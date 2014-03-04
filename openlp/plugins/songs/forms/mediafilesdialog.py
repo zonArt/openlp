@@ -69,5 +69,6 @@ class Ui_MediaFilesDialog(object):
         """
         media_files_dialog.setWindowTitle(translate('SongsPlugin.MediaFilesForm', 'Select Media File(s)'))
         self.select_label.setText(translate('SongsPlugin.MediaFilesForm',
-            'Select one or more audio files from the list below, and click OK to import them into this song.'))
+                                  'Select one or more audio files from the list below, and click OK to import them '
+                                  'into this song.'))
 

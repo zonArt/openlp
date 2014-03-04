@@ -93,11 +93,7 @@ class TestMediaItem(TestCase):
             self.media_item.build_file_mask_string()
 
         # THEN: The file mask should be generated correctly
-        self.assertIn('*.odp', self.media_item.on_new_file_masks,
-            'The file mask should contain the odp extension')
-        self.assertIn('*.ppt', self.media_item.on_new_file_masks,
-            'The file mask should contain the ppt extension')
-        self.assertIn('*.pdf', self.media_item.on_new_file_masks,
-            'The file mask should contain the pdf extension')
-        self.assertIn('*.xps', self.media_item.on_new_file_masks,
-            'The file mask should contain the xps extension')
+        self.assertIn('*.odp', self.media_item.on_new_file_masks, 'The file mask should contain the odp extension')
+        self.assertIn('*.ppt', self.media_item.on_new_file_masks, 'The file mask should contain the ppt extension')
+        self.assertIn('*.pdf', self.media_item.on_new_file_masks, 'The file mask should contain the pdf extension')
+        self.assertIn('*.xps', self.media_item.on_new_file_masks, 'The file mask should contain the xps extension')

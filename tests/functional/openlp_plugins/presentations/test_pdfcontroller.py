@@ -77,7 +77,7 @@ class TestPdfController(TestCase):
 
     def constructor_test(self):
         """
-        Test the Constructor
+        Test the Constructor from the PdfController
         """
         # GIVEN: No presentation controller
         controller = None
@@ -90,7 +90,7 @@ class TestPdfController(TestCase):
 
     def load_pdf_test(self):
         """
-        Test loading of a Pdf
+        Test loading of a Pdf using the PdfController
         """
         # GIVEN: A Pdf-file
         test_file = os.path.join(TEST_RESOURCES_PATH, 'presentations', 'pdf_test1.pdf')

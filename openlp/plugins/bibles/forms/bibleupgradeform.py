@@ -107,7 +107,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         if self.page(pageId) == self.progress_page:
             self.pre_wizard()
-            self.performWizard()
+            self.perform_wizard()
             self.post_wizard()
         elif self.page(pageId) == self.selectPage and not self.files:
             self.next()
@@ -312,7 +312,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Set default values for the wizard pages.
         """
-        log.debug('BibleUpgrade setDefaults')
+        log.debug('BibleUpgrade set_defaults')
         settings = Settings()
         settings.beginGroup(self.plugin.settings_section)
         self.stop_import_flag = False
@@ -338,7 +338,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Starting upgrade...'))
         self.application.process_events()
 
-    def performWizard(self):
+    def perform_wizard(self):
         """
         Perform the actual upgrade.
         """
