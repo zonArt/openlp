@@ -72,6 +72,9 @@ class MediaInfo(object):
     length = 0
     start_time = 0
     end_time = 0
+    title_track = 0
+    audio_track = 0
+    subtitle_track = 0
     media_type = MediaType()
 
 

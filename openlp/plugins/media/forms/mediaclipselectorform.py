@@ -31,6 +31,8 @@ import os
 import sys
 import logging
 import time
+from datetime import datetime
+
 
 from PyQt4 import QtCore, QtGui
 
@@ -132,12 +134,14 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.toggle_disable_load_media(False)
             return
         self.vlc_media_player.audio_set_mute(True)
-        while self.vlc_media_player.get_time() == 0:
-            if self.vlc_media_player.get_state() == vlc.State.Error:
-                log.debug('player in error state')
-                self.toggle_disable_load_media(False)
-                return
-            time.sleep(0.1)
+        #while self.vlc_media_player.get_time() == 0:
+        #    if self.vlc_media_player.get_state() == vlc.State.Error:
+        #        log.debug('player in error state')
+        #        self.toggle_disable_load_media(False)
+        #        return
+        #    time.sleep(0.1)
+        if not self.media_state_wait(vlc.State.Playing):
+            return
         self.vlc_media_player.pause()
         self.vlc_media_player.set_time(0)
         # Get titles, insert in combobox
@@ -223,11 +227,13 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.vlc_media_player.set_time(0)
         self.vlc_media_player.play()
         self.vlc_media_player.audio_set_mute(True)
-        while self.vlc_media_player.get_time() == 0:
-            if self.vlc_media_player.get_state() == vlc.State.Error:
-                log.debug('player in error state')
-                return
-            time.sleep(0.1)
+        #while self.vlc_media_player.get_time() == 0:
+        #    if self.vlc_media_player.get_state() == vlc.State.Error:
+        #        log.debug('player in error state')
+        #        return
+        #    time.sleep(0.1)
+        if not self.media_state_wait(vlc.State.Playing):
+            return
         # pause
         self.vlc_media_player.pause()
         self.vlc_media_player.set_time(0)
@@ -358,3 +364,16 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         path = self.media_path_combobox.currentText()
         optical = 'optical:' + str(title) + ':' + str(audio_track) + ':' + str(subtitle_track) + ':' + str(start_time_ms) + ':' + str(end_time_ms) + ':' + path
         self.media_item.add_optical_clip(optical)
+
+    def media_state_wait(self, media_state):
+        """
+        Wait for the video to change its state
+        Wait no longer than 15 seconds. (loading an iso file needs a long time)
+        """
+        start = datetime.now()
+        while not media_state == self.vlc_media.get_state():
+            if self.vlc_media.get_state() == vlc.State.Error:
+                return False
+            if (datetime.now() - start).seconds > 15:
+                return False
+        return True

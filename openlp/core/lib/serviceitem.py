@@ -108,6 +108,8 @@ class ItemCapabilities(object):
     ``CanAutoStartForLive``
             The capability to ignore the do not play if display blank flag.
 
+    ``IsOptical``
+            .Determines is the service_item is based on an optical device
     """
     CanPreview = 1
     CanEdit = 2
@@ -125,6 +127,7 @@ class ItemCapabilities(object):
     CanWordSplit = 14
     HasBackgroundAudio = 15
     CanAutoStartForLive = 16
+    IsOptical = 17
 
 
 class ServiceItem(object):
@@ -573,7 +576,7 @@ class ServiceItem(object):
                 frame = self._raw_frames[row]
             except IndexError:
                 return ''
-        if self.is_image():
+        if self.is_image() or self.is_capable(ItemCapabilities.IsOptical):
             path_from = frame['path']
         else:
             path_from = os.path.join(frame['path'], frame['title'])

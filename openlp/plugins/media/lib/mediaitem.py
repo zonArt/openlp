@@ -33,7 +33,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
-from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, ServiceItem, ServiceItemContext, \
+from openlp.core.lib import ItemCapabilities, MediaManagerItem, MediaType, ServiceItem, ServiceItemContext, \
     build_icon, check_item_selected
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
@@ -41,7 +41,6 @@ from openlp.core.ui.media import get_media_players, set_media_players
 from openlp.core.utils import get_locale_key
 from openlp.plugins.media.forms.mediaclipselectorform import MediaClipSelectorForm
 from openlp.core.ui.media.vlcplayer import VLC_AVAILABLE
-
 
 
 log = logging.getLogger(__name__)
@@ -193,22 +192,45 @@ class MediaMediaItem(MediaManagerItem):
             if item is None:
                 return False
         filename = item.data(QtCore.Qt.UserRole)
-        if not os.path.exists(filename):
-            if not remote:
-                # File is no longer present
-                critical_error_message_box(
-                    translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                    translate('MediaPlugin.MediaItem', 'The file %s no longer exists.') % filename)
-            return False
-        (path, name) = os.path.split(filename)
-        service_item.title = name
-        service_item.processor = self.display_type_combo_box.currentText()
-        service_item.add_from_command(path, name, CLAPPERBOARD)
-        # Only get start and end times if going to a service
-        if context == ServiceItemContext.Service:
-            # Start media and obtain the length
-            if not self.media_controller.media_length(service_item):
+        log.debug('generate_slide_data, filename: ' + filename)
+        if filename.startswith('optical:'):
+            (name, title, audio_track, subtitle_track, start, end) = self.parse_optical_path(filename)
+            log.debug('generate_slide_data, optical name: ' + name)
+            if not os.path.exists(name):
+                if not remote:
+                    # Optical disc is no longer present
+                    critical_error_message_box(
+                        translate('MediaPlugin.MediaItem', 'Missing Media File'),
+                        translate('MediaPlugin.MediaItem', 'The optical disc %s is no longer available.') % name)
                 return False
+            service_item.title = name
+            service_item.processor = self.display_type_combo_box.currentText()
+            service_item.add_from_command(filename, name, OPTICAL_ICON)
+            # Only set start and end times if going to a service
+            #if context == ServiceItemContext.Service:
+            # Set the length
+            self.media_controller.media_setup_optical(name, title, audio_track, subtitle_track, start, end, None, None)
+            service_item.set_media_length((end - start)/1000)
+            service_item.start_time = start/1000
+            service_item.end_time = end/1000
+            service_item.add_capability(ItemCapabilities.IsOptical)
+        else:
+            if not os.path.exists(filename):
+                if not remote:
+                    # File is no longer present
+                    critical_error_message_box(
+                        translate('MediaPlugin.MediaItem', 'Missing Media File'),
+                        translate('MediaPlugin.MediaItem', 'The file %s no longer exists.') % filename)
+                return False
+            (path, name) = os.path.split(filename)
+            service_item.title = name
+            service_item.processor = self.display_type_combo_box.currentText()
+            service_item.add_from_command(path, name, CLAPPERBOARD)
+            # Only get start and end times if going to a service
+            if context == ServiceItemContext.Service:
+                # Start media and obtain the length
+                if not self.media_controller.media_length(service_item):
+                    return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         if Settings().value(self.settings_section + '/media auto start') == QtCore.Qt.Checked:
@@ -329,7 +351,14 @@ class MediaMediaItem(MediaManagerItem):
         log.debug('in on_load_optical')
         self.media_clip_selector_form.exec_()
 
-    def parse_optical_path(self, input):
+    def add_optical_clip(self, optical):
+        full_list = self.get_file_list()
+        full_list.append(optical)
+        self.load_list([optical])
+        Settings().setValue(self.settings_section + '/media files', self.get_file_list())
+
+    @staticmethod
+    def parse_optical_path(input):
         # split the clip info
         clip_info = input.split(sep=':')
         title = int(clip_info[1])
@@ -341,9 +370,3 @@ class MediaMediaItem(MediaManagerItem):
         if len(clip_info) > 7:
             filename += clip_info[7]
         return filename, title, audio_track, subtitle_track, start, end
-
-    def add_optical_clip(self, optical):
-        full_list = self.get_file_list()
-        full_list.append(optical)
-        self.load_list([optical])
-        Settings().setValue(self.settings_section + '/media files', self.get_file_list())
