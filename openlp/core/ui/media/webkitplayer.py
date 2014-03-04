@@ -376,9 +376,9 @@ class WebkitPlayer(MediaPlayer):
         else:
             is_visible = "hidden"
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript('show_flash("setVisible", null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript('show_flash("setVisible", null, null, "%s");' % is_visible)
         else:
-            display.frame.evaluateJavaScript('show_video("setVisible", null, null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript('show_video("setVisible", null, null, null, "%s");' % is_visible)
 
     def update_ui(self, display):
         """
@@ -412,9 +412,9 @@ class WebkitPlayer(MediaPlayer):
         Return some information about this player
         """
         return(translate('Media.player', 'Webkit is a media player which runs '
-            'inside a web browser. This player allows text over video to be '
-            'rendered.') +
-            '<br/> <strong>' + translate('Media.player', 'Audio') +
-            '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' +
-            translate('Media.player', 'Video') + '</strong><br/>' +
-            str(VIDEO_EXT) + '<br/>')
+               'inside a web browser. This player allows text over video to be '
+               'rendered.') +
+               '<br/> <strong>' + translate('Media.player', 'Audio') +
+               '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' +
+               translate('Media.player', 'Video') + '</strong><br/>' +
+               str(VIDEO_EXT) + '<br/>')

@@ -47,13 +47,13 @@ class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
         super(MediaFilesForm, self).__init__()
         self.setupUi(self)
 
-    def populateFiles(self, files):
+    def populate_files(self, files):
         self.file_list_widget.clear()
         for file in files:
             item = QtGui.QListWidgetItem(os.path.split(file)[1])
             item.setData(QtCore.Qt.UserRole, file)
             self.file_list_widget.addItem(item)
 
-    def getSelectedFiles(self):
+    def get_selected_files(self):
         return [item.data(QtCore.Qt.UserRole) for item in self.file_list_widget.selectedItems()]
 

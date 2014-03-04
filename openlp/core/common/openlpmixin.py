@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,7 +33,8 @@ import logging
 import inspect
 
 from openlp.core.common import trace_error_handler
-DO_NOT_TRACE_EVENTS = ['timerEvent', 'paintEvent']
+DO_NOT_TRACE_EVENTS = ['timerEvent', 'paintEvent', 'drag_enter_event', 'drop_event', 'on_controller_size_changed',
+                       'preview_size_changed', 'resizeEvent']
 
 
 class OpenLPMixin(object):
@@ -68,13 +69,13 @@ class OpenLPMixin(object):
 
     def log_debug(self, message):
         """
-        Common log debug handler which prints the calling path
+        Common log debug handler
         """
         self.logger.debug(message)
 
     def log_info(self, message):
         """
-        Common log info handler which prints the calling path
+        Common log info handler
         """
         self.logger.info(message)
 

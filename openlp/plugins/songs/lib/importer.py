@@ -107,7 +107,7 @@ class SongFormat(object):
 
     ``u'prefix'``
         Prefix for Qt objects. Use mixedCase, e.g. ``u'openLyrics'``
-        See ``SongImportForm.addFileSelectItem()``
+        See ``SongImportForm.add_file_select_item()``
 
     Optional attributes for each song format:
 

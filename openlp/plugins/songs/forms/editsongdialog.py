@@ -153,8 +153,8 @@ class Ui_EditSongDialog(object):
         self.topics_layout.setObjectName('topics_layout')
         self.topic_add_layout = QtGui.QHBoxLayout()
         self.topic_add_layout.setObjectName('topic_add_layout')
-        self.topicsComboBox = create_combo_box(self.topics_group_box, 'topicsComboBox')
-        self.topic_add_layout.addWidget(self.topicsComboBox)
+        self.topics_combo_box = create_combo_box(self.topics_group_box, 'topics_combo_box')
+        self.topic_add_layout.addWidget(self.topics_combo_box)
         self.topic_add_button = QtGui.QPushButton(self.topics_group_box)
         self.topic_add_button.setObjectName('topic_add_button')
         self.topic_add_layout.addWidget(self.topic_add_button)
@@ -296,7 +296,7 @@ class Ui_EditSongDialog(object):
         self.verse_edit_all_button.setText(translate('SongsPlugin.EditSongForm', 'Ed&it All'))
         self.verse_delete_button.setText(UiStrings().Delete)
         self.song_tab_widget.setTabText(self.song_tab_widget.indexOf(self.lyrics_tab),
-            translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
+                                        translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
         self.authors_group_box.setTitle(SongStrings.Authors)
         self.author_add_button.setText(translate('SongsPlugin.EditSongForm', '&Add to Song'))
         self.author_remove_button.setText(translate('SongsPlugin.EditSongForm', '&Remove'))
@@ -308,7 +308,7 @@ class Ui_EditSongDialog(object):
         self.song_book_name_label.setText(translate('SongsPlugin.EditSongForm', 'Book:'))
         self.song_book_number_label.setText(translate('SongsPlugin.EditSongForm', 'Number:'))
         self.song_tab_widget.setTabText(self.song_tab_widget.indexOf(self.authors_tab),
-            translate('SongsPlugin.EditSongForm', 'Authors, Topics && Song Book'))
+                                        translate('SongsPlugin.EditSongForm', 'Authors, Topics && Song Book'))
         self.theme_group_box.setTitle(UiStrings().Theme)
         self.theme_add_button.setText(translate('SongsPlugin.EditSongForm', 'New &Theme'))
         self.rights_group_box.setTitle(translate('SongsPlugin.EditSongForm', 'Copyright Information'))
@@ -316,9 +316,9 @@ class Ui_EditSongDialog(object):
         self.ccli_label.setText(UiStrings().CCLINumberLabel)
         self.comments_group_box.setTitle(translate('SongsPlugin.EditSongForm', 'Comments'))
         self.song_tab_widget.setTabText(self.song_tab_widget.indexOf(self.theme_tab),
-            translate('SongsPlugin.EditSongForm', 'Theme, Copyright Info && Comments'))
+                                        translate('SongsPlugin.EditSongForm', 'Theme, Copyright Info && Comments'))
         self.song_tab_widget.setTabText(self.song_tab_widget.indexOf(self.audio_tab),
-            translate('SongsPlugin.EditSongForm', 'Linked Audio'))
+                                        translate('SongsPlugin.EditSongForm', 'Linked Audio'))
         self.from_file_button.setText(translate('SongsPlugin.EditSongForm', 'Add &File(s)'))
         self.from_media_button.setText(translate('SongsPlugin.EditSongForm', 'Add &Media'))
         self.audio_remove_button.setText(translate('SongsPlugin.EditSongForm', '&Remove'))

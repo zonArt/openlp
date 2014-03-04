@@ -96,8 +96,14 @@ class PresentationDocument(object):
         """
         Constructor for the PresentationController class
         """
-        self.slidenumber = 0
         self.controller = controller
+        self._setup(name)
+
+    def _setup(self, name):
+        """
+        Run some initial setup. This method is separate from __init__ in order to mock it out in tests.
+        """
+        self.slidenumber = 0
         self.filepath = name
         check_directory_exists(self.get_thumbnail_folder())
 

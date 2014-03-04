@@ -35,7 +35,7 @@ from openlp.core.common import Settings
 
 from PyQt4 import QtCore
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__+'.__init__')
 
 
 class MediaState(object):

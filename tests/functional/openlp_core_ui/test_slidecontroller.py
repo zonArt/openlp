@@ -26,49 +26,53 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Package to test the openlp.core.ui.slidecontroller package.
+"""
+from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui
+from openlp.core.ui import SlideController
 
-from openlp.core.common import translate
-from openlp.core.lib.ui import create_button_box
+from tests.interfaces import MagicMock, patch
 
 
-class Ui_SongUsageDeleteDialog(object):
-    """
-    The Song Usage delete dialog
-    """
-    def setupUi(self, song_usage_delete_dialog):
+class TestSlideController(TestCase):
+
+    def initial_slide_controller_test(self):
         """
-        Setup the UI
+        Test the initial slide controller state .
+        """
+        # GIVEN: A new slideController instance.
+        slide_controller = SlideController(None)
+        # WHEN: the default controller is built.
+        # THEN: The controller should not be a live controller.
+        self.assertEqual(slide_controller.is_live, False, 'The base slide controller should not be a live controller')
 
-        :param song_usage_delete_dialog:
+    def toggle_blank_test(self):
         """
-        song_usage_delete_dialog.setObjectName('song_usage_delete_dialog')
-        song_usage_delete_dialog.resize(291, 243)
-        self.vertical_layout = QtGui.QVBoxLayout(song_usage_delete_dialog)
-        self.vertical_layout.setSpacing(8)
-        self.vertical_layout.setContentsMargins(8, 8, 8, 8)
-        self.vertical_layout.setObjectName('vertical_layout')
-        self.delete_label = QtGui.QLabel(song_usage_delete_dialog)
-        self.delete_label.setObjectName('delete_label')
-        self.vertical_layout.addWidget(self.delete_label)
-        self.delete_calendar = QtGui.QCalendarWidget(song_usage_delete_dialog)
-        self.delete_calendar.setFirstDayOfWeek(QtCore.Qt.Sunday)
-        self.delete_calendar.setGridVisible(True)
-        self.delete_calendar.setVerticalHeaderFormat(QtGui.QCalendarWidget.NoVerticalHeader)
-        self.delete_calendar.setObjectName('delete_calendar')
-        self.vertical_layout.addWidget(self.delete_calendar)
-        self.button_box = create_button_box(song_usage_delete_dialog, 'button_box', ['cancel', 'ok'])
-        self.vertical_layout.addWidget(self.button_box)
-        self.retranslateUi(song_usage_delete_dialog)
+        Test the setting of the display blank icons by display type.
+        """
+        # GIVEN: A new slideController instance.
+        slide_controller = SlideController(None)
+        service_item = MagicMock()
+        toolbar = MagicMock()
+        toolbar.set_widget_visible = self.dummy_widget_visible
+        slide_controller.toolbar = toolbar
+        slide_controller.service_item = service_item
 
-    def retranslateUi(self, song_usage_delete_dialog):
-        """
-        Retranslate the strings
-        :param song_usage_delete_dialog:
-        """
-        song_usage_delete_dialog.setWindowTitle(
-            translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Song Usage Data'))
-        self.delete_label.setText(
-            translate('SongUsagePlugin.SongUsageDeleteForm', 'Select the date up to which the song usage data '
-                      'should be deleted. \nAll data recorded before this date will be permanently deleted.'))
+        # WHEN a text based service item is used
+        slide_controller.service_item.is_text = MagicMock(return_value=True)
+        slide_controller.set_blank_menu()
+
+        # THEN: then call set up the toolbar to blank the display screen.
+        self.assertEqual(len(self.test_widget), 3, 'There should be three icons to display on the screen')
+
+        # WHEN a non text based service item is used
+        slide_controller.service_item.is_text = MagicMock(return_value=False)
+        slide_controller.set_blank_menu()
+
+        # THEN: then call set up the toolbar to blank the display screen.
+        self.assertEqual(len(self.test_widget), 2, 'There should be only two icons to display on the screen')
+
+    def dummy_widget_visible(self, widget, visible=True):
+        self.test_widget = widget

@@ -36,6 +36,10 @@ from openlp.core.lib.ui import create_button_box, create_button
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, custom_edit_dialog):
+        """
+        Build the Edit Dialog UI
+        :param custom_edit_dialog: The Dialog
+        """
         custom_edit_dialog.setObjectName('custom_edit_dialog')
         custom_edit_dialog.resize(450, 350)
         custom_edit_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
@@ -100,7 +104,7 @@ class Ui_CustomEditDialog(object):
         self.dialog_layout.addLayout(self.bottom_form_layout)
         self.preview_button = QtGui.QPushButton()
         self.button_box = create_button_box(custom_edit_dialog, 'button_box', ['cancel', 'save'],
-            [self.preview_button])
+                                            [self.preview_button])
         self.dialog_layout.addWidget(self.button_box)
         self.retranslateUi(custom_edit_dialog)
 

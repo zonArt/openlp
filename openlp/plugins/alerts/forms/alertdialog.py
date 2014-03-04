@@ -35,7 +35,15 @@ from openlp.core.lib.ui import create_button, create_button_box
 
 
 class Ui_AlertDialog(object):
+    """
+    Alert UI Class
+    """
     def setupUi(self, alert_dialog):
+        """
+        Setup the Alert UI dialog
+
+        :param alert_dialog: The dialog
+        """
         alert_dialog.setObjectName('alert_dialog')
         alert_dialog.resize(400, 300)
         alert_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
@@ -72,20 +80,25 @@ class Ui_AlertDialog(object):
         self.save_button.setObjectName('save_button')
         self.manage_button_layout.addWidget(self.save_button)
         self.delete_button = create_button(alert_dialog, 'delete_button', role='delete', enabled=False,
-            click=alert_dialog.on_delete_button_clicked)
+                                           click=alert_dialog.on_delete_button_clicked)
         self.manage_button_layout.addWidget(self.delete_button)
         self.manage_button_layout.addStretch()
         self.alert_dialog_layout.addLayout(self.manage_button_layout, 1, 1)
         display_icon = build_icon(':/general/general_live.png')
         self.display_button = create_button(alert_dialog, 'display_button', icon=display_icon, enabled=False)
         self.display_close_button = create_button(alert_dialog, 'display_close_button', icon=display_icon,
-            enabled=False)
+                                                  enabled=False)
         self.button_box = create_button_box(alert_dialog, 'button_box', ['close'],
-            [self.display_button, self.display_close_button])
+                                            [self.display_button, self.display_close_button])
         self.alert_dialog_layout.addWidget(self.button_box, 2, 0, 1, 2)
         self.retranslateUi(alert_dialog)
 
     def retranslateUi(self, alert_dialog):
+        """
+        Retranslate the UI strings
+
+        :param alert_dialog: The dialog
+        """
         alert_dialog.setWindowTitle(translate('AlertsPlugin.AlertForm', 'Alert Message'))
         self.alert_entry_label.setText(translate('AlertsPlugin.AlertForm', 'Alert &text:'))
         self.alert_parameter.setText(translate('AlertsPlugin.AlertForm', '&Parameter:'))
