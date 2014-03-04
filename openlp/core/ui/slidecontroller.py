@@ -444,7 +444,7 @@ class SlideController(DisplayController):
                 # "V1" was the slide we wanted to go.
                 self.preview_widget.change_slide(self.slide_list[self.current_shortcut])
                 self.slide_selected()
-           # Reset the shortcut.
+            # Reset the shortcut.
             self.current_shortcut = ''
 
     def set_live_hot_keys(self, parent=None):
@@ -774,7 +774,7 @@ class SlideController(DisplayController):
             self._reset_blank()
         if service_item.is_command():
             Registry().execute(
-                '%s_start' % service_item.name.lower(), [service_item, self.is_live, self.hide_mode(), slide_no])
+                '%s_start' % service_item.name.lower(), [self.service_item, self.is_live, self.hide_mode(), slide_no])
         self.slide_list = {}
         if self.is_live:
             self.song_menu.menu().clear()

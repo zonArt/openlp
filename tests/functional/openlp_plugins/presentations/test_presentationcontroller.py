@@ -34,6 +34,7 @@ from unittest import TestCase
 from openlp.plugins.presentations.lib.presentationcontroller import PresentationController, PresentationDocument
 from tests.functional import MagicMock, patch
 
+
 class TestPresentationController(TestCase):
     """
     Test the PresentationController.
@@ -64,6 +65,7 @@ class TestPresentationController(TestCase):
         # THEN: The name of the presentation controller should be correct
         self.assertEqual('PresentationController', controller.name,
                          'The name of the presentation controller should be correct')
+
 
 class TestPresentationDocument(TestCase):
     """
@@ -101,12 +103,12 @@ class TestPresentationDocument(TestCase):
         """
         Set up the patches and mocks need for all tests.
         """
-        self.check_directory_exists_patcher = patch(
-            'openlp.plugins.presentations.lib.presentationcontroller.check_directory_exists')
-        self.get_thumbnail_folder_patcher = patch(
-            'openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder')
-        self._setup_patcher = patch(
-            'openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument._setup')
+        self.check_directory_exists_patcher = \
+            patch('openlp.plugins.presentations.lib.presentationcontroller.check_directory_exists')
+        self.get_thumbnail_folder_patcher = \
+            patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder')
+        self._setup_patcher = \
+            patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument._setup')
 
         self.mock_check_directory_exists = self.check_directory_exists_patcher.start()
         self.mock_get_thumbnail_folder = self.get_thumbnail_folder_patcher.start()
@@ -124,29 +126,29 @@ class TestPresentationDocument(TestCase):
         self.get_thumbnail_folder_patcher.stop()
         self._setup_patcher.stop()
 
-    def initalise_presentation_document_test(self):
+    def initialise_presentation_document_test(self):
         """
-        Test the PresentationDocument __init__ method when initalising the PresentationDocument Class
+        Test the PresentationDocument __init__ method when initialising the PresentationDocument Class
         """
         # GIVEN: A reset mock_setup and mocked controller
         self.mock_setup.reset()
 
         # WHEN: Creating an instance of PresentationDocument
-        instance = PresentationDocument(self.mock_controller, 'Name')
+        PresentationDocument(self.mock_controller, 'Name')
 
         # THEN: PresentationDocument.__init__ should have been called with the correct arguments
         self.mock_setup.assert_called_once_with('Name')
 
     def presentation_document_setup_test(self):
         """
-        Test the PresentationDocument _setup method when initalising the PresentationDocument Class
+        Test the PresentationDocument _setup method when initialising the PresentationDocument Class
         """
         self._setup_patcher.stop()
 
         # GIVEN: A  mocked controller, patched check_directory_exists_patcher and patched get_thumbnail_folder method
 
         # WHEN: Creating an instance of PresentationDocument
-        instance = PresentationDocument(self.mock_controller, 'Name')
+        PresentationDocument(self.mock_controller, 'Name')
 
         # THEN: check_directory_exists should have been called with the correct arguments
         self.mock_check_directory_exists.assert_called_once_with('returned/path/')

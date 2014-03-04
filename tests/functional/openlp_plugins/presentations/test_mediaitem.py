@@ -75,11 +75,16 @@ class TestMediaItem(TestCase):
         presentation_controller.also_supports = []
         presentation_viewer_controller = MagicMock()
         presentation_viewer_controller.enabled.return_value = False
+        pdf_controller = MagicMock()
+        pdf_controller.enabled.return_value = True
+        pdf_controller.supports = ['pdf']
+        pdf_controller.also_supports = ['xps']
         # Mock the controllers.
         self.media_item.controllers = {
             'Impress': impress_controller,
             'Powerpoint': presentation_controller,
-            'Powerpoint Viewer': presentation_viewer_controller
+            'Powerpoint Viewer': presentation_viewer_controller,
+            'Pdf': pdf_controller
         }
 
         # WHEN: Build the file mask.
@@ -88,7 +93,7 @@ class TestMediaItem(TestCase):
             self.media_item.build_file_mask_string()
 
         # THEN: The file mask should be generated correctly
-        self.assertIn('*.odp', self.media_item.on_new_file_masks,
-            'The file mask should contain the odp extension')
-        self.assertIn('*.ppt', self.media_item.on_new_file_masks,
-            'The file mask should contain the ppt extension')
+        self.assertIn('*.odp', self.media_item.on_new_file_masks, 'The file mask should contain the odp extension')
+        self.assertIn('*.ppt', self.media_item.on_new_file_masks, 'The file mask should contain the ppt extension')
+        self.assertIn('*.pdf', self.media_item.on_new_file_masks, 'The file mask should contain the pdf extension')
+        self.assertIn('*.xps', self.media_item.on_new_file_masks, 'The file mask should contain the xps extension')

@@ -29,7 +29,7 @@
 """
 This module contains tests for the pptviewcontroller module of the Presentations plugin.
 """
-
+import os
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
@@ -42,6 +42,7 @@ from openlp.plugins.presentations.lib.pptviewcontroller import PptviewDocument
 #       check_availablecheck_installed
 #       start_process(self)
 #       kill
+
 
 class TestPptviewDocument(TestCase):
     """
@@ -78,8 +79,8 @@ class TestPptviewDocument(TestCase):
             'openlp.plugins.presentations.lib.pptviewcontroller.PresentationDocument.get_temp_folder')
         self.presentation_document_setup_patcher = patch(
             'openlp.plugins.presentations.lib.pptviewcontroller.PresentationDocument._setup')
-        self.rect_patcher = patch('openlp.plugins.presentations.lib.pptviewcontroller.RECT')
         self.screen_list_patcher = patch('openlp.plugins.presentations.lib.pptviewcontroller.ScreenList')
+        self.rect_patcher = MagicMock()
 
         self.mock_os = self.os_patcher.start()
         self.mock_pptview_document_create_thumbnails = self.pptview_document_create_thumbnails_patcher.start()
@@ -118,12 +119,14 @@ class TestPptviewDocument(TestCase):
         self.mock_controller.process.OpenPPT.return_value = 0
         instance = PptviewDocument(self.mock_controller, self.mock_presentation)
         instance.filepath = 'test\path.ppt'
-        result = instance.load_presentation()
 
-        # THEN: PptviewDocument.load_presentation should return True
-        self.assertTrue(result)
+        if os.name == 'nt':
+            result = instance.load_presentation()
 
-    def load_presentation_unsuccesfull_test(self):
+            # THEN: PptviewDocument.load_presentation should return True
+            self.assertTrue(result)
+
+    def load_presentation_un_succesfull_test(self):
         """
         Test the PptviewDocument.load_presentation() method when the temporary directory does not exist and the PPT is
         not successfully opened
@@ -136,8 +139,9 @@ class TestPptviewDocument(TestCase):
         self.mock_controller.process.OpenPPT.return_value = -1
         instance = PptviewDocument(self.mock_controller, self.mock_presentation)
         instance.filepath = 'test\path.ppt'
-        result = instance.load_presentation()
+        if os.name == 'nt':
+            result = instance.load_presentation()
 
-        # THEN: The temporary directory should be created and PptviewDocument.load_presentation should return False
-        self.mock_os.makedirs.assert_called_once_with('temp folder')
-        self.assertFalse(result)
+            # THEN: The temporary directory should be created and PptviewDocument.load_presentation should return False
+            self.mock_os.makedirs.assert_called_once_with('temp folder')
+            self.assertFalse(result)

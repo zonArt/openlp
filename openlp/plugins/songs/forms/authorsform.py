@@ -111,8 +111,8 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         elif not self.display_edit.text():
             if critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm',
-                    'You have not set a display name for the author, combine the first and last names?'),
-                parent=self, question=True) == QtGui.QMessageBox.Yes:
+                                  'You have not set a display name for the author, combine the first and last names?'),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                 self.display_edit.setText(self.first_name_edit.text() + ' ' + self.last_name_edit.text())
                 return QtGui.QDialog.accept(self)
             else:

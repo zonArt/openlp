@@ -28,11 +28,13 @@
 ###############################################################################
 
 import logging
+import copy
 
 from PyQt4 import QtCore
 
 from openlp.core.common import Registry
 from openlp.core.ui import HideMode
+from openlp.core.lib import ServiceItemContext, ServiceItem
 
 log = logging.getLogger(__name__)
 
@@ -69,6 +71,7 @@ class Controller(object):
             return
         self.doc.slidenumber = slide_no
         self.hide_mode = hide_mode
+        log.debug('add_handler, slidenumber: %d' % slide_no)
         if self.is_live:
             if hide_mode == HideMode.Screen:
                 Registry().execute('live_display_hide', HideMode.Screen)
@@ -316,6 +319,28 @@ class MessageListener(object):
         hide_mode = message[2]
         file = item.get_frame_path()
         self.handler = item.processor
+        # When starting presentation from the servicemanager we convert
+        # PDF/XPS-serviceitems into image-serviceitems. When started from the mediamanager
+        # the conversion has already been done at this point.
+        if file.endswith('.pdf') or file.endswith('.xps'):
+            log.debug('Converting from pdf/xps to images for serviceitem with file %s', file)
+            # Create a copy of the original item, and then clear the original item so it can be filled with images
+            item_cpy = copy.copy(item)
+            item.__init__(None)
+            if is_live:
+                self.media_item.generate_slide_data(item, item_cpy, False, False, ServiceItemContext.Live, file)
+            else:
+                self.media_item.generate_slide_data(item, item_cpy, False, False, ServiceItemContext.Preview, file)
+            # Some of the original serviceitem attributes is needed in the new serviceitem
+            item.footer = item_cpy.footer
+            item.from_service = item_cpy.from_service
+            item.iconic_representation = item_cpy.iconic_representation
+            item.image_border = item_cpy.image_border
+            item.main = item_cpy.main
+            item.theme_data = item_cpy.theme_data
+            # When presenting PDF or XPS, we are using the image presentation code,
+            # so handler & processor is set to None, and we skip adding the handler.
+            self.handler = None
         if self.handler == self.media_item.automatic:
             self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
@@ -324,7 +349,12 @@ class MessageListener(object):
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
+        # When presenting PDF or XPS, we are using the image presentation code,
+        # so handler & processor is set to None, and we skip adding the handler.
+        if self.handler is None:
+            self.controller = controller
+        else:
+            controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
 
     def slide(self, message):
         """
