@@ -137,38 +137,44 @@ class SongSelectImport(object):
         """
         Get the full song from SongSelect
 
-        :param song:
-        :param callback:
+        :param song: The song dictionary to update
+        :param callback: A callback which can be used to indicate progress
+        :return: The updated song dictionary
         """
         if callback:
             callback()
-        song_page = BeautifulSoup(self.opener.open(song['link']).read(), 'lxml')
+        try:
+            song_page = BeautifulSoup(self.opener.open(song['link']).read(), 'lxml')
+        except (TypeError, HTTPError) as e:
+            log.exception(u'Could not get song from SongSelect, %s', e)
+            return None
         if callback:
             callback()
         try:
             lyrics_page = BeautifulSoup(self.opener.open(song['link'] + '/lyrics').read(), 'lxml')
-        except HTTPError:
-            lyrics_page = None
+        except (TypeError, HTTPError):
+            log.exception(u'Could not get lyrics from SongSelect')
+            return None
         if callback:
             callback()
         song['copyright'] = '/'.join([li.string for li in song_page.find('ul', 'copyright').find_all('li')])
         song['copyright'] = self.html_parser.unescape(song['copyright'])
         song['ccli_number'] = song_page.find('ul', 'info').find('li').string.split(':')[1].strip()
         song['verses'] = []
-        if lyrics_page:
-            verses = lyrics_page.find('section', 'lyrics').find_all('p')
-            verse_labels = lyrics_page.find('section', 'lyrics').find_all('h3')
-            for counter in range(len(verses)):
-                verse = {'label': verse_labels[counter].string, 'lyrics': ''}
-                for v in verses[counter].contents:
-                    if isinstance(v, NavigableString):
-                        verse['lyrics'] = verse['lyrics'] + v.string
-                    else:
-                        verse['lyrics'] += '\n'
-                verse['lyrics'] = verse['lyrics'].strip(' \n\r\t')
-                song['verses'].append(self.html_parser.unescape(verse))
+        verses = lyrics_page.find('section', 'lyrics').find_all('p')
+        verse_labels = lyrics_page.find('section', 'lyrics').find_all('h3')
+        for counter in range(len(verses)):
+            verse = {'label': verse_labels[counter].string, 'lyrics': ''}
+            for v in verses[counter].contents:
+                if isinstance(v, NavigableString):
+                    verse['lyrics'] = verse['lyrics'] + v.string
+                else:
+                    verse['lyrics'] += '\n'
+            verse['lyrics'] = verse['lyrics'].strip(' \n\r\t')
+            song['verses'].append(self.html_parser.unescape(verse))
         for counter, author in enumerate(song['authors']):
             song['authors'][counter] = self.html_parser.unescape(author)
+        return song
 
     def save_song(self, song):
         """

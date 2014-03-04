@@ -193,7 +193,7 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         self.song_progress_bar.setValue(0)
         self.main_window.application.process_events()
         # Get the full song
-        self.song_select_importer.get_song(song, self._update_song_progress)
+        song = self.song_select_importer.get_song(song, self._update_song_progress)
         # Update the UI
         self.title_edit.setText(song['title'])
         self.copyright_edit.setText(song['copyright'])
