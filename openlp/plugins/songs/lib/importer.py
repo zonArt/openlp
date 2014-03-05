@@ -137,7 +137,7 @@ class SongFormat(object):
         Title for ``QFileDialog`` (default includes the format's ``u'name'``).
 
     ``u'invalidSourceMsg'``
-        Message displayed if ``isValidSource()`` returns ``False``.
+        Message displayed if ``is_valid_source()`` returns ``False``.
 
     ``u'descriptionText'``
         Short description (1-2 lines) about the song format.

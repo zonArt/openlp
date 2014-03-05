@@ -68,9 +68,9 @@ class EasySlidesImport(SongImport):
         if hasattr(song, 'Title2'):
             self._add_unicode_attribute('alternateTitle', song.Title2)
         if hasattr(song, 'SongNumber'):
-            self._add_unicode_attribute('songNumber', song.SongNumber)
-        if self.songNumber == '0':
-            self.songNumber = ''
+            self._add_unicode_attribute('song_number', song.SongNumber)
+        if self.song_number == '0':
+            self.song_number = ''
         self._addAuthors(song)
         if hasattr(song, 'Copyright'):
             self._add_copyright(song.Copyright)
@@ -79,13 +79,13 @@ class EasySlidesImport(SongImport):
         if hasattr(song, 'LicenceAdmin2'):
             self._add_copyright(song.LicenceAdmin2)
         if hasattr(song, 'BookReference'):
-            self._add_unicode_attribute('songBookName', song.BookReference)
+            self._add_unicode_attribute('song_book_name', song.BookReference)
         self._parseAndAddLyrics(song)
         if self._success:
             if not self.finish():
-                self.logError(song.Title1 if song.Title1 else '')
+                self.log_error(song.Title1 if song.Title1 else '')
         else:
-            self.setDefaults()
+            self.set_defaults()
 
     def _add_unicode_attribute(self, self_attribute, import_attribute, mandatory=False):
         """
@@ -132,7 +132,7 @@ class EasySlidesImport(SongImport):
             The imported variable to get the data from.
         """
         try:
-            self.addCopyright(str(element).strip())
+            self.add_copyright(str(element).strip())
         except UnicodeDecodeError:
             log.exception('Unicode error on decoding copyright: %s' % element)
             self._success = False
@@ -235,7 +235,7 @@ class EasySlidesImport(SongImport):
                 verses[reg].setdefault(vt, {})
                 verses[reg][vt].setdefault(vn, {})
                 verses[reg][vt][vn].setdefault(inst, [])
-                verses[reg][vt][vn][inst].append(self.tidyText(line))
+                verses[reg][vt][vn][inst].append(self.tidy_text(line))
         # done parsing
 
         versetags = []
@@ -271,7 +271,7 @@ class EasySlidesImport(SongImport):
                 else:
                     continue
                 if tag in versetags:
-                    self.verseOrderList.append(tag)
+                    self.verse_order_list.append(tag)
                 else:
                     log.info('Got order item %s, which is not in versetags, dropping item from presentation order',
                         tag)

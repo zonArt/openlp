@@ -38,6 +38,7 @@ from .songimport import SongImport
 
 log = logging.getLogger(__name__)
 
+
 class CCLIFileImport(SongImport):
     """
     The :class:`CCLIFileImport` class provides OpenLP with the ability to import
@@ -86,13 +87,13 @@ class CCLIFileImport(SongImport):
                 if ext.lower() == '.usr':
                     log.info('SongSelect .usr format file found: %s', filename)
                     if not self.doImportUsrFile(lines):
-                        self.logError(filename)
+                        self.log_error(filename)
                 elif ext.lower() == '.txt':
                     log.info('SongSelect .txt format file found: %s', filename)
                     if not self.doImportTxtFile(lines):
-                        self.logError(filename)
+                        self.log_error(filename)
                 else:
-                    self.logError(filename,
+                    self.log_error(filename,
                         translate('SongsPlugin.CCLIFileImport', 'The file does not have a valid extension.'))
                     log.info('Extension %s is not valid', filename)
             if self.stop_import_flag:
@@ -163,9 +164,9 @@ class CCLIFileImport(SongImport):
             if line.startswith('[S '):
                 ccli, line = line.split(']', 1)
                 if ccli.startswith('[S A'):
-                    self.ccliNumber = ccli[4:].strip()
+                    self.ccli_number = ccli[4:].strip()
                 else:
-                    self.ccliNumber = ccli[3:].strip()
+                    self.ccli_number = ccli[3:].strip()
             if line.startswith('Title='):
                 self.title = line[6:].strip()
             elif line.startswith('Author='):
@@ -213,7 +214,7 @@ class CCLIFileImport(SongImport):
                     verse_type = VerseType.tags[VerseType.Other]
                     verse_text = verse_lines[1]
             if verse_text:
-                self.addVerse(verse_text, verse_type)
+                self.add_verse(verse_text, verse_type)
             check_first_verse_line = False
         # Handle multiple authors
         author_list = song_author.split('/')
@@ -223,7 +224,7 @@ class CCLIFileImport(SongImport):
             separated = author.split(',')
             if len(separated) > 1:
                 author = ' '.join(map(str.strip, reversed(separated)))
-            self.addAuthor(author.strip())
+            self.add_author(author.strip())
         self.topics = [topic.strip() for topic in song_topics.split('/t')]
         return self.finish()
 
@@ -272,7 +273,7 @@ class CCLIFileImport(SongImport):
                     continue
                 elif verse_start:
                     if verse_text:
-                        self.addVerse(verse_text, verse_type)
+                        self.add_verse(verse_text, verse_type)
                         verse_text = ''
                         verse_start = False
             else:
@@ -286,7 +287,7 @@ class CCLIFileImport(SongImport):
                     if clean_line.startswith('CCLI'):
                         line_number += 1
                         ccli_parts = clean_line.split(' ')
-                        self.ccliNumber = ccli_parts[len(ccli_parts) - 1]
+                        self.ccli_number = ccli_parts[len(ccli_parts) - 1]
                     elif not verse_start:
                         # We have the verse descriptor
                         verse_desc_parts = clean_line.split(' ')
@@ -348,5 +349,5 @@ class CCLIFileImport(SongImport):
             author_list = song_author.split('|')
         # Clean spaces before and after author names.
         for author_name in author_list:
-            self.addAuthor(author_name.strip())
+            self.add_author(author_name.strip())
         return self.finish()

@@ -369,8 +369,8 @@ class TestEasyWorshipSongImport(TestCase):
             importer = EasyWorshipSongImportLogger(mocked_manager)
             importer.import_wizard = mocked_import_wizard
             importer.stop_import_flag = False
-            importer.addAuthor = mocked_add_author
-            importer.addVerse = mocked_add_verse
+            importer.add_author = mocked_add_author
+            importer.add_verse = mocked_add_verse
             importer.title = mocked_title
             importer.finish = mocked_finish
             importer.topics = []
@@ -394,11 +394,11 @@ class TestEasyWorshipSongImport(TestCase):
                 if song_copyright:
                     self.assertEqual(importer.copyright, song_copyright)
                 if ccli_number:
-                    self.assertEquals(importer.ccliNumber, ccli_number, 'ccliNumber for %s should be %s'
+                    self.assertEquals(importer.ccli_number, ccli_number, 'ccli_number for %s should be %s'
                                                                         % (title, ccli_number))
                 for verse_text, verse_tag in add_verse_calls:
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if verse_order_list:
-                    self.assertEquals(importer.verseOrderList, verse_order_list, 'verseOrderList for %s should be %s'
+                    self.assertEquals(importer.verse_order_list, verse_order_list, 'verse_order_list for %s should be %s'
                                                                    % (title, verse_order_list))
                 mocked_finish.assert_called_with()

@@ -130,7 +130,7 @@ class TestSongBeamerImport(TestCase):
                 importer = SongBeamerImport(mocked_manager)
                 importer.import_wizard = mocked_import_wizard
                 importer.stop_import_flag = False
-                importer.addVerse = mocked_add_verse
+                importer.add_verse = mocked_add_verse
                 importer.finish = mocked_finish
 
                 # WHEN: Importing each file
@@ -147,9 +147,9 @@ class TestSongBeamerImport(TestCase):
                 for verse_text, verse_tag in add_verse_calls:
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if song_book_name:
-                    self.assertEquals(importer.songBookName, song_book_name, 'songBookName for %s should be "%s"'
+                    self.assertEquals(importer.song_book_name, song_book_name, 'song_book_name for %s should be "%s"'
                         % (song_file, song_book_name))
                 if song_number:
-                    self.assertEquals(importer.songNumber, song_number, 'songNumber for %s should be %s'
+                    self.assertEquals(importer.song_number, song_number, 'song_number for %s should be %s'
                         % (song_file, song_number))
                 mocked_finish.assert_called_with()

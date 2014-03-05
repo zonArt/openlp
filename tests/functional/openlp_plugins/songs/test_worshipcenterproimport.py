@@ -152,7 +152,7 @@ class TestWorshipCenterProSongImport(TestCase):
         Test that exceptions raised by pyodbc are handled
         """
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module, a mocked out translate method,
-        #       a mocked "manager" and a mocked out logError method.
+        #       a mocked "manager" and a mocked out log_error method.
         with patch('openlp.plugins.songs.lib.worshipcenterproimport.SongImport'), \
             patch('openlp.plugins.songs.lib.worshipcenterproimport.pyodbc.connect') as mocked_pyodbc_connect, \
             patch('openlp.plugins.songs.lib.worshipcenterproimport.translate') as mocked_translate:
@@ -160,7 +160,7 @@ class TestWorshipCenterProSongImport(TestCase):
             mocked_log_error = MagicMock()
             mocked_translate.return_value = 'Translated Text'
             importer = WorshipCenterProImport(mocked_manager)
-            importer.logError = mocked_log_error
+            importer.log_error = mocked_log_error
             importer.import_source = 'import_source'
             pyodbc_errors = [pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError]
             mocked_pyodbc_connect.side_effect = pyodbc_errors
@@ -169,7 +169,7 @@ class TestWorshipCenterProSongImport(TestCase):
             for effect in pyodbc_errors:
                 return_value = importer.doImport()
 
-                # THEN: doImport should return None, and pyodbc, translate & logError are called with known calls
+                # THEN: doImport should return None, and pyodbc, translate & log_error are called with known calls
                 self.assertIsNone(return_value, 'doImport should return None when pyodbc raises an exception.')
                 mocked_pyodbc_connect.assert_called_with( 'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
                 mocked_translate.assert_called_with('SongsPlugin.WorshipCenterProImport',
@@ -181,7 +181,7 @@ class TestWorshipCenterProSongImport(TestCase):
         Test that a simulated WorshipCenter Pro recordset is imported correctly
         """
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module with a simulated recordset, a mocked out
-        #       translate method,  a mocked "manager", addVerse method & mocked_finish method.
+        #       translate method,  a mocked "manager", add_verse method & mocked_finish method.
         with patch('openlp.plugins.songs.lib.worshipcenterproimport.SongImport'), \
             patch('openlp.plugins.songs.lib.worshipcenterproimport.pyodbc') as mocked_pyodbc, \
             patch('openlp.plugins.songs.lib.worshipcenterproimport.translate') as mocked_translate:
@@ -194,7 +194,7 @@ class TestWorshipCenterProSongImport(TestCase):
             importer = WorshipCenterProImportLogger(mocked_manager)
             importer.import_source = 'import_source'
             importer.import_wizard = mocked_import_wizard
-            importer.addVerse = mocked_add_verse
+            importer.add_verse = mocked_add_verse
             importer.stop_import_flag = False
             importer.finish = mocked_finish
 
@@ -202,7 +202,7 @@ class TestWorshipCenterProSongImport(TestCase):
             return_value = importer.doImport()
 
 
-            # THEN: doImport should return None, and pyodbc, import_wizard, importer.title and addVerse are called with
+            # THEN: doImport should return None, and pyodbc, import_wizard, importer.title and add_verse are called with
             #       known calls
             self.assertIsNone(return_value, 'doImport should return None when pyodbc raises an exception.')
             mocked_pyodbc.connect.assert_called_with('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
@@ -220,4 +220,4 @@ class TestWorshipCenterProSongImport(TestCase):
                 for call in verse_calls:
                     mocked_add_verse.assert_any_call(call)
             self.assertEqual(mocked_add_verse.call_count, add_verse_call_count,
-                'Incorrect number of calls made to addVerse')
+                'Incorrect number of calls made to add_verse')

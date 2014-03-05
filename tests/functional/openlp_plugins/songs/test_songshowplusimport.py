@@ -41,6 +41,7 @@ from tests.functional import patch, MagicMock
 TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'songshowplussongs'))
 
+
 class TestSongShowPlusFileImport(SongImportTestHelper):
     def __init__(self, *args, **kwargs):
         self.importer_class_name = 'SongShowPlusImport'

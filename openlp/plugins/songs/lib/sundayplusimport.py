@@ -75,18 +75,18 @@ class SundayPlusImport(SongImport):
         """
         Process the Sunday Plus file object.
         """
-        self.setDefaults()
+        self.set_defaults()
         if not self.parse(file.read()):
-            self.logError(file.name)
+            self.log_error(file.name)
             return
         if not self.title:
             self.title = self.titleFromFilename(file.name)
         if not self.finish():
-            self.logError(file.name)
+            self.log_error(file.name)
 
     def parse(self, data, cell=False):
         if len(data) == 0 or data[0:1] != '[' or data[-1] != ']':
-            self.logError('File is malformed')
+            self.log_error('File is malformed')
             return False
         i = 1
         verse_type = VerseType.tags[VerseType.Verse]
@@ -126,7 +126,7 @@ class SundayPlusImport(SongImport):
                     elif name == 'Author':
                         author = self.decode(self.unescape(value))
                         if len(author):
-                            self.addAuthor(author)
+                            self.add_author(author)
                     elif name == 'Copyright':
                         self.copyright = self.decode(self.unescape(value))
                     elif name[0:4] == 'CELL':
@@ -160,13 +160,13 @@ class SundayPlusImport(SongImport):
                             if line[:3].lower() == 'ccl':
                                 m = re.search(r'[0-9]+', line)
                                 if m:
-                                    self.ccliNumber = int(m.group(0))
+                                    self.ccli_number = int(m.group(0))
                                     continue
                             elif line.lower() == 'public domain':
                                 self.copyright = 'Public Domain'
                                 continue
                             processed_lines.append(line)
-                        self.addVerse('\n'.join(processed_lines).strip(), verse_type)
+                        self.add_verse('\n'.join(processed_lines).strip(), verse_type)
                 if end == -1:
                     break
                 i = end + 1

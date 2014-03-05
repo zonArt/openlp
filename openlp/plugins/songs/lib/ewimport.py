@@ -163,7 +163,7 @@ class EasyWorshipSongImport(SongImport):
                     break
                 raw_record = db_file.read(record_size)
                 self.fields = self.recordStruct.unpack(raw_record)
-                self.setDefaults()
+                self.set_defaults()
                 self.title = self.getField(fi_title).decode()
                 # Get remaining fields.
                 copy = self.getField(fi_copy)
@@ -180,7 +180,7 @@ class EasyWorshipSongImport(SongImport):
                     self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
                                                 'Administered by %s') % admin.decode()
                 if ccli:
-                    self.ccliNumber = ccli.decode()
+                    self.ccli_number = ccli.decode()
                 if authors:
                     # Split up the authors
                     author_list = authors.split(b'/')
@@ -189,7 +189,7 @@ class EasyWorshipSongImport(SongImport):
                     if len(author_list) < 2:
                         author_list = authors.split(b',')
                     for author_name in author_list:
-                        self.addAuthor(author_name.decode().strip())
+                        self.add_author(author_name.decode().strip())
                 if words:
                     # Format the lyrics
                     result = strip_rtf(words.decode(), self.encoding)
@@ -227,14 +227,14 @@ class EasyWorshipSongImport(SongImport):
                                 if not number_found:
                                     verse_type += '1'
                                 break
-                        self.addVerse(verse_split[-1].strip() if first_line_is_tag else verse, verse_type)
+                        self.add_verse(verse_split[-1].strip() if first_line_is_tag else verse, verse_type)
                 if len(self.comments) > 5:
                     self.comments += str(translate('SongsPlugin.EasyWorshipSongImport',
                         '\n[above are Song Tags with notes imported from EasyWorship]'))
                 if self.stop_import_flag:
                     break
                 if not self.finish():
-                    self.logError(self.import_source)
+                    self.log_error(self.import_source)
         db_file.close()
         self.memoFile.close()
 

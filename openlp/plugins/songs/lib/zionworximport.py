@@ -89,7 +89,7 @@ class ZionWorxImport(SongImport):
             try:
                 records = list(songs_reader)
             except csv.Error as e:
-                self.logError(translate('SongsPlugin.ZionWorxImport', 'Error reading CSV file.'),
+                self.log_error(translate('SongsPlugin.ZionWorxImport', 'Error reading CSV file.'),
                     translate('SongsPlugin.ZionWorxImport', 'Line %d: %s') % (songs_reader.line_num, e))
                 return
             num_records = len(records)
@@ -98,20 +98,20 @@ class ZionWorxImport(SongImport):
             for index, record in enumerate(records, 1):
                 if self.stop_import_flag:
                     return
-                self.setDefaults()
+                self.set_defaults()
                 try:
                     self.title = self._decode(record['Title1'])
                     if record['Title2']:
                         self.alternate_title = self._decode(record['Title2'])
                     self.parse_author(self._decode(record['Writer']))
-                    self.addCopyright(self._decode(record['Copyright']))
+                    self.add_copyright(self._decode(record['Copyright']))
                     lyrics = self._decode(record['Lyrics'])
                 except UnicodeDecodeError as e:
-                    self.logError(translate('SongsPlugin.ZionWorxImport', 'Record %d' % index),
+                    self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d' % index),
                         translate('SongsPlugin.ZionWorxImport', 'Decoding error: %s') % e)
                     continue
                 except TypeError as e:
-                    self.logError(translate(
+                    self.log_error(translate(
                         'SongsPlugin.ZionWorxImport', 'File not valid ZionWorx CSV format.'), 'TypeError: %s' % e)
                     return
                 verse = ''
@@ -119,13 +119,13 @@ class ZionWorxImport(SongImport):
                     if line and not line.isspace():
                         verse += line + '\n'
                     elif verse:
-                        self.addVerse(verse)
+                        self.add_verse(verse)
                         verse = ''
                 if verse:
-                    self.addVerse(verse)
+                    self.add_verse(verse)
                 title = self.title
                 if not self.finish():
-                    self.logError(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
+                    self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
                         + (': "' + title + '"' if title else ''))
 
     def _decode(self, str):

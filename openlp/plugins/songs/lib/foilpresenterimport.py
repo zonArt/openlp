@@ -133,7 +133,7 @@ class FoilPresenterImport(SongImport):
                 xml = etree.tostring(parsed_file).decode()
                 self.FoilPresenter.xml_to_song(xml)
             except etree.XMLSyntaxError:
-                self.logError(file_path, SongStrings.XMLSyntaxError)
+                self.log_error(file_path, SongStrings.XMLSyntaxError)
                 log.exception('XML syntax error in file %s' % file_path)
 
 
@@ -423,7 +423,7 @@ class FoilPresenter(object):
             VerseType.tags[VerseType.PreChorus]: 1
         }
         if not hasattr(foilpresenterfolie.strophen, 'strophe'):
-            self.importer.logError(self._child(foilpresenterfolie.titel),
+            self.importer.log_error(self._child(foilpresenterfolie.titel),
                 str(translate('SongsPlugin.FoilPresenterSongImport',
                 'Invalid Foilpresenter song file. No verses found.')))
             self.save_song = False

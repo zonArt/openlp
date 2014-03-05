@@ -109,7 +109,7 @@ class SongBeamerImport(SongImport):
             # TODO: check that it is a valid SongBeamer file
             if self.stop_import_flag:
                 return
-            self.setDefaults()
+            self.set_defaults()
             self.currentVerse = ''
             self.currentVerseType = VerseType.tags[VerseType.Verse]
             read_verses = False
@@ -134,7 +134,7 @@ class SongBeamerImport(SongImport):
                 elif line.startswith('---'):
                     if self.currentVerse:
                         self.replaceHtmlTags()
-                        self.addVerse(self.currentVerse, self.currentVerseType)
+                        self.add_verse(self.currentVerse, self.currentVerseType)
                         self.currentVerse = ''
                         self.currentVerseType = VerseType.tags[VerseType.Verse]
                     read_verses = True
@@ -148,9 +148,9 @@ class SongBeamerImport(SongImport):
                         self.currentVerse += line + '\n'
             if self.currentVerse:
                 self.replaceHtmlTags()
-                self.addVerse(self.currentVerse, self.currentVerseType)
+                self.add_verse(self.currentVerse, self.currentVerseType)
             if not self.finish():
-                self.logError(import_file)
+                self.log_error(import_file)
 
     def replaceHtmlTags(self):
         """
@@ -174,7 +174,7 @@ class SongBeamerImport(SongImport):
         if not tag_val[0] or not tag_val[1]:
             return
         if tag_val[0] == '#(c)':
-            self.addCopyright(tag_val[1])
+            self.add_copyright(tag_val[1])
         elif tag_val[0] == '#AddCopyrightInfo':
             pass
         elif tag_val[0] == '#Author':
@@ -186,7 +186,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == '#Categories':
             self.topics = tag_val[1].split(',')
         elif tag_val[0] == '#CCLI':
-            self.ccliNumber = tag_val[1]
+            self.ccli_number = tag_val[1]
         elif tag_val[0] == '#Chords':
             pass
         elif tag_val[0] == '#ChurchSongID':
@@ -233,10 +233,10 @@ class SongBeamerImport(SongImport):
             song_book_pub = tag_val[1]
         elif tag_val[0] == '#Songbook' or tag_val[0] == '#SongBook':
             book_data = tag_val[1].split('/')
-            self.songBookName = book_data[0].strip()
+            self.song_book_name = book_data[0].strip()
             if len(book_data) == 2:
                 number = book_data[1].strip()
-                self.songNumber = number if number.isdigit() else ''
+                self.song_number = number if number.isdigit() else ''
         elif tag_val[0] == '#Speed':
             pass
         elif tag_val[0] == 'Tempo':

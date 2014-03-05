@@ -71,7 +71,7 @@ class OooImport(SongImport):
         try:
             self.startOoo()
         except NoConnectException as exc:
-            self.logError(
+            self.log_error(
                 self.import_source[0],
                 translate('SongsPlugin.SongImport', 'Cannot access OpenOffice or LibreOffice'))
             log.error(exc)
@@ -87,9 +87,9 @@ class OooImport(SongImport):
                     self.processOooDocument()
                     self.closeOooFile()
                 else:
-                    self.logError(self.filepath, translate('SongsPlugin.SongImport', 'Unable to open file'))
+                    self.log_error(self.filepath, translate('SongsPlugin.SongImport', 'Unable to open file'))
             else:
-                self.logError(self.filepath, translate('SongsPlugin.SongImport', 'File not found'))
+                self.log_error(self.filepath, translate('SongsPlugin.SongImport', 'File not found'))
         self.closeOoo()
 
     def processOooDocument(self):
@@ -228,13 +228,13 @@ class OooImport(SongImport):
         self.processSongsText(text)
 
     def processSongsText(self, text):
-        songtexts = self.tidyText(text).split('\f')
-        self.setDefaults()
+        songtexts = self.tidy_text(text).split('\f')
+        self.set_defaults()
         for songtext in songtexts:
             if songtext.strip():
-                self.processSongText(songtext.strip())
-                if self.checkComplete():
+                self.process_song_text(songtext.strip())
+                if self.check_complete():
                     self.finish()
-                    self.setDefaults()
-        if self.checkComplete():
+                    self.set_defaults()
+        if self.check_complete():
             self.finish()

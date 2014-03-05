@@ -110,10 +110,10 @@ class WowImport(SongImport):
             for source in self.import_source:
                 if self.stop_import_flag:
                     return
-                self.setDefaults()
+                self.set_defaults()
                 song_data = open(source, 'rb')
                 if song_data.read(19) != 'WoW File\nSong Words':
-                    self.logError(source, str(translate('SongsPlugin.WordsofWorshipSongImport',
+                    self.log_error(source, str(translate('SongsPlugin.WordsofWorshipSongImport',
                             ('Invalid Words of Worship song file. Missing "Wow File\\nSong Words" header.'))))
                     continue
                 # Seek to byte which stores number of blocks in the song
@@ -121,7 +121,7 @@ class WowImport(SongImport):
                 no_of_blocks = ord(song_data.read(1))
                 song_data.seek(66)
                 if song_data.read(16) != 'CSongDoc::CBlock':
-                    self.logError(source, str(translate('SongsPlugin.WordsofWorshipSongImport',
+                    self.log_error(source, str(translate('SongsPlugin.WordsofWorshipSongImport',
                         ('Invalid Words of Worship song file. Missing "CSongDoc::CBlock" string.'))))
                     continue
                 # Seek to the beginning of the first block
@@ -141,7 +141,7 @@ class WowImport(SongImport):
                     # this is the last block!
                     if block + 1 < no_of_blocks:
                         song_data.seek(2, os.SEEK_CUR)
-                    self.addVerse(block_text, block_type)
+                    self.add_verse(block_text, block_type)
                 # Now to extract the author
                 author_length = ord(song_data.read(1))
                 if author_length:
@@ -149,10 +149,10 @@ class WowImport(SongImport):
                 # Finally the copyright
                 copyright_length = ord(song_data.read(1))
                 if copyright_length:
-                    self.addCopyright(str(song_data.read(copyright_length), 'cp1252'))
+                    self.add_copyright(str(song_data.read(copyright_length), 'cp1252'))
                 file_name = os.path.split(source)[1]
                 # Get the song title
                 self.title = file_name.rpartition('.')[0]
                 song_data.close()
                 if not self.finish():
-                    self.logError(source)
+                    self.log_error(source)

@@ -108,7 +108,7 @@ class SofImport(OooImport):
         except RuntimeException as exc:
             log.exception('Error processing file: %s', exc)
         if not self.finish():
-            self.logError(self.filepath)
+            self.log_error(self.filepath)
 
     def processParagraph(self, paragraph):
         """
@@ -173,17 +173,17 @@ class SofImport(OooImport):
             self.skipToCloseBracket = True
             return
         if text.startswith('Copyright'):
-            self.addCopyright(text)
+            self.add_copyright(text)
             return
         if text == '(Repeat)':
             self.finishVerse()
-            self.repeatVerse()
+            self.repeat_verse()
             return
         if self.title == '':
             if self.copyright == '':
                 self.addSofAuthor(text)
             else:
-                self.addCopyright(text)
+                self.add_copyright(text)
             return
         self.addVerseLine(text)
 
@@ -195,12 +195,12 @@ class SofImport(OooImport):
         into line
         """
         text = textportion.getString()
-        text = self.tidyText(text)
+        text = self.tidy_text(text)
         if text.strip() == '':
             return text
         if textportion.CharWeight == BOLD:
             boldtext = text.strip()
-            if boldtext.isdigit() and self.songNumber == '':
+            if boldtext.isdigit() and self.song_number == '':
                 self.addSongNumber(boldtext)
                 return ''
             text = self.uncapText(text)
@@ -219,11 +219,11 @@ class SofImport(OooImport):
         """
         if self.song:
             self.finishVerse()
-            if not self.checkComplete():
+            if not self.check_complete():
                 return
             self.finish()
         self.song = True
-        self.setDefaults()
+        self.set_defaults()
         self.skipToCloseBracket = False
         self.isChorus = False
         self.italics = False
@@ -234,7 +234,7 @@ class SofImport(OooImport):
         Add a song number, store as alternate title. Also use the song
         number to work out which songbook we're in
         """
-        self.songNumber = song_no
+        self.song_number = song_no
         self.alternateTitle = song_no + '.'
         self.songBook_pub = 'Kingsway Publications'
         if int(song_no) <= 640:
@@ -299,7 +299,7 @@ class SofImport(OooImport):
             splitat = None
         else:
             versetag = 'V'
-            splitat = self.verseSplits(self.songNumber)
+            splitat = self.verseSplits(self.song_number)
         if splitat:
             ln = 0
             verse = ''
@@ -322,9 +322,9 @@ class SofImport(OooImport):
         self.isChorus = False
 
     def addSofVerse(self, lyrics, tag):
-        self.addVerse(lyrics, tag)
-        if not self.isChorus and 'C1' in self.verseOrderListGenerated:
-            self.verseOrderListGenerated.append('C1')
+        self.add_verse(lyrics, tag)
+        if not self.isChorus and 'C1' in self.verse_order_list_generated:
+            self.verse_order_list_generated.append('C1')
             self.verseOrderListGenerated_useful = True
 
     def uncapText(self, text):

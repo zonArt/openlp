@@ -201,7 +201,7 @@ class SongImportForm(OpenLPWizard):
     def validateCurrentPage(self):
         """
         Re-implement the validateCurrentPage() method. Validate the current page before moving on to the next page.
-        Provide each song format class with a chance to validate its input by overriding isValidSource().
+        Provide each song format class with a chance to validate its input by overriding is_valid_source().
         """
         if self.currentPage() == self.welcome_page:
             return True
@@ -217,7 +217,7 @@ class SongImportForm(OpenLPWizard):
                 import_source = self.format_widgets[this_format]['file_path_edit'].text()
                 error_title = (UiStrings().IFSs if select_mode == SongFormatSelect.SingleFile else UiStrings().IFdSs)
                 focus_button = self.format_widgets[this_format]['browseButton']
-            if not class_.isValidSource(import_source):
+            if not class_.is_valid_source(import_source):
                 critical_error_message_box(error_title, error_msg)
                 focus_button.setFocus()
                 return False

@@ -100,7 +100,7 @@ class SongProImport(SongImport):
         Process a section of the song, i.e. title, verse etc.
         """
         if tag == 'T':
-            self.setDefaults()
+            self.set_defaults()
             if text:
                 self.title = text
             return
@@ -118,29 +118,29 @@ class SongProImport(SongImport):
         if tag == 'A':
             self.parse_author(text)
         elif tag in ['B', 'C']:
-            self.addVerse(text, tag)
+            self.add_verse(text, tag)
         elif tag == 'D':
-            self.addVerse(text, 'E')
+            self.add_verse(text, 'E')
         elif tag == 'G':
             self.topics.append(text)
         elif tag == 'M':
             matches = re.findall(r'\d+', text)
             if matches:
-                self.songNumber = matches[-1]
-                self.songBookName = text[:text.rfind(self.songNumber)]
+                self.song_number = matches[-1]
+                self.song_book_name = text[:text.rfind(self.song_number)]
         elif tag == 'N':
             self.comments = text
         elif tag == 'O':
             for char in text:
                 if char == 'C':
-                    self.verseOrderList.append('C1')
+                    self.verse_order_list.append('C1')
                 elif char == 'B':
-                    self.verseOrderList.append('B1')
+                    self.verse_order_list.append('B1')
                 elif char == 'D':
-                    self.verseOrderList.append('E1')
+                    self.verse_order_list.append('E1')
                 elif '1' <= char <= '7':
-                    self.verseOrderList.append('V' + char)
+                    self.verse_order_list.append('V' + char)
         elif tag == 'R':
-            self.addCopyright(text)
+            self.add_copyright(text)
         elif '1' <= tag <= '7':
-            self.addVerse(text, 'V' + tag[1:])
+            self.add_verse(text, 'V' + tag[1:])

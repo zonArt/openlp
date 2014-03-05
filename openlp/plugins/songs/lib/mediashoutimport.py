@@ -57,7 +57,7 @@ class MediaShoutImport(SongImport):
             'DBQ=%s;PWD=6NOZ4eHK7k' % self.import_source)
         except:
             # Unfortunately no specific exception type
-            self.logError(self.import_source,
+            self.log_error(self.import_source,
                 translate('SongsPlugin.MediaShoutImport', 'Unable to open the MediaShout database.'))
             return
         cursor = conn.cursor()
@@ -88,21 +88,21 @@ class MediaShoutImport(SongImport):
         """
         Create the song, i.e. title, verse etc.
         """
-        self.setDefaults()
+        self.set_defaults()
         self.title = song.Title
         self.parse_author(song.Author)
-        self.addCopyright(song.Copyright)
+        self.add_copyright(song.Copyright)
         self.comments = song.Notes
         for topic in topics:
             self.topics.append(topic.Name)
         if '-' in song.SongID:
-            self.songBookName, self.songNumber = song.SongID.split('-', 1)
+            self.song_book_name, self.song_number = song.SongID.split('-', 1)
         else:
-            self.songBookName = song.SongID
+            self.song_book_name = song.SongID
         for verse in verses:
             tag = VERSE_TAGS[verse.Type] + str(verse.Number) if verse.Type < len(VERSE_TAGS) else 'O'
-            self.addVerse(verse.Text, tag)
+            self.add_verse(verse.Text, tag)
         for order in verse_order:
             if order.Type < len(VERSE_TAGS):
-                self.verseOrderList.append(VERSE_TAGS[order.Type] + str(order.Number))
+                self.verse_order_list.append(VERSE_TAGS[order.Type] + str(order.Number))
         self.finish()

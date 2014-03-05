@@ -169,7 +169,7 @@ class TestFoilPresenter(TestCase):
         # WHEN: xml_to_song is called with a string without an xml encoding declaration
         foil_presenter_instance.xml_to_song('<foilpresenterfolie>')
 
-        # THEN: the string shiuld have been left intact
+        # THEN: the string should have been left intact
         self.mocked_re.compile.sub.called_with('<foilpresenterfolie>')
 
     def process_lyrics_no_verses_test(self):
@@ -188,7 +188,7 @@ class TestFoilPresenter(TestCase):
         # WHEN: _process_lyrics is called
         result = foil_presenter_instance._process_lyrics(mock_foilpresenterfolie, mocked_song)
 
-        # THEN: _process_lyrics should return None and the song_import logError method should have been called once
+        # THEN: _process_lyrics should return None and the song_import log_error method should have been called once
         self.assertIsNone(result)
-        self.mocked_song_import.logError.assert_called_once_with('Element Text', 'Translated String')
+        self.mocked_song_import.log_error.assert_called_once_with('Element Text', 'Translated String')
         self.process_lyrics_patcher.start()
