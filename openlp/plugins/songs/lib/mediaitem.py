@@ -36,8 +36,8 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
-from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, \
-     check_item_selected, create_separated_list
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, check_item_selected, \
+    create_separated_list
 from openlp.core.lib.ui import create_widget_action
 from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm

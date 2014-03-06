@@ -61,6 +61,7 @@ try:
 except ImportError:
     ITALIC = 2
 
+
 class SofImport(OooImport):
     """
     Import songs provided on disks with the Songs of Fellowship music books
@@ -85,7 +86,7 @@ class SofImport(OooImport):
         OooImport.__init__(self, manager, **kwargs)
         self.song = False
 
-    def processOooDocument(self):
+    def process_ooo_document(self):
         """
         Handle the import process for SoF files.
         """
@@ -108,7 +109,7 @@ class SofImport(OooImport):
         except RuntimeException as exc:
             log.exception('Error processing file: %s', exc)
         if not self.finish():
-            self.log_error(self.filepath)
+            self.log_error(self.file_path)
 
     def processParagraph(self, paragraph):
         """

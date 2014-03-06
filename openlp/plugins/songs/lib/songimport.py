@@ -154,12 +154,22 @@ class SongImport(QtCore.QObject):
         return text
 
     def process_song_text(self, text):
+        """
+        Process the song text from import
+
+        :param text: Some text
+        """
         verse_texts = text.split('\n\n')
         for verse_text in verse_texts:
             if verse_text.strip() != '':
                 self.process_verse_text(verse_text.strip())
 
     def process_verse_text(self, text):
+        """
+        Process the song verse text from import
+
+        :param text: Some text
+        """
         lines = text.split('\n')
         if text.lower().find(self.copyright_string) >= 0 or text.find(str(SongStrings.CopyrightSymbol)) >= 0:
             copyright_found = False
@@ -190,9 +200,8 @@ class SongImport(QtCore.QObject):
 
     def parse_author(self, text):
         """
-        Add the author. OpenLP stores them individually so split by 'and', '&'
-        and comma. However need to check for 'Mr and Mrs Smith' and turn it to
-        'Mr Smith' and 'Mrs Smith'.
+        Add the author. OpenLP stores them individually so split by 'and', '&' and comma. However need to check
+        for 'Mr and Mrs Smith' and turn it to 'Mr Smith' and 'Mrs Smith'.
         """
         for author in text.split(','):
             authors = author.split('&')
@@ -227,16 +236,10 @@ class SongImport(QtCore.QObject):
         attempt to detect duplicates. In this case it will just add to the verse
         order.
 
-        ``verse_text``
-            The text of the verse.
-
-        ``verse_def``
-            The verse tag can be v1/c1/b etc, or 'v' and 'c' (will count the
+        :param verse_text:  The text of the verse.
+        :param verse_def: The verse tag can be v1/c1/b etc, or 'v' and 'c' (will count the
             verses/choruses itself) or None, where it will assume verse.
-
-        ``lang``
-            The language code (ISO-639) of the verse, for example *en* or *de*.
-
+        :param lang: The language code (ISO-639) of the verse, for example *en* or *de*.
         """
         for (old_verse_def, old_verse, old_lang) in self.verses:
             if old_verse.strip() == verse_text.strip():
@@ -317,24 +320,24 @@ class SongImport(QtCore.QObject):
         song.comments = self.comments
         song.theme_name = self.theme_name
         song.ccli_number = self.ccli_number
-        for authortext in self.authors:
-            author = self.manager.get_object_filtered(Author, Author.display_name == authortext)
+        for author_text in self.authors:
+            author = self.manager.get_object_filtered(Author, Author.display_name == author_text)
             if not author:
-                author = Author.populate(display_name=authortext,
-                    last_name=authortext.split(' ')[-1],
-                    first_name=' '.join(authortext.split(' ')[:-1]))
+                author = Author.populate(display_name=author_text,
+                                         last_name=author_text.split(' ')[-1],
+                                         first_name=' '.join(author_text.split(' ')[:-1]))
             song.authors.append(author)
         if self.song_book_name:
             song_book = self.manager.get_object_filtered(Book, Book.name == self.song_book_name)
             if song_book is None:
                 song_book = Book.populate(name=self.song_book_name, publisher=self.song_book_pub)
             song.book = song_book
-        for topictext in self.topics:
-            if not topictext:
+        for topic_text in self.topics:
+            if not topic_text:
                 continue
-            topic = self.manager.get_object_filtered(Topic, Topic.name == topictext)
+            topic = self.manager.get_object_filtered(Topic, Topic.name == topic_text)
             if topic is None:
-                topic = Topic.populate(name=topictext)
+                topic = Topic.populate(name=topic_text)
             song.topics.append(topic)
         # We need to save the song now, before adding the media files, so that
         # we know where to save the media files to.
@@ -357,14 +360,14 @@ class SongImport(QtCore.QObject):
         This method copies the media file to the correct location and returns
         the new file location.
 
-        ``filename``
-            The file to copy.
+        :param song_id:
+        :param filename: The file to copy.
         """
         if not hasattr(self, 'save_path'):
             self.save_path = os.path.join(AppLocation.get_section_data_path(self.import_wizard.plugin.name),
-                'audio', str(song_id))
+                                                                            'audio', str(song_id))
         check_directory_exists(self.save_path)
         if not filename.startswith(self.save_path):
-            oldfile, filename = filename, os.path.join(self.save_path, os.path.split(filename)[1])
-            shutil.copyfile(oldfile, filename)
+            old_file, filename = filename, os.path.join(self.save_path, os.path.split(filename)[1])
+            shutil.copyfile(old_file, filename)
         return filename

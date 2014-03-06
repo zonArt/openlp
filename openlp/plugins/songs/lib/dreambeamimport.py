@@ -40,6 +40,7 @@ from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
+
 class DreamBeamImport(SongImport):
     """
     The :class:`DreamBeamImport` class provides the ability to import song files from
@@ -83,7 +84,7 @@ class DreamBeamImport(SongImport):
         * \*.xml
     """
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive a single file or a list of files to import.
         """
@@ -103,7 +104,8 @@ class DreamBeamImport(SongImport):
                 xml = etree.tostring(parsed_file).decode()
                 song_xml = objectify.fromstring(xml)
                 if song_xml.tag != 'DreamSong':
-                    self.log_error(file,
+                    self.log_error(
+                        file,
                         translate('SongsPlugin.DreamBeamImport', 'Invalid DreamBeam song file. Missing DreamSong tag.'))
                     continue
                 if hasattr(song_xml, 'Version'):
@@ -127,9 +129,9 @@ class DreamBeamImport(SongImport):
                     if hasattr(song_xml, 'Number'):
                         self.song_number = str(song_xml.Number.text)
                     if hasattr(song_xml, 'Sequence'):
-                        for LyricsSequenceItem in (song_xml.Sequence.iterchildren()):
-                            self.verse_order_list.append("%s%s" % (LyricsSequenceItem.get('Type')[:1],
-                                LyricsSequenceItem.get('Number')))
+                        for lyrics_sequence_item in (song_xml.Sequence.iterchildren()):
+                            self.verse_order_list.append("%s%s" % (lyrics_sequence_item.get('Type')[:1],
+                                                         lyrics_sequence_item.get('Number')))
                     if hasattr(song_xml, 'Notes'):
                         self.comments = str(song_xml.Notes.text)
                 else:

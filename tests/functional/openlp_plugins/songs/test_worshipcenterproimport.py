@@ -165,12 +165,12 @@ class TestWorshipCenterProSongImport(TestCase):
             pyodbc_errors = [pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError]
             mocked_pyodbc_connect.side_effect = pyodbc_errors
 
-            # WHEN: Calling the doImport method
+            # WHEN: Calling the do_import method
             for effect in pyodbc_errors:
-                return_value = importer.doImport()
+                return_value = importer.do_import()
 
-                # THEN: doImport should return None, and pyodbc, translate & log_error are called with known calls
-                self.assertIsNone(return_value, 'doImport should return None when pyodbc raises an exception.')
+                # THEN: do_import should return None, and pyodbc, translate & log_error are called with known calls
+                self.assertIsNone(return_value, 'do_import should return None when pyodbc raises an exception.')
                 mocked_pyodbc_connect.assert_called_with( 'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
                 mocked_translate.assert_called_with('SongsPlugin.WorshipCenterProImport',
                     'Unable to connect the WorshipCenter Pro database.')
@@ -198,13 +198,13 @@ class TestWorshipCenterProSongImport(TestCase):
             importer.stop_import_flag = False
             importer.finish = mocked_finish
 
-            # WHEN: Calling the doImport method
-            return_value = importer.doImport()
+            # WHEN: Calling the do_import method
+            return_value = importer.do_import()
 
 
-            # THEN: doImport should return None, and pyodbc, import_wizard, importer.title and add_verse are called with
+            # THEN: do_import should return None, and pyodbc, import_wizard, importer.title and add_verse are called with
             #       known calls
-            self.assertIsNone(return_value, 'doImport should return None when pyodbc raises an exception.')
+            self.assertIsNone(return_value, 'do_import should return None when pyodbc raises an exception.')
             mocked_pyodbc.connect.assert_called_with('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
             mocked_pyodbc.connect().cursor.assert_any_call()
             mocked_pyodbc.connect().cursor().execute.assert_called_with('SELECT ID, Field, Value FROM __SONGDATA')

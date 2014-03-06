@@ -107,9 +107,9 @@ class SongImportTestHelper(TestCase):
         topics = self._get_data(result_data, 'topics')
         verse_order_list = self._get_data(result_data, 'verse_order_list')
 
-        # THEN: doImport should return none, the song data should be as expected, and finish should have been
+        # THEN: do_import should return none, the song data should be as expected, and finish should have been
         #       called.
-        self.assertIsNone(importer.doImport(), 'doImport should return None when it has completed')
+        self.assertIsNone(importer.do_import(), 'do_import should return None when it has completed')
         self.assertEquals(importer.title, title, 'title for %s should be "%s"' % (source_file_name, title))
         for author in author_calls:
             self.mocked_parse_author.assert_any_call(author)

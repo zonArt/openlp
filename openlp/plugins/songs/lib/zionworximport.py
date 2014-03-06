@@ -78,7 +78,7 @@ class ZionWorxImport(SongImport):
     * Note: This is the default format of the Python ``csv`` module.
 
     """
-    def doImport(self):
+    def do_import(self):
         """
         Receive a CSV file (from a ZionWorx database dump) to import.
         """

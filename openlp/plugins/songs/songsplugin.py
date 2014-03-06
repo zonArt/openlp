@@ -289,7 +289,7 @@ class SongsPlugin(Plugin):
         self.application.process_events()
         for db in song_dbs:
             importer = OpenLPSongImport(self.manager, filename=db)
-            importer.doImport(progress)
+            importer.do_import(progress)
             self.application.process_events()
         progress.setValue(song_count)
         self.media_item.on_search_text_button_clicked()

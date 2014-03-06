@@ -62,7 +62,7 @@ class SundayPlusImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
         self.encoding = 'us-ascii'
 
-    def doImport(self):
+    def do_import(self):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             if self.stop_import_flag:

@@ -48,7 +48,7 @@ class MediaShoutImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive a single file to import.
         """

@@ -85,7 +85,7 @@ class PowerSongImport(SongImport):
                     return True
         return False
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive either a list of files or a folder (unicode) to import.
         """

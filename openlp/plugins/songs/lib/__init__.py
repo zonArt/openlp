@@ -197,11 +197,8 @@ class VerseType(object):
         """
         Return the translated UPPERCASE tag for a given tag, used to show translated verse tags in UI
 
-        ``verse_tag``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_tag: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
@@ -217,11 +214,8 @@ class VerseType(object):
         """
         Return the translated name for a given tag
 
-        ``verse_tag``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_tag: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
@@ -237,11 +231,8 @@ class VerseType(object):
         """
         Return the VerseType for a given tag
 
-        ``verse_tag``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_tag: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
@@ -257,11 +248,8 @@ class VerseType(object):
         """
         Return the VerseType for a given tag
 
-        ``verse_tag``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_tag: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.translated_tags):
@@ -277,11 +265,8 @@ class VerseType(object):
         """
         Return the VerseType for a given string
 
-        ``verse_name``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_name: The string to return a VerseType for
+        :param default:  Default return value if no matching tag is found
         """
         verse_name = verse_name.lower()
         for num, name in enumerate(VerseType.names):
@@ -294,8 +279,7 @@ class VerseType(object):
         """
         Return the VerseType for a given string
 
-        ``verse_name``
-            The string to return a VerseType for
+        :param verse_name: The string to return a VerseType for
         """
         verse_name = verse_name.lower()
         for num, translation in enumerate(VerseType.translated_names):
@@ -307,11 +291,8 @@ class VerseType(object):
         """
         Return the VerseType for a given string
 
-        ``verse_name``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_name: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
         """
         if len(verse_name) > 1:
             verse_index = VerseType.from_translated_string(verse_name)
@@ -331,11 +312,11 @@ def retrieve_windows_encoding(recommendation=None):
     Determines which encoding to use on an information source. The process uses both automated detection, which is
     passed to this method as a recommendation, and user confirmation to return an encoding.
 
-    ``recommendation``
-        A recommended encoding discovered programmatically for the user to confirm.
+    :param recommendation: A recommended encoding discovered programmatically for the user to confirm.
     """
     # map chardet result to compatible windows standard code page
-    codepage_mapping = {'IBM866': 'cp866', 'TIS-620': 'cp874',
+    codepage_mapping = {
+        'IBM866': 'cp866', 'TIS-620': 'cp874',
         'SHIFT_JIS': 'cp932', 'GB2312': 'cp936', 'HZ-GB-2312': 'cp936',
         'EUC-KR': 'cp949', 'Big5': 'cp950', 'ISO-8859-2': 'cp1250',
         'windows-1250': 'cp1250', 'windows-1251': 'cp1251',
@@ -346,7 +327,8 @@ def retrieve_windows_encoding(recommendation=None):
         recommendation = codepage_mapping[recommendation]
 
     # Show dialog for encoding selection
-    encodings = [('cp1256', translate('SongsPlugin', 'Arabic (CP-1256)')),
+    encodings = [
+        ('cp1256', translate('SongsPlugin', 'Arabic (CP-1256)')),
         ('cp1257', translate('SongsPlugin', 'Baltic (CP-1257)')),
         ('cp1250', translate('SongsPlugin', 'Central European (CP-1250)')),
         ('cp1251', translate('SongsPlugin', 'Cyrillic (CP-1251)')),
@@ -367,17 +349,17 @@ def retrieve_windows_encoding(recommendation=None):
                 recommended_index = index
                 break
     if recommended_index > -1:
-        choice = QtGui.QInputDialog.getItem(None,
-            translate('SongsPlugin', 'Character Encoding'),
-            translate('SongsPlugin', 'The codepage setting is responsible\n'
-                'for the correct character representation.\nUsually you are fine with the preselected choice.'),
+        choice = QtGui.QInputDialog.getItem(
+            None, translate('SongsPlugin', 'Character Encoding'),
+            translate('SongsPlugin', 'The codepage setting is responsible\nfor the correct character '
+                                     'representation.\nUsually you are fine with the preselected choice.'),
             [pair[1] for pair in encodings], recommended_index, False)
     else:
-        choice = QtGui.QInputDialog.getItem(None,
-            translate('SongsPlugin', 'Character Encoding'),
-            translate('SongsPlugin', 'Please choose the character encoding.\n'
-                'The encoding is responsible for the correct character representation.'),
-                [pair[1] for pair in encodings], 0, False)
+        choice = QtGui.QInputDialog.getItem(
+            None, translate('SongsPlugin', 'Character Encoding'),
+            translate('SongsPlugin', 'Please choose the character encoding.\nThe encoding is responsible for the '
+                                     'correct character representation.'),
+            [pair[1] for pair in encodings], 0, False)
     if not choice[1]:
         return None
     return next(filter(lambda item: item[1] == choice[0], encodings))[0]
@@ -402,11 +384,8 @@ def clean_song(manager, song):
     Cleans the search title, rebuilds the search lyrics, adds a default author if the song does not have one and other
     clean ups. This should always called when a new song is added or changed.
 
-    ``manager``
-        The song's manager.
-
-    ``song``
-        The song object.
+    :param manager: The song's manager.
+    :param song: The song object.
     """
     from .xml import SongXML
 
@@ -425,8 +404,7 @@ def clean_song(manager, song):
         # keeps the database clean. This can be removed when everybody has cleaned his songs.
         song.lyrics = song.lyrics.replace('<lyrics language="en">', '<lyrics>')
         verses = SongXML().get_verses(song.lyrics)
-        song.search_lyrics = ' '.join([clean_string(verse[1])
-            for verse in verses])
+        song.search_lyrics = ' '.join([clean_string(verse[1]) for verse in verses])
         # We need a new and clean SongXML instance.
         sxml = SongXML()
         # Rebuild the song's verses, to remove any wrong verse names (for  example translated ones), which might have
@@ -466,8 +444,7 @@ def clean_song(manager, song):
                 break
     else:
         verses = SongXML().get_verses(song.lyrics)
-        song.search_lyrics = ' '.join([clean_string(verse[1])
-            for verse in verses])
+        song.search_lyrics = ' '.join([clean_string(verse[1]) for verse in verses])
 
     # The song does not have any author, add one.
     if not song.authors:
@@ -484,17 +461,10 @@ def get_encoding(font, font_table, default_encoding, failed=False):
     """
     Finds an encoding to use. Asks user, if necessary.
 
-    ``font``
-        The number of currently active font.
-
-    ``font_table``
-        Dictionary of fonts and respective encodings.
-
-    ``default_encoding``
-        The default encoding to use when font_table is empty or no font is used.
-
-    ``failed``
-        A boolean indicating whether the previous encoding didn't work.
+    :param font: The number of currently active font.
+    :param font_table: Dictionary of fonts and respective encodings.
+    :param default_encoding: The default encoding to use when font_table is empty or no font is used.
+    :param failed: A boolean indicating whether the previous encoding didn't work.
     """
     encoding = None
     if font in font_table:
@@ -513,13 +483,11 @@ def strip_rtf(text, default_encoding=None):
     This function strips RTF control structures and returns an unicode string.
 
     Thanks to Markus Jarderot (MizardX) for this code, used by permission.
+
     http://stackoverflow.com/questions/188545
 
-    ``text``
-        RTF-encoded text, a string.
-
-    ``default_encoding``
-        Default encoding to use when no encoding is specified.
+    :param text: RTF-encoded text, a string.
+    :param default_encoding: Default encoding to use when no encoding is specified.
     """
     # Current font is the font tag we last met.
     font = ''
@@ -623,11 +591,8 @@ def delete_song(song_id, song_plugin):
     Deletes a song from the database. Media files associated to the song
     are removed prior to the deletion of the song.
 
-    ``song_id``
-        The ID of the song to delete.
-
-    ``song_plugin``
-        The song plugin instance.
+    :param song_id: The ID of the song to delete.
+    :param song_plugin: The song plugin instance.
     """
     media_files = song_plugin.manager.get_all_objects(MediaFile, MediaFile.song_id == song_id)
     for media_file in media_files:

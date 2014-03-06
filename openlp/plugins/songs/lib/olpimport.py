@@ -63,7 +63,7 @@ class OpenLPSongImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
         self.sourceSession = None
 
-    def doImport(self, progressDialog=None):
+    def do_import(self, progressDialog=None):
         """
         Run the import for an OpenLP version 2 song database.
 

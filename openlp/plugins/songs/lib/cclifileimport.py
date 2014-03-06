@@ -41,24 +41,20 @@ log = logging.getLogger(__name__)
 
 class CCLIFileImport(SongImport):
     """
-    The :class:`CCLIFileImport` class provides OpenLP with the ability to import
-    CCLI SongSelect song files in both .txt and .usr formats. See
-    `<http://www.ccli.com/>`_ for more details.
+    The :class:`CCLIFileImport` class provides OpenLP with the ability to import CCLI SongSelect song files in
+    both .txt and .usr formats. See `<http://www.ccli.com/>`_ for more details.
     """
 
     def __init__(self, manager, **kwargs):
         """
         Initialise the import.
 
-        ``manager``
-            The song manager for the running OpenLP installation.
-
-        ``filenames``
-            The files to be imported.
+        :param manager: The song manager for the running OpenLP installation.
+        :param kwargs:  The files to be imported.
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def doImport(self):
+    def do_import(self):
         """
         Import either a ``.usr`` or a ``.txt`` SongSelect file.
         """
@@ -86,11 +82,11 @@ class CCLIFileImport(SongImport):
                 ext = os.path.splitext(filename)[1]
                 if ext.lower() == '.usr':
                     log.info('SongSelect .usr format file found: %s', filename)
-                    if not self.doImportUsrFile(lines):
+                    if not self.do_import_usr_file(lines):
                         self.log_error(filename)
                 elif ext.lower() == '.txt':
                     log.info('SongSelect .txt format file found: %s', filename)
-                    if not self.doImportTxtFile(lines):
+                    if not self.do_import_txt_file(lines):
                         self.log_error(filename)
                 else:
                     self.log_error(filename,
@@ -99,13 +95,10 @@ class CCLIFileImport(SongImport):
             if self.stop_import_flag:
                 return
 
-    def doImportUsrFile(self, textList):
+    def do_import_usr_file(self, text_list):
         """
         The :func:`doImport_usr_file` method provides OpenLP with the ability
         to import CCLI SongSelect songs in *USR* file format.
-
-        ``textList``
-            An array of strings containing the usr file content.
 
         **SongSelect .usr file format**
 
@@ -156,11 +149,12 @@ class CCLIFileImport(SongImport):
             *Fields* description
             e.g. *Words=Above all powers....* [/n = CR, /n/t = CRLF]
 
+        :param text_list: An array of strings containing the usr file content.
         """
-        log.debug('USR file text: %s', textList)
+        log.debug('USR file text: %s', text_list)
         song_author = ''
         song_topics = ''
-        for line in textList:
+        for line in text_list:
             if line.startswith('[S '):
                 ccli, line = line.split(']', 1)
                 if ccli.startswith('[S A'):
@@ -177,7 +171,7 @@ class CCLIFileImport(SongImport):
                 song_topics = line[7:].strip().replace(' | ', '/t')
             elif line.startswith('Fields='):
                 # Fields contain single line indicating verse, chorus, etc,
-                # /t delimited, same as with words field. store seperately
+                # /t delimited, same as with words field. store separately
                 # and process at end.
                 song_fields = line[7:].strip()
             elif line.startswith('Words='):
@@ -228,13 +222,12 @@ class CCLIFileImport(SongImport):
         self.topics = [topic.strip() for topic in song_topics.split('/t')]
         return self.finish()
 
-    def doImportTxtFile(self, textList):
+    def do_import_txt_file(self, text_list):
         """
         The :func:`doImport_txt_file` method provides OpenLP with the ability
         to import CCLI SongSelect songs in *TXT* file format.
 
-        ``textList``
-            An array of strings containing the txt file content.
+        :param text_list: An array of strings containing the txt file content.
 
         SongSelect .txt file format::
 
@@ -260,13 +253,13 @@ class CCLIFileImport(SongImport):
                 # e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
 
         """
-        log.debug('TXT file text: %s', textList)
+        log.debug('TXT file text: %s', text_list)
         line_number = 0
         check_first_verse_line = False
         verse_text = ''
         song_author = ''
         verse_start = False
-        for line in textList:
+        for line in text_list:
             clean_line = line.strip()
             if not clean_line:
                 if line_number == 0:

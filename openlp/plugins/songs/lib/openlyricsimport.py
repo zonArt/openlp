@@ -56,7 +56,7 @@ class OpenLyricsImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
         self.openLyrics = OpenLyrics(self.manager)
 
-    def doImport(self):
+    def do_import(self):
         """
         Imports the songs.
         """

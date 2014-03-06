@@ -334,7 +334,7 @@ class SongImportForm(OpenLPWizard):
 
     def perform_wizard(self):
         """
-        Perform the actual import. This method pulls in the correct importer class, and then runs the ``doImport``
+        Perform the actual import. This method pulls in the correct importer class, and then runs the ``do_import``
         method of the importer to do the actual importing.
         """
         source_format = self.current_format
@@ -349,7 +349,7 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.import_songs(
                 source_format,
                 filenames=self.get_list_of_files(self.format_widgets[source_format]['file_list_widget']))
-        importer.doImport()
+        importer.do_import()
         self.progress_label.setText(WizardStrings.FinishedImport)
 
     def on_error_copy_to_button_clicked(self):
