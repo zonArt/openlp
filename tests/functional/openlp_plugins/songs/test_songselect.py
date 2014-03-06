@@ -31,6 +31,7 @@ This module contains tests for the CCLI SongSelect importer.
 """
 from unittest import TestCase
 from urllib.error import URLError
+from openlp.plugins.songs.lib import Author, Song
 
 from openlp.plugins.songs.lib.songselect import SongSelectImport, LOGOUT_URL, BASE_URL
 
@@ -308,3 +309,74 @@ class TestSongSelect(TestCase):
             self.assertIn('ccli_number', result, 'The returned song should have a CCLI number')
             self.assertIn('verses', result, 'The returned song should have verses')
             self.assertEqual(3, len(result['verses']), 'Three verses should have been returned')
+
+    def save_song_new_author_test(self):
+        """
+        Test that saving a song with a new author performs the correct actions
+        """
+        # GIVEN: A song to save, and some mocked out objects
+        with patch('openlp.plugins.songs.lib.songselect.clean_song') as mocked_clean_song, \
+                patch('openlp.plugins.songs.lib.songselect.Author') as MockedAuthor:
+            song_dict = {
+                'title': 'Arky Arky',
+                'authors': ['Public Domain'],
+                'verses': [
+                    {'label': 'Verse 1', 'lyrics': 'The Lord told Noah: there\'s gonna be a floody, floody'},
+                    {'label': 'Chorus 1', 'lyrics': 'So, rise and shine, and give God the glory, glory'},
+                    {'label': 'Verse 2', 'lyrics': 'The Lord told Noah to build him an arky, arky'}
+                ],
+                'copyright': 'Public Domain',
+                'ccli_number': '123456'
+            }
+            MockedAuthor.display_name.__eq__.return_value = False
+            mocked_db_manager = MagicMock()
+            mocked_db_manager.get_object_filtered.return_value = None
+            importer = SongSelectImport(mocked_db_manager)
+
+            # WHEN: The song is saved to the database
+            result = importer.save_song(song_dict)
+
+            # THEN: The return value should be a Song class and the mocked_db_manager should have been called
+            self.assertIsInstance(result, Song, 'The returned value should be a Song object')
+            mocked_clean_song.assert_called_with(mocked_db_manager, result)
+            self.assertEqual(2, mocked_db_manager.save_object.call_count,
+                             'The save_object() method should have been called twice')
+            mocked_db_manager.get_object_filtered.assert_called_with(MockedAuthor, False)
+            MockedAuthor.populate.assert_called_with(first_name='Public', last_name='Domain',
+                                                     display_name='Public Domain')
+            self.assertEqual(1, len(result.authors), 'There should only be one author')
+
+    def save_song_existing_author_test(self):
+        """
+        Test that saving a song with an existing author performs the correct actions
+        """
+        # GIVEN: A song to save, and some mocked out objects
+        with patch('openlp.plugins.songs.lib.songselect.clean_song') as mocked_clean_song, \
+                    patch('openlp.plugins.songs.lib.songselect.Author') as MockedAuthor:
+            song_dict = {
+                'title': 'Arky Arky',
+                'authors': ['Public Domain'],
+                'verses': [
+                    {'label': 'Verse 1', 'lyrics': 'The Lord told Noah: there\'s gonna be a floody, floody'},
+                    {'label': 'Chorus 1', 'lyrics': 'So, rise and shine, and give God the glory, glory'},
+                    {'label': 'Verse 2', 'lyrics': 'The Lord told Noah to build him an arky, arky'}
+                ],
+                'copyright': 'Public Domain',
+                'ccli_number': '123456'
+            }
+            MockedAuthor.display_name.__eq__.return_value = False
+            mocked_db_manager = MagicMock()
+            mocked_db_manager.get_object_filtered.return_value = MagicMock()
+            importer = SongSelectImport(mocked_db_manager)
+
+            # WHEN: The song is saved to the database
+            result = importer.save_song(song_dict)
+
+            # THEN: The return value should be a Song class and the mocked_db_manager should have been called
+            self.assertIsInstance(result, Song, 'The returned value should be a Song object')
+            mocked_clean_song.assert_called_with(mocked_db_manager, result)
+            self.assertEqual(2, mocked_db_manager.save_object.call_count,
+                             'The save_object() method should have been called twice')
+            mocked_db_manager.get_object_filtered.assert_called_with(MockedAuthor, False)
+            self.assertEqual(0, MockedAuthor.populate.call_count, 'A new author should not have been instantiated')
+            self.assertEqual(1, len(result.authors), 'There should only be one author')
