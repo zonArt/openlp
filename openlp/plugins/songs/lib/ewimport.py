@@ -76,6 +76,11 @@ class EasyWorshipSongImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
+        """
+        Import the songs
+
+        :return:
+        """
         # Open the DB and MB files if they exist
         import_source_mb = self.import_source.replace('.DB', '.MB')
         if not os.path.isfile(self.import_source) or not os.path.isfile(import_source_mb):
@@ -239,9 +244,20 @@ class EasyWorshipSongImport(SongImport):
         self.memo_file.close()
 
     def find_field(self, field_name):
+        """
+        Find a field in the descriptions
+
+        :param field_name: field to find
+        :return:
+        """
         return [i for i, x in enumerate(self.field_descriptions) if x.name == field_name][0]
 
     def set_record_struct(self, field_descriptions):
+        """
+        Save the record structure
+
+        :param field_descriptions: An array of field descriptions
+        """
         # Begin with empty field struct list
         fsl = ['>']
         for field_desc in field_descriptions:

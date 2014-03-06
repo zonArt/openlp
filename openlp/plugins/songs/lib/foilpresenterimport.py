@@ -106,6 +106,7 @@ from openlp.plugins.songs.lib.xml import SongXML
 
 log = logging.getLogger(__name__)
 
+
 class FoilPresenterImport(SongImport):
     """
     This provides the Foilpresenter import.
@@ -116,7 +117,7 @@ class FoilPresenterImport(SongImport):
         """
         log.debug('initialise FoilPresenterImport')
         SongImport.__init__(self, manager, **kwargs)
-        self.FoilPresenter = FoilPresenter(self.manager, self)
+        self.foil_presenter = FoilPresenter(self.manager, self)
 
     def do_import(self):
         """
@@ -131,7 +132,7 @@ class FoilPresenterImport(SongImport):
             try:
                 parsed_file = etree.parse(file_path, parser)
                 xml = etree.tostring(parsed_file).decode()
-                self.FoilPresenter.xml_to_song(xml)
+                self.foil_presenter.xml_to_song(xml)
             except etree.XMLSyntaxError:
                 self.log_error(file_path, SongStrings.XMLSyntaxError)
                 log.exception('XML syntax error in file %s' % file_path)
@@ -245,8 +246,7 @@ class FoilPresenter(object):
         """
         This returns the text of an element as unicode string.
 
-        ``element``
-            The element.
+        :param element: The element
         """
         if element is not None:
             return str(element)
@@ -256,11 +256,8 @@ class FoilPresenter(object):
         """
         Adds the authors specified in the XML to the song.
 
-        ``foilpresenterfolie``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param foilpresenterfolie: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         authors = []
         try:
@@ -324,8 +321,7 @@ class FoilPresenter(object):
                     break
             author_temp = []
             for author in strings:
-                temp = re.split(',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',
-                    author)
+                temp = re.split(',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);', author)
                 for tempx in temp:
                     author_temp.append(tempx)
                 for author in author_temp:
@@ -349,7 +345,7 @@ class FoilPresenter(object):
             if author is None:
                 # We need to create a new author, as the author does not exist.
                 author = Author.populate(display_name=display_name, last_name=display_name.split(' ')[-1],
-                    first_name=' '.join(display_name.split(' ')[:-1]))
+                                         first_name=' '.join(display_name.split(' ')[:-1]))
                 self.manager.save_object(author)
             song.authors.append(author)
 
@@ -357,11 +353,8 @@ class FoilPresenter(object):
         """
         Adds the CCLI number to the song.
 
-        ``foilpresenterfolie``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param foilpresenterfolie: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         try:
             song.ccli_number = self._child(foilpresenterfolie.ccliid)
@@ -372,11 +365,8 @@ class FoilPresenter(object):
         """
         Joins the comments specified in the XML and add it to the song.
 
-        ``foilpresenterfolie``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param foilpresenterfolie: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         try:
             song.comments = self._child(foilpresenterfolie.notiz)
@@ -387,11 +377,8 @@ class FoilPresenter(object):
         """
         Adds the copyright to the song.
 
-        ``foilpresenterfolie``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param foilpresenterfolie: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         try:
             song.copyright = self._child(foilpresenterfolie.copyright.text_)
@@ -402,11 +389,8 @@ class FoilPresenter(object):
         """
         Processes the verses and search_lyrics for the song.
 
-        ``foilpresenterfolie``
-            The foilpresenterfolie object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param foilpresenterfolie: The foilpresenterfolie object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         sxml = SongXML()
         temp_verse_order = {}
@@ -424,8 +408,8 @@ class FoilPresenter(object):
         }
         if not hasattr(foilpresenterfolie.strophen, 'strophe'):
             self.importer.log_error(self._child(foilpresenterfolie.titel),
-                str(translate('SongsPlugin.FoilPresenterSongImport',
-                'Invalid Foilpresenter song file. No verses found.')))
+                                    str(translate('SongsPlugin.FoilPresenterSongImport',
+                                                  'Invalid Foilpresenter song file. No verses found.')))
             self.save_song = False
             return
         for strophe in foilpresenterfolie.strophen.strophe:
@@ -478,10 +462,8 @@ class FoilPresenter(object):
                         verse_number = str(int(verse_number) + 1)
             verse_type_index = VerseType.from_tag(verse_type[0])
             verse_type = VerseType.tags[verse_type_index]
-            temp_verse_order[verse_sortnr] = ''.join((verse_type[0],
-                verse_number))
-            temp_verse_order_backup.append(''.join((verse_type[0],
-                verse_number)))
+            temp_verse_order[verse_sortnr] = ''.join((verse_type[0], verse_number))
+            temp_verse_order_backup.append(''.join((verse_type[0], verse_number)))
             sxml.add_verse_to_lyrics(verse_type, verse_number, text)
         song.lyrics = str(sxml.extract_xml(), 'utf-8')
         # Process verse order
@@ -506,11 +488,8 @@ class FoilPresenter(object):
         """
         Adds the song book and song number specified in the XML to the song.
 
-        ``foilpresenterfolie``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param foilpresenterfolie: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         song.song_book_id = 0
         song.song_number = ''
@@ -518,8 +497,7 @@ class FoilPresenter(object):
             for bucheintrag in foilpresenterfolie.buch.bucheintrag:
                 book_name = self._child(bucheintrag.name)
                 if book_name:
-                    book = self.manager.get_object_filtered(Book,
-                        Book.name == book_name)
+                    book = self.manager.get_object_filtered(Book, Book.name == book_name)
                     if book is None:
                         # We need to create a book, because it does not exist.
                         book = Book.populate(name=book_name, publisher='')
@@ -539,11 +517,8 @@ class FoilPresenter(object):
         """
         Processes the titles specified in the song's XML.
 
-        ``foilpresenterfolie``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param foilpresenterfolie: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         try:
             for title_string in foilpresenterfolie.titel.titelstring:
@@ -561,18 +536,14 @@ class FoilPresenter(object):
         """
         Adds the topics to the song.
 
-        ``foilpresenterfolie``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param foilpresenterfolie:  The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         try:
             for name in foilpresenterfolie.kategorien.name:
                 topic_text = self._child(name)
                 if topic_text:
-                    topic = self.manager.get_object_filtered(Topic,
-                        Topic.name == topic_text)
+                    topic = self.manager.get_object_filtered(Topic, Topic.name == topic_text)
                     if topic is None:
                         # We need to create a topic, because it does not exist.
                         topic = Topic.populate(name=topic_text)

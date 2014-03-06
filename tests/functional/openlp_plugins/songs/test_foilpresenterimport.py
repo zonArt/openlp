@@ -116,17 +116,17 @@ class TestFoilPresenter(TestCase):
 
     def create_foil_presenter_test(self):
         """
-        Test creating an instance of the FoilPresenter class
+        Test creating an instance of the foil_presenter class
         """
         # GIVEN: A mocked out "manager" and "SongImport" instance
         mocked_manager = MagicMock()
         mocked_song_import = MagicMock()
 
-        # WHEN: An FoilPresenter instance is created
+        # WHEN: An foil_presenter instance is created
         foil_presenter_instance = FoilPresenter(mocked_manager, mocked_song_import)
 
         # THEN: The instance should not be None
-        self.assertIsNotNone(foil_presenter_instance, 'FoilPresenter instance should not be none')
+        self.assertIsNotNone(foil_presenter_instance, 'foil_presenter instance should not be none')
 
     def no_xml_test(self):
         """
