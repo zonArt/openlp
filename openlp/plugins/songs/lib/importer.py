@@ -107,7 +107,7 @@ class SongFormat(object):
         Name of the format, e.g. ``'OpenLyrics'``
 
     ``'prefix'``
-        Prefix for Qt objects. Use mixedCase, e.g. ``'openLyrics'``
+        Prefix for Qt objects. Use mixedCase, e.g. ``'open_lyrics'``
         See ``SongImportForm.add_file_select_item()``
 
     Optional attributes for each song format:
@@ -185,7 +185,7 @@ class SongFormat(object):
         OpenLyrics: {
             'class': OpenLyricsImport,
             'name': 'OpenLyrics',
-            'prefix': 'openLyrics',
+            'prefix': 'open_lyrics',
             'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2.0 Exported Song')
         },

@@ -115,10 +115,10 @@ class OpenSongImport(SongImport):
             if self.stop_import_flag:
                 return
             song_file = open(filename)
-            self.doImportFile(song_file)
+            self.do_import_file(song_file)
             song_file.close()
 
-    def doImportFile(self, file):
+    def do_import_file(self, file):
         """
         Process the OpenSong file - pass in a file-like object, not a file path.
         """
@@ -132,7 +132,7 @@ class OpenSongImport(SongImport):
         root = tree.getroot()
         if root.tag != 'song':
             self.log_error(file.name, str(
-                translate('SongsPlugin.OpenSongImport', ('Invalid OpenSong song file. Missing song tag.'))))
+                translate('SongsPlugin.OpenSongImport', 'Invalid OpenSong song file. Missing song tag.')))
             return
         fields = dir(root)
         decode = {
@@ -218,7 +218,7 @@ class OpenSongImport(SongImport):
         for (verse_tag, verse_num, inst) in our_verse_order:
             lines = '\n'.join(verses[verse_tag][verse_num][inst])
             length = 0
-            while(length < len(verse_num) and verse_num[length].isnumeric()):
+            while length < len(verse_num) and verse_num[length].isnumeric():
                 length += 1
             verse_def = '%s%s' % (verse_tag, verse_num[:length])
             verse_joints[verse_def] = '%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
@@ -248,7 +248,7 @@ class OpenSongImport(SongImport):
                 if verse_num in verses.get(verse_tag, {}):
                     self.verse_order_list.append(verse_def)
                 else:
-                    log.info('Got order %s but not in verse tags, dropping'
-                        'this item from presentation order', verse_def)
+                    log.info('Got order %s but not in verse tags, dropping this item from presentation order',
+                             verse_def)
         if not self.finish():
             self.log_error(file.name)
