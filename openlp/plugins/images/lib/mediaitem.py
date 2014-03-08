@@ -207,8 +207,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         Recursively deletes a group and all groups and images in it.
 
-        ``image_group``
-            The ImageGroups instance of the group that will be deleted.
+        :param image_group: The ImageGroups instance of the group that will be deleted.
         """
         images = self.manager.get_all_objects(ImageFilenames, ImageFilenames.group_id == image_group.id)
         for image in images:
