@@ -435,7 +435,10 @@ class ServiceItem(object):
             for text_image in serviceitem['serviceitem']['data']:
                 if not self.title:
                     self.title = text_image['title']
-                if path:
+                if self.is_capable(ItemCapabilities.IsOptical):
+                    self.has_original_files = False
+                    self.add_from_command(text_image['path'], text_image['title'], text_image['image'])
+                elif path:
                     self.has_original_files = False
                     self.add_from_command(path, text_image['title'], text_image['image'])
                 else:
@@ -446,7 +449,7 @@ class ServiceItem(object):
         """
         Returns the title of the service item.
         """
-        if self.is_text():
+        if self.is_text() or self.is_capable(ItemCapabilities.IsOptical):
             return self.title
         else:
             if len(self._raw_frames) > 1:
@@ -516,7 +519,8 @@ class ServiceItem(object):
         """
         Confirms if the ServiceItem uses a file
         """
-        return self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command
+        return self.service_item_type == ServiceItemType.Image or \
+               (self.service_item_type == ServiceItemType.Command and not self.is_capable(ItemCapabilities.IsOptical))
 
     def is_text(self):
         """
@@ -646,15 +650,20 @@ class ServiceItem(object):
                 self.is_valid = False
                 break
             elif self.is_command():
-                file_name = os.path.join(frame['path'], frame['title'])
-                if not os.path.exists(file_name):
-                    self.is_valid = False
-                    break
-                if suffix_list and not self.is_text():
-                    file_suffix = frame['title'].split('.')[-1]
-                    if file_suffix.lower() not in suffix_list:
+                if self.is_capable(ItemCapabilities.IsOptical):
+                    if not os.path.exists(frame['title']):
                         self.is_valid = False
                         break
+                else:
+                    file_name = os.path.join(frame['path'], frame['title'])
+                    if not os.path.exists(file_name):
+                        self.is_valid = False
+                        break
+                    if suffix_list and not self.is_text():
+                        file_suffix = frame['title'].split('.')[-1]
+                        if file_suffix.lower() not in suffix_list:
+                            self.is_valid = False
+                            break
 
     def _get_renderer(self):
         """

@@ -102,17 +102,32 @@ def set_media_players(players_list, overridden_player='auto'):
     This method saves the configured media players and overridden player to the
     settings
 
-    ``players_list``
-        A list with all active media players.
-
-    ``overridden_player``
-        Here an special media player is chosen for all media actions.
+    :param players_list: A list with all active media players.
+    :param overridden_player: Here an special media player is chosen for all media actions.
     """
     log.debug('set_media_players')
     players = ','.join(players_list)
     if Settings().value('media/override player') == QtCore.Qt.Checked and overridden_player != 'auto':
         players = players.replace(overridden_player, '[%s]' % overridden_player)
     Settings().setValue('media/players', players)
+
+def parse_optical_path(input):
+    """
+    Split the optical path info.
+
+    :param input: The string to parse
+    :return: The elements extracted from the string:  filename, title, audio_track, subtitle_track, start, end
+    """
+    clip_info = input.split(sep=':')
+    title = int(clip_info[1])
+    audio_track = int(clip_info[2])
+    subtitle_track = int(clip_info[3])
+    start = float(clip_info[4])
+    end = float(clip_info[5])
+    filename = clip_info[6]
+    if len(clip_info) > 7:
+        filename += clip_info[7]
+    return filename, title, audio_track, subtitle_track, start, end
 
 from .mediacontroller import MediaController
 from .playertab import PlayerTab

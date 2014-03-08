@@ -38,7 +38,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.common import Registry, RegistryMixin, Settings, UiStrings, translate
 from openlp.core.lib import OpenLPToolbar, ItemCapabilities
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
+from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players, parse_optical_path
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.common import AppLocation
 from openlp.core.ui import DisplayControllerType
@@ -397,7 +397,7 @@ class MediaController(object):
             if service_item.is_capable(ItemCapabilities.IsOptical):
                 log.debug('video is optical and live')
                 path = service_item.get_frame_path()
-                (name, title, audio_track, subtitle_track, start, end) = self.parse_optical_path(path)
+                (name, title, audio_track, subtitle_track, start, end) = parse_optical_path(path)
                 is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display, controller)
             else :
                 log.debug('video is not optical and live')
@@ -415,7 +415,7 @@ class MediaController(object):
             if service_item.is_capable(ItemCapabilities.IsOptical):
                 log.debug('video is optical and preview')
                 path = service_item.get_frame_path()
-                (name, title, audio_track, subtitle_track, start, end) = self.parse_optical_path(path)
+                (name, title, audio_track, subtitle_track, start, end) = parse_optical_path(path)
                 is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display, controller)
             else :
                 log.debug('video is not optical and preview')
@@ -819,16 +819,3 @@ class MediaController(object):
 
     live_controller = property(_get_live_controller)
 
-    @staticmethod
-    def parse_optical_path(input):
-        # split the clip info
-        clip_info = input.split(sep=':')
-        title = int(clip_info[1])
-        audio_track = int(clip_info[2])
-        subtitle_track = int(clip_info[3])
-        start = float(clip_info[4])
-        end = float(clip_info[5])
-        filename = clip_info[6]
-        if len(clip_info) > 7:
-            filename += clip_info[7]
-        return filename, title, audio_track, subtitle_track, start, end
