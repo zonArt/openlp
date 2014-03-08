@@ -113,7 +113,7 @@ class PdfController(PresentationController):
         self.gsbin = ''
         self.also_supports = []
         # Use the user defined program if given
-        if (Settings().value('presentations/enable_pdf_program')):
+        if Settings().value('presentations/enable_pdf_program'):
             pdf_program = Settings().value('presentations/pdf_program')
             program_type = self.check_binary(pdf_program)
             if program_type == 'gs':
@@ -197,7 +197,7 @@ class PdfDocument(PresentationDocument):
         runlog = []
         try:
             runlog = check_output([self.controller.gsbin, '-dNOPAUSE', '-dNODISPLAY', '-dBATCH',
-                                   '-sFile=' + self.filepath, gs_resolution_script])
+                                   '-sFile=' + self.file_path, gs_resolution_script])
         except CalledProcessError as e:
             log.debug(' '.join(e.cmd))
             log.debug(e.output)
@@ -246,13 +246,13 @@ class PdfDocument(PresentationDocument):
                 os.makedirs(self.get_temp_folder())
             if self.controller.mudrawbin:
                 runlog = check_output([self.controller.mudrawbin, '-w', str(size.right()), '-h', str(size.bottom()),
-                                       '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.filepath])
+                                       '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path])
             elif self.controller.gsbin:
                 resolution = self.gs_get_resolution(size)
                 runlog = check_output([self.controller.gsbin, '-dSAFER', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m',
                                        '-r' + str(resolution), '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4',
                                        '-sOutputFile=' + os.path.join(self.get_temp_folder(), 'mainslide%03d.png'),
-                                       self.filepath])
+                                       self.file_path])
             created_files = sorted(os.listdir(self.get_temp_folder()))
             for fn in created_files:
                 if os.path.isfile(os.path.join(self.get_temp_folder(), fn)):
