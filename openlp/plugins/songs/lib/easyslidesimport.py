@@ -67,7 +67,7 @@ class EasySlidesImport(SongImport):
         self._success = True
         self._add_unicode_attribute('title', song.Title1, True)
         if hasattr(song, 'Title2'):
-            self._add_unicode_attribute('alternateTitle', song.Title2)
+            self._add_unicode_attribute('alternate_title', song.Title2)
         if hasattr(song, 'SongNumber'):
             self._add_unicode_attribute('song_number', song.SongNumber)
         if self.song_number == '0':

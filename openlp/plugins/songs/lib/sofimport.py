@@ -69,8 +69,8 @@ class SofImport(OooImport):
 
     Use OpenOffice.org Writer for processing the rtf file
 
-    The three books are not only inconsistant with each other, they are
-    inconsistant in themselves too with their formatting. Not only this, but
+    The three books are not only inconsistent with each other, they are
+    inconsistent in themselves too with their formatting. Not only this, but
     the 1+2 book does not space out verses correctly. This script attempts
     to sort it out, but doesn't get it 100% right. But better than having to
     type them all out!
@@ -90,14 +90,14 @@ class SofImport(OooImport):
         """
         Handle the import process for SoF files.
         """
-        self.processSofFile()
+        self.process_sof_file()
 
-    def processSofFile(self):
+    def process_sof_file(self):
         """
         Process the RTF file, a paragraph at a time
         """
-        self.blankLines = 0
-        self.newSong()
+        self.blank_lines = 0
+        self.new_song()
         try:
             paragraphs = self.document.getText().createEnumeration()
             while paragraphs.hasMoreElements():
@@ -105,65 +105,68 @@ class SofImport(OooImport):
                     return
                 paragraph = paragraphs.nextElement()
                 if paragraph.supportsService("com.sun.star.text.Paragraph"):
-                    self.processParagraph(paragraph)
+                    self.process_paragraph(paragraph)
         except RuntimeException as exc:
             log.exception('Error processing file: %s', exc)
         if not self.finish():
             self.log_error(self.file_path)
 
-    def processParagraph(self, paragraph):
+    def process_paragraph(self, paragraph):
         """
         Process a paragraph.
-        In the first book, a paragraph is a single line. In the latter ones
-        they may contain multiple lines.
-        Each paragraph contains textportions. Each textportion has it's own
-        styling, e.g. italics, bold etc.
+        In the first book, a paragraph is a single line. In the latter ones they may contain multiple lines.
+        Each paragraph contains textportions. Each textportion has it's own styling, e.g. italics, bold etc.
         Also check for page breaks, which indicates a new song in books 1+2.
-        In later books, there may not be line breaks, so check for 3 or more
-        newlines
+        In later books, there may not be line breaks, so check for 3 or more newlines
+
+        :param paragraph: The paragraph text
         """
         text = ''
-        textportions = paragraph.createEnumeration()
-        while textportions.hasMoreElements():
-            textportion = textportions.nextElement()
-            if textportion.BreakType in (PAGE_BEFORE, PAGE_BOTH):
-                self.processParagraphText(text)
-                self.newSong()
+        text_portions = paragraph.createEnumeration()
+        while text_portions.hasMoreElements():
+            text_portion = text_portions.nextElement()
+            if text_portion.BreakType in (PAGE_BEFORE, PAGE_BOTH):
+                self.process_paragraph_text(text)
+                self.new_song()
                 text = ''
-            text += self.processTextPortion(textportion)
-            if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
-                self.processParagraphText(text)
-                self.newSong()
+            text += self.process_text_portion(text_portion)
+            if text_portion.BreakType in (PAGE_AFTER, PAGE_BOTH):
+                self.process_paragraph_text(text)
+                self.new_song()
                 text = ''
-        self.processParagraphText(text)
+        self.process_paragraph_text(text)
 
-    def processParagraphText(self, text):
+    def process_paragraph_text(self, text):
         """
         Split the paragraph text into multiple lines and process
+
+        :param text: The text
         """
         for line in text.split('\n'):
-            self.processParagraphLine(line)
-        if self.blankLines > 2:
-            self.newSong()
+            self.process_paragraph_line(line)
+        if self.blank_lines > 2:
+            self.new_song()
 
-    def processParagraphLine(self, text):
+    def process_paragraph_line(self, text):
         """
         Process a single line. Throw away that text which isn't relevant, i.e.
         stuff that appears at the end of the song.
         Anything that is OK, append to the current verse
+
+        :param text: The text
         """
         text = text.strip()
         if text == '':
-            self.blankLines += 1
-            if self.blankLines > 1:
+            self.blank_lines += 1
+            if self.blank_lines > 1:
                 return
             if self.title != '':
-                self.finishVerse()
+                self.finish_verse()
             return
-        self.blankLines = 0
-        if self.skipToCloseBracket:
+        self.blank_lines = 0
+        if self.skip_to_close_bracket:
             if text.endswith(')'):
-                self.skipToCloseBracket = False
+                self.skip_to_close_bracket = False
             return
         if text.startswith('CCL Licence'):
             self.italics = False
@@ -171,90 +174,93 @@ class SofImport(OooImport):
         if text == 'A Songs of Fellowship Worship Resource':
             return
         if text.startswith('(NB.') or text.startswith('(Regrettably') or text.startswith('(From'):
-            self.skipToCloseBracket = True
+            self.skip_to_close_bracket = True
             return
         if text.startswith('Copyright'):
             self.add_copyright(text)
             return
         if text == '(Repeat)':
-            self.finishVerse()
+            self.finish_verse()
             self.repeat_verse()
             return
         if self.title == '':
             if self.copyright == '':
-                self.addSofAuthor(text)
+                self.add_sof_author(text)
             else:
                 self.add_copyright(text)
             return
-        self.addVerseLine(text)
+        self.add_verse_line(text)
 
-    def processTextPortion(self, textportion):
+    def process_text_portion(self, text_portion):
         """
-        Process a text portion. Here we just get the text and detect if
-        it's bold or italics. If it's bold then its a song number or song title.
-        Song titles are in all capitals, so we must bring the capitalization
-        into line
+        Process a text portion. Here we just get the text and detect if it's bold or italics. If it's bold then its a
+        song number or song title.
+        Song titles are in all capitals, so we must bring the capitalization into line
+
+        :param text_portion: A Piece of text
         """
-        text = textportion.getString()
+        text = text_portion.getString()
         text = self.tidy_text(text)
         if text.strip() == '':
             return text
-        if textportion.CharWeight == BOLD:
-            boldtext = text.strip()
-            if boldtext.isdigit() and self.song_number == '':
-                self.addSongNumber(boldtext)
+        if text_portion.CharWeight == BOLD:
+            bold_text = text.strip()
+            if bold_text.isdigit() and self.song_number == '':
+                self.add_song_number(bold_text)
                 return ''
-            text = self.uncapText(text)
+            text = self.uncap_text(text)
             if self.title == '':
-                self.addTitle(text)
+                self.add_title(text)
             return text
         if text.strip().startswith('('):
             return text
-        self.italics = (textportion.CharPosture == ITALIC)
+        self.italics = (text_portion.CharPosture == ITALIC)
         return text
 
-    def newSong(self):
+    def new_song(self):
         """
         A change of song. Store the old, create a new
         ... but only if the last song was complete. If not, stick with it
         """
         if self.song:
-            self.finishVerse()
+            self.finish_verse()
             if not self.check_complete():
                 return
             self.finish()
         self.song = True
         self.set_defaults()
-        self.skipToCloseBracket = False
-        self.isChorus = False
+        self.skip_to_close_bracket = False
+        self.is_chorus = False
         self.italics = False
-        self.currentVerse = ''
+        self.current__verse = ''
 
-    def addSongNumber(self, song_no):
+    def add_song_number(self, song_no):
         """
-        Add a song number, store as alternate title. Also use the song
-        number to work out which songbook we're in
+        Add a song number, store as alternate title. Also use the song number to work out which songbook we're in
+
+        :param song_no: The Song number
         """
         self.song_number = song_no
-        self.alternateTitle = song_no + '.'
-        self.songBook_pub = 'Kingsway Publications'
+        self.alternate_title = song_no + '.'
+        self.song_book_pub = 'Kingsway Publications'
         if int(song_no) <= 640:
-            self.songBook = 'Songs of Fellowship 1'
+            self.song_book = 'Songs of Fellowship 1'
         elif int(song_no) <= 1150:
-            self.songBook = 'Songs of Fellowship 2'
+            self.song_book = 'Songs of Fellowship 2'
         elif int(song_no) <= 1690:
-            self.songBook = 'Songs of Fellowship 3'
+            self.song_book = 'Songs of Fellowship 3'
         elif int(song_no) <= 2200:
-            self.songBook = 'Songs of Fellowship 4'
+            self.song_book = 'Songs of Fellowship 4'
         elif int(song_no) <= 2710:
-            self.songBook = 'Songs of Fellowship 5'
+            self.song_book = 'Songs of Fellowship 5'
         else:
-            self.songBook = 'Songs of Fellowship Other'
+            self.song_book = 'Songs of Fellowship Other'
 
-    def addTitle(self, text):
+    def add_title(self, text):
         """
-        Add the title to the song. Strip some leading/trailing punctuation that
-        we don't want in a title
+        Add the title to the song. Strip some leading/trailing punctuation that we don't want in a title
+
+        :param text: Title text
         """
         title = text.strip()
         if title.startswith('\''):
@@ -264,50 +270,50 @@ class SofImport(OooImport):
         self.title = title
         self.import_wizard.increment_progress_bar('Processing song ' + title, 0)
 
-    def addSofAuthor(self, text):
+    def add_sof_author(self, text):
         """
-        Add the author. OpenLP stores them individually so split by 'and', '&'
-        and comma.
-        However need to check for "Mr and Mrs Smith" and turn it to
-        "Mr Smith" and "Mrs Smith".
+        Add the author. OpenLP stores them individually so split by 'and', '&' and comma.
+        However need to check for "Mr and Mrs Smith" and turn it to "Mr Smith" and "Mrs Smith".
+
+        :param text: Author text
         """
         text = text.replace(' and ', ' & ')
         self.parse_author(text)
 
-    def addVerseLine(self, text):
+    def add_verse_line(self, text):
         """
-        Add a line to the current verse. If the formatting has changed and
-        we're beyond the second line of first verse, then this indicates
-        a change of verse. Italics are a chorus
-        """
-        if self.italics != self.isChorus and ((len(self.verses) > 0) or
-            (self.currentVerse.count('\n') > 1)):
-            self.finishVerse()
-        if self.italics:
-            self.isChorus = True
-        self.currentVerse += text + '\n'
+        Add a line to the current verse. If the formatting has changed and we're beyond the second line of first verse,
+        then this indicates a change of verse. Italics are a chorus
 
-    def finishVerse(self):
+        :param text: The verse text
         """
-        Verse is finished, store it. Note in book 1+2, some songs are formatted
-        incorrectly. Here we try and split songs with missing line breaks into
-        the correct number of verses.
+        if self.italics != self.is_chorus and ((len(self.verses) > 0) or
+            (self.current__verse.count('\n') > 1)):
+            self.finish_verse()
+        if self.italics:
+            self.is_chorus = True
+        self.current__verse += text + '\n'
+
+    def finish_verse(self):
         """
-        if self.currentVerse.strip() == '':
+        Verse is finished, store it. Note in book 1+2, some songs are formatted incorrectly. Here we try and split
+        songs with missing line breaks into the correct number of verses.
+        """
+        if self.current__verse.strip() == '':
             return
-        if self.isChorus:
+        if self.is_chorus:
             versetag = 'C'
             splitat = None
         else:
             versetag = 'V'
-            splitat = self.verseSplits(self.song_number)
+            splitat = self.verse_splits(self.song_number)
         if splitat:
             ln = 0
             verse = ''
-            for line in self.currentVerse.split('\n'):
+            for line in self.current__verse.split('\n'):
                 ln += 1
                 if line == '' or ln > splitat:
-                    self.addSofVerse(verse, versetag)
+                    self.add_sof_verse(verse, versetag)
                     ln = 0
                     if line:
                         verse = line + '\n'
@@ -316,19 +322,19 @@ class SofImport(OooImport):
                 else:
                     verse += line + '\n'
             if verse:
-                self.addSofVerse(verse, versetag)
+                self.add_sof_verse(verse, versetag)
         else:
-            self.addSofVerse(self.currentVerse, versetag)
-        self.currentVerse = ''
-        self.isChorus = False
+            self.add_sof_verse(self.current__verse, versetag)
+        self.current__verse = ''
+        self.is_chorus = False
 
-    def addSofVerse(self, lyrics, tag):
+    def add_sof_verse(self, lyrics, tag):
         self.add_verse(lyrics, tag)
-        if not self.isChorus and 'C1' in self.verse_order_list_generated:
+        if not self.is_chorus and 'C1' in self.verse_order_list_generated:
             self.verse_order_list_generated.append('C1')
-            self.verseOrderListGenerated_useful = True
+            self.verse_order_list_generated_useful = True
 
-    def uncapText(self, text):
+    def uncap_text(self, text):
         """
         Words in the title are in all capitals, so we lowercase them.
         However some of these words, e.g. referring to God need a leading
@@ -337,28 +343,26 @@ class SofImport(OooImport):
         There is a complicated word "One", which is sometimes lower and
         sometimes upper depending on context. Never mind, keep it lower.
         """
-        textarr = re.split('(\W+)', text)
-        textarr[0] = textarr[0].capitalize()
-        for i in range(1, len(textarr)):
+        text_arr = re.split('(\W+)', text)
+        text_arr[0] = text_arr[0].capitalize()
+        for i in range(1, len(text_arr)):
             # Do not translate these. Fixed strings in SOF song file
-            if textarr[i] in ('JESUS', 'CHRIST', 'KING', 'ALMIGHTY',
-                'REDEEMER', 'SHEPHERD', 'SON', 'GOD', 'LORD', 'FATHER',
-                'HOLY', 'SPIRIT', 'LAMB', 'YOU', 'YOUR', 'I', 'I\'VE',
-                'I\'M', 'I\'LL', 'SAVIOUR', 'O', 'YOU\'RE', 'HE', 'HIS',
-                'HIM', 'ZION', 'EMMANUEL', 'MAJESTY', 'JESUS\'', 'JIREH',
-                'JUDAH', 'LION', 'LORD\'S', 'ABRAHAM', 'GOD\'S',
-                'FATHER\'S', 'ELIJAH' 'MARTHA', 'CHRISTMAS', 'ALPHA',
-                'OMEGA'):
-                textarr[i] = textarr[i].capitalize()
+            if text_arr[i] in ('JESUS', 'CHRIST', 'KING', 'ALMIGHTY', 'REDEEMER', 'SHEPHERD', 'SON', 'GOD', 'LORD',
+                              'FATHER', 'HOLY', 'SPIRIT', 'LAMB', 'YOU', 'YOUR', 'I', 'I\'VE', 'I\'M', 'I\'LL',
+                              'SAVIOUR', 'O', 'YOU\'RE', 'HE', 'HIS', 'HIM', 'ZION', 'EMMANUEL', 'MAJESTY', 'JESUS\'',
+                              'JIREH', 'JUDAH', 'LION', 'LORD\'S', 'ABRAHAM', 'GOD\'S', 'FATHER\'S', 'ELIJAH' 'MARTHA',
+                              'CHRISTMAS', 'ALPHA', 'OMEGA'):
+                text_arr[i] = text_arr[i].capitalize()
             else:
-                textarr[i] = textarr[i].lower()
-        text = ''.join(textarr)
+                text_arr[i] = text_arr[i].lower()
+        text = ''.join(text_arr)
         return text
 
-    def verseSplits(self, song_number):
+    def verse_splits(self, song_number):
         """
-        Because someone at Kingsway forgot to check the 1+2 RTF file,
-        some verses were not formatted correctly.
+        Because someone at Kingsway forgot to check the 1+2 RTF file, some verses were not formatted correctly.
+
+        :param song_number: The Song number
         """
         if song_number == 11:
             return 8

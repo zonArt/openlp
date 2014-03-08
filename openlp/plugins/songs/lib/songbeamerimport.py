@@ -40,6 +40,7 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
+
 class SongBeamerTypes(object):
     MarkTypes = {
         'Refrain': VerseType.tags[VerseType.Chorus],
@@ -110,8 +111,8 @@ class SongBeamerImport(SongImport):
             if self.stop_import_flag:
                 return
             self.set_defaults()
-            self.currentVerse = ''
-            self.currentVerseType = VerseType.tags[VerseType.Verse]
+            self.current_verse = ''
+            self.current_verse_type = VerseType.tags[VerseType.Verse]
             read_verses = False
             file_name = os.path.split(import_file)[1]
             if os.path.isfile(import_file):
@@ -132,39 +133,38 @@ class SongBeamerImport(SongImport):
                 if line.startswith('#') and not read_verses:
                     self.parseTags(line)
                 elif line.startswith('---'):
-                    if self.currentVerse:
-                        self.replaceHtmlTags()
-                        self.add_verse(self.currentVerse, self.currentVerseType)
-                        self.currentVerse = ''
-                        self.currentVerseType = VerseType.tags[VerseType.Verse]
+                    if self.current_verse:
+                        self.replace_html_tags()
+                        self.add_verse(self.current_verse, self.current_verse_type)
+                        self.current_verse = ''
+                        self.current_verse_type = VerseType.tags[VerseType.Verse]
                     read_verses = True
                     verse_start = True
                 elif read_verses:
                     if verse_start:
                         verse_start = False
-                        if not self.checkVerseMarks(line):
-                            self.currentVerse = line + '\n'
+                        if not self.check_verse_marks(line):
+                            self.current_verse = line + '\n'
                     else:
-                        self.currentVerse += line + '\n'
-            if self.currentVerse:
-                self.replaceHtmlTags()
-                self.add_verse(self.currentVerse, self.currentVerseType)
+                        self.current_verse += line + '\n'
+            if self.current_verse:
+                self.replace_html_tags()
+                self.add_verse(self.current_verse, self.current_verse_type)
             if not self.finish():
                 self.log_error(import_file)
 
-    def replaceHtmlTags(self):
+    def replace_html_tags(self):
         """
         This can be called to replace SongBeamer's specific (html) tags with OpenLP's specific (html) tags.
         """
         for pair in SongBeamerImport.HTML_TAG_PAIRS:
-            self.currentVerse = pair[0].sub(pair[1], self.currentVerse)
+            self.current_verse = pair[0].sub(pair[1], self.current_verse)
 
     def parseTags(self, line):
         """
         Parses a meta data line.
 
-        ``line``
-            The line in the file. It should consist of a tag and a value for this tag (unicode)::
+        :param line: The line in the file. It should consist of a tag and a value for this tag (unicode)::
 
                 u'#Title=Nearer my God to Thee'
         """
@@ -267,20 +267,19 @@ class SongBeamerImport(SongImport):
             # TODO: add the verse order.
             pass
 
-    def checkVerseMarks(self, line):
+    def check_verse_marks(self, line):
         """
         Check and add the verse's MarkType. Returns ``True`` if the given linE contains a correct verse mark otherwise
         ``False``.
 
-        ``line``
-            The line to check for marks (unicode).
+        :param line: The line to check for marks (unicode).
         """
         marks = line.split(' ')
         if len(marks) <= 2 and marks[0] in SongBeamerTypes.MarkTypes:
-            self.currentVerseType = SongBeamerTypes.MarkTypes[marks[0]]
+            self.current_verse_type = SongBeamerTypes.MarkTypes[marks[0]]
             if len(marks) == 2:
                 # If we have a digit, we append it to current_verse_type.
                 if marks[1].isdigit():
-                    self.currentVerseType += marks[1]
+                    self.current_verse_type += marks[1]
             return True
         return False

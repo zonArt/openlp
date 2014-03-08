@@ -89,13 +89,13 @@ class SongProImport(SongImport):
                 file_line = str(file_line, 'cp1252')
                 file_text = file_line.rstrip()
                 if file_text and file_text[0] == '#':
-                    self.processSection(tag, text.rstrip())
+                    self.process_section(tag, text.rstrip())
                     tag = file_text[1:]
                     text = ''
                 else:
                     text += file_line
 
-    def processSection(self, tag, text):
+    def process_section(self, tag, text):
         """
         Process a section of the song, i.e. title, verse etc.
         """

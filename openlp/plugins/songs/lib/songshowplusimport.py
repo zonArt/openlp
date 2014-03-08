@@ -141,8 +141,8 @@ class SongShowPlusImport(SongImport):
                     authors = self.decode(data).split(" / ")
                     for author in authors:
                         if author.find(",") !=-1:
-                            authorParts = author.split(", ")
-                            author = authorParts[1] + " " + authorParts[0]
+                            author_parts = author.split(", ")
+                            author = author_parts[1] + " " + author_parts[0]
                         self.parse_author(author)
                 elif block_key == COPYRIGHT:
                     self.add_copyright(self.decode(data))
@@ -180,6 +180,13 @@ class SongShowPlusImport(SongImport):
                 self.log_error(file)
 
     def to_openlp_verse_tag(self, verse_name, ignore_unique=False):
+        """
+        Handle OpenLP verse tags
+
+        :param verse_name: The verse name
+        :param ignore_unique: Ignore if unique
+        :return: The verse tags and verse number concatenated
+        """
         # Have we got any digits? If so, verse number is everything from the digits to the end (OpenLP does not have
         # concept of part verses, so just ignore any non integers on the end (including floats))
         match = re.match(r'(\D*)(\d+)', verse_name)

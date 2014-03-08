@@ -41,6 +41,7 @@ log = logging.getLogger(__name__)
 # Used to strip control chars (except 10=LF, 13=CR)
 CONTROL_CHARS_MAP = dict.fromkeys(list(range(10)) + [11, 12] + list(range(14,32)) + [127])
 
+
 class ZionWorxImport(SongImport):
     """
     The :class:`ZionWorxImport` class provides the ability to import songs
@@ -84,13 +85,13 @@ class ZionWorxImport(SongImport):
         """
         with open(self.import_source, 'rb') as songs_file:
             field_names = ['SongNum', 'Title1', 'Title2', 'Lyrics', 'Writer', 'Copyright', 'Keywords',
-                'DefaultStyle']
+                           'DefaultStyle']
             songs_reader = csv.DictReader(songs_file, field_names)
             try:
                 records = list(songs_reader)
             except csv.Error as e:
                 self.log_error(translate('SongsPlugin.ZionWorxImport', 'Error reading CSV file.'),
-                    translate('SongsPlugin.ZionWorxImport', 'Line %d: %s') % (songs_reader.line_num, e))
+                               translate('SongsPlugin.ZionWorxImport', 'Line %d: %s') % (songs_reader.line_num, e))
                 return
             num_records = len(records)
             log.info('%s records found in CSV file' % num_records)
@@ -108,7 +109,7 @@ class ZionWorxImport(SongImport):
                     lyrics = self._decode(record['Lyrics'])
                 except UnicodeDecodeError as e:
                     self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d' % index),
-                        translate('SongsPlugin.ZionWorxImport', 'Decoding error: %s') % e)
+                                   translate('SongsPlugin.ZionWorxImport', 'Decoding error: %s') % e)
                     continue
                 except TypeError as e:
                     self.log_error(translate(
@@ -126,12 +127,11 @@ class ZionWorxImport(SongImport):
                 title = self.title
                 if not self.finish():
                     self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
-                        + (': "' + title + '"' if title else ''))
+                                   + (': "' + title + '"' if title else ''))
 
     def _decode(self, str):
         """
-        Decodes CSV input to unicode, stripping all control characters (except
-        new lines).
+        Decodes CSV input to unicode, stripping all control characters (except new lines).
         """
         # This encoding choice seems OK. ZionWorx has no option for setting the
         # encoding for its songs, so we assume encoding is always the same.

@@ -271,8 +271,7 @@ class SongImport(QtCore.QObject):
     def check_complete(self):
         """
         Check the mandatory fields are entered (i.e. title and a verse)
-        Author not checked here, if no author then "Author unknown" is
-        automatically added
+        Author not checked here, if no author then "Author unknown" is automatically added
         """
         if not self.title or not self.verses:
             return False

@@ -97,21 +97,13 @@ class SongXML(object):
         """
         Add a verse to the ``<lyrics>`` tag.
 
-        ``type``
-            A string denoting the type of verse. Possible values are *v*, *c*, *b*, *p*, *i*, *e* and *o*. Any other
-            type is **not** allowed, this also includes translated types.
-
-        ``number``
-            An integer denoting the number of the item, for example: verse 1.
-
-        ``content``
-            The actual text of the verse to be stored.
-
-        ``lang``
-            The verse's language code (ISO-639). This is not required, but should be added if available.
+        :param type:  A string denoting the type of verse. Possible values are *v*, *c*, *b*, *p*, *i*, *e* and *o*.
+        Any other type is **not** allowed, this also includes translated types.
+        :param number: An integer denoting the number of the item, for example: verse 1.
+        :param content: The actual text of the verse to be stored.
+        :param lang:  The verse's language code (ISO-639). This is not required, but should be added if available.
         """
-        verse = etree.Element('verse', type=str(type),
-            label=str(number))
+        verse = etree.Element('verse', type=str(type), label=str(number))
         if lang:
             verse.set('lang', lang)
         verse.text = etree.CDATA(content)
@@ -121,16 +113,13 @@ class SongXML(object):
         """
         Extract our newly created XML song.
         """
-        return etree.tostring(self.song_xml, encoding='UTF-8',
-            xml_declaration=True)
+        return etree.tostring(self.song_xml, encoding='UTF-8', xml_declaration=True)
 
     def get_verses(self, xml):
         """
         Iterates through the verses in the XML and returns a list of verses and their attributes.
 
-        ``xml``
-            The XML of the song to be parsed.
-
+        :param xml: The XML of the song to be parsed.
         The returned list has the following format::
 
             [[{'type': 'v', 'label': '1'}, u"optional slide split 1[---]optional slide split 2"],
@@ -351,8 +340,7 @@ class OpenLyrics(object):
 
         The first unicode string are the start tags (for the next slide). The second unicode string are the end tags.
 
-        ``text``
-            The text to test. The text must **not** contain html tags, only OpenLP formatting tags are allowed::
+        :param text: The text to test. The text must **not** contain html tags, only OpenLP formatting tags are allowed::
 
                 {st}{r}Text text text
         """
@@ -378,12 +366,9 @@ class OpenLyrics(object):
         Create and save a song from OpenLyrics format xml to the database. Since we also export XML from external
         sources (e. g. OpenLyrics import), we cannot ensure, that it completely conforms to the OpenLyrics standard.
 
-        ``xml``
-            The XML to parse (unicode).
-
-        ``parse_and_temporary_save``
-            Switch to skip processing the whole song and storing the songs in the database with a temporary flag.
-            Defaults to ``False``.
+        :param xml: The XML to parse (unicode).
+        :param parse_and_temporary_save: Switch to skip processing the whole song and storing the songs in the database
+        with a temporary flag. Defaults to ``False``.
         """
         # No xml get out of here.
         if not xml:
@@ -418,6 +403,15 @@ class OpenLyrics(object):
         return song
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
+        """
+        Build an element
+
+        :param tag: A Tag
+        :param parent: Its parent
+        :param text: Some text to be added
+        :param label: And a label
+        :return:
+        """
         if label:
             element = etree.Element(tag, name=str(label))
         else:
@@ -430,6 +424,9 @@ class OpenLyrics(object):
     def _add_tag_to_formatting(self, tag_name, tags_element):
         """
         Add new formatting tag to the element ``<format>`` if the tag is not present yet.
+
+        :param tag_name: The tag_name
+        :param tags_element: Some tag elements
         """
         available_tags = FormattingTags.get_html_tags()
         start_tag = '{%s}' % tag_name
@@ -477,16 +474,16 @@ class OpenLyrics(object):
     def _extract_xml(self, xml):
         """
         Extract our newly created XML song.
+
+        :param xml: The XML
         """
-        return etree.tostring(xml, encoding='UTF-8',
-            xml_declaration=True)
+        return etree.tostring(xml, encoding='UTF-8', xml_declaration=True)
 
     def _text(self, element):
         """
         This returns the text of an element as unicode string.
 
-        ``element``
-            The element.
+        :param element: The element.
         """
         if element.text is not None:
             return str(element.text)
@@ -496,11 +493,8 @@ class OpenLyrics(object):
         """
         Adds the authors specified in the XML to the song.
 
-        ``properties``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param properties: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object
         """
         authors = []
         if hasattr(properties, 'authors'):
@@ -509,24 +503,20 @@ class OpenLyrics(object):
                 if display_name:
                     authors.append(display_name)
         for display_name in authors:
-            author = self.manager.get_object_filtered(Author,
-                Author.display_name == display_name)
+            author = self.manager.get_object_filtered(Author, Author.display_name == display_name)
             if author is None:
                 # We need to create a new author, as the author does not exist.
                 author = Author.populate(display_name=display_name,
-                    last_name=display_name.split(' ')[-1],
-                    first_name=' '.join(display_name.split(' ')[:-1]))
+                                         last_name=display_name.split(' ')[-1],
+                                         first_name=' '.join(display_name.split(' ')[:-1]))
             song.authors.append(author)
 
     def _process_cclinumber(self, properties, song):
         """
         Adds the CCLI number to the song.
 
-        ``properties``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param properties: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         if hasattr(properties, 'ccliNo'):
             song.ccli_number = self._text(properties.ccliNo)
@@ -535,11 +525,8 @@ class OpenLyrics(object):
         """
         Joins the comments specified in the XML and add it to the song.
 
-        ``properties``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param properties: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         if hasattr(properties, 'comments'):
             comments_list = []
@@ -553,11 +540,8 @@ class OpenLyrics(object):
         """
         Adds the copyright to the song.
 
-        ``properties``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param properties: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         if hasattr(properties, 'copyright'):
             song.copyright = self._text(properties.copyright)
@@ -566,6 +550,9 @@ class OpenLyrics(object):
         """
         Process the formatting tags from the song and either add missing tags temporary or permanently to the
         formatting tag list.
+
+        :param song_xml: The song XML
+        :param temporary: Is the song temporary?
         """
         if not hasattr(song_xml, 'format'):
             return
@@ -603,11 +590,9 @@ class OpenLyrics(object):
         Converts the xml text with mixed content to OpenLP representation. Chords are skipped and formatting tags are
         converted.
 
-        ``element``
-            The property object (lxml.etree.Element).
-
-        ``newlines``
-            The switch to enable/disable processing of line breaks <br/>. The <br/> is used since OpenLyrics 0.8.
+        :param element: The property object (lxml.etree.Element).
+        :param newlines: The switch to enable/disable processing of line breaks <br/>. The <br/> is used since
+        OpenLyrics 0.8.
         """
         text = ''
         use_endtag = True
@@ -655,8 +640,8 @@ class OpenLyrics(object):
         """
         Converts lyrics lines to OpenLP representation.
 
-        ``lines``
-            The lines object (lxml.objectify.ObjectifiedElement).
+        :param lines: The lines object (lxml.objectify.ObjectifiedElement).
+        :param version:
         """
         text = ''
         # Convert lxml.objectify to lxml.etree representation.
@@ -682,14 +667,9 @@ class OpenLyrics(object):
         """
         Processes the verses and search_lyrics for the song.
 
-        ``properties``
-            The properties object (lxml.objectify.ObjectifiedElement).
-
-        ``song_xml``
-            The objectified song (lxml.objectify.ObjectifiedElement).
-
-        ``song_obj``
-            The song object.
+        :param properties: The properties object (lxml.objectify.ObjectifiedElement).
+        :param song_xml: The objectified song (lxml.objectify.ObjectifiedElement).
+        :param song_obj: The song object.
         """
         sxml = SongXML()
         verses = {}
@@ -698,12 +678,12 @@ class OpenLyrics(object):
             lyrics = song_xml.lyrics
         except AttributeError:
             raise OpenLyricsError(OpenLyricsError.LyricsError, '<lyrics> tag is missing.',
-                translate('OpenLP.OpenLyricsImportError', '<lyrics> tag is missing.'))
+                                  translate('OpenLP.OpenLyricsImportError', '<lyrics> tag is missing.'))
         try:
             verse_list = lyrics.verse
         except AttributeError:
             raise OpenLyricsError(OpenLyricsError.VerseError, '<verse> tag is missing.',
-                translate('OpenLP.OpenLyricsImportError', '<verse> tag is missing.'))
+                                  translate('OpenLP.OpenLyricsImportError', '<verse> tag is missing.'))
         # Loop over the "verse" elements.
         for verse in verse_list:
             text = ''
@@ -712,8 +692,7 @@ class OpenLyrics(object):
                 if text:
                     text += '\n'
                 # Append text from "lines" element to verse text.
-                text += self._process_verse_lines(lines,
-                    version=song_xml.get('version'))
+                text += self._process_verse_lines(lines, version=song_xml.get('version'))
                 # Add an optional split to the verse text.
                 if lines.get('break') is not None:
                     text += '\n[---]'
@@ -749,11 +728,8 @@ class OpenLyrics(object):
         """
         Adds the song book and song number specified in the XML to the song.
 
-        ``properties``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param properties: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         song.song_book_id = None
         song.song_number = ''
@@ -775,11 +751,8 @@ class OpenLyrics(object):
         """
         Processes the titles specified in the song's XML.
 
-        ``properties``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param properties: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         for title in properties.titles.title:
             if not song.title:
@@ -792,11 +765,8 @@ class OpenLyrics(object):
         """
         Adds the topics to the song.
 
-        ``properties``
-            The property object (lxml.objectify.ObjectifiedElement).
-
-        ``song``
-            The song object.
+        :param properties: The property object (lxml.objectify.ObjectifiedElement).
+        :param song: The song object.
         """
         if hasattr(properties, 'themes'):
             for topic_text in properties.themes.theme:

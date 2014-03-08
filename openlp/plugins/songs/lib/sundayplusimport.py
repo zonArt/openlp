@@ -48,6 +48,7 @@ HOTKEY_TO_VERSE_TYPE = {
     '+': 'b',
     'Z': 'o'}
 
+
 class SundayPlusImport(SongImport):
     """
     Import Sunday Plus songs
@@ -68,10 +69,10 @@ class SundayPlusImport(SongImport):
             if self.stop_import_flag:
                 return
             song_file = open(filename)
-            self.doImportFile(song_file)
+            self.do_import_file(song_file)
             song_file.close()
 
-    def doImportFile(self, file):
+    def do_import_file(self, file):
         """
         Process the Sunday Plus file object.
         """
@@ -80,11 +81,18 @@ class SundayPlusImport(SongImport):
             self.log_error(file.name)
             return
         if not self.title:
-            self.title = self.titleFromFilename(file.name)
+            self.title = self.title_from_filename(file.name)
         if not self.finish():
             self.log_error(file.name)
 
     def parse(self, data, cell=False):
+        """
+        Process the records
+
+        :param data: The data to be processed
+        :param cell: ?
+        :return:
+        """
         if len(data) == 0 or data[0:1] != '[' or data[-1] != ']':
             self.log_error('File is malformed')
             return False
@@ -173,7 +181,13 @@ class SundayPlusImport(SongImport):
             i += 1
         return True
 
-    def titleFromFilename(self, filename):
+    def title_from_filename(self, filename):
+        """
+        Extract the title from the filename
+
+        :param filename: File name
+        :return:
+        """
         title = os.path.split(filename)[1]
         if title.endswith('.ptf'):
             title = title[:-4]
