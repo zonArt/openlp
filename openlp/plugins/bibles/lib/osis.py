@@ -84,8 +84,8 @@ class OSISBible(BibleDB):
         success = True
         last_chapter = 0
         match_count = 0
-        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
-            'Detecting encoding (this may take a few minutes)...'))
+        self.wizard.increment_progress_bar(
+            translate('BiblesPlugin.OsisImport', 'Detecting encoding (this may take a few minutes)...'))
         try:
             detect_file = open(self.filename, 'r')
             details = chardet.detect(detect_file.read(1048576))
@@ -101,7 +101,7 @@ class OSISBible(BibleDB):
             osis = codecs.open(self.filename, 'r', details['encoding'])
             repl = replacement
             language_id = False
-            # Decide if the bible propably contains only NT or AT and NT or
+            # Decide if the bible probably contains only NT or AT and NT or
             # AT, NT and Apocrypha
             if lines_in_file < 11500:
                 book_count = 27
@@ -154,10 +154,11 @@ class OSISBible(BibleDB):
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
-                        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport', 'Importing %s %s...',
-                            'Importing <book name> <chapter>...') % (book_details['name'], chapter))
+                        self.wizard.increment_progress_bar(
+                            translate('BiblesPlugin.OsisImport', 'Importing %s %s...',
+                                      'Importing <book name> <chapter>...') % (book_details['name'], chapter))
                         last_chapter = chapter
-                    # All of this rigmarol below is because the mod2osis tool from the Sword library embeds XML in the
+                    # All of this rigmarole below is because the mod2osis tool from the Sword library embeds XML in the
                     # OSIS but neglects to enclose the verse text (with XML) in <[CDATA[ ]]> tags.
                     verse_text = self.note_regex.sub('', verse_text)
                     verse_text = self.title_regex.sub('', verse_text)
