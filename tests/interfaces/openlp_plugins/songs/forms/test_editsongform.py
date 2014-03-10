@@ -3,7 +3,7 @@ Package to test the openlp.plugins.songs.forms.editsongform package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from openlp.core.common import Registry
 from openlp.plugins.songs.forms.editsongform import EditSongForm
@@ -20,7 +20,11 @@ class TestEditSongForm(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
         Registry().register('theme_manager', MagicMock())
@@ -32,7 +36,6 @@ class TestEditSongForm(TestCase):
         """
         del self.form
         del self.main_window
-        del self.app
 
     def ui_defaults_test(self):
         """

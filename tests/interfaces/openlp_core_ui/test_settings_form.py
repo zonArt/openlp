@@ -31,7 +31,11 @@ class TestSettingsForm(TestCase):
         self.dummy2 = MagicMock()
         self.dummy3 = MagicMock()
         self.desktop = MagicMock()
-        self.app = QtGui.QApplication([])
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
         self.desktop.primaryScreen.return_value = SCREEN['primary']
         self.desktop.screenCount.return_value = SCREEN['number']
         self.desktop.screenGeometry.return_value = SCREEN['size']
@@ -44,7 +48,6 @@ class TestSettingsForm(TestCase):
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         del self.form
-        del self.app
 
     def basic_cancel_test(self):
         """
