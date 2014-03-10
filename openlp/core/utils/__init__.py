@@ -426,17 +426,14 @@ def get_locale_key(string):
         The corresponding string.
     """
     string = string.lower()
-    # For Python 3 on platforms other than Windows ICU is not necessary. In those cases locale.strxfrm(str) can be used.
-    if os.name == 'nt':
-        global ICU_COLLATOR
-        if ICU_COLLATOR is None:
-            import icu
-            from .languagemanager import LanguageManager
-            language = LanguageManager.get_language()
-            icu_locale = icu.Locale(language)
-            ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
-        return ICU_COLLATOR.getSortKey(string)
-    return locale.strxfrm(string).encode()
+    global ICU_COLLATOR
+    if ICU_COLLATOR is None:
+        import icu
+        from .languagemanager import LanguageManager
+        language = LanguageManager.get_language()
+        icu_locale = icu.Locale(language)
+        ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
+    return ICU_COLLATOR.getSortKey(string)
 
 
 def get_natural_key(string):
