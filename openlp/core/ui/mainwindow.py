@@ -119,8 +119,10 @@ class Ui_MainWindow(object):
         self.recent_files_menu = QtGui.QMenu(self.file_menu)
         self.recent_files_menu.setObjectName('recentFilesMenu')
         self.file_import_menu = QtGui.QMenu(self.file_menu)
+        self.file_import_menu.setIcon(build_icon(u':/general/general_import.png'))
         self.file_import_menu.setObjectName('file_import_menu')
         self.file_export_menu = QtGui.QMenu(self.file_menu)
+        self.file_export_menu.setIcon(build_icon(u':/general/general_export.png'))
         self.file_export_menu.setObjectName('file_export_menu')
         # View Menu
         self.view_menu = QtGui.QMenu(self.menu_bar)
@@ -230,7 +232,7 @@ class Ui_MainWindow(object):
             main_window, 'modeDefaultItem', checked=False, category=UiStrings().ViewMode, can_shortcuts=True)
         self.mode_setup_item = create_action(main_window, 'modeSetupItem', checked=False, category=UiStrings().ViewMode,
                                              can_shortcuts=True)
-        self.mode_live_item = create_action(main_window, 'modeLiveItem', checked=True, category=UiStrings().ViewMode, 
+        self.mode_live_item = create_action(main_window, 'modeLiveItem', checked=True, category=UiStrings().ViewMode,
                                             can_shortcuts=True)
         self.mode_group = QtGui.QActionGroup(main_window)
         self.mode_group.addAction(self.mode_default_item)
@@ -239,10 +241,10 @@ class Ui_MainWindow(object):
         self.mode_default_item.setChecked(True)
         action_list.add_category(UiStrings().Tools, CategoryOrder.standard_menu)
         self.tools_add_tool_item = create_action(main_window,
-                                                 'toolsAddToolItem', icon=':/tools/tools_add.png', 
+                                                 'toolsAddToolItem', icon=':/tools/tools_add.png',
                                                  category=UiStrings().Tools, can_shortcuts=True)
         self.tools_open_data_folder = create_action(main_window,
-                                                    'toolsOpenDataFolder', icon=':/general/general_open.png', 
+                                                    'toolsOpenDataFolder', icon=':/general/general_open.png',
                                                     category=UiStrings().Tools, can_shortcuts=True)
         self.tools_first_time_wizard = create_action(main_window,
                                                      'toolsFirstTimeWizard', icon=':/general/general_revert.png',
@@ -268,24 +270,24 @@ class Ui_MainWindow(object):
             language_item = create_action(main_window, key, checked=qm_list[key] == saved_language)
             add_actions(self.language_group, [language_item])
         self.settings_shortcuts_item = create_action(main_window, 'settingsShortcutsItem',
-                                                     icon=':/system/system_configure_shortcuts.png', 
+                                                     icon=':/system/system_configure_shortcuts.png',
                                                      category=UiStrings().Settings, can_shortcuts=True)
         # Formatting Tags were also known as display tags.
         self.formatting_tag_item = create_action(main_window, 'displayTagItem',
-                                                 icon=':/system/tag_editor.png', category=UiStrings().Settings, 
+                                                 icon=':/system/tag_editor.png', category=UiStrings().Settings,
                                                  can_shortcuts=True)
         self.settings_configure_item = create_action(main_window, 'settingsConfigureItem',
-                                                     icon=':/system/system_settings.png', can_shortcuts=True, 
+                                                     icon=':/system/system_settings.png', can_shortcuts=True,
                                                      category=UiStrings().Settings)
         # Give QT Extra Hint that this is the Preferences Menu Item
         self.settings_configure_item.setMenuRole(QtGui.QAction.PreferencesRole)
-        self.settings_import_item = create_action(main_window, 'settingsImportItem', 
+        self.settings_import_item = create_action(main_window, 'settingsImportItem',
                                                   category=UiStrings().Import, can_shortcuts=True)
-        self.settings_export_item = create_action(main_window, 'settingsExportItem', 
+        self.settings_export_item = create_action(main_window, 'settingsExportItem',
                                                   category=UiStrings().Export, can_shortcuts=True)
         action_list.add_category(UiStrings().Help, CategoryOrder.standard_menu)
         self.about_item = create_action(main_window, 'aboutItem', icon=':/system/system_about.png',
-                                        can_shortcuts=True, category=UiStrings().Help, 
+                                        can_shortcuts=True, category=UiStrings().Help,
                                         triggers=self.on_about_item_clicked)
         # Give QT Extra Hint that this is an About Menu Item
         self.about_item.setMenuRole(QtGui.QAction.AboutRole)
@@ -302,13 +304,13 @@ class Ui_MainWindow(object):
         self.web_site_item = create_action(main_window, 'webSiteItem', can_shortcuts=True, category=UiStrings().Help)
         # Shortcuts not connected to buttons or menu entries.
         self.search_shortcut_action = create_action(main_window,
-                                                    'searchShortcut', can_shortcuts=True, 
+                                                    'searchShortcut', can_shortcuts=True,
                                                     category=translate('OpenLP.MainWindow', 'General'),
                                                     triggers=self.on_search_shortcut_triggered)
-        add_actions(self.file_import_menu, (self.settings_import_item, None, self.import_theme_item,
-                    self.import_language_item))
-        add_actions(self.file_export_menu, (self.settings_export_item, None, self.export_theme_item,
-                    self.export_language_item))
+        add_actions(self.file_import_menu, (self.settings_import_item, self.import_theme_item,
+                    self.import_language_item, None))
+        add_actions(self.file_export_menu, (self.settings_export_item, self.export_theme_item,
+                    self.export_language_item, None))
         add_actions(self.file_menu, (self.file_new_item, self.file_open_item,
                     self.file_save_item, self.file_save_as_item, self.recent_files_menu.menuAction(), None,
                     self.file_import_menu.menuAction(), self.file_export_menu.menuAction(), None,
@@ -651,7 +653,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                                                      'Time Wizard?\n\nRe-running this wizard may make changes to your '
                                                      'current OpenLP configuration and possibly add songs to your '
                                                      '#existing songs list and change your default theme.'),
-                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | 
+                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                              QtGui.QMessageBox.No),
                                            QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
