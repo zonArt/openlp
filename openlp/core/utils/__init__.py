@@ -426,15 +426,18 @@ def get_locale_key(string):
         The corresponding string.
     """
     string = string.lower()
+    # ICU is the prefered way to handle locale sort key, we fallback to locale.strxfrm which will work in most cases.
     global ICU_COLLATOR
-    if ICU_COLLATOR is None:
-        import icu
-        from .languagemanager import LanguageManager
-        language = LanguageManager.get_language()
-        icu_locale = icu.Locale(language)
-        ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
-    return ICU_COLLATOR.getSortKey(string)
-
+    try:
+        if ICU_COLLATOR is None:
+            import icu
+            from .languagemanager import LanguageManager
+            language = LanguageManager.get_language()
+            icu_locale = icu.Locale(language)
+            ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
+        return ICU_COLLATOR.getSortKey(string)
+    except:
+        return locale.strxfrm(string).encode()
 
 def get_natural_key(string):
     """
