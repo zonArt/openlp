@@ -31,6 +31,7 @@ The :mod:`~openlp.plugins.songs.forms.songselectform` module contains the GUI fo
 """
 
 import logging
+import os
 from time import sleep
 
 from PyQt4 import QtCore, QtGui
@@ -144,28 +145,21 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
             progress_dialog.setValue(1)
             progress_dialog.show()
             progress_dialog.setFocus()
-            self.main_window.application.process_events()
+            self.application.process_events()
             sleep(0.5)
-            self.main_window.application.process_events()
+            self.application.process_events()
             self.song_select_importer.logout()
-            self.main_window.application.process_events()
+            self.application.process_events()
             progress_dialog.setValue(2)
         return QtGui.QDialog.done(self, r)
 
-    def _get_main_window(self):
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
     def _update_login_progress(self):
         self.login_progress_bar.setValue(self.login_progress_bar.value() + 1)
-        self.main_window.application.process_events()
+        self.application.process_events()
 
     def _update_song_progress(self):
         self.song_progress_bar.setValue(self.song_progress_bar.value() + 1)
-        self.main_window.application.process_events()
+        self.application.process_events()
 
     def _view_song(self, current_item):
         if not current_item:
@@ -191,7 +185,7 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         for key, value in current_item.items():
             song[key] = value
         self.song_progress_bar.setValue(0)
-        self.main_window.application.process_events()
+        self.application.process_events()
         # Get the full song
         song = self.song_select_importer.get_song(song, self._update_song_progress)
         # Update the UI
@@ -219,7 +213,7 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         self.song_progress_bar.setVisible(False)
         self.song_progress_bar.setValue(0)
         self.song = song
-        self.main_window.application.process_events()
+        self.application.process_events()
 
     def on_save_password_checkbox_toggled(self, checked):
         """
@@ -248,7 +242,7 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         self.login_spacer.setVisible(False)
         self.login_progress_bar.setValue(0)
         self.login_progress_bar.setVisible(True)
-        self.main_window.application.process_events()
+        self.application.process_events()
         # Log the user in
         if not self.song_select_importer.login(
                 self.username_edit.text(), self.password_edit.text(), self._update_login_progress):
@@ -271,12 +265,13 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         self.login_spacer.setVisible(True)
         self.login_button.setEnabled(True)
         self.search_combobox.setFocus()
-        self.main_window.application.process_events()
+        self.application.process_events()
 
     def on_search_button_clicked(self):
         """
         Run a search on SongSelect.
         """
+        # Set up UI components
         self.view_button.setEnabled(False)
         self.search_button.setEnabled(False)
         self.search_progress_bar.setMinimum(0)
@@ -285,11 +280,10 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         self.search_progress_bar.setVisible(True)
         self.search_results_widget.clear()
         self.result_count_label.setText(translate('SongsPlugin.SongSelectForm', 'Found %s song(s)') % self.song_count)
-        self.main_window.application.process_events()
+        self.application.process_events()
         self.song_count = 0
         search_history = self.search_combobox.getItems()
         Settings().setValue(self.plugin.settings_section + '/songselect searches', '|'.join(search_history))
-
         # Create thread and run search
         self.thread = QtCore.QThread()
         self.worker = SearchWorker(self.song_select_importer, self.search_combobox.currentText())
@@ -328,10 +322,10 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
 
         :param songs:
         """
-        self.main_window.application.process_events()
+        self.application.process_events()
         self.search_progress_bar.setVisible(False)
         self.search_button.setEnabled(True)
-        self.main_window.application.process_events()
+        self.application.process_events()
 
     def on_search_results_widget_selection_changed(self):
         """
@@ -376,5 +370,18 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         if question_dialog.exec_() == QtGui.QMessageBox.Yes:
             self.on_back_button_clicked()
         else:
-            self.main_window.application.process_events()
+            self.application.process_events()
             self.done(QtGui.QDialog.Accepted)
+
+    @property
+    def application(self):
+        """
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
+        """
+        if os.name == 'nt':
+            return Registry().get('application')
+        else:
+            if not hasattr(self, '_application'):
+                self._application = Registry().get('application')
+            return self._application
