@@ -250,19 +250,10 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
     This is the next generation über-awesome function that takes a person's typed in string and converts it to a list
     of references to be queried from the Bible database files.
 
-    ``reference``
-        A string. The Bible reference to parse.
-
-    ``bible``
-        A object. The Bible database object.
-
-    ``language_selection``
-        An int. The language selection the user has choosen in settings section.
-
-    ``book_ref_id``
-        A string. The book reference id.
-
-    Returns ``None`` or a reference list.
+    :param reference: A string. The Bible reference to parse.
+    :param bible:  A object. The Bible database object.
+    :param language_selection:  An int. The language selection the user has chosen in settings section.
+    :param book_ref_id: A string. The book reference id.
 
     The reference list is a list of tuples, with each tuple structured like this::
 
