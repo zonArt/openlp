@@ -48,6 +48,7 @@ log = logging.getLogger(__name__)
 
 RESERVED_CHARACTERS = '\\.^$*+?{}[]()'
 
+
 class BibleMeta(BaseModel):
     """
     Bible Meta Data
@@ -117,9 +118,8 @@ def init_schema(url):
 
 class BibleDB(QtCore.QObject, Manager):
     """
-    This class represents a database-bound Bible. It is used as a base class
-    for all the custom importers, so that the can implement their own import
-    methods, but benefit from the database methods in here via inheritance,
+    This class represents a database-bound Bible. It is used as a base class for all the custom importers, so that
+    the can implement their own import methods, but benefit from the database methods in here via inheritance,
     rather than depending on yet another object.
     """
     log.info('BibleDB loaded')
@@ -129,14 +129,13 @@ class BibleDB(QtCore.QObject, Manager):
         The constructor loads up the database and creates and initialises the
         tables if the database doesn't exist.
 
-        **Required keyword arguments:**
+        :param parent:
+        :param kwargs:
+            ``path``
+                The path to the bible database file.
 
-        ``path``
-            The path to the bible database file.
-
-        ``name``
-            The name of the database. This is also used as the file name for
-            SQLite databases.
+            ``name``
+                The name of the database. This is also used as the file name for SQLite databases.
         """
         log.info('BibleDB loaded')
         QtCore.QObject.__init__(self)
@@ -178,9 +177,8 @@ class BibleDB(QtCore.QObject, Manager):
 
     def register(self, wizard):
         """
-        This method basically just initialialises the database. It is called
-        from the Bible Manager when a Bible is imported. Descendant classes
-        may want to override this method to supply their own custom
+        This method basically just initialises the database. It is called from the Bible Manager when a Bible is
+        imported. Descendant classes may want to override this method to supply their own custom
         initialisation as well.
 
         :param wizard: The actual Qt wizard form.
@@ -422,13 +420,11 @@ class BibleDB(QtCore.QObject, Manager):
         log.debug('BibleDB.verse_search("%s")', text)
         verses = self.session.query(Verse)
         if text.find(',') > -1:
-            keywords = \
-                ['%%%s%%' % keyword.strip() for keyword in text.split(',')]
+            keywords = ['%%%s%%' % keyword.strip() for keyword in text.split(',')]
             or_clause = [Verse.text.like(keyword) for keyword in keywords]
             verses = verses.filter(or_(*or_clause))
         else:
-            keywords = \
-                ['%%%s%%' % keyword.strip() for keyword in text.split(' ')]
+            keywords = ['%%%s%%' % keyword.strip() for keyword in text.split(' ')]
             for keyword in keywords:
                 verses = verses.filter(Verse.text.like(keyword))
         verses = verses.all()

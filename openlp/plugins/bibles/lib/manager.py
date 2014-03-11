@@ -58,8 +58,7 @@ class BibleFormat(object):
         """
         Return the appropriate implementation class.
 
-        ``format``
-            The Bible format.
+        :param format: The Bible format.
         """
         if format == BibleFormat.OSIS:
             return OSISBible
@@ -93,9 +92,8 @@ class BibleManager(object):
 
     def __init__(self, parent):
         """
-        Finds all the bibles defined for the system and creates an interface
-        object for each bible containing connection information. Throws
-        Exception if no Bibles are found.
+        Finds all the bibles defined for the system and creates an interface object for each bible containing
+        connection information. Throws Exception if no Bibles are found.
 
         Init confirms the bible exists and stores the database path.
         """
@@ -113,9 +111,8 @@ class BibleManager(object):
 
     def reload_bibles(self):
         """
-        Reloads the Bibles from the available Bible databases on disk. If a web
-        Bible is encountered, an instance of HTTPBible is loaded instead of the
-        BibleDB class.
+        Reloads the Bibles from the available Bible databases on disk. If a web Bible is encountered, an instance
+        of HTTPBible is loaded instead of the BibleDB class.
         """
         log.debug('Reload bibles')
         files = AppLocation.get_files(self.settings_section, self.suffix)
@@ -276,9 +273,9 @@ class BibleManager(object):
                 )
             return None
         language_selection = self.get_language_selection(bible)
-        reflist = parse_reference(verse_text, self.db_cache[bible], language_selection, book_ref_id)
-        if reflist:
-            return self.db_cache[bible].get_verses(reflist, show_error)
+        ref_list = parse_reference(verse_text, self.db_cache[bible], language_selection, book_ref_id)
+        if ref_list:
+            return self.db_cache[bible].get_verses(ref_list, show_error)
         else:
             if show_error:
                 reference_separators = {
@@ -343,10 +340,10 @@ class BibleManager(object):
             return None
         # Check if the bible or second_bible is a web bible.
         web_bible = self.db_cache[bible].get_object(BibleMeta, 'download_source')
-        second_webbible = ''
+        second_web_bible = ''
         if second_bible:
-            second_webbible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
-        if web_bible or second_webbible:
+            second_web_bible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
+        if web_bible or second_web_bible:
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
                 translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.')
