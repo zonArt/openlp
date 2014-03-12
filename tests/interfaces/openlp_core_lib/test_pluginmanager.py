@@ -23,6 +23,7 @@ class TestPluginManager(TestCase):
         """
         Some pre-test setup required.
         """
+        Settings.setDefaultFormat(Settings.IniFormat)
         fd, self.ini_file = mkstemp('.ini')
         self.temp_dir = mkdtemp('openlp')
         Settings().set_filename(self.ini_file)
@@ -38,7 +39,7 @@ class TestPluginManager(TestCase):
         del self.main_window
         Settings().remove('advanced/data path')
         shutil.rmtree(self.temp_dir)
-        os.unlink(self.ini_file)
+        os.unlink(Settings().fileName())
 
     def find_plugins_test(self):
         """

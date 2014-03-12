@@ -48,6 +48,7 @@ class TestThemeManager(TestCase):
         """
         Create the UI
         """
+        Settings.setDefaultFormat(Settings.IniFormat)
         fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.app = QtGui.QApplication([])
@@ -58,7 +59,6 @@ class TestThemeManager(TestCase):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        os.unlink(self.ini_file)
         os.unlink(Settings().fileName())
         del self.app
 

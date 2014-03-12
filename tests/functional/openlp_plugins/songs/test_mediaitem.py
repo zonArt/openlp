@@ -28,6 +28,7 @@ class TestMediaItem(TestCase):
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
             self.media_item = SongMediaItem(None, MagicMock())
 
+        Settings.setDefaultFormat(Settings.IniFormat)
         fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
@@ -40,7 +41,6 @@ class TestMediaItem(TestCase):
         del self.application
         # Not all tests use settings!
         try:
-            os.unlink(self.ini_file)
             os.unlink(Settings().fileName())
         except Exception:
             pass

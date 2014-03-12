@@ -59,7 +59,7 @@ class TestActionList(TestCase):
         Clean up
         """
         self.settings.endGroup()
-        os.unlink(self.ini_file)
+        os.unlink(Settings().fileName())
 
     def test_add_action_same_parent(self):
         """
