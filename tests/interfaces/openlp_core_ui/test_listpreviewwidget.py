@@ -4,7 +4,7 @@
 
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from openlp.core.common import Registry
 from openlp.core.lib import ServiceItem
@@ -20,7 +20,11 @@ class TestListPreviewWidget(TestCase):
         Create the UI.
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
         self.main_window = QtGui.QMainWindow()
         self.image = QtGui.QImage(1, 1, QtGui.QImage.Format_RGB32)
         self.image_manager = MagicMock()
@@ -34,7 +38,6 @@ class TestListPreviewWidget(TestCase):
         """
         del self.preview_widget
         del self.main_window
-        del self.app
 
     def initial_slide_count_test(self):
         """
