@@ -33,7 +33,7 @@ import os
 from unittest import TestCase
 from tempfile import mkstemp
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from openlp.core.common import Registry, Settings
 from openlp.core.ui import ThemeManager
@@ -50,7 +50,11 @@ class TestThemeManager(TestCase):
         """
         fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
-        self.app = QtGui.QApplication([])
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
         Registry.create()
         self.theme_manager = ThemeManager()
 
@@ -60,7 +64,6 @@ class TestThemeManager(TestCase):
         """
         os.unlink(self.ini_file)
         os.unlink(Settings().fileName())
-        del self.app
 
     def initialise_test(self):
         """
