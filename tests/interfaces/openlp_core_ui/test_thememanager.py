@@ -31,8 +31,6 @@ Interface tests to test the themeManager class and related methods.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui, QtCore
-
 from openlp.core.common import Registry, Settings
 from openlp.core.ui import ThemeManager
 from tests.functional import patch, MagicMock
@@ -49,11 +47,6 @@ class TestThemeManager(TestCase, TestMixin):
         """
         self.build_settings()
         self.get_application()
-        old_app_instance = QtCore.QCoreApplication.instance()
-        if old_app_instance is None:
-            self.app = QtGui.QApplication([])
-        else:
-            self.app = old_app_instance
         Registry.create()
         self.theme_manager = ThemeManager()
 
@@ -72,7 +65,7 @@ class TestThemeManager(TestCase, TestMixin):
         self.theme_manager.load_first_time_themes = MagicMock()
         Settings().setValue('themes/global theme', 'my_theme')
 
-        # WHEN: the initialistion is run
+        # WHEN: the initialisation is run
         self.theme_manager.bootstrap_initialise()
 
         # THEN:
