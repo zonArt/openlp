@@ -49,6 +49,7 @@ class TestActionList(TestCase):
         Prepare the tests
         """
         self.action_list = ActionList.get_instance()
+        Settings.setDefaultFormat(Settings.IniFormat)
         self.settings = Settings()
         fd, self.ini_file = mkstemp('.ini')
         self.settings.set_filename(self.ini_file)
@@ -59,7 +60,7 @@ class TestActionList(TestCase):
         Clean up
         """
         self.settings.endGroup()
-        os.unlink(self.ini_file)
+        os.unlink(Settings().fileName())
 
     def test_add_action_same_parent(self):
         """

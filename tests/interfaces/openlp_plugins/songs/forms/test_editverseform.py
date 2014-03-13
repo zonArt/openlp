@@ -19,7 +19,11 @@ class TestEditVerseForm(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
         self.form = EditVerseForm()
@@ -30,7 +34,6 @@ class TestEditVerseForm(TestCase):
         """
         del self.form
         del self.main_window
-        del self.app
 
     def ui_defaults_test(self):
         """
