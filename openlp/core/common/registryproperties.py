@@ -95,7 +95,7 @@ class RegistryProperties(object):
 
     def _get_preview_controller(self):
         """
-        Adds the live controller to the class dynamically
+        Adds the preview controller to the class dynamically
         """
         if not hasattr(self, '_preview_controller') or not self._preview_controller:
             self._preview_controller = Registry().get('preview_controller')

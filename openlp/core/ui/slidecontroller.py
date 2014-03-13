@@ -102,7 +102,7 @@ class DisplayController(QtGui.QWidget):
         Registry().execute('%s' % sender, [controller, args])
 
 
-class SlideController(RegistryProperties, DisplayController):
+class SlideController(DisplayController, RegistryProperties):
     """
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.

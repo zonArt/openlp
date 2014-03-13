@@ -460,7 +460,7 @@ class Ui_MainWindow(object):
         self.mode_live_item.setStatusTip(translate('OpenLP.MainWindow', 'Set the view mode to Live.'))
 
 
-class MainWindow(RegistryProperties, QtGui.QMainWindow, Ui_MainWindow):
+class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
     """
     The main window.
     """
