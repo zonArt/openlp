@@ -41,6 +41,7 @@ from tests.functional import patch, MagicMock
 TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'songshowplussongs'))
 
+
 class TestSongShowPlusFileImport(SongImportTestHelper):
     def __init__(self, *args, **kwargs):
         self.importer_class_name = 'SongShowPlusImport'
@@ -48,10 +49,13 @@ class TestSongShowPlusFileImport(SongImportTestHelper):
         super(TestSongShowPlusFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
-        test_import = self.file_import(os.path.join(TEST_PATH, 'Amazing Grace.sbsong'),
-            self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
-        test_import = self.file_import(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.sbsong'),
-            self.load_external_result_data(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.json')))
+        """
+        Test that loading a SongShow Plus file works correctly on various files
+        """
+        self.file_import(os.path.join(TEST_PATH, 'Amazing Grace.sbsong'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
+        self.file_import(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.sbsong'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.json')))
 
 
 class TestSongShowPlusImport(TestCase):

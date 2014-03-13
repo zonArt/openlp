@@ -61,6 +61,7 @@ class TestRouter(TestCase):
         """
         Create the UI
         """
+        Settings.setDefaultFormat(Settings.IniFormat)
         self.fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
@@ -73,7 +74,7 @@ class TestRouter(TestCase):
         """
         del self.application
         os.close(self.fd)
-        os.unlink(self.ini_file)
+        os.unlink(Settings().fileName())
 
     def password_encrypter_test(self):
         """

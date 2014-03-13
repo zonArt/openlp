@@ -7,7 +7,7 @@ import shutil
 from tempfile import mkstemp, mkdtemp
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from openlp.core.common import Registry, Settings
 from openlp.core.lib.pluginmanager import PluginManager
@@ -23,22 +23,26 @@ class TestPluginManager(TestCase):
         """
         Some pre-test setup required.
         """
+        Settings.setDefaultFormat(Settings.IniFormat)
         fd, self.ini_file = mkstemp('.ini')
         self.temp_dir = mkdtemp('openlp')
         Settings().set_filename(self.ini_file)
         Settings().setValue('advanced/data path', self.temp_dir)
         Registry.create()
         Registry().register('service_list', MagicMock())
-        self.app = QtGui.QApplication([])
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
 
     def tearDown(self):
-        del self.app
         del self.main_window
         Settings().remove('advanced/data path')
         shutil.rmtree(self.temp_dir)
-        os.unlink(self.ini_file)
+        os.unlink(Settings().fileName())
 
     def find_plugins_test(self):
         """

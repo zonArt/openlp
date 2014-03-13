@@ -55,6 +55,7 @@ class TestPdfController(TestCase):
         """
         Set up the components need for all tests.
         """
+        Settings.setDefaultFormat(Settings.IniFormat)
         self.fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
@@ -69,7 +70,7 @@ class TestPdfController(TestCase):
         """
         del self.application
         try:
-            os.unlink(self.ini_file)
+            os.unlink(Settings().fileName())
             shutil.rmtree(self.thumbnail_folder)
             shutil.rmtree(self.temp_folder)
         except OSError:

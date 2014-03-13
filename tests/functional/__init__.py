@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+Base directory for tests
+"""
 import sip
 sip.setapi('QDate', 2)
 sip.setapi('QDateTime', 2)
@@ -11,9 +15,11 @@ import sys
 from PyQt4 import QtGui
 
 if sys.version_info[1] >= 3:
-    from unittest.mock import MagicMock, patch, mock_open
+    from unittest.mock import MagicMock, patch, mock_open, call
 else:
-    from mock import MagicMock, patch, mock_open
+    from mock import MagicMock, patch, mock_open, call
 
 # Only one QApplication can be created. Use QtGui.QApplication.instance() when you need to "create" a  QApplication.
 application = QtGui.QApplication([])
+
+__all__ = ['MagicMock', 'patch', 'mock_open', 'call', 'application']
