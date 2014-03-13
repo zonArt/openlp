@@ -29,6 +29,7 @@
 """
 Functional tests to test the AppLocation class and related methods.
 """
+import os
 from unittest import TestCase
 
 from openlp.core.utils import clean_filename, get_filesystem_encoding, get_locale_key, \
@@ -140,8 +141,12 @@ class TestUtils(TestCase):
         Test the split_filename() function with a path to a file
         """
         # GIVEN: A path to a file.
-        file_path = '/home/user/myfile.txt'
-        wanted_result = ('/home/user', 'myfile.txt')
+        if os.name == 'nt':
+            file_path = 'C:\\home\\user\\myfile.txt'
+            wanted_result = ('C:\\home\\user', 'myfile.txt')
+        else:
+            file_path = '/home/user/myfile.txt'
+            wanted_result = ('/home/user', 'myfile.txt')
         with patch('openlp.core.utils.os.path.isfile') as mocked_is_file:
             mocked_is_file.return_value = True
 
@@ -156,8 +161,12 @@ class TestUtils(TestCase):
         Test the split_filename() function with a path to a directory
         """
         # GIVEN: A path to a dir.
-        file_path = '/home/user/mydir'
-        wanted_result = ('/home/user/mydir', '')
+        if os.name == 'nt':
+            file_path = 'C:\\home\\user\\mydir'
+            wanted_result = ('C:\\home\\user\\mydir', '')
+        else:
+            file_path = '/home/user/mydir'
+            wanted_result = ('/home/user/mydir', '')
         with patch('openlp.core.utils.os.path.isfile') as mocked_is_file:
             mocked_is_file.return_value = False
 

@@ -179,16 +179,18 @@ class TestServiceItem(TestCase):
         # new layout of service item. The layout use in serviceitem_image_2.osd is actually invalid now.
         self.assertTrue(service_item.is_valid, 'The first service item should be valid')
         self.assertTrue(service_item2.is_valid, 'The second service item should be valid')
-        self.assertEqual(test_file1, service_item.get_rendered_frame(0),
-                         'The first frame should match the path to the image')
-        self.assertEqual(test_file2, service_item2.get_rendered_frame(0),
-                         'The Second frame should match the path to the image')
-        self.assertEqual(frame_array1, service_item.get_frames()[0], 'The return should match the frame array1')
-        self.assertEqual(frame_array2, service_item2.get_frames()[0], 'The return should match the frame array2')
-        self.assertEqual(test_file1, service_item.get_frame_path(0),
-                         'The frame path should match the full path to the image')
-        self.assertEqual(test_file2, service_item2.get_frame_path(0),
-                         'The frame path should match the full path to the image')
+        # These test will fail on windows due to the difference in folder seperators
+        if os.name != 'nt':
+            self.assertEqual(test_file1, service_item.get_rendered_frame(0),
+                             'The first frame should match the path to the image')
+            self.assertEqual(test_file2, service_item2.get_rendered_frame(0),
+                             'The Second frame should match the path to the image')
+            self.assertEqual(frame_array1, service_item.get_frames()[0], 'The return should match the frame array1')
+            self.assertEqual(frame_array2, service_item2.get_frames()[0], 'The return should match the frame array2')
+            self.assertEqual(test_file1, service_item.get_frame_path(0),
+                             'The frame path should match the full path to the image')
+            self.assertEqual(test_file2, service_item2.get_frame_path(0),
+                             'The frame path should match the full path to the image')
         self.assertEqual(image_name1, service_item.get_frame_title(0),
                          'The 1st frame title should match the image name')
         self.assertEqual(image_name2, service_item2.get_frame_title(0),
