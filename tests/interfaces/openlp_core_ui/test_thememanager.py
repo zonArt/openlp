@@ -29,18 +29,17 @@
 """
 Interface tests to test the themeManager class and related methods.
 """
-import os
 from unittest import TestCase
-from tempfile import mkstemp
 
 from PyQt4 import QtGui, QtCore
 
 from openlp.core.common import Registry, Settings
 from openlp.core.ui import ThemeManager
 from tests.functional import patch, MagicMock
+from tests.helpers.testmixin import TestMixin
 
 
-class TestThemeManager(TestCase):
+class TestThemeManager(TestCase, TestMixin):
     """
     Test the functions in the ThemeManager module
     """
@@ -48,9 +47,8 @@ class TestThemeManager(TestCase):
         """
         Create the UI
         """
-        Settings.setDefaultFormat(Settings.IniFormat)
-        fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
+        self.build_settings()
+        self.get_application()
         old_app_instance = QtCore.QCoreApplication.instance()
         if old_app_instance is None:
             self.app = QtGui.QApplication([])
@@ -63,7 +61,7 @@ class TestThemeManager(TestCase):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        os.unlink(Settings().fileName())
+        self.destroy_settings()
 
     def initialise_test(self):
         """
