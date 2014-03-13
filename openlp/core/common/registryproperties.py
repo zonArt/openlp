@@ -39,7 +39,8 @@ class RegistryProperties(object):
     This adds registry components to classes to use at run time.
     """
 
-    def _get_application(self):
+    @property
+    def application(self):
         """
         Adds the openlp to the class dynamically.
         Windows needs to access the application in a dynamic manner.
@@ -51,9 +52,8 @@ class RegistryProperties(object):
                 self._application = Registry().get('application')
             return self._application
 
-    application = property(_get_application)
-
-    def _get_plugin_manager(self):
+    @property
+    def plugin_manager(self):
         """
         Adds the plugin manager to the class dynamically
         """
@@ -61,9 +61,8 @@ class RegistryProperties(object):
             self._plugin_manager = Registry().get('plugin_manager')
         return self._plugin_manager
 
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_image_manager(self):
+    @property
+    def image_manager(self):
         """
         Adds the image manager to the class dynamically
         """
@@ -71,9 +70,8 @@ class RegistryProperties(object):
             self._image_manager = Registry().get('image_manager')
         return self._image_manager
 
-    image_manager = property(_get_image_manager)
-
-    def _get_media_controller(self):
+    @property
+    def media_controller(self):
         """
         Adds the media controller to the class dynamically
         """
@@ -81,9 +79,8 @@ class RegistryProperties(object):
             self._media_controller = Registry().get('media_controller')
         return self._media_controller
 
-    media_controller = property(_get_media_controller)
-
-    def _get_service_manager(self):
+    @property
+    def service_manager(self):
         """
         Adds the service manager to the class dynamically
         """
@@ -91,9 +88,8 @@ class RegistryProperties(object):
             self._service_manager = Registry().get('service_manager')
         return self._service_manager
 
-    service_manager = property(_get_service_manager)
-
-    def _get_preview_controller(self):
+    @property
+    def preview_controller(self):
         """
         Adds the preview controller to the class dynamically
         """
@@ -101,9 +97,8 @@ class RegistryProperties(object):
             self._preview_controller = Registry().get('preview_controller')
         return self._preview_controller
 
-    preview_controller = property(_get_preview_controller)
-
-    def _get_live_controller(self):
+    @property
+    def live_controller(self):
         """
         Adds the live controller to the class dynamically
         """
@@ -111,9 +106,8 @@ class RegistryProperties(object):
             self._live_controller = Registry().get('live_controller')
         return self._live_controller
 
-    live_controller = property(_get_live_controller)
-
-    def _get_main_window(self):
+    @property
+    def main_window(self):
         """
         Adds the main window to the class dynamically
         """
@@ -121,4 +115,3 @@ class RegistryProperties(object):
             self._main_window = Registry().get('main_window')
         return self._main_window
 
-    main_window = property(_get_main_window)
