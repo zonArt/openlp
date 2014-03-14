@@ -39,6 +39,9 @@ from openlp.core.common import Settings
 class TestMixin(object):
 
     def get_application(self):
+        """
+        Build or reuse the Application object
+        """
         old_app_instance = QtCore.QCoreApplication.instance()
         if old_app_instance is None:
             self.app = QtGui.QApplication([])
@@ -46,11 +49,17 @@ class TestMixin(object):
             self.app = old_app_instance
 
     def build_settings(self):
+        """
+        Build the settings Object and initialise it
+        """
         Settings.setDefaultFormat(Settings.IniFormat)
         fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
 
     def destroy_settings(self):
+        """
+        Destroy the Settings Object
+        """
         if hasattr(self, 'fd'):
             os.close(self.fd)
         os.unlink(Settings().fileName())

@@ -11,9 +11,10 @@ from openlp.core.common import Registry, Settings
 from openlp.core.lib import ServiceItem
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
 from tests.functional import patch, MagicMock
+from tests.helpers.testmixin import TestMixin
 
 
-class TestMediaItem(TestCase):
+class TestMediaItem(TestCase, TestMixin):
     """
     Test the functions in the :mod:`lib` module.
     """
@@ -27,24 +28,15 @@ class TestMediaItem(TestCase):
         with patch('openlp.core.lib.mediamanageritem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
             self.media_item = SongMediaItem(None, MagicMock())
-
-        Settings.setDefaultFormat(Settings.IniFormat)
-        self.fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
-        self.application = QtGui.QApplication.instance()
+        self.get_application()
+        self.build_settings()
         QtCore.QLocale.setDefault(QtCore.QLocale('en_GB'))
 
     def tearDown(self):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        del self.application
-        # Not all tests use settings!
-        try:
-            os.close(self.fd)
-            os.unlink(Settings().fileName())
-        except Exception:
-            pass
+        self.destroy_settings()
 
     def build_song_footer_one_author_test(self):
         """
