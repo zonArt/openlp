@@ -19,7 +19,11 @@ class TestServiceManager(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
         ScreenList.create(self.app.desktop())
         Registry().register('application', MagicMock())
         with patch('openlp.core.lib.PluginManager'):
@@ -30,8 +34,6 @@ class TestServiceManager(TestCase):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        del self.main_window
-        del self.app
 
     def basic_service_manager_test(self):
         """

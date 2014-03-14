@@ -54,8 +54,8 @@ class PdfController(PresentationController):
         :param plugin: The plugin that creates the controller.
         """
         log.debug('Initialising')
+        super(PdfController, self).__init__(plugin, 'Pdf', PdfDocument)
         self.process = None
-        PresentationController.__init__(self, plugin, 'Pdf', PdfDocument)
         self.supports = ['pdf']
         self.also_supports = []
         # Determine whether mudraw or ghostscript is used
