@@ -10,6 +10,7 @@ from openlp.core.ui import filerenameform
 from tests.interfaces import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 
+
 class TestStartFileRenameForm(TestCase, TestMixin):
 
     def setUp(self):
