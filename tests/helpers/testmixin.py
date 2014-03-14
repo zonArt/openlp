@@ -51,5 +51,6 @@ class TestMixin(object):
         Settings().set_filename(self.ini_file)
 
     def destroy_settings(self):
-        os.close(self.fd)
+        if hasattr(self, 'fd'):
+            os.close(self.fd)
         os.unlink(Settings().fileName())
