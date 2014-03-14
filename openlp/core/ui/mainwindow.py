@@ -41,7 +41,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate
 from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageManager, PluginStatus, ScreenList, \
     build_icon
 from openlp.core.lib.ui import UiStrings, create_action
@@ -106,8 +106,8 @@ class Ui_MainWindow(object):
         self.control_splitter.setObjectName('control_splitter')
         self.main_content_layout.addWidget(self.control_splitter)
         # Create slide controllers
-        self.preview_controller = PreviewController(self)
-        self.live_controller = LiveController(self)
+        PreviewController(self)
+        LiveController(self)
         preview_visible = Settings().value('user interface/preview panel')
         live_visible = Settings().value('user interface/live panel')
         panel_locked = Settings().value('user interface/lock panel')
@@ -460,7 +460,7 @@ class Ui_MainWindow(object):
         self.mode_live_item.setStatusTip(translate('OpenLP.MainWindow', 'Set the view mode to Live.'))
 
 
-class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
     """
     The main window.
     """
@@ -492,13 +492,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.copy_data = False
         Settings().set_up_default_values()
         self.about_form = AboutForm(self)
-        self.media_controller = MediaController()
+        MediaController()
         self.settings_form = SettingsForm(self)
         self.formatting_tag_form = FormattingTagForm(self)
         self.shortcut_form = ShortcutListForm(self)
         # Set up the path with plugins
-        self.plugin_manager = PluginManager(self)
-        self.image_manager = ImageManager()
+        PluginManager(self)
+        ImageManager()
         self.renderer = Renderer()
         # Set up the interface
         self.setupUi(self)
@@ -1380,16 +1380,4 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             settings.remove('advanced/data path')
         self.application.set_normal_cursor()
 
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
 
-    application = property(_get_application)
