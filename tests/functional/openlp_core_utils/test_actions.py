@@ -51,7 +51,7 @@ class TestActionList(TestCase):
         self.action_list = ActionList.get_instance()
         Settings.setDefaultFormat(Settings.IniFormat)
         self.settings = Settings()
-        fd, self.ini_file = mkstemp('.ini')
+        self.fd, self.ini_file = mkstemp('.ini')
         self.settings.set_filename(self.ini_file)
         self.settings.beginGroup('shortcuts')
 
@@ -60,6 +60,7 @@ class TestActionList(TestCase):
         Clean up
         """
         self.settings.endGroup()
+        os.close(self.fd)
         os.unlink(Settings().fileName())
 
     def test_add_action_same_parent(self):

@@ -24,7 +24,7 @@ class TestPluginManager(TestCase):
         Some pre-test setup required.
         """
         Settings.setDefaultFormat(Settings.IniFormat)
-        fd, self.ini_file = mkstemp('.ini')
+        self.fd, self.ini_file = mkstemp('.ini')
         self.temp_dir = mkdtemp('openlp')
         Settings().set_filename(self.ini_file)
         Settings().setValue('advanced/data path', self.temp_dir)
@@ -40,9 +40,10 @@ class TestPluginManager(TestCase):
 
     def tearDown(self):
         del self.main_window
+        os.close(self.fd)
+        os.unlink(Settings().fileName())
         Settings().remove('advanced/data path')
         shutil.rmtree(self.temp_dir)
-        os.unlink(Settings().fileName())
 
     def find_plugins_test(self):
         """
@@ -68,3 +69,4 @@ class TestPluginManager(TestCase):
         assert 'songusage' in plugin_names, 'There should be a "songusage" plugin.'
         assert 'alerts' in plugin_names, 'There should be a "alerts" plugin.'
         assert 'remotes' in plugin_names, 'There should be a "remotes" plugin.'
+

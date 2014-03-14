@@ -29,7 +29,7 @@ class TestMediaItem(TestCase):
             self.media_item = SongMediaItem(None, MagicMock())
 
         Settings.setDefaultFormat(Settings.IniFormat)
-        fd, self.ini_file = mkstemp('.ini')
+        self.fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
         QtCore.QLocale.setDefault(QtCore.QLocale('en_GB'))
@@ -41,6 +41,7 @@ class TestMediaItem(TestCase):
         del self.application
         # Not all tests use settings!
         try:
+            os.close(self.fd)
             os.unlink(Settings().fileName())
         except Exception:
             pass
