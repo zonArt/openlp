@@ -60,7 +60,9 @@ class TestPresentationController(TestCase):
         controller = None
 
         # WHEN: The presentation controller object is created
-        controller = PresentationController(plugin=MagicMock())
+        mock_plugin = MagicMock()
+        mock_plugin.settings_section = ''
+        controller = PresentationController(plugin=mock_plugin)
 
         # THEN: The name of the presentation controller should be correct
         self.assertEqual('PresentationController', controller.name,

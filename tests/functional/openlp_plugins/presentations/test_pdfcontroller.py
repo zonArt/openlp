@@ -63,6 +63,8 @@ class TestPdfController(TestCase):
         Settings().extend_default_settings(__default_settings__)
         self.temp_folder = mkdtemp()
         self.thumbnail_folder = mkdtemp()
+        self.mock_plugin = MagicMock()
+        self.mock_plugin.settings_section = self.temp_folder
 
     def tearDown(self):
         """
@@ -70,6 +72,7 @@ class TestPdfController(TestCase):
         """
         del self.application
         try:
+            os.close(self.fd)
             os.unlink(Settings().fileName())
             shutil.rmtree(self.thumbnail_folder)
             shutil.rmtree(self.temp_folder)
@@ -84,7 +87,7 @@ class TestPdfController(TestCase):
         controller = None
 
         # WHEN: The presentation controller object is created
-        controller = PdfController(plugin=MagicMock())
+        controller = PdfController(plugin=self.mock_plugin)
 
         # THEN: The name of the presentation controller should be correct
         self.assertEqual('Pdf', controller.name, 'The name of the presentation controller should be correct')
@@ -97,7 +100,7 @@ class TestPdfController(TestCase):
         test_file = os.path.join(TEST_RESOURCES_PATH, 'presentations', 'pdf_test1.pdf')
 
         # WHEN: The Pdf is loaded
-        controller = PdfController(plugin=MagicMock())
+        controller = PdfController(plugin=self.mock_plugin)
         if not controller.check_available():
             raise SkipTest('Could not detect mudraw or ghostscript, so skipping PDF test')
         controller.temp_folder = self.temp_folder

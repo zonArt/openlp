@@ -3,6 +3,7 @@ Functional tests to test the AppLocation class and related methods.
 """
 import os
 from unittest import TestCase
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import is_not_image_file
 from tests.utils.constants import TEST_RESOURCES_PATH
@@ -12,6 +13,17 @@ class TestUtils(TestCase):
     """
     A test suite to test out various methods around the Utils functions.
     """
+
+    def setUp(self):
+        """
+        Some pre-test setup required.
+        """
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
+
     def is_not_image_empty_test(self):
         """
         Test the method handles an empty string
@@ -50,3 +62,4 @@ class TestUtils(TestCase):
 
         # THEN the result is false
         assert result is True, 'The file is not an image file so the test should return True'
+
