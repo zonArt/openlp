@@ -29,8 +29,6 @@
 """
 Functional tests to test the Bible Manager class and related methods.
 """
-import os
-from tempfile import mkstemp
 from unittest import TestCase
 
 from openlp.core.common import Registry, Settings
@@ -38,16 +36,16 @@ from openlp.plugins.bibles.lib import BibleManager, LanguageSelection
 from tests.interfaces import MagicMock, patch
 
 from tests.utils.constants import TEST_RESOURCES_PATH
+from tests.helpers.testmixin import TestMixin
 
 
-class TestBibleManager(TestCase):
+class TestBibleManager(TestCase, TestMixin):
 
     def setUp(self):
         """
         Set up the environment for testing bible queries with 1 Timothy 3
         """
-        fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
+        self.build_settings()
         Registry.create()
         Registry().register('service_list', MagicMock())
         Registry().register('application', MagicMock())
@@ -75,7 +73,7 @@ class TestBibleManager(TestCase):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        os.unlink(self.ini_file)
+        self.destroy_settings()
 
     def get_books_test(self):
         """
