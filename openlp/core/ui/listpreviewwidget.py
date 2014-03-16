@@ -33,11 +33,11 @@ It is based on a QTableWidget but represents its contents in list form.
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry
+from openlp.core.common import RegistryProperties
 from openlp.core.lib import ImageSource, ServiceItem
 
 
-class ListPreviewWidget(QtGui.QTableWidget):
+class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
     def __init__(self, parent, screen_ratio):
         """
         Initializes the widget to default state.
@@ -161,14 +161,3 @@ class ListPreviewWidget(QtGui.QTableWidget):
         Returns the number of slides this widget holds.
         """
         return super(ListPreviewWidget, self).rowCount()
-
-    def _get_image_manager(self):
-        """
-        Adds the image manager to the class dynamically.
-        """
-        if not hasattr(self, '_image_manager'):
-            self._image_manager = Registry().get('image_manager')
-        return self._image_manager
-
-    image_manager = property(_get_image_manager)
-

@@ -493,13 +493,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         Settings().set_up_default_values()
         self.about_form = AboutForm(self)
         MediaController()
-        self.settings_form = SettingsForm(self)
+        SettingsForm(self)
         self.formatting_tag_form = FormattingTagForm(self)
         self.shortcut_form = ShortcutListForm(self)
         # Set up the path with plugins
         PluginManager(self)
         ImageManager()
-        self.renderer = Renderer()
+        Renderer()
         # Set up the interface
         self.setupUi(self)
         # Define the media Dock Manager

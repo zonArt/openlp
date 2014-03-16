@@ -30,12 +30,12 @@
 The service item edit dialog
 """
 from PyQt4 import QtGui
-from openlp.core.common import Registry
+from openlp.core.common import Registry, RegistryProperties
 
 from .serviceitemeditdialog import Ui_ServiceItemEditDialog
 
 
-class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
+class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog, RegistryProperties):
     """
     This is the form that is used to edit the verses of the song.
     """
@@ -151,14 +151,3 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             else:
                 self.up_button.setEnabled(True)
             self.delete_button.setEnabled(True)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-

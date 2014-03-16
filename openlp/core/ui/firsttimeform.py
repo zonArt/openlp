@@ -41,7 +41,7 @@ from configparser import ConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate
 from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.utils import get_web_page
 from .firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
@@ -75,7 +75,7 @@ class ThemeScreenshotThread(QtCore.QThread):
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
 
-class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
+class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
     """
     This is the Theme Import Wizard, which allows easy creation and editing of OpenLP themes.
     """
@@ -474,27 +474,3 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         status = PluginStatus.Active if field.checkState() == QtCore.Qt.Checked else PluginStatus.Inactive
         Settings().setValue(tag, status)
-
-    def _get_theme_manager(self):
-        """
-        Adds the theme manager to the class dynamically
-        """
-        if not hasattr(self, '_theme_manager'):
-            self._theme_manager = Registry().get('theme_manager')
-        return self._theme_manager
-
-    theme_manager = property(_get_theme_manager)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

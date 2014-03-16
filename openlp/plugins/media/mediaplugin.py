@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.common import Registry, translate
+from openlp.core.common import translate
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
@@ -120,13 +120,3 @@ class MediaPlugin(Plugin):
         Add html code to htmlbuilder.
         """
         return self.media_controller.get_media_display_html()
-
-    def _get_media_controller(self):
-        """
-        Adds the media controller to the class dynamically
-        """
-        if not hasattr(self, '_media_controller'):
-            self._media_controller = Registry().get('media_controller')
-        return self._media_controller
-
-    media_controller = property(_get_media_controller)
