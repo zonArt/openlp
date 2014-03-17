@@ -201,7 +201,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
     def validateCurrentPage(self):
         """
         Re-implement the validateCurrentPage() method. Validate the current page before moving on to the next page.
-        Provide each song format class with a chance to validate its input by overriding isValidSource().
+        Provide each song format class with a chance to validate its input by overriding is_valid_source().
         """
         if self.currentPage() == self.welcome_page:
             return True
@@ -217,7 +217,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
                 import_source = self.format_widgets[this_format]['file_path_edit'].text()
                 error_title = (UiStrings().IFSs if select_mode == SongFormatSelect.SingleFile else UiStrings().IFdSs)
                 focus_button = self.format_widgets[this_format]['browseButton']
-            if not class_.isValidSource(import_source):
+            if not class_.is_valid_source(import_source):
                 critical_error_message_box(error_title, error_msg)
                 focus_button.setFocus()
                 return False
@@ -334,7 +334,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
 
     def perform_wizard(self):
         """
-        Perform the actual import. This method pulls in the correct importer class, and then runs the ``doImport``
+        Perform the actual import. This method pulls in the correct importer class, and then runs the ``do_import``
         method of the importer to do the actual importing.
         """
         source_format = self.current_format
@@ -349,7 +349,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
             importer = self.plugin.import_songs(
                 source_format,
                 filenames=self.get_list_of_files(self.format_widgets[source_format]['file_list_widget']))
-        importer.doImport()
+        importer.do_import()
         self.progress_label.setText(WizardStrings.FinishedImport)
 
     def on_error_copy_to_button_clicked(self):

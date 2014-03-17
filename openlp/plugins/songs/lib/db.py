@@ -87,6 +87,7 @@ class Topic(BaseModel):
     """
     pass
 
+
 def init_schema(url):
     """
     Setup the songs database connection and initialise the database schema.
@@ -183,8 +184,7 @@ def init_schema(url):
     # Definition of the "media_files" table
     media_files_table = Table('media_files', metadata,
         Column('id', types.Integer(), primary_key=True),
-        Column('song_id', types.Integer(), ForeignKey('songs.id'),
-            default=None),
+        Column('song_id', types.Integer(), ForeignKey('songs.id'), default=None),
         Column('file_name', types.Unicode(255), nullable=False),
         Column('type', types.Unicode(64), nullable=False, default='audio'),
         Column('weight', types.Integer(), default=0)
@@ -200,8 +200,7 @@ def init_schema(url):
     # Definition of the "songs" table
     songs_table = Table('songs', metadata,
         Column('id', types.Integer(), primary_key=True),
-        Column('song_book_id', types.Integer(),
-            ForeignKey('song_books.id'), default=None),
+        Column('song_book_id', types.Integer(), ForeignKey('song_books.id'), default=None),
         Column('title', types.Unicode(255), nullable=False),
         Column('alternate_title', types.Unicode(255)),
         Column('lyrics', types.UnicodeText, nullable=False),
@@ -214,8 +213,7 @@ def init_schema(url):
         Column('search_title', types.Unicode(255), index=True, nullable=False),
         Column('search_lyrics', types.UnicodeText, nullable=False),
         Column('create_date', types.DateTime(), default=func.now()),
-        Column('last_modified', types.DateTime(), default=func.now(),
-            onupdate=func.now()),
+        Column('last_modified', types.DateTime(), default=func.now(), onupdate=func.now()),
         Column('temporary', types.Boolean(), default=False)
     )
 
@@ -227,18 +225,14 @@ def init_schema(url):
 
     # Definition of the "authors_songs" table
     authors_songs_table = Table('authors_songs', metadata,
-        Column('author_id', types.Integer(),
-            ForeignKey('authors.id'), primary_key=True),
-        Column('song_id', types.Integer(),
-            ForeignKey('songs.id'), primary_key=True)
+        Column('author_id', types.Integer(), ForeignKey('authors.id'), primary_key=True),
+        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True)
     )
 
     # Definition of the "songs_topics" table
     songs_topics_table = Table('songs_topics', metadata,
-        Column('song_id', types.Integer(),
-            ForeignKey('songs.id'), primary_key=True),
-        Column('topic_id', types.Integer(),
-            ForeignKey('topics.id'), primary_key=True)
+        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
+        Column('topic_id', types.Integer(), ForeignKey('topics.id'), primary_key=True)
     )
 
     mapper(Author, authors_table)
@@ -246,13 +240,10 @@ def init_schema(url):
     mapper(MediaFile, media_files_table)
     mapper(Song, songs_table,
         properties={
-            'authors': relation(Author, backref='songs',
-                secondary=authors_songs_table, lazy=False),
+            'authors': relation(Author, backref='songs', secondary=authors_songs_table, lazy=False),
             'book': relation(Book, backref='songs'),
-            'media_files': relation(MediaFile, backref='songs',
-                order_by=media_files_table.c.weight),
-            'topics': relation(Topic, backref='songs',
-                secondary=songs_topics_table)
+            'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
+            'topics': relation(Topic, backref='songs', secondary=songs_topics_table)
         })
     mapper(Topic, topics_table)
 

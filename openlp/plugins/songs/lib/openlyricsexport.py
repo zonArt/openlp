@@ -27,8 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlyricsexport` module provides the functionality for exporting
-songs from the database to the OpenLyrics format.
+The :mod:`openlyricsexport` module provides the functionality for exporting songs from the database to the OpenLyrics
+format.
 """
 import logging
 import os
@@ -62,15 +62,15 @@ class OpenLyricsExport(RegistryProperties):
         Export the songs.
         """
         log.debug('started OpenLyricsExport')
-        openLyrics = OpenLyrics(self.manager)
+        open_lyrics = OpenLyrics(self.manager)
         self.parent.progress_bar.setMaximum(len(self.songs))
         for song in self.songs:
             self.application.process_events()
             if self.parent.stop_export_flag:
                 return False
             self.parent.increment_progress_bar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
-                song.title)
-            xml = openLyrics.song_to_xml(song)
+                                                         song.title)
+            xml = open_lyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml.encode()))
             filename = '%s (%s)' % (song.title, ', '.join([author.display_name for author in song.authors]))
             filename = clean_filename(filename)
@@ -78,6 +78,7 @@ class OpenLyricsExport(RegistryProperties):
             filename = '%s.xml' % filename[0:250 - len(self.save_path)]
             # Pass a file object, because lxml does not cope with some special
             # characters in the path (see lp:757673 and lp:744337).
-            tree.write(open(os.path.join(self.save_path, filename), 'wb'),
-                encoding='utf-8', xml_declaration=True, pretty_print=True)
+            tree.write(open(os.path.join(self.save_path, filename), 'wb'), encoding='utf-8', xml_declaration=True,
+                       pretty_print=True)
         return True
+

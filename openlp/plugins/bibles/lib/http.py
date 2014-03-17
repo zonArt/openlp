@@ -73,14 +73,9 @@ class BGExtract(RegistryProperties):
         """
         Remove a particular element from the BeautifulSoup tree.
 
-        ``parent``
-            The element from which items need to be removed.
-
-        ``tag``
-            A string of the tab type, e.g. "div"
-
-        ``class_``
-            An HTML class attribute for further qualification.
+        :param parent: The element from which items need to be removed.
+        :param tag: A string of the tab type, e.g. "div"
+        :param class_: An HTML class attribute for further qualification.
         """
         if class_:
             all_tags = parent.find_all(tag, class_)
@@ -93,8 +88,7 @@ class BGExtract(RegistryProperties):
         """
         Extract a verse (or part of a verse) from a tag.
 
-        ``tag``
-            The BeautifulSoup Tag element with the stuff we want.
+        :param tag: The BeautifulSoup Tag element with the stuff we want.
         """
         if isinstance(tag, NavigableString):
             return None, str(tag)
@@ -121,8 +115,7 @@ class BGExtract(RegistryProperties):
         """
         Remove all the rubbish from the HTML page.
 
-        ``tag``
-            The base tag within which we want to remove stuff.
+        :param tag: The base tag within which we want to remove stuff.
         """
         self._remove_elements(tag, 'sup', 'crossreference')
         self._remove_elements(tag, 'sup', 'footnote')
@@ -136,8 +129,7 @@ class BGExtract(RegistryProperties):
         """
         Extract all the verses from a pre-prepared list of HTML tags.
 
-        ``tags``
-            A list of BeautifulSoup Tag elements.
+        :param tags: A list of BeautifulSoup Tag elements.
         """
         verses = []
         tags = tags[::-1]
@@ -183,8 +175,7 @@ class BGExtract(RegistryProperties):
         Use the old style of parsing for those Bibles on BG who mysteriously have not been migrated to the new (still
         broken) HTML.
 
-        ``div``
-            The parent div.
+        :param div:  The parent div.
         """
         verse_list = {}
         # Cater for inconsistent mark up in the first verse of a chapter.
@@ -224,14 +215,9 @@ class BGExtract(RegistryProperties):
         """
         Access and decode Bibles via the BibleGateway website.
 
-        ``version``
-            The version of the Bible like 31 for New International version.
-
-        ``book_name``
-            Name of the Book.
-
-        ``chapter``
-            Chapter number.
+        :param version: The version of the Bible like 31 for New International version.
+        :param book_name: Name of the Book.
+        :param chapter: Chapter number.
         """
         log.debug('BGExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
         url_book_name = urllib.parse.quote(book_name.encode("utf-8"))
@@ -258,10 +244,9 @@ class BGExtract(RegistryProperties):
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books a Bible contaions from BibleGateway website.
+        Load a list of all books a Bible contains from BibleGateway website.
 
-        ``version``
-            The version of the Bible like NIV for New International Version
+        :param version: The version of the Bible like NIV for New International Version
         """
         log.debug('BGExtract.get_books_from_http("%s")', version)
         url_params = urllib.parse.urlencode({'action': 'getVersionInfo', 'vid': '%s' % version})
@@ -313,14 +298,9 @@ class BSExtract(RegistryProperties):
         """
         Access and decode bibles via Bibleserver mobile website
 
-        ``version``
-            The version of the bible like NIV for New International Version
-
-        ``book_name``
-            Text name of bible book e.g. Genesis, 1. John, 1John or Offenbarung
-
-        ``chapter``
-            Chapter number
+        :param version: The version of the bible like NIV for New International Version
+        :param book_name: Text name of bible book e.g. Genesis, 1. John, 1John or Offenbarung
+        :param chapter: Chapter number
         """
         log.debug('BSExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
         url_version = urllib.parse.quote(version.encode("utf-8"))
@@ -348,12 +328,11 @@ class BSExtract(RegistryProperties):
         """
         Load a list of all books a Bible contains from Bibleserver mobile website.
 
-        ``version``
-            The version of the Bible like NIV for New International Version
+        :param version: The version of the Bible like NIV for New International Version
         """
         log.debug('BSExtract.get_books_from_http("%s")', version)
         url_version = urllib.parse.quote(version.encode("utf-8"))
-        chapter_url = 'http://m.bibleserver.com/overlay/selectBook?translation=%s' % (url_version)
+        chapter_url = 'http://m.bibleserver.com/overlay/selectBook?translation=%s' % url_version
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
@@ -379,14 +358,9 @@ class CWExtract(RegistryProperties):
         """
         Access and decode bibles via the Crosswalk website
 
-        ``version``
-            The version of the Bible like niv for New International Version
-
-        ``book_name``
-            Text name of in english e.g. 'gen' for Genesis
-
-        ``chapter``
-            Chapter number
+        :param version: The version of the Bible like niv for New International Version
+        :param book_name:  Text name of in english e.g. 'gen' for Genesis
+        :param chapter: Chapter number
         """
         log.debug('CWExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
         url_book_name = book_name.replace(' ', '-')
@@ -434,11 +408,10 @@ class CWExtract(RegistryProperties):
         """
         Load a list of all books a Bible contain from the Crosswalk website.
 
-        ``version``
-            The version of the bible like NIV for New International Version
+        :param version: The version of the bible like NIV for New International Version
         """
         log.debug('CWExtract.get_books_from_http("%s")', version)
-        chapter_url = 'http://www.biblestudytools.com/%s/' % (version)
+        chapter_url = 'http://www.biblestudytools.com/%s/' % version
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
@@ -490,7 +463,8 @@ class HTTPBible(BibleDB, RegistryProperties):
         failure.
         """
         self.wizard.progress_bar.setMaximum(68)
-        self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible', 'Registering Bible and loading books...'))
+        self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible',
+                                                     'Registering Bible and loading books...'))
         self.save_meta('download_source', self.download_source)
         self.save_meta('download_name', self.download_name)
         if self.proxy_server:
@@ -509,8 +483,8 @@ class HTTPBible(BibleDB, RegistryProperties):
             handler = BSExtract(self.proxy_server)
         books = handler.get_books_from_http(self.download_name)
         if not books:
-            log.error('Importing books from %s - download name: "%s" '\
-                'failed' % (self.download_source, self.download_name))
+            log.error('Importing books from %s - download name: "%s" failed' %
+                      (self.download_source, self.download_name))
             return False
         self.wizard.progress_bar.setMaximum(len(books) + 2)
         self.wizard.increment_progress_bar(translate( 'BiblesPlugin.HTTPBible', 'Registering Language...'))
@@ -530,12 +504,12 @@ class HTTPBible(BibleDB, RegistryProperties):
                 'BiblesPlugin.HTTPBible', 'Importing %s...', 'Importing <book name>...') % book)
             book_ref_id = self.get_book_ref_id_by_name(book, len(books), language_id)
             if not book_ref_id:
-                log.error('Importing books from %s - download name: "%s" '\
-                    'failed' % (self.download_source, self.download_name))
+                log.error('Importing books from %s - download name: "%s" failed' %
+                          (self.download_source, self.download_name))
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
             log.debug('Book details: Name:%s; id:%s; testament_id:%s',
-                book, book_ref_id, book_details['testament_id'])
+                      book, book_ref_id, book_details['testament_id'])
             self.create_book(book, book_ref_id, book_details['testament_id'])
         if self.stop_import_flag:
             return False
@@ -569,7 +543,7 @@ class HTTPBible(BibleDB, RegistryProperties):
                     critical_error_message_box(
                         translate('BiblesPlugin', 'No Book Found'),
                         translate('BiblesPlugin', 'No matching book could be found in this Bible. Check that you have '
-                        'spelled the name of the book correctly.'))
+                                  'spelled the name of the book correctly.'))
                 return []
             book = db_book.name
             if BibleDB.get_verse_count(self, book_id, reference[1]) == 0:
@@ -615,8 +589,7 @@ class HTTPBible(BibleDB, RegistryProperties):
         """
         Return the number of chapters in a particular book.
 
-        ``book``
-            The book object to get the chapter count for.
+        :param book: The book object to get the chapter count for.
         """
         log.debug('HTTPBible.get_chapter_count("%s")', book.name)
         return BiblesResourcesDB.get_chapter_count(book.book_reference_id)
@@ -625,11 +598,8 @@ class HTTPBible(BibleDB, RegistryProperties):
         """
         Return the number of verses for the specified chapter and book.
 
-        ``book``
-            The name of the book.
-
-        ``chapter``
-            The chapter whose verses are being counted.
+        :param book_id: The name of the book.
+        :param chapter: The chapter whose verses are being counted.
         """
         log.debug('HTTPBible.get_verse_count("%s", %s)', book_id, chapter)
         return BiblesResourcesDB.get_verse_count(book_id, chapter)
@@ -639,18 +609,11 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre
     """
     Gets a webpage and returns a parsed and optionally cleaned soup or None.
 
-    ``reference_url``
-        The URL to obtain the soup from.
-
-    ``header``
-        An optional HTTP header to pass to the bible web server.
-
-    ``pre_parse_regex``
-        A regular expression to run on the webpage. Allows manipulation of the webpage before passing to BeautifulSoup
-        for parsing.
-
-    ``pre_parse_substitute``
-        The text to replace any matches to the regular expression with.
+    :param reference_url: The URL to obtain the soup from.
+    :param header: An optional HTTP header to pass to the bible web server.
+    :param pre_parse_regex: A regular expression to run on the webpage. Allows manipulation of the webpage before
+    passing to BeautifulSoup for parsing.
+    :param pre_parse_substitute: The text to replace any matches to the regular expression with.
     """
     if not reference_url:
         return None
@@ -685,9 +648,10 @@ def send_error_message(error_type):
         critical_error_message_box(
             translate('BiblesPlugin.HTTPBible', 'Download Error'),
             translate('BiblesPlugin.HTTPBible', 'There was a problem downloading your verse selection. Please check '
-                'your Internet connection, and if this error continues to occur please consider reporting a bug.'))
+                      'your Internet connection, and if this error continues to occur please consider reporting a bug'
+                      '.'))
     elif error_type == 'parse':
         critical_error_message_box(
             translate('BiblesPlugin.HTTPBible', 'Parse Error'),
             translate('BiblesPlugin.HTTPBible', 'There was a problem extracting your verse selection. If this error '
-                'continues to occur please consider reporting a bug.'))
+                      'continues to occur please consider reporting a bug.'))

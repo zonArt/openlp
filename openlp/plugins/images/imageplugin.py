@@ -57,16 +57,16 @@ class ImagePlugin(Plugin):
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
-            '<br />The image plugin provides displaying of images.<br />One '
-            'of the distinguishing features of this plugin is the ability to '
-            'group a number of images together in the service manager, making '
-            'the displaying of multiple images easier. This plugin can also '
-            'make use of OpenLP\'s "timed looping" feature to create a slide '
-            'show that runs automatically. In addition to this, images from '
-            'the plugin can be used to override the current theme\'s '
-            'background, which renders text-based items like songs with the '
-            'selected image as a background instead of the background '
-            'provided by the theme.')
+                               '<br />The image plugin provides displaying of images.<br />One '
+                               'of the distinguishing features of this plugin is the ability to '
+                               'group a number of images together in the service manager, making '
+                               'the displaying of multiple images easier. This plugin can also '
+                               'make use of OpenLP\'s "timed looping" feature to create a slide '
+                               'show that runs automatically. In addition to this, images from '
+                               'the plugin can be used to override the current theme\'s '
+                               'background, which renders text-based items like songs with the '
+                               'selected image as a background instead of the background '
+                               'provided by the theme.')
         return about_text
 
     def app_startup(self):

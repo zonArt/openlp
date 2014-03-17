@@ -54,9 +54,9 @@ class OpenLyricsImport(SongImport):
         """
         log.debug('initialise OpenLyricsImport')
         SongImport.__init__(self, manager, **kwargs)
-        self.openLyrics = OpenLyrics(self.manager)
+        self.open_lyrics = OpenLyrics(self.manager)
 
-    def doImport(self):
+    def do_import(self):
         """
         Imports the songs.
         """
@@ -71,11 +71,11 @@ class OpenLyricsImport(SongImport):
                 # special characters in the path (see lp:757673 and lp:744337).
                 parsed_file = etree.parse(open(file_path, 'r'), parser)
                 xml = etree.tostring(parsed_file).decode()
-                self.openLyrics.xml_to_song(xml)
+                self.open_lyrics.xml_to_song(xml)
             except etree.XMLSyntaxError:
                 log.exception('XML syntax error in file %s' % file_path)
-                self.logError(file_path, SongStrings.XMLSyntaxError)
+                self.log_error(file_path, SongStrings.XMLSyntaxError)
             except OpenLyricsError as exception:
-                log.exception('OpenLyricsException %d in file %s: %s'
-                    % (exception.type, file_path, exception.log_message))
-                self.logError(file_path, exception.display_message)
+                log.exception('OpenLyricsException %d in file %s: %s' %
+                              (exception.type, file_path, exception.log_message))
+                self.log_error(file_path, exception.display_message)

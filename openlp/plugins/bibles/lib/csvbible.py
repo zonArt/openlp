@@ -80,8 +80,8 @@ class CSVBible(BibleDB):
         """
         log.info(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        self.booksfile = kwargs['booksfile']
-        self.versesfile = kwargs['versefile']
+        self.books_file = kwargs['books_file']
+        self.verses_file = kwargs['versefile']
 
     def do_import(self, bible_name=None):
         """
@@ -99,8 +99,8 @@ class CSVBible(BibleDB):
         book_list = {}
         # Populate the Tables
         try:
-            details = get_file_encoding(self.booksfile)
-            books_file = open(self.booksfile, 'r')
+            details = get_file_encoding(self.books_file)
+            books_file = open(self.books_file, 'r')
             if not books_file.read(3) == '\xEF\xBB\xBF':
                 # no BOM was found
                 books_file.seek(0)
@@ -109,10 +109,10 @@ class CSVBible(BibleDB):
                 if self.stop_import_flag:
                     break
                 self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing books... %s') %
-                    str(line[2], details['encoding']))
+                                                   str(line[2], details['encoding']))
                 book_ref_id = self.get_book_ref_id_by_name(str(line[2], details['encoding']), 67, language_id)
                 if not book_ref_id:
-                    log.error('Importing books from "%s" failed' % self.booksfile)
+                    log.error('Importing books from "%s" failed' % self.books_file)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 self.create_book(str(line[2], details['encoding']), book_ref_id, book_details['testament_id'])
@@ -131,8 +131,8 @@ class CSVBible(BibleDB):
         verse_file = None
         try:
             book_ptr = None
-            details = get_file_encoding(self.versesfile)
-            verse_file = open(self.versesfile, 'rb')
+            details = get_file_encoding(self.verses_file)
+            verse_file = open(self.verses_file, 'rb')
             if not verse_file.read(3) == '\xEF\xBB\xBF':
                 # no BOM was found
                 verse_file.seek(0)
@@ -147,8 +147,9 @@ class CSVBible(BibleDB):
                 if book_ptr != line_book:
                     book = self.get_book(line_book)
                     book_ptr = book.name
-                    self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible',
-                        'Importing verses from %s... Importing verses from <book name>...') % book.name)
+                    self.wizard.increment_progress_bar(
+                        translate('BiblesPlugin.CSVBible',
+                                  'Importing verses from %s... Importing verses from <book name>...') % book.name)
                     self.session.commit()
                 try:
                     verse_text = str(line[3], details['encoding'])
@@ -168,6 +169,7 @@ class CSVBible(BibleDB):
             return False
         else:
             return success
+
 
 def get_file_encoding(filename):
     """
