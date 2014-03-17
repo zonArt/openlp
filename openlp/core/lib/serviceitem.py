@@ -359,7 +359,7 @@ class ServiceItem(object):
         with them or None when the saved service is lite and the original file paths need to be preserved.
         """
         log.debug('set_from_service called with path %s' % path)
-        header = service_item['service_item']['header']
+        header = service_item['serviceitem']['header']
         self.title = header['title']
         self.name = header['name']
         self.service_item_type = header['type']
@@ -395,21 +395,21 @@ class ServiceItem(object):
                 self.background_audio.append(os.path.join(path, filename))
         self.theme_overwritten = header.get('theme_overwritten', False)
         if self.service_item_type == ServiceItemType.Text:
-            for slide in service_item['service_item']['data']:
+            for slide in service_item['serviceitem']['data']:
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
-            settings_section = service_item['service_item']['header']['name']
+            settings_section = service_item['serviceitem']['header']['name']
             background = QtGui.QColor(Settings().value(settings_section + '/background color'))
             if path:
                 self.has_original_files = False
-                for text_image in service_item['service_item']['data']:
+                for text_image in service_item['serviceitem']['data']:
                     filename = os.path.join(path, text_image)
                     self.add_from_image(filename, text_image, background)
             else:
-                for text_image in service_item['service_item']['data']:
+                for text_image in service_item['serviceitem']['data']:
                     self.add_from_image(text_image['path'], text_image['title'], background)
         elif self.service_item_type == ServiceItemType.Command:
-            for text_image in service_item['service_item']['data']:
+            for text_image in service_item['serviceitem']['data']:
                 if not self.title:
                     self.title = text_image['title']
                 if path:
