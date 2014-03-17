@@ -80,7 +80,7 @@ class MediaSlider(QtGui.QSlider):
         QtGui.QSlider.mouseReleaseEvent(self, event)
 
 
-class MediaController(RegistryProperties):
+class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
     """
     The implementation of the Media Controller. The Media Controller adds an own
     class for every Player. Currently these are QtWebkit, Phonon and Vlc.
@@ -94,12 +94,11 @@ class MediaController(RegistryProperties):
     current_media_players is an array of player instances keyed on ControllerType.
 
     """
-    def __init__(self):
+    def __init__(self, parent=None):
         """
         Constructor
         """
-        Registry().register('media_controller', self)
-        Registry().register_function('bootstrap_initialise', self.bootstrap_initialise)
+        super(MediaController, self).__init__(parent)
         self.media_players = {}
         self.display_controllers = {}
         self.current_media_players = {}
