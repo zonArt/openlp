@@ -35,6 +35,7 @@ from unittest import TestCase
 
 from tests.functional import patch, MagicMock
 
+
 class SongImportTestHelper(TestCase):
     """
     This class is designed to be a helper class to reduce repition when testing the import of song files.

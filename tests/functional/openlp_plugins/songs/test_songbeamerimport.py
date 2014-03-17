@@ -38,20 +38,20 @@ from openlp.plugins.songs.lib.songbeamerimport import SongBeamerImport
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'songbeamersongs'))
-SONG_TEST_DATA = {'Lobsinget dem Herrn.sng':
-        {'title': 'GL 1 - Lobsinget dem Herrn',
-         'verses':
-             [('1. Lobsinget dem Herrn,\no preiset Ihn gern!\n'
-               'Anbetung und Lob Ihm gebühret.\n', 'v'),
-              ('2. Lobsingt Seiner Lieb´,\ndie einzig ihn trieb,\n'
-               'zu sterben für unsere Sünden!\n', 'v'),
-              ('3. Lobsingt Seiner Macht!\nSein Werk ist vollbracht:\n'
-               'Er sitzet zur Rechten des Vaters.\n', 'v'),
-              ('4. Lobsingt seiner Treu´,\ndie immerdar neu,\n'
-               'bis Er uns zur Herrlichket führet!\n\n', 'v')],
-         'song_book_name': 'Glaubenslieder I',
-         'song_number': "1"}
-        }
+SONG_TEST_DATA = {
+    'Lobsinget dem Herrn.sng': {
+        'title': 'GL 1 - Lobsinget dem Herrn',
+        'verses': [
+            ('1. Lobsinget dem Herrn,\no preiset Ihn gern!\nAnbetung und Lob Ihm gebühret.\n', 'v'),
+            ('2. Lobsingt Seiner Lieb´,\ndie einzig ihn trieb,\nzu sterben für unsere Sünden!\n', 'v'),
+            ('3. Lobsingt Seiner Macht!\nSein Werk ist vollbracht:\nEr sitzet zur Rechten des Vaters.\n', 'v'),
+            ('4. Lobsingt seiner Treu´,\ndie immerdar neu,\nbis Er uns zur Herrlichket führet!\n\n', 'v')
+        ],
+        'song_book_name': 'Glaubenslieder I',
+        'song_number': "1"
+    }
+}
+
 
 class TestSongBeamerImport(TestCase):
     """

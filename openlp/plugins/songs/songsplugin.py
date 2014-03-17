@@ -38,11 +38,13 @@ import sqlite3
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import UiStrings, translate
+from openlp.core.common import UiStrings, Registry, translate
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList
+from openlp.plugins.songs.forms.duplicatesongremovalform import DuplicateSongRemovalForm
+from openlp.plugins.songs.forms.songselectform import SongSelectForm
 from openlp.plugins.songs.lib import clean_song, upgrade
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.mediaitem import SongSearch
@@ -50,27 +52,29 @@ from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
 from openlp.plugins.songs.lib.songstab import SongsTab
-from openlp.plugins.songs.forms.duplicatesongremovalform import DuplicateSongRemovalForm
 
 
 log = logging.getLogger(__name__)
-__default_settings__ = {'songs/db type': 'sqlite',
-                        'songs/last search type': SongSearch.Entire,
-                        'songs/last import type': SongFormat.OpenLyrics,
-                        'songs/update service on edit': False,
-                        'songs/search as type': False,
-                        'songs/add song from service': True,
-                        'songs/display songbar': True,
-                        'songs/last directory import': '',
-                        'songs/last directory export': ''
-                        }
+__default_settings__ = {
+    'songs/db type': 'sqlite',
+    'songs/last search type': SongSearch.Entire,
+    'songs/last import type': SongFormat.OpenLyrics,
+    'songs/update service on edit': False,
+    'songs/search as type': False,
+    'songs/add song from service': True,
+    'songs/display songbar': True,
+    'songs/last directory import': '',
+    'songs/last directory export': '',
+    'songs/songselect username': '',
+    'songs/songselect password': '',
+    'songs/songselect searches': ''
+}
 
 
 class SongsPlugin(Plugin):
     """
-    This is the number 1 plugin, if importance were placed on any plugins. This plugin enables the user to create,
-    edit and display songs. Songs are divided into verses, and the verse order can be specified. Authors, topics and
-    song books can be assigned to songs as well.
+    This plugin enables the user to create, edit and display songs. Songs are divided into verses, and the verse order
+    can be specified. Authors, topics and song books can be assigned to songs as well.
     """
     log.info('Song Plugin loaded')
 
@@ -83,6 +87,7 @@ class SongsPlugin(Plugin):
         self.weight = -10
         self.icon_path = ':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
+        self.songselect_form = None
 
     def check_pre_conditions(self):
         """
@@ -92,10 +97,11 @@ class SongsPlugin(Plugin):
 
     def initialise(self):
         """
-        Lets Initialise the plugin
+        Initialise the plugin
         """
         log.info('Songs Initialising')
         super(SongsPlugin, self).initialise()
+        self.songselect_form = SongSelectForm(Registry().get('main_window'), self, self.manager)
         self.song_import_item.setVisible(True)
         self.song_export_item.setVisible(True)
         self.tools_reindex_item.setVisible(True)
@@ -119,12 +125,18 @@ class SongsPlugin(Plugin):
             tooltip=translate('SongsPlugin', 'Import songs using the import wizard.'),
             triggers=self.on_song_import_item_clicked)
         import_menu.addAction(self.song_import_item)
+        self.import_songselect_item = create_action(
+            import_menu, 'import_songselect_item', text=translate('SongsPlugin', 'CCLI SongSelect'),
+            statustip=translate('SongsPlugin', 'Import songs from CCLI\'s SongSelect service.'),
+            triggers=self.on_import_songselect_item_triggered
+        )
+        import_menu.addAction(self.import_songselect_item)
 
     def add_export_menu_Item(self, export_menu):
         """
         Give the Songs plugin the opportunity to add items to the **Export** menu.
 
-        :param export_menu:  The actual **Export** menu item, so that your actions can use it as their parent.
+        :param export_menu: The actual **Export** menu item, so that your actions can use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
         self.song_export_item = create_action(
@@ -179,29 +191,42 @@ class SongsPlugin(Plugin):
         """
         DuplicateSongRemovalForm(self).exec_()
 
+    def on_import_songselect_item_triggered(self):
+        """
+        Run the SongSelect importer.
+        """
+        self.songselect_form.exec_()
+        self.media_item.on_search_text_button_clicked()
+
     def on_song_import_item_clicked(self):
         """
-        The song import option has been selected
+        Run the song import wizard.
         """
         if self.media_item:
             self.media_item.on_import_click()
 
     def on_song_export_item_clicked(self):
         """
-        The song export option has been selected
+        Run the song export wizard.
         """
         if self.media_item:
             self.media_item.on_export_click()
 
     def about(self):
+        """
+        Provides information for the plugin manager to display.
+
+        :return: A translatable string with some basic information about the Songs plugin
+        """
         return translate('SongsPlugin', '<strong>Songs Plugin</strong>'
-                         '<br />The songs plugin provides the ability to display and manage songs.')
+                                        '<br />The songs plugin provides the ability to display and manage songs.')
 
     def uses_theme(self, theme):
         """
         Called to find out if the song plugin is currently using a theme.
 
-        Returns True if the theme is being used, otherwise returns False.
+        :param theme: The theme to check for usage
+        :return: True if the theme is being used, otherwise returns False
         """
         if self.manager.get_all_objects(Song, Song.theme_name == theme):
             return True

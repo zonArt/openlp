@@ -131,7 +131,8 @@ def de_hump(name):
 from .openlpmixin import OpenLPMixin
 from .registry import Registry
 from .registrymixin import RegistryMixin
+from .registryproperties import RegistryProperties
 from .uistrings import UiStrings
 from .settings import Settings
 from .applocation import AppLocation
-
+from .historycombobox import HistoryComboBox
