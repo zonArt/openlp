@@ -71,7 +71,7 @@ class Controller(object):
             return
         self.doc.slidenumber = slide_no
         self.hide_mode = hide_mode
-        log.debug('add_handler, slidenumber: %d' % slide_no)
+        log.debug('add_handler, slide_number: %d' % slide_no)
         if self.is_live:
             if hide_mode == HideMode.Screen:
                 Registry().execute('live_display_hide', HideMode.Screen)
@@ -342,7 +342,7 @@ class MessageListener(object):
             # so handler & processor is set to None, and we skip adding the handler.
             self.handler = None
         if self.handler == self.media_item.automatic:
-            self.handler = self.media_item.findControllerByType(file)
+            self.handler = self.media_item.find_controller_by_type(file)
             if not self.handler:
                 return
         if is_live:
@@ -359,6 +359,8 @@ class MessageListener(object):
     def slide(self, message):
         """
         React to the message to move to a specific slide.
+
+        :param message: The message {1} is_live {2} slide
         """
         is_live = message[1]
         slide = message[2]
@@ -370,6 +372,8 @@ class MessageListener(object):
     def first(self, message):
         """
         React to the message to move to the first slide.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -380,6 +384,8 @@ class MessageListener(object):
     def last(self, message):
         """
         React to the message to move to the last slide.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -390,6 +396,8 @@ class MessageListener(object):
     def next(self, message):
         """
         React to the message to move to the next animation/slide.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -400,6 +408,8 @@ class MessageListener(object):
     def previous(self, message):
         """
         React to the message to move to the previous animation/slide.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -410,6 +420,8 @@ class MessageListener(object):
     def shutdown(self, message):
         """
         React to message to shutdown the presentation. I.e. end the show and close the file.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -420,6 +432,8 @@ class MessageListener(object):
     def hide(self, message):
         """
         React to the message to show the desktop.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -428,6 +442,8 @@ class MessageListener(object):
     def blank(self, message):
         """
         React to the message to blank the display.
+
+        :param message: The message {1} is_live {2} slide
         """
         is_live = message[1]
         hide_mode = message[2]
@@ -437,6 +453,8 @@ class MessageListener(object):
     def unblank(self, message):
         """
         React to the message to unblank the display.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:

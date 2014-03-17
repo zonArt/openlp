@@ -83,7 +83,7 @@ class TestVerseReferenceList(TestCase):
         # THEN: The current index should be 0 and the end pointer of the entry should be '2'
         self.assertEqual(reference_list.current_index, 0, 'The current index should be 0')
         self.assertEqual(reference_list.verse_list[0]['end'], next_verse,
-            'The end in first entry should be %u' % next_verse)
+                         'The end in first entry should be %u' % next_verse)
 
     def add_another_verse_test(self):
         """
@@ -124,8 +124,8 @@ class TestVerseReferenceList(TestCase):
         # THEN: the data will be appended to the list
         self.assertEqual(len(reference_list.version_list), 1, 'The version data should be appended')
         self.assertEqual(reference_list.version_list[0],
-            {'version': version, 'copyright': copyright_, 'permission': permission},
-            'The version data should be appended')
+                         {'version': version, 'copyright': copyright_, 'permission': permission},
+                         'The version data should be appended')
 
     def add_existing_version_test(self):
         """

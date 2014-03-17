@@ -183,7 +183,7 @@ class PresentationMediaItem(MediaManagerItem):
                                                    translate('PresentationPlugin.MediaItem',
                                                              'A presentation with that filename already exists.'))
                     continue
-                controller_name = self.findControllerByType(filename)
+                controller_name = self.find_controller_by_type(filename)
                 if controller_name:
                     controller = self.controllers[controller_name]
                     doc = controller.add_document(file)
@@ -240,11 +240,16 @@ class PresentationMediaItem(MediaManagerItem):
                 self.list_view.takeItem(row)
             Settings().setValue(self.settings_section + '/presentations files', self.get_file_list())
 
-    def generate_slide_data(self, service_item, item=None, xml_version=False,
-                            remote=False, context=ServiceItemContext.Service, presentation_file=None):
+    def generate_slide_data(self, service_item, item=None, xml_version=False, remote=False,
+                            context=ServiceItemContext.Service, presentation_file=None):
         """
-        Load the relevant information for displaying the presentation in the slidecontroller. In the case of
-        powerpoints, an image for each slide.
+        Generate the slide data. Needs to be implemented by the plugin.
+
+        :param service_item: The service item to be built on
+        :param item: The Song item to be used
+        :param xml_version: The xml version (not used)
+        :param remote: Triggered from remote
+        :param context: Why is it being generated
         """
         if item:
             items = [item]
@@ -272,7 +277,7 @@ class PresentationMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 service_item.title = name
                 if os.path.exists(filename):
-                    processor = self.findControllerByType(filename)
+                    processor = self.find_controller_by_type(filename)
                     if not processor:
                         return False
                     controller = self.controllers[processor]
@@ -282,13 +287,13 @@ class PresentationMediaItem(MediaManagerItem):
                             os.path.join(doc.get_temp_folder(), 'mainslide001.png')):
                         doc.load_presentation()
                     i = 1
-                    imagefile = 'mainslide%03d.png' % i
-                    image = os.path.join(doc.get_temp_folder(), imagefile)
+                    image_file = 'mainslide%03d.png' % i
+                    image = os.path.join(doc.get_temp_folder(), image_file)
                     while os.path.isfile(image):
                         service_item.add_from_image(image, name)
                         i += 1
-                        imagefile = 'mainslide%03d.png' % i
-                        image = os.path.join(doc.get_temp_folder(), imagefile)
+                        image_file = 'mainslide%03d.png' % i
+                        image = os.path.join(doc.get_temp_folder(), image_file)
                     doc.close_presentation()
                     return True
                 else:
@@ -307,7 +312,7 @@ class PresentationMediaItem(MediaManagerItem):
                 service_item.title = name
                 if os.path.exists(filename):
                     if service_item.processor == self.automatic:
-                        service_item.processor = self.findControllerByType(filename)
+                        service_item.processor = self.find_controller_by_type(filename)
                         if not service_item.processor:
                             return False
                     controller = self.controllers[service_item.processor]
@@ -340,11 +345,13 @@ class PresentationMediaItem(MediaManagerItem):
                                                              'The presentation %s no longer exists.') % filename)
                     return False
 
-    def findControllerByType(self, filename):
+    def find_controller_by_type(self, filename):
         """
         Determine the default application controller to use for the selected file type. This is used if "Automatic" is
         set as the preferred controller. Find the first (alphabetic) enabled controller which "supports" the extension.
         If none found, then look for a controller which "also supports" it instead.
+
+        :param filename: The file name
         """
         file_type = os.path.splitext(filename)[1][1:]
         if not file_type:
@@ -360,6 +367,13 @@ class PresentationMediaItem(MediaManagerItem):
         return None
 
     def search(self, string, show_error):
+        """
+        Search in files
+
+        :param string: name to be found
+        :param show_error: not used
+        :return:
+        """
         files = Settings().value(self.settings_section + '/presentations files')
         results = []
         string = string.lower()

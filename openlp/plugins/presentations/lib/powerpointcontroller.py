@@ -112,6 +112,9 @@ class PowerpointDocument(PresentationDocument):
     def __init__(self, controller, presentation):
         """
         Constructor, store information about the file and initialise.
+
+        :param controller:
+        :param presentation:
         """
         log.debug('Init Presentation Powerpoint')
         super(PowerpointDocument, self).__init__(controller, presentation)
@@ -126,7 +129,7 @@ class PowerpointDocument(PresentationDocument):
         if not self.controller.process or not self.controller.process.Visible:
             self.controller.start_process()
         try:
-            self.controller.process.Presentations.Open(self.filepath, False, False, True)
+            self.controller.process.Presentations.Open(self.file_path, False, False, True)
         except pywintypes.com_error:
             log.debug('PPT open failed')
             return False
@@ -275,12 +278,14 @@ class PowerpointDocument(PresentationDocument):
         log.debug('get_slide_count')
         return self.presentation.Slides.Count
 
-    def goto_slide(self, slideno):
+    def goto_slide(self, slide_no):
         """
         Moves to a specific slide in the presentation.
+
+        :param slide_no: The slide the text is required for, starting at 1
         """
         log.debug('goto_slide')
-        self.presentation.SlideShowWindow.View.GotoSlide(slideno)
+        self.presentation.SlideShowWindow.View.GotoSlide(slide_no)
 
     def next_step(self):
         """
@@ -302,8 +307,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns the text on the slide.
 
-        ``slide_no``
-            The slide the text is required for, starting at 1.
+        :param slide_no: The slide the text is required for, starting at 1
         """
         return _get_text_from_shapes(self.presentation.Slides(slide_no).Shapes)
 
@@ -311,8 +315,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns the text on the slide.
 
-        ``slide_no``
-            The slide the notes are required for, starting at 1.
+        :param slide_no: The slide the text is required for, starting at 1
         """
         return _get_text_from_shapes(self.presentation.Slides(slide_no).NotesPage.Shapes)
 
@@ -321,8 +324,7 @@ def _get_text_from_shapes(shapes):
     """
     Returns any text extracted from the shapes on a presentation slide.
 
-    ``shapes``
-        A set of shapes to search for text.
+    :param shapes: A set of shapes to search for text.
     """
     text = ''
     for index in range(shapes.Count):
