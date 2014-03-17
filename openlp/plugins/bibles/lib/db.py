@@ -74,8 +74,7 @@ def init_schema(url):
     """
     Setup a bible database connection and initialise the database schema.
 
-    ``url``
-        The database to setup.
+    :param url: The database to setup.
     """
     session, metadata = init_db(url)
 
@@ -725,9 +724,9 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
     @staticmethod
     def get_webbibles(source):
         """
-        Return the bibles a webbible provide for download.
+        Return the bibles a web_bible provide for download.
 
-        :param source: The source of the webbible.
+        :param source: The source of the web_bible.
         """
         log.debug('BiblesResourcesDB.get_webbibles("%s")', source)
         if not isinstance(source, str):
@@ -749,10 +748,10 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
     @staticmethod
     def get_webbible(abbreviation, source):
         """
-        Return the bibles a webbible provide for download.
+        Return the bibles a web_bible provide for download.
 
-        :param abbreviation: The abbreviation of the webbible.
-        :param source: The source of the webbible.
+        :param abbreviation: The abbreviation of the web_bible.
+        :param source: The source of the web_bible.
         """
         log.debug('BiblesResourcesDB.get_webbibles("%s", "%s")', abbreviation, source)
         if not isinstance(abbreviation, str):

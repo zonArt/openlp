@@ -83,14 +83,10 @@ class CustomPlugin(Plugin):
 
     def rename_theme(self, old_theme, new_theme):
         """
-        Renames a theme the custom plugin is using making the plugin use the
-        new name.
+        Renames a theme the custom plugin is using making the plugin use the new name.
 
-        ``oldTheme``
-            The name of the theme the plugin should stop using.
-
-        ``newTheme``
-            The new name the plugin should now use.
+        :param old_theme: The name of the theme the plugin should stop using.
+        :param new_theme: The new name the plugin should now use.
         """
         customs_using_theme = self.db_manager.get_all_objects(CustomSlide, CustomSlide.theme_name == old_theme)
         for custom in customs_using_theme:

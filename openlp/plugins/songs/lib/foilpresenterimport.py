@@ -211,8 +211,7 @@ class FoilPresenter(object):
         """
         Create and save a song from Foilpresenter format xml to the database.
 
-        ``xml``
-            The XML to parse (unicode).
+        :param xml: The XML to parse (unicode).
         """
         # No xml get out of here.
         if not xml:

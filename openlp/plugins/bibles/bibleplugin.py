@@ -136,8 +136,7 @@ class BiblePlugin(Plugin):
         """
         Give the bible plugin the opportunity to add items to the **Tools** menu.
 
-        ``tools_menu``
-            The actual **Tools** menu item, so that your actions can use it as their parent.
+        :param tools_menu:  The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.debug('add tools menu')
         self.tools_upgrade_item = create_action(

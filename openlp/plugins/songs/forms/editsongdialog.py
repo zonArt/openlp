@@ -334,11 +334,8 @@ def create_combo_box(parent, name):
     """
     Utility method to generate a standard combo box for this dialog.
 
-    ``parent``
-        The parent widget for this combo box.
-
-    ``name``
-        The object name.
+    :param parent: The parent widget for this combo box.
+    :param name: The object name
     """
     combo_box = QtGui.QComboBox(parent)
     combo_box.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)

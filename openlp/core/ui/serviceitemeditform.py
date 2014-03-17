@@ -131,8 +131,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         Called when the currentRow has changed.
 
-        ``row``
-            The row number (int).
+        :param row: The row number (int).
         """
         # Disable all buttons, as no row is selected or only one image is left.
         if row == -1 or self.list_widget.count() == 1:

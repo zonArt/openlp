@@ -52,8 +52,7 @@ class LanguageManager(object):
         """
         Set up a translator to use in this instance of OpenLP
 
-        ``language``
-            The language to load into the translator
+        :param language: The language to load into the translator
         """
         if LanguageManager.auto_language:
             language = QtCore.QLocale.system().name()
@@ -85,8 +84,7 @@ class LanguageManager(object):
         """
         Load the language name from a language file
 
-        ``qm_file``
-            The file to obtain the name from
+        :param qm_file: The file to obtain the name from
         """
         translator = QtCore.QTranslator()
         translator.load(qm_file)
@@ -110,11 +108,8 @@ class LanguageManager(object):
         """
         Set the language to translate OpenLP into
 
-        ``action``
-            The language menu option
-
-        ``message``
-            Display the message option
+        :param action:  The language menu option
+        :param message:  Display the message option
         """
         language = 'en'
         if action:

@@ -46,11 +46,10 @@ class SettingsTab(QtGui.QWidget):
         """
         Constructor to create the Settings tab item.
 
-        ``title``
-            The title of the tab, which is used internally for the tab handling.
-
-        ``visible_title``
-            The title of the tab, which is usually displayed on the tab.
+        :param parent:
+        :param title: The title of the tab, which is used internally for the tab handling.
+        :param visible_title: The title of the tab, which is usually displayed on the tab.
+        :param icon_path:
         """
         super(SettingsTab, self).__init__(parent)
         self.tab_title = title
@@ -129,9 +128,7 @@ class SettingsTab(QtGui.QWidget):
         """
         Changes which need to be made after setup of application
 
-        ``postUpdate``
-            Indicates if called before or after updates.
-
+        :param post_update: Indicates if called before or after updates.
         """
         pass
 

@@ -397,11 +397,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         Checks if the given ``changing_action `` can use the given ``key_sequence``. Returns ``True`` if the
         ``key_sequence`` can be used by the action, otherwise displays a dialog and returns ``False``.
 
-        ``changing_action``
-            The action which wants to use the ``key_sequence``.
-
-        ``key_sequence``
-            The key sequence which the action want so use.
+        :param changing_action: The action which wants to use the ``key_sequence``.
+        :param key_sequence: The key sequence which the action want so use.
         """
         is_valid = True
         for category in self.action_list.categories:

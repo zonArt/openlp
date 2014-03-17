@@ -522,8 +522,7 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         """
         The constructor for the display form.
 
-        ``parent``
-            The parent widget.
+        :param parent:  The parent widget.
         """
         super(AudioPlayer, self).__init__(parent)
         self.current_index = -1

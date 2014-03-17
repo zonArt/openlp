@@ -176,8 +176,7 @@ class PluginManager(RegistryMixin, OpenLPMixin):
         """
         Loop through all the plugins and give them an opportunity to upgrade their settings.
 
-        ``settings``
-            The Settings object containing the old settings.
+        :param settings: The Settings object containing the old settings.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
@@ -185,8 +184,7 @@ class PluginManager(RegistryMixin, OpenLPMixin):
 
     def initialise_plugins(self):
         """
-        Loop through all the plugins and give them an opportunity to
-        initialise themselves.
+        Loop through all the plugins and give them an opportunity to initialise themselves.
         """
         for plugin in self.plugins:
             self.log_info('initialising plugins %s in a %s state' % (plugin.name, plugin.is_active()))
@@ -196,8 +194,7 @@ class PluginManager(RegistryMixin, OpenLPMixin):
 
     def finalise_plugins(self):
         """
-        Loop through all the plugins and give them an opportunity to
-        clean themselves up
+        Loop through all the plugins and give them an opportunity to clean themselves up
         """
         for plugin in self.plugins:
             if plugin.is_active():

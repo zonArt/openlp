@@ -67,14 +67,9 @@ class BibleImportForm(OpenLPWizard):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
-        ``parent``
-            The QWidget-derived parent of the wizard.
-
-        ``manager``
-            The Bible manager.
-
-        ``bible_plugin``
-            The Bible plugin.
+        :param parent: The QWidget-derived parent of the wizard.
+        :param manager: The Bible manager.
+        :param bible_plugin: The Bible plugin.
         """
         self.manager = manager
         self.web_bible_list = {}
