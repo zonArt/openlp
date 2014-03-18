@@ -41,17 +41,22 @@ from tests.functional import patch, MagicMock
 TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'songshowplussongs'))
 
+
 class TestSongShowPlusFileImport(SongImportTestHelper):
+
     def __init__(self, *args, **kwargs):
         self.importer_class_name = 'SongShowPlusImport'
         self.importer_module_name = 'songshowplusimport'
         super(TestSongShowPlusFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
-        test_import = self.file_import(os.path.join(TEST_PATH, 'Amazing Grace.sbsong'),
-            self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
-        test_import = self.file_import(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.sbsong'),
-            self.load_external_result_data(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.json')))
+        """
+        Test that loading a SongShow Plus file works correctly on various files
+        """
+        self.file_import(os.path.join(TEST_PATH, 'Amazing Grace.sbsong'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
+        self.file_import(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.sbsong'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.json')))
 
 
 class TestSongShowPlusImport(TestCase):
@@ -74,7 +79,7 @@ class TestSongShowPlusImport(TestCase):
 
     def invalid_import_source_test(self):
         """
-        Test SongShowPlusImport.doImport handles different invalid import_source values
+        Test SongShowPlusImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
@@ -88,14 +93,14 @@ class TestSongShowPlusImport(TestCase):
             for source in ['not a list', 0]:
                 importer.import_source = source
 
-                # THEN: doImport should return none and the progress bar maximum should not be set.
-                self.assertIsNone(importer.doImport(), 'doImport should return None when import_source is not a list')
+                # THEN: do_import should return none and the progress bar maximum should not be set.
+                self.assertIsNone(importer.do_import(), 'do_import should return None when import_source is not a list')
                 self.assertEquals(mocked_import_wizard.progress_bar.setMaximum.called, False,
                                   'setMaximum on import_wizard.progress_bar should not have been called')
 
     def valid_import_source_test(self):
         """
-        Test SongShowPlusImport.doImport handles different invalid import_source values
+        Test SongShowPlusImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
@@ -108,10 +113,10 @@ class TestSongShowPlusImport(TestCase):
             # WHEN: Import source is a list
             importer.import_source = ['List', 'of', 'files']
 
-            # THEN: doImport should return none and the progress bar setMaximum should be called with the length of
+            # THEN: do_import should return none and the progress bar setMaximum should be called with the length of
             #       import_source.
-            self.assertIsNone(importer.doImport(),
-                'doImport should return None when import_source is a list and stop_import_flag is True')
+            self.assertIsNone(importer.do_import(),
+                'do_import should return None when import_source is a list and stop_import_flag is True')
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(len(importer.import_source))
 
     def to_openlp_verse_tag_test(self):

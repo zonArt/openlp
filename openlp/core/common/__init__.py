@@ -38,7 +38,7 @@ import traceback
 
 from PyQt4 import QtCore
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__+'.__init__')
 
 
 FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
@@ -131,7 +131,8 @@ def de_hump(name):
 from .openlpmixin import OpenLPMixin
 from .registry import Registry
 from .registrymixin import RegistryMixin
+from .registryproperties import RegistryProperties
 from .uistrings import UiStrings
 from .settings import Settings
 from .applocation import AppLocation
-
+from .historycombobox import HistoryComboBox

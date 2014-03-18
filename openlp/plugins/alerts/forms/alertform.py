@@ -29,7 +29,7 @@
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.common import translate
+from openlp.core.common import Registry, translate
 from openlp.plugins.alerts.lib.db import AlertItem
 
 from .alertdialog import Ui_AlertDialog
@@ -46,8 +46,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.manager = plugin.manager
         self.plugin = plugin
         self.item_id = None
-        # TODO: Use Registry()
-        super(AlertForm, self).__init__(self.plugin.main_window)
+        super(AlertForm, self).__init__( Registry().get('main_window'))
         self.setupUi(self)
         self.display_button.clicked.connect(self.on_display_clicked)
         self.display_close_button.clicked.connect(self.on_display_close_clicked)

@@ -74,7 +74,7 @@ class MediaMediaItem(MediaManagerItem):
         self.display_controller.controller_layout = QtGui.QVBoxLayout()
         self.media_controller.register_controller(self.display_controller)
         self.media_controller.set_controls_visible(self.display_controller, False)
-        self.display_controller.preview_display = Display(self.display_controller, False, self.display_controller)
+        self.display_controller.preview_display = Display(self.display_controller)
         self.display_controller.preview_display.hide()
         self.display_controller.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
         self.display_controller.preview_display.screen = {'size': self.display_controller.preview_display.geometry()}
@@ -131,6 +131,11 @@ class MediaMediaItem(MediaManagerItem):
         self.display_type_combo_box.currentIndexChanged.connect(self.override_player_changed)
 
     def override_player_changed(self, index):
+        """
+        The Player has been overridden
+
+        :param index: Index
+        """
         player = get_media_players()[0]
         if index == 0:
             set_media_players(player)
@@ -178,9 +183,15 @@ class MediaMediaItem(MediaManagerItem):
                                                      'the media file "%s" no longer exists.') % filename)
 
     def generate_slide_data(self, service_item, item=None, xml_version=False, remote=False,
-                            context=ServiceItemContext.Live):
+                            context=ServiceItemContext.Service):
         """
         Generate the slide data. Needs to be implemented by the plugin.
+
+        :param service_item: The service item to be built on
+        :param item: The Song item to be used
+        :param xml_version: The xml version (not used)
+        :param remote: Triggered from remote
+        :param context: Why is it being generated
         """
         if item is None:
             item = self.list_view.currentItem()
@@ -269,6 +280,12 @@ class MediaMediaItem(MediaManagerItem):
 
     def load_list(self, media, target_group=None):
         # Sort the media by its filename considering language specific characters.
+        """
+        Load the media list
+
+        :param media: The media
+        :param target_group:
+        """
         media.sort(key=lambda file_name: get_locale_key(os.path.split(str(file_name))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)

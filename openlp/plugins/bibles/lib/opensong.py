@@ -55,8 +55,7 @@ class OpenSongBible(BibleDB):
         """
         Recursively get all text in an objectify element and its child elements.
 
-        ``element``
-            An objectify element to get the text from
+        :param element: An objectify element to get the text from
         """
         verse_text = ''
         if element.text:
@@ -122,14 +121,16 @@ class OpenSongBible(BibleDB):
                         else:
                             verse_number += 1
                         self.create_verse(db_book.id, chapter_number, verse_number, self.get_text(verse))
-                    self.wizard.increment_progress_bar(translate('BiblesPlugin.Opensong', 'Importing %s %s...',
-                        'Importing <book name> <chapter>...')) % (db_book.name, chapter_number)
+                    self.wizard.increment_progress_bar(
+                        translate('BiblesPlugin.Opensong', 'Importing %s %s...',
+                                  'Importing <book name> <chapter>...')) % (db_book.name, chapter_number)
                 self.session.commit()
             self.application.process_events()
         except etree.XMLSyntaxError as inst:
-            critical_error_message_box(message=translate('BiblesPlugin.OpenSongImport',
-                'Incorrect Bible file type supplied. OpenSong Bibles may be '
-                'compressed. You must decompress them before import.'))
+            critical_error_message_box(
+                message=translate('BiblesPlugin.OpenSongImport',
+                                  'Incorrect Bible file type supplied. OpenSong Bibles may be '
+                                  'compressed. You must decompress them before import.'))
             log.exception(inst)
             success = False
         except (IOError, AttributeError):

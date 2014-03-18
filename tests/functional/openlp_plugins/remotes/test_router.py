@@ -64,6 +64,7 @@ class TestRouter(TestCase):
         """
         Create the UI
         """
+        Settings.setDefaultFormat(Settings.IniFormat)
         self.fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
@@ -76,7 +77,7 @@ class TestRouter(TestCase):
         """
         del self.application
         os.close(self.fd)
-        os.unlink(self.ini_file)
+        os.unlink(Settings().fileName())
 
     def password_encrypter_test(self):
         """
@@ -90,7 +91,6 @@ class TestRouter(TestCase):
         router = HttpRouter()
         router.initialise()
         test_value = 'b3BlbmxwOnBhc3N3b3Jk'
-        print(router.auth)
 
         # THEN: the function should return the correct password
         self.assertEqual(router.auth, test_value,

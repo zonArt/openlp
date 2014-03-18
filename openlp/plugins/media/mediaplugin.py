@@ -66,7 +66,7 @@ class MediaPlugin(Plugin):
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
-            '<br />The media plugin provides playback of audio and video.')
+                               '<br />The media plugin provides playback of audio and video.')
         return about_text
 
     def set_plugin_text_strings(self):

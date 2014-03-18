@@ -52,6 +52,7 @@ else:
         import uno
         from com.sun.star.beans import PropertyValue
         from com.sun.star.task import ErrorCodeIOException
+
         uno_available = True
     except ImportError:
         uno_available = False
@@ -183,9 +184,9 @@ class ImpressController(PresentationController):
         docs = desktop.getComponents()
         cnt = 0
         if docs.hasElements():
-            element_list = docs.createEnumeration()
-            while element_list.hasMoreElements():
-                doc = element_list.nextElement()
+            list_elements = docs.createEnumeration()
+            while list_elements.hasMoreElements():
+                doc = list_elements.nextElement()
                 if doc.getImplementationName() != 'com.sun.star.comp.framework.BackingComp':
                     cnt += 1
         if cnt > 0:
@@ -203,7 +204,7 @@ class ImpressDocument(PresentationDocument):
     Class which holds information and controls a single presentation.
     """
 
-    def __init__(self, controller, presentation):
+    def __init__ (self, controller, presentation):
         """
         Constructor, store information about the file and initialise.
         """
@@ -225,10 +226,10 @@ class ImpressDocument(PresentationDocument):
             if desktop is None:
                 self.controller.start_process()
                 desktop = self.controller.get_com_desktop()
-            url = 'file:///' + self.filepath.replace('\\', '/').replace(':', '|').replace(' ', '%20')
+            url = 'file:///' + self.file_path.replace('\\', '/').replace(':', '|').replace(' ', '%20')
         else:
             desktop = self.controller.get_uno_desktop()
-            url = uno.systemPathToFileUrl(self.filepath)
+            url = uno.systemPathToFileUrl(self.file_path)
         if desktop is None:
             return False
         self.desktop = desktop
@@ -353,7 +354,7 @@ class ImpressDocument(PresentationDocument):
         log.debug('unblank screen OpenOffice')
         return self.control.resume()
 
-    def blank_screen(self):
+    def blank_screen (self):
         """
         Blanks the screen.
         """
@@ -410,11 +411,13 @@ class ImpressDocument(PresentationDocument):
         """
         return self.document.getDrawPages().getCount()
 
-    def goto_slide(self, slideno):
+    def goto_slide(self, slide_no):
         """
         Go to a specific slide (from 1).
+
+        :param slide_no: The slide the text is required for, starting at 1
         """
-        self.control.gotoSlideIndex(slideno-1)
+        self.control.gotoSlideIndex(slide_no - 1)
 
     def next_step(self):
         """
@@ -436,8 +439,7 @@ class ImpressDocument(PresentationDocument):
         """
         Returns the text on the slide.
 
-        ``slide_no``
-            The slide the text is required for, starting at 1
+        :param slide_no: The slide the text is required for, starting at 1
         """
         return self.__get_text_from_page(slide_no)
 
@@ -445,18 +447,17 @@ class ImpressDocument(PresentationDocument):
         """
         Returns the text in the slide notes.
 
-        ``slide_no``
-            The slide the notes are required for, starting at 1
+        :param slide_no: The slide the notes are required for, starting at 1
         """
         return self.__get_text_from_page(slide_no, TextType.Notes)
 
     def __get_text_from_page(self, slide_no, text_type=TextType.SlideText):
         """
         Return any text extracted from the presentation page.
-        ``slide_no``
-            1 based slide index
-        ``text_type``
-            A TextType. Enumeration of the types of supported text 
+
+        :param slide_no: The slide the notes are required for, starting at 1
+        :param notes: A boolean. If set the method searches the notes of the slide.
+        :param text_type: A TextType. Enumeration of the types of supported text.
         """
         text = ''
         if TextType.Title <= text_type <= TextType.Notes:

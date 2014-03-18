@@ -186,7 +186,7 @@ class SongReviewWidget(QtGui.QWidget):
         # Some pixels are missing at the bottom of the table, but all themes I tried still allowed
         # to read the last verse line, so I'll just leave it at that.
         self.song_info_verse_list_widget.setFixedHeight(self.song_info_verse_list_widget.verticalHeader().length() +
-            self.song_info_verse_list_widget.verticalHeader().offset() + 6)
+                                                        self.song_info_verse_list_widget.verticalHeader().offset() + 6)
         self.song_group_box_layout.addWidget(self.song_info_verse_list_widget)
         self.song_group_box_layout.addStretch()
         self.song_vertical_layout.addWidget(self.song_group_box)

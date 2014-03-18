@@ -524,7 +524,7 @@ class BibleImportForm(OpenLPWizard):
             self.progress_label.setText(WizardStrings.StartingImport)
         self.application.process_events()
 
-    def performWizard(self):
+    def perform_wizard(self):
         """
         Perform the actual import.
         """

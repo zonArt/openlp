@@ -38,20 +38,20 @@ from openlp.plugins.songs.lib.songbeamerimport import SongBeamerImport
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'songbeamersongs'))
-SONG_TEST_DATA = {'Lobsinget dem Herrn.sng':
-        {'title': 'GL 1 - Lobsinget dem Herrn',
-         'verses':
-             [('1. Lobsinget dem Herrn,\no preiset Ihn gern!\n'
-               'Anbetung und Lob Ihm gebühret.\n', 'v'),
-              ('2. Lobsingt Seiner Lieb´,\ndie einzig ihn trieb,\n'
-               'zu sterben für unsere Sünden!\n', 'v'),
-              ('3. Lobsingt Seiner Macht!\nSein Werk ist vollbracht:\n'
-               'Er sitzet zur Rechten des Vaters.\n', 'v'),
-              ('4. Lobsingt seiner Treu´,\ndie immerdar neu,\n'
-               'bis Er uns zur Herrlichket führet!\n\n', 'v')],
-         'song_book_name': 'Glaubenslieder I',
-         'song_number': "1"}
-        }
+SONG_TEST_DATA = {
+    'Lobsinget dem Herrn.sng': {
+        'title': 'GL 1 - Lobsinget dem Herrn',
+        'verses': [
+            ('1. Lobsinget dem Herrn,\no preiset Ihn gern!\nAnbetung und Lob Ihm gebühret.\n', 'v'),
+            ('2. Lobsingt Seiner Lieb´,\ndie einzig ihn trieb,\nzu sterben für unsere Sünden!\n', 'v'),
+            ('3. Lobsingt Seiner Macht!\nSein Werk ist vollbracht:\nEr sitzet zur Rechten des Vaters.\n', 'v'),
+            ('4. Lobsingt seiner Treu´,\ndie immerdar neu,\nbis Er uns zur Herrlichket führet!\n\n', 'v')
+        ],
+        'song_book_name': 'Glaubenslieder I',
+        'song_number': "1"
+    }
+}
+
 
 class TestSongBeamerImport(TestCase):
     """
@@ -73,7 +73,7 @@ class TestSongBeamerImport(TestCase):
 
     def invalid_import_source_test(self):
         """
-        Test SongBeamerImport.doImport handles different invalid import_source values
+        Test SongBeamerImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
@@ -87,14 +87,14 @@ class TestSongBeamerImport(TestCase):
             for source in ['not a list', 0]:
                 importer.import_source = source
 
-                # THEN: doImport should return none and the progress bar maximum should not be set.
-                self.assertIsNone(importer.doImport(), 'doImport should return None when import_source is not a list')
+                # THEN: do_import should return none and the progress bar maximum should not be set.
+                self.assertIsNone(importer.do_import(), 'do_import should return None when import_source is not a list')
                 self.assertEquals(mocked_import_wizard.progress_bar.setMaximum.called, False,
                                   'setMaxium on import_wizard.progress_bar should not have been called')
 
     def valid_import_source_test(self):
         """
-        Test SongBeamerImport.doImport handles different invalid import_source values
+        Test SongBeamerImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
@@ -107,10 +107,10 @@ class TestSongBeamerImport(TestCase):
             # WHEN: Import source is a list
             importer.import_source = ['List', 'of', 'files']
 
-            # THEN: doImport should return none and the progress bar setMaximum should be called with the length of
+            # THEN: do_import should return none and the progress bar setMaximum should be called with the length of
             #       import_source.
-            self.assertIsNone(importer.doImport(),
-                'doImport should return None when import_source is a list and stop_import_flag is True')
+            self.assertIsNone(importer.do_import(),
+                'do_import should return None when import_source is a list and stop_import_flag is True')
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(len(importer.import_source))
 
     def file_import_test(self):
@@ -130,7 +130,7 @@ class TestSongBeamerImport(TestCase):
                 importer = SongBeamerImport(mocked_manager)
                 importer.import_wizard = mocked_import_wizard
                 importer.stop_import_flag = False
-                importer.addVerse = mocked_add_verse
+                importer.add_verse = mocked_add_verse
                 importer.finish = mocked_finish
 
                 # WHEN: Importing each file
@@ -140,16 +140,16 @@ class TestSongBeamerImport(TestCase):
                 song_book_name = SONG_TEST_DATA[song_file]['song_book_name']
                 song_number = SONG_TEST_DATA[song_file]['song_number']
 
-                # THEN: doImport should return none, the song data should be as expected, and finish should have been
+                # THEN: do_import should return none, the song data should be as expected, and finish should have been
                 #       called.
-                self.assertIsNone(importer.doImport(), 'doImport should return None when it has completed')
+                self.assertIsNone(importer.do_import(), 'do_import should return None when it has completed')
                 self.assertEquals(importer.title, title, 'title for %s should be "%s"' % (song_file, title))
                 for verse_text, verse_tag in add_verse_calls:
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if song_book_name:
-                    self.assertEquals(importer.songBookName, song_book_name, 'songBookName for %s should be "%s"'
+                    self.assertEquals(importer.song_book_name, song_book_name, 'song_book_name for %s should be "%s"'
                         % (song_file, song_book_name))
                 if song_number:
-                    self.assertEquals(importer.songNumber, song_number, 'songNumber for %s should be %s'
+                    self.assertEquals(importer.song_number, song_number, 'song_number for %s should be %s'
                         % (song_file, song_number))
                 mocked_finish.assert_called_with()

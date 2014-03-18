@@ -62,8 +62,8 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         Override the inherited method to check before we close.
         """
         if not self.name_edit.text():
-            critical_error_message_box(message=translate('SongsPlugin.TopicsForm',
-                'You need to type in a topic name.'))
+            critical_error_message_box(
+                message=translate('SongsPlugin.TopicsForm', 'You need to type in a topic name.'))
             self.name_edit.setFocus()
             return False
         else:

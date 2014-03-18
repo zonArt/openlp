@@ -3,7 +3,7 @@ Package to test the openlp.core.ui.mainwindow package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from openlp.core.common import Registry
 from openlp.core.ui.mainwindow import MainWindow
@@ -18,7 +18,11 @@ class TestMainWindow(TestCase):
         """
         Registry.create()
         self.registry = Registry()
-        self.app = QtGui.QApplication([])
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
         # Mock cursor busy/normal methods.
         self.app.set_busy_cursor = MagicMock()
         self.app.set_normal_cursor = MagicMock()
@@ -42,7 +46,6 @@ class TestMainWindow(TestCase):
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         del self.main_window
-        del self.app
 
     def restore_current_media_manager_item_test(self):
         """

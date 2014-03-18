@@ -27,11 +27,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import os
 import logging
 import zipfile
 import re
 from xml.etree import ElementTree
+
 
 if os.name == 'nt':
     from ctypes import cdll
@@ -124,12 +126,17 @@ class PptviewDocument(PresentationDocument):
         the background PptView task started earlier.
         """
         log.debug('LoadPresentation')
+        temp_folder = self.get_temp_folder()
         size = ScreenList().current['size']
         rect = RECT(size.x(), size.y(), size.right(), size.bottom())
-        filepath = str(self.filepath.replace('/', '\\'))
-        if not os.path.isdir(self.get_temp_folder()):
-            os.makedirs(self.get_temp_folder())
-        self.ppt_id = self.controller.process.OpenPPT(filepath, None, rect, str(self.get_temp_folder()) + '\\slide')
+        file_path = os.path.normpath(self.file_path)
+        preview_path = os.path.join(temp_folder, 'slide')
+        # Ensure that the paths are null terminated
+        file_path = file_path.encode('utf-16-le') + b'\0'
+        preview_path = preview_path.encode('utf-16-le') + b'\0'
+        if not os.path.isdir(temp_folder):
+            os.makedirs(temp_folder)
+        self.ppt_id = self.controller.process.OpenPPT(file_path, None, rect, preview_path)
         if self.ppt_id >= 0:
             self.create_thumbnails()
             self.stop_presentation()
@@ -290,11 +297,13 @@ class PptviewDocument(PresentationDocument):
         """
         return self.controller.process.GetSlideCount(self.ppt_id)
 
-    def goto_slide(self, slideno):
+    def goto_slide(self, slide_no):
         """
         Moves to a specific slide in the presentation.
+
+        :param slide_no: The slide the text is required for, starting at 1
         """
-        self.controller.process.GotoSlide(self.ppt_id, slideno)
+        self.controller.process.GotoSlide(self.ppt_id, slide_no)
 
     def next_step(self):
         """
