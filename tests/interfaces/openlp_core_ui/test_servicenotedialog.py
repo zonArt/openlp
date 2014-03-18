@@ -36,20 +36,17 @@ from PyQt4 import QtCore, QtGui, QtTest
 from openlp.core.common import Registry
 from openlp.core.ui import servicenoteform
 from tests.interfaces import patch
+from tests.helpers.testmixin import TestMixin
 
 
-class TestStartNoteDialog(TestCase):
+class TestStartNoteDialog(TestCase, TestMixin):
 
     def setUp(self):
         """
         Create the UI
         """
         Registry.create()
-        old_app_instance = QtCore.QCoreApplication.instance()
-        if old_app_instance is None:
-            self.app = QtGui.QApplication([])
-        else:
-            self.app = old_app_instance
+        self.get_application()
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
         self.form = servicenoteform.ServiceNoteForm()

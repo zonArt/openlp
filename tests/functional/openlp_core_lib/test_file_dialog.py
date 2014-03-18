@@ -7,6 +7,7 @@ from openlp.core.common import UiStrings
 from openlp.core.lib.filedialog import FileDialog
 from tests.functional import MagicMock, patch
 
+
 class TestFileDialog(TestCase):
     """
     Test the functions in the :mod:`filedialog` module.
@@ -46,7 +47,7 @@ class TestFileDialog(TestCase):
     def returned_file_list_test(self):
         """
             Test that FileDialog.getOpenFileNames handles a list of files properly when QFileList.getOpenFileNames
-            returns a good file name, a urlencoded file name and a non-existing file
+            returns a good file name, a url encoded file name and a non-existing file
         """
         self.mocked_os.rest()
         self.mocked_qt_gui.reset()
@@ -62,7 +63,7 @@ class TestFileDialog(TestCase):
         result = FileDialog.getOpenFileNames(self.mocked_parent)
 
         # THEN: os.path.exists should have been called with known args. QmessageBox.information should have been
-        #       called. The returned result should corrilate with the input.
+        #       called. The returned result should correlate with the input.
         self.mocked_os.path.exists.assert_callde_with('/Valid File')
         self.mocked_os.path.exists.assert_callde_with('/url%20encoded%20file%20%231')
         self.mocked_os.path.exists.assert_callde_with('/url encoded file #1')

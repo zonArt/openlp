@@ -30,11 +30,11 @@
 Provide the generic plugin functionality for OpenLP plugins.
 """
 import logging
-import os
+
 
 from PyQt4 import QtCore
 
-from openlp.core.common import Registry, Settings, UiStrings
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
@@ -65,7 +65,7 @@ class StringContent(object):
     VisibleName = 'visible_name'
 
 
-class Plugin(QtCore.QObject):
+class Plugin(QtCore.QObject, RegistryProperties):
     """
     Base class for openlp plugins to inherit from.
 
@@ -410,26 +410,3 @@ class Plugin(QtCore.QObject):
         The plugin's needs to handle a new song creation
         """
         pass
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

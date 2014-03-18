@@ -140,7 +140,7 @@ class AlertsPlugin(Plugin):
         self.weight = -3
         self.icon_path = ':/plugins/plugin_alerts.png'
         self.icon = build_icon(self.icon_path)
-        self.alerts_manager = AlertsManager(self)
+        AlertsManager(self)
         self.manager = Manager('alerts', init_schema)
         self.alert_form = AlertForm(self)
 
