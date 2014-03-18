@@ -93,10 +93,11 @@ def upgrade_db(url, upgrade):
         """
         pass
 
-    metadata_table = Table('metadata', metadata,
-                           Column('key', types.Unicode(64), primary_key=True),
-                           Column('value', types.UnicodeText(), default=None)
-                           )
+    metadata_table = Table(
+        'metadata', metadata,
+        Column('key', types.Unicode(64), primary_key=True),
+        Column('value', types.UnicodeText(), default=None)
+    )
     metadata_table.create(checkfirst=True)
     mapper(Metadata, metadata_table)
     version_meta = session.query(Metadata).get('version')
@@ -137,7 +138,6 @@ def delete_database(plugin_name, db_file_name=None):
     :param plugin_name: The name of the plugin to remove the database for
     :param db_file_name: The database file name. Defaults to None resulting in the plugin_name being used.
     """
-    db_file_path = None
     if db_file_name:
         db_file_path = os.path.join(AppLocation.get_section_data_path(plugin_name), db_file_name)
     else:
