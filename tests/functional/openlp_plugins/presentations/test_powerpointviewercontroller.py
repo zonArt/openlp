@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,8 +29,12 @@
 """
 Functional tests to test the PptviewController class and related methods.
 """
-from unittest import TestCase
+from unittest import TestCase, SkipTest
 import os
+
+if os.name != 'nt':
+    raise SkipTest('Not Windows, skipping test')
+
 from mock import MagicMock, patch, mock_open
 from openlp.plugins.presentations.lib.pptviewcontroller import PptviewController, PptviewDocument
 
