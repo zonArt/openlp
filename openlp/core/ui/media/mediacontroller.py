@@ -35,7 +35,7 @@ import os
 import datetime
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, RegistryMixin, Settings, UiStrings, translate
+from openlp.core.common import OpenLPMixin, Registry, RegistryMixin, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
@@ -80,7 +80,7 @@ class MediaSlider(QtGui.QSlider):
         QtGui.QSlider.mouseReleaseEvent(self, event)
 
 
-class MediaController(object):
+class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
     """
     The implementation of the Media Controller. The Media Controller adds an own class for every Player.
     Currently these are QtWebkit, Phonon and Vlc. display_controllers are an array of controllers keyed on the
@@ -93,12 +93,11 @@ class MediaController(object):
     current_media_players is an array of player instances keyed on ControllerType.
 
     """
-    def __init__(self):
+    def __init__(self, parent=None):
         """
         Constructor
         """
-        Registry().register('media_controller', self)
-        Registry().register_function('bootstrap_initialise', self.bootstrap_initialise)
+        super(MediaController, self).__init__(parent)
         self.media_players = {}
         self.display_controllers = {}
         self.current_media_players = {}
@@ -703,23 +702,3 @@ class MediaController(object):
         if controller.is_live:
             return controller.display
         return controller.preview_display
-
-    def _get_service_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)

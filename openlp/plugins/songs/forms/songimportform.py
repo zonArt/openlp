@@ -35,7 +35,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.common import RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import FileDialog
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
@@ -44,7 +44,7 @@ from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
 log = logging.getLogger(__name__)
 
 
-class SongImportForm(OpenLPWizard):
+class SongImportForm(OpenLPWizard, RegistryProperties):
     """
     This is the Song Import Wizard, which allows easy importing of Songs
     into OpenLP from other formats like OpenLyrics, OpenSong and CCLI.
@@ -479,26 +479,6 @@ class SongImportForm(OpenLPWizard):
         self.format_widgets[this_format]['disabled_label'] = disabled_label
         self.format_widgets[this_format]['import_widget'] = import_widget
         return import_widget
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
 
 
 class SongImportSourcePage(QtGui.QWizardPage):

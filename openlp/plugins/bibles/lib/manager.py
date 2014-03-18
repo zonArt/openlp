@@ -30,7 +30,7 @@
 import logging
 import os
 
-from openlp.core.common import Registry, AppLocation, Settings, translate
+from openlp.core.common import RegistryProperties, AppLocation, Settings, translate
 from openlp.core.utils import delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
@@ -84,7 +84,7 @@ class BibleFormat(object):
         ]
 
 
-class BibleManager(object):
+class BibleManager(RegistryProperties):
     """
     The Bible manager which holds and manages all the Bibles.
     """
@@ -404,16 +404,5 @@ class BibleManager(object):
         """
         for bible in self.db_cache:
             self.db_cache[bible].finalise()
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
 
 __all__ = ['BibleFormat']

@@ -124,7 +124,7 @@ from urllib.parse import urlparse, parse_qs
 from mako.template import Template
 from PyQt4 import QtCore
 
-from openlp.core.common import Registry, AppLocation, Settings, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, translate
 from openlp.core.lib import PluginStatus, StringContent, image_to_byte
 
 log = logging.getLogger(__name__)
@@ -139,7 +139,7 @@ FILE_TYPES = {
 }
 
 
-class HttpRouter(object):
+class HttpRouter(RegistryProperties):
     """
     This code is called by the HttpServer upon a request and it processes it based on the routing table.
     This code is stateless and is created on each request.
@@ -584,43 +584,3 @@ class HttpRouter(object):
             item_id = plugin.media_item.create_item_from_id(id)
             plugin.media_item.emit(QtCore.SIGNAL('%s_add_to_service' % plugin_name), [item_id, True])
         self.do_http_success()
-
-    def _get_service_manager(self):
-        """
-        Adds the service manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_alerts_manager(self):
-        """
-        Adds the alerts manager to the class dynamically
-        """
-        if not hasattr(self, '_alerts_manager'):
-            self._alerts_manager = Registry().get('alerts_manager')
-        return self._alerts_manager
-
-    alerts_manager = property(_get_alerts_manager)

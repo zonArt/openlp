@@ -38,7 +38,7 @@ import bs4
 import sqlalchemy
 from lxml import etree
 
-from openlp.core.common import Registry
+from openlp.core.common import RegistryProperties
 
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
@@ -93,7 +93,7 @@ from .exceptiondialog import Ui_ExceptionDialog
 log = logging.getLogger(__name__)
 
 
-class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
+class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
     """
     The exception dialog
     """
@@ -260,13 +260,3 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             return '-'
         except:
             return '- (Possible non-standard UNO installation)'
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

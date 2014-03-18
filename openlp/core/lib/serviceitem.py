@@ -39,7 +39,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry, Settings, translate
+from openlp.core.common import RegistryProperties, Settings, translate
 from openlp.core.lib import ImageSource, build_icon, clean_tags, expand_tags
 
 log = logging.getLogger(__name__)
@@ -127,7 +127,7 @@ class ItemCapabilities(object):
     CanAutoStartForLive = 16
 
 
-class ServiceItem(object):
+class ServiceItem(RegistryProperties):
     """
     The service item is a base class for the plugins to use to interact with
     the service manager, the slide controller, and the projection screen
@@ -628,23 +628,3 @@ class ServiceItem(object):
                     if file_suffix.lower() not in suffix_list:
                         self.is_valid = False
                         break
-
-    def _get_renderer(self):
-        """
-        Adds the Renderer to the class dynamically
-        """
-        if not hasattr(self, '_renderer'):
-            self._renderer = Registry().get('renderer')
-        return self._renderer
-
-    renderer = property(_get_renderer)
-
-    def _get_image_manager(self):
-        """
-        Adds the image manager to the class dynamically
-        """
-        if not hasattr(self, '_image_manager'):
-            self._image_manager = Registry().get('image_manager')
-        return self._image_manager
-
-    image_manager = property(_get_image_manager)

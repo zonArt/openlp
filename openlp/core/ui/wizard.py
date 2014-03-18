@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import build_icon
 from openlp.core.lib.ui import add_welcome_page
 
@@ -72,7 +72,7 @@ class WizardStrings(object):
                                  'A song format e.g. PowerSong')
 
 
-class OpenLPWizard(QtGui.QWizard):
+class OpenLPWizard(QtGui.QWizard, RegistryProperties):
     """
     Generic OpenLP wizard to provide generic functionality and a unified look
     and feel.
@@ -304,17 +304,3 @@ class OpenLPWizard(QtGui.QWizard):
         if folder:
             editbox.setText(folder)
         Settings().setValue(self.plugin.settings_section + '/' + setting_name, folder)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

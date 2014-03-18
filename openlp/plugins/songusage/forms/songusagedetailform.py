@@ -33,14 +33,14 @@ import os
 from PyQt4 import QtGui
 from sqlalchemy.sql import and_
 
-from openlp.core.common import Registry, Settings, check_directory_exists, translate
+from openlp.core.common import RegistryProperties, Settings, check_directory_exists, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from .songusagedetaildialog import Ui_SongUsageDetailDialog
 
 log = logging.getLogger(__name__)
 
 
-class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
+class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryProperties):
     """
     Class documentation goes here.
     """
@@ -118,13 +118,3 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             if file_handle:
                 file_handle.close()
         self.close()
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

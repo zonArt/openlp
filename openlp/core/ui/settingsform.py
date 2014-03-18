@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry
+from openlp.core.common import Registry, RegistryProperties
 from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
@@ -42,7 +42,7 @@ from .settingsdialog import Ui_SettingsDialog
 log = logging.getLogger(__name__)
 
 
-class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
+class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
     """
     Provide the form to manipulate the settings for OpenLP
     """
@@ -152,33 +152,3 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         if not function in self.processes:
             self.processes.append(function)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_service_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)

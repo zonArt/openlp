@@ -115,3 +115,38 @@ class RegistryProperties(object):
             self._main_window = Registry().get('main_window')
         return self._main_window
 
+    @property
+    def renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, '_renderer') or not self._renderer:
+            self._renderer = Registry().get('renderer')
+        return self._renderer
+
+    @property
+    def theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, '_theme_manager') or not self._theme_manager:
+            self._theme_manager = Registry().get('theme_manager')
+        return self._theme_manager
+
+    @property
+    def settings_form(self):
+        """
+        Adds the settings form to the class dynamically
+        """
+        if not hasattr(self, '_settings_form') or not self._settings_form:
+            self._settings_form = Registry().get('settings_form')
+        return self._settings_form
+
+    @property
+    def alerts_manager(self):
+        """
+        Adds the alerts manager to the class dynamically
+        """
+        if not hasattr(self, '_alerts_manager') or not self._alerts_manager:
+            self._alerts_manager = Registry().get('alerts_manager')
+        return self._alerts_manager

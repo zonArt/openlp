@@ -425,13 +425,3 @@ class PresentationController(object):
 
     def close_presentation(self):
         pass
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)

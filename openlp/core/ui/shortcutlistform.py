@@ -33,7 +33,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, Settings, translate
+from openlp.core.common import RegistryProperties, Settings, translate
 from openlp.core.utils.actions import ActionList
 from .shortcutlistdialog import Ui_ShortcutListDialog
 
@@ -42,7 +42,7 @@ REMOVE_AMPERSAND = re.compile(r'&{1}')
 log = logging.getLogger(__name__)
 
 
-class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
+class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties):
     """
     The shortcut list dialog
     """
@@ -459,14 +459,3 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             button.setChecked(checked)
         if enabled is not None:
             button.setEnabled(enabled)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-

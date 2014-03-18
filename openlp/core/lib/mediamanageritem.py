@@ -35,7 +35,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import FileDialog, OpenLPToolbar, ServiceItem, StringContent, ListWidgetWithDnD, \
     ServiceItemContext
 from openlp.core.lib.searchedit import SearchEdit
@@ -44,7 +44,7 @@ from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 log = logging.getLogger(__name__)
 
 
-class MediaManagerItem(QtGui.QWidget):
+class MediaManagerItem(QtGui.QWidget, RegistryProperties):
     """
     MediaManagerItem is a helper widget for plugins.
 
@@ -684,97 +684,3 @@ s
         :param show_error: Should the error be shown (True)
         """
         raise NotImplementedError('Plugin.search needs to be defined by the plugin')
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_renderer(self):
-        """
-        Adds the Renderer to the class dynamically
-        """
-        if not hasattr(self, '_renderer'):
-            self._renderer = Registry().get('renderer')
-        return self._renderer
-
-    renderer = property(_get_renderer)
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)
-
-    def _get_preview_controller(self):
-        """
-        Adds the preview controller to the class dynamically
-        """
-        if not hasattr(self, '_preview_controller'):
-            self._preview_controller = Registry().get('preview_controller')
-        return self._preview_controller
-
-    preview_controller = property(_get_preview_controller)
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_media_controller(self):
-        """
-        Adds the media controller to the class dynamically
-        """
-        if not hasattr(self, '_media_controller'):
-            self._media_controller = Registry().get('media_controller')
-        return self._media_controller
-
-    media_controller = property(_get_media_controller)
-
-    def _get_service_manager(self):
-        """
-        Adds the service manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_theme_manager(self):
-        """
-        Adds the theme manager to the class dynamically
-        """
-        if not hasattr(self, '_theme_manager'):
-            self._theme_manager = Registry().get('theme_manager')
-        return self._theme_manager
-
-    theme_manager = property(_get_theme_manager)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

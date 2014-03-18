@@ -32,7 +32,7 @@ import os
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
-from openlp.core.common import Registry, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.authorsform import AuthorsForm
 from openlp.plugins.songs.forms.topicsform import TopicsForm
@@ -43,7 +43,7 @@ from .songmaintenancedialog import Ui_SongMaintenanceDialog
 log = logging.getLogger(__name__)
 
 
-class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
+class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog, RegistryProperties):
     """
     Class documentation goes here.
     """
@@ -532,17 +532,3 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         else:
             delete_button.setEnabled(True)
             edit_button.setEnabled(True)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

@@ -36,7 +36,7 @@ import lxml.html
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import get_text_file_string
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.common import AppLocation
@@ -111,7 +111,7 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 """
 
 
-class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
+class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties):
     """
     The :class:`~openlp.core.ui.printserviceform.PrintServiceForm` class displays a dialog for printing the service.
     """
@@ -395,23 +395,3 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         for item in self.service_manager.service_items:
             # Trigger Audit requests
             Registry().register_function('print_service_started', [item['service_item']])
-
-    def _get_service_manager(self):
-        """
-        Adds the service manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

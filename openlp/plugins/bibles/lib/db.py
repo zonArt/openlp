@@ -38,7 +38,7 @@ from sqlalchemy import Column, ForeignKey, Table, or_, types, func
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.common import Registry, AppLocation, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import clean_filename
@@ -115,7 +115,7 @@ def init_schema(url):
     return session
 
 
-class BibleDB(QtCore.QObject, Manager):
+class BibleDB(QtCore.QObject, Manager, RegistryProperties):
     """
     This class represents a database-bound Bible. It is used as a base class for all the custom importers, so that
     the can implement their own import methods, but benefit from the database methods in here via inheritance,
@@ -499,20 +499,6 @@ class BibleDB(QtCore.QObject, Manager):
         log.debug('...............................Verses ')
         verses = self.session.query(Verse).all()
         log.debug(verses)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)
 
 
 class BiblesResourcesDB(QtCore.QObject, Manager):

@@ -31,13 +31,13 @@ Package to test the openlp.core.lib.settingsform package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtTest, QtGui
+from PyQt4 import QtCore, QtTest
 
 from openlp.core.common import Registry
 from openlp.core.ui import settingsform
 from openlp.core.lib import ScreenList
 from tests.interfaces import MagicMock, patch
-
+from tests.helpers.testmixin import TestMixin
 
 SCREEN = {
     'primary': False,
@@ -46,7 +46,7 @@ SCREEN = {
 }
 
 
-class TestSettingsForm(TestCase):
+class TestSettingsForm(TestCase, TestMixin):
     """
     Test the PluginManager class
     """
@@ -59,11 +59,7 @@ class TestSettingsForm(TestCase):
         self.dummy2 = MagicMock()
         self.dummy3 = MagicMock()
         self.desktop = MagicMock()
-        old_app_instance = QtCore.QCoreApplication.instance()
-        if old_app_instance is None:
-            self.app = QtGui.QApplication([])
-        else:
-            self.app = old_app_instance
+        self.get_application()
         self.desktop.primaryScreen.return_value = SCREEN['primary']
         self.desktop.screenCount.return_value = SCREEN['number']
         self.desktop.screenGeometry.return_value = SCREEN['size']

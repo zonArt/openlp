@@ -29,7 +29,6 @@
 """
 The :mod:`http` module enables OpenLP to retrieve scripture from bible websites.
 """
-import os
 import logging
 import re
 import socket
@@ -38,7 +37,7 @@ from html.parser import HTMLParseError
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-from openlp.core.common import Registry, translate
+from openlp.core.common import Registry, RegistryProperties, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
@@ -61,7 +60,7 @@ VERSE_NUMBER_REGEX = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
 log = logging.getLogger(__name__)
 
 
-class BGExtract(object):
+class BGExtract(RegistryProperties):
     """
     Extract verses from BibleGateway
     """
@@ -285,22 +284,8 @@ class BGExtract(object):
                 books.append(book.contents[0])
         return books
 
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
 
-    application = property(_get_application)
-
-
-class BSExtract(object):
+class BSExtract(RegistryProperties):
     """
     Extract verses from Bibleserver.com
     """
@@ -359,22 +344,8 @@ class BSExtract(object):
         content = content.find_all('li')
         return [book.contents[0].contents[0] for book in content if len(book.contents[0].contents)]
 
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
 
-    application = property(_get_application)
-
-
-class CWExtract(object):
+class CWExtract(RegistryProperties):
     """
     Extract verses from CrossWalk/BibleStudyTools
     """
@@ -457,22 +428,8 @@ class CWExtract(object):
             books.append(book.contents[0])
         return books
 
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
 
-    application = property(_get_application)
-
-
-class HTTPBible(BibleDB):
+class HTTPBible(BibleDB, RegistryProperties):
     log.info('%s HTTPBible loaded', __name__)
 
     def __init__(self, parent, **kwargs):
@@ -646,20 +603,6 @@ class HTTPBible(BibleDB):
         """
         log.debug('HTTPBible.get_verse_count("%s", %s)', book_id, chapter)
         return BiblesResourcesDB.get_verse_count(book_id, chapter)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)
 
 
 def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre_parse_substitute=None):
