@@ -33,7 +33,7 @@ import re
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry, UiStrings, translate
+from openlp.core.common import RegistryProperties, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 from .editbibledialog import Ui_EditBibleDialog
 from openlp.plugins.bibles.lib import BibleStrings
@@ -41,7 +41,7 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
-class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
+class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog, RegistryProperties):
     """
     Class to manage the editing of a bible
     """
@@ -189,17 +189,3 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                             % new_book_name)
                     return False
         return True
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

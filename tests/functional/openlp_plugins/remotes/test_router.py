@@ -31,13 +31,11 @@ This module contains tests for the lib submodule of the Remotes plugin.
 """
 import os
 from unittest import TestCase
-from tempfile import mkstemp
-
-from PyQt4 import QtGui
 
 from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
 from tests.functional import MagicMock, patch, mock_open
+from tests.helpers.testmixin import TestMixin
 
 __default_settings__ = {
     'remotes/twelve hour': True,
@@ -53,7 +51,7 @@ __default_settings__ = {
 TEST_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
-class TestRouter(TestCase):
+class TestRouter(TestCase, TestMixin):
     """
     Test the functions in the :mod:`lib` module.
     """
@@ -61,10 +59,8 @@ class TestRouter(TestCase):
         """
         Create the UI
         """
-        Settings.setDefaultFormat(Settings.IniFormat)
-        self.fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
-        self.application = QtGui.QApplication.instance()
+        self.get_application()
+        self.build_settings()
         Settings().extend_default_settings(__default_settings__)
         self.router = HttpRouter()
 
@@ -72,9 +68,7 @@ class TestRouter(TestCase):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        del self.application
-        os.close(self.fd)
-        os.unlink(Settings().fileName())
+        self.destroy_settings()
 
     def password_encrypter_test(self):
         """

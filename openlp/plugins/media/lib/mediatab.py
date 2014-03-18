@@ -33,14 +33,6 @@ from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.lib import SettingsTab
 
 
-class MediaQ_check_box(QtGui.QCheckBox):
-    """
-    MediaQ_check_box adds an extra property, playerName to the Q_check_box class.
-    """
-    def setPlayerName(self, name):
-        self.playerName = name
-
-
 class MediaTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.

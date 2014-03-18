@@ -34,14 +34,14 @@ import os
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry, translate
+from openlp.core.common import RegistryProperties, translate
 from openlp.core.lib import PluginStatus
 from .plugindialog import Ui_PluginViewDialog
 
 log = logging.getLogger(__name__)
 
 
-class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
+class PluginForm(QtGui.QDialog, Ui_PluginViewDialog, RegistryProperties):
     """
     The plugin form provides user control over the plugins OpenLP uses.
     """
@@ -155,27 +155,3 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             status_text = translate('OpenLP.PluginForm', '%s (Disabled)')
         self.plugin_list_widget.currentItem().setText(
             status_text % self.active_plugin.name_strings['singular'])
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

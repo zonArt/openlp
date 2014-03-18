@@ -35,7 +35,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, translate
+from openlp.core.common import Registry, RegistryProperties, translate
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib import delete_song
 from openlp.plugins.songs.lib.db import Song, MediaFile
@@ -45,7 +45,7 @@ from openlp.plugins.songs.lib.songcompare import songs_probably_equal
 log = logging.getLogger(__name__)
 
 
-class DuplicateSongRemovalForm(OpenLPWizard):
+class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
     """
     This is the Duplicate Song Removal Wizard. It provides functionality to search for and remove duplicate songs
     in the database.
@@ -328,28 +328,3 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.button(QtGui.QWizard.FinishButton).setEnabled(True)
             self.button(QtGui.QWizard.NextButton).hide()
             self.button(QtGui.QWizard.CancelButton).hide()
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically.
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)
-

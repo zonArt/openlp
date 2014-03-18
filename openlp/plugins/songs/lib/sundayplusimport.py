@@ -48,6 +48,7 @@ HOTKEY_TO_VERSE_TYPE = {
     '+': 'b',
     'Z': 'o'}
 
+
 class SundayPlusImport(SongImport):
     """
     Import Sunday Plus songs
@@ -62,31 +63,38 @@ class SundayPlusImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
         self.encoding = 'us-ascii'
 
-    def doImport(self):
+    def do_import(self):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             if self.stop_import_flag:
                 return
             song_file = open(filename)
-            self.doImportFile(song_file)
+            self.do_import_file(song_file)
             song_file.close()
 
-    def doImportFile(self, file):
+    def do_import_file(self, file):
         """
         Process the Sunday Plus file object.
         """
-        self.setDefaults()
+        self.set_defaults()
         if not self.parse(file.read()):
-            self.logError(file.name)
+            self.log_error(file.name)
             return
         if not self.title:
-            self.title = self.titleFromFilename(file.name)
+            self.title = self.title_from_filename(file.name)
         if not self.finish():
-            self.logError(file.name)
+            self.log_error(file.name)
 
     def parse(self, data, cell=False):
+        """
+        Process the records
+
+        :param data: The data to be processed
+        :param cell: ?
+        :return:
+        """
         if len(data) == 0 or data[0:1] != '[' or data[-1] != ']':
-            self.logError('File is malformed')
+            self.log_error('File is malformed')
             return False
         i = 1
         verse_type = VerseType.tags[VerseType.Verse]
@@ -126,7 +134,7 @@ class SundayPlusImport(SongImport):
                     elif name == 'Author':
                         author = self.decode(self.unescape(value))
                         if len(author):
-                            self.addAuthor(author)
+                            self.add_author(author)
                     elif name == 'Copyright':
                         self.copyright = self.decode(self.unescape(value))
                     elif name[0:4] == 'CELL':
@@ -160,20 +168,26 @@ class SundayPlusImport(SongImport):
                             if line[:3].lower() == 'ccl':
                                 m = re.search(r'[0-9]+', line)
                                 if m:
-                                    self.ccliNumber = int(m.group(0))
+                                    self.ccli_number = int(m.group(0))
                                     continue
                             elif line.lower() == 'public domain':
                                 self.copyright = 'Public Domain'
                                 continue
                             processed_lines.append(line)
-                        self.addVerse('\n'.join(processed_lines).strip(), verse_type)
+                        self.add_verse('\n'.join(processed_lines).strip(), verse_type)
                 if end == -1:
                     break
                 i = end + 1
             i += 1
         return True
 
-    def titleFromFilename(self, filename):
+    def title_from_filename(self, filename):
+        """
+        Extract the title from the filename
+
+        :param filename: File name
+        :return:
+        """
         title = os.path.split(filename)[1]
         if title.endswith('.ptf'):
             title = title[:-4]

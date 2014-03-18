@@ -37,6 +37,7 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
+
 class EasySlidesImport(SongImport):
     """
     Import songs exported from EasySlides
@@ -50,7 +51,7 @@ class EasySlidesImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def doImport(self):
+    def do_import(self):
         log.info('Importing EasySlides XML file %s', self.import_source)
         parser = etree.XMLParser(remove_blank_text=True)
         parsed_file = etree.parse(self.import_source, parser)
@@ -60,18 +61,18 @@ class EasySlidesImport(SongImport):
         for song in song_xml.Item:
             if self.stop_import_flag:
                 return
-            self._parseSong(song)
+            self._parse_song(song)
 
-    def _parseSong(self, song):
+    def _parse_song(self, song):
         self._success = True
         self._add_unicode_attribute('title', song.Title1, True)
         if hasattr(song, 'Title2'):
-            self._add_unicode_attribute('alternateTitle', song.Title2)
+            self._add_unicode_attribute('alternate_title', song.Title2)
         if hasattr(song, 'SongNumber'):
-            self._add_unicode_attribute('songNumber', song.SongNumber)
-        if self.songNumber == '0':
-            self.songNumber = ''
-        self._addAuthors(song)
+            self._add_unicode_attribute('song_number', song.SongNumber)
+        if self.song_number == '0':
+            self.song_number = ''
+        self._add_authors(song)
         if hasattr(song, 'Copyright'):
             self._add_copyright(song.Copyright)
         if hasattr(song, 'LicenceAdmin1'):
@@ -79,13 +80,13 @@ class EasySlidesImport(SongImport):
         if hasattr(song, 'LicenceAdmin2'):
             self._add_copyright(song.LicenceAdmin2)
         if hasattr(song, 'BookReference'):
-            self._add_unicode_attribute('songBookName', song.BookReference)
-        self._parseAndAddLyrics(song)
+            self._add_unicode_attribute('song_book_name', song.BookReference)
+        self._parse_and_add_lyrics(song)
         if self._success:
             if not self.finish():
-                self.logError(song.Title1 if song.Title1 else '')
+                self.log_error(song.Title1 if song.Title1 else '')
         else:
-            self.setDefaults()
+            self.set_defaults()
 
     def _add_unicode_attribute(self, self_attribute, import_attribute, mandatory=False):
         """
@@ -94,14 +95,9 @@ class EasySlidesImport(SongImport):
         present _success is set to False so the importer can react
         appropriately.
 
-        ``self_attribute``
-            The attribute in the song model to populate.
-
-        ``import_attribute``
-            The imported value to convert to unicode and save to the song.
-
-        ``mandatory``
-            Signals that this attribute must exist in a valid song.
+        :param self_attribute:  The attribute in the song model to populate.
+        :param import_attribute: The imported value to convert to unicode and save to the song.
+        :param mandatory: Signals that this attribute must exist in a valid song.
         """
         try:
             setattr(self, self_attribute, str(import_attribute).strip())
@@ -113,7 +109,7 @@ class EasySlidesImport(SongImport):
             if mandatory:
                 self._success = False
 
-    def _addAuthors(self, song):
+    def _add_authors(self, song):
         try:
             authors = str(song.Writer).split(',')
             self.authors = [author.strip() for author in authors if author.strip()]
@@ -125,21 +121,24 @@ class EasySlidesImport(SongImport):
 
     def _add_copyright(self, element):
         """
-        Add a piece of copyright to the total copyright information for the
-        song.
+        Add a piece of copyright to the total copyright information for the song.
 
-        ``element``
-            The imported variable to get the data from.
+        :param element: The imported variable to get the data from.
         """
         try:
-            self.addCopyright(str(element).strip())
+            self.add_copyright(str(element).strip())
         except UnicodeDecodeError:
             log.exception('Unicode error on decoding copyright: %s' % element)
             self._success = False
         except AttributeError:
             pass
 
-    def _parseAndAddLyrics(self, song):
+    def _parse_and_add_lyrics(self, song):
+        """
+        Process the song lyrics
+
+        :param song: The song details
+        """
         try:
             lyrics = str(song.Contents).strip()
         except UnicodeDecodeError:
@@ -151,29 +150,29 @@ class EasySlidesImport(SongImport):
         lines = lyrics.split('\n')
         # we go over all lines first, to determine information,
         # which tells us how to parse verses later
-        regionlines = {}
-        separatorlines = 0
+        region_lines = {}
+        separator_lines = 0
         for line in lines:
             line = line.strip()
             if not line:
                 continue
             elif line[1:7] == 'region':
                 # this is region separator, probably [region 2]
-                region = self._extractRegion(line)
-                regionlines[region] = 1 + regionlines.get(region, 0)
+                region = self._extract_region(line)
+                region_lines[region] = 1 + region_lines.get(region, 0)
             elif line[0] == '[':
-                separatorlines += 1
+                separator_lines += 1
         # if the song has separators
-        separators = (separatorlines > 0)
+        separators = (separator_lines > 0)
         # the number of different regions in song - 1
-        if len(regionlines) > 1:
+        if len(region_lines) > 1:
             log.info('EasySlidesImport: the file contained a song named "%s"'
-                'with more than two regions, but only two regions are tested, encountered regions were: %s',
-                self.title, ','.join(list(regionlines.keys())))
+                     'with more than two regions, but only two regions are tested, encountered regions were: %s',
+                     self.title, ','.join(list(region_lines.keys())))
         # if the song has regions
-        regions = (len(regionlines) > 0)
+        regions = (len(region_lines) > 0)
         # if the regions are inside verses
-        regionsInVerses = (regions and regionlines[list(regionlines.keys())[0]] > 1)
+        regions_in_verses = (regions and region_lines[list(region_lines.keys())[0]] > 1)
         MarkTypes = {
             'CHORUS': VerseType.tags[VerseType.Chorus],
             'VERSE': VerseType.tags[VerseType.Verse],
@@ -185,21 +184,20 @@ class EasySlidesImport(SongImport):
         verses = {}
         # list as [region, versetype, versenum, instance]
         our_verse_order = []
-        defaultregion = '1'
-        reg = defaultregion
+        default_region = '1'
+        reg = default_region
         verses[reg] = {}
         # instance differentiates occurrences of same verse tag
         vt = 'V'
         vn = '1'
         inst = 1
-
         for line in lines:
             line = line.strip()
             if not line:
                 if separators:
                     # separators are used, so empty line means slide break
                     # inside verse
-                    if self._listHas(verses, [reg, vt, vn, inst]):
+                    if self._list_has(verses, [reg, vt, vn, inst]):
                         inst += 1
                 else:
                     # separators are not used, so empty line starts a new verse
@@ -207,9 +205,9 @@ class EasySlidesImport(SongImport):
                     vn = len(verses[reg].get(vt, {})) + 1
                     inst = 1
             elif line[0:7] == '[region':
-                reg = self._extractRegion(line)
+                reg = self._extract_region(line)
                 verses.setdefault(reg, {})
-                if not regionsInVerses:
+                if not regions_in_verses:
                     vt = 'V'
                     vn = '1'
                     inst = 1
@@ -224,10 +222,10 @@ class EasySlidesImport(SongImport):
                     marker = match.group(1).strip()
                     vn = match.group(2)
                 vt = MarkTypes.get(marker, 'O') if marker else 'V'
-                if regionsInVerses:
-                    region = defaultregion
+                if regions_in_verses:
+                    region = default_region
                 inst = 1
-                if self._listHas(verses, [reg, vt, vn, inst]):
+                if self._list_has(verses, [reg, vt, vn, inst]):
                     inst = len(verses[reg][vt][vn]) + 1
             else:
                 if not [reg, vt, vn, inst] in our_verse_order:
@@ -235,21 +233,19 @@ class EasySlidesImport(SongImport):
                 verses[reg].setdefault(vt, {})
                 verses[reg][vt].setdefault(vn, {})
                 verses[reg][vt][vn].setdefault(inst, [])
-                verses[reg][vt][vn][inst].append(self.tidyText(line))
+                verses[reg][vt][vn][inst].append(self.tidy_text(line))
         # done parsing
-
         versetags = []
         # we use our_verse_order to ensure, we insert lyrics in the same order
         # as these appeared originally in the file
         for [reg, vt, vn, inst] in our_verse_order:
-            if self._listHas(verses, [reg, vt, vn, inst]):
+            if self._list_has(verses, [reg, vt, vn, inst]):
                 # this is false, but needs user input
                 lang = None
                 versetag = '%s%s' % (vt, vn)
                 versetags.append(versetag)
                 lines = '\n'.join(verses[reg][vt][vn][inst])
                 self.verses.append([versetag, lines, lang])
-
         SeqTypes = {
             'p': 'P1',
             'q': 'P2',
@@ -271,25 +267,37 @@ class EasySlidesImport(SongImport):
                 else:
                     continue
                 if tag in versetags:
-                    self.verseOrderList.append(tag)
+                    self.verse_order_list.append(tag)
                 else:
-                    log.info('Got order item %s, which is not in versetags, dropping item from presentation order',
-                        tag)
+                    log.info('Got order item %s, which is not in versetags, dropping item from presentation order', tag)
         except UnicodeDecodeError:
             log.exception('Unicode decode error while decoding Sequence')
             self._success = False
         except AttributeError:
             pass
 
-    def _listHas(self, lst, subitems):
-        for subitem in subitems:
-            if subitem in lst:
-                lst = lst[subitem]
+    def _list_has(self, lst, sub_items):
+        """
+        See if the list has sub items
+
+        :param lst: The list to check
+        :param sub_items: sub item list
+        :return:
+        """
+        for sub_item in sub_items:
+            if sub_item in lst:
+                lst = lst[sub_item]
             else:
                 return False
         return True
 
-    def _extractRegion(self, line):
+    def _extract_region(self, line):
         # this was true already: line[0:7] == u'[region':
+        """
+        Extract the region from text
+
+        :param line: The line of text
+        :return:
+        """
         right_bracket = line.find(']')
         return line[7:right_bracket].strip()

@@ -35,7 +35,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.common import RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import FileDialog
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
@@ -44,7 +44,7 @@ from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
 log = logging.getLogger(__name__)
 
 
-class SongImportForm(OpenLPWizard):
+class SongImportForm(OpenLPWizard, RegistryProperties):
     """
     This is the Song Import Wizard, which allows easy importing of Songs
     into OpenLP from other formats like OpenLyrics, OpenSong and CCLI.
@@ -201,7 +201,7 @@ class SongImportForm(OpenLPWizard):
     def validateCurrentPage(self):
         """
         Re-implement the validateCurrentPage() method. Validate the current page before moving on to the next page.
-        Provide each song format class with a chance to validate its input by overriding isValidSource().
+        Provide each song format class with a chance to validate its input by overriding is_valid_source().
         """
         if self.currentPage() == self.welcome_page:
             return True
@@ -217,7 +217,7 @@ class SongImportForm(OpenLPWizard):
                 import_source = self.format_widgets[this_format]['file_path_edit'].text()
                 error_title = (UiStrings().IFSs if select_mode == SongFormatSelect.SingleFile else UiStrings().IFdSs)
                 focus_button = self.format_widgets[this_format]['browseButton']
-            if not class_.isValidSource(import_source):
+            if not class_.is_valid_source(import_source):
                 critical_error_message_box(error_title, error_msg)
                 focus_button.setFocus()
                 return False
@@ -334,7 +334,7 @@ class SongImportForm(OpenLPWizard):
 
     def perform_wizard(self):
         """
-        Perform the actual import. This method pulls in the correct importer class, and then runs the ``doImport``
+        Perform the actual import. This method pulls in the correct importer class, and then runs the ``do_import``
         method of the importer to do the actual importing.
         """
         source_format = self.current_format
@@ -349,7 +349,7 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.import_songs(
                 source_format,
                 filenames=self.get_list_of_files(self.format_widgets[source_format]['file_list_widget']))
-        importer.doImport()
+        importer.do_import()
         self.progress_label.setText(WizardStrings.FinishedImport)
 
     def on_error_copy_to_button_clicked(self):
@@ -479,26 +479,6 @@ class SongImportForm(OpenLPWizard):
         self.format_widgets[this_format]['disabled_label'] = disabled_label
         self.format_widgets[this_format]['import_widget'] = import_widget
         return import_widget
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
 
 
 class SongImportSourcePage(QtGui.QWizardPage):

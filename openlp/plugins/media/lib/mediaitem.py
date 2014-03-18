@@ -32,7 +32,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, UiStrings,\
+    translate
 from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, ServiceItem, ServiceItemContext, \
     build_icon, check_item_selected
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
@@ -51,7 +52,7 @@ DVD_ICON = build_icon(':/media/media_video.png')
 ERROR_ICON = build_icon(':/general/general_delete.png')
 
 
-class MediaMediaItem(MediaManagerItem):
+class MediaMediaItem(MediaManagerItem, RegistryProperties):
     """
     This is the custom media manager item for Media Slides.
     """
@@ -131,6 +132,11 @@ class MediaMediaItem(MediaManagerItem):
         self.display_type_combo_box.currentIndexChanged.connect(self.override_player_changed)
 
     def override_player_changed(self, index):
+        """
+        The Player has been overridden
+
+        :param index: Index
+        """
         player = get_media_players()[0]
         if index == 0:
             set_media_players(player)
@@ -178,9 +184,15 @@ class MediaMediaItem(MediaManagerItem):
                                                      'the media file "%s" no longer exists.') % filename)
 
     def generate_slide_data(self, service_item, item=None, xml_version=False, remote=False,
-                            context=ServiceItemContext.Live):
+                            context=ServiceItemContext.Service):
         """
         Generate the slide data. Needs to be implemented by the plugin.
+
+        :param service_item: The service item to be built on
+        :param item: The Song item to be used
+        :param xml_version: The xml version (not used)
+        :param remote: Triggered from remote
+        :param context: Why is it being generated
         """
         if item is None:
             item = self.list_view.currentItem()
@@ -269,6 +281,12 @@ class MediaMediaItem(MediaManagerItem):
 
     def load_list(self, media, target_group=None):
         # Sort the media by its filename considering language specific characters.
+        """
+        Load the media list
+
+        :param media: The media
+        :param target_group:
+        """
         media.sort(key=lambda file_name: get_locale_key(os.path.split(str(file_name))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)

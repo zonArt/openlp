@@ -40,6 +40,7 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
+
 class SongBeamerTypes(object):
     MarkTypes = {
         'Refrain': VerseType.tags[VerseType.Chorus],
@@ -98,7 +99,7 @@ class SongBeamerImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive a single file or a list of files to import.
         """
@@ -109,9 +110,9 @@ class SongBeamerImport(SongImport):
             # TODO: check that it is a valid SongBeamer file
             if self.stop_import_flag:
                 return
-            self.setDefaults()
-            self.currentVerse = ''
-            self.currentVerseType = VerseType.tags[VerseType.Verse]
+            self.set_defaults()
+            self.current_verse = ''
+            self.current_verse_type = VerseType.tags[VerseType.Verse]
             read_verses = False
             file_name = os.path.split(import_file)[1]
             if os.path.isfile(import_file):
@@ -132,39 +133,38 @@ class SongBeamerImport(SongImport):
                 if line.startswith('#') and not read_verses:
                     self.parseTags(line)
                 elif line.startswith('---'):
-                    if self.currentVerse:
-                        self.replaceHtmlTags()
-                        self.addVerse(self.currentVerse, self.currentVerseType)
-                        self.currentVerse = ''
-                        self.currentVerseType = VerseType.tags[VerseType.Verse]
+                    if self.current_verse:
+                        self.replace_html_tags()
+                        self.add_verse(self.current_verse, self.current_verse_type)
+                        self.current_verse = ''
+                        self.current_verse_type = VerseType.tags[VerseType.Verse]
                     read_verses = True
                     verse_start = True
                 elif read_verses:
                     if verse_start:
                         verse_start = False
-                        if not self.checkVerseMarks(line):
-                            self.currentVerse = line + '\n'
+                        if not self.check_verse_marks(line):
+                            self.current_verse = line + '\n'
                     else:
-                        self.currentVerse += line + '\n'
-            if self.currentVerse:
-                self.replaceHtmlTags()
-                self.addVerse(self.currentVerse, self.currentVerseType)
+                        self.current_verse += line + '\n'
+            if self.current_verse:
+                self.replace_html_tags()
+                self.add_verse(self.current_verse, self.current_verse_type)
             if not self.finish():
-                self.logError(import_file)
+                self.log_error(import_file)
 
-    def replaceHtmlTags(self):
+    def replace_html_tags(self):
         """
         This can be called to replace SongBeamer's specific (html) tags with OpenLP's specific (html) tags.
         """
         for pair in SongBeamerImport.HTML_TAG_PAIRS:
-            self.currentVerse = pair[0].sub(pair[1], self.currentVerse)
+            self.current_verse = pair[0].sub(pair[1], self.current_verse)
 
     def parseTags(self, line):
         """
         Parses a meta data line.
 
-        ``line``
-            The line in the file. It should consist of a tag and a value for this tag (unicode)::
+        :param line: The line in the file. It should consist of a tag and a value for this tag (unicode)::
 
                 u'#Title=Nearer my God to Thee'
         """
@@ -174,7 +174,7 @@ class SongBeamerImport(SongImport):
         if not tag_val[0] or not tag_val[1]:
             return
         if tag_val[0] == '#(c)':
-            self.addCopyright(tag_val[1])
+            self.add_copyright(tag_val[1])
         elif tag_val[0] == '#AddCopyrightInfo':
             pass
         elif tag_val[0] == '#Author':
@@ -186,7 +186,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == '#Categories':
             self.topics = tag_val[1].split(',')
         elif tag_val[0] == '#CCLI':
-            self.ccliNumber = tag_val[1]
+            self.ccli_number = tag_val[1]
         elif tag_val[0] == '#Chords':
             pass
         elif tag_val[0] == '#ChurchSongID':
@@ -233,10 +233,10 @@ class SongBeamerImport(SongImport):
             song_book_pub = tag_val[1]
         elif tag_val[0] == '#Songbook' or tag_val[0] == '#SongBook':
             book_data = tag_val[1].split('/')
-            self.songBookName = book_data[0].strip()
+            self.song_book_name = book_data[0].strip()
             if len(book_data) == 2:
                 number = book_data[1].strip()
-                self.songNumber = number if number.isdigit() else ''
+                self.song_number = number if number.isdigit() else ''
         elif tag_val[0] == '#Speed':
             pass
         elif tag_val[0] == 'Tempo':
@@ -267,20 +267,19 @@ class SongBeamerImport(SongImport):
             # TODO: add the verse order.
             pass
 
-    def checkVerseMarks(self, line):
+    def check_verse_marks(self, line):
         """
         Check and add the verse's MarkType. Returns ``True`` if the given linE contains a correct verse mark otherwise
         ``False``.
 
-        ``line``
-            The line to check for marks (unicode).
+        :param line: The line to check for marks (unicode).
         """
         marks = line.split(' ')
         if len(marks) <= 2 and marks[0] in SongBeamerTypes.MarkTypes:
-            self.currentVerseType = SongBeamerTypes.MarkTypes[marks[0]]
+            self.current_verse_type = SongBeamerTypes.MarkTypes[marks[0]]
             if len(marks) == 2:
                 # If we have a digit, we append it to current_verse_type.
                 if marks[1].isdigit():
-                    self.currentVerseType += marks[1]
+                    self.current_verse_type += marks[1]
             return True
         return False
