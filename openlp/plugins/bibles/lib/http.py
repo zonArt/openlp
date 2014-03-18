@@ -641,8 +641,7 @@ def send_error_message(error_type):
     """
     Send a standard error message informing the user of an issue.
 
-    ``error_type``
-        The type of error that occured for the issue.
+    :param error_type: The type of error that occurred for the issue.
     """
     if error_type == 'download':
         critical_error_message_box(

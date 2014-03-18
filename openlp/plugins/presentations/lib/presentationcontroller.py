@@ -218,8 +218,7 @@ class PresentationDocument(object):
         """
         Jumps directly to the requested slide.
 
-        ``slide_no``
-            The slide to jump to, starting at 1
+        :param slide_no: The slide to jump to, starting at 1
         """
         pass
 
@@ -250,8 +249,8 @@ class PresentationDocument(object):
         """
         Returns an image path containing a preview for the requested slide
 
-        ``slide_no``
-            The slide an image is required for, starting at 1
+        :param slide_no: The slide an image is required for, starting at 1
+        :param check_exists:
         """
         path = os.path.join(self.get_thumbnail_folder(), self.controller.thumbnail_prefix + str(slide_no) + '.png')
         if os.path.isfile(path) or not check_exists:

@@ -95,8 +95,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         Receive drop event check if it is a file and process it if it is.
 
-        ``event``
-            Handle of the event pint passed
+        :param event:  Handle of the event pint passed
         """
         if event.mimeData().hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)

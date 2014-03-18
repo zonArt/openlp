@@ -208,11 +208,8 @@ class HttpRouter(RegistryProperties):
         """
         Invoke the route function passing the relevant values
 
-        ``function``
-            The function to be calledL.
-
-        ``*args``
-            Any passed data.
+        :param function: The function to be called.
+        :param args: Any passed data.
         """
         response = function['function'](*args)
         if response:
@@ -223,11 +220,8 @@ class HttpRouter(RegistryProperties):
         """
         Common function to process HTTP requests
 
-        ``url_path``
-            The requested URL.
-
-        ``*args``
-            Any passed data.
+        :param url_path: The requested URL.
+        :param args: Any passed data.
         """
         self.request_data = None
         url_path_split = urlparse(url_path)
@@ -379,8 +373,7 @@ class HttpRouter(RegistryProperties):
 
     def get_content_type(self, file_name):
         """
-        Examines the extension of the file and determines
-        what the content_type should be, defaults to text/plain
+        Examines the extension of the file and determines what the content_type should be, defaults to text/plain
         Returns the extension and the content_type
         """
         content_type = 'text/plain'
@@ -432,8 +425,7 @@ class HttpRouter(RegistryProperties):
         Hide or show the display screen.
         This is a cross Thread call and UI is updated so Events need to be used.
 
-        ``action``
-            This is the action, either ``hide`` or ``show``.
+        :param action: This is the action, either ``hide`` or ``show``.
         """
         self.live_controller.emit(QtCore.SIGNAL('slidecontroller_toggle_display'), action)
         self.do_json_header()
@@ -489,11 +481,8 @@ class HttpRouter(RegistryProperties):
         """
         Perform an action on the slide controller.
 
-        ``display_type``
-            This is the type of slide controller, either ``preview`` or ``live``.
-
-        ``action``
-            The action to perform.
+        :param display_type: This is the type of slide controller, either ``preview`` or ``live``.
+        :param action: The action to perform.
         """
         event = 'slidecontroller_%s_%s' % (display_type, action)
         if self.request_data:
@@ -514,8 +503,6 @@ class HttpRouter(RegistryProperties):
         """
         Handles requests for service items in the service manager
 
-        ``action``
-            The action to perform.
         """
         self.do_json_header()
         return json.dumps({'results': {'items': self._get_service_items()}}).encode()
@@ -524,8 +511,7 @@ class HttpRouter(RegistryProperties):
         """
         Handles requests for service items in the service manager
 
-        ``action``
-            The action to perform.
+        :param action: The action to perform.
         """
         event = 'servicemanager_%s_item' % action
         if self.request_data:
@@ -543,9 +529,7 @@ class HttpRouter(RegistryProperties):
         """
         Return plugin related information, based on the action.
 
-        ``action``
-            The action to perform. If *search* return a list of plugin names
-            which support search.
+        :param action: The action to perform. If *search* return a list of plugin names which support search.
         """
         if action == 'search':
             searches = []
@@ -559,8 +543,7 @@ class HttpRouter(RegistryProperties):
         """
         Return a list of items that match the search text.
 
-        ``plugin``
-            The plugin name to search in.
+        :param plugin_name: The plugin name to search in.
         """
         try:
             text = json.loads(self.request_data)['request']['text']

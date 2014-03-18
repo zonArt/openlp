@@ -475,7 +475,7 @@ class BibleMediaItem(MediaManagerItem):
             bible = self.advancedVersionComboBox.currentText()
         if bible:
             self.edit_bible_form = EditBibleForm(self, self.main_window, self.plugin.manager)
-            self.edit_bible_form.loadBible(bible)
+            self.edit_bible_form.load_bible(bible)
             if self.edit_bible_form.exec_():
                 self.reload_bibles()
 

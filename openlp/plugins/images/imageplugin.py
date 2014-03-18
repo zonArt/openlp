@@ -84,8 +84,7 @@ class ImagePlugin(Plugin):
         """
         Upgrade the settings of this plugin.
 
-        ``settings``
-            The Settings object containing the old settings.
+        :param settings: The Settings object containing the old settings.
         """
         files_from_config = settings.get_files_from_config(self)
         if files_from_config:

@@ -148,8 +148,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         """
         Register for updates to be done on save removing duplicate functions
 
-        ``function``
-            The function to be called
+        :param function:  The function to be called
         """
         if not function in self.processes:
             self.processes.append(function)

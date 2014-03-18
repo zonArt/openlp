@@ -361,11 +361,8 @@ class SongFormat(object):
         """
         Return requested song format attribute(s).
 
-        ``format``
-            A song format from SongFormat.
-
-        ``*attributes``
-            Zero or more song format attributes from SongFormat.
+        :param format:  A song format from SongFormat.
+        :param attributes: Zero or more song format attributes from SongFormat.
 
         Return type depends on number of supplied attributes:
 

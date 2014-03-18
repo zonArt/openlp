@@ -82,8 +82,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog, RegistryPrope
         """
         Show the dialog.
 
-        ``from_song_edit``
-            Indicates if the maintenance dialog has been opened from song edit
+
+        :param from_song_edit: Indicates if the maintenance dialog has been opened from song edit
             or from the media manager. Defaults to **False**.
         """
         self.from_song_edit = from_song_edit

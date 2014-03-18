@@ -179,8 +179,7 @@ def check_latest_version(current_version):
     Check the latest version of OpenLP against the version file on the OpenLP
     site.
 
-    ``current_version``
-        The current version of OpenLP.
+    :param current_version: The current version of OpenLP.
 
     **Rules around versions and version files:**
 
@@ -222,11 +221,8 @@ def add_actions(target, actions):
     """
     Adds multiple actions to a menu or toolbar in one command.
 
-    ``target``
-        The menu or toolbar to add actions to.
-
-    ``actions``
-        The actions to be added. An action consisting of the keyword ``None``
+    :param target: The menu or toolbar to add actions to
+    :param actions: The actions to be added. An action consisting of the keyword ``None``
         will result in a separator being inserted into the target.
     """
     for action in actions:
@@ -264,8 +260,7 @@ def is_not_image_file(file_name):
     """
     Validate that the file is not an image file.
 
-    ``file_name``
-        File name to be checked.
+    :param file_name: File name to be checked.
     """
     if not file_name:
         return True
@@ -292,8 +287,7 @@ def clean_filename(filename):
     """
     Removes invalid characters from the given ``filename``.
 
-    ``filename``
-        The "dirty" file name to clean.
+    :param filename:  The "dirty" file name to clean.
     """
     if not isinstance(filename, str):
         filename = str(filename, 'utf-8')
@@ -304,8 +298,7 @@ def delete_file(file_path_name):
     """
     Deletes a file from the system.
 
-    ``file_path_name``
-        The file, including path, to delete.
+    :param file_path_name: The file, including path, to delete.
     """
     if not file_path_name:
         return False
@@ -333,14 +326,9 @@ def get_web_page(url, header=None, update_openlp=False):
     """
     Attempts to download the webpage at url and returns that page or None.
 
-    ``url``
-        The URL to be downloaded.
-
-    ``header``
-        An optional HTTP header to pass in the request to the web server.
-
-    ``update_openlp``
-        Tells OpenLP to update itself if the page is successfully downloaded.
+    :param url: The URL to be downloaded.
+    :param header:  An optional HTTP header to pass in the request to the web server.
+    :param update_openlp: Tells OpenLP to update itself if the page is successfully downloaded.
         Defaults to False.
     """
     # TODO: Add proxy usage. Get proxy info from OpenLP settings, add to a
@@ -386,8 +374,7 @@ def get_uno_instance(resolver):
     """
     Returns a running openoffice.org instance.
 
-    ``resolver``
-        The UNO resolver to use to find a running instance.
+    :param resolver: The UNO resolver to use to find a running instance.
     """
     log.debug('get UNO Desktop Openoffice - resolve')
     if UNO_CONNECTION_TYPE == 'pipe':
@@ -404,11 +391,8 @@ def format_time(text, local_time):
     unicode string and passes individual % placeholders to time.strftime().
     This ensures only ascii characters are passed to time.strftime().
 
-    ``text``
-        The text to be processed.
-
-    ``local_time``
-        The time to be used to add to the string.  This is a time object
+    :param text:  The text to be processed.
+    :param local_time: The time to be used to add to the string.  This is a time object
     """
     def match_formatting(match):
         """
@@ -422,8 +406,7 @@ def get_locale_key(string):
     """
     Creates a key for case insensitive, locale aware string sorting.
 
-    ``string``
-        The corresponding string.
+    :param string: The corresponding string.
     """
     string = string.lower()
     # ICU is the prefered way to handle locale sort key, we fallback to locale.strxfrm which will work in most cases.
@@ -438,6 +421,7 @@ def get_locale_key(string):
         return ICU_COLLATOR.getSortKey(string)
     except:
         return locale.strxfrm(string).encode()
+
 
 def get_natural_key(string):
     """
@@ -458,5 +442,5 @@ from .actions import ActionList
 
 
 __all__ = ['ActionList', 'LanguageManager', 'get_application_version', 'check_latest_version',
-    'add_actions', 'get_filesystem_encoding', 'get_web_page', 'get_uno_command', 'get_uno_instance',
-    'delete_file', 'clean_filename', 'format_time', 'get_locale_key', 'get_natural_key']
+           'add_actions', 'get_filesystem_encoding', 'get_web_page', 'get_uno_command', 'get_uno_instance',
+           'delete_file', 'clean_filename', 'format_time', 'get_locale_key', 'get_natural_key']

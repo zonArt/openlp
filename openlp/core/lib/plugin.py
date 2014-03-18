@@ -122,28 +122,21 @@ class Plugin(QtCore.QObject, RegistryProperties):
 
     def __init__(self, name, default_settings, media_item_class=None, settings_tab_class=None, version=None):
         """
-        This is the constructor for the plugin object. This provides an easy
-        way for descendent plugins to populate common data. This method *must*
+        This is the constructor for the plugin object. This provides an easy way for descendant plugins to populate
+         common data. This method *must*
+
         be overridden, like so::
 
             class MyPlugin(Plugin):
                 def __init__(self):
                     super(MyPlugin, self).__init__('MyPlugin', version=u'0.1')
 
-        ``name``
-            Defaults to *None*. The name of the plugin.
-
-        ``default_settings``
-            A dict containing the plugin's settings. The value to each key is the default value to be used.
-
-        ``media_item_class``
-            The class name of the plugin's media item.
-
-        ``settings_tab_class``
-            The class name of the plugin's settings tab.
-
-        ``version``
-            Defaults to *None*, which means that the same version number is used as OpenLP's version number.
+        :param name: Defaults to *None*. The name of the plugin.
+        :param default_settings: A dict containing the plugin's settings. The value to each key is the default value
+        to be used.
+        :param media_item_class: The class name of the plugin's media item.
+        :param settings_tab_class: The class name of the plugin's settings tab.
+        :param version: Defaults to *None*, which means that the same version number is used as OpenLP's version number.
         """
         log.debug('Plugin %s initialised' % name)
         super(Plugin, self).__init__()
@@ -221,8 +214,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         Upgrade the settings of this plugin.
 
-        ``settings``
-            The Settings object containing the old settings.
+        :param settings: The Settings object containing the old settings.
         """
         pass
 
@@ -230,8 +222,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         Create a menu item and add it to the "Import" menu.
 
-        ``import_menu``
-            The Import menu.
+        :param import_menu: The Import menu.
         """
         pass
 
@@ -239,8 +230,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         Create a menu item and add it to the "Export" menu.
 
-        ``export_menu``
-            The Export menu
+        :param export_menu: The Export menu
         """
         pass
 
@@ -248,8 +238,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         Create a menu item and add it to the "Tools" menu.
 
-        ``tools_menu``
-            The Tools menu
+        :param tools_menu: The Tools menu
         """
         pass
 
@@ -267,8 +256,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         Add menu items to the menu, given the menubar.
 
-        ``menubar``
-            The application's menu bar.
+        :param menubar: The application's menu bar.
         """
         pass
 
@@ -284,8 +272,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
 
     def about(self):
         """
-        Show a dialog when the user clicks on the 'About' button in the plugin
-        manager.
+        Show a dialog when the user clicks on the 'About' button in the plugin manager.
         """
         raise NotImplementedError('Plugin.about needs to be defined by the plugin')
 
@@ -328,11 +315,8 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         Renames a theme a plugin is using making the plugin use the new name.
 
-        ``old_theme``
-            The name of the theme the plugin should stop using.
-
-        ``new_theme``
-            The new name the plugin should now use.
+        :param old_theme:  The name of the theme the plugin should stop using.
+        :param new_theme: The new name the plugin should now use
         """
         pass
 

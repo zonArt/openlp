@@ -55,8 +55,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
-        ``parent``
-            The QWidget-derived parent of the wizard.
+        :param parent: The QWidget-derived parent of the wizard.
         """
         super(ThemeForm, self).__init__(parent)
         self.setupUi(self)

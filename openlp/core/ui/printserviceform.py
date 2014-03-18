@@ -239,23 +239,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties)
 
     def _add_element(self, tag, text=None, parent=None, classId=None, attribute=None):
         """
-        Creates a html element. If ``text`` is given, the element's text will
-        set and if a ``parent`` is given, the element is appended.
+        Creates a html element. If ``text`` is given, the element's text will set and if a ``parent`` is given,
+        the element is appended.
 
-        ``tag``
-            The html tag, e. g. ``u'span'``. Defaults to ``None``.
-
-        ``text``
-            The text for the tag. Defaults to ``None``.
-
-        ``parent``
-            The parent element. Defaults to ``None``.
-
-        ``classId``
-            Value for the class attribute
-
-        ``attribute``
-            Tuple name/value pair to add as an optional attribute
+        :param tag: The html tag, e. g. ``u'span'``. Defaults to ``None``.
+        :param text: The text for the tag. Defaults to ``None``.
+        :param parent: The parent element. Defaults to ``None``.
+        :param classId: Value for the class attribute
+        :param attribute: Tuple name/value pair to add as an optional attribute
         """
         if text is not None:
             element = lxml.html.fragment_fromstring(str(text), create_parent=tag)

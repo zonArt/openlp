@@ -284,8 +284,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
 
     def _build_theme_screenshots(self):
         """
-        This method builds the theme screenshots' icons for all items in the
-        ``self.themes_list_widget``.
+        This method builds the theme screenshots' icons for all items in the ``self.themes_list_widget``.
         """
         themes = self.config.get('themes', 'files')
         themes = themes.split(',')
@@ -298,12 +297,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
                     break
             item.setIcon(build_icon(os.path.join(gettempdir(), 'openlp', screenshot)))
 
-    def _getFileSize(self, url):
+    def _get_file_size(self, url):
         """
         Get the size of a file.
 
-        ``url``
-            The URL of the file we want to download.
+        :param url: The URL of the file we want to download.
         """
         site = urllib.request.urlopen(url)
         meta = site.info()
@@ -321,11 +319,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         """
         Update the wizard progress page.
 
-        ``status_text``
-            Current status information to display.
-
-        ``increment``
-            The value to increment the progress bar by.
+        :param status_text: Current status information to display.
+        :param increment: The value to increment the progress bar by.
         """
         if status_text:
             self.progress_label.setText(status_text)
@@ -346,7 +341,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
             item = self.songs_list_widget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole)
-                size = self._getFileSize('%s%s' % (self.web, filename))
+                size = self._get_file_size('%s%s' % (self.web, filename))
                 self.max_progress += size
         # Loop through the Bibles list and increase for each selected item
         iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
@@ -355,7 +350,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
             item = iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                 filename = item.data(0, QtCore.Qt.UserRole)
-                size = self._getFileSize('%s%s' % (self.web, filename))
+                size = self._get_file_size('%s%s' % (self.web, filename))
                 self.max_progress += size
             iterator += 1
         # Loop through the themes list and increase for each selected item
@@ -364,7 +359,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
             item = self.themes_list_widget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole)
-                size = self._getFileSize('%s%s' % (self.web, filename))
+                size = self._get_file_size('%s%s' % (self.web, filename))
                 self.max_progress += size
         if self.max_progress:
             # Add on 2 for plugins status setting plus a "finished" point.

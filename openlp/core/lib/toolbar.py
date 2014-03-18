@@ -74,11 +74,8 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         Set the visibility for a widget or a list of widgets.
 
-        ``widget``
-            A list of string with widget object names.
-
-        ``visible``
-            The new state as bool.
+        :param widgets: A list of string with widget object names.
+        :param visible: The new state as bool.
         """
         for handle in widgets:
             if handle in self.actions:
