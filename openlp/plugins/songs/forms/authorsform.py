@@ -52,8 +52,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         """
         Execute the dialog.
 
-        ``clear``
-            Clear the form fields before displaying the dialog.
+        :param clear: Clear the form fields before displaying the dialog.
         """
         if clear:
             self.first_name_edit.clear()
@@ -69,8 +68,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         When the first name is edited and the setting to automatically create a display name is True, then try to create
         a display name from the first and last names.
 
-        ``display_name``
-            The text from the first_name_edit widget.
+        :param display_name: The text from the first_name_edit widget.
         """
         if not self.auto_display_name:
             return
@@ -85,8 +83,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         When the last name is edited and the setting to automatically create a display name is True, then try to create
         a display name from the first and last names.
 
-        ``display_name``
-            The text from the last_name_edit widget.
+        :param display_name: The text from the last_name_edit widget.
         """
         if not self.auto_display_name:
             return

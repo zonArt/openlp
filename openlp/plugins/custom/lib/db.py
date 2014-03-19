@@ -60,8 +60,7 @@ def init_schema(url):
     """
     Setup the custom database connection and initialise the database schema
 
-    ``url``
-        The database to setup
+    :param url:  The database to setup
     """
     session, metadata = init_db(url)
 

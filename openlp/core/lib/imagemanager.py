@@ -111,16 +111,12 @@ class Image(object):
         """
         Create an image for the :class:`ImageManager`'s cache.
 
-        ``path``
-            The image's file path. This should be an existing file path.
-
-        ``source``
-            The source describes the image's origin. Possible values are described in the
+        :param path: The image's file path. This should be an existing file path.
+        :param source: The source describes the image's origin. Possible values are described in the
             :class:`~openlp.core.lib.ImageSource` class.
-
-        ``background``
-            A ``QtGui.QColor`` object specifying the colour to be used to fill the gabs if the image's ratio does not
+        :param background: A ``QtGui.QColor`` object specifying the colour to be used to fill the gabs if the image's ratio does not
             match with the display ratio.
+
         """
         self.path = path
         self.image = None
@@ -163,11 +159,8 @@ class PriorityQueue(queue.PriorityQueue):
         """
         Modifies the priority of the given ``image``.
 
-        ``image``
-            The image to remove. This should be an :class:`Image` instance.
-
-        ``new_priority``
-            The image's new priority. See the :class:`Priority` class for priorities.
+        :param image: The image to remove. This should be an :class:`Image` instance.
+        :param new_priority: The image's new priority. See the :class:`Priority` class for priorities.
         """
         self.remove(image)
         image.priority = new_priority
@@ -177,8 +170,7 @@ class PriorityQueue(queue.PriorityQueue):
         """
         Removes the given ``image`` from the queue.
 
-        ``image``
-            The image to remove. This should be an ``Image`` instance.
+        :param image:  The image to remove. This should be an ``Image`` instance.
         """
         if (image.priority, image.secondary_priority, image) in self.queue:
             self.queue.remove((image.priority, image.secondary_priority, image))

@@ -556,23 +556,12 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     """
     Build the full web paged structure for display
 
-    ``item``
-        Service Item to be displayed
-
-    ``screen``
-        Current display information
-
-    ``is_live``
-        Item is going live, rather than preview/theme building
-
-    ``background``
-        Theme background image - bytes
-
-    ``image``
-        Image media item - bytes
-
-    ``plugins``
-        The List of available plugins
+    :param item: Service Item to be displayed
+    :param screen: Current display information
+    :param is_live: Item is going live, rather than preview/theme building
+    :param background:  Theme background image - bytes
+    :param image: Image media item - bytes
+    :param plugins: The List of available plugins
     """
     width = screen['size'].width()
     height = screen['size'].height()
@@ -626,8 +615,8 @@ def build_background_css(item, width):
     """
     Build the background css
 
-    ``item``
-        Service Item containing theme and location information
+    :param item: Service Item containing theme and location information
+    :param width:
     """
     width = int(width) // 2
     theme = item.theme_data
@@ -660,9 +649,7 @@ def build_lyrics_css(item):
     """
     Build the lyrics display css
 
-    ``item``
-        Service Item containing theme and location information
-
+    :param item: Service Item containing theme and location information
     """
     style = """
 .lyricstable {
@@ -700,8 +687,7 @@ def build_lyrics_outline_css(theme_data):
     """
     Build the css which controls the theme outline. Also used by renderer for splitting verses
 
-    ``theme_data``
-        Object containing theme information
+    :param theme_data: Object containing theme information
     """
     if theme_data.font_main_outline:
         size = float(theme_data.font_main_outline_size) / 16
@@ -715,14 +701,9 @@ def build_lyrics_format_css(theme_data, width, height):
     """
     Build the css which controls the theme format. Also used by renderer for splitting verses
 
-    ``theme_data``
-        Object containing theme information
-
-    ``width``
-        Width of the lyrics block
-
-    ``height``
-        Height of the lyrics block
+    :param theme_data: Object containing theme information
+    :param width: Width of the lyrics block
+    :param height: Height of the lyrics block
     """
     align = HorizontalType.Names[theme_data.display_horizontal_align]
     valign = VerticalType.Names[theme_data.display_vertical_align]
@@ -756,8 +737,8 @@ def build_footer_css(item, height):
     """
     Build the display of the item footer
 
-    ``item``
-        Service Item to be processed.
+    :param item: Service Item to be processed.
+    :param height:
     """
     style = """
     left: %spx;

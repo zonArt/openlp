@@ -91,9 +91,9 @@ class RemotesPlugin(Plugin):
         Information about this plugin
         """
         about_text = translate('RemotePlugin', '<strong>Remote Plugin</strong>'
-            '<br />The remote plugin provides the ability to send messages to '
-            'a running version of OpenLP on a different computer via a web '
-            'browser or through the remote API.')
+                               '<br />The remote plugin provides the ability to send messages to '
+                               'a running version of OpenLP on a different computer via a web '
+                               'browser or through the remote API.')
         return about_text
 
     def set_plugin_text_strings(self):

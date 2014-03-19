@@ -186,8 +186,7 @@ class ThemesTab(SettingsTab):
         """
         Called from ThemeManager when the Themes have changed.
 
-        ``theme_list``
-            The list of available themes::
+        :param theme_list: The list of available themes::
 
                 [u'Bible Theme', u'Song Theme']
         """

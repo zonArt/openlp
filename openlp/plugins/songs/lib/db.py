@@ -92,9 +92,7 @@ def init_schema(url):
     """
     Setup the songs database connection and initialise the database schema.
 
-    ``url``
-        The database to setup
-
+    :param url: The database to setup
     The song database contains the following tables:
 
         * authors

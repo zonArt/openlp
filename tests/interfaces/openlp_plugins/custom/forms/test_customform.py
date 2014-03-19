@@ -38,9 +38,10 @@ from openlp.core.common import Registry
 from openlp.plugins.custom.lib.mediaitem import CustomMediaItem
 from openlp.plugins.custom.forms.editcustomform import EditCustomForm
 from tests.interfaces import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
 
 
-class TestEditCustomForm(TestCase):
+class TestEditCustomForm(TestCase, TestMixin):
     """
     Test the EditCustomForm.
     """
@@ -49,11 +50,7 @@ class TestEditCustomForm(TestCase):
         Create the UI
         """
         Registry.create()
-        old_app_instance = QtCore.QCoreApplication.instance()
-        if old_app_instance is None:
-            self.app = QtGui.QApplication([])
-        else:
-            self.app = old_app_instance
+        self.get_application()
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
         media_item = MagicMock()

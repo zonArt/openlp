@@ -63,6 +63,7 @@ from openlp.plugins.bibles.lib.http import BSExtract
 #   get_soup_for_bible_ref
 #   send_error_message
 
+
 class TestBSExtract(TestCase):
     """
     Test the BSExtractClass

@@ -31,12 +31,12 @@ The :mod:`~openlp.core.ui.servicenoteform` module contains the `ServiceNoteForm`
 """
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry, translate
+from openlp.core.common import Registry, RegistryProperties, translate
 from openlp.core.lib import SpellTextEdit
 from openlp.core.lib.ui import create_button_box
 
 
-class ServiceNoteForm(QtGui.QDialog):
+class ServiceNoteForm(QtGui.QDialog, RegistryProperties):
     """
     This is the form that is used to edit the verses of the song.
     """
@@ -75,13 +75,3 @@ class ServiceNoteForm(QtGui.QDialog):
         Translate the UI on the fly
         """
         self.setWindowTitle(translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

@@ -218,8 +218,7 @@ class PresentationDocument(object):
         """
         Jumps directly to the requested slide.
 
-        ``slide_no``
-            The slide to jump to, starting at 1
+        :param slide_no: The slide to jump to, starting at 1
         """
         pass
 
@@ -250,8 +249,8 @@ class PresentationDocument(object):
         """
         Returns an image path containing a preview for the requested slide
 
-        ``slide_no``
-            The slide an image is required for, starting at 1
+        :param slide_no: The slide an image is required for, starting at 1
+        :param check_exists:
         """
         path = os.path.join(self.get_thumbnail_folder(), self.controller.thumbnail_prefix + str(slide_no) + '.png')
         if os.path.isfile(path) or not check_exists:
@@ -470,17 +469,6 @@ class PresentationController(object):
     def close_presentation(self):
         pass
 
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-
 class TextType(object):
     """
     Type Enumeration for Types of Text to request
@@ -488,3 +476,4 @@ class TextType(object):
     Title = 0
     SlideText = 1
     Notes = 2
+

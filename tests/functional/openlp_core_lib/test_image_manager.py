@@ -36,18 +36,19 @@ from PyQt4 import QtGui
 
 from openlp.core.common import Registry
 from openlp.core.lib import ImageManager, ScreenList
+from tests.helpers.testmixin import TestMixin
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
 
 
-class TestImageManager(TestCase):
+class TestImageManager(TestCase, TestMixin):
 
     def setUp(self):
         """
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication.instance()
+        self.get_application()
         ScreenList.create(self.app.desktop())
         self.image_manager = ImageManager()
 

@@ -84,8 +84,7 @@ class ImagePlugin(Plugin):
         """
         Upgrade the settings of this plugin.
 
-        ``settings``
-            The Settings object containing the old settings.
+        :param settings: The Settings object containing the old settings.
         """
         files_from_config = settings.get_files_from_config(self)
         if files_from_config:
@@ -124,13 +123,3 @@ class ImagePlugin(Plugin):
         log.info('Images config_update')
         background = QtGui.QColor(Settings().value(self.settings_section + '/background color'))
         self.image_manager.update_images_border(ImageSource.ImagePlugin, background)
-
-    def _get_image_manager(self):
-        """
-        Adds the image manager to the class dynamically
-        """
-        if not hasattr(self, '_image_manager'):
-            self._image_manager = Registry().get('image_manager')
-        return self._image_manager
-
-    image_manager = property(_get_image_manager)

@@ -172,11 +172,8 @@ class ThemeXML(object):
         """
         Expand the json objects and make into variables.
 
-        ``var``
-            The array list to be processed.
-
-        ``prev``
-            The preceding string to add to the key to make the variable.
+        :param var: The array list to be processed.
+        :param prev: The preceding string to add to the key to make the variable.
         """
         for key, value in var.items():
             if prev:
@@ -192,8 +189,7 @@ class ThemeXML(object):
         """
         Add the path name to the image name so the background can be rendered.
 
-        ``path``
-            The path name to be added.
+        :param path: The path name to be added.
         """
         if self.background_type == 'image':
             if self.background_filename and path:
@@ -226,8 +222,7 @@ class ThemeXML(object):
         """
         Add a Solid background.
 
-        ``bkcolor``
-            The color of the background.
+        :param bkcolor: The color of the background.
         """
         background = self.theme_xml.createElement('background')
         background.setAttribute('type', 'solid')
@@ -238,14 +233,9 @@ class ThemeXML(object):
         """
         Add a gradient background.
 
-        ``startcolor``
-            The gradient's starting colour.
-
-        ``endcolor``
-            The gradient's ending colour.
-
-        ``direction``
-            The direction of the gradient.
+        :param startcolor: The gradient's starting colour.
+        :param endcolor: The gradient's ending colour.
+        :param direction: The direction of the gradient.
         """
         background = self.theme_xml.createElement('background')
         background.setAttribute('type', 'gradient')
@@ -261,8 +251,8 @@ class ThemeXML(object):
         """
         Add a image background.
 
-        ``filename``
-            The file name of the image.
+        :param filename: The file name of the image.
+        :param border_color:
         """
         background = self.theme_xml.createElement('background')
         background.setAttribute('type', 'image')
@@ -278,57 +268,24 @@ class ThemeXML(object):
         """
         Add a Font.
 
-        ``name``
-            The name of the font.
-
-        ``color``
-            The colour of the font.
-
-        ``size``
-            The size of the font.
-
-        ``override``
-            Whether or not to override the default positioning of the theme.
-
-        ``fonttype``
-            The type of font, ``main`` or ``footer``. Defaults to ``main``.
-
-        ``weight``
-            The weight of then font Defaults to 50 Normal
-
-        ``italics``
-            Does the font render to italics Defaults to 0 Normal
-
-        ``xpos``
-            The X position of the text block.
-
-        ``ypos``
-            The Y position of the text block.
-
-        ``width``
-            The width of the text block.
-
-        ``height``
-            The height of the text block.
-
-        ``outline``
-            Whether or not to show an outline.
-
-        ``outline_color``
-            The colour of the outline.
-
-        ``outline_size``
-            How big the Shadow is
-
-        ``shadow``
-            Whether or not to show a shadow.
-
-        ``shadow_color``
-            The colour of the shadow.
-
-        ``shadow_size``
-            How big the Shadow is
-
+        :param name: The name of the font.
+        :param color: The colour of the font.
+        :param size: The size of the font.
+        :param override: Whether or not to override the default positioning of the theme.
+        :param fonttype: The type of font, ``main`` or ``footer``. Defaults to ``main``.
+        :param bold:
+        :param italics: The weight of then font Defaults to 50 Normal
+        :param line_adjustment: Does the font render to italics Defaults to 0 Normal
+        :param xpos: The X position of the text block.
+        :param ypos: The Y position of the text block.
+        :param width: The width of the text block.
+        :param height: The height of the text block.
+        :param outline: Whether or not to show an outline.
+        :param outline_color: The colour of the outline.
+        :param outline_pixel:  How big the Shadow is
+        :param shadow: Whether or not to show a shadow.
+        :param shadow_color: The colour of the shadow.
+        :param shadow_pixel: How big the Shadow is
         """
         background = self.theme_xml.createElement('font')
         background.setAttribute('type', fonttype)
@@ -372,15 +329,9 @@ class ThemeXML(object):
         """
         Add a Display options.
 
-        ``horizontal``
-            The horizontal alignment of the text.
-
-        ``vertical``
-            The vertical alignment of the text.
-
-        ``transition``
-            Whether the slide transition is active.
-
+        :param horizontal: The horizontal alignment of the text.
+        :param vertical: The vertical alignment of the text.
+        :param transition: Whether the slide transition is active.
         """
         background = self.theme_xml.createElement('display')
         self.theme.appendChild(background)
@@ -446,8 +397,7 @@ class ThemeXML(object):
         """
         Read in an XML string and parse it.
 
-        ``xml``
-            The XML string to parse.
+        :param xml: The XML string to parse.
         """
         self.parse_xml(str(xml))
 
@@ -455,8 +405,7 @@ class ThemeXML(object):
         """
         Parse an XML string.
 
-        ``xml``
-            The XML string to parse.
+        :param xml: The XML string to parse.
         """
         # remove encoding string
         line = xml.find('?>')

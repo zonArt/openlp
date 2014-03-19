@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import build_icon
 from openlp.core.lib.ui import add_welcome_page
 
@@ -64,15 +64,15 @@ class WizardStrings(object):
     PercentSymbolFormat = translate('OpenLP.Ui', '%p%')
     Ready = translate('OpenLP.Ui', 'Ready.')
     StartingImport = translate('OpenLP.Ui', 'Starting import...')
-    YouSpecifyFile = translate('OpenLP.Ui', 'You need to specify one '
-        '%s file to import from.', 'A file type e.g. OpenSong')
-    YouSpecifyFiles = translate('OpenLP.Ui', 'You need to specify at '
-        'least one %s file to import from.', 'A file type e.g. OpenSong')
-    YouSpecifyFolder = translate('OpenLP.Ui', 'You need to specify one '
-        '%s folder to import from.', 'A song format e.g. PowerSong')
+    YouSpecifyFile = translate('OpenLP.Ui', 'You need to specify one %s file to import from.',
+                               'A file type e.g. OpenSong')
+    YouSpecifyFiles = translate('OpenLP.Ui', 'You need to specify at least one %s file to import from.',
+                                'A file type e.g. OpenSong')
+    YouSpecifyFolder = translate('OpenLP.Ui', 'You need to specify one %s folder to import from.',
+                                 'A song format e.g. PowerSong')
 
 
-class OpenLPWizard(QtGui.QWizard):
+class OpenLPWizard(QtGui.QWizard, RegistryProperties):
     """
     Generic OpenLP wizard to provide generic functionality and a unified look
     and feel.
@@ -121,7 +121,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.setModal(True)
         self.setWizardStyle(QtGui.QWizard.ModernStyle)
         self.setOptions(QtGui.QWizard.IndependentPages |
-            QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
+                        QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
         add_welcome_page(self, image)
         self.add_custom_pages()
         if self.with_progress_page:
@@ -209,18 +209,18 @@ class OpenLPWizard(QtGui.QWizard):
             Registry().execute('openlp_stop_wizard')
         self.done(QtGui.QDialog.Rejected)
 
-    def on_current_id_changed(self, pageId):
+    def on_current_id_changed(self, page_id):
         """
         Perform necessary functions depending on which wizard page is active.
         """
-        if self.with_progress_page and self.page(pageId) == self.progress_page:
+        if self.with_progress_page and self.page(page_id) == self.progress_page:
             self.pre_wizard()
             self.perform_wizard()
             self.post_wizard()
         else:
-            self.custom_page_changed(pageId)
+            self.custom_page_changed(page_id)
 
-    def custom_page_changed(self, pageId):
+    def custom_page_changed(self, page_id):
         """
         Called when changing to a page other than the progress page
         """
@@ -242,11 +242,8 @@ class OpenLPWizard(QtGui.QWizard):
         """
         Update the wizard progress page.
 
-        ``status_text``
-            Current status information to display.
-
-        ``increment``
-            The value to increment the progress bar by.
+        :param status_text: Current status information to display.
+        :param increment: The value to increment the progress bar by.
         """
         log.debug('IncrementBar %s', status_text)
         self.progress_label.setText(status_text)
@@ -276,17 +273,10 @@ class OpenLPWizard(QtGui.QWizard):
         """
         Opens a QFileDialog and saves the filename to the given editbox.
 
-        ``title``
-            The title of the dialog (unicode).
-
-        ``editbox``
-            An editbox (QLineEdit).
-
-        ``setting_name``
-            The place where to save the last opened directory.
-
-        ``filters``
-            The file extension filters. It should contain the file description
+        :param title: The title of the dialog (unicode).
+        :param editbox:  An editbox (QLineEdit).
+        :param setting_name: The place where to save the last opened directory.
+        :param filters: The file extension filters. It should contain the file description
             as well as the file extension. For example::
 
                 u'OpenLP 2.0 Databases (*.sqlite)'
@@ -304,14 +294,9 @@ class OpenLPWizard(QtGui.QWizard):
         """
         Opens a QFileDialog and saves the selected folder to the given editbox.
 
-        ``title``
-            The title of the dialog (unicode).
-
-        ``editbox``
-            An editbox (QLineEdit).
-
-        ``setting_name``
-            The place where to save the last opened directory.
+        :param title: The title of the dialog (unicode).
+        :param editbox: An editbox (QLineEdit).
+        :param setting_name: The place where to save the last opened directory.
         """
         folder = QtGui.QFileDialog.getExistingDirectory(
             self, title, Settings().value(self.plugin.settings_section + '/' + setting_name),
@@ -319,17 +304,3 @@ class OpenLPWizard(QtGui.QWizard):
         if folder:
             editbox.setText(folder)
         Settings().setValue(self.plugin.settings_section + '/' + setting_name, folder)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

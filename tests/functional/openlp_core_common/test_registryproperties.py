@@ -41,17 +41,23 @@ class TestRegistryProperties(TestCase, RegistryProperties):
     """
     def setUp(self):
         """
-        Create the UI
+        Create the Register
         """
         Registry.create()
 
     def no_application_test(self):
+        """
+        Test property if no registry value assigned
+        """
         # GIVEN an Empty Registry
         # WHEN there is no Application
         # THEN the application should be none
         self.assertEquals(self.application, None, 'The application value should be None')
 
     def application_test(self):
+        """
+        Test property if registry value assigned
+        """
         # GIVEN an Empty Registry
         application = MagicMock()
         # WHEN the application is registered

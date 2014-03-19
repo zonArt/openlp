@@ -348,8 +348,7 @@ class Settings(QtCore.QSettings):
         """
         Static method to merge the given ``default_values`` with the ``Settings.__default_settings__``.
 
-        ``default_values``
-            A dict with setting keys and their default values.
+        :param default_values: A dict with setting keys and their default values.
         """
         Settings.__default_settings__ = dict(list(default_values.items()) + list(Settings.__default_settings__.items()))
 
@@ -419,8 +418,7 @@ class Settings(QtCore.QSettings):
         Returns the value for the given ``key``. The returned ``value`` is of the same type as the default value in the
         *Settings.__default_settings__* dict.
 
-        ``key``
-            The key to return the value from.
+        :param key: The key to return the value from.
         """
         # if group() is not empty the group has not been specified together with the key.
         if self.group():
@@ -434,12 +432,9 @@ class Settings(QtCore.QSettings):
         """
         This converts the given ``setting`` to the type of the given ``default_value``.
 
-        ``setting``
-            The setting to convert. This could be ``true`` for example.Settings()
-
-        ``default_value``
-            Indication the type the setting should be converted to. For example ``True`` (type is boolean), meaning that
-            we convert the string ``true`` to a python boolean.
+        :param setting: The setting to convert. This could be ``true`` for example.Settings()
+        :param default_value: Indication the type the setting should be converted to. For example ``True``
+        (type is boolean), meaning that we convert the string ``true`` to a python boolean.
 
         **Note**, this method only converts a few types and might need to be extended if a certain type is missing!
         """
@@ -471,10 +466,9 @@ class Settings(QtCore.QSettings):
         This removes the settings needed for old way we saved files (e. g. the image paths for the image plugin). A list
         of file paths are returned.
 
-        **Note**: Only a list of paths is returned; this does not convert anything!
+         **Note**: Only a list of paths is returned; this does not convert anything!
 
-        ``plugin``
-            The Plugin object.The caller has to convert/save the list himself; o
+         :param plugin: The Plugin object.The caller has to convert/save the list himself; o
         """
         files_list = []
         # We need QSettings instead of Settings here to bypass our central settings dict.
