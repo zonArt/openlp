@@ -31,7 +31,7 @@ Functional tests to test the PowerPointController class and related methods.
 """
 from unittest import TestCase
 import os
-from mock import MagicMock
+from tests.functional import patch, MagicMock
 from openlp.plugins.presentations.lib.powerpointcontroller import \
     PowerpointController, PowerpointDocument, _get_text_from_shapes
 
