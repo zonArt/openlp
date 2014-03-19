@@ -385,7 +385,7 @@ class Settings(QtCore.QSettings):
         """
         if self.group():
             key = self.group() + '/' + key
-        return Settings.__default_settings__.get(key, '')
+        return Settings.__default_settings__[key]
 
     def remove_obsolete_settings(self):
         """
@@ -422,9 +422,9 @@ class Settings(QtCore.QSettings):
         """
         # if group() is not empty the group has not been specified together with the key.
         if self.group():
-            default_value = Settings.__default_settings__.get(self.group() + '/' + key, '')
+            default_value = Settings.__default_settings__[self.group() + '/' + key]
         else:
-            default_value = Settings.__default_settings__.get(key, '')
+            default_value = Settings.__default_settings__[key]
         setting = super(Settings, self).value(key, default_value)
         return self._convert_value(setting, default_value)
 
