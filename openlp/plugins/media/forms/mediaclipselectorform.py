@@ -36,6 +36,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.common import translate
 from openlp.plugins.media.forms.mediaclipselectordialog import Ui_MediaClipSelector
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media.vendor import vlc
@@ -117,13 +118,14 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         path = self.media_path_combobox.currentText()
         if path == '':
             log.debug('no given path')
-            critical_error_message_box('Error', 'No path was given')
+            critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm', 'No path was given'))
             self.toggle_disable_load_media(False)
             return
         self.vlc_media = self.vlc_instance.media_new_path(path)
         if not self.vlc_media:
             log.debug('vlc media player is none')
-            critical_error_message_box('Error', 'An error happened during initialization of VLC player')
+            critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
+                                       'An error happened during initialization of VLC player'))
             self.toggle_disable_load_media(False)
             return
         # put the media in the media player
@@ -132,7 +134,8 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         # start playback to get vlc to parse the media
         if self.vlc_media_player.play() < 0:
             log.debug('vlc play returned error')
-            critical_error_message_box('Error', 'An error happen when starting VLC player')
+            critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
+                                       'An error happen when starting VLC player'))
             self.toggle_disable_load_media(False)
             return
         self.vlc_media_player.audio_set_mute(True)
