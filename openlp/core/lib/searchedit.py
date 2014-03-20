@@ -79,8 +79,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         Reimplemented method to react to resizing of the widget.
 
-        ``event``
-            The event that happened.
+        :param event: The event that happened.
         """
         size = self.clear_button.size()
         frame_width = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
@@ -100,8 +99,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         Set a new current search type.
 
-        ``identifier``
-            The search type identifier (int).
+        :param identifier: The search type identifier (int).
         """
         menu = self.menu_button.menu()
         for action in menu.actions():
@@ -122,8 +120,8 @@ class SearchEdit(QtGui.QLineEdit):
         A list of tuples to be used in the search type menu. The first item in the list will be preselected as the
         default.
 
-        ``items``
-            The list of tuples to use. The tuples should contain an integer identifier, an icon (QIcon instance or
+         :param items:     The list of tuples to use. The tuples should contain an integer identifier, an icon (QIcon instance or
+
             string) and a title for the item in the menu. In short, they should look like this::
 
                 (<identifier>, <icon>, <title>, <place holder text>)
@@ -162,8 +160,7 @@ class SearchEdit(QtGui.QLineEdit):
         Internally implemented slot to react to when the text in the line edit has changed so that we can show or hide
         the clear button.
 
-        ``text``
-            A :class:`~PyQt4.QtCore.QString` instance which represents the text in the line edit.
+        :param text: A :class:`~PyQt4.QtCore.QString` instance which represents the text in the line edit.
         """
         self.clear_button.setVisible(bool(text))
 

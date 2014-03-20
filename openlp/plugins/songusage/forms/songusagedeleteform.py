@@ -29,12 +29,12 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry, translate
+from openlp.core.common import RegistryProperties, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from .songusagedeletedialog import Ui_SongUsageDeleteDialog
 
 
-class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
+class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog, RegistryProperties):
     """
     Class documentation goes here.
     """
@@ -71,13 +71,3 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
                 self.accept()
         else:
             self.reject()
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

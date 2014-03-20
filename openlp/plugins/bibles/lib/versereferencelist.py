@@ -42,18 +42,15 @@ class VerseReferenceList(object):
     def add(self, book, chapter, verse, version, copyright, permission):
         self.add_version(version, copyright, permission)
         if not self.verse_list or self.verse_list[self.current_index]['book'] != book:
-            self.verse_list.append({'version': version, 'book': book,
-                'chapter': chapter, 'start': verse, 'end': verse})
+            self.verse_list.append({'version': version, 'book': book, 'chapter': chapter, 'start': verse, 'end': verse})
             self.current_index += 1
         elif self.verse_list[self.current_index]['chapter'] != chapter:
-            self.verse_list.append({'version': version, 'book': book,
-                'chapter': chapter, 'start': verse, 'end': verse})
+            self.verse_list.append({'version': version, 'book': book, 'chapter': chapter, 'start': verse, 'end': verse})
             self.current_index += 1
         elif (self.verse_list[self.current_index]['end'] + 1) == verse:
             self.verse_list[self.current_index]['end'] = verse
         else:
-            self.verse_list.append({'version': version, 'book': book,
-                'chapter': chapter, 'start': verse, 'end': verse})
+            self.verse_list.append({'version': version, 'book': book, 'chapter': chapter, 'start': verse, 'end': verse})
             self.current_index += 1
 
     def add_version(self, version, copyright, permission):

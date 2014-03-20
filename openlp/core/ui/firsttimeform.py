@@ -41,7 +41,7 @@ from configparser import ConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate
 from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.utils import get_web_page
 from .firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
@@ -75,7 +75,7 @@ class ThemeScreenshotThread(QtCore.QThread):
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
 
-class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
+class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
     """
     This is the Theme Import Wizard, which allows easy creation and editing of OpenLP themes.
     """
@@ -284,8 +284,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def _build_theme_screenshots(self):
         """
-        This method builds the theme screenshots' icons for all items in the
-        ``self.themes_list_widget``.
+        This method builds the theme screenshots' icons for all items in the ``self.themes_list_widget``.
         """
         themes = self.config.get('themes', 'files')
         themes = themes.split(',')
@@ -298,12 +297,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     break
             item.setIcon(build_icon(os.path.join(gettempdir(), 'openlp', screenshot)))
 
-    def _getFileSize(self, url):
+    def _get_file_size(self, url):
         """
         Get the size of a file.
 
-        ``url``
-            The URL of the file we want to download.
+        :param url: The URL of the file we want to download.
         """
         site = urllib.request.urlopen(url)
         meta = site.info()
@@ -321,11 +319,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Update the wizard progress page.
 
-        ``status_text``
-            Current status information to display.
-
-        ``increment``
-            The value to increment the progress bar by.
+        :param status_text: Current status information to display.
+        :param increment: The value to increment the progress bar by.
         """
         if status_text:
             self.progress_label.setText(status_text)
@@ -346,7 +341,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             item = self.songs_list_widget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole)
-                size = self._getFileSize('%s%s' % (self.web, filename))
+                size = self._get_file_size('%s%s' % (self.web, filename))
                 self.max_progress += size
         # Loop through the Bibles list and increase for each selected item
         iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
@@ -355,7 +350,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             item = iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                 filename = item.data(0, QtCore.Qt.UserRole)
-                size = self._getFileSize('%s%s' % (self.web, filename))
+                size = self._get_file_size('%s%s' % (self.web, filename))
                 self.max_progress += size
             iterator += 1
         # Loop through the themes list and increase for each selected item
@@ -364,7 +359,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             item = self.themes_list_widget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole)
-                size = self._getFileSize('%s%s' % (self.web, filename))
+                size = self._get_file_size('%s%s' % (self.web, filename))
                 self.max_progress += size
         if self.max_progress:
             # Add on 2 for plugins status setting plus a "finished" point.
@@ -474,27 +469,3 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         status = PluginStatus.Active if field.checkState() == QtCore.Qt.Checked else PluginStatus.Inactive
         Settings().setValue(tag, status)
-
-    def _get_theme_manager(self):
-        """
-        Adds the theme manager to the class dynamically
-        """
-        if not hasattr(self, '_theme_manager'):
-            self._theme_manager = Registry().get('theme_manager')
-        return self._theme_manager
-
-    theme_manager = property(_get_theme_manager)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

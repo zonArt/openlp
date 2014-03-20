@@ -83,8 +83,7 @@ class HttpThread(QtCore.QThread):
         """
         Constructor for the thread class.
 
-        ``server``
-            The http server class.
+        :param server: The http server class.
         """
         super(HttpThread, self).__init__(None)
         self.http_server = server

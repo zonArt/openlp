@@ -39,8 +39,8 @@ from datetime import datetime, timedelta
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, AppLocation, Settings, ThemeLevel, OpenLPMixin, RegistryMixin, \
-    check_directory_exists, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, ThemeLevel, OpenLPMixin, \
+    RegistryMixin, check_directory_exists, UiStrings, translate
 from openlp.core.lib import OpenLPToolbar, ServiceItem, ItemCapabilities, PluginStatus, build_icon
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
@@ -306,7 +306,7 @@ class Ui_ServiceManager(object):
         event.accept()
 
 
-class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManager):
+class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManager, RegistryProperties):
     """
     Manages the services. This involves taking text strings from plugins and adding them to the service. This service
     can then be zipped up with all the resources used into one OSZ or oszl file for use on any OpenLP v2 installation.
@@ -1633,67 +1633,3 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         setting_dialog = PrintServiceForm()
         setting_dialog.exec_()
-
-    def _get_renderer(self):
-        """
-        Adds the Renderer to the class dynamically
-        """
-        if not hasattr(self, '_renderer'):
-            self._renderer = Registry().get('renderer')
-        return self._renderer
-
-    renderer = property(_get_renderer)
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)
-
-    def _get_preview_controller(self):
-        """
-        Adds the preview controller to the class dynamically
-        """
-        if not hasattr(self, '_preview_controller'):
-            self._preview_controller = Registry().get('preview_controller')
-        return self._preview_controller
-
-    preview_controller = property(_get_preview_controller)
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

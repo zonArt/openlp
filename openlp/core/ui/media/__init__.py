@@ -99,8 +99,7 @@ def get_media_players():
 
 def set_media_players(players_list, overridden_player='auto'):
     """
-    This method saves the configured media players and overridden player to the
-    settings
+    This method saves the configured media players and overridden player to the settings
 
     :param players_list: A list with all active media players.
     :param overridden_player: Here an special media player is chosen for all media actions.

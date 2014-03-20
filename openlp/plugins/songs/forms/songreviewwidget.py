@@ -58,11 +58,8 @@ class SongReviewWidget(QtGui.QWidget):
 
     def __init__(self, parent, song):
         """
-        ``parent``
-            The QWidget-derived parent of the wizard.
-
-        ``song``
-            The Song which this SongReviewWidget should represent.
+        :param parent: The QWidget-derived parent of the wizard.
+        :param song: The Song which this SongReviewWidget should represent.
         """
         super(SongReviewWidget, self).__init__(parent)
         self.song = song

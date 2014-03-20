@@ -335,8 +335,7 @@ class GeneralTab(SettingsTab):
         """
         Toggle screen state depending on check box state.
 
-        ``checked``
-            The state of the check box (boolean).
+        :param checked: The state of the check box (boolean).
         """
         self.monitor_combo_box.setDisabled(checked)
         self.custom_X_value_edit.setEnabled(checked)

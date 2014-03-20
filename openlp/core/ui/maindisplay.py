@@ -38,13 +38,12 @@ Some of the code for this form is based on the examples at:
 
 import cgi
 import logging
-import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
-from openlp.core.common import Registry, OpenLPMixin, Settings, translate
+from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate
 from openlp.core.lib import ServiceItem, ImageSource, build_html, expand_tags, image_to_byte
 from openlp.core.lib.theme import BackgroundType
 
@@ -118,7 +117,7 @@ class Display(QtGui.QGraphicsView):
         self.web_loaded = True
 
 
-class MainDisplay(OpenLPMixin, Display):
+class MainDisplay(OpenLPMixin, Display, RegistryProperties):
     """
     This is the display screen as a specialized class from the Display class
     """
@@ -468,50 +467,6 @@ class MainDisplay(OpenLPMixin, Display):
             self.setCursor(QtCore.Qt.ArrowCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
-    def _get_plugin_manager(self):
-        """
-        Adds the Renderer to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_image_manager(self):
-        """
-        Adds the image manager to the class dynamically
-        """
-        if not hasattr(self, '_image_manager'):
-            self._image_manager = Registry().get('image_manager')
-        return self._image_manager
-
-    image_manager = property(_get_image_manager)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)
-
 
 class AudioPlayer(OpenLPMixin, QtCore.QObject):
     """
@@ -522,8 +477,7 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         """
         The constructor for the display form.
 
-        ``parent``
-            The parent widget.
+        :param parent:  The parent widget.
         """
         super(AudioPlayer, self).__init__(parent)
         self.current_index = -1

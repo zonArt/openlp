@@ -47,8 +47,7 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
         """
         Show the form
 
-        ``selected_group``
-            The ID of the group that should be selected by default when showing the dialog.
+        :param selected_group: The ID of the group that should be selected by default when showing the dialog.
         """
         self.new_group_edit.clear()
         if selected_group is not None:

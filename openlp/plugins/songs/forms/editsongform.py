@@ -38,7 +38,7 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, AppLocation, UiStrings, check_directory_exists, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, UiStrings, check_directory_exists, translate
 from openlp.core.lib import FileDialog, PluginStatus, MediaType, create_separated_list
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.lib import VerseType, clean_song
@@ -52,7 +52,7 @@ from openlp.plugins.songs.forms.mediafilesform import MediaFilesForm
 log = logging.getLogger(__name__)
 
 
-class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
+class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
     """
     Class to manage the editing of a song
     """
@@ -956,23 +956,3 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
         self.media_item.auto_select_id = self.song.id
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_theme_manager(self):
-        """
-        Adds the theme manager to the class dynamically
-        """
-        if not hasattr(self, '_theme_manager'):
-            self._theme_manager = Registry().get('theme_manager')
-        return self._theme_manager
-
-    theme_manager = property(_get_theme_manager)

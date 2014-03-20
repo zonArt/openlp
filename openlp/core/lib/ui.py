@@ -45,11 +45,8 @@ def add_welcome_page(parent, image):
     """
     Generate an opening welcome page for a wizard using a provided image.
 
-    ``parent``
-        A ``QWizard`` object to add the welcome page to.
-
-    ``image``
-        A splash image for the wizard.
+    :param parent: A ``QWizard`` object to add the welcome page to.
+    :param image: A splash image for the wizard.
     """
     parent.welcome_page = QtGui.QWizardPage()
     parent.welcome_page.setPixmap(QtGui.QWizard.WatermarkPixmap, QtGui.QPixmap(image))
@@ -73,19 +70,12 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
     Creates a QDialogButtonBox with the given buttons. The ``accepted()`` and ``rejected()`` signals of the button box
     are connected with the dialogs ``accept()`` and ``reject()`` slots.
 
-    ``dialog``
-        The parent object. This has to be a ``QDialog`` descendant.
-
-    ``name``
-        A string which is set as object name.
-
-    ``standard_buttons``
-        A list of strings for the used buttons. It might contain: ``ok``, ``save``, ``cancel``, ``close``, and
-        ``defaults``.
-
-    ``custom_buttons``
-        A list of additional buttons. If a item is a instance of QtGui.QAbstractButton it is added with
-        QDialogButtonBox.ActionRole. Otherwhise the item has to be a tuple of a button and a ButtonRole.
+    :param dialog: The parent object. This has to be a ``QDialog`` descendant.
+    :param name: A string which is set as object name.
+    :param standard_buttons: A list of strings for the used buttons. It might contain: ``ok``, ``save``, ``cancel``,
+    ``close``, and ``defaults``.
+    :param custom_buttons: A list of additional buttons. If a item is a instance of QtGui.QAbstractButton it is added
+    with QDialogButtonBox.ActionRole. Other wise the item has to be a tuple of a button and a ButtonRole.
     """
     if custom_buttons is None:
         custom_buttons = []
@@ -117,17 +107,10 @@ def critical_error_message_box(title=None, message=None, parent=None, question=F
     """
     Provides a standard critical message box for errors that OpenLP displays to users.
 
-    ``title``
-        The title for the message box.
-
-    ``message``
-        The message to display to the user.
-
-    ``parent``
-        The parent UI element to attach the dialog to.
-
-    ``question``
-        Should this message box question the user.
+    :param title: The title for the message box.
+    :param message: The message to display to the user.
+    :param parent: The parent UI element to attach the dialog to.
+    :param question: Should this message box question the user.
     """
     if question:
         return QtGui.QMessageBox.critical(parent, UiStrings().Error, message,
@@ -140,11 +123,8 @@ def create_horizontal_adjusting_combo_box(parent, name):
     """
     Creates a QComboBox with adapting width for media items.
 
-    ``parent``
-        The parent widget.
-
-    ``name``
-        A string set as object name for the combo box.
+    :param parent: The parent widget.
+    :param name: A string set as object name for the combo box.
     """
     combo = QtGui.QComboBox(parent)
     combo.setObjectName(name)
@@ -157,11 +137,9 @@ def create_button(parent, name, **kwargs):
     """
     Return an button with the object name set and the given parameters.
 
-    ``parent``
-        A QtCore.QWidget for the buttons parent (required).
-
-    ``name``
-        A string which is set as object name (required).
+    :param parent:  A QtCore.QWidget for the buttons parent (required).
+    :param name: A string which is set as object name (required).
+    :param kwargs:
 
     ``role``
         A string which can have one value out of ``delete``, ``up``, and ``down``. This decides about default values
@@ -178,6 +156,7 @@ def create_button(parent, name, **kwargs):
 
     ``enabled``
         False in case the button should be disabled.
+
     """
     if 'role' in kwargs:
         role = kwargs.pop('role')
@@ -217,11 +196,9 @@ def create_action(parent, name, **kwargs):
     """
     Return an action with the object name set and the given parameters.
 
-    ``parent``
-        A QtCore.QObject for the actions parent (required).
-
-    ``name``
-        A string which is set as object name (required).
+    :param parent:  A QtCore.QObject for the actions parent (required).
+    :param name:  A string which is set as object name (required).
+    :param kwargs:
 
     ``text``
         A string for the action text.
@@ -253,6 +230,7 @@ def create_action(parent, name, **kwargs):
 
     ``can_shortcuts``
         Capability stating if this action can have shortcuts. If ``True`` the action is added to shortcut dialog
+
         otherwise it it not. Define your shortcut in the :class:`~openlp.core.lib.Settings` class. *Note*: When *not*
         ``True`` you *must not* set a shortcuts at all.
 
@@ -314,11 +292,8 @@ def set_case_insensitive_completer(cache, widget):
     """
     Sets a case insensitive text completer for a widget.
 
-    ``cache``
-        The list of items to use as suggestions.
-
-    ``widget``
-        A widget to set the completer (QComboBox or QTextEdit instance)
+    :param cache: The list of items to use as suggestions.
+    :param widget: A widget to set the completer (QComboBox or QTextEdit instance)
     """
     completer = QtGui.QCompleter(cache)
     completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
@@ -329,10 +304,7 @@ def create_valign_selection_widgets(parent):
     """
     Creates a standard label and combo box for asking users to select a vertical alignment.
 
-    ``parent``
-        The parent object. This should be a ``QWidget`` descendant.
-
-    Returns a tuple of QLabel and QComboBox.
+    :param parent: The parent object. This should be a ``QWidget`` descendant.
     """
     label = QtGui.QLabel(parent)
     label.setText(translate('OpenLP.Ui', '&Vertical Align:'))

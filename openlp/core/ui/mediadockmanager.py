@@ -50,11 +50,9 @@ class MediaDockManager(object):
         """
         Add a MediaManagerItem to the dock
 
-        ``media_item``
-            The item to add to the dock
-
-        ``icon``
-            An icon for this dock item
+        :param media_item:  The item to add to the dock
+        :param icon: An icon for this dock item
+        :param weight:
         """
         visible_title = media_item.plugin.get_string(StringContent.VisibleName)
         log.info('Adding %s dock' % visible_title)
@@ -80,8 +78,7 @@ class MediaDockManager(object):
         """
         Removes a MediaManagerItem from the dock
 
-        ``media_item``
-            The item to add to the dock
+        :param media_item: The item to add to the dock
         """
         visible_title = media_item.plugin.get_string(StringContent.VisibleName)
         log.debug('remove %s dock' % visible_title['title'])

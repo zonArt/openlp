@@ -150,8 +150,7 @@ class ScreenList(object):
         """
         Add a screen to the list of known screens.
 
-        ``screen``
-            A dict with the screen properties::
+        :param screen: A dict with the screen properties::
 
                 {
                     u'primary': True,
@@ -170,8 +169,7 @@ class ScreenList(object):
         """
         Remove a screen from the list of known screens.
 
-        ``number``
-            The screen number (int).
+        :param number: The screen number (int).
         """
         log.info('remove_screen %d' % number)
         for screen in self.screen_list:
@@ -184,8 +182,7 @@ class ScreenList(object):
         """
         Confirms a screen is known.
 
-        ``number``
-            The screen number (int).
+        :param number: The screen number (int).
         """
         for screen in self.screen_list:
             if screen['number'] == number:
@@ -196,8 +193,7 @@ class ScreenList(object):
         """
         Set up the current screen dimensions.
 
-        ``number``
-            The screen number (int).
+        :param number: The screen number (int).
         """
         log.debug('set_current_display %s' % number)
         if number + 1 > self.display_count:
@@ -211,8 +207,7 @@ class ScreenList(object):
 
     def set_override_display(self):
         """
-        Replace the current size with the override values, as the user wants to
-        have their own screen attributes.
+        Replace the current size with the override values, as the user wants to have their own screen attributes.
         """
         log.debug('set_override_display')
         self.current = copy.deepcopy(self.override)
@@ -220,8 +215,7 @@ class ScreenList(object):
 
     def reset_current_display(self):
         """
-        Replace the current values with the correct values, as the user wants to
-        use the correct screen attributes.
+        Replace the current values with the correct values, as the user wants to use the correct screen attributes.
         """
         log.debug('reset_current_display')
         self.set_current_display(self.current['number'])
@@ -230,8 +224,7 @@ class ScreenList(object):
         """
         Return the screen number that the centre of the passed window is in.
 
-        ``window``
-            A QWidget we are finding the location of.
+        :param window: A QWidget we are finding the location of.
         """
         x = window.x() + (window.width() // 2)
         y = window.y() + (window.height() // 2)

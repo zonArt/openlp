@@ -37,6 +37,7 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 VERSE_TAGS = ['V', 'C', 'B', 'O', 'P', 'I', 'E']
 
+
 class MediaShoutImport(SongImport):
     """
     The :class:`MediaShoutImport` class provides the ability to import the
@@ -48,61 +49,57 @@ class MediaShoutImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive a single file to import.
         """
         try:
-           conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};'
-            'DBQ=%s;PWD=6NOZ4eHK7k' % self.import_source)
+            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s;PWD=6NOZ4eHK7k' %
+                                  self.import_source)
         except:
             # Unfortunately no specific exception type
-            self.logError(self.import_source,
-                translate('SongsPlugin.MediaShoutImport', 'Unable to open the MediaShout database.'))
+            self.log_error(self.import_source, translate('SongsPlugin.MediaShoutImport',
+                                                         'Unable to open the MediaShout database.'))
             return
         cursor = conn.cursor()
-        cursor.execute('SELECT Record, Title, Author, Copyright, '
-                       'SongID, CCLI, Notes FROM Songs ORDER BY Title')
+        cursor.execute('SELECT Record, Title, Author, Copyright, SongID, CCLI, Notes FROM Songs ORDER BY Title')
         songs = cursor.fetchall()
         self.import_wizard.progress_bar.setMaximum(len(songs))
         for song in songs:
             if self.stop_import_flag:
                 break
-            cursor.execute('SELECT Type, Number, Text FROM Verses '
-                'WHERE Record = %s ORDER BY Type, Number' % song.Record)
+            cursor.execute('SELECT Type, Number, Text FROM Verses WHERE Record = %s ORDER BY Type, Number'
+                           % song.Record)
             verses = cursor.fetchall()
-            cursor.execute('SELECT Type, Number, POrder FROM PlayOrder '
-                'WHERE Record = %s ORDER BY POrder' % song.Record)
+            cursor.execute('SELECT Type, Number, POrder FROM PlayOrder WHERE Record = %s ORDER BY POrder' % song.Record)
             verse_order = cursor.fetchall()
-            cursor.execute('SELECT Name FROM Themes INNER JOIN SongThemes '
-                'ON SongThemes.ThemeId = Themes.ThemeId '
-                'WHERE SongThemes.Record = %s' % song.Record)
+            cursor.execute('SELECT Name FROM Themes INNER JOIN SongThemes ON SongThemes.ThemeId = Themes.ThemeId '
+                           'WHERE SongThemes.Record = %s' % song.Record)
             topics = cursor.fetchall()
-            cursor.execute('SELECT Name FROM Groups INNER JOIN SongGroups '
-                'ON SongGroups.GroupId = Groups.GroupId '
-                'WHERE SongGroups.Record = %s' % song.Record)
+            cursor.execute('SELECT Name FROM Groups INNER JOIN SongGroups ON SongGroups.GroupId = Groups.GroupId '
+                           'WHERE SongGroups.Record = %s' % song.Record)
             topics += cursor.fetchall()
-            self.processSong(song, verses, verse_order, topics)
+            self.process_song(song, verses, verse_order, topics)
 
-    def processSong(self, song, verses, verse_order, topics):
+    def process_song(self, song, verses, verse_order, topics):
         """
         Create the song, i.e. title, verse etc.
         """
-        self.setDefaults()
+        self.set_defaults()
         self.title = song.Title
         self.parse_author(song.Author)
-        self.addCopyright(song.Copyright)
+        self.add_copyright(song.Copyright)
         self.comments = song.Notes
         for topic in topics:
             self.topics.append(topic.Name)
         if '-' in song.SongID:
-            self.songBookName, self.songNumber = song.SongID.split('-', 1)
+            self.song_book_name, self.song_number = song.SongID.split('-', 1)
         else:
-            self.songBookName = song.SongID
+            self.song_book_name = song.SongID
         for verse in verses:
             tag = VERSE_TAGS[verse.Type] + str(verse.Number) if verse.Type < len(VERSE_TAGS) else 'O'
-            self.addVerse(verse.Text, tag)
+            self.add_verse(verse.Text, tag)
         for order in verse_order:
             if order.Type < len(VERSE_TAGS):
-                self.verseOrderList.append(VERSE_TAGS[order.Type] + str(order.Number))
+                self.verse_order_list.append(VERSE_TAGS[order.Type] + str(order.Number))
         self.finish()
