@@ -180,7 +180,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
                 self.theme.background_type == background_image and is_not_image_file(self.theme.background_filename):
             QtGui.QMessageBox.critical(self, translate('OpenLP.ThemeWizard', 'Background Image Empty'),
                                        translate('OpenLP.ThemeWizard', '_you have not selected a '
-                                       'background image. Please select one before continuing.'))
+                                                 'background image. Please select one before continuing.'))
             return False
         else:
             return True
