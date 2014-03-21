@@ -120,7 +120,7 @@ class DreamBeamImport(SongImport):
                         author_copyright = song_xml.Author.text
                     if hasattr(song_xml, 'SongLyrics'):
                         for lyrics_item in song_xml.SongLyrics.iterchildren():
-                            verse_type =  lyrics_item.get('Type')
+                            verse_type = lyrics_item.get('Type')
                             verse_number = lyrics_item.get('Number')
                             verse_text = str(lyrics_item.text)
                             self.add_verse(verse_text, ('%s%s' % (verse_type[:1], verse_number)))
@@ -145,8 +145,7 @@ class DreamBeamImport(SongImport):
                         author_copyright = song_xml.Text2.Text.text
                 if author_copyright:
                     author_copyright = str(author_copyright)
-                    if author_copyright.find(
-                        str(SongStrings.CopyrightSymbol)) >= 0:
+                    if author_copyright.find(str(SongStrings.CopyrightSymbol)) >= 0:
                         self.add_copyright(author_copyright)
                     else:
                         self.parse_author(author_copyright)

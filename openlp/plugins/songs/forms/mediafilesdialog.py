@@ -71,4 +71,3 @@ class Ui_MediaFilesDialog(object):
         self.select_label.setText(translate('SongsPlugin.MediaFilesForm',
                                   'Select one or more audio files from the list below, and click OK to import them '
                                   'into this song.'))
-

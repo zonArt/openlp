@@ -138,7 +138,7 @@ class SundayPlusImport(SongImport):
                     elif name == 'Copyright':
                         self.copyright = self.decode(self.unescape(value))
                     elif name[0:4] == 'CELL':
-                        self.parse(value, cell = name[4:])
+                        self.parse(value, cell=name[4:])
                 # We are in a verse group.
                 else:
                     if name == 'MARKER_NAME':
@@ -207,4 +207,3 @@ class SundayPlusImport(SongImport):
         text = text.replace('^^', '"')
         text = text.replace('^', '\'')
         return text.strip()
-
