@@ -664,7 +664,7 @@ class BibleMediaItem(MediaManagerItem):
                     db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
                     if not db_book:
                         log.debug('Passage "%s %d:%d" not found in Second Bible' %
-                            (verse.book.name, verse.chapter, verse.verse))
+                                  (verse.book.name, verse.chapter, verse.verse))
                         passage_not_found = True
                         count += 1
                         continue
@@ -910,8 +910,8 @@ class BibleMediaItem(MediaManagerItem):
         elif old_verse + 1 != verse and old_chapter == chapter:
             # We are still in the same chapter, but a verse has been skipped.
             return True
-        elif old_chapter + 1 == chapter and (verse != 1 or
-            old_verse != self.plugin.manager.get_verse_count(old_bible, old_book, old_chapter)):
+        elif old_chapter + 1 == chapter and (verse != 1 or old_verse !=
+                                             self.plugin.manager.get_verse_count(old_bible, old_book, old_chapter)):
             # We are in the following chapter, but the last verse was not the
             # last verse of the chapter or the current verse is not the
             # first one of the chapter.

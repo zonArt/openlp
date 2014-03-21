@@ -422,7 +422,7 @@ class BiblesTab(SettingsTab):
             color.setAlpha(128)
         palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Text, color)
         return palette
-    
+
     def check_is_verse_number_visible(self):
         """
         Enables / Disables verse settings dependent on is_verse_number_visible
@@ -430,4 +430,3 @@ class BiblesTab(SettingsTab):
         self.new_chapters_check_box.setEnabled(self.is_verse_number_visible)
         self.display_style_label.setEnabled(self.is_verse_number_visible)
         self.display_style_combo_box.setEnabled(self.is_verse_number_visible)
-
