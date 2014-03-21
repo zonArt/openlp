@@ -35,7 +35,7 @@ import os
 import datetime
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, RegistryMixin, Settings, UiStrings, translate
+from openlp.core.common import OpenLPMixin, Registry, RegistryMixin, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
@@ -80,26 +80,24 @@ class MediaSlider(QtGui.QSlider):
         QtGui.QSlider.mouseReleaseEvent(self, event)
 
 
-class MediaController(object):
+class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
     """
-    The implementation of the Media Controller. The Media Controller adds an own
-    class for every Player. Currently these are QtWebkit, Phonon and Vlc.
+    The implementation of the Media Controller. The Media Controller adds an own class for every Player.
+    Currently these are QtWebkit, Phonon and Vlc. display_controllers are an array of controllers keyed on the
+    slidecontroller or plugin which built them.
 
-    display_controllers are an array of controllers keyed on the
-    slidecontroller or plugin which built them.  ControllerType is the class
-    containing the key values.
+    ControllerType is the class containing the key values.
 
     media_players are an array of media players keyed on player name.
 
     current_media_players is an array of player instances keyed on ControllerType.
 
     """
-    def __init__(self):
+    def __init__(self, parent=None):
         """
         Constructor
         """
-        Registry().register('media_controller', self)
-        Registry().register_function('bootstrap_initialise', self.bootstrap_initialise)
+        super(MediaController, self).__init__(parent)
         self.media_players = {}
         self.display_controllers = {}
         self.current_media_players = {}
@@ -156,8 +154,7 @@ class MediaController(object):
         Register each media Player (Webkit, Phonon, etc) and store
         for later use
 
-        ``player``
-            Individual player class which has been enabled
+        :param player: Individual player class which has been enabled
         """
         self.media_players[player.name] = player
 
@@ -199,8 +196,7 @@ class MediaController(object):
 
     def media_state(self):
         """
-        Check if there is a running media Player and do updating stuff (e.g.
-        update the UI)
+        Check if there is a running media Player and do updating stuff (e.g. update the UI)
         """
         if not list(self.current_media_players.keys()):
             self.timer.stop()
@@ -256,8 +252,7 @@ class MediaController(object):
         """
         Registers media controls where the players will be placed to run.
 
-        ``controller``
-            The controller where a player will be placed
+        :param controller: The controller where a player will be placed
         """
         self.display_controllers[controller.controller_type] = controller
         self.setup_generic_controls(controller)
@@ -266,8 +261,7 @@ class MediaController(object):
         """
         Set up controls on the control_panel for a given controller
 
-        ``controller``
-            First element is the controller which should be used
+        :param controller:  First element is the controller which should be used
         """
         controller.media_info = MediaInfo()
         # Build a Media ToolBar
@@ -313,14 +307,10 @@ class MediaController(object):
 
     def setup_display(self, display, preview):
         """
-        After a new display is configured, all media related widgets will be
-        created too
+        After a new display is configured, all media related widgets will be created too
 
-        ``display``
-            Display on which the output is to be played
-
-        ``preview``
-            Whether the display is a main or preview display
+        :param display:  Display on which the output is to be played
+        :param preview: Whether the display is a main or preview display
         """
         # clean up possible running old media files
         self.finalise()
@@ -337,14 +327,10 @@ class MediaController(object):
 
     def set_controls_visible(self, controller, value):
         """
-        After a new display is configured, all media related widget will be
-        created too
+        After a new display is configured, all media related widget will be created too
 
-        ``controller``
-            The controller on which controls act.
-
-        ``value``
-            control name to be changed.
+        :param controller: The controller on which controls act.
+        :param value: control name to be changed.
         """
         # Generic controls
         controller.mediabar.setVisible(value)
@@ -355,14 +341,10 @@ class MediaController(object):
 
     def resize(self, display, player):
         """
-        After Mainwindow changes or Splitter moved all related media widgets
-        have to be resized
+        After Mainwindow changes or Splitter moved all related media widgets have to be resized
 
-        ``display``
-            The display on which output is playing.
-
-        ``player``
-            The player which is doing the playing.
+        :param display: The display on which output is playing.
+        :param player:  The player which is doing the playing.
         """
         player.resize(display)
 
@@ -370,17 +352,10 @@ class MediaController(object):
         """
         Loads and starts a video to run with the option of sound
 
-        ``source``
-            Where the call originated form
-
-        ``service_item``
-            The player which is doing the playing
-
-        ``hidden``
-            The player which is doing the playing
-
-        ``video_behind_text``
-            Is the video to be played behind text.
+        :param source: Where the call originated form
+        :param service_item: The player which is doing the playing
+        :param hidden: The player which is doing the playing
+        :param video_behind_text: Is the video to be played behind text.
         """
         log.debug('video')
         is_valid = False
@@ -437,8 +412,7 @@ class MediaController(object):
         """
         Loads and starts a media item to obtain the media length
 
-        ``service_item``
-            The ServiceItem containing the details to be played.
+        :param service_item: The ServiceItem containing the details to be played.
         """
         controller = self.display_controllers[DisplayControllerType.Plugin]
         log.debug('media_length')
@@ -466,11 +440,9 @@ class MediaController(object):
         """
         Select the correct media Player type from the prioritized Player list
 
-        ``controller``
-            First element is the controller which should be used
-
-        ``service_item``
-            The ServiceItem containing the details to be played.
+        :param controller: First element is the controller which should be used
+        :param display: Which display to use
+        :param service_item: The ServiceItem containing the details to be played.
         """
         used_players = get_media_players()[0]
         if service_item.processor != UiStrings().Automatic:
@@ -508,8 +480,8 @@ class MediaController(object):
         """
         Responds to the request to play a loaded video
 
-        ``msg``
-            First element is the controller which should be used
+        :param msg: First element is the controller which should be used
+        :param status:
         """
         log.debug('media_play_msg')
         self.media_play(msg[0], status)
@@ -518,8 +490,8 @@ class MediaController(object):
         """
         Responds to the request to play a loaded video
 
-        ``controller``
-            The controller to be played
+        :param controller: The controller to be played
+        :param status:
         """
         log.debug('media_play')
         controller.seek_slider.blockSignals(True)
@@ -558,8 +530,7 @@ class MediaController(object):
         """
         Responds to the request to pause a loaded video
 
-        ``msg``
-            First element is the controller which should be used
+        :param msg: First element is the controller which should be used
         """
         log.debug('media_pause_msg')
         self.media_pause(msg[0])
@@ -568,8 +539,7 @@ class MediaController(object):
         """
         Responds to the request to pause a loaded video
 
-        ``controller``
-            The Controller to be paused
+        :param controller: The Controller to be paused
         """
         log.debug('media_pause')
         display = self._define_display(controller)
@@ -582,8 +552,7 @@ class MediaController(object):
         """
         Responds to the request to stop a loaded video
 
-        ``msg``
-            First element is the controller which should be used
+        :param msg: First element is the controller which should be used
         """
         log.debug('media_stop_msg')
         self.media_stop(msg[0])
@@ -592,8 +561,7 @@ class MediaController(object):
         """
         Responds to the request to stop a loaded video
 
-        ``controller``
-            The controller that needs to be stopped
+        :param controller: The controller that needs to be stopped
         """
         log.debug('media_stop')
         display = self._define_display(controller)
@@ -610,8 +578,7 @@ class MediaController(object):
         """
         Changes the volume of a running video
 
-        ``msg``
-            First element is the controller which should be used
+        :param msg: First element is the controller which should be used
         """
         controller = msg[0]
         vol = msg[1][0]
@@ -621,8 +588,8 @@ class MediaController(object):
         """
         Changes the volume of a running video
 
-        ``msg``
-            First element is the controller which should be used
+        :param controller: The Controller to use
+        :param volume: The volume to be set
         """
         log.debug('media_volume %d' % volume)
         display = self._define_display(controller)
@@ -633,8 +600,7 @@ class MediaController(object):
         """
         Responds to the request to change the seek Slider of a loaded video via a message
 
-        ``msg``
-            First element is the controller which should be used
+        :param msg: First element is the controller which should be used
             Second element is a list with the seek value as first element
         """
         log.debug('media_seek')
@@ -646,12 +612,8 @@ class MediaController(object):
         """
         Responds to the request to change the seek Slider of a loaded video
 
-        ``controller``
-            The controller to use.
-
-        ``seek_value``
-            The value to set.
-
+        :param controller: The controller to use.
+        :param seek_value: The value to set.
         """
         log.debug('media_seek')
         display = self._define_display(controller)
@@ -675,8 +637,7 @@ class MediaController(object):
         """
         Hide the related video Widget
 
-        ``msg``
-            First element is the boolean for Live indication
+        :param msg: First element is the boolean for Live indication
         """
         is_live = msg[1]
         if not is_live:
@@ -691,8 +652,7 @@ class MediaController(object):
         """
         Blank the related video Widget
 
-        ``msg``
-            First element is the boolean for Live indication
+        :param msg: First element is the boolean for Live indication
             Second element is the hide mode
         """
         is_live = msg[1]
@@ -709,8 +669,7 @@ class MediaController(object):
         """
         Unblank the related video Widget
 
-        ``msg``
-            First element is not relevant in this context
+        :param msg: First element is not relevant in this context
             Second element is the boolean for Live indication
         """
         Registry().execute('live_display_show')
@@ -738,29 +697,8 @@ class MediaController(object):
         """
         Extract the correct display for a given controller
 
-        ``controller``
-            Controller to be used
+        :param controller:  Controller to be used
         """
         if controller.is_live:
             return controller.display
         return controller.preview_display
-
-    def _get_service_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)

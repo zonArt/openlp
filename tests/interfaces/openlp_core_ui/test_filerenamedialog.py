@@ -31,7 +31,7 @@
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui, QtTest
+from PyQt4 import QtGui, QtTest
 
 from openlp.core.common import Registry
 from openlp.core.ui import filerenameform

@@ -127,8 +127,7 @@ class CustomXMLParser(object):
         """
         Set up our custom XML parser.
 
-        ``xml``
-            The XML of the custom to be parsed.
+        :param xml: The XML of the custom to be parsed.
         """
         self.custom_xml = None
         if xml[:5] == '<?xml':
@@ -140,8 +139,7 @@ class CustomXMLParser(object):
 
     def get_verses(self):
         """
-        Iterates through the verses in the XML and returns a list of verses
-        and their attributes.
+        Iterates through the verses in the XML and returns a list of verses and their attributes.
         """
         xml_iter = self.custom_xml.getiterator()
         verse_list = []

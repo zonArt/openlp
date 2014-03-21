@@ -33,10 +33,10 @@ displaying of alerts.
 
 from PyQt4 import QtCore
 
-from openlp.core.common import OpenLPMixin, RegistryMixin, Registry, translate
+from openlp.core.common import OpenLPMixin, RegistryMixin, Registry, RegistryProperties, translate
 
 
-class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject):
+class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperties):
     """
     AlertsManager manages the settings of Alerts.
     """
@@ -98,23 +98,3 @@ class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject):
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generate_alert()
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

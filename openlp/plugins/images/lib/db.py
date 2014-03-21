@@ -54,9 +54,7 @@ def init_schema(url):
     """
     Setup the images database connection and initialise the database schema.
 
-    ``url``
-        The database to setup
-
+    :param url: The database to setup
     The images database contains the following tables:
 
         * image_groups

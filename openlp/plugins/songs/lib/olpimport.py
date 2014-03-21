@@ -65,8 +65,7 @@ class OpenLPSongImport(SongImport):
         """
         Run the import for an OpenLP version 2 song database.
 
-        ``progress_dialog``
-            The QProgressDialog used when importing songs from the FRW.
+        :param progress_dialog: The QProgressDialog used when importing songs from the FRW.
         """
 
         class OldAuthor(BaseModel):

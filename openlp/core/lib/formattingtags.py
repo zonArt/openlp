@@ -170,9 +170,7 @@ class FormattingTags(object):
         """
         Add a list of tags to the list.
 
-        ``tags``
-            The list with tags to add.
-
+        :param tags: The list with tags to add.
         Each **tag** has to be a ``dict`` and should have the following keys:
 
         * desc

@@ -31,14 +31,13 @@ This module contains tests for the lib submodule of the Presentations plugin.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui
-
 from openlp.core.common import Registry
 from openlp.plugins.presentations.lib.mediaitem import PresentationMediaItem
 from tests.functional import patch, MagicMock
+from tests.helpers.testmixin import TestMixin
 
 
-class TestMediaItem(TestCase):
+class TestMediaItem(TestCase, TestMixin):
     """
     Test the mediaitem methods.
     """
@@ -52,13 +51,7 @@ class TestMediaItem(TestCase):
         with patch('openlp.plugins.presentations.lib.mediaitem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.presentations.lib.mediaitem.PresentationMediaItem.setup_item'):
             self.media_item = PresentationMediaItem(None, MagicMock, MagicMock())
-        self.application = QtGui.QApplication.instance()
-
-    def tearDown(self):
-        """
-        Delete all the C++ objects at the end so that we don't have a segfault
-        """
-        del self.application
+        self.get_application()
 
     def build_file_mask_string_test(self):
         """

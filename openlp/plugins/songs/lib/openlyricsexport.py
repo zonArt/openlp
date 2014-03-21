@@ -35,14 +35,14 @@ import os
 
 from lxml import etree
 
-from openlp.core.common import Registry, check_directory_exists, translate
+from openlp.core.common import RegistryProperties, check_directory_exists, translate
 from openlp.core.utils import clean_filename
 from openlp.plugins.songs.lib.xml import OpenLyrics
 
 log = logging.getLogger(__name__)
 
 
-class OpenLyricsExport(object):
+class OpenLyricsExport(RegistryProperties):
     """
     This provides the Openlyrics export.
     """
@@ -82,16 +82,3 @@ class OpenLyricsExport(object):
                        pretty_print=True)
         return True
 
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

@@ -32,22 +32,21 @@ This module contains tests for the PdfController
 import os
 import shutil
 from unittest import TestCase, SkipTest
-from tempfile import mkstemp, mkdtemp
-
-from PyQt4 import QtGui
+from tempfile import mkdtemp
 
 from openlp.plugins.presentations.lib.pdfcontroller import PdfController, PdfDocument
 from tests.functional import MagicMock
 from openlp.core.common import Settings
 from openlp.core.lib import ScreenList
 from tests.utils.constants import TEST_RESOURCES_PATH
+from tests.helpers.testmixin import TestMixin
 
 __default_settings__ = {
     'presentations/enable_pdf_program': False
 }
 
 
-class TestPdfController(TestCase):
+class TestPdfController(TestCase, TestMixin):
     """
     Test the PdfController.
     """
@@ -55,11 +54,9 @@ class TestPdfController(TestCase):
         """
         Set up the components need for all tests.
         """
-        Settings.setDefaultFormat(Settings.IniFormat)
-        self.fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
-        self.application = QtGui.QApplication.instance()
-        ScreenList.create(self.application.desktop())
+        self.get_application()
+        self.build_settings()
+        ScreenList.create(self.app.desktop())
         Settings().extend_default_settings(__default_settings__)
         self.temp_folder = mkdtemp()
         self.thumbnail_folder = mkdtemp()
@@ -70,10 +67,8 @@ class TestPdfController(TestCase):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        del self.application
         try:
-            os.close(self.fd)
-            os.unlink(Settings().fileName())
+            self.destroy_settings()
             shutil.rmtree(self.thumbnail_folder)
             shutil.rmtree(self.temp_folder)
         except OSError:

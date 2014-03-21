@@ -641,8 +641,7 @@ class AdvancedTab(SettingsTab):
         """
         Notify user about required restart.
 
-        ``checked``
-            The state of the check box (boolean).
+        :param checked: The state of the check box (boolean).
         """
         QtGui.QMessageBox.information(self, translate('OpenLP.AdvancedTab', 'Restart Required'),
                                       translate('OpenLP.AdvancedTab', 'This change will only take effect once OpenLP '

@@ -52,14 +52,9 @@ def init_db(url, auto_flush=True, auto_commit=False):
     """
     Initialise and return the session and metadata for a database
 
-    ``url``
-        The database to initialise connection with
-
-    ``auto_flush``
-        Sets the flushing behaviour of the session
-
-    ``auto_commit``
-        Sets the commit behaviour of the session
+    :param url: The database to initialise connection with
+    :param auto_flush: Sets the flushing behaviour of the session
+    :param auto_commit: Sets the commit behaviour of the session
     """
     engine = create_engine(url, poolclass=NullPool)
     metadata = MetaData(bind=engine)
@@ -71,8 +66,7 @@ def get_upgrade_op(session):
     """
     Create a migration context and an operations object for performing upgrades.
 
-    ``session``
-        The SQLAlchemy session object.
+    :param session: The SQLAlchemy session object.
     """
     context = MigrationContext.configure(session.bind.connect())
     return Operations(context)

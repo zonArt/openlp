@@ -493,13 +493,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         Settings().set_up_default_values()
         self.about_form = AboutForm(self)
         MediaController()
-        self.settings_form = SettingsForm(self)
+        SettingsForm(self)
         self.formatting_tag_form = FormattingTagForm(self)
         self.shortcut_form = ShortcutListForm(self)
         # Set up the path with plugins
         PluginManager(self)
         ImageManager()
-        self.renderer = Renderer()
+        Renderer()
         # Set up the interface
         self.setupUi(self)
         # Define the media Dock Manager
@@ -697,11 +697,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Display an error message
 
-        ``title``
-            The title of the warning box.
-
-        ``message``
-            The message to be displayed.
+        :param title: The title of the warning box.
+        :param message: The message to be displayed.
         """
         if hasattr(self.application, 'splash'):
             self.application.splash.close()
@@ -711,11 +708,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Display a warning message
 
-        ``title``
-            The title of the warning box.
-
-        ``message``
-            The message to be displayed.
+        :param title:  The title of the warning box.
+        :param message: The message to be displayed.
         """
         if hasattr(self.application, 'splash'):
             self.application.splash.close()
@@ -725,11 +719,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Display an informational message
 
-        ``title``
-            The title of the warning box.
-
-        ``message``
-            The message to be displayed.
+        :param title: The title of the warning box.
+        :param message: The message to be displayed.
         """
         if hasattr(self.application, 'splash'):
             self.application.splash.close()
@@ -1067,8 +1058,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Runs all the cleanup code before OpenLP shuts down.
 
-        ``save_settings``
-            Switch to prevent saving settings. Defaults to **True**.
+        :param save_settings: Switch to prevent saving settings. Defaults to **True**.
         """
         self.image_manager.stop_manager = True
         while self.image_manager.image_thread.isRunning():
@@ -1099,11 +1089,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         This method is called from the ServiceManager to set the title of the main window.
 
-        ``modified``
-            Whether or not this service has been modified.
-
-        ``file_name``
-            The file name of the service file.
+        :param modified: Whether or not this service has been modified.
+        :param file_name: The file name of the service file.
         """
         if modified:
             title = '%s - %s*' % (UiStrings().OLPV2x, file_name)
@@ -1146,10 +1133,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Sets the visibility of the preview panel including saving the setting and updating the menu.
 
-        ``visible``
-            A bool giving the state to set the panel to
+        :param visible: A bool giving the state to set the panel to
                 True - Visible
                 False - Hidden
+
         """
         self.preview_controller.panel.setVisible(visible)
         Settings().setValue('user interface/preview panel', visible)
@@ -1183,8 +1170,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Sets the visibility of the live panel including saving the setting and updating the menu.
 
-        ``visible``
-            A bool giving the state to set the panel to
+
+        :param visible: A bool giving the state to set the panel to
                 True - Visible
                 False - Hidden
         """
@@ -1266,8 +1253,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Adds a service to the list of recently used files.
 
-        ``filename``
-            The service filename to add
+        :param filename: The service filename to add
         """
         # The max_recent_files value does not have an interface and so never gets
         # actually stored in the settings therefore the default value of 20 will

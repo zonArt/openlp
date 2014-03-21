@@ -30,7 +30,7 @@
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.common import Registry, OpenLPMixin, RegistryMixin, Settings
+from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, RegistryMixin, Settings
 from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, ScreenList, ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css
 from openlp.core.common import ThemeLevel
@@ -47,7 +47,7 @@ VERSE_FOR_LINE_COUNT = '\n'.join(map(str, range(100)))
 FOOTER = ['Arky Arky (Unknown)', 'Public Domain', 'CCLI 123456']
 
 
-class Renderer(OpenLPMixin, RegistryMixin):
+class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
     """
     Class to pull all Renderer interactions into one place. The plugins will call helper methods to do the rendering but
     this class will provide display defense code.
@@ -563,23 +563,3 @@ class Renderer(OpenLPMixin, RegistryMixin):
         # this parse we are to be wordy
         line = line.replace('\n', ' ')
         return line.split(' ')
-
-    def _get_image_manager(self):
-        """
-        Adds the image manager to the class dynamically
-        """
-        if not hasattr(self, '_image_manager'):
-            self._image_manager = Registry().get('image_manager')
-        return self._image_manager
-
-    image_manager = property(_get_image_manager)
-
-    def _get_theme_manager(self):
-        """
-        Adds the theme manager to the class dynamically
-        """
-        if not hasattr(self, '_theme_manager') or not self._theme_manager :
-            self._theme_manager = Registry().get('theme_manager')
-        return self._theme_manager
-
-    theme_manager = property(_get_theme_manager)
