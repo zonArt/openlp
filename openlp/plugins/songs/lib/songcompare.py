@@ -52,13 +52,15 @@ MIN_BLOCK_SIZE = 70
 MAX_TYPO_SIZE = 3
 
 
-def songs_probably_equal(song1, song2):
+def songs_probably_equal(song1, song2=None):
     """
     Calculate and return whether two songs are probably equal.
 
     :param song1: The first song to compare.
     :param song2:  The second song to compare.
     """
+    if song2 is None:
+        song1, song2 = song1
     if len(song1.search_lyrics) < len(song2.search_lyrics):
         small = song1.search_lyrics
         large = song2.search_lyrics
@@ -75,8 +77,9 @@ def songs_probably_equal(song1, song2):
     for element in diff_no_typos:
         if element[0] == "equal" and _op_length(element) >= MIN_BLOCK_SIZE:
             length_of_equal_blocks += _op_length(element)
+
     if length_of_equal_blocks >= MIN_BLOCK_SIZE:
-        return True
+        return song1, song2
     # Check 2: Similarity based on the relative length of the longest equal block.
     # Calculate the length of the largest equal block of the diff set.
     length_of_longest_equal_block = 0
@@ -84,9 +87,9 @@ def songs_probably_equal(song1, song2):
         if element[0] == "equal" and _op_length(element) > length_of_longest_equal_block:
             length_of_longest_equal_block = _op_length(element)
     if length_of_equal_blocks >= MIN_BLOCK_SIZE or length_of_longest_equal_block > len(small) * 2 // 3:
-        return True
+        return song1, song2
     # Both checks failed. We assume the songs are not equal.
-    return False
+    return None
 
 
 def _op_length(opcode):
