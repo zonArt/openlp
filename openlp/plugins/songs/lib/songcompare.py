@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -56,11 +56,8 @@ def songs_probably_equal(song1, song2):
     """
     Calculate and return whether two songs are probably equal.
 
-    ``song1``
-        The first song to compare.
-
-    ``song2``
-        The second song to compare.
+    :param song1: The first song to compare.
+    :param song2:  The second song to compare.
     """
     if len(song1.search_lyrics) < len(song2.search_lyrics):
         small = song1.search_lyrics
@@ -96,8 +93,7 @@ def _op_length(opcode):
     """
     Return the length of a given difference.
 
-    ``opcode``
-        The difference.
+    :param opcode:  The difference.
     """
     return max(opcode[2] - opcode[1], opcode[4] - opcode[3])
 
@@ -107,33 +103,28 @@ def _remove_typos(diff):
     Remove typos from a diff set. A typo is a small difference (<max_typo_size)
     surrounded by larger equal passages (>min_fragment_size).
 
-    ``diff``
-        The diff set to remove the typos from.
+    :param diff: The diff set to remove the typos from.
     """
     # Remove typo at beginning of the string.
     if len(diff) >= 2:
-        if diff[0][0] != "equal" and _op_length(diff[0]) <= MAX_TYPO_SIZE and \
-                _op_length(diff[1]) >= MIN_FRAGMENT_SIZE:
-                    del diff[0]
+        if diff[0][0] != "equal" and _op_length(diff[0]) <= MAX_TYPO_SIZE and _op_length(diff[1]) >= MIN_FRAGMENT_SIZE:
+            del diff[0]
     # Remove typos in the middle of the string.
     if len(diff) >= 3:
         for index in range(len(diff) - 3, -1, -1):
-            if _op_length(diff[index]) >= MIN_FRAGMENT_SIZE and \
-                diff[index + 1][0] != "equal" and _op_length(diff[index + 1]) <= MAX_TYPO_SIZE and \
-                    _op_length(diff[index + 2]) >= MIN_FRAGMENT_SIZE:
-                        del diff[index + 1]
+            if _op_length(diff[index]) >= MIN_FRAGMENT_SIZE and diff[index + 1][0] != "equal" and \
+                _op_length(diff[index + 1]) <= MAX_TYPO_SIZE and _op_length(diff[index + 2]) >= MIN_FRAGMENT_SIZE:
+                del diff[index + 1]
     # Remove typo at the end of the string.
     if len(diff) >= 2:
-        if _op_length(diff[-2]) >= MIN_FRAGMENT_SIZE and \
-            diff[-1][0] != "equal" and _op_length(diff[-1]) <= MAX_TYPO_SIZE:
-                del diff[-1]
+        if _op_length(diff[-2]) >= MIN_FRAGMENT_SIZE and diff[-1][0] != "equal" \
+                and _op_length(diff[-1]) <= MAX_TYPO_SIZE:
+            del diff[-1]
 
     # Merge the bordering equal passages that occured by removing differences.
     for index in range(len(diff) - 2, -1, -1):
         if diff[index][0] == "equal" and _op_length(diff[index]) >= MIN_FRAGMENT_SIZE and \
-            diff[index + 1][0] == "equal" and _op_length(diff[index + 1]) >= MIN_FRAGMENT_SIZE:
-                diff[index] = ("equal", diff[index][1], diff[index + 1][2], diff[index][3],
-                    diff[index + 1][4])
-                del diff[index + 1]
-
+                             diff[index + 1][0] == "equal" and _op_length(diff[index + 1]) >= MIN_FRAGMENT_SIZE:
+            diff[index] = ("equal", diff[index][1], diff[index + 1][2], diff[index][3], diff[index + 1][4])
+            del diff[index + 1]
     return diff

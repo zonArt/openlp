@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -116,31 +116,31 @@ class BiblePlugin(Plugin):
             if QtGui.QMessageBox.information(self.main_window,
                 translate('OpenLP', 'Information'),
                 translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your existing Bibles.\n'
-                    'Should OpenLP upgrade now?'),
+                          'Should OpenLP upgrade now?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \
                     QtGui.QMessageBox.Yes:
                 self.on_tools_upgrade_Item_triggered()
 
     def add_import_menu_item(self, import_menu):
         self.import_bible_item = create_action(import_menu, 'importBibleItem',
-            text=translate('BiblesPlugin', '&Bible'), visible=False,
-            triggers=self.on_bible_import_click)
+                                               text=translate('BiblesPlugin', '&Bible'), visible=False,
+                                               triggers=self.on_bible_import_click)
         import_menu.addAction(self.import_bible_item)
 
     def add_export_menu_Item(self, export_menu):
         self.export_bible_item = create_action(export_menu, 'exportBibleItem',
-            text=translate('BiblesPlugin', '&Bible'), visible=False)
+                                               text=translate('BiblesPlugin', '&Bible'), visible=False)
         export_menu.addAction(self.export_bible_item)
 
     def add_tools_menu_item(self, tools_menu):
         """
         Give the bible plugin the opportunity to add items to the **Tools** menu.
 
-        ``tools_menu``
-            The actual **Tools** menu item, so that your actions can use it as their parent.
+        :param tools_menu:  The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.debug('add tools menu')
-        self.tools_upgrade_item = create_action(tools_menu, 'toolsUpgradeItem',
+        self.tools_upgrade_item = create_action(
+            tools_menu, 'toolsUpgradeItem',
             text=translate('BiblesPlugin', '&Upgrade older Bibles'),
             statustip=translate('BiblesPlugin', 'Upgrade the Bible databases to the latest format.'),
             visible=False, triggers=self.on_tools_upgrade_Item_triggered)
@@ -162,14 +162,16 @@ class BiblePlugin(Plugin):
 
     def about(self):
         about_text = translate('BiblesPlugin', '<strong>Bible Plugin</strong>'
-            '<br />The Bible plugin provides the ability to display Bible '
-            'verses from different sources during the service.')
+                               '<br />The Bible plugin provides the ability to display Bible '
+                               'verses from different sources during the service.')
         return about_text
 
     def uses_theme(self, theme):
         """
         Called to find out if the bible plugin is currently using a theme. Returns ``True`` if the theme is being used,
         otherwise returns ``False``.
+
+        :param theme: The theme
         """
         return str(self.settings_tab.bible_theme) == theme
 
@@ -178,11 +180,8 @@ class BiblePlugin(Plugin):
         Rename the theme the bible plugin is using making the plugin use the
         new name.
 
-        ``old_theme``
-            The name of the theme the plugin should stop using. Unused for this particular plugin.
-
-        ``new_theme``
-            The new name the plugin should now use.
+        :param old_theme: The name of the theme the plugin should stop using. Unused for this particular plugin.
+        :param new_theme:  The new name the plugin should now use.
         """
         self.settings_tab.bible_theme = new_theme
         self.settings_tab.save()
@@ -207,8 +206,7 @@ class BiblePlugin(Plugin):
             'new': translate('BiblesPlugin', 'Add a new Bible.'),
             'edit': translate('BiblesPlugin', 'Edit the selected Bible.'),
             'delete': translate('BiblesPlugin', 'Delete the selected Bible.'),
-            'preview': translate('BiblesPlugin',
-                'Preview the selected Bible.'),
+            'preview': translate('BiblesPlugin', 'Preview the selected Bible.'),
             'live': translate('BiblesPlugin', 'Send the selected Bible live.'),
             'service': translate('BiblesPlugin', 'Add the selected Bible to the service.')
         }

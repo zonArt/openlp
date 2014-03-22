@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -56,7 +56,7 @@ class RemoteTab(SettingsTab):
         self.address_edit = QtGui.QLineEdit(self.server_settings_group_box)
         self.address_edit.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         self.address_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'),
-            self))
+                                       self))
         self.address_edit.setObjectName('address_edit')
         self.server_settings_layout.addRow(self.address_label, self.address_edit)
         self.twelve_hour_check_box = QtGui.QCheckBox(self.server_settings_group_box)
@@ -177,14 +177,13 @@ class RemoteTab(SettingsTab):
         self.live_url_label.setText(translate('RemotePlugin.RemoteTab', 'Live view URL:'))
         self.twelve_hour_check_box.setText(translate('RemotePlugin.RemoteTab', 'Display stage time in 12h format'))
         self.android_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
-        self.qr_description_label.setText(translate('RemotePlugin.RemoteTab',
-            'Scan the QR code or click <a href="https://play.google.com/store/'
-            'apps/details?id=org.openlp.android">download</a> to install the '
-            'Android app from Google Play.'))
+        self.qr_description_label.setText(
+            translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="https://play.google.com/store/'
+                      'apps/details?id=org.openlp.android">download</a> to install the Android app from Google Play.'))
         self.https_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'HTTPS Server'))
-        self.https_error_label.setText(translate('RemotePlugin.RemoteTab',
-            'Could not find an SSL certificate. The HTTPS server will not be available unless an SSL certificate '
-            'is found. Please see the manual for more information.'))
+        self.https_error_label.setText(
+            translate('RemotePlugin.RemoteTab', 'Could not find an SSL certificate. The HTTPS server will not be '
+                      'available unless an SSL certificate is found. Please see the manual for more information.'))
         self.https_port_label.setText(self.port_label.text())
         self.remote_https_url_label.setText(self.remote_url_label.text())
         self.stage_https_url_label.setText(self.stage_url_label.text())
@@ -290,4 +289,3 @@ class RemoteTab(SettingsTab):
         Invert the HTTP group box based on Https group settings
         """
         self.http_settings_group_box.setEnabled(not self.https_settings_group_box.isChecked())
-

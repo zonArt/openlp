@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,7 +33,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 
 
 class ListWidgetWithDnD(QtGui.QListWidget):
@@ -45,8 +45,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         Initialise the list widget
         """
         super(ListWidgetWithDnD, self).__init__(parent)
-        self.mimeDataText = name
-        assert(self.mimeDataText)
+        self.mime_data_text = name
 
     def activateDnD(self):
         """
@@ -54,7 +53,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        Registry().register_function(('%s_dnd' % self.mimeDataText), self.parent().load_file)
+        Registry().register_function(('%s_dnd' % self.mime_data_text), self.parent().load_file)
 
     def mouseMoveEvent(self, event):
         """
@@ -68,9 +67,9 @@ class ListWidgetWithDnD(QtGui.QListWidget):
             event.ignore()
             return
         drag = QtGui.QDrag(self)
-        mimeData = QtCore.QMimeData()
-        drag.setMimeData(mimeData)
-        mimeData.setText(self.mimeDataText)
+        mime_data = QtCore.QMimeData()
+        drag.setMimeData(mime_data)
+        mime_data.setText(self.mime_data_text)
         drag.start(QtCore.Qt.CopyAction)
 
     def dragEnterEvent(self, event):
@@ -96,21 +95,20 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         Receive drop event check if it is a file and process it if it is.
 
-        ``event``
-            Handle of the event pint passed
+        :param event:  Handle of the event pint passed
         """
         if event.mimeData().hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
             files = []
             for url in event.mimeData().urls():
-                localFile = url.toLocalFile()
-                if os.path.isfile(localFile):
-                    files.append(localFile)
-                elif os.path.isdir(localFile):
-                    listing = os.listdir(localFile)
+                local_file = url.toLocalFile()
+                if os.path.isfile(local_file):
+                    files.append(local_file)
+                elif os.path.isdir(local_file):
+                    listing = os.listdir(local_file)
                     for file in listing:
-                        files.append(os.path.join(localFile, file))
-            Registry().execute('%s_dnd' % self.mimeDataText, files)
+                        files.append(os.path.join(local_file, file))
+            Registry().execute('%s_dnd' % self.mime_data_text, files)
         else:
             event.ignore()

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -172,46 +172,46 @@ class Settings(QtCore.QSettings):
         'shortcuts/importBibleItem': [],
         'shortcuts/listViewBiblesDeleteItem': [QtGui.QKeySequence(QtCore.Qt.Key_Delete)],
         'shortcuts/listViewBiblesPreviewItem': [QtGui.QKeySequence(QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.Key_Return)],
+                                                QtGui.QKeySequence(QtCore.Qt.Key_Return)],
         'shortcuts/listViewBiblesLiveItem': [QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
+                                             QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
         'shortcuts/listViewBiblesServiceItem': [QtGui.QKeySequence(QtCore.Qt.Key_Plus),
-            QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
+                                                QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
         'shortcuts/listViewCustomDeleteItem': [QtGui.QKeySequence(QtCore.Qt.Key_Delete)],
         'shortcuts/listViewCustomPreviewItem': [QtGui.QKeySequence(QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.Key_Return)],
+                                                QtGui.QKeySequence(QtCore.Qt.Key_Return)],
         'shortcuts/listViewCustomLiveItem': [QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
+                                             QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
         'shortcuts/listViewCustomServiceItem': [QtGui.QKeySequence(QtCore.Qt.Key_Plus),
-            QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
+                                                QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
         'shortcuts/listViewImagesDeleteItem': [QtGui.QKeySequence(QtCore.Qt.Key_Delete)],
         'shortcuts/listViewImagesPreviewItem': [QtGui.QKeySequence(QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.Key_Return)],
+                                                QtGui.QKeySequence(QtCore.Qt.Key_Return)],
         'shortcuts/listViewImagesLiveItem': [QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
+                                             QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
         'shortcuts/listViewImagesServiceItem': [QtGui.QKeySequence(QtCore.Qt.Key_Plus),
-            QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
+                                                QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
         'shortcuts/listViewMediaDeleteItem': [QtGui.QKeySequence(QtCore.Qt.Key_Delete)],
         'shortcuts/listViewMediaPreviewItem': [QtGui.QKeySequence(QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.Key_Return)],
+                                               QtGui.QKeySequence(QtCore.Qt.Key_Return)],
         'shortcuts/listViewMediaLiveItem': [QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
+                                            QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
         'shortcuts/listViewMediaServiceItem': [QtGui.QKeySequence(QtCore.Qt.Key_Plus),
-            QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
+                                               QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
         'shortcuts/listViewPresentationsDeleteItem': [QtGui.QKeySequence(QtCore.Qt.Key_Delete)],
         'shortcuts/listViewPresentationsPreviewItem': [QtGui.QKeySequence(QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.Key_Return)],
+                                                       QtGui.QKeySequence(QtCore.Qt.Key_Return)],
         'shortcuts/listViewPresentationsLiveItem': [QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
+                                                    QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
         'shortcuts/listViewPresentationsServiceItem': [QtGui.QKeySequence(QtCore.Qt.Key_Plus),
-            QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
+                                                       QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
         'shortcuts/listViewSongsDeleteItem': [QtGui.QKeySequence(QtCore.Qt.Key_Delete)],
         'shortcuts/listViewSongsPreviewItem': [QtGui.QKeySequence(QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.Key_Return)],
+                                               QtGui.QKeySequence(QtCore.Qt.Key_Return)],
         'shortcuts/listViewSongsLiveItem': [QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter),
-            QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
+                                            QtGui.QKeySequence(QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return)],
         'shortcuts/listViewSongsServiceItem': [QtGui.QKeySequence(QtCore.Qt.Key_Plus),
-            QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
+                                               QtGui.QKeySequence(QtCore.Qt.Key_Equal)],
         'shortcuts/lockPanel': [],
         'shortcuts/modeDefaultItem': [],
         'shortcuts/modeLiveItem': [],
@@ -222,8 +222,7 @@ class Settings(QtCore.QSettings):
         'shortcuts/moveBottom': [QtGui.QKeySequence(QtCore.Qt.Key_End)],
         'shortcuts/moveDown': [QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
         'shortcuts/nextTrackItem': [],
-        'shortcuts/nextItem_live': [QtGui.QKeySequence(QtCore.Qt.Key_Down),
-            QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
+        'shortcuts/nextItem_live': [QtGui.QKeySequence(QtCore.Qt.Key_Down), QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
         'shortcuts/nextItem_preview': [],
         'shortcuts/nextService': [QtGui.QKeySequence(QtCore.Qt.Key_Right)],
         'shortcuts/newService': [],
@@ -231,8 +230,7 @@ class Settings(QtCore.QSettings):
         'shortcuts/onlineHelpItem': [QtGui.QKeySequence('Alt+F1')],
         'shortcuts/openService': [],
         'shortcuts/saveService': [],
-        'shortcuts/previousItem_live': [QtGui.QKeySequence(QtCore.Qt.Key_Up),
-            QtGui.QKeySequence(QtCore.Qt.Key_PageUp)],
+        'shortcuts/previousItem_live': [QtGui.QKeySequence(QtCore.Qt.Key_Up), QtGui.QKeySequence(QtCore.Qt.Key_PageUp)],
         'shortcuts/playbackPause': [],
         'shortcuts/playbackPlay': [],
         'shortcuts/playbackStop': [],
@@ -350,8 +348,7 @@ class Settings(QtCore.QSettings):
         """
         Static method to merge the given ``default_values`` with the ``Settings.__default_settings__``.
 
-        ``default_values``
-            A dict with setting keys and their default values.
+        :param default_values: A dict with setting keys and their default values.
         """
         Settings.__default_settings__ = dict(list(default_values.items()) + list(Settings.__default_settings__.items()))
 
@@ -421,8 +418,7 @@ class Settings(QtCore.QSettings):
         Returns the value for the given ``key``. The returned ``value`` is of the same type as the default value in the
         *Settings.__default_settings__* dict.
 
-        ``key``
-            The key to return the value from.
+        :param key: The key to return the value from.
         """
         # if group() is not empty the group has not been specified together with the key.
         if self.group():
@@ -436,12 +432,9 @@ class Settings(QtCore.QSettings):
         """
         This converts the given ``setting`` to the type of the given ``default_value``.
 
-        ``setting``
-            The setting to convert. This could be ``true`` for example.Settings()
-
-        ``default_value``
-            Indication the type the setting should be converted to. For example ``True`` (type is boolean), meaning that
-            we convert the string ``true`` to a python boolean.
+        :param setting: The setting to convert. This could be ``true`` for example.Settings()
+        :param default_value: Indication the type the setting should be converted to. For example ``True``
+        (type is boolean), meaning that we convert the string ``true`` to a python boolean.
 
         **Note**, this method only converts a few types and might need to be extended if a certain type is missing!
         """
@@ -473,10 +466,9 @@ class Settings(QtCore.QSettings):
         This removes the settings needed for old way we saved files (e. g. the image paths for the image plugin). A list
         of file paths are returned.
 
-        **Note**: Only a list of paths is returned; this does not convert anything!
+         **Note**: Only a list of paths is returned; this does not convert anything!
 
-        ``plugin``
-            The Plugin object.The caller has to convert/save the list himself; o
+         :param plugin: The Plugin object.The caller has to convert/save the list himself; o
         """
         files_list = []
         # We need QSettings instead of Settings here to bypass our central settings dict.

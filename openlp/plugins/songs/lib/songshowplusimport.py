@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -94,7 +94,7 @@ class SongShowPlusImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive a single file or a list of files to import.
         """
@@ -141,19 +141,19 @@ class SongShowPlusImport(SongImport):
                     authors = self.decode(data).split(" / ")
                     for author in authors:
                         if author.find(",") !=-1:
-                            authorParts = author.split(", ")
-                            author = authorParts[1] + " " + authorParts[0]
+                            author_parts = author.split(", ")
+                            author = author_parts[1] + " " + author_parts[0]
                         self.parse_author(author)
                 elif block_key == COPYRIGHT:
-                    self.addCopyright(self.decode(data))
+                    self.add_copyright(self.decode(data))
                 elif block_key == CCLI_NO:
-                    self.ccliNumber = int(data)
+                    self.ccli_number = int(data)
                 elif block_key == VERSE:
-                    self.addVerse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
+                    self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
                 elif block_key == CHORUS:
-                    self.addVerse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Chorus], verse_no))
+                    self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Chorus], verse_no))
                 elif block_key == BRIDGE:
-                    self.addVerse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Bridge], verse_no))
+                    self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Bridge], verse_no))
                 elif block_key == TOPIC:
                     self.topics.append(self.decode(data))
                 elif block_key == COMMENTS:
@@ -165,21 +165,28 @@ class SongShowPlusImport(SongImport):
                             verse_tag = self.decode(verse_tag)
                         self.ssp_verse_order_list.append(verse_tag)
                 elif block_key == SONG_BOOK:
-                    self.songBookName = self.decode(data)
+                    self.song_book_name = self.decode(data)
                 elif block_key == SONG_NUMBER:
-                    self.songNumber = ord(data)
+                    self.song_number = ord(data)
                 elif block_key == CUSTOM_VERSE:
                     verse_tag = self.to_openlp_verse_tag(verse_name)
-                    self.addVerse(self.decode(data), verse_tag)
+                    self.add_verse(self.decode(data), verse_tag)
                 else:
                     log.debug("Unrecognised blockKey: %s, data: %s" % (block_key, data))
                     song_data.seek(next_block_starts)
-            self.verseOrderList = self.ssp_verse_order_list
+            self.verse_order_list = self.ssp_verse_order_list
             song_data.close()
             if not self.finish():
-                self.logError(file)
+                self.log_error(file)
 
     def to_openlp_verse_tag(self, verse_name, ignore_unique=False):
+        """
+        Handle OpenLP verse tags
+
+        :param verse_name: The verse name
+        :param ignore_unique: Ignore if unique
+        :return: The verse tags and verse number concatenated
+        """
         # Have we got any digits? If so, verse number is everything from the digits to the end (OpenLP does not have
         # concept of part verses, so just ignore any non integers on the end (including floats))
         match = re.match(r'(\D*)(\d+)', verse_name)

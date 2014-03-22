@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -36,8 +36,7 @@ from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation, UiStrings, Settings, check_directory_exists, translate
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, AppLocation, UiStrings, Settings, check_directory_exists, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import delete_file
@@ -58,14 +57,9 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
-        ``parent``
-            The QWidget-derived parent of the wizard.
-
-        ``manager``
-            The Bible manager.
-
-        ``bible_plugin``
-            The Bible plugin.
+        :param parent: The QWidget-derived parent of the wizard.
+        :param manager: The Bible manager.
+        :param bible_plugin: The Bible plugin.
         """
         self.manager = manager
         self.media_item = bible_plugin.media_item
@@ -108,7 +102,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         if self.page(pageId) == self.progress_page:
             self.pre_wizard()
-            self.performWizard()
+            self.perform_wizard()
             self.post_wizard()
         elif self.page(pageId) == self.selectPage and not self.files:
             self.next()
@@ -313,7 +307,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Set default values for the wizard pages.
         """
-        log.debug('BibleUpgrade setDefaults')
+        log.debug('BibleUpgrade set_defaults')
         settings = Settings()
         settings.beginGroup(self.plugin.settings_section)
         self.stop_import_flag = False
@@ -339,7 +333,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Starting upgrade...'))
         self.application.process_events()
 
-    def performWizard(self):
+    def perform_wizard(self):
         """
         Perform the actual upgrade.
         """

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,8 +33,8 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.common import AppLocation, Settings, check_directory_exists
-from openlp.core.lib import Registry, create_thumb, validate_thumb
+from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists
+from openlp.core.lib import create_thumb, validate_thumb
 
 log = logging.getLogger(__name__)
 
@@ -96,9 +96,15 @@ class PresentationDocument(object):
         """
         Constructor for the PresentationController class
         """
-        self.slidenumber = 0
         self.controller = controller
-        self.filepath = name
+        self._setup(name)
+
+    def _setup(self, name):
+        """
+        Run some initial setup. This method is separate from __init__ in order to mock it out in tests.
+        """
+        self.slide_number = 0
+        self.file_path = name
         check_directory_exists(self.get_thumbnail_folder())
 
     def load_presentation(self):
@@ -125,7 +131,7 @@ class PresentationDocument(object):
         """
         Return just the filename of the presentation, without the directory
         """
-        return os.path.split(self.filepath)[1]
+        return os.path.split(self.file_path)[1]
 
     def get_thumbnail_folder(self):
         """
@@ -143,10 +149,10 @@ class PresentationDocument(object):
         """
         Returns ``True`` if the thumbnail images exist and are more recent than the powerpoint file.
         """
-        lastimage = self.get_thumbnail_path(self.get_slide_count(), True)
-        if not (lastimage and os.path.isfile(lastimage)):
+        last_image = self.get_thumbnail_path(self.get_slide_count(), True)
+        if not (last_image and os.path.isfile(last_image)):
             return False
-        return validate_thumb(self.filepath, lastimage)
+        return validate_thumb(self.file_path, last_image)
 
     def close_presentation(self):
         """
@@ -212,8 +218,7 @@ class PresentationDocument(object):
         """
         Jumps directly to the requested slide.
 
-        ``slide_no``
-            The slide to jump to, starting at 1
+        :param slide_no: The slide to jump to, starting at 1
         """
         pass
 
@@ -244,11 +249,10 @@ class PresentationDocument(object):
         """
         Returns an image path containing a preview for the requested slide
 
-        ``slide_no``
-            The slide an image is required for, starting at 1
+        :param slide_no: The slide an image is required for, starting at 1
+        :param check_exists:
         """
-        path = os.path.join(self.get_thumbnail_folder(),
-            self.controller.thumbnail_prefix + str(slide_no) + '.png')
+        path = os.path.join(self.get_thumbnail_folder(), self.controller.thumbnail_prefix + str(slide_no) + '.png')
         if os.path.isfile(path) or not check_exists:
             return path
         else:
@@ -262,21 +266,20 @@ class PresentationDocument(object):
             return
         if not hide_mode:
             current = self.get_slide_number()
-            if current == self.slidenumber:
+            if current == self.slide_number:
                 return
-            self.slidenumber = current
+            self.slide_number = current
         if is_live:
             prefix = 'live'
         else:
             prefix = 'preview'
-        Registry().execute('slidecontroller_%s_change' % prefix, self.slidenumber - 1)
+        Registry().execute('slidecontroller_%s_change' % prefix, self.slide_number - 1)
 
     def get_slide_text(self, slide_no):
         """
         Returns the text on the slide
 
-        ``slide_no``
-            The slide the text is required for, starting at 1
+        :param slide_no: The slide the text is required for, starting at 1
         """
         return ''
 
@@ -284,16 +287,15 @@ class PresentationDocument(object):
         """
         Returns the text on the slide
 
-        ``slide_no``
-            The slide the notes are required for, starting at 1
+        :param slide_no: The slide the text is required for, starting at 1
         """
         return ''
 
 
 class PresentationController(object):
     """
-    This class is used to control interactions with presentation applications by creating a runtime environment. This is
-    a base class for presentation controllers to inherit from.
+    This class is used to control interactions with presentation applications by creating a runtime environment.
+    This is a base class for presentation controllers to inherit from.
 
     To create a new controller, take a copy of this file and name it so it ends with ``controller.py``, i.e.
     ``foobarcontroller.py``. Make sure it inherits
@@ -341,10 +343,10 @@ class PresentationController(object):
     """
     log.info('PresentationController loaded')
 
-    def __init__(self, plugin=None, name='PresentationController',
-        document_class=PresentationDocument):
+    def __init__(self, plugin=None, name='PresentationController', document_class=PresentationDocument):
         """
         This is the constructor for the presentationcontroller object. This provides an easy way for descendent plugins
+
         to populate common data. This method *must* be overridden, like so::
 
             class MyPresentationController(PresentationController):
@@ -352,11 +354,9 @@ class PresentationController(object):
                     PresentationController.__init(
                         self, plugin, u'My Presenter App')
 
-        ``plugin``
-            Defaults to *None*. The presentationplugin object
-
-        ``name``
-            Name of the application, to appear in the application
+        :param plugin:  Defaults to *None*. The presentationplugin object
+        :param name: Name of the application, to appear in the application
+        :param document_class:
         """
         self.supports = []
         self.also_supports = []
@@ -425,13 +425,3 @@ class PresentationController(object):
 
     def close_presentation(self):
         pass
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)

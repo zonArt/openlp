@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -47,14 +47,14 @@ def init_schema(url):
     """
     Setup the alerts database connection and initialise the database schema
 
-    ``url``
+    :param url:
         The database to setup
     """
     session, metadata = init_db(url)
 
     alerts_table = Table('alerts', metadata,
-        Column('id', types.Integer(), primary_key=True),
-        Column('text', types.UnicodeText, nullable=False))
+                         Column('id', types.Integer(), primary_key=True),
+                         Column('text', types.UnicodeText, nullable=False))
 
     mapper(AlertItem, alerts_table)
 

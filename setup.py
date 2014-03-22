@@ -5,8 +5,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
@@ -41,8 +41,7 @@ def try_int(s):
     Convert string s to an integer if possible. Fail silently and return
     the string as-is if it isn't an integer.
 
-    ``s``
-    The string to try to convert.
+    :param s: The string to try to convert.
     """
     try:
         return int(s)
@@ -54,8 +53,7 @@ def natural_sort_key(s):
     """
     Return a tuple by which s is sorted.
 
-    ``s``
-        A string value from the list we want to sort.
+    :param s: A string value from the list we want to sort.
     """
     return list(map(try_int, SPLIT_ALPHA_DIGITS.findall(s)))
 
@@ -64,11 +62,8 @@ def natural_compare(a, b):
     """
     Compare two strings naturally and return the result.
 
-    ``a``
-        A string to compare.
-
-    ``b``
-        A string to compare.
+    :param a:  A string to compare.
+    :param b: A string to compare.
     """
     return cmp(natural_sort_key(a), natural_sort_key(b))
 

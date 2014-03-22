@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -58,11 +58,8 @@ class SongReviewWidget(QtGui.QWidget):
 
     def __init__(self, parent, song):
         """
-        ``parent``
-            The QWidget-derived parent of the wizard.
-
-        ``song``
-            The Song which this SongReviewWidget should represent.
+        :param parent: The QWidget-derived parent of the wizard.
+        :param song: The Song which this SongReviewWidget should represent.
         """
         super(SongReviewWidget, self).__init__(parent)
         self.song = song
@@ -186,7 +183,7 @@ class SongReviewWidget(QtGui.QWidget):
         # Some pixels are missing at the bottom of the table, but all themes I tried still allowed
         # to read the last verse line, so I'll just leave it at that.
         self.song_info_verse_list_widget.setFixedHeight(self.song_info_verse_list_widget.verticalHeader().length() +
-            self.song_info_verse_list_widget.verticalHeader().offset() + 6)
+                                                        self.song_info_verse_list_widget.verticalHeader().offset() + 6)
         self.song_group_box_layout.addWidget(self.song_info_verse_list_widget)
         self.song_group_box_layout.addStretch()
         self.song_vertical_layout.addWidget(self.song_group_box)

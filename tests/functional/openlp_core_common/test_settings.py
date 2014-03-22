@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,16 +29,13 @@
 """
 Package to test the openlp.core.lib.settings package.
 """
-import os
-from tempfile import mkstemp
-
 from unittest import TestCase
-from PyQt4 import QtGui
 
 from openlp.core.common import Settings
+from tests.helpers.testmixin import TestMixin
 
 
-class TestSettings(TestCase):
+class TestSettings(TestCase, TestMixin):
     """
     Test the functions in the Settings module
     """
@@ -46,17 +43,14 @@ class TestSettings(TestCase):
         """
         Create the UI
         """
-        fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
-        self.application = QtGui.QApplication.instance()
+        self.get_application()
+        self.build_settings()
 
     def tearDown(self):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        del self.application
-        os.unlink(self.ini_file)
-        os.unlink(Settings().fileName())
+        self.destroy_settings()
 
     def settings_basic_test(self):
         """

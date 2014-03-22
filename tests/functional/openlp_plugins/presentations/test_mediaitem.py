@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,14 +31,13 @@ This module contains tests for the lib submodule of the Presentations plugin.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui
-
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from openlp.plugins.presentations.lib.mediaitem import PresentationMediaItem
 from tests.functional import patch, MagicMock
+from tests.helpers.testmixin import TestMixin
 
 
-class TestMediaItem(TestCase):
+class TestMediaItem(TestCase, TestMixin):
     """
     Test the mediaitem methods.
     """
@@ -52,13 +51,7 @@ class TestMediaItem(TestCase):
         with patch('openlp.plugins.presentations.lib.mediaitem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.presentations.lib.mediaitem.PresentationMediaItem.setup_item'):
             self.media_item = PresentationMediaItem(None, MagicMock, MagicMock())
-        self.application = QtGui.QApplication.instance()
-
-    def tearDown(self):
-        """
-        Delete all the C++ objects at the end so that we don't have a segfault
-        """
-        del self.application
+        self.get_application()
 
     def build_file_mask_string_test(self):
         """
@@ -75,11 +68,16 @@ class TestMediaItem(TestCase):
         presentation_controller.also_supports = []
         presentation_viewer_controller = MagicMock()
         presentation_viewer_controller.enabled.return_value = False
+        pdf_controller = MagicMock()
+        pdf_controller.enabled.return_value = True
+        pdf_controller.supports = ['pdf']
+        pdf_controller.also_supports = ['xps']
         # Mock the controllers.
         self.media_item.controllers = {
             'Impress': impress_controller,
             'Powerpoint': presentation_controller,
-            'Powerpoint Viewer': presentation_viewer_controller
+            'Powerpoint Viewer': presentation_viewer_controller,
+            'Pdf': pdf_controller
         }
 
         # WHEN: Build the file mask.
@@ -88,7 +86,7 @@ class TestMediaItem(TestCase):
             self.media_item.build_file_mask_string()
 
         # THEN: The file mask should be generated correctly
-        self.assertIn('*.odp', self.media_item.on_new_file_masks,
-            'The file mask should contain the odp extension')
-        self.assertIn('*.ppt', self.media_item.on_new_file_masks,
-            'The file mask should contain the ppt extension')
+        self.assertIn('*.odp', self.media_item.on_new_file_masks, 'The file mask should contain the odp extension')
+        self.assertIn('*.ppt', self.media_item.on_new_file_masks, 'The file mask should contain the ppt extension')
+        self.assertIn('*.pdf', self.media_item.on_new_file_masks, 'The file mask should contain the pdf extension')
+        self.assertIn('*.xps', self.media_item.on_new_file_masks, 'The file mask should contain the xps extension')

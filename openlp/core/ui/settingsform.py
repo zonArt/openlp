@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,7 +33,8 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import PluginStatus, Registry, build_icon
+from openlp.core.common import Registry, RegistryProperties
+from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
 from .settingsdialog import Ui_SettingsDialog
@@ -41,7 +42,7 @@ from .settingsdialog import Ui_SettingsDialog
 log = logging.getLogger(__name__)
 
 
-class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
+class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
     """
     Provide the form to manipulate the settings for OpenLP
     """
@@ -50,7 +51,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Initialise the settings form
         """
         Registry().register('settings_form', self)
-        Registry().register_function('bootstrap_post_set_up', self.post_set_up)
+        Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
         super(SettingsForm, self).__init__(parent)
         self.processes = []
         self.setupUi(self)
@@ -116,7 +117,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             self.stacked_layout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
 
-    def post_set_up(self):
+    def bootstrap_post_set_up(self):
         """
         Run any post-setup code for the tabs on the form
         """
@@ -136,49 +137,18 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             if plugin.settings_tab:
                 plugin.settings_tab.post_set_up()
 
-    def tab_changed(self, tabIndex):
+    def tab_changed(self, tab_index):
         """
         A different settings tab is selected
         """
-        self.stacked_layout.setCurrentIndex(tabIndex)
+        self.stacked_layout.setCurrentIndex(tab_index)
         self.stacked_layout.currentWidget().tab_visible()
 
     def register_post_process(self, function):
         """
         Register for updates to be done on save removing duplicate functions
 
-        ``function``
-            The function to be called
+        :param function:  The function to be called
         """
         if not function in self.processes:
             self.processes.append(function)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_service_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)

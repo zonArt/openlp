@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -38,6 +38,7 @@ from openlp.core.common import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
+
 
 class PowerSongImport(SongImport):
     """
@@ -73,7 +74,7 @@ class PowerSongImport(SongImport):
         * .song
     """
     @staticmethod
-    def isValidSource(import_source):
+    def is_valid_source(import_source):
         """
         Checks if source is a PowerSong 1.0 folder:
             * is a directory
@@ -85,12 +86,12 @@ class PowerSongImport(SongImport):
                     return True
         return False
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive either a list of files or a folder (unicode) to import.
         """
         from .importer import SongFormat
-        PS_string = SongFormat.get(SongFormat.PowerSong, 'name')
+        ps_string = SongFormat.get(SongFormat.PowerSong, 'name')
         if isinstance(self.import_source, str):
             if os.path.isdir(self.import_source):
                 dir = self.import_source
@@ -101,27 +102,27 @@ class PowerSongImport(SongImport):
             else:
                 self.import_source = ''
         if not self.import_source or not isinstance(self.import_source, list):
-            self.logError(translate('SongsPlugin.PowerSongImport', 'No songs to import.'),
-                translate('SongsPlugin.PowerSongImport', 'No %s files found.') % PS_string)
+            self.log_error(translate('SongsPlugin.PowerSongImport', 'No songs to import.'),
+                           translate('SongsPlugin.PowerSongImport', 'No %s files found.') % ps_string)
             return
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for file in self.import_source:
             if self.stop_import_flag:
                 return
-            self.setDefaults()
+            self.set_defaults()
             parse_error = False
             with open(file, 'rb') as song_data:
                 while True:
                     try:
-                        label = self._readString(song_data)
+                        label = self._read_string(song_data)
                         if not label:
                             break
-                        field = self._readString(song_data)
+                        field = self._read_string(song_data)
                     except ValueError:
                         parse_error = True
-                        self.logError(os.path.basename(file), str(
+                        self.log_error(os.path.basename(file), str(
                             translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Unexpected byte value.')) %
-                                PS_string)
+                                ps_string)
                         break
                     else:
                         if label == 'TITLE':
@@ -130,38 +131,38 @@ class PowerSongImport(SongImport):
                             self.parse_author(field)
                         elif label == 'COPYRIGHTLINE':
                             found_copyright = True
-                            self._parseCopyrightCCLI(field)
+                            self._parse_copyright_cCCLI(field)
                         elif label == 'PART':
-                            self.addVerse(field)
+                            self.add_verse(field)
             if parse_error:
                 continue
             # Check that file had TITLE field
             if not self.title:
-                self.logError(os.path.basename(file), str(
-                    translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "TITLE" header.')) % PS_string)
+                self.log_error(os.path.basename(file), str(
+                    translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "TITLE" header.')) % ps_string)
                 continue
             # Check that file had COPYRIGHTLINE label
             if not found_copyright:
-                self.logError(self.title, str(
+                self.log_error(self.title, str(
                     translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "COPYRIGHTLINE" header.')) %
-                        PS_string)
+                        ps_string)
                 continue
             # Check that file had at least one verse
             if not self.verses:
-                self.logError(self.title, str(
+                self.log_error(self.title, str(
                     translate('SongsPlugin.PowerSongImport', 'Verses not found. Missing "PART" header.')))
                 continue
             if not self.finish():
-                self.logError(self.title)
+                self.log_error(self.title)
 
-    def _readString(self, file_object):
+    def _read_string(self, file_object):
         """
         Reads in next variable-length string.
         """
-        string_len = self._read7BitEncodedInteger(file_object)
+        string_len = self._read_7_bit_encoded_integer(file_object)
         return str(file_object.read(string_len), 'utf-8', 'ignore')
 
-    def _read7BitEncodedInteger(self, file_object):
+    def _read_7_bit_encoded_integer(self, file_object):
         """
         Reads in a 32-bit integer in compressed 7-bit format.
 
@@ -179,7 +180,7 @@ class PowerSongImport(SongImport):
             # Check for corrupted stream (since max 5 bytes per 32-bit integer)
             if i == 5:
                 raise ValueError
-            byte = self._readByte(file_object)
+            byte = self._read_byte(file_object)
             # Strip high bit and shift left
             val += (byte & 0x7f) << shift
             shift += 7
@@ -189,7 +190,7 @@ class PowerSongImport(SongImport):
             i += 1
         return val
 
-    def _readByte(self, file_object):
+    def _read_byte(self, file_object):
         """
         Reads in next byte as an unsigned integer
 
@@ -202,7 +203,7 @@ class PowerSongImport(SongImport):
         else:
             return ord(byte_str)
 
-    def _parseCopyrightCCLI(self, field):
+    def _parse_copyright_cCCLI(self, field):
         """
         Look for CCLI song number, and get copyright
         """
@@ -211,8 +212,8 @@ class PowerSongImport(SongImport):
             copyright = ccli_no
             ccli_no = ''
         if copyright:
-            self.addCopyright(copyright.rstrip('\n').replace('\n', ' '))
+            self.add_copyright(copyright.rstrip('\n').replace('\n', ' '))
         if ccli_no:
             ccli_no = ccli_no.strip(' :')
             if ccli_no.isdigit():
-                self.ccliNumber = ccli_no
+                self.ccli_number = ccli_no

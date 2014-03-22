@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -67,14 +67,9 @@ class BibleImportForm(OpenLPWizard):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
-        ``parent``
-            The QWidget-derived parent of the wizard.
-
-        ``manager``
-            The Bible manager.
-
-        ``bible_plugin``
-            The Bible plugin.
+        :param parent: The QWidget-derived parent of the wizard.
+        :param manager: The Bible manager.
+        :param bible_plugin: The Bible plugin.
         """
         self.manager = manager
         self.web_bible_list = {}
@@ -524,7 +519,7 @@ class BibleImportForm(OpenLPWizard):
             self.progress_label.setText(WizardStrings.StartingImport)
         self.application.process_events()
 
-    def performWizard(self):
+    def perform_wizard(self):
         """
         Perform the actual import.
         """

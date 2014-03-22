@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -67,11 +67,13 @@ class CustomTab(SettingsTab):
         self.custom_mode_group_box.setTitle(translate('CustomPlugin.CustomTab', 'Custom Display'))
         self.display_footer_check_box.setText(translate('CustomPlugin.CustomTab', 'Display footer'))
         self.add_from_service_checkbox.setText(translate('CustomPlugin.CustomTab',
-            'Import missing custom slides from service files'))
+                                               'Import missing custom slides from service files'))
 
     def on_display_footer_check_box_changed(self, check_state):
         """
         Toggle the setting for displaying the footer.
+
+        :param check_state: The current check box state
         """
         self.display_footer = False
         # we have a set value convert to True/False
@@ -79,9 +81,18 @@ class CustomTab(SettingsTab):
             self.display_footer = True
 
     def on_add_from_service_check_box_changed(self, check_state):
+        """
+        Allows service items to create Custom items.
+
+        :param check_state: The current check box state
+        """
         self.update_load = (check_state == QtCore.Qt.Checked)
 
     def load(self):
+        """
+
+        Load the settings into the dialog
+        """
         settings = Settings()
         settings.beginGroup(self.settings_section)
         self.display_footer = settings.value('display footer')
@@ -91,6 +102,9 @@ class CustomTab(SettingsTab):
         settings.endGroup()
 
     def save(self):
+        """
+        Save the Dialog settings
+        """
         settings = Settings()
         settings.beginGroup(self.settings_section)
         settings.setValue('display footer', self.display_footer)

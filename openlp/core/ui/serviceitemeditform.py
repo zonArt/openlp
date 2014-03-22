@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -30,12 +30,12 @@
 The service item edit dialog
 """
 from PyQt4 import QtGui
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, RegistryProperties
 
 from .serviceitemeditdialog import Ui_ServiceItemEditDialog
 
 
-class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
+class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog, RegistryProperties):
     """
     This is the form that is used to edit the verses of the song.
     """
@@ -131,8 +131,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         Called when the currentRow has changed.
 
-        ``row``
-            The row number (int).
+        :param row: The row number (int).
         """
         # Disable all buttons, as no row is selected or only one image is left.
         if row == -1 or self.list_widget.count() == 1:
@@ -151,14 +150,3 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             else:
                 self.up_button.setEnabled(True)
             self.delete_button.setEnabled(True)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-

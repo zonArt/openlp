@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -109,34 +109,34 @@ class OpenSongImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def doImport(self):
+    def do_import(self):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             if self.stop_import_flag:
                 return
             song_file = open(filename)
-            self.doImportFile(song_file)
+            self.do_import_file(song_file)
             song_file.close()
 
-    def doImportFile(self, file):
+    def do_import_file(self, file):
         """
         Process the OpenSong file - pass in a file-like object, not a file path.
         """
-        self.setDefaults()
+        self.set_defaults()
         try:
             tree = objectify.parse(file)
         except (Error, LxmlError):
-            self.logError(file.name, SongStrings.XMLSyntaxError)
+            self.log_error(file.name, SongStrings.XMLSyntaxError)
             log.exception('Error parsing XML')
             return
         root = tree.getroot()
         if root.tag != 'song':
-            self.logError(file.name, str(
-                translate('SongsPlugin.OpenSongImport', ('Invalid OpenSong song file. Missing song tag.'))))
+            self.log_error(file.name, str(
+                translate('SongsPlugin.OpenSongImport', 'Invalid OpenSong song file. Missing song tag.')))
             return
         fields = dir(root)
         decode = {
-            'copyright': self.addCopyright,
+            'copyright': self.add_copyright,
             'ccli': 'ccli_number',
             'author': self.parse_author,
             'title': 'title',
@@ -207,7 +207,7 @@ class OpenSongImport(SongImport):
                 verses[verse_tag][verse_num][inst] = []
                 our_verse_order.append([verse_tag, verse_num, inst])
             # Tidy text and remove the ____s from extended words
-            this_line = self.tidyText(this_line)
+            this_line = self.tidy_text(this_line)
             this_line = this_line.replace('_', '')
             this_line = this_line.replace('|', '\n')
             this_line = this_line.strip()
@@ -218,15 +218,15 @@ class OpenSongImport(SongImport):
         for (verse_tag, verse_num, inst) in our_verse_order:
             lines = '\n'.join(verses[verse_tag][verse_num][inst])
             length = 0
-            while(length < len(verse_num) and verse_num[length].isnumeric()):
+            while length < len(verse_num) and verse_num[length].isnumeric():
                 length += 1
             verse_def = '%s%s' % (verse_tag, verse_num[:length])
             verse_joints[verse_def] = '%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
                 if verse_def in verse_joints else lines
         for verse_def, lines in verse_joints.items():
-            self.addVerse(lines, verse_def)
+            self.add_verse(lines, verse_def)
         if not self.verses:
-            self.addVerse('')
+            self.add_verse('')
         # figure out the presentation order, if present
         if 'presentation' in fields and root.presentation:
             order = str(root.presentation)
@@ -246,9 +246,9 @@ class OpenSongImport(SongImport):
                     verse_num = '1'
                 verse_def = '%s%s' % (verse_tag, verse_num)
                 if verse_num in verses.get(verse_tag, {}):
-                    self.verseOrderList.append(verse_def)
+                    self.verse_order_list.append(verse_def)
                 else:
-                    log.info('Got order %s but not in verse tags, dropping'
-                        'this item from presentation order', verse_def)
+                    log.info('Got order %s but not in verse tags, dropping this item from presentation order',
+                             verse_def)
         if not self.finish():
-            self.logError(file.name)
+            self.log_error(file.name)
