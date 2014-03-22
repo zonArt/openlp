@@ -48,7 +48,8 @@ log = logging.getLogger(__name__)
 
 class SongIterator(object):
     """
-    This class implements an iterator for the song duplicate finder. The iterator returns a tuple of two songs.
+    This class implements an iterator for the song duplicate finder. The iterator returns a tuple of two songs. When
+    completely iterated then all songs have once been returned combined with any other songs.
     """
     def __init__(self, songs):
         self.songs = songs
