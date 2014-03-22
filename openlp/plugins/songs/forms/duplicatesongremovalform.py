@@ -47,6 +47,9 @@ log = logging.getLogger(__name__)
 
 
 class SongIterator(object):
+    """
+    This class implements an iterator for the song duplicate finder. The iterator returns a tuple of two songs.
+    """
     def __init__(self, songs):
         self.songs = songs
 
@@ -182,7 +185,6 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
                 process_number = max(1, multiprocessing.cpu_count() - 1)
                 pool = multiprocessing.Pool(process_number)
                 song_list = SongIterator(songs)
-                #song_list = [(songs[outer_song_counter], songs[inner_song_counter]) for outer_song_counter in range(max_songs - 1) for inner_song_counter in range(outer_song_counter + 1, max_songs)]
                 result = pool.imap_unordered(songs_probably_equal, song_list, 30)
                 # Do not accept any further tasks. Also this closes the processes if all tasks are done.
                 pool.close()
