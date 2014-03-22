@@ -652,7 +652,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                                            translate('OpenLP.MainWindow', 'Are you sure you want to re-run the First '
                                                      'Time Wizard?\n\nRe-running this wizard may make changes to your '
                                                      'current OpenLP configuration and possibly add songs to your '
-                                                     '#existing songs list and change your default theme.'),
+                                                     'existing songs list and change your default theme.'),
                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                              QtGui.QMessageBox.No),
                                            QtGui.QMessageBox.No)
