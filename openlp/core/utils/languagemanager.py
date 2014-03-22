@@ -126,8 +126,9 @@ class LanguageManager(object):
         log.info('Language file: \'%s\' written to conf file' % language)
         if message:
             QtGui.QMessageBox.information(None,
-                translate('OpenLP.LanguageManager', 'Language'),
-                translate('OpenLP.LanguageManager', 'Please restart OpenLP to use your new language setting.'))
+                                          translate('OpenLP.LanguageManager', 'Language'),
+                                          translate('OpenLP.LanguageManager', 'Please restart OpenLP to use your new '
+                                                                              'language setting.'))
 
     @staticmethod
     def init_qm_list():

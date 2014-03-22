@@ -68,8 +68,8 @@ class OpenLyricsExport(RegistryProperties):
             self.application.process_events()
             if self.parent.stop_export_flag:
                 return False
-            self.parent.increment_progress_bar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
-                                                         song.title)
+            self.parent.increment_progress_bar(
+                translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') % song.title)
             xml = open_lyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml.encode()))
             filename = '%s (%s)' % (song.title, ', '.join([author.display_name for author in song.authors]))
@@ -81,4 +81,3 @@ class OpenLyricsExport(RegistryProperties):
             tree.write(open(os.path.join(self.save_path, filename), 'wb'), encoding='utf-8', xml_declaration=True,
                        pretty_print=True)
         return True
-

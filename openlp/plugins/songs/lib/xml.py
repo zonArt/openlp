@@ -340,7 +340,8 @@ class OpenLyrics(object):
 
         The first unicode string are the start tags (for the next slide). The second unicode string are the end tags.
 
-        :param text: The text to test. The text must **not** contain html tags, only OpenLP formatting tags are allowed::
+        :param text: The text to test. The text must **not** contain html tags, only OpenLP formatting tags
+        are allowed::
 
                 {st}{r}Text text text
         """

@@ -176,7 +176,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog, RegistryProperties):
             critical_error_message_box(
                 UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm', 'You need to specify a book name for "%s".') %
-                           self.book_names[abbreviation])
+                self.book_names[abbreviation])
             return False
         elif not book_regex.match(new_book_name):
             self.book_name_edit[abbreviation].setFocus()

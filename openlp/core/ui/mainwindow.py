@@ -887,7 +887,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         # application terminates normally.   We need to exit without saving configuration.
         QtGui.QMessageBox.information(self, translate('OpenLP.MainWindow', 'Import settings'),
                                       translate('OpenLP.MainWindow', 'OpenLP will now close.  Imported settings will '
-                                      'be applied the next time you start OpenLP.'),
+                                                'be applied the next time you start OpenLP.'),
                                       QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
         self.settings_imported = True
         self.clean_up()
@@ -1042,8 +1042,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 ret = QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'Close OpenLP'),
                                                  translate('OpenLP.MainWindow', 'Are you sure you want to close '
                                                                                 'OpenLP?'),
-                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui
-                                                 .QMessageBox.No),
+                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                                   QtGui.QMessageBox.No),
                                                  QtGui.QMessageBox.Yes)
                 if ret == QtGui.QMessageBox.Yes:
                     self.clean_up()
@@ -1234,16 +1234,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.recent_files_menu.clear()
         for file_id, filename in enumerate(recent_files_to_display):
             log.debug('Recent file name: %s', filename)
-            action = create_action(self, '',
-                                   text='&%d %s' % (file_id + 1,
+            action = create_action(self, '', text='&%d %s' % (file_id + 1,
                                    os.path.splitext(os.path.basename(str(filename)))[0]), data=filename,
                                    triggers=self.service_manager_contents.on_recent_service_clicked)
             self.recent_files_menu.addAction(action)
         clear_recent_files_action = create_action(self, '',
                                                   text=translate('OpenLP.MainWindow', 'Clear List', 'Clear List of '
-                                                                                                   'recent files'),
+                                                                                                    'recent files'),
                                                   statustip=translate('OpenLP.MainWindow', 'Clear the list of recent '
-                                                                                          'files.'),
+                                                                                           'files.'),
                                                   enabled=bool(self.recent_files),
                                                   triggers=self.clear_recent_file_menu)
         add_actions(self.recent_files_menu, (None, clear_recent_files_action))
@@ -1352,8 +1351,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 self.application.set_normal_cursor()
                 log.exception('Data copy failed %s' % str(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
-                                           translate('OpenLP.MainWindow',
-                                           'OpenLP Data directory copy failed\n\n%s').replace('%s', str(why)),
+                                           translate('OpenLP.MainWindow', 'OpenLP Data directory copy failed\n\n%s').
+                                           replace('%s', str(why)),
                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 return False
         else:
@@ -1365,5 +1364,3 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if self.new_data_path == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove('advanced/data path')
         self.application.set_normal_cursor()
-
-

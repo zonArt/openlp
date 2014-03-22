@@ -246,4 +246,4 @@ class AlertsPlugin(Plugin):
         align = VerticalType.Names[self.settings_tab.location]
         frame.evaluateJavaScript('update_css("%s", "%s", "%s", "%s", "%s")' %
                                  (align, self.settings_tab.font_face, self.settings_tab.font_size,
-                                 self.settings_tab.font_color, self.settings_tab.background_color))
+                                  self.settings_tab.font_color, self.settings_tab.background_color))

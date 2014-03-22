@@ -56,4 +56,3 @@ class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
 
     def get_selected_files(self):
         return [item.data(QtCore.Qt.UserRole) for item in self.file_list_widget.selectedItems()]
-

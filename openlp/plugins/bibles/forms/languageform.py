@@ -36,8 +36,7 @@ from PyQt4.QtGui import QDialog
 
 from openlp.core.common import translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.plugins.bibles.forms.languagedialog import \
-    Ui_LanguageDialog
+from openlp.plugins.bibles.forms.languagedialog import Ui_LanguageDialog
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 
