@@ -179,15 +179,8 @@ class SearchEdit(QtGui.QLineEdit):
         correct action on the button, and set the current search type (using the list of identifiers provided by the
         developer), the ``searchTypeChanged(int)`` signal is emitted with the identifier.
         """
-        sender = self.sender()
         for action in self.menu_button.menu().actions():
+            # Why is this needed?
             action.setChecked(False)
-        self.menu_button.setDefaultAction(sender)
-        self._current_search_type = sender.data()
-        # setplaceholder_text has been implemented in Qt 4.7 and in at least
-        # PyQt 4.9 (I am not sure, if it was implemented in PyQt 4.8).
-        try:
-            self.setPlaceholderText(self.menu_button.defaultAction().placeholder_text)
-        except AttributeError:
-            pass
-        self.emit(QtCore.SIGNAL('searchTypeChanged(int)'), self._current_search_type)
+        sender = self.sender()
+        self.set_current_search_type(sender.data())
