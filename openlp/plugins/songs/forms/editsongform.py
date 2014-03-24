@@ -601,7 +601,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
     def on_verse_add_button_clicked(self):
         self.verse_form.set_verse('', True)
         if self.verse_form.exec_():
-            after_text, verse_tag, verse_num = self.verse_form.get_verse
+            after_text, verse_tag, verse_num = self.verse_form.get_verse()
             verse_def = '%s%s' % (verse_tag, verse_num)
             item = QtGui.QTableWidgetItem(after_text)
             item.setData(QtCore.Qt.UserRole, verse_def)
@@ -619,7 +619,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
             verse_id = item.data(QtCore.Qt.UserRole)
             self.verse_form.set_verse(temp_text, True, verse_id)
             if self.verse_form.exec_():
-                after_text, verse_tag, verse_num = self.verse_form.get_verse
+                after_text, verse_tag, verse_num = self.verse_form.get_verse()
                 verse_def = '%s%s' % (verse_tag, verse_num)
                 item.setData(QtCore.Qt.UserRole, verse_def)
                 item.setText(after_text)
@@ -661,7 +661,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
             self.verse_form.set_verse('')
         if not self.verse_form.exec_():
             return
-        verse_list = self.verse_form.get_all_verses
+        verse_list = self.verse_form.get_all_verses()
         verse_list = str(verse_list.replace('\r\n', '\n'))
         self.verse_list_widget.clear()
         self.verse_list_widget.setRowCount(0)
