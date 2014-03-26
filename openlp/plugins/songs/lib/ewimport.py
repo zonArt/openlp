@@ -34,13 +34,13 @@ EasyWorship song databases into the current installation database.
 import os
 import struct
 import re
+import zlib
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib import retrieve_windows_encoding, strip_rtf
 from .songimport import SongImport
 
-RTF_STRIPPING_REGEX = re.compile(r'\{\\tx[^}]*\}')
 # regex: at least two newlines, can have spaces between them
 SLIDE_BREAK_REGEX = re.compile(r'\n *?\n[\n ]*')
 NUMBER_REGEX = re.compile(r'[0-9]+')
@@ -77,7 +77,91 @@ class EasyWorshipSongImport(SongImport):
 
     def do_import(self):
         """
-        Import the songs
+        Determines the type of file to import and calls the appropiate method
+
+        :return:
+        """
+        if self.import_source.lower().endswith('ews'):
+            self.import_ews()
+        else:
+            self.import_db()
+
+    def import_ews(self):
+        """
+        Import the songs from service file
+        The full spec of the ews files can be found here:
+        https://github.com/meinders/lithium-ews/blob/master/docs/ews%20file%20format.md
+
+        :return:
+        """
+        # Open ews file if it exists
+        if not os.path.isfile(self.import_source):
+            return
+        # Make sure there is room for at least a header and one entry
+        if os.path.getsize(self.import_source) < 892:
+            return
+        # Take a stab at how text is encoded
+        self.encoding = 'cp1252'
+        self.ews_file = open(self.import_source, 'rb')
+        # Get file version
+        type, = struct.unpack('<38s', self.ews_file.read(38))
+        version = type.decode()[-3:]
+        # Set fileposition based on filetype/version
+        file_pos = 0
+        if version == '  5':
+            file_pos = 56
+        elif version == '  3':
+            file_pos = 48
+        elif version == '1.6':
+            file_pos = 40
+        else:
+            return
+        entry_count = self.get_i32(file_pos)
+        entry_length = self.get_i16(file_pos+4)
+        file_pos += 6
+        self.import_wizard.progress_bar.setMaximum(entry_count)
+        # Loop over songs
+        for x in range(1, entry_count):
+            # Load entry metadata
+            self.set_defaults()
+            self.title = self.get_string(file_pos, 50)
+            resource = self.get_string(file_pos + 51, 255)
+            authors = self.get_string(file_pos + 307, 50)
+            copyright = self.get_string(file_pos + 358, 100)
+            admin = self.get_string(file_pos + 459, 50)
+            cont_ptr = self.get_i32(file_pos + 800)
+            cont_type = self.get_i32(file_pos + 820)
+            notes = self.get_string(file_pos + 1155, 160)
+            self.ccli_number = self.get_string(file_pos + 1410, 10)
+            # Only handle content type 1 (songs)
+            if cont_type != 1:
+                file_pos += entry_length
+                continue
+            # Load song content
+            content_length = self.get_i32(cont_ptr)
+            deflated_content = self.get_bytes(cont_ptr + 4, content_length - 10)
+            deflated_length = self.get_i32(cont_ptr + 4 + content_length - 6)
+            inflated_content = zlib.decompress(deflated_content, 15, deflated_length)
+            if copyright:
+                self.copyright = copyright
+            if admin:
+                if copyright:
+                    self.copyright += ', '
+                self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
+                                            'Administered by %s') % admin
+            # Set the SongImport object members.
+            self.set_song_import_object(authors, inflated_content)
+            if self.stop_import_flag:
+                break
+            if not self.finish():
+                self.log_error(self.import_source)
+            # Set file_pos for next entry
+            file_pos += entry_length
+        self.ews_file.close()
+
+    def import_db(self):
+        """
+        Import the songs from the database
 
         :return:
         """
@@ -176,7 +260,6 @@ class EasyWorshipSongImport(SongImport):
                 ccli = self.get_field(fi_ccli)
                 authors = self.get_field(fi_author)
                 words = self.get_field(fi_words)
-                # Set the SongImport object members.
                 if copy:
                     self.copyright = copy.decode()
                 if admin:
@@ -187,61 +270,72 @@ class EasyWorshipSongImport(SongImport):
                 if ccli:
                     self.ccli_number = ccli.decode()
                 if authors:
-                    # Split up the authors
-                    author_list = authors.split(b'/')
-                    if len(author_list) < 2:
-                        author_list = authors.split(b';')
-                    if len(author_list) < 2:
-                        author_list = authors.split(b',')
-                    for author_name in author_list:
-                        self.add_author(author_name.decode().strip())
-                if words:
-                    # Format the lyrics
-                    result = strip_rtf(words.decode(), self.encoding)
-                    if result is None:
-                        return
-                    words, self.encoding = result
-                    verse_type = VerseType.tags[VerseType.Verse]
-                    for verse in SLIDE_BREAK_REGEX.split(words):
-                        verse = verse.strip()
-                        if not verse:
-                            continue
-                        verse_split = verse.split('\n', 1)
-                        first_line_is_tag = False
-                        # EW tags: verse, chorus, pre-chorus, bridge, tag,
-                        # intro, ending, slide
-                        for tag in VerseType.tags + ['tag', 'slide']:
-                            tag = tag.lower()
-                            ew_tag = verse_split[0].strip().lower()
-                            if ew_tag.startswith(tag):
-                                verse_type = tag[0]
-                                if tag == 'tag' or tag == 'slide':
-                                    verse_type = VerseType.tags[VerseType.Other]
-                                first_line_is_tag = True
-                                number_found = False
-                                # check if tag is followed by number and/or note
-                                if len(ew_tag) > len(tag):
-                                    match = NUMBER_REGEX.search(ew_tag)
-                                    if match:
-                                        number = match.group()
-                                        verse_type += number
-                                        number_found = True
-                                    match = NOTE_REGEX.search(ew_tag)
-                                    if match:
-                                        self.comments += ew_tag + '\n'
-                                if not number_found:
-                                    verse_type += '1'
-                                break
-                        self.add_verse(verse_split[-1].strip() if first_line_is_tag else verse, verse_type)
-                if len(self.comments) > 5:
-                    self.comments += str(translate('SongsPlugin.EasyWorshipSongImport',
-                                                   '\n[above are Song Tags with notes imported from EasyWorship]'))
+                    authors = authors.decode()
+                else:
+                    authors = ''
+                # Set the SongImport object members.
+                self.set_song_import_object(authors, words)
                 if self.stop_import_flag:
                     break
                 if not self.finish():
                     self.log_error(self.import_source)
         db_file.close()
         self.memo_file.close()
+
+    def set_song_import_object(self, authors, words):
+        """
+        Set the SongImport object members.
+        """
+        if authors:
+            # Split up the authors
+            author_list = authors.split('/')
+            if len(author_list) < 2:
+                author_list = authors.split(';')
+            if len(author_list) < 2:
+                author_list = authors.split(',')
+            for author_name in author_list:
+                self.add_author(author_name.strip())
+        if words:
+            # Format the lyrics
+            result = strip_rtf(words.decode(), self.encoding)
+            if result is None:
+                return
+            words, self.encoding = result
+            verse_type = VerseType.tags[VerseType.Verse]
+            for verse in SLIDE_BREAK_REGEX.split(words):
+                verse = verse.strip()
+                if not verse:
+                    continue
+                verse_split = verse.split('\n', 1)
+                first_line_is_tag = False
+                # EW tags: verse, chorus, pre-chorus, bridge, tag,
+                # intro, ending, slide
+                for tag in VerseType.tags + ['tag', 'slide']:
+                    tag = tag.lower()
+                    ew_tag = verse_split[0].strip().lower()
+                    if ew_tag.startswith(tag):
+                        verse_type = tag[0]
+                        if tag == 'tag' or tag == 'slide':
+                            verse_type = VerseType.tags[VerseType.Other]
+                        first_line_is_tag = True
+                        number_found = False
+                        # check if tag is followed by number and/or note
+                        if len(ew_tag) > len(tag):
+                            match = NUMBER_REGEX.search(ew_tag)
+                            if match:
+                                number = match.group()
+                                verse_type += number
+                                number_found = True
+                            match = NOTE_REGEX.search(ew_tag)
+                            if match:
+                                self.comments += ew_tag + '\n'
+                        if not number_found:
+                            verse_type += '1'
+                        break
+                self.add_verse(verse_split[-1].strip() if first_line_is_tag else verse, verse_type)
+        if len(self.comments) > 5:
+            self.comments += str(translate('SongsPlugin.EasyWorshipSongImport',
+                                           '\n[above are Song Tags with notes imported from EasyWorship]'))
 
     def find_field(self, field_name):
         """
@@ -323,3 +417,38 @@ class EasyWorshipSongImport(SongImport):
             return self.memo_file.read(blob_size)
         else:
             return 0
+
+    def get_bytes(self, pos, length):
+        """
+        Get bytes from ews_file
+        """
+        self.ews_file.seek(pos)
+        return self.ews_file.read(length)
+
+    def get_string(self, pos, length):
+        """
+        Get string from ews_file
+        """
+        bytes = self.get_bytes(pos, length)
+        mask = '<' + str(length) + 's'
+        byte_str, = struct.unpack(mask, bytes)
+        return byte_str.decode('unicode-escape').replace('\0', '').strip()
+
+    def get_i16(self, pos):
+        """
+        Get short int from ews_file
+        """
+
+        bytes = self.get_bytes(pos, 2)
+        mask = '<h'
+        number, = struct.unpack(mask, bytes)
+        return number
+
+    def get_i32(self, pos):
+        """
+        Get long int from ews_file
+        """
+        bytes = self.get_bytes(pos, 4)
+        mask = '<i'
+        number, = struct.unpack(mask, bytes)
+        return number

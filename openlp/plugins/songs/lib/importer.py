@@ -229,7 +229,10 @@ class SongFormat(object):
             'name': 'EasyWorship',
             'prefix': 'ew',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.db)' % translate('SongsPlugin.ImportWizardForm', 'EasyWorship Song Database')
+            'filter': '%s (*.db);; %s (*.ews)' % (translate('SongsPlugin.ImportWizardForm',
+                                                            'EasyWorship Song Database'),
+                                                  translate('SongsPlugin.ImportWizardForm',
+                                                            'EasyWorship Service File'))
         },
         FoilPresenter: {
             'class': FoilPresenterImport,
