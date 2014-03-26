@@ -120,9 +120,8 @@ class SearchEdit(QtGui.QLineEdit):
         A list of tuples to be used in the search type menu. The first item in the list will be preselected as the
         default.
 
-         :param items:     The list of tuples to use. The tuples should contain an integer identifier, an icon (QIcon instance or
-
-            string) and a title for the item in the menu. In short, they should look like this::
+         :param items:     The list of tuples to use. The tuples should contain an integer identifier, an icon (QIcon
+         instance or string) and a title for the item in the menu. In short, they should look like this::
 
                 (<identifier>, <icon>, <title>, <place holder text>)
 

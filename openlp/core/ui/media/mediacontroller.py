@@ -374,7 +374,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 path = service_item.get_frame_path()
                 (name, title, audio_track, subtitle_track, start, end) = parse_optical_path(path)
                 is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display, controller)
-            else :
+            else:
                 log.debug('video is not optical and live')
                 is_valid = self._check_file_type(controller, display, service_item)
             display.override['theme'] = ''
@@ -392,15 +392,15 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 path = service_item.get_frame_path()
                 (name, title, audio_track, subtitle_track, start, end) = parse_optical_path(path)
                 is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display, controller)
-            else :
+            else:
                 log.debug('video is not optical and preview')
                 is_valid = self._check_file_type(controller, display, service_item)
         if not is_valid:
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                translate('MediaPlugin.MediaItem', 'Unsupported File'))
+                                       translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
-        log.debug('video mediatype: ' +str(controller.media_info.media_type))
+        log.debug('video mediatype: ' + str(controller.media_info.media_type))
         # dont care about actual theme, set a black background
         if controller.is_live and not controller.media_info.is_background:
             display.frame.evaluateJavaScript('show_video( "setBackBoard", null, null, null,"visible");')
@@ -418,7 +418,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         if autoplay:
             if not self.media_play(controller):
                 critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                    translate('MediaPlugin.MediaItem', 'Unsupported File'))
+                                           translate('MediaPlugin.MediaItem', 'Unsupported File'))
                 return False
         self.set_controls_visible(controller, True)
         log.debug('use %s controller' % self.current_media_players[controller.controller_type])
@@ -481,14 +481,14 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 vlc_player = player
         if vlc_player is None:
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'VLC player required'),
-                translate('MediaPlugin.MediaItem', 'VLC player required for playback of optical devices'))
+                                       translate('MediaPlugin.MediaItem',
+                                                 'VLC player required for playback of optical devices'))
             return False
         vlc_player.load(display)
         self.resize(display, vlc_player)
         self.current_media_players[controller.controller_type] = vlc_player
         controller.media_info.media_type = MediaType.DVD
         return True
-
 
     def _check_file_type(self, controller, display, service_item):
         """
@@ -698,9 +698,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return
         display = self._define_display(self.live_controller)
         if self.live_controller.controller_type in self.current_media_players and \
-            self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
-            self.current_media_players[self.live_controller.controller_type].pause(display)
-            self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
+                self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
+                self.current_media_players[self.live_controller.controller_type].pause(display)
+                self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
 
     def media_blank(self, msg):
         """
@@ -756,4 +756,3 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         if controller.is_live:
             return controller.display
         return controller.preview_display
-

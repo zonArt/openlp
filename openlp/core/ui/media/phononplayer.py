@@ -105,7 +105,7 @@ class PhononPlayer(MediaPlayer):
                 if ext not in mime_type_list:
                     mime_type_list.append(ext)
             log.info('MediaPlugin: %s additional extensions: %s' %
-                (mimetype, ' '.join(self.additional_extensions[mimetype])))
+                     (mimetype, ' '.join(self.additional_extensions[mimetype])))
 
     def setup(self, display):
         """

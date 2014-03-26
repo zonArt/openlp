@@ -87,15 +87,14 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryPrope
             )
             return
         check_directory_exists(path)
-        file_name = translate('SongUsagePlugin.SongUsageDetailForm', 'usage_detail_%s_%s.txt') % (
-            self.from_date_calendar.selectedDate().toString('ddMMyyyy'),
-            self.to_date_calendar.selectedDate().toString('ddMMyyyy'))
+        file_name = translate('SongUsagePlugin.SongUsageDetailForm', 'usage_detail_%s_%s.txt') % \
+            (self.from_date_calendar.selectedDate().toString('ddMMyyyy'),
+             self.to_date_calendar.selectedDate().toString('ddMMyyyy'))
         Settings().setValue(self.plugin.settings_section + '/from date', self.from_date_calendar.selectedDate())
         Settings().setValue(self.plugin.settings_section + '/to date', self.to_date_calendar.selectedDate())
         usage = self.plugin.manager.get_all_objects(
-            SongUsageItem, and_(
-            SongUsageItem.usagedate >= self.from_date_calendar.selectedDate().toPyDate(),
-            SongUsageItem.usagedate < self.to_date_calendar.selectedDate().toPyDate()),
+            SongUsageItem, and_(SongUsageItem.usagedate >= self.from_date_calendar.selectedDate().toPyDate(),
+                                SongUsageItem.usagedate < self.to_date_calendar.selectedDate().toPyDate()),
             [SongUsageItem.usagedate, SongUsageItem.usagetime])
         report_file_name = os.path.join(path, file_name)
         file_handle = None
@@ -103,9 +102,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryPrope
             file_handle = open(report_file_name, 'w')
             for instance in usage:
                 record = '\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
-                    '\"%s\",\"%s\"\n' % (instance.usagedate,
-                    instance.usagetime, instance.title, instance.copyright,
-                    instance.ccl_number, instance.authors, instance.plugin_name, instance.source)
+                    '\"%s\",\"%s\"\n' % \
+                         (instance.usagedate, instance.usagetime, instance.title, instance.copyright,
+                          instance.ccl_number, instance.authors, instance.plugin_name, instance.source)
                 file_handle.write(record.encode('utf-8'))
             self.main_window.information_message(
                 translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation'),

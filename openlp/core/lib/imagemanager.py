@@ -113,8 +113,8 @@ class Image(object):
         :param path: The image's file path. This should be an existing file path.
         :param source: The source describes the image's origin. Possible values are described in the
             :class:`~openlp.core.lib.ImageSource` class.
-        :param background: A ``QtGui.QColor`` object specifying the colour to be used to fill the gabs if the image's ratio does not
-            match with the display ratio.
+        :param background: A ``QtGui.QColor`` object specifying the colour to be used to fill the gabs if the image's
+            ratio does not match with the display ratio.
 
         """
         self.path = path

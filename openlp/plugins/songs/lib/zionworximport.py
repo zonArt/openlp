@@ -39,7 +39,7 @@ from openlp.plugins.songs.lib.songimport import SongImport
 log = logging.getLogger(__name__)
 
 # Used to strip control chars (except 10=LF, 13=CR)
-CONTROL_CHARS_MAP = dict.fromkeys(list(range(10)) + [11, 12] + list(range(14,32)) + [127])
+CONTROL_CHARS_MAP = dict.fromkeys(list(range(10)) + [11, 12] + list(range(14, 32)) + [127])
 
 
 class ZionWorxImport(SongImport):

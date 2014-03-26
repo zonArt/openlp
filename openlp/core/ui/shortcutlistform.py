@@ -285,7 +285,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
         if QtGui.QMessageBox.question(self, translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
                                       translate('OpenLP.ShortcutListDialog', 'Do you want to restore all '
                                                 'shortcuts to their defaults?'),
-                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | 
+                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                         QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
             return
         self._adjust_button(self.primary_push_button, False, text='')
