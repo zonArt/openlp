@@ -72,7 +72,6 @@ class TestSearchEdit(TestCase, TestMixin):
         """
         del self.main_window
 
-
     def set_search_types_test(self):
         """
         Test setting the search types of the search edit.
