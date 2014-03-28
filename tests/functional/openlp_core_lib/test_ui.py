@@ -27,38 +27,29 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Mixin class with helpers
+Package to test the openlp.core.lib.ui package.
 """
-import os
-from tempfile import mkstemp
+from PyQt4 import QtGui
+from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui
-from openlp.core.common import Settings
+from openlp.core.lib.ui import *
 
 
-class TestMixin(object):
+class TestUi(TestCase):
+    """
+    Test the functions in the ui module
+    """
 
-    def get_application(self):
+    def test_add_welcome_page(self):
         """
-        Build or reuse the Application object
+        Test appending a welcome page to a wizard
         """
-        old_app_instance = QtCore.QCoreApplication.instance()
-        if old_app_instance is None:
-            self.app = QtGui.QApplication([])
-        else:
-            self.app = old_app_instance
+        # GIVEN: A wizard
+        wizard = QtGui.QWizard()
 
-    def build_settings(self):
-        """
-        Build the settings Object and initialise it
-        """
-        Settings.setDefaultFormat(Settings.IniFormat)
-        self.fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
+        # WHEN: A welcome page has been added to the wizard
+        add_welcome_page(wizard, ':/wizards/wizard_firsttime.bmp')
 
-    def destroy_settings(self):
-        """
-        Destroy the Settings Object
-        """
-        os.close(self.fd)
-        os.unlink(Settings().fileName())
+        # THEN: The wizard should have one page with a pixmap.
+        self.assertEqual(1, len(wizard.pageIds()), 'The wizard should have one page.')
+        self.assertIsInstance(wizard.page(0).pixmap(QtGui.QWizard.WatermarkPixmap), QtGui.QPixmap)
