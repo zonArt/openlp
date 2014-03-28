@@ -194,6 +194,7 @@ class Manager(object):
                 db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
             except (SQLAlchemyError, DBAPIError):
                 log.exception('Error loading database: %s', self.db_url)
+                return
             if db_ver > up_ver:
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
@@ -215,7 +216,7 @@ class Manager(object):
         Save an object to the database
 
         :param object_instance: The object to save
-        :param commit:  Commit the session with this object
+        :param commit: Commit the session with this object
         """
         for try_count in range(3):
             try:

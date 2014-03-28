@@ -36,7 +36,7 @@ from sqlalchemy.sql.expression import func, false, null, text
 
 from openlp.core.lib.db import get_upgrade_op
 
-__version__ = 3
+__version__ = 4
 
 
 def upgrade_1(session, metadata):
@@ -82,3 +82,12 @@ def upgrade_3(session, metadata):
         op.add_column('songs', Column('temporary', types.Boolean(create_constraint=False), server_default=false()))
     else:
         op.add_column('songs', Column('temporary', types.Boolean(), server_default=false()))
+
+def upgrade_4(session, metadata):
+    """
+    Version 4 upgrade.
+
+    This upgrade adds a column for author type to the authors table
+    """
+    op = get_upgrade_op(session)
+    op.add_column('authors_songs', Column('author_type', types.String(), primary_key=True, server_default=null()))

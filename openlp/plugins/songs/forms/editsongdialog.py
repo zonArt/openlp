@@ -122,6 +122,11 @@ class Ui_EditSongDialog(object):
         self.author_add_layout.setObjectName('author_add_layout')
         self.authors_combo_box = create_combo_box(self.authors_group_box, 'authors_combo_box')
         self.author_add_layout.addWidget(self.authors_combo_box)
+        self.author_types_combo_box = create_combo_box(self.authors_group_box, 'author_types_combo_box', editable=False)
+        # Need to give these boxes some min width, else they are too small
+        self.authors_combo_box.setMinimumWidth(150)
+        self.author_types_combo_box.setMinimumWidth(80)
+        self.author_add_layout.addWidget(self.author_types_combo_box)
         self.author_add_button = QtGui.QPushButton(self.authors_group_box)
         self.author_add_button.setObjectName('author_add_button')
         self.author_add_layout.addWidget(self.author_add_button)
@@ -330,7 +335,7 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', '<strong>Warning:</strong> You have not entered a verse order.')
 
 
-def create_combo_box(parent, name):
+def create_combo_box(parent, name, editable=True):
     """
     Utility method to generate a standard combo box for this dialog.
 
@@ -340,7 +345,7 @@ def create_combo_box(parent, name):
     combo_box = QtGui.QComboBox(parent)
     combo_box.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
     combo_box.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-    combo_box.setEditable(True)
+    combo_box.setEditable(editable)
     combo_box.setInsertPolicy(QtGui.QComboBox.NoInsert)
     combo_box.setObjectName(name)
     return combo_box

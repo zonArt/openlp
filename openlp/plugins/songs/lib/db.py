@@ -39,11 +39,33 @@ from sqlalchemy.sql.expression import func
 
 from openlp.core.lib.db import BaseModel, init_db
 from openlp.core.utils import get_natural_key
+from openlp.core.lib import translate
 
 
 class Author(BaseModel):
     """
     Author model
+    """
+    #These types are defined by OpenLyrics: http://openlyrics.info/dataformat.html#authors
+    TYPE_WORDS = 'words'
+    TYPE_MUSIC = 'music'
+    TYPE_TRANSLATION = 'translation'
+    Types = {
+        TYPE_WORDS: translate('OpenLP.Ui', 'Words'),
+        TYPE_MUSIC: translate('OpenLP.Ui', 'Music'),
+        TYPE_TRANSLATION: translate('OpenLP.Ui', 'Translation')
+    }
+    def get_display_name(self, author_type=None):
+        if author_type:
+            return "%s: %s"%(self.Types[author_type], self.display_name)
+        return self.display_name
+
+class AuthorSong(BaseModel):
+    """
+    Relationship between Authors and Songs (many to many).
+    Need to define this relationship table explicit to get access to the
+    Association Object (author_type).
+    http://docs.sqlalchemy.org/en/latest/orm/relationships.html#association-object
     """
     pass
 
@@ -67,6 +89,7 @@ class Song(BaseModel):
     """
     Song model
     """
+
     def __init__(self):
         self.sort_key = []
 
@@ -120,6 +143,7 @@ def init_schema(url):
 
         * author_id
         * song_id
+        * author_type
 
     **media_files Table**
         * id
@@ -230,7 +254,8 @@ def init_schema(url):
     authors_songs_table = Table(
         'authors_songs', metadata,
         Column('author_id', types.Integer(), ForeignKey('authors.id'), primary_key=True),
-        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True)
+        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
+        Column('author_type', types.String(), primary_key=True)
     )
 
     # Definition of the "songs_topics" table
@@ -241,10 +266,14 @@ def init_schema(url):
     )
 
     mapper(Author, authors_table)
+    mapper(AuthorSong, authors_songs_table, properties={
+        'author': relation(Author)
+    })
     mapper(Book, song_books_table)
     mapper(MediaFile, media_files_table)
     mapper(Song, songs_table, properties={
-        'authors': relation(Author, backref='songs', secondary=authors_songs_table, lazy=False),
+        'authors_songs': relation(AuthorSong, cascade="all, delete-orphan"),
+        'authors': relation(Author, secondary=authors_songs_table, viewonly=True),
         'book': relation(Book, backref='songs'),
         'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
         'topics': relation(Topic, backref='songs', secondary=songs_topics_table)
