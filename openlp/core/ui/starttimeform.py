@@ -74,12 +74,12 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog, RegistryProperties):
             self.minute_finish_spin_box.value() * 60 + self.second_finish_spin_box.value()
         if end > self.item['service_item'].media_length:
             critical_error_message_box(title=translate('OpenLP.StartTime_form', 'Time Validation Error'),
-                                       message=translate('OpenLP.StartTime_form', 
+                                       message=translate('OpenLP.StartTime_form',
                                                          'Finish time is set after the end of the media item'))
             return
         elif start > end:
             critical_error_message_box(title=translate('OpenLP.StartTime_form', 'Time Validation Error'),
-                                       message=translate('OpenLP.StartTime_form', 
+                                       message=translate('OpenLP.StartTime_form',
                                                          'Start time is after the finish time of the media item'))
             return
         self.item['service_item'].start_time = start

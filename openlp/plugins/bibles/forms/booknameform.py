@@ -52,7 +52,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
     """
     log.info('BookNameForm loaded')
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         """
         Constructor
         """
@@ -66,11 +66,11 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         """
         Set up the signals used in the booknameform.
         """
-        self.old_testament_check_box.stateChanged.connect(self.onCheckBoxIndexChanged)
-        self.new_testament_check_box.stateChanged.connect(self.onCheckBoxIndexChanged)
-        self.apocrypha_check_box.stateChanged.connect(self.onCheckBoxIndexChanged)
+        self.old_testament_check_box.stateChanged.connect(self.on_check_box_index_changed)
+        self.new_testament_check_box.stateChanged.connect(self.on_check_box_index_changed)
+        self.apocrypha_check_box.stateChanged.connect(self.on_check_box_index_changed)
 
-    def onCheckBoxIndexChanged(self, index):
+    def on_check_box_index_changed(self, index):
         """
         Reload Combobox if CheckBox state has changed
         """
@@ -119,7 +119,8 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             cor_book = self.corresponding_combo_box.currentText()
             for character in '\\.^$*+?{}[]()':
                 cor_book = cor_book.replace(character, '\\' + character)
-            books = [key for key in list(self.book_names.keys()) if re.match(cor_book, str(self.book_names[key]), re.UNICODE)]
+            books = [key for key in list(self.book_names.keys()) if re.match(cor_book, str(self.book_names[key]),
+                                                                             re.UNICODE)]
             books = [_f for _f in map(BiblesResourcesDB.get_book, books) if _f]
             if books:
                 self.book_id = books[0]['id']

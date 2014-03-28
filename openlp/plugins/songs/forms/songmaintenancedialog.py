@@ -162,6 +162,6 @@ class Ui_SongMaintenanceDialog(object):
         self.edit_book_button.setText(UiStrings().Edit)
         self.delete_book_button.setText(UiStrings().Delete)
         type_list_width = max(self.fontMetrics().width(SongStrings.Authors),
-                            self.fontMetrics().width(SongStrings.Topics),
-                            self.fontMetrics().width(SongStrings.SongBooks))
+                              self.fontMetrics().width(SongStrings.Topics),
+                              self.fontMetrics().width(SongStrings.SongBooks))
         self.type_list_widget.setFixedWidth(type_list_width + self.type_list_widget.iconSize().width() + 32)

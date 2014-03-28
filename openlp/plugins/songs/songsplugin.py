@@ -342,7 +342,7 @@ class SongsPlugin(Plugin):
         """
         Remove temporary songs from the database
         """
-        songs = self.manager.get_all_objects(Song, Song.temporary == True)
+        songs = self.manager.get_all_objects(Song, Song.temporary is True)
         for song in songs:
             self.manager.delete_object(Song, song.id)
 

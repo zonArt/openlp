@@ -170,14 +170,14 @@ class SlideController(DisplayController, RegistryProperties):
         size_toolbar_policy.setHeightForWidth(self.toolbar.sizePolicy().hasHeightForWidth())
         self.toolbar.setSizePolicy(size_toolbar_policy)
         self.previous_item = create_action(self, 'previousItem_' + self.type_prefix,
-                                           text=translate('OpenLP.SlideController', 'Previous Slide'), 
+                                           text=translate('OpenLP.SlideController', 'Previous Slide'),
                                            icon=':/slides/slide_previous.png',
                                            tooltip=translate('OpenLP.SlideController', 'Move to previous.'),
                                            can_shortcuts=True, context=QtCore.Qt.WidgetWithChildrenShortcut,
                                            category=self.category, triggers=self.on_slide_selected_previous)
         self.toolbar.addAction(self.previous_item)
         self.next_item = create_action(self, 'nextItem_' + self.type_prefix,
-                                       text=translate('OpenLP.SlideController', 'Next Slide'), 
+                                       text=translate('OpenLP.SlideController', 'Next Slide'),
                                        icon=':/slides/slide_next.png',
                                        tooltip=translate('OpenLP.SlideController', 'Move to next.'),
                                        can_shortcuts=True, context=QtCore.Qt.WidgetWithChildrenShortcut,
@@ -195,17 +195,17 @@ class SlideController(DisplayController, RegistryProperties):
             self.hide_menu.setMenu(QtGui.QMenu(translate('OpenLP.SlideController', 'Hide'), self.toolbar))
             self.toolbar.add_toolbar_widget(self.hide_menu)
             self.blank_screen = create_action(self, 'blankScreen',
-                                              text=translate('OpenLP.SlideController', 'Blank Screen'), 
+                                              text=translate('OpenLP.SlideController', 'Blank Screen'),
                                               icon=':/slides/slide_blank.png',
-                                              checked=False, can_shortcuts=True, category=self.category, 
+                                              checked=False, can_shortcuts=True, category=self.category,
                                               triggers=self.on_blank_display)
             self.theme_screen = create_action(self, 'themeScreen',
-                                              text=translate('OpenLP.SlideController', 'Blank to Theme'), 
+                                              text=translate('OpenLP.SlideController', 'Blank to Theme'),
                                               icon=':/slides/slide_theme.png',
                                               checked=False, can_shortcuts=True, category=self.category,
                                               triggers=self.on_theme_display)
             self.desktop_screen = create_action(self, 'desktopScreen',
-                                                text=translate('OpenLP.SlideController', 'Show Desktop'), 
+                                                text=translate('OpenLP.SlideController', 'Show Desktop'),
                                                 icon=':/slides/slide_desktop.png',
                                                 checked=False, can_shortcuts=True, category=self.category,
                                                 triggers=self.on_hide_display)
@@ -255,15 +255,16 @@ class SlideController(DisplayController, RegistryProperties):
             self.toolbar.add_toolbar_widget(self.delay_spin_box)
         else:
             self.toolbar.add_toolbar_action('goLive', icon=':/general/general_live.png',
-                                            tooltip=translate('OpenLP.SlideController', 'Move to live.'), 
+                                            tooltip=translate('OpenLP.SlideController', 'Move to live.'),
                                             triggers=self.on_go_live)
             self.toolbar.add_toolbar_action('addToService', icon=':/general/general_add.png',
-                                            tooltip=translate('OpenLP.SlideController', 'Add to Service.'), 
+                                            tooltip=translate('OpenLP.SlideController', 'Add to Service.'),
                                             triggers=self.on_preview_add_to_service)
             self.toolbar.addSeparator()
             self.toolbar.add_toolbar_action('editSong', icon=':/general/general_edit.png',
-                                            tooltip=translate('OpenLP.SlideController', 'Edit and reload song preview.')
-                                            , triggers=self.on_edit_song)
+                                            tooltip=translate('OpenLP.SlideController',
+                                                              'Edit and reload song preview.'),
+                                            triggers=self.on_edit_song)
         self.controller_layout.addWidget(self.toolbar)
         # Build the Media Toolbar
         self.media_controller.register_controller(self)
@@ -355,7 +356,7 @@ class SlideController(DisplayController, RegistryProperties):
                 {'key': 'O', 'configurable': True, 'text': translate('OpenLP.SlideController', 'Go to "Other"')}
             ]
             shortcuts.extend([{'key': str(number)} for number in range(10)])
-            self.controller.addActions([create_action(self, 'shortcutAction_%s' % s['key'], 
+            self.controller.addActions([create_action(self, 'shortcutAction_%s' % s['key'],
                                                       text=s.get('text'),
                                                       can_shortcuts=True,
                                                       context=QtCore.Qt.WidgetWithChildrenShortcut,
@@ -394,9 +395,9 @@ class SlideController(DisplayController, RegistryProperties):
         """
         Called, when a shortcut has been activated to jump to a chorus, verse, etc.
 
-        **Note**: This implementation is based on shortcuts. But it rather works like "key sequenes". You have to 
+        **Note**: This implementation is based on shortcuts. But it rather works like "key sequenes". You have to
         press one key after the other and **not** at the same time.
-        For example to jump to "V3" you have to press "V" and afterwards but within a time frame of 350ms 
+        For example to jump to "V3" you have to press "V" and afterwards but within a time frame of 350ms
         you have to press "3".
         """
         try:
@@ -456,17 +457,17 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.previous_service = create_action(parent, 'previousService',
                                               text=translate('OpenLP.SlideController', 'Previous Service'),
-                                              can_shortcuts=True, context=QtCore.Qt.WidgetWithChildrenShortcut, 
+                                              can_shortcuts=True, context=QtCore.Qt.WidgetWithChildrenShortcut,
                                               category=self.category,
                                               triggers=self.service_previous)
         self.next_service = create_action(parent, 'nextService',
                                           text=translate('OpenLP.SlideController', 'Next Service'),
-                                          can_shortcuts=True, context=QtCore.Qt.WidgetWithChildrenShortcut, 
+                                          can_shortcuts=True, context=QtCore.Qt.WidgetWithChildrenShortcut,
                                           category=self.category,
                                           triggers=self.service_next)
         self.escape_item = create_action(parent, 'escapeItem',
                                          text=translate('OpenLP.SlideController', 'Escape Item'),
-                                         can_shortcuts=True, context=QtCore.Qt.WidgetWithChildrenShortcut, 
+                                         can_shortcuts=True, context=QtCore.Qt.WidgetWithChildrenShortcut,
                                          category=self.category,
                                          triggers=self.live_escape)
 
@@ -1325,7 +1326,7 @@ class SlideController(DisplayController, RegistryProperties):
         """
         Update how much time is remaining
 
-        :param time: the time remainings
+        :param time: the time remaining
         """
         seconds = self.display.audio_player.media_object.remainingTime() // 1000
         minutes = seconds // 60

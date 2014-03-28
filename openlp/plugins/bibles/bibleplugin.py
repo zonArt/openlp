@@ -113,8 +113,8 @@ class BiblePlugin(Plugin):
         """
         super(BiblePlugin, self).app_startup()
         if self.manager.old_bible_databases:
-            if QtGui.QMessageBox.information(self.main_window,
-                translate('OpenLP', 'Information'),
+            if QtGui.QMessageBox.information(
+                    self.main_window, translate('OpenLP', 'Information'),
                 translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your existing Bibles.\n'
                           'Should OpenLP upgrade now?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \

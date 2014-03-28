@@ -287,8 +287,7 @@ class SofImport(OooImport):
 
         :param text: The verse text
         """
-        if self.italics != self.is_chorus and ((len(self.verses) > 0) or
-            (self.current__verse.count('\n') > 1)):
+        if self.italics != self.is_chorus and ((len(self.verses) > 0) or (self.current__verse.count('\n') > 1)):
             self.finish_verse()
         if self.italics:
             self.is_chorus = True
@@ -348,10 +347,10 @@ class SofImport(OooImport):
         for i in range(1, len(text_arr)):
             # Do not translate these. Fixed strings in SOF song file
             if text_arr[i] in ('JESUS', 'CHRIST', 'KING', 'ALMIGHTY', 'REDEEMER', 'SHEPHERD', 'SON', 'GOD', 'LORD',
-                              'FATHER', 'HOLY', 'SPIRIT', 'LAMB', 'YOU', 'YOUR', 'I', 'I\'VE', 'I\'M', 'I\'LL',
-                              'SAVIOUR', 'O', 'YOU\'RE', 'HE', 'HIS', 'HIM', 'ZION', 'EMMANUEL', 'MAJESTY', 'JESUS\'',
-                              'JIREH', 'JUDAH', 'LION', 'LORD\'S', 'ABRAHAM', 'GOD\'S', 'FATHER\'S', 'ELIJAH' 'MARTHA',
-                              'CHRISTMAS', 'ALPHA', 'OMEGA'):
+                               'FATHER', 'HOLY', 'SPIRIT', 'LAMB', 'YOU', 'YOUR', 'I', 'I\'VE', 'I\'M', 'I\'LL',
+                               'SAVIOUR', 'O', 'YOU\'RE', 'HE', 'HIS', 'HIM', 'ZION', 'EMMANUEL', 'MAJESTY', 'JESUS\'',
+                               'JIREH', 'JUDAH', 'LION', 'LORD\'S', 'ABRAHAM', 'GOD\'S', 'FATHER\'S',
+                               'ELIJAH' 'MARTHA', 'CHRISTMAS', 'ALPHA', 'OMEGA'):
                 text_arr[i] = text_arr[i].capitalize()
             else:
                 text_arr[i] = text_arr[i].lower()

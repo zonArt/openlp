@@ -36,14 +36,14 @@ from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        'remotes/twelve hour': True,
-        'remotes/port': 4316,
-        'remotes/https port': 4317,
-        'remotes/https enabled': False,
-        'remotes/user id': 'openlp',
-        'remotes/password': 'password',
-        'remotes/authentication enabled': False,
-        'remotes/ip address': '0.0.0.0'
+    'remotes/twelve hour': True,
+    'remotes/port': 4316,
+    'remotes/https port': 4317,
+    'remotes/https enabled': False,
+    'remotes/user id': 'openlp',
+    'remotes/password': 'password',
+    'remotes/authentication enabled': False,
+    'remotes/ip address': '0.0.0.0'
 }
 
 

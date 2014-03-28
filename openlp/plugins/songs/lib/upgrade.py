@@ -82,4 +82,3 @@ def upgrade_3(session, metadata):
         op.add_column('songs', Column('temporary', types.Boolean(create_constraint=False), server_default=false()))
     else:
         op.add_column('songs', Column('temporary', types.Boolean(), server_default=false()))
-

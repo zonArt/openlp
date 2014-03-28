@@ -33,8 +33,8 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func, and_
 
 from openlp.core.common import Registry, Settings, UiStrings, translate
-from openlp.core.lib import MediaManagerItem, ItemCapabilities, ServiceItemContext, PluginStatus,\
-   check_item_selected
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, ServiceItemContext, PluginStatus, \
+    check_item_selected
 from openlp.plugins.custom.forms.editcustomform import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -105,12 +105,10 @@ class CustomMediaItem(MediaManagerItem):
         """
         Initialise the UI so it can provide Searches
         """
-        self.search_text_edit.set_search_types([(CustomSearch.Titles, ':/songs/song_search_title.png',
-                                                translate('SongsPlugin.MediaItem', 'Titles'),
-                                                translate('SongsPlugin.MediaItem', 'Search Titles...')),
-                                                (CustomSearch.Themes, ':/slides/slide_theme.png', UiStrings().Themes,
-                                                UiStrings().SearchThemes)
-                                                ])
+        self.search_text_edit.set_search_types(
+            [(CustomSearch.Titles, ':/songs/song_search_title.png', translate('SongsPlugin.MediaItem', 'Titles'),
+              translate('SongsPlugin.MediaItem', 'Search Titles...')),
+             (CustomSearch.Themes, ':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)])
         self.search_text_edit.set_current_search_type(Settings().value('%s/last search type' % self.settings_section))
         self.load_list(self.plugin.db_manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
         self.config_update()
@@ -191,10 +189,9 @@ class CustomMediaItem(MediaManagerItem):
             if QtGui.QMessageBox.question(self, UiStrings().ConfirmDelete,
                                           translate('CustomPlugin.MediaItem',
                                                     'Are you sure you want to delete the %n selected custom slide(s)?',
-                                                    '',
-                                          QtCore.QCoreApplication.CodecForTr, len(items)),
-                                          QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes
-                                                  | QtGui.QMessageBox.No),
+                                                    '', QtCore.QCoreApplication.CodecForTr, len(items)),
+                                          QtGui.QMessageBox.StandardButtons(
+                                              QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                                           QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             row_list = [item.row() for item in self.list_view.selectedIndexes()]
@@ -348,4 +345,3 @@ class CustomMediaItem(MediaManagerItem):
                                                                     func.lower(CustomSlide.text).like(search)),
                                                                 order_by_ref=CustomSlide.title)
         return [[custom.id, custom.title] for custom in search_results]
-

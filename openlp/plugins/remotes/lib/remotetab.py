@@ -225,7 +225,8 @@ class RemoteTab(SettingsTab):
                     continue
                 for address in interface.addressEntries():
                     ip = address.ip()
-                    if ip.protocol() == QtNetwork.QAbstractSocket.IPv4Protocol and ip != QtNetwork.QHostAddress.LocalHost:
+                    if ip.protocol() == QtNetwork.QAbstractSocket.IPv4Protocol and \
+                       ip != QtNetwork.QHostAddress.LocalHost:
                         return ip.toString()
         return ip_address
 
@@ -262,9 +263,9 @@ class RemoteTab(SettingsTab):
                 Settings().value(self.settings_section + '/port') != self.port_spin_box.value() or \
                 Settings().value(self.settings_section + '/https port') != self.https_port_spin_box.value() or \
                 Settings().value(self.settings_section + '/https enabled') != \
-                        self.https_settings_group_box.isChecked() or \
+                self.https_settings_group_box.isChecked() or \
                 Settings().value(self.settings_section + '/authentication enabled') != \
-                        self.user_login_group_box.isChecked():
+                self.user_login_group_box.isChecked():
             self.settings_form.register_post_process('remotes_config_updated')
         Settings().setValue(self.settings_section + '/port', self.port_spin_box.value())
         Settings().setValue(self.settings_section + '/https port', self.https_port_spin_box.value())

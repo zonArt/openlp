@@ -62,7 +62,7 @@ def init_schema(url):
                             Column('ccl_number', types.Unicode(65)),
                             Column('plugin_name', types.Unicode(20)),
                             Column('source', types.Unicode(10))
-    )
+                            )
 
     mapper(SongUsageItem, songusage_table)
 

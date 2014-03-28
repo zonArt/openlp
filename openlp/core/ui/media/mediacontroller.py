@@ -383,7 +383,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         if not is_valid:
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                translate('MediaPlugin.MediaItem', 'Unsupported File'))
+                                       translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         # dont care about actual theme, set a black background
         if controller.is_live and not controller.media_info.is_background:
@@ -402,7 +402,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         if autoplay:
             if not self.media_play(controller):
                 critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                    translate('MediaPlugin.MediaItem', 'Unsupported File'))
+                                           translate('MediaPlugin.MediaItem', 'Unsupported File'))
                 return False
         self.set_controls_visible(controller, True)
         log.debug('use %s controller' % self.current_media_players[controller.controller_type])
@@ -644,9 +644,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return
         display = self._define_display(self.live_controller)
         if self.live_controller.controller_type in self.current_media_players and \
-            self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
-            self.current_media_players[self.live_controller.controller_type].pause(display)
-            self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
+                self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
+                self.current_media_players[self.live_controller.controller_type].pause(display)
+                self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
 
     def media_blank(self, msg):
         """

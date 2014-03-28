@@ -385,10 +385,10 @@ class Ui_ThemeWizard(object):
                                QtCore.SLOT('setDisabled(bool)'))
         QtCore.QObject.connect(self.footer_position_check_box, QtCore.SIGNAL('toggled(bool)'), self.footer_y_spin_box,
                                QtCore.SLOT('setDisabled(bool)'))
-        QtCore.QObject.connect(self.footer_position_check_box, QtCore.SIGNAL('toggled(bool)'), self.footer_width_spin_box,
-                               QtCore.SLOT('setDisabled(bool)'))
-        QtCore.QObject.connect(self.footer_position_check_box, QtCore.SIGNAL('toggled(bool)'), self.footer_height_spin_box,
-                               QtCore.SLOT('setDisabled(bool)'))
+        QtCore.QObject.connect(self.footer_position_check_box, QtCore.SIGNAL('toggled(bool)'),
+                               self.footer_width_spin_box, QtCore.SLOT('setDisabled(bool)'))
+        QtCore.QObject.connect(self.footer_position_check_box, QtCore.SIGNAL('toggled(bool)'),
+                               self.footer_height_spin_box, QtCore.SLOT('setDisabled(bool)'))
 
     def retranslateUi(self, themeWizard):
         """
@@ -409,15 +409,18 @@ class Ui_ThemeWizard(object):
         self.background_combo_box.setItemText(BackgroundType.Gradient,
                                               translate('OpenLP.ThemeWizard', 'Gradient'))
         self.background_combo_box.setItemText(BackgroundType.Image, UiStrings().Image)
-        self.background_combo_box.setItemText(BackgroundType.Transparent, translate('OpenLP.ThemeWizard', 'Transparent'))
+        self.background_combo_box.setItemText(BackgroundType.Transparent,
+                                              translate('OpenLP.ThemeWizard', 'Transparent'))
         self.color_label.setText(translate('OpenLP.ThemeWizard', 'color:'))
         self.gradient_start_label.setText(translate('OpenLP.ThemeWizard', 'Starting color:'))
         self.gradient_end_label.setText(translate('OpenLP.ThemeWizard', 'Ending color:'))
         self.gradient_type_label.setText(translate('OpenLP.ThemeWizard', 'Gradient:'))
         self.gradient_combo_box.setItemText(BackgroundGradientType.Horizontal,
                                             translate('OpenLP.ThemeWizard', 'Horizontal'))
-        self.gradient_combo_box.setItemText(BackgroundGradientType.Vertical, translate('OpenLP.ThemeWizard', 'Vertical'))
-        self.gradient_combo_box.setItemText(BackgroundGradientType.Circular, translate('OpenLP.ThemeWizard', 'Circular'))
+        self.gradient_combo_box.setItemText(BackgroundGradientType.Vertical,
+                                            translate('OpenLP.ThemeWizard', 'Vertical'))
+        self.gradient_combo_box.setItemText(BackgroundGradientType.Circular,
+                                            translate('OpenLP.ThemeWizard', 'Circular'))
         self.gradient_combo_box.setItemText(BackgroundGradientType.LeftTop,
                                             translate('OpenLP.ThemeWizard', 'Top Left - Bottom Right'))
         self.gradient_combo_box.setItemText(BackgroundGradientType.LeftBottom,
@@ -486,6 +489,6 @@ class Ui_ThemeWizard(object):
         self.preview_page.setSubTitle(translate('OpenLP.ThemeWizard', 'Preview the theme and save it.'))
         self.theme_name_label.setText(translate('OpenLP.ThemeWizard', 'Theme name:'))
         # Align all QFormLayouts towards each other.
-        label_width = max(self.background_label.minimumSizeHint().width(), 
+        label_width = max(self.background_label.minimumSizeHint().width(),
                           self.horizontal_label.minimumSizeHint().width())
         self.spacer.changeSize(label_width, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
