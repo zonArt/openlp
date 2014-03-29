@@ -49,7 +49,7 @@ class EasySlidesImport(SongImport):
         """
         Initialise the class.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(EasySlidesImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         log.info('Importing EasySlides XML file %s', self.import_source)
