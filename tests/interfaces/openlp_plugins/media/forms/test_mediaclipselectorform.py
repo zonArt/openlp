@@ -56,10 +56,6 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         self.vlc_patcher.start()
         # Mock the media item
         self.mock_media_item = MagicMock()
-        # Mock media_state_wait to avoid waiting for VLC playing state
-        #self.mock_media_state_wait = patch('openlp.plugins.media.forms.mediaclipselectorform.media_state_wait')
-        #self.mock_media_state_wait.return_value = True
-        #self.mock_media_state_wait.start()
         # create form to test
         self.form = MediaClipSelectorForm(self.mock_media_item, self.main_window, None)
         mock_media_state_wait = MagicMock()
@@ -70,7 +66,6 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        #self.mock_media_state_wait.stop()
         self.vlc_patcher.stop()
         del self.form
         del self.main_window

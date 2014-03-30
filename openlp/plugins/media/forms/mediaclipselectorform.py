@@ -122,16 +122,23 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         """
         self.disable_all()
         path = self.media_path_combobox.currentText()
+        # Check if given path is non-empty and exists before starting VLC
         if path == '':
             log.debug('no given path')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm', 'No path was given'))
+            self.toggle_disable_load_media(False)
+            return
+        if not os.path.exists(path):
+            log.debug('vlc media player is none')
+            critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
+                                                         'Given path does not exists'))
             self.toggle_disable_load_media(False)
             return
         self.vlc_media = self.vlc_instance.media_new_path(path)
         if not self.vlc_media:
             log.debug('vlc media player is none')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
-                                       'An error happened during initialization of VLC player'))
+                                                         'An error happened during initialization of VLC player'))
             self.toggle_disable_load_media(False)
             return
         # put the media in the media player
@@ -141,11 +148,13 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         if self.vlc_media_player.play() < 0:
             log.debug('vlc play returned error')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
-                                       'An error happen when starting VLC player'))
+                                                         'VLC player failed playing the media'))
             self.toggle_disable_load_media(False)
             return
         self.vlc_media_player.audio_set_mute(True)
         if not self.media_state_wait(vlc.State.Playing):
+            critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
+                                                         'VLC player failed playing the media'))
             self.toggle_disable_load_media(False)
             return
         self.vlc_media_player.pause()
@@ -453,4 +462,4 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                     continue
                 dirs = os.listdir('/Volumes/' + volume)
                 if 'VIDEO_TS' in dirs:
-                    self.media_path_combobox.addItem()
+                    self.media_path_combobox.addItem('/Volumes/' + volume)
