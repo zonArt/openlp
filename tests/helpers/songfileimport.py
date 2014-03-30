@@ -89,7 +89,7 @@ class SongImportTestHelper(TestCase):
         """
         Import the given file and check that it has imported correctly
         """
-        importer = self.importer_class(self.mocked_manager)
+        importer = self.importer_class(self.mocked_manager, filenames=[source_file_name])
         importer.import_wizard = self.mocked_import_wizard
         importer.stop_import_flag = False
         importer.topics = []
