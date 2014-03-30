@@ -81,7 +81,6 @@ class Book(BaseModel):
     def __repr__(self):
         return '<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
 
-
 class MediaFile(BaseModel):
     """
     MediaFile model
