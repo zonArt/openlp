@@ -53,3 +53,31 @@ class TestUi(TestCase):
         # THEN: The wizard should have one page with a pixmap.
         self.assertEqual(1, len(wizard.pageIds()), 'The wizard should have one page.')
         self.assertIsInstance(wizard.page(0).pixmap(QtGui.QWizard.WatermarkPixmap), QtGui.QPixmap)
+
+    def test_create_button_box(self):
+        """
+        Test creating a button box for a dialog
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create the button box with five buttons
+        btnbox = create_button_box(dialog, 'my_btns', ['ok', 'save', 'cancel', 'close', 'defaults'])
+
+        # THEN: We should get a QDialogButtonBox with five buttons
+        self.assertIsInstance(btnbox, QtGui.QDialogButtonBox)
+        self.assertEqual(5, len(btnbox.buttons()))
+
+        # WHEN: We create the button box with a custom button
+        btnbox = create_button_box(dialog, 'my_btns', None, [QtGui.QPushButton('Custom')])
+        # THEN: We should get a QDialogButtonBox with one button
+        self.assertIsInstance(btnbox, QtGui.QDialogButtonBox)
+        self.assertEqual(1, len(btnbox.buttons()))
+
+        # WHEN: We create the button box with a custom button and a custom role
+        btnbox = create_button_box(dialog, 'my_btns', None,
+                                   [(QtGui.QPushButton('Help'), QtGui.QDialogButtonBox.HelpRole)])
+        # THEN: We should get a QDialogButtonBox with one button with a certain role
+        self.assertIsInstance(btnbox, QtGui.QDialogButtonBox)
+        self.assertEqual(1, len(btnbox.buttons()))
+        self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
