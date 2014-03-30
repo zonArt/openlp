@@ -28,7 +28,12 @@
 ###############################################################################
 
 import os
+if os.name == 'nt':
+    from ctypes import windll
+    import string
 import sys
+if sys.platform.startswith('linux'):
+    import dbus
 import logging
 import time
 from datetime import datetime
@@ -106,6 +111,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_position)
         self.timer.start(100)
+        self.find_optical_devices()
 
     @QtCore.pyqtSlot(bool)
     def on_load_disc_pushbutton_clicked(self, clicked):
@@ -140,6 +146,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             return
         self.vlc_media_player.audio_set_mute(True)
         if not self.media_state_wait(vlc.State.Playing):
+            self.toggle_disable_load_media(False)
             return
         self.vlc_media_player.pause()
         self.vlc_media_player.set_time(0)
@@ -217,9 +224,9 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         """
         end_time = self.end_timeedit.time()
         end_time_ms = end_time.hour() * 60 * 60 * 1000 + \
-                      end_time.minute() * 60 * 1000 + \
-                      end_time.second() * 1000 + \
-                      end_time.msec()
+            end_time.minute() * 60 * 1000 + \
+            end_time.second() * 1000 + \
+            end_time.msec()
         self.vlc_media_player.set_time(end_time_ms)
 
     @QtCore.pyqtSlot(bool)
@@ -231,9 +238,9 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         """
         start_time = self.start_timeedit.time()
         start_time_ms = start_time.hour() * 60 * 60 * 1000 + \
-                      start_time.minute() * 60 * 1000 + \
-                      start_time.second() * 1000 + \
-                      start_time.msec()
+            start_time.minute() * 60 * 1000 + \
+            start_time.second() * 1000 + \
+            start_time.msec()
         self.vlc_media_player.set_time(start_time_ms)
 
     @QtCore.pyqtSlot(int)
@@ -373,14 +380,14 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         log.debug('in on_save_pushbutton_clicked')
         start_time = self.start_timeedit.time()
         start_time_ms = start_time.hour() * 60 * 60 * 1000 + \
-                      start_time.minute() * 60 * 1000 + \
-                      start_time.second() * 1000 + \
-                      start_time.msec()
+            start_time.minute() * 60 * 1000 + \
+            start_time.second() * 1000 + \
+            start_time.msec()
         end_time = self.end_timeedit.time()
         end_time_ms = end_time.hour() * 60 * 60 * 1000 + \
-                      end_time.minute() * 60 * 1000 + \
-                      end_time.second() * 1000 + \
-                      end_time.msec()
+            end_time.minute() * 60 * 1000 + \
+            end_time.second() * 1000 + \
+            end_time.msec()
         title = self.title_combo_box.itemData(self.title_combo_box.currentIndex())
         audio_track = self.audio_tracks_combobox.itemData(self.audio_tracks_combobox.currentIndex())
         subtitle_track = self.subtitle_tracks_combobox.itemData(self.subtitle_tracks_combobox.currentIndex())
@@ -392,15 +399,58 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
     def media_state_wait(self, media_state):
         """
         Wait for the video to change its state
-        Wait no longer than 15 seconds. (loading an iso file needs a long time)
+        Wait no longer than 15 seconds. (loading an optical disc takes some time)
 
         :param media_state: VLC media state to wait for.
         :return: True if state was reached within 15 seconds, False if not or error occurred.
         """
         start = datetime.now()
-        while not media_state == self.vlc_media.get_state():
-            if self.vlc_media.get_state() == vlc.State.Error:
+        while media_state != self.vlc_media_player.get_state():
+            if self.vlc_media_player.get_state() == vlc.State.Error:
                 return False
             if (datetime.now() - start).seconds > 15:
                 return False
         return True
+
+    def find_optical_devices(self):
+        """
+        Attempt to autodetect optical devices on the computer, and add them to the media-dropdown
+        :return:
+        """
+        # Clear list first
+        self.media_path_combobox.clear()
+        # insert empty string as first item
+        self.media_path_combobox.addItem('')
+        if os.name == 'nt':
+            # use win api to fine optical drives
+            bitmask = windll.kernel32.GetLogicalDrives()
+            for letter in string.uppercase:
+                if bitmask & 1:
+                    try:
+                        type = windll.kernel32.GetDriveTypeW('%s:\\' % letter)
+                        # if type is 5, it is a cd-rom drive
+                        if type == 5:
+                            self.media_path_combobox.addItem('%s:\\' % letter)
+                    except Exception as e:
+                        log.debug("Exception while looking for optical drives: ", e)
+                bitmask >>= 1
+        elif sys.platform.startswith('linux'):
+            # Get disc devices from dbus and find the ones that are optical
+            bus = dbus.SystemBus()
+            udev_manager_obj = bus.get_object("org.freedesktop.UDisks", "/org/freedesktop/UDisks")
+            udev_manager = dbus.Interface(udev_manager_obj, 'org.freedesktop.UDisks')
+            for dev in udev_manager.EnumerateDevices():
+                device_obj = bus.get_object("org.freedesktop.UDisks", dev)
+                device_props = dbus.Interface(device_obj, dbus.PROPERTIES_IFACE)
+                if device_props.Get('org.freedesktop.UDisks.Device', "DeviceIsOpticalDisc"):
+                    self.media_path_combobox.addItem(device_props.Get('org.freedesktop.UDisks.Device', "DeviceFile"))
+        elif sys.platform.startswith('darwin'):
+            # Look for DVD folders in devices to find optical devices
+            volumes = os.listdir('/Volumes')
+            candidates = list()
+            for volume in volumes:
+                if volume.startswith('.'):
+                    continue
+                dirs = os.listdir('/Volumes/' + volume)
+                if 'VIDEO_TS' in dirs:
+                    self.media_path_combobox.addItem()
