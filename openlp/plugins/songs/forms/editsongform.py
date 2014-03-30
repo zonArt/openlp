@@ -42,7 +42,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, UiStri
 from openlp.core.lib import FileDialog, PluginStatus, MediaType, create_separated_list
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.lib import VerseType, clean_song
-from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorSong, Topic, MediaFile
+from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorSong, AuthorType, Topic, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
 from openlp.plugins.songs.forms.editsongdialog import Ui_EditSongDialog
@@ -306,9 +306,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.author_types_combo_box.clear()
         self.author_types_combo_box.addItem('')
         # Don't iterate over the dictionary to give them this specific order
-        self.author_types_combo_box.addItem(Author.Types[Author.TYPE_WORDS], Author.TYPE_WORDS)
-        self.author_types_combo_box.addItem(Author.Types[Author.TYPE_MUSIC], Author.TYPE_MUSIC)
-        self.author_types_combo_box.addItem(Author.Types[Author.TYPE_TRANSLATION], Author.TYPE_TRANSLATION)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Words], AuthorType.Words)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Music], AuthorType.Music)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Translation], AuthorType.Translation)
 
     def load_topics(self):
         """

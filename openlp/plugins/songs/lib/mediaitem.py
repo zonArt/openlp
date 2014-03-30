@@ -44,7 +44,7 @@ from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
 from openlp.plugins.songs.forms.songexportform import SongExportForm
 from openlp.plugins.songs.lib import VerseType, clean_string, delete_song
-from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
+from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
 
@@ -467,18 +467,18 @@ class SongMediaItem(MediaManagerItem):
 
         :param item: The service item to be amended
         :param song: The song to be used to generate the footer
-        :return List of all authors (only required for initial song generation)
+        :return: List of all authors (only required for initial song generation)
         """
         authors_words = []
         authors_music = []
         authors_translation = []
         authors_none = []
         for author_song in song.authors_songs:
-            if author_song.author_type == Author.TYPE_WORDS:
+            if author_song.author_type == AuthorType.Words:
                 authors_words.append(author_song.author.display_name)
-            elif author_song.author_type == Author.TYPE_MUSIC:
+            elif author_song.author_type == AuthorType.Music:
                 authors_music.append(author_song.author.display_name)
-            elif author_song.author_type == Author.TYPE_TRANSLATION:
+            elif author_song.author_type == AuthorType.Translation:
                 authors_translation.append(author_song.author.display_name)
             else:
                 authors_none.append(author_song.author.display_name)
@@ -491,11 +491,11 @@ class SongMediaItem(MediaManagerItem):
         if authors_none:
             item.raw_footer.append("%s: %s"%(translate('OpenLP.Ui', 'Written by'), create_separated_list(authors_none)))
         if authors_words:
-            item.raw_footer.append("%s: %s"%(Author.Types[Author.TYPE_WORDS], create_separated_list(authors_words)))
+            item.raw_footer.append("%s: %s"%(AuthorType.Types[AuthorType.Words], create_separated_list(authors_words)))
         if authors_music:
-            item.raw_footer.append("%s: %s"%(Author.Types[Author.TYPE_MUSIC], create_separated_list(authors_music)))
+            item.raw_footer.append("%s: %s"%(AuthorType.Types[AuthorType.Music], create_separated_list(authors_music)))
         if authors_translation:
-            item.raw_footer.append("%s: %s"%(Author.Types[Author.TYPE_TRANSLATION], create_separated_list(authors_translation)))
+            item.raw_footer.append("%s: %s"%(AuthorType.Types[AuthorType.Translation], create_separated_list(authors_translation)))
         if not authors_all: #No authors defined
             item.raw_footer.append(SongStrings.AuthorUnknown)
         item.raw_footer.append(song.copyright)

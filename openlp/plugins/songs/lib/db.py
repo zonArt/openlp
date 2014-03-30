@@ -46,18 +46,9 @@ class Author(BaseModel):
     """
     Author model
     """
-    #These types are defined by OpenLyrics: http://openlyrics.info/dataformat.html#authors
-    TYPE_WORDS = 'words'
-    TYPE_MUSIC = 'music'
-    TYPE_TRANSLATION = 'translation'
-    Types = {
-        TYPE_WORDS: translate('OpenLP.Ui', 'Words'),
-        TYPE_MUSIC: translate('OpenLP.Ui', 'Music'),
-        TYPE_TRANSLATION: translate('OpenLP.Ui', 'Translation')
-    }
     def get_display_name(self, author_type=None):
         if author_type:
-            return "%s: %s"%(self.Types[author_type], self.display_name)
+            return "%s: %s"%(AuthorType.Types[author_type], self.display_name)
         return self.display_name
 
 class AuthorSong(BaseModel):
@@ -69,6 +60,19 @@ class AuthorSong(BaseModel):
     """
     pass
 
+class AuthorType(object):
+    """
+    Enumeration for Author types.
+    They are defined by OpenLyrics: http://openlyrics.info/dataformat.html#authors
+    """
+    Words = 'words'
+    Music = 'music'
+    Translation = 'translation'
+    Types = {
+        Words: translate('OpenLP.Ui', 'Words'),
+        Music: translate('OpenLP.Ui', 'Music'),
+        Translation: translate('OpenLP.Ui', 'Translation')
+    }
 
 class Book(BaseModel):
     """
