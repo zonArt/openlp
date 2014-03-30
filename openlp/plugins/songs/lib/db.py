@@ -35,7 +35,7 @@ import re
 
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation, reconstructor
-from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func, text
 
 from openlp.core.lib.db import BaseModel, init_db
 from openlp.core.utils import get_natural_key
@@ -259,7 +259,7 @@ def init_schema(url):
         'authors_songs', metadata,
         Column('author_id', types.Integer(), ForeignKey('authors.id'), primary_key=True),
         Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
-        Column('author_type', types.String(), primary_key=True)
+        Column('author_type', types.String(), primary_key=True, nullable=False, server_default=text('""'))
     )
 
     # Definition of the "songs_topics" table

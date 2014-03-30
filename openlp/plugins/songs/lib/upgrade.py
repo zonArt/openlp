@@ -102,7 +102,8 @@ def upgrade_4(session, metadata):
     """
     Version 4 upgrade.
 
-    This upgrade adds a column for author type to the authors table
+    This upgrade adds a column for author type to the authors_songs table
     """
     op = get_upgrade_op(session)
-    op.add_column('authors_songs', Column('author_type', types.String(), primary_key=True, server_default=null()))
+    op.add_column('authors_songs', Column('author_type', types.String(), primary_key=True,
+                                          nullable=False, server_default=text('""')))

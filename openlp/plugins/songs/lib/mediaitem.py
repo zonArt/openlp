@@ -234,8 +234,8 @@ class SongMediaItem(MediaManagerItem):
             if song.temporary:
                 continue
             author_list = [author.display_name for author in song.authors]
-            song_title = str(song.title)
-            song_detail = '%s (%s)' % (song_title, create_separated_list(author_list))
+            song_detail = '%s (%s)' % (song.title, create_separated_list(author_list)) if author_list\
+                    else '%s'%song.title
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
