@@ -40,6 +40,7 @@ If you do not know/have the token, then please ask for it (e. g. IRC).
 """
 
 from optparse import OptionParser
+from requests.exceptions import HTTPError
 from subprocess import Popen, PIPE
 import sys
 import time
@@ -58,8 +59,9 @@ class OpenLPJobs(object):
     Branch_Functional = 'Branch-02-Functional-Tests'
     Branch_Interface = 'Branch-03-Interface-Tests'
     Branch_Windows = 'Branch-04-Windows_Tests'
+    Branch_PEP = 'Branch-05-Code-Analysis'
 
-    Jobs = [Branch_Pull, Branch_Functional, Branch_Interface, Branch_Windows]
+    Jobs = [Branch_Pull, Branch_Functional, Branch_Interface, Branch_Windows, Branch_PEP]
 
 
 class JenkinsTrigger(object):
@@ -113,9 +115,9 @@ class JenkinsTrigger(object):
         url = build.info['url']
         print('[%s] %s' % (result_string, url))
         # On failure open the browser.
-        if result_string == "FAILURE":
-            url += 'console'
-            Popen(('xdg-open', url), stderr=PIPE)
+        #if result_string == "FAILURE":
+        #    url += 'console'
+        #    Popen(('xdg-open', url), stderr=PIPE)
 
 
 def get_repo_name():
@@ -162,7 +164,7 @@ def main():
 
     parser = OptionParser(usage=usage)
     parser.add_option('-d', '--disable-output', dest='enable_output', action="store_false", default=True,
-                      help='Print output for the merge request.')
+                      help='Disable output.')
     parser.add_option('-b', '--open-browser', dest='open_browser', action="store_true", default=False,
                       help='Opens the jenkins page in your browser.')
     #parser.add_option('-e', '--open-browser-on-error', dest='open_browser_on_error', action="store_true", default=False,
@@ -174,14 +176,18 @@ def main():
             return
         token = args[-1]
         jenkins_trigger = JenkinsTrigger(token)
-        jenkins_trigger.trigger_build()
+        try:
+            jenkins_trigger.trigger_build()
+        except HTTPError as e:
+            print("Wrong token.")
+            return
         # Open the browser before printing the output.
         if options.open_browser:
             jenkins_trigger.open_browser()
         if options.enable_output:
             jenkins_trigger.print_output()
     else:
-        raise Exception()
+        parser.print_help()
 
 if __name__ == '__main__':
     main()
