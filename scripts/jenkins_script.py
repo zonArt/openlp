@@ -141,10 +141,9 @@ def get_repo_name():
         if 'push branch' in line:
             repo_name = line.replace('push branch: bzr+ssh://bazaar.launchpad.net/', 'lp:')
             break
-        # Check if trunk. Note, bzr info can return both 'push branch' as well as 'checkout of branch'. The later can
-        # occur before the first. So we do not want to break here to make sure we find any orrucances of
         elif 'checkout of branch' in line:
-            repo_name = line.replace('checkout of branch: bzr+ssh://bazaar.launchpad.net/+branch/', 'lp:')
+            repo_name = line.replace('checkout of branch: bzr+ssh://bazaar.launchpad.net/', 'lp:')
+            break
     repo_name = repo_name.strip('/')
 
     # Did we find the branch name?
