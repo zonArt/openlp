@@ -32,11 +32,11 @@ This script helps to trigger builds of branches. To use it you have to install t
 
     pip3 isntall jenkins-webapi
 
-You probably want to create an alias. Add this to your ~/.bashrc file and then logout and login:
+You probably want to create an alias. Add this to your ~/.bashrc file and then logout and login (to apply the alias):
 
-    alias ci="python PATH-TO-THIS-SCRIPT TOKEN"
+    alias ci="python3 ~/Projects/OpenLP/trunk/script/jenkins_script.py TOKEN"
 
-If you do not know/have the token, then please ask for it (e. g. IRC).
+You can look up the token in the Branch-01-Pull job configuration or ask in IRC.
 """
 
 from optparse import OptionParser
