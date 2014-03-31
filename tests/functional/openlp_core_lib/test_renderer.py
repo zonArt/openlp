@@ -96,7 +96,7 @@ class TestRenderer(TestCase):
         renderer = Renderer()
         given_raw_text = '{st}{r}Text text text'
         expected_tuple = ('{st}{r}Text text text{/r}{/st}', '{st}{r}',
-                          '<strong><span style="-webkit-text-fill-color:red">')
+                          '<strsong><span style="-webkit-text-fill-color:red">')
 
         # WHEN:
         result = renderer._get_start_tags(given_raw_text)
