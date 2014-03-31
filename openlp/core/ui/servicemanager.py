@@ -1487,7 +1487,6 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             if new_item:
                 self.add_service_item(new_item, replace=True)
 
-<<<<<<< TREE
     def on_service_item_rename(self):
         """
         Opens a dialog to rename the service item.
@@ -1503,10 +1502,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             self.repaint_service_list(item, -1)
             self.set_modified()
 
-    def create_custom(self):
-=======
     def create_custom(self, field=None):
->>>>>>> MERGE-SOURCE
         """
         Saves the current text item as a custom slide
         :param field:
