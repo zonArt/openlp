@@ -49,7 +49,7 @@ class TestRenderer(TestCase):
 
     def setUp(self):
         """
-        Set up the components need for all tests.
+        Set up the components need for all tests
         """
         # Mocked out desktop object
         self.desktop = MagicMock()
@@ -67,7 +67,7 @@ class TestRenderer(TestCase):
 
     def initial_renderer_test(self):
         """
-        Test the initial renderer state .
+        Test the initial renderer state
         """
         # GIVEN: A new renderer instance.
         renderer = Renderer()
@@ -77,7 +77,7 @@ class TestRenderer(TestCase):
 
     def default_screen_layout_test(self):
         """
-        Test the default layout calculations.
+        Test the default layout calculations
         """
         # GIVEN: A new renderer instance.
         renderer = Renderer()
@@ -87,3 +87,19 @@ class TestRenderer(TestCase):
         self.assertEqual(renderer.height, 768, 'The base renderer should be a live controller')
         self.assertEqual(renderer.screen_ratio, 0.75, 'The base renderer should be a live controller')
         self.assertEqual(renderer.footer_start, 691, 'The base renderer should be a live controller')
+
+    def _get_start_tags_test(self):
+        """
+        Test the _get_start_tags() method
+        """
+        # GIVEN: A new renderer instance.
+        renderer = Renderer()
+        given_raw_text = '{st}{r}Text text text'
+        expected_tuple = ('{st}{r}Text text text{/r}{/st}', '{st}{r}',
+                          '<strong><span style="-webkit-text-fill-color:red">')
+
+        # WHEN:
+        result = renderer._get_start_tags(given_raw_text)
+
+        # THEN:
+        self.assertEqual(result, expected_tuple)
