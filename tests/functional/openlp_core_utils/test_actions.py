@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,17 +29,16 @@
 """
 Package to test the openlp.core.utils.actions package.
 """
-import os
-from tempfile import mkstemp
 from unittest import TestCase
 
 from PyQt4 import QtGui, QtCore
 
 from openlp.core.common import Settings
 from openlp.core.utils import ActionList
+from tests.helpers.testmixin import TestMixin
 
 
-class TestActionList(TestCase):
+class TestActionList(TestCase, TestMixin):
     """
     Test the ActionList class
     """
@@ -49,9 +48,8 @@ class TestActionList(TestCase):
         Prepare the tests
         """
         self.action_list = ActionList.get_instance()
+        self.build_settings()
         self.settings = Settings()
-        fd, self.ini_file = mkstemp('.ini')
-        self.settings.set_filename(self.ini_file)
         self.settings.beginGroup('shortcuts')
 
     def tearDown(self):
@@ -59,7 +57,7 @@ class TestActionList(TestCase):
         Clean up
         """
         self.settings.endGroup()
-        os.unlink(self.ini_file)
+        self.destroy_settings()
 
     def test_add_action_same_parent(self):
         """

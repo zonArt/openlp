@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -26,25 +26,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-import sys
-
-from openlp.plugins.songs.lib.opensongimport import OpenSongImport
-from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib.db import init_schema
-
-import logging
-LOG_FILENAME = 'test_import_file.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
-
-from test_opensongimport import wizard_stub
-
-def test(filenames):
-    manager = Manager('songs', init_schema)
-    o = OpenSongImport(manager, filenames=filenames)
-    o.import_wizard = wizard_stub()
-    o.commit = False
-    o.do_import()
-    o.print_song()
-
-if __name__ == "__main__":
-    test(sys.argv[1:])
+"""
+The :mod:`~tests.helpers` module provides helper classes for use in the tests.
+"""

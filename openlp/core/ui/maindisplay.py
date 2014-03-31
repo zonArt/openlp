@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -38,14 +38,13 @@ Some of the code for this form is based on the examples at:
 
 import cgi
 import logging
-import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
-from openlp.core.common import Settings, translate
-from openlp.core.lib import ServiceItem, ImageSource, Registry, build_html, expand_tags, image_to_byte
+from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate
+from openlp.core.lib import ServiceItem, ImageSource, build_html, expand_tags, image_to_byte
 from openlp.core.lib.theme import BackgroundType
 
 from openlp.core.lib import ScreenList
@@ -56,22 +55,23 @@ log = logging.getLogger(__name__)
 
 class Display(QtGui.QGraphicsView):
     """
-    This is a general display screen class. Here the general display settings
-    will done. It will be used as specialized classes by Main Display and
-    Preview display.
+    This is a general display screen class. Here the general display settings will done. It will be used as
+    specialized classes by Main Display and Preview display.
     """
-    def __init__(self, parent, live, controller):
+    def __init__(self, parent):
         """
         Constructor
         """
-        if live:
+        self.is_live = False
+        if hasattr(parent, 'is_live') and parent.is_live:
+            self.is_live = True
+        if self.is_live:
             super(Display, self).__init__()
             # Overwrite the parent() method.
             self.parent = lambda: parent
         else:
             super(Display, self).__init__(parent)
-        self.is_live = live
-        self.controller = controller
+        self.controller = parent
         self.screen = {}
         # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
         # OpenGL. Only white blank screen is shown on the 2nd monitor all the
@@ -84,9 +84,7 @@ class Display(QtGui.QGraphicsView):
         """
         Set up and build the screen base
         """
-        log.debug('Start Display base setup (live = %s)' % self.is_live)
         self.setGeometry(self.screen['size'])
-        log.debug('Setup webView')
         self.web_view = QtWebKit.QWebView(self)
         self.web_view.setGeometry(0, 0, self.screen['size'].width(), self.screen['size'].height())
         self.web_view.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
@@ -107,33 +105,34 @@ class Display(QtGui.QGraphicsView):
     def resizeEvent(self, event):
         """
         React to resizing of this display
+
+        :param event: The event to be handled
         """
         self.web_view.setGeometry(0, 0, self.width(), self.height())
 
-    def is_web_loaded(self):
+    def is_web_loaded(self, field=None):
         """
         Called by webView event to show display is fully loaded
         """
-        log.debug('is web loaded')
         self.web_loaded = True
 
 
-class MainDisplay(Display):
+class MainDisplay(OpenLPMixin, Display, RegistryProperties):
     """
     This is the display screen as a specialized class from the Display class
     """
-    def __init__(self, parent, live, controller):
+    def __init__(self, parent):
         """
         Constructor
         """
-        super(MainDisplay, self).__init__(parent, live, controller)
+        super(MainDisplay, self).__init__(parent)
         self.screens = ScreenList()
         self.rebuild_css = False
         self.hide_mode = None
         self.override = {}
         self.retranslateUi()
         self.media_object = None
-        if live:
+        if self.is_live:
             self.audio_player = AudioPlayer(self)
         else:
             self.audio_player = None
@@ -164,6 +163,8 @@ class MainDisplay(Display):
     def set_transparency(self, enabled):
         """
         Set the transparency of the window
+
+        :param enabled: Is transparency enabled
         """
         if enabled:
             self.setAutoFillBackground(False)
@@ -189,7 +190,7 @@ class MainDisplay(Display):
         """
         Set up and build the output screen
         """
-        log.debug('Start MainDisplay setup (live = %s)' % self.is_live)
+        self.log_debug('Start MainDisplay setup (live = %s)' % self.is_live)
         self.screen = self.screens.current
         self.setVisible(False)
         Display.setup(self)
@@ -215,21 +216,16 @@ class MainDisplay(Display):
             service_item = ServiceItem()
             service_item.bg_image_bytes = image_to_byte(self.initial_fame)
             self.web_view.setHtml(build_html(service_item, self.screen, self.is_live, None,
-                plugins=self.plugin_manager.plugins))
-            self.__hideMouse()
-        log.debug('Finished MainDisplay setup')
+                                  plugins=self.plugin_manager.plugins))
+            self._hide_mouse()
 
     def text(self, slide, animate=True):
         """
         Add the slide text from slideController
 
-        ``slide``
-            The slide text to be displayed
-
-        ``animate``
-            Perform transitions if applicable when setting the text
+        :param slide: The slide text to be displayed
+        :param animate: Perform transitions if applicable when setting the text
         """
-        log.debug('text to display')
         # Wait for the webview to update before displaying text.
         while not self.web_loaded:
             self.application.process_events()
@@ -248,10 +244,9 @@ class MainDisplay(Display):
         """
         Display an alert.
 
-        ``text``
-            The text to be displayed.
+        :param text: The text to be displayed.
+        :param location: Where on the screen is the text to be displayed
         """
-        log.debug('alert to display')
         # First we convert <>& marks to html variants, then apply
         # formattingtags, finally we double all backslashes for JavaScript.
         text_prepared = expand_tags(cgi.escape(text)).replace('\\', '\\\\').replace('\"', '\\\"')
@@ -278,12 +273,15 @@ class MainDisplay(Display):
     def direct_image(self, path, background):
         """
         API for replacement backgrounds so Images are added directly to cache.
+
+        :param path: Path to Image
+        :param background: The background color
         """
         self.image_manager.add_image(path, ImageSource.ImagePlugin, background)
         if not hasattr(self, 'service_item'):
             return False
         self.override['image'] = path
-        self.override['theme'] = self.service_item.themedata.background_filename
+        self.override['theme'] = self.service_item.theme_data.background_filename
         self.image(path)
         # Update the preview frame.
         if self.is_live:
@@ -295,12 +293,9 @@ class MainDisplay(Display):
         Add an image as the background. The image has already been added to the
         cache.
 
-        ``path``
-            The path to the image to be displayed. **Note**, the path is only
-            passed to identify the image. If the image has changed it has to be
-            re-added to the image manager.
+        :param path: The path to the image to be displayed. **Note**, the path is only passed to identify the image.
+        If the image has changed it has to be re-added to the image manager.
         """
-        log.debug('image to display')
         image = self.image_manager.get_image_bytes(path, ImageSource.ImagePlugin)
         self.controller.media_controller.media_reset(self.controller)
         self.display_image(image)
@@ -308,6 +303,8 @@ class MainDisplay(Display):
     def display_image(self, image):
         """
         Display an image, as is.
+
+        :param image: The image to be displayed
         """
         self.setGeometry(self.screen['size'])
         if image:
@@ -318,10 +315,8 @@ class MainDisplay(Display):
 
     def reset_image(self):
         """
-        Reset the background image to the service item image. Used after the
-        image plugin has changed the background.
+        Reset the background image to the service item image. Used after the image plugin has changed the background.
         """
-        log.debug('reset_image')
         if hasattr(self, 'service_item'):
             self.display_image(self.service_item.bg_image_bytes)
         else:
@@ -336,14 +331,13 @@ class MainDisplay(Display):
         """
         Generates a preview of the image displayed.
         """
-        log.debug('preview for %s', self.is_live)
         was_visible = self.isVisible()
         self.application.process_events()
         # We must have a service item to preview.
         if self.is_live and hasattr(self, 'service_item'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
-            if self.service_item.themedata and self.service_item.themedata.display_slide_transition:
+            if self.service_item.theme_data and self.service_item.theme_data.display_slide_transition:
                 while not self.frame.evaluateJavaScript('show_text_completed()'):
                     self.application.process_events()
         # Wait for the webview to update before getting the preview.
@@ -368,10 +362,11 @@ class MainDisplay(Display):
 
     def build_html(self, service_item, image_path=''):
         """
-        Store the service_item and build the new HTML from it. Add the
-        HTML to the display
+        Store the service_item and build the new HTML from it. Add the HTML to the display
+
+        :param service_item: The Service item to be used
+        :param image_path: Where the image resides.
         """
-        log.debug('build_html')
         self.web_loaded = False
         self.initial_fame = None
         self.service_item = service_item
@@ -383,27 +378,24 @@ class MainDisplay(Display):
                 Registry().execute('video_background_replaced')
                 self.override = {}
             # We have a different theme.
-            elif self.override['theme'] != service_item.themedata.background_filename:
+            elif self.override['theme'] != service_item.theme_data.background_filename:
                 Registry().execute('live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
                 background = self.image_manager.get_image_bytes(self.override['image'], ImageSource.ImagePlugin)
-        self.set_transparency(self.service_item.themedata.background_type ==
-            BackgroundType.to_string(BackgroundType.Transparent))
-        if self.service_item.themedata.background_filename:
+        self.set_transparency(self.service_item.theme_data.background_type ==
+                              BackgroundType.to_string(BackgroundType.Transparent))
+        if self.service_item.theme_data.background_filename:
             self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(
-                self.service_item.themedata.background_filename, ImageSource.Theme
-            )
+                self.service_item.theme_data.background_filename, ImageSource.Theme)
         if image_path:
             image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
         html = build_html(self.service_item, self.screen, self.is_live, background, image_bytes,
-            plugins=self.plugin_manager.plugins)
-        log.debug('buildHtml - pre setHtml')
+                          plugins=self.plugin_manager.plugins)
         self.web_view.setHtml(html)
-        log.debug('buildHtml - post setHtml')
         if service_item.foot_text:
             self.footer(service_item.foot_text)
         # if was hidden keep it hidden
@@ -412,22 +404,24 @@ class MainDisplay(Display):
                 Registry().execute('slidecontroller_live_unblank')
             else:
                 self.hide_display(self.hide_mode)
-        self.__hideMouse()
+        self._hide_mouse()
 
     def footer(self, text):
         """
         Display the Footer
+
+        :param text: footer text to be displayed
         """
-        log.debug('footer')
         js = 'show_footer(\'' + text.replace('\\', '\\\\').replace('\'', '\\\'') + '\')'
         self.frame.evaluateJavaScript(js)
 
     def hide_display(self, mode=HideMode.Screen):
         """
-        Hide the display by making all layers transparent
-        Store the images so they can be replaced when required
+        Hide the display by making all layers transparent Store the images so they can be replaced when required
+
+        :param mode: How the screen is to be hidden
         """
-        log.debug('hide_display mode = %d', mode)
+        self.log_debug('hide_display mode = %d' % mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
             if not Settings().value('core/display on monitor'):
@@ -450,7 +444,6 @@ class MainDisplay(Display):
         Show the stored layers so the screen reappears as it was originally.
         Make the stored images None to release memory.
         """
-        log.debug('show_display')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
             if not Settings().value('core/display on monitor'):
@@ -463,7 +456,7 @@ class MainDisplay(Display):
         if self.is_live:
             Registry().execute('live_display_active')
 
-    def __hideMouse(self):
+    def _hide_mouse(self):
         """
         Hide mouse cursor when moved over display.
         """
@@ -474,68 +467,20 @@ class MainDisplay(Display):
             self.setCursor(QtCore.Qt.ArrowCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
-    def _get_plugin_manager(self):
-        """
-        Adds the Renderer to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
 
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_image_manager(self):
-        """
-        Adds the image manager to the class dynamically
-        """
-        if not hasattr(self, '_image_manager'):
-            self._image_manager = Registry().get('image_manager')
-        return self._image_manager
-
-    image_manager = property(_get_image_manager)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)
-
-
-class AudioPlayer(QtCore.QObject):
+class AudioPlayer(OpenLPMixin, QtCore.QObject):
     """
-    This Class will play audio only allowing components to work with a
-    soundtrack independent of the user interface.
+    This Class will play audio only allowing components to work with a soundtrack independent of the user interface.
     """
-    log.info('AudioPlayer Loaded')
 
     def __init__(self, parent):
         """
         The constructor for the display form.
 
-        ``parent``
-            The parent widget.
+        :param parent:  The parent widget.
         """
-        log.debug('AudioPlayer Initialisation started')
         super(AudioPlayer, self).__init__(parent)
-        self.currentIndex = -1
+        self.current_index = -1
         self.playlist = []
         self.repeat = False
         self.media_object = Phonon.MediaObject()
@@ -558,19 +503,19 @@ class AudioPlayer(QtCore.QObject):
         Just before the audio player finishes the current track, queue the next
         item in the playlist, if there is one.
         """
-        self.currentIndex += 1
-        if len(self.playlist) > self.currentIndex:
-            self.media_object.enqueue(self.playlist[self.currentIndex])
+        self.current_index += 1
+        if len(self.playlist) > self.current_index:
+            self.media_object.enqueue(self.playlist[self.current_index])
 
     def on_finished(self):
         """
         When the audio track finishes.
         """
         if self.repeat:
-            log.debug('Repeat is enabled... here we go again!')
+            self.log_debug('Repeat is enabled... here we go again!')
             self.media_object.clearQueue()
             self.media_object.clear()
-            self.currentIndex = -1
+            self.current_index = -1
             self.play()
 
     def connectVolumeSlider(self, slider):
@@ -583,7 +528,7 @@ class AudioPlayer(QtCore.QObject):
         """
         Reset the audio player, clearing the playlist and the queue.
         """
-        self.currentIndex = -1
+        self.current_index = -1
         self.playlist = []
         self.stop()
         self.media_object.clear()
@@ -592,8 +537,7 @@ class AudioPlayer(QtCore.QObject):
         """
         We want to play the file so start it
         """
-        log.debug('AudioPlayer.play() called')
-        if self.currentIndex == -1:
+        if self.current_index == -1:
             self.on_about_to_finish()
         self.media_object.play()
 
@@ -601,58 +545,59 @@ class AudioPlayer(QtCore.QObject):
         """
         Pause the Audio
         """
-        log.debug('AudioPlayer.pause() called')
         self.media_object.pause()
 
     def stop(self):
         """
         Stop the Audio and clean up
         """
-        log.debug('AudioPlayer.stop() called')
         self.media_object.stop()
 
-    def add_to_playlist(self, filenames):
+    def add_to_playlist(self, file_names):
         """
         Add another file to the playlist.
 
-        ``filenames``
-            A list with files to be added to the playlist.
+        :param file_names:  A list with files to be added to the playlist.
         """
-        if not isinstance(filenames, list):
-            filenames = [filenames]
-        self.playlist.extend(list(map(Phonon.MediaSource, filenames)))
+        if not isinstance(file_names, list):
+            file_names = [file_names]
+        self.playlist.extend(list(map(Phonon.MediaSource, file_names)))
 
     def next(self):
         """
         Skip forward to the next track in the list
         """
-        if not self.repeat and self.currentIndex + 1 >= len(self.playlist):
+        if not self.repeat and self.current_index + 1 >= len(self.playlist):
             return
-        isPlaying = self.media_object.state() == Phonon.PlayingState
-        self.currentIndex += 1
-        if self.repeat and self.currentIndex == len(self.playlist):
-            self.currentIndex = 0
+        is_playing = self.media_object.state() == Phonon.PlayingState
+        self.current_index += 1
+        if self.repeat and self.current_index == len(self.playlist):
+            self.current_index = 0
         self.media_object.clearQueue()
         self.media_object.clear()
-        self.media_object.enqueue(self.playlist[self.currentIndex])
-        if isPlaying:
+        self.media_object.enqueue(self.playlist[self.current_index])
+        if is_playing:
             self.media_object.play()
 
     def go_to(self, index):
         """
         Go to a particular track in the list
+
+        :param index: The track to go to
         """
-        isPlaying = self.media_object.state() == Phonon.PlayingState
+        is_playing = self.media_object.state() == Phonon.PlayingState
         self.media_object.clearQueue()
         self.media_object.clear()
-        self.currentIndex = index
-        self.media_object.enqueue(self.playlist[self.currentIndex])
-        if isPlaying:
+        self.current_index = index
+        self.media_object.enqueue(self.playlist[self.current_index])
+        if is_playing:
             self.media_object.play()
 
     def connectSlot(self, signal, slot):
         """
         Connect a slot to a signal on the media object.  Used by slidecontroller to connect to audio object.
+
+        :param slot: The slot the signal is attached to.
+        :param signal: The signal to be fired
         """
         QtCore.QObject.connect(self.media_object, signal, slot)
-

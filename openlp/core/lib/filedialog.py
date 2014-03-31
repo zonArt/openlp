@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,35 +27,40 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.plugins.songs.lib.opensongimport import OpenSongImport
-from openlp.plugins.songs.lib.db import init_schema
-from openlp.core.lib.db import Manager
-import os
-import codecs
-
+"""
+Provide a work around for a bug in QFileDialog <https://bugs.launchpad.net/openlp/+bug/1209515>
+"""
 import logging
-LOG_FILENAME = 'import.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
+import os
+from urllib import parse
 
-from test_opensongimport import wizard_stub
+from PyQt4 import QtGui
 
-# Useful test function for importing a variety of different files
-# Uncomment below depending on what problem trying to make occur!
+from openlp.core.common import UiStrings
 
-def opensong_import_lots():
-    ziploc = '/home/mjt/openlp/OpenSong_Data/'
-    files = []
-    files = [os.path.join(ziploc, 'RaoulSongs', 'Songs', 'Jesus Freak')]
-    # files.extend(glob(ziploc+u'Songs.zip'))
-    # files.extend(glob(ziploc+u'RaoulSongs.zip'))
-    # files.extend(glob(ziploc+u'SOF.zip'))
-    # files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
-    # files.extend(glob(ziploc+u'opensong_*.zip'))
-    errfile = codecs.open('import_lots_errors.txt', 'w', 'utf8')
-    manager = Manager('songs', init_schema)
-    o = OpenSongImport(manager, filenames=files)
-    o.import_wizard=wizard_stub()
-    o.do_import()
+log = logging.getLogger(__name__)
 
-if __name__ == "__main__":
-    opensong_import_lots()
+
+class FileDialog(QtGui.QFileDialog):
+    """
+    Subclass QFileDialog to work round a bug
+    """
+    @staticmethod
+    def getOpenFileNames(parent, *args, **kwargs):
+        """
+        Reimplement getOpenFileNames to fix the way it returns some file names that url encoded when selecting multiple
+        files
+        """
+        files = QtGui.QFileDialog.getOpenFileNames(parent, *args, **kwargs)
+        file_list = []
+        for file in files:
+            if not os.path.exists(file):
+                log.info('File not found. Attempting to unquote.')
+                file = parse.unquote(file)
+                if not os.path.exists(file):
+                    log.error('File %s not found.' % file)
+                    QtGui.QMessageBox.information(parent, UiStrings().FileNotFound,
+                                                  UiStrings().FileNotFoundMessage % file)
+                    continue
+            file_list.append(file)
+        return file_list

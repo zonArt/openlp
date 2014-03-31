@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,13 +29,14 @@
 """
 Package to test the openlp.core.lib package.
 """
+import os
 from unittest import TestCase
 
 from sqlalchemy.pool import NullPool
 from sqlalchemy.orm.scoping import ScopedSession
 from sqlalchemy import MetaData
 
-from openlp.core.lib.db import init_db, get_upgrade_op
+from openlp.core.lib.db import init_db, get_upgrade_op, delete_database
 from tests.functional import patch, MagicMock
 
 
@@ -110,3 +111,44 @@ class TestDB(TestCase):
             mocked_session.bind.connect.assert_called_with()
             MockedMigrationContext.configure.assert_called_with(mocked_connection)
             MockedOperations.assert_called_with(mocked_context)
+
+    def delete_database_without_db_file_name_test(self):
+        """
+        Test that the ``delete_database`` function removes a database file, without the file name parameter
+        """
+        # GIVEN: Mocked out AppLocation class and delete_file method, a test plugin name and a db location
+        with patch('openlp.core.lib.db.AppLocation') as MockedAppLocation, \
+                patch('openlp.core.lib.db.delete_file') as mocked_delete_file:
+            MockedAppLocation.get_section_data_path.return_value = 'test-dir'
+            mocked_delete_file.return_value = True
+            test_plugin = 'test'
+            test_location = os.path.join('test-dir', test_plugin)
+
+            # WHEN: delete_database is run without a database file
+            result = delete_database(test_plugin)
+
+            # THEN: The AppLocation.get_section_data_path and delete_file methods should have been called
+            MockedAppLocation.get_section_data_path.assert_called_with(test_plugin)
+            mocked_delete_file.assert_called_with(test_location)
+            self.assertTrue(result, 'The result of delete_file should be True (was rigged that way)')
+
+    def delete_database_with_db_file_name_test(self):
+        """
+        Test that the ``delete_database`` function removes a database file, with the file name supplied
+        """
+        # GIVEN: Mocked out AppLocation class and delete_file method, a test plugin name and a db location
+        with patch('openlp.core.lib.db.AppLocation') as MockedAppLocation, \
+                patch('openlp.core.lib.db.delete_file') as mocked_delete_file:
+            MockedAppLocation.get_section_data_path.return_value = 'test-dir'
+            mocked_delete_file.return_value = False
+            test_plugin = 'test'
+            test_db_file = 'mydb.sqlite'
+            test_location = os.path.join('test-dir', test_db_file)
+
+            # WHEN: delete_database is run without a database file
+            result = delete_database(test_plugin, test_db_file)
+
+            # THEN: The AppLocation.get_section_data_path and delete_file methods should have been called
+            MockedAppLocation.get_section_data_path.assert_called_with(test_plugin)
+            mocked_delete_file.assert_called_with(test_location)
+            self.assertFalse(result, 'The result of delete_file should be False (was rigged that way)')

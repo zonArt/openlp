@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,10 +32,10 @@ Package to test the openlp.core.lib package.
 import os
 from unittest import TestCase
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from tests.functional import MagicMock
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../', '..', 'resources'))
 
 
 class TestRegistry(TestCase):
@@ -59,22 +59,18 @@ class TestRegistry(TestCase):
         with self.assertRaises(KeyError) as context:
             Registry().register('test1', mock_1)
         self.assertEqual(context.exception.args[0], 'Duplicate service exception test1',
-            'KeyError exception should have been thrown for duplicate service')
+                         'KeyError exception should have been thrown for duplicate service')
 
         # WHEN I try to get back a non existent component
         # THEN I will get an exception
-        with self.assertRaises(KeyError) as context:
-            temp = Registry().get('test2')
-        self.assertEqual(context.exception.args[0], 'Service test2 not found in list',
-            'KeyError exception should have been thrown for missing service')
+        temp = Registry().get('test2')
+        self.assertEqual(temp, None, 'None should have been returned for missing service')
 
         # WHEN I try to replace a component I should be allowed (testing only)
         Registry().remove('test1')
         # THEN I will get an exception
-        with self.assertRaises(KeyError) as context:
-            temp = Registry().get('test1')
-        self.assertEqual(context.exception.args[0], 'Service test1 not found in list',
-            'KeyError exception should have been thrown for deleted service')
+        temp = Registry().get('test1')
+        self.assertEqual(temp, None, 'None should have been returned for deleted service')
 
     def registry_function_test(self):
         """

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -45,11 +45,12 @@ class FormattingTagController(object):
         """
         Initiator
         """
-        self.html_tag_regex = re.compile(r'<(?:(?P<close>/(?=[^\s/>]+>))?'
-        r'(?P<tag>[^\s/!\?>]+)(?:\s+[^\s=]+="[^"]*")*\s*(?P<empty>/)?'
-        r'|(?P<cdata>!\[CDATA\[(?:(?!\]\]>).)*\]\])'
-        r'|(?P<procinst>\?(?:(?!\?>).)*\?)'
-        r'|(?P<comment>!--(?:(?!-->).)*--))>', re.UNICODE)
+        self.html_tag_regex = re.compile(
+            r'<(?:(?P<close>/(?=[^\s/>]+>))?'
+            r'(?P<tag>[^\s/!\?>]+)(?:\s+[^\s=]+="[^"]*")*\s*(?P<empty>/)?'
+            r'|(?P<cdata>!\[CDATA\[(?:(?!\]\]>).)*\]\])'
+            r'|(?P<procinst>\?(?:(?!\?>).)*\?)'
+            r'|(?P<comment>!--(?:(?!-->).)*--))>', re.UNICODE)
         self.html_regex = re.compile(r'^(?:[^<>]*%s)*[^<>]*$' % self.html_tag_regex.pattern)
 
     def pre_save(self):
@@ -76,12 +77,12 @@ class FormattingTagController(object):
             The end html tag.
 
         """
-        for linenumber, html1 in enumerate(self.protected_tags):
+        for line_number, html1 in enumerate(self.protected_tags):
             if self._strip(html1['start tag']) == tag:
                 return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
             if self._strip(html1['desc']) == desc:
                 return translate('OpenLP.FormattingTagForm', 'Description %s already defined.') % tag
-        for linenumber, html1 in enumerate(self.custom_tags):
+        for line_number, html1 in enumerate(self.custom_tags):
             if self._strip(html1['start tag']) == tag:
                 return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
             if self._strip(html1['desc']) == desc:
@@ -172,5 +173,5 @@ class FormattingTagController(object):
             return None, end
         if end and end != end_html:
             return translate('OpenLP.FormattingTagForm',
-                'End tag %s does not match end tag for start tag %s' % (end, start_html)), None
+                             'End tag %s does not match end tag for start tag %s' % (end, start_html)), None
         return None, None

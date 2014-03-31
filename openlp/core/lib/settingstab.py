@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -35,10 +35,10 @@ own tab to the settings dialog.
 from PyQt4 import QtGui
 
 
-from openlp.core.lib import Registry
+from openlp.core.common import RegistryProperties
 
 
-class SettingsTab(QtGui.QWidget):
+class SettingsTab(QtGui.QWidget, RegistryProperties):
     """
     SettingsTab is a helper widget for plugins to define Tabs for the settings dialog.
     """
@@ -46,11 +46,10 @@ class SettingsTab(QtGui.QWidget):
         """
         Constructor to create the Settings tab item.
 
-        ``title``
-            The title of the tab, which is used internally for the tab handling.
-
-        ``visible_title``
-            The title of the tab, which is usually displayed on the tab.
+        :param parent:
+        :param title: The title of the tab, which is used internally for the tab handling.
+        :param visible_title: The title of the tab, which is usually displayed on the tab.
+        :param icon_path:
         """
         super(SettingsTab, self).__init__(parent)
         self.tab_title = title
@@ -125,13 +124,11 @@ class SettingsTab(QtGui.QWidget):
         """
         self.load()
 
-    def post_set_up(self, postUpdate=False):
+    def post_set_up(self, post_update=False):
         """
         Changes which need to be made after setup of application
 
-        ``postUpdate``
-            Indicates if called before or after updates.
-
+        :param post_update: Indicates if called before or after updates.
         """
         pass
 
@@ -140,63 +137,3 @@ class SettingsTab(QtGui.QWidget):
         Tab has just been made visible to the user
         """
         self.tab_visited = True
-
-    def _get_service_manager(self):
-        """
-        Adds the service manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_renderer(self):
-        """
-        Adds the Renderer to the class dynamically
-        """
-        if not hasattr(self, '_renderer'):
-            self._renderer = Registry().get('renderer')
-        return self._renderer
-
-    renderer = property(_get_renderer)
-
-    def _get_theme_manager(self):
-        """
-        Adds the theme manager to the class dynamically
-        """
-        if not hasattr(self, '_theme_manager'):
-            self._theme_manager = Registry().get('theme_manager')
-        return self._theme_manager
-
-    theme_manager = property(_get_theme_manager)
-
-    def _get_media_controller(self):
-        """
-        Adds the media controller to the class dynamically
-        """
-        if not hasattr(self, '_media_controller'):
-            self._media_controller = Registry().get('media_controller')
-        return self._media_controller
-
-    media_controller = property(_get_media_controller)
-
-    def _get_settings_form(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_settings_form'):
-            self._settings_form = Registry().get('settings_form')
-        return self._settings_form
-
-    settings_form = property(_get_settings_form)

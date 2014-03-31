@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -62,9 +62,11 @@ class TestTheme(TestCase):
 
         # THEN: We should get some default behaviours
         self.assertTrue(default_theme.background_border_color == '#000000', 'The theme should have a black border')
-        self.assertTrue(default_theme.background_type == 'solid', 'There theme should have a solid backgrounds')
+        self.assertTrue(default_theme.background_type == 'solid', 'The theme should have a solid backgrounds')
         self.assertTrue(default_theme.display_vertical_align == 0,
-            'There theme should have display_vertical_align of 0')
+                        'The theme should have a display_vertical_align of 0')
         self.assertTrue(default_theme.font_footer_name == "Arial",
-            'There theme should has font_footer_name of Arial')
-        self.assertTrue(default_theme.font_main_bold is False, 'There theme should has font_main_bold of false')
+                        'The theme should have a font_footer_name of Arial')
+        self.assertTrue(default_theme.font_main_bold is False, 'The theme should have a font_main_bold of false')
+        self.assertTrue(len(default_theme.__dict__) == 47, 'The theme should have 47 variables')
+

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,8 +31,8 @@ from PyQt4 import QtGui
 
 import logging
 
-from openlp.core.common import Settings, translate
-from openlp.core.lib import Plugin, StringContent, Registry, ImageSource, build_icon
+from openlp.core.common import Registry, Settings, translate
+from openlp.core.lib import Plugin, StringContent, ImageSource, build_icon
 from openlp.core.lib.db import Manager
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 from openlp.plugins.images.lib.db import init_schema
@@ -57,16 +57,16 @@ class ImagePlugin(Plugin):
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
-            '<br />The image plugin provides displaying of images.<br />One '
-            'of the distinguishing features of this plugin is the ability to '
-            'group a number of images together in the service manager, making '
-            'the displaying of multiple images easier. This plugin can also '
-            'make use of OpenLP\'s "timed looping" feature to create a slide '
-            'show that runs automatically. In addition to this, images from '
-            'the plugin can be used to override the current theme\'s '
-            'background, which renders text-based items like songs with the '
-            'selected image as a background instead of the background '
-            'provided by the theme.')
+                               '<br />The image plugin provides displaying of images.<br />One '
+                               'of the distinguishing features of this plugin is the ability to '
+                               'group a number of images together in the service manager, making '
+                               'the displaying of multiple images easier. This plugin can also '
+                               'make use of OpenLP\'s "timed looping" feature to create a slide '
+                               'show that runs automatically. In addition to this, images from '
+                               'the plugin can be used to override the current theme\'s '
+                               'background, which renders text-based items like songs with the '
+                               'selected image as a background instead of the background '
+                               'provided by the theme.')
         return about_text
 
     def app_startup(self):
@@ -84,8 +84,7 @@ class ImagePlugin(Plugin):
         """
         Upgrade the settings of this plugin.
 
-        ``settings``
-            The Settings object containing the old settings.
+        :param settings: The Settings object containing the old settings.
         """
         files_from_config = settings.get_files_from_config(self)
         if files_from_config:
@@ -124,13 +123,3 @@ class ImagePlugin(Plugin):
         log.info('Images config_update')
         background = QtGui.QColor(Settings().value(self.settings_section + '/background color'))
         self.image_manager.update_images_border(ImageSource.ImagePlugin, background)
-
-    def _get_image_manager(self):
-        """
-        Adds the image manager to the class dynamically
-        """
-        if not hasattr(self, '_image_manager'):
-            self._image_manager = Registry().get('image_manager')
-        return self._image_manager
-
-    image_manager = property(_get_image_manager)

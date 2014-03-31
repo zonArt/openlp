@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.common import translate
 from openlp.core.lib.ui import create_button_box
 
+
 class Ui_BookNameDialog(object):
     def setupUi(self, book_name_dialog):
         book_name_dialog.setObjectName('book_name_dialog')
@@ -48,15 +49,15 @@ class Ui_BookNameDialog(object):
         self.corresponding_layout.setColumnStretch(1, 1)
         self.corresponding_layout.setSpacing(8)
         self.corresponding_layout.setObjectName('corresponding_layout')
-        self.currentLabel = QtGui.QLabel(book_name_dialog)
-        self.currentLabel.setObjectName('currentLabel')
-        self.corresponding_layout.addWidget(self.currentLabel, 0, 0, 1, 1)
+        self.current_label = QtGui.QLabel(book_name_dialog)
+        self.current_label.setObjectName('current_label')
+        self.corresponding_layout.addWidget(self.current_label, 0, 0, 1, 1)
         self.current_book_label = QtGui.QLabel(book_name_dialog)
         self.current_book_label.setObjectName('current_book_label')
         self.corresponding_layout.addWidget(self.current_book_label, 0, 1, 1, 1)
-        self.correspondingLabel = QtGui.QLabel(book_name_dialog)
-        self.correspondingLabel.setObjectName('correspondingLabel')
-        self.corresponding_layout.addWidget(self.correspondingLabel, 1, 0, 1, 1)
+        self.corresponding_label = QtGui.QLabel(book_name_dialog)
+        self.corresponding_label.setObjectName('corresponding_label')
+        self.corresponding_layout.addWidget(self.corresponding_label, 1, 0, 1, 1)
         self.corresponding_combo_box = QtGui.QComboBox(book_name_dialog)
         self.corresponding_combo_box.setObjectName('corresponding_combo_box')
         self.corresponding_layout.addWidget(self.corresponding_combo_box, 1, 1, 1, 1)
@@ -87,11 +88,11 @@ class Ui_BookNameDialog(object):
 
     def retranslateUi(self, book_name_dialog):
         book_name_dialog.setWindowTitle(translate('BiblesPlugin.BookNameDialog', 'Select Book Name'))
-        self.info_label.setText(translate('BiblesPlugin.BookNameDialog',
-            'The following book name cannot be matched up internally. '
-            'Please select the corresponding name from the list.'))
-        self.currentLabel.setText(translate('BiblesPlugin.BookNameDialog', 'Current name:'))
-        self.correspondingLabel.setText(translate('BiblesPlugin.BookNameDialog', 'Corresponding name:'))
+        self.info_label.setText(
+            translate('BiblesPlugin.BookNameDialog', 'The following book name cannot be matched up internally. '
+                      'Please select the corresponding name from the list.'))
+        self.current_label.setText(translate('BiblesPlugin.BookNameDialog', 'Current name:'))
+        self.corresponding_label.setText(translate('BiblesPlugin.BookNameDialog', 'Corresponding name:'))
         self.options_group_box.setTitle(translate('BiblesPlugin.BookNameDialog', 'Show Books From'))
         self.old_testament_check_box.setText(translate('BiblesPlugin.BookNameDialog', 'Old Testament'))
         self.new_testament_check_box.setText(translate('BiblesPlugin.BookNameDialog', 'New Testament'))

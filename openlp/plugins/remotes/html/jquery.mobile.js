@@ -2485,7 +2485,7 @@ $.mobile.transitionFallbacks = {};
 				return path.stripHash( newPath ).replace( /[^\/]*\.[^\/*]+$/, '' );
 			},
 
-			//return the substring of a filepath before the sub-page key, for making a server request
+			//return the substring of a file_path before the sub-page key, for making a server request
 			getFilePath: function( path ) {
 				var splitkey = '&' + $.mobile.subPageUrlKey;
 				return path && path.split( splitkey )[0].split( dialogHashKey )[0];

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -124,13 +124,22 @@ from urllib.parse import urlparse, parse_qs
 from mako.template import Template
 from PyQt4 import QtCore
 
-from openlp.core.common import AppLocation, Settings, translate
-from openlp.core.lib import Registry, PluginStatus, StringContent, image_to_byte
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, translate
+from openlp.core.lib import PluginStatus, StringContent, image_to_byte
 
 log = logging.getLogger(__name__)
+FILE_TYPES = {
+    '.html': 'text/html',
+    '.css': 'text/css',
+    '.js': 'application/javascript',
+    '.jpg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.ico': 'image/x-icon',
+    '.png': 'image/png'
+}
 
 
-class HttpRouter(object):
+class HttpRouter(RegistryProperties):
     """
     This code is called by the HttpServer upon a request and it processes it based on the routing table.
     This code is stateless and is created on each request.
@@ -199,11 +208,8 @@ class HttpRouter(object):
         """
         Invoke the route function passing the relevant values
 
-        ``function``
-            The function to be calledL.
-
-        ``*args``
-            Any passed data.
+        :param function: The function to be called.
+        :param args: Any passed data.
         """
         response = function['function'](*args)
         if response:
@@ -214,11 +220,8 @@ class HttpRouter(object):
         """
         Common function to process HTTP requests
 
-        ``url_path``
-            The requested URL.
-
-        ``*args``
-            Any passed data.
+        :param url_path: The requested URL.
+        :param args: Any passed data.
         """
         self.request_data = None
         url_path_split = urlparse(url_path)
@@ -346,30 +349,13 @@ class HttpRouter(object):
         path = os.path.normpath(os.path.join(self.html_dir, file_name))
         if not path.startswith(self.html_dir):
             return self.do_not_found()
-        ext = os.path.splitext(file_name)[1]
-        html = None
-        if ext == '.html':
-            self.send_header('Content-type', 'text/html')
-            variables = self.template_vars
-            html = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
-        elif ext == '.css':
-            self.send_header('Content-type', 'text/css')
-        elif ext == '.js':
-            self.send_header('Content-type', 'application/javascript')
-        elif ext == '.jpg':
-            self.send_header('Content-type', 'image/jpeg')
-        elif ext == '.gif':
-            self.send_header('Content-type', 'image/gif')
-        elif ext == '.ico':
-            self.send_header('Content-type', 'image/x-icon')
-        elif ext == '.png':
-            self.send_header('Content-type', 'image/png')
-        else:
-            self.send_header('Content-type', 'text/plain')
+        content = None
+        ext, content_type = self.get_content_type(path)
         file_handle = None
         try:
-            if html:
-                content = html
+            if ext == '.html':
+                variables = self.template_vars
+                content = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
             else:
                 file_handle = open(path, 'rb')
                 log.debug('Opened %s' % path)
@@ -380,7 +366,20 @@ class HttpRouter(object):
         finally:
             if file_handle:
                 file_handle.close()
+        self.send_response(200)
+        self.send_header('Content-type', content_type)
+        self.end_headers()
         return content
+
+    def get_content_type(self, file_name):
+        """
+        Examines the extension of the file and determines what the content_type should be, defaults to text/plain
+        Returns the extension and the content_type
+        """
+        content_type = 'text/plain'
+        ext = os.path.splitext(file_name)[1]
+        content_type = FILE_TYPES.get(ext, 'text/plain')
+        return ext, content_type
 
     def poll(self):
         """
@@ -426,8 +425,7 @@ class HttpRouter(object):
         Hide or show the display screen.
         This is a cross Thread call and UI is updated so Events need to be used.
 
-        ``action``
-            This is the action, either ``hide`` or ``show``.
+        :param action: This is the action, either ``hide`` or ``show``.
         """
         self.live_controller.emit(QtCore.SIGNAL('slidecontroller_toggle_display'), action)
         self.do_json_header()
@@ -483,11 +481,8 @@ class HttpRouter(object):
         """
         Perform an action on the slide controller.
 
-        ``display_type``
-            This is the type of slide controller, either ``preview`` or ``live``.
-
-        ``action``
-            The action to perform.
+        :param display_type: This is the type of slide controller, either ``preview`` or ``live``.
+        :param action: The action to perform.
         """
         event = 'slidecontroller_%s_%s' % (display_type, action)
         if self.request_data:
@@ -508,8 +503,6 @@ class HttpRouter(object):
         """
         Handles requests for service items in the service manager
 
-        ``action``
-            The action to perform.
         """
         self.do_json_header()
         return json.dumps({'results': {'items': self._get_service_items()}}).encode()
@@ -518,8 +511,7 @@ class HttpRouter(object):
         """
         Handles requests for service items in the service manager
 
-        ``action``
-            The action to perform.
+        :param action: The action to perform.
         """
         event = 'servicemanager_%s_item' % action
         if self.request_data:
@@ -537,9 +529,7 @@ class HttpRouter(object):
         """
         Return plugin related information, based on the action.
 
-        ``action``
-            The action to perform. If *search* return a list of plugin names
-            which support search.
+        :param action: The action to perform. If *search* return a list of plugin names which support search.
         """
         if action == 'search':
             searches = []
@@ -553,8 +543,7 @@ class HttpRouter(object):
         """
         Return a list of items that match the search text.
 
-        ``plugin``
-            The plugin name to search in.
+        :param plugin_name: The plugin name to search in.
         """
         try:
             text = json.loads(self.request_data)['request']['text']
@@ -595,43 +584,3 @@ class HttpRouter(object):
             item_id = plugin.media_item.create_item_from_id(id)
             plugin.media_item.emit(QtCore.SIGNAL('%s_add_to_service' % plugin_name), [item_id, True])
         self.do_http_success()
-
-    def _get_service_manager(self):
-        """
-        Adds the service manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_alerts_manager(self):
-        """
-        Adds the alerts manager to the class dynamically
-        """
-        if not hasattr(self, '_alerts_manager'):
-            self._alerts_manager = Registry().get('alerts_manager')
-        return self._alerts_manager
-
-    alerts_manager = property(_get_alerts_manager)

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -52,8 +52,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         """
         Execute the dialog.
 
-        ``clear``
-            Clear the form fields before displaying the dialog.
+        :param clear: Clear the form fields before displaying the dialog.
         """
         if clear:
             self.first_name_edit.clear()
@@ -69,8 +68,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         When the first name is edited and the setting to automatically create a display name is True, then try to create
         a display name from the first and last names.
 
-        ``display_name``
-            The text from the first_name_edit widget.
+        :param display_name: The text from the first_name_edit widget.
         """
         if not self.auto_display_name:
             return
@@ -85,8 +83,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         When the last name is edited and the setting to automatically create a display name is True, then try to create
         a display name from the first and last names.
 
-        ``display_name``
-            The text from the last_name_edit widget.
+        :param display_name: The text from the last_name_edit widget.
         """
         if not self.auto_display_name:
             return
@@ -111,8 +108,8 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         elif not self.display_edit.text():
             if critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm',
-                    'You have not set a display name for the author, combine the first and last names?'),
-                parent=self, question=True) == QtGui.QMessageBox.Yes:
+                                  'You have not set a display name for the author, combine the first and last names?'),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                 self.display_edit.setText(self.first_name_edit.text() + ' ' + self.last_name_edit.text())
                 return QtGui.QDialog.accept(self)
             else:

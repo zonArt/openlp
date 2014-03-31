@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -71,10 +71,10 @@ class SongsTab(SettingsTab):
         self.mode_group_box.setTitle(translate('SongsPlugin.SongsTab', 'Songs Mode'))
         self.search_as_type_check_box.setText(translate('SongsPlugin.SongsTab', 'Enable search as you type'))
         self.tool_bar_active_check_box.setText(translate('SongsPlugin.SongsTab',
-            'Display verses on live tool bar'))
+                                                         'Display verses on live tool bar'))
         self.update_on_edit_check_box.setText(translate('SongsPlugin.SongsTab', 'Update service from song edit'))
         self.add_from_service_check_box.setText(translate('SongsPlugin.SongsTab',
-            'Import missing songs from service files'))
+                                                          'Import missing songs from service files'))
 
     def on_search_as_type_check_box_changed(self, check_state):
         self.song_search = (check_state == QtCore.Qt.Checked)

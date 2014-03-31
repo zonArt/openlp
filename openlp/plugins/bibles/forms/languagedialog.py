@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,6 +32,7 @@ from PyQt4 import QtGui
 from openlp.core.common import translate
 from openlp.core.lib.ui import create_button_box
 
+
 class Ui_LanguageDialog(object):
     def setupUi(self, language_dialog):
         language_dialog.setObjectName('language_dialog')
@@ -54,11 +55,11 @@ class Ui_LanguageDialog(object):
         self.language_label.setObjectName('language_label')
         self.language_h_box_layout.addWidget(self.language_label)
         self.language_combo_box = QtGui.QComboBox(language_dialog)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.language_combo_box.sizePolicy().hasHeightForWidth())
-        self.language_combo_box.setSizePolicy(sizePolicy)
+        size_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.language_combo_box.sizePolicy().hasHeightForWidth())
+        self.language_combo_box.setSizePolicy(size_policy)
         self.language_combo_box.setObjectName('language_combo_box')
         self.language_h_box_layout.addWidget(self.language_combo_box)
         self.language_layout.addLayout(self.language_h_box_layout)
@@ -70,7 +71,8 @@ class Ui_LanguageDialog(object):
     def retranslateUi(self, language_dialog):
         language_dialog.setWindowTitle(translate('BiblesPlugin.LanguageDialog', 'Select Language'))
         self.bible_label.setText(translate('BiblesPlugin.LanguageDialog', ''))
-        self.info_label.setText(translate('BiblesPlugin.LanguageDialog',
-            'OpenLP is unable to determine the language of this translation of the Bible. Please select the language '
-            'from the list below.'))
+        self.info_label.setText(
+            translate('BiblesPlugin.LanguageDialog',
+                      'OpenLP is unable to determine the language of this translation of the Bible. Please select '
+                      'the language from the list below.'))
         self.language_label.setText(translate('BiblesPlugin.LanguageDialog', 'Language:'))

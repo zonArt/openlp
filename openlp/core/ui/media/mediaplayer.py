@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,14 +31,13 @@ The :mod:`~openlp.core.ui.media.mediaplayer` module contains the MediaPlayer cla
 """
 import os
 
-from openlp.core.lib import Registry
+from openlp.core.common import RegistryProperties
 from openlp.core.ui.media import MediaState
 
 
-class MediaPlayer(object):
+class MediaPlayer(RegistryProperties):
     """
-    This is the base class media Player class to provide OpenLP with a
-    pluggable media display framework.
+    This is the base class media Player class to provide OpenLP with a pluggable media display framework.
     """
 
     def __init__(self, parent, name='media_player'):
@@ -152,17 +151,3 @@ class MediaPlayer(object):
         Returns Information about the player
         """
         return ''
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)
