@@ -45,7 +45,6 @@ import sys
 import time
 
 from jenkins import Jenkins
-from PyQt4 import QtCore, QtGui
 
 
 JENKINS_URL = 'http://ci.openlp.org/'
