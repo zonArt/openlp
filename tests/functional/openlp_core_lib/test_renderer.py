@@ -104,3 +104,18 @@ class TestRenderer(TestCase):
         # THEN: Check if the correct tuple is returned.
         self.assertEqual(result, expected_tuple), 'A tuple should be returned '
         '(fixed-text, opening tags, html opening tags).'
+
+    def _word_split_test(self):
+        """
+        Test the _word_split() method
+        """
+        # GIVEN: A line of text
+        renderer = Renderer()
+        given_line = 'beginning asdf \n end asdf'
+        expected_words = ['beginning', 'asdf', 'end', 'asdf']
+
+        # WHEN: Split the line
+        result_words = renderer._words_split(given_line)
+
+        # THEN: The word lists should be the same.
+        self.assertListEqual(result_words, expected_words)
