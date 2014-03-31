@@ -34,7 +34,7 @@ This script helps to trigger builds of branches. To use it you have to install t
 
 You probably want to create an alias. Add this to your ~/.bashrc file and then logout and login (to apply the alias):
 
-    alias ci="python3 ~/Projects/OpenLP/trunk/script/jenkins_script.py TOKEN"
+    alias ci="python3 ./scripts/jenkins_script.py TOKEN"
 
 You can look up the token in the Branch-01-Pull job configuration or ask in IRC.
 """
