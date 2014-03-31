@@ -92,7 +92,7 @@ class TestRenderer(TestCase):
         """
         Test the _get_start_tags() method
         """
-        # GIVEN: A new renderer instance.
+        # GIVEN: A new renderer instance. Broken raw_text (missing closing tags).
         renderer = Renderer()
         given_raw_text = '{st}{r}Text text text'
         expected_tuple = ('{st}{r}Text text text{/r}{/st}', '{st}{r}',

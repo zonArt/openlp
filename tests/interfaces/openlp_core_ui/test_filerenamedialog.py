@@ -62,7 +62,6 @@ class TestStartFileRenameForm(TestCase, TestMixin):
         """
         Test the windowTitle of the FileRenameDialog
         """
-        assert False, "reason"
         # GIVEN: A mocked QDialog.exec_() method
         with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
 
