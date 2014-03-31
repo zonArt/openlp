@@ -167,8 +167,8 @@ def main():
                       help='Disable output.')
     parser.add_option('-b', '--open-browser', dest='open_browser', action="store_true", default=False,
                       help='Opens the jenkins page in your browser.')
-    #parser.add_option('-e', '--open-browser-on-error', dest='open_browser_on_error', action="store_true", default=False,
-    #                  help='Opens the jenkins page in your browser in case a test fails.')
+    #parser.add_option('-e', '--open-browser-on-error', dest='open_browser_on_error', action="store_true",
+    #                  default=False, help='Opens the jenkins page in your browser in case a test fails.')
     options, args = parser.parse_args(sys.argv)
 
     if len(args) == 2:
