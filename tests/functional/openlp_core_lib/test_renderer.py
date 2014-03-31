@@ -119,3 +119,5 @@ class TestRenderer(TestCase):
 
         # THEN: The word lists should be the same.
         self.assertListEqual(result_words, expected_words)
+
+        pep_error = 'sdfjalksdjfl kajsdlfj lkasdjflkjaslkdjlkasjdljklsdjflkajsdljalksdflkajsdlfj laskdflkjsdlfkjaslkdflksajdlfk'
