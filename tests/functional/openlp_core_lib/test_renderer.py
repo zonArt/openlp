@@ -96,10 +96,11 @@ class TestRenderer(TestCase):
         renderer = Renderer()
         given_raw_text = '{st}{r}Text text text'
         expected_tuple = ('{st}{r}Text text text{/r}{/st}', '{st}{r}',
-                          '<strsong><span style="-webkit-text-fill-color:red">')
+                          '<strong><span style="-webkit-text-fill-color:red">')
 
         # WHEN:
         result = renderer._get_start_tags(given_raw_text)
 
-        # THEN:
-        self.assertEqual(result, expected_tuple)
+        # THEN: Check if the correct tuple is returned.
+        self.assertEqual(result, expected_tuple), 'A tuple should be returned '
+        '(fixed-text, opening tags, html opening tags).'
