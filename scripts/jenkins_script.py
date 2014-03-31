@@ -30,7 +30,7 @@
 """
 This script helps to trigger builds of branches. To use it you have to install the jenkins-webapi package:
 
-    pip3 isntall jenkins-webapi
+    pip3 install jenkins-webapi
 
 You probably want to create an alias. Add this to your ~/.bashrc file and then logout and login (to apply the alias):
 

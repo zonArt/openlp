@@ -151,6 +151,7 @@ class Registry(object):
                     if result:
                         results.append(result)
                 except TypeError:
+                    print("sdf")
                     # Who has called me can help in debugging
                     trace_error_handler(log)
                     log.exception('Exception for function %s', function)
