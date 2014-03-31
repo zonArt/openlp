@@ -98,7 +98,7 @@ class TestLib(TestCase):
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal((self.song1, self.song2))
 
-        # THEN: The result should be True.
+        # THEN: The result should be a tuple..
         assert result == (self.song1, self.song2), 'The result should be the tuble of songs'
 
     def songs_probably_equal_short_song_test(self):
@@ -112,7 +112,7 @@ class TestLib(TestCase):
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal((self.song1, self.song2))
 
-        # THEN: The result should be True.
+        # THEN: The result should be a tuple..
         assert result == (self.song1, self.song2), 'The result should be the tuble of songs'
 
     def songs_probably_equal_error_song_test(self):
@@ -126,7 +126,7 @@ class TestLib(TestCase):
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal((self.song1, self.song2))
 
-        # THEN: The result should be True.
+        # THEN: The result should be a tuple of songs..
         assert result == (self.song1, self.song2), 'The result should be the tuble of songs'
 
     def songs_probably_equal_different_song_test(self):
@@ -140,7 +140,7 @@ class TestLib(TestCase):
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal((self.song1, self.song2))
 
-        # THEN: The result should be False.
+        # THEN: The result should be Nonw.
         assert result is None, 'The result should be None'
 
     def remove_typos_beginning_test(self):
