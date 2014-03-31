@@ -181,5 +181,4 @@ class SearchEdit(QtGui.QLineEdit):
         for action in self.menu_button.menu().actions():
             # Why is this needed?
             action.setChecked(False)
-        sender = self.sender()
-        self.set_current_search_type(sender.data())
+        self.set_current_search_type(self.sender().data())
