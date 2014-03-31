@@ -83,9 +83,8 @@ class Ui_ExceptionDialog(object):
         self.attach_tile_button = create_button(exception_dialog, 'attach_tile_button',
                                                 icon=':/general/general_open.png',
                                                 click=self.on_attach_file_button_clicked)
-        self.button_box = create_button_box(exception_dialog, 'button_box',
-                                            ['close'], [self.send_report_button,
-                                            self.save_report_button, self.attach_tile_button])
+        self.button_box = create_button_box(exception_dialog, 'button_box', ['close'],
+                                            [self.send_report_button, self.save_report_button, self.attach_tile_button])
         self.exception_layout.addWidget(self.button_box)
 
         self.retranslateUi(exception_dialog)

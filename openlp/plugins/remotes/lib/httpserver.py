@@ -144,6 +144,3 @@ class HTTPSServer(HTTPServer):
             server_side=True)
         self.server_bind()
         self.server_activate()
-
-
-

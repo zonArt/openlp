@@ -31,6 +31,7 @@ Package to test the openlp.core.lib.pluginmanager package.
 """
 import sys
 import shutil
+import gc
 from tempfile import mkdtemp
 from unittest import TestCase
 
@@ -65,6 +66,9 @@ class TestPluginManager(TestCase, TestMixin):
         del self.main_window
         Settings().remove('advanced/data path')
         self.destroy_settings()
+        # On windows we need to manually garbage collect to close sqlalchemy files
+        # to avoid errors when temporary files are deleted.
+        gc.collect()
         shutil.rmtree(self.temp_dir)
 
     def find_plugins_test(self):

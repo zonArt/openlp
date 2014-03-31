@@ -549,4 +549,3 @@ def delete_song(song_id, song_plugin):
     except OSError:
         log.exception('Could not remove directory: %s', save_path)
     song_plugin.manager.delete_object(Song, song_id)
-

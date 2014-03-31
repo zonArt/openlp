@@ -117,7 +117,9 @@ is the function which has to be called from outside. The generated and returned 
             display: table-cell;
             word-wrap: break-word;
             -webkit-transition: opacity 0.4s ease;
-            white-space:pre-wrap; word-wrap: break-word; text-align: left; vertical-align: top; font-family: Nimbus Sans L; font-size: 40pt; color: #FFFFFF; line-height: 100%; margin: 0;padding: 0; padding-bottom: 0; padding-left: 4px; width: 1580px; height: 810px;
+            white-space:pre-wrap; word-wrap: break-word; text-align: left; vertical-align: top; font-family: Nimbus
+            Sans L; font-size: 40pt; color: #FFFFFF; line-height: 100%; margin: 0;padding: 0; padding-bottom: 0;
+            padding-left: 4px; width: 1580px; height: 810px;
         }
         .lyricsmain {
              -webkit-text-stroke: 0.125em #000000; -webkit-text-fill-color: #FFFFFF;  text-shadow: #000000 5px 5px;
@@ -720,12 +722,12 @@ def build_lyrics_format_css(theme_data, width, height):
     else:
         padding_bottom = '0'
     lyrics = '%s word-wrap: break-word; ' \
-        'text-align: %s; vertical-align: %s; font-family: %s; ' \
-        'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
-        'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx; height: %spx; ' % \
+             'text-align: %s; vertical-align: %s; font-family: %s; ' \
+             'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
+             'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx; height: %spx; ' % \
         (justify, align, valign, theme_data.font_main_name, theme_data.font_main_size,
-        theme_data.font_main_color, 100 + int(theme_data.font_main_line_adjustment), padding_bottom,
-        left_margin, width, height)
+         theme_data.font_main_color, 100 + int(theme_data.font_main_line_adjustment), padding_bottom,
+         left_margin, width, height)
     if theme_data.font_main_italics:
         lyrics += 'font-style:italic; '
     if theme_data.font_main_bold:

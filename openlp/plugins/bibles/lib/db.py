@@ -80,23 +80,20 @@ def init_schema(url):
 
     meta_table = Table('metadata', metadata,
                        Column('key', types.Unicode(255), primary_key=True, index=True),
-                       Column('value', types.Unicode(255)),
-    )
+                       Column('value', types.Unicode(255)),)
 
     book_table = Table('book', metadata,
                        Column('id', types.Integer, primary_key=True),
                        Column('book_reference_id', types.Integer, index=True),
                        Column('testament_reference_id', types.Integer),
-                       Column('name', types.Unicode(50), index=True),
-    )
+                       Column('name', types.Unicode(50), index=True),)
     verse_table = Table('verse', metadata,
                         Column('id', types.Integer, primary_key=True, index=True),
                         Column('book_id', types.Integer, ForeignKey(
                             'book.id'), index=True),
                         Column('chapter', types.Integer, index=True),
                         Column('verse', types.Integer, index=True),
-                        Column('text', types.UnicodeText, index=True),
-    )
+                        Column('text', types.UnicodeText, index=True),)
 
     try:
         class_mapper(BibleMeta)
@@ -225,7 +222,8 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
 
         :param book_id: The id of the book being appended.
         :param chapter: The chapter number.
-        :param text_list: A dict of the verses to be inserted. The key is the verse number, and the value is the verse text.
+        :param text_list: A dict of the verses to be inserted. The key is the verse number, and the value is the
+        verse text.
         """
         log.debug('BibleDBcreate_chapter("%s", "%s")', book_id, chapter)
         # Text list has book and chapter as first two elements of the array.
@@ -437,7 +435,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         """
         log.debug('BibleDB.get_chapter_count("%s")', book.name)
         count = self.session.query(func.max(Verse.chapter)).join(Book).filter(
-            Book.book_reference_id==book.book_reference_id).scalar()
+            Book.book_reference_id == book.book_reference_id).scalar()
         if not count:
             return 0
         return count
@@ -718,8 +716,8 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         if not isinstance(source, str):
             source = str(source)
         source = BiblesResourcesDB.get_download_source(source)
-        bibles = BiblesResourcesDB.run_sql('SELECT id, name, abbreviation, '
-            'language_id, download_source_id FROM webbibles WHERE download_source_id = ?', (source['id'],))
+        bibles = BiblesResourcesDB.run_sql('SELECT id, name, abbreviation, language_id, download_source_id '
+                                           'FROM webbibles WHERE download_source_id = ?', (source['id'],))
         if bibles:
             return [{
                 'id': bible[0],
@@ -824,10 +822,9 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         log.debug('BiblesResourcesDB.get_testament_reference()')
         testaments = BiblesResourcesDB.run_sql('SELECT id, name FROM testament_reference ORDER BY id')
         return [
-            {
-            'id': testament[0],
-            'name': str(testament[1])
-            }
+            {'id': testament[0],
+             'name': str(testament[1])
+             }
             for testament in testaments
         ]
 
@@ -934,7 +931,7 @@ class OldBibleDB(QtCore.QObject, Manager):
         QtCore.QObject.__init__(self)
         if 'path' not in kwargs:
             raise KeyError('Missing keyword argument "path".')
-        if  'file' not in kwargs:
+        if 'file' not in kwargs:
             raise KeyError('Missing keyword argument "file".')
         if 'path' in kwargs:
             self.path = kwargs['path']

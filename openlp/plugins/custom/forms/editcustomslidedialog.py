@@ -33,6 +33,7 @@ from openlp.core.common import UiStrings, translate
 from openlp.core.lib import SpellTextEdit
 from openlp.core.lib.ui import create_button, create_button_box
 
+
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, custom_slide_edit_dialog):
         custom_slide_edit_dialog.setObjectName('custom_slide_edit_dialog')
@@ -45,7 +46,7 @@ class Ui_CustomSlideEditDialog(object):
         self.insert_button = create_button(custom_slide_edit_dialog, 'insertButton',
                                            icon=':/general/general_add.png')
         self.button_box = create_button_box(custom_slide_edit_dialog, 'button_box', ['cancel', 'save'],
-            [self.split_button, self.insert_button])
+                                            [self.split_button, self.insert_button])
         self.dialog_layout.addWidget(self.button_box)
         self.retranslateUi(custom_slide_edit_dialog)
 

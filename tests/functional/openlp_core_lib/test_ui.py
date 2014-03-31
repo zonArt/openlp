@@ -26,25 +26,30 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-import sys
+"""
+Package to test the openlp.core.lib.ui package.
+"""
+from PyQt4 import QtGui
+from unittest import TestCase
 
-from openlp.plugins.songs.lib.opensongimport import OpenSongImport
-from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib.db import init_schema
+from openlp.core.lib.ui import *
 
-import logging
-LOG_FILENAME = 'test_import_file.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
-from test_opensongimport import wizard_stub
+class TestUi(TestCase):
+    """
+    Test the functions in the ui module
+    """
 
-def test(filenames):
-    manager = Manager('songs', init_schema)
-    o = OpenSongImport(manager, filenames=filenames)
-    o.import_wizard = wizard_stub()
-    o.commit = False
-    o.do_import()
-    o.print_song()
+    def test_add_welcome_page(self):
+        """
+        Test appending a welcome page to a wizard
+        """
+        # GIVEN: A wizard
+        wizard = QtGui.QWizard()
 
-if __name__ == "__main__":
-    test(sys.argv[1:])
+        # WHEN: A welcome page has been added to the wizard
+        add_welcome_page(wizard, ':/wizards/wizard_firsttime.bmp')
+
+        # THEN: The wizard should have one page with a pixmap.
+        self.assertEqual(1, len(wizard.pageIds()), 'The wizard should have one page.')
+        self.assertIsInstance(wizard.page(0).pixmap(QtGui.QWizard.WatermarkPixmap), QtGui.QPixmap)

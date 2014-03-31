@@ -72,13 +72,18 @@ USER_AGENTS = {
         'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.71 Safari/537.36'
     ],
     'darwin': [
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.43 Safari/537.31',
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11',
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.47 Safari/536.11',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.31 (KHTML, like Gecko) '
+        'Chrome/26.0.1410.43 Safari/537.31',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/536.11 (KHTML, like Gecko) '
+        'Chrome/20.0.1132.57 Safari/536.11',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/536.11 (KHTML, like Gecko) '
+        'Chrome/20.0.1132.47 Safari/536.11',
     ],
     'linux2': [
-        'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.22 (KHTML, like Gecko) Ubuntu Chromium/25.0.1364.160 Chrome/25.0.1364.160 Safari/537.22',
-        'Mozilla/5.0 (X11; CrOS armv7l 2913.260.0) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.99 Safari/537.11',
+        'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.22 (KHTML, like Gecko) Ubuntu Chromium/25.0.1364.160 '
+        'Chrome/25.0.1364.160 Safari/537.22',
+        'Mozilla/5.0 (X11; CrOS armv7l 2913.260.0) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.99 '
+        'Safari/537.11',
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.27 (KHTML, like Gecko) Chrome/26.0.1389.0 Safari/537.27'
     ],
     'default': [
@@ -144,9 +149,9 @@ def get_application_version():
         # If they are equal, then this tree is tarball with the source for the release. We do not want the revision
         # number in the full version.
         if tree_revision == tag_revision:
-            full_version =  tag_version
+            full_version = tag_version
         else:
-            full_version =  '%s-bzr%s' % (tag_version, tree_revision)
+            full_version = '%s-bzr%s' % (tag_version, tree_revision)
     else:
         # We're not running the development version, let's use the file.
         filepath = AppLocation.get_directory(AppLocation.VersionDir)

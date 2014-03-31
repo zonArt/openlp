@@ -601,4 +601,3 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         :param signal: The signal to be fired
         """
         QtCore.QObject.connect(self.media_object, signal, slot)
-

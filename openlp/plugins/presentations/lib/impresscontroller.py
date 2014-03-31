@@ -29,7 +29,8 @@
 
 # OOo API documentation:
 # http://api.openoffice.org/docs/common/ref/com/sun/star/presentation/XSlideShowController.html
-# http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Basic/Getting_Information_about_UNO_Objects#Inspecting_interfaces_during_debugging
+# http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Basic
+#                          /Getting_Information_about_UNO_Objects#Inspecting_interfaces_during_debugging
 # http://docs.go-oo.org/sd/html/classsd_1_1SlideShow.html
 # http://www.oooforum.org/forum/viewtopic.phtml?t=5252
 # http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/Working_with_Presentations
@@ -45,6 +46,7 @@ if os.name == 'nt':
     from win32com.client import Dispatch
     import pywintypes
     # Declare an empty exception to match the exception imported from UNO
+
     class ErrorCodeIOException(Exception):
         pass
 else:
@@ -204,7 +206,7 @@ class ImpressDocument(PresentationDocument):
     Class which holds information and controls a single presentation.
     """
 
-    def __init__ (self, controller, presentation):
+    def __init__(self, controller, presentation):
         """
         Constructor, store information about the file and initialise.
         """
@@ -353,7 +355,7 @@ class ImpressDocument(PresentationDocument):
         log.debug('unblank screen OpenOffice')
         return self.control.resume()
 
-    def blank_screen (self):
+    def blank_screen(self):
         """
         Blanks the screen.
         """

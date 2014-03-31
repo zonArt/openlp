@@ -204,4 +204,3 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                                           QtGui.QMessageBox.Ok)
             #self.tag_table_widget.selectRow(pre_row - 1)
             self.tag_table_widget.resizeRowsToContents()
-
