@@ -441,18 +441,20 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                         if type == 5:
                             self.media_path_combobox.addItem('%s:\\' % letter)
                     except Exception as e:
-                        log.debug("Exception while looking for optical drives: ", e)
+                        log.debug('Exception while looking for optical drives: ', e)
                 bitmask >>= 1
         elif sys.platform.startswith('linux'):
             # Get disc devices from dbus and find the ones that are optical
             bus = dbus.SystemBus()
-            udev_manager_obj = bus.get_object("org.freedesktop.UDisks", "/org/freedesktop/UDisks")
+            udev_manager_obj = bus.get_object('org.freedesktop.UDisks', '/org/freedesktop/UDisks')
             udev_manager = dbus.Interface(udev_manager_obj, 'org.freedesktop.UDisks')
             for dev in udev_manager.EnumerateDevices():
                 device_obj = bus.get_object("org.freedesktop.UDisks", dev)
                 device_props = dbus.Interface(device_obj, dbus.PROPERTIES_IFACE)
-                if device_props.Get('org.freedesktop.UDisks.Device', "DeviceIsOpticalDisc"):
-                    self.media_path_combobox.addItem(device_props.Get('org.freedesktop.UDisks.Device', "DeviceFile"))
+                if device_props.Get('org.freedesktop.UDisks.Device', 'DeviceIsDrive'):
+                    drive_props = device_props.Get('org.freedesktop.UDisks.Device', 'DriveMediaCompatibility')
+                    if any('optical' in prop for prop in drive_props):
+                        self.media_path_combobox.addItem(device_props.Get('org.freedesktop.UDisks.Device', 'DeviceFile'))
         elif sys.platform.startswith('darwin'):
             # Look for DVD folders in devices to find optical devices
             volumes = os.listdir('/Volumes')
