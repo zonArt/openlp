@@ -56,29 +56,27 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 log = logging.getLogger(__name__)
 
 MEDIA_MANAGER_STYLE = """
-  QToolBox {
+QToolBox {
     padding-bottom: 2px;
-  }
-  QToolBox::tab {
+}
+QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(button), stop: 0.5 palette(button),
-        stop: 1.0 palette(mid));
-    border: 1px groove palette(mid);
-    border-radius: 5px;
-  }
-  QToolBox::tab:selected {
+        stop: 0 palette(button), stop: 1.0 palette(mid));
+    border: 1px solid palette(mid);
+    border-radius: 3px;
+}
+QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(light), stop: 0.5 palette(midlight),
-        stop: 1.0 palette(dark));
-    border: 1px groove palette(dark);
+        stop: 0 palette(light), stop: 1.0 palette(button));
+    border: 1px solid palette(mid);
     font-weight: bold;
-  }
+}
 """
 
 PROGRESSBAR_STYLE = """
-    QProgressBar{
-       height: 10px;
-    }
+QProgressBar{
+    height: 10px;
+}
 """
 
 
