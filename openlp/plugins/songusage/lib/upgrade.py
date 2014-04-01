@@ -30,10 +30,14 @@
 The :mod:`upgrade` module provides a way for the database and schema that is the
 backend for the SongsUsage plugin
 """
-from openlp.core.lib.db import get_upgrade_op
+import logging
 
+from sqlalchemy.exc import OperationalError
 from sqlalchemy import Column, types
 
+from openlp.core.lib.db import get_upgrade_op
+
+log = logging.getLogger(__name__)
 __version__ = 1
 
 
@@ -42,7 +46,13 @@ def upgrade_1(session, metadata):
     Version 1 upgrade.
 
     This upgrade adds two new fields to the songusage database
+
+    :param session: SQLAlchemy Session object
+    :param metadata: SQLAlchemy MetaData object
     """
-    op = get_upgrade_op(session)
-    op.add_column('songusage_data', Column('plugin_name', types.Unicode(20), server_default=''))
-    op.add_column('songusage_data', Column('source', types.Unicode(10), server_default=''))
+    try:
+        op = get_upgrade_op(session)
+        op.add_column('songusage_data', Column('plugin_name', types.Unicode(20), server_default=''))
+        op.add_column('songusage_data', Column('source', types.Unicode(10), server_default=''))
+    except OperationalError:
+        log.info('Upgrade 1 has already taken place')
