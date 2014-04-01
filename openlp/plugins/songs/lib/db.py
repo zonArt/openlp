@@ -48,8 +48,9 @@ class Author(BaseModel):
     """
     def get_display_name(self, author_type=None):
         if author_type:
-            return "%s: %s"%(AuthorType.Types[author_type], self.display_name)
+            return "%s: %s" % (AuthorType.Types[author_type], self.display_name)
         return self.display_name
+
 
 class AuthorSong(BaseModel):
     """
@@ -59,6 +60,7 @@ class AuthorSong(BaseModel):
     http://docs.sqlalchemy.org/en/latest/orm/relationships.html#association-object
     """
     pass
+
 
 class AuthorType(object):
     """
@@ -74,12 +76,14 @@ class AuthorType(object):
         Translation: translate('OpenLP.Ui', 'Translation')
     }
 
+
 class Book(BaseModel):
     """
     Book model
     """
     def __repr__(self):
         return '<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
+
 
 class MediaFile(BaseModel):
     """

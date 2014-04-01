@@ -234,8 +234,7 @@ class SongMediaItem(MediaManagerItem):
             if song.temporary:
                 continue
             author_list = [author.display_name for author in song.authors]
-            song_detail = '%s (%s)' % (song.title, create_separated_list(author_list)) if author_list\
-                    else '%s'%song.title
+            song_detail = '%s (%s)' % (song.title, create_separated_list(author_list)) if author_list else song.title
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
@@ -489,14 +488,18 @@ class SongMediaItem(MediaManagerItem):
         item.raw_footer = []
         item.raw_footer.append(song.title)
         if authors_none:
-            item.raw_footer.append("%s: %s"%(translate('OpenLP.Ui', 'Written by'), create_separated_list(authors_none)))
+            item.raw_footer.append("%s: %s" % (translate('OpenLP.Ui', 'Written by'),
+                                               create_separated_list(authors_none)))
         if authors_words:
-            item.raw_footer.append("%s: %s"%(AuthorType.Types[AuthorType.Words], create_separated_list(authors_words)))
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Words],
+                                               create_separated_list(authors_words)))
         if authors_music:
-            item.raw_footer.append("%s: %s"%(AuthorType.Types[AuthorType.Music], create_separated_list(authors_music)))
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Music],
+                                               create_separated_list(authors_music)))
         if authors_translation:
-            item.raw_footer.append("%s: %s"%(AuthorType.Types[AuthorType.Translation], create_separated_list(authors_translation)))
-        if not authors_all: #No authors defined
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Translation],
+                                               create_separated_list(authors_translation)))
+        if not authors_all:  # No authors defined
             item.raw_footer.append(SongStrings.AuthorUnknown)
         item.raw_footer.append(song.copyright)
         if Settings().value('core/ccli number'):

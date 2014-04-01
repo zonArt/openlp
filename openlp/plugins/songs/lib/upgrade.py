@@ -98,6 +98,7 @@ def upgrade_3(session, metadata):
     except OperationalError:
         log.info('Upgrade 3 has already been run')
 
+
 def upgrade_4(session, metadata):
     """
     Version 4 upgrade.
