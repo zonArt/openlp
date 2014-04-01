@@ -597,10 +597,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             args = []
             for a in self.arguments:
                 args.extend([a])
-            filename = args[0]
-            if not isinstance(filename, str):
-                filename = str(filename, sys.getfilesystemencoding())
-            self.service_manager_contents.load_file(filename)
+            for arg in args:
+                filename = arg
+                if not isinstance(filename, str):
+                    filename = str(filename, sys.getfilesystemencoding())
+                if filename.endswith(('.osz', '.oszl', '.otz')):
+                    self.service_manager_contents.load_file(filename)
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_Last_file()
         self.timer_version_id = self.startTimer(1000)
