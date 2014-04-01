@@ -107,7 +107,7 @@ class ItemCapabilities(object):
 
     ``CanAutoStartForLive``
             The capability to ignore the do not play if display blank flag.
-    
+
     ``CanEditTitle``
             The capability to edit the title of the item
 
