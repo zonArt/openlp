@@ -74,6 +74,9 @@ def check_directory_exists(directory, do_not_log=False):
 def get_frozen_path(frozen_option, non_frozen_option):
     """
     Return a path based on the system status.
+
+    :param frozen_option:
+    :param non_frozen_option:
     """
     if hasattr(sys, 'frozen') and sys.frozen == 1:
         return frozen_option
