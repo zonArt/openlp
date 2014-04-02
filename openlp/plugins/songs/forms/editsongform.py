@@ -217,8 +217,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         if self.authors_list_view.count() == 0:
             self.song_tab_widget.setCurrentIndex(1)
             self.authors_list_view.setFocus()
-            critical_error_message_box(
-            message=translate('SongsPlugin.EditSongForm', 'You need to have an author for this song.'))
+            critical_error_message_box(message=translate('SongsPlugin.EditSongForm',
+                                                         'You need to have an author for this song.'))
             return False
         if self.verse_order_edit.text():
             result = self._validate_verse_list(self.verse_order_edit.text(), self.verse_list_widget.rowCount())
