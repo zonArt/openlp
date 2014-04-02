@@ -85,4 +85,3 @@ class TestMainWindow(TestCase, TestMixin):
 
             # THEN: The current widget should have been set.
             self.main_window.media_tool_box.setCurrentIndex.assert_called_with(2)
-

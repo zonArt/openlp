@@ -129,7 +129,8 @@ class TestSongShowPlusImport(TestCase):
             importer = SongShowPlusImport(mocked_manager, filenames=[])
 
             # WHEN: Supplied with the following arguments replicating verses being added
-            test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
+            test_values = [
+                ('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
                 ('Verse 2', VerseType.tags[VerseType.Verse] + '2'),
                 ('verse1', VerseType.tags[VerseType.Verse] + '1'),
                 ('Verse', VerseType.tags[VerseType.Verse] + '1'),
@@ -156,7 +157,8 @@ class TestSongShowPlusImport(TestCase):
             importer = SongShowPlusImport(mocked_manager, filenames=[])
 
             # WHEN: Supplied with the following arguments replicating a verse order being added
-            test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
+            test_values = [
+                ('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
                 ('Verse 2', VerseType.tags[VerseType.Verse] + '2'),
                 ('verse1', VerseType.tags[VerseType.Verse] + '1'),
                 ('Verse', VerseType.tags[VerseType.Verse] + '1'),

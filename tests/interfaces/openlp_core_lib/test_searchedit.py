@@ -133,5 +133,3 @@ class TestSearchEdit(TestCase, TestMixin):
         Just check if the resizeEvent() method is re-implemented.
         """
         assert hasattr(self.search_edit, "resizeEvent"), "The search edit should re-implement the resizeEvent method."
-
-        
