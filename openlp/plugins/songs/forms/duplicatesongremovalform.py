@@ -244,7 +244,7 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
         self.break_search = True
         self.plugin.media_item.on_search_text_button_clicked()
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set default form values for the song import wizard.
         """

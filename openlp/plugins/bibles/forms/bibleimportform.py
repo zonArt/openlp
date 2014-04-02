@@ -465,7 +465,7 @@ class BibleImportForm(OpenLPWizard):
         self.license_details_page.registerField('license_copyright', self.copyright_edit)
         self.license_details_page.registerField('license_permissions', self.permissions_edit)
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set default values for the wizard pages.
         """

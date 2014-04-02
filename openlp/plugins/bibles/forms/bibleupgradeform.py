@@ -307,7 +307,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if self.currentPage() == self.progress_page:
             return True
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set default values for the wizard pages.
         """
