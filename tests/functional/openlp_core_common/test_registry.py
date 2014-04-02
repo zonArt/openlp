@@ -100,6 +100,20 @@ class TestRegistry(TestCase):
         # THEN: I expect then function to have been called and a return given
         self.assertEqual(return_value[0], 'function_2', 'A return value is provided and matches')
 
+    def remove_function_test(self):
+        """
+        Test the remove_function() method
+        """
+        # GIVEN: An existing registry register a function
+        Registry.create()
+        Registry().register_function('test1', self.dummy_function_1)
+
+        # WHEN: Remove the function.
+        Registry().remove_function('test1', self.dummy_function_1)
+
+        # THEN: The method should not be available.
+        assert not Registry().functions_list['test1'], 'The function should not be in the dict anymore.'
+
     def dummy_function_1(self):
         return "function_1"
 
