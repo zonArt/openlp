@@ -49,6 +49,7 @@ from jenkins import Jenkins
 
 
 JENKINS_URL = 'http://ci.openlp.org/'
+REPO_REGEX = r'(.*+)(~.*)'
 
 
 class OpenLPJobs(object):
@@ -107,8 +108,7 @@ class JenkinsTrigger(object):
         """
         job = self.jenkins_instance.job(job_name)
         while job.info['inQueue']:
-            # Give other processes the possibility to take over. Like Thread.yield().
-            time.sleep(0)
+            time.sleep(1)
         build = job.last_build
         build.wait()
         result_string = build.info['result']
@@ -137,12 +137,9 @@ def get_repo_name():
     # Determine the branch's name
     repo_name = ''
     for line in output_list:
-        # Check if it is remote branch.
-        if 'push branch' in line:
-            repo_name = line.replace('push branch: bzr+ssh://bazaar.launchpad.net/', 'lp:')
-            break
-        elif 'checkout of branch' in line:
-            repo_name = line.replace('checkout of branch: bzr+ssh://bazaar.launchpad.net/', 'lp:')
+        match = re.match(REPO_REGEX, line)
+        if match:
+            repo_name = 'lp:%s' % match.group(2)
             break
     repo_name = repo_name.strip('/')
 
