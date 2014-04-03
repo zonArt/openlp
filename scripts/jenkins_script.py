@@ -40,6 +40,7 @@ You can look up the token in the Branch-01-Pull job configuration or ask in IRC.
 """
 
 from optparse import OptionParser
+import re
 from requests.exceptions import HTTPError
 from subprocess import Popen, PIPE
 import sys
@@ -137,10 +138,17 @@ def get_repo_name():
     # Determine the branch's name
     repo_name = ''
     for line in output_list:
-        match = re.match(REPO_REGEX, line)
-        if match:
-            repo_name = 'lp:%s' % match.group(2)
-            break
+        # Check if it is remote branch.
+        if 'push branch' in line:
+            match = re.match(REPO_REGEX, line)
+            if match:
+                repo_name = 'lp:%s' % match.group(2)
+                break
+        elif 'checkout of branch' in line:
+            match = re.match(REPO_REGEX, line)
+            if match:
+                repo_name = 'lp:%s' % match.group(2)
+                break
     repo_name = repo_name.strip('/')
 
     # Did we find the branch name?
