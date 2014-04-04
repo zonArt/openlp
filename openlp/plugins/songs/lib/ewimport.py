@@ -91,17 +91,24 @@ class EasyWorshipSongImport(SongImport):
         Import the songs from service file
         The full spec of the ews files can be found here:
         https://github.com/meinders/lithium-ews/blob/master/docs/ews%20file%20format.md
+        or here: http://wiki.openlp.org/Development:EasyWorship_EWS_Format
 
         :return:
         """
         # Open ews file if it exists
         if not os.path.isfile(self.import_source):
+            log.debug('Given ews file does not exists.')
             return
         # Make sure there is room for at least a header and one entry
         if os.path.getsize(self.import_source) < 892:
+            log.debug('Given ews file is to small to contain valid data.')
             return
         # Take a stab at how text is encoded
         self.encoding = 'cp1252'
+        self.encoding = retrieve_windows_encoding(self.encoding)
+        if not self.encoding:
+            log.debug('No encoding set.')
+            return
         self.ews_file = open(self.import_source, 'rb')
         # Get file version
         type, = struct.unpack('<38s', self.ews_file.read(38))
@@ -115,13 +122,14 @@ class EasyWorshipSongImport(SongImport):
         elif version == '1.6':
             file_pos = 40
         else:
+            log.debug('Given ews file is of unknown version.')
             return
         entry_count = self.get_i32(file_pos)
         entry_length = self.get_i16(file_pos+4)
         file_pos += 6
         self.import_wizard.progress_bar.setMaximum(entry_count)
         # Loop over songs
-        for x in range(1, entry_count):
+        for i in range(entry_count):
             # Load entry metadata
             self.set_defaults()
             self.title = self.get_string(file_pos, 50)
