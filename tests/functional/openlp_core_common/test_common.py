@@ -79,4 +79,5 @@ class TestCommonFunctions(TestCase):
             trace_error_handler(mocked_logger)
 
             # THEN: The mocked_logger.error() method should have been called with the correct parameters
-            mocked_logger.error.assert_called_with('Called by trace_error_handler_test at line 56 in openlp.fake')
+            mocked_logger.error.assert_called_with('OpenLP Error trace\n   File openlp.fake at line 56 \n\t called trace_error_handler_test')
+
