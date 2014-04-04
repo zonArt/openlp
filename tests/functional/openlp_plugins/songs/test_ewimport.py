@@ -456,4 +456,3 @@ class TestEasyWorshipSongImport(TestCase):
             for verse_text, verse_tag in EWS_SONG_TEST_DATA['verses']:
                 mocked_add_verse.assert_any_call(verse_text, verse_tag)
             mocked_finish.assert_called_with()
-

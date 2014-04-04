@@ -110,6 +110,15 @@ class EasyWorshipSongImport(SongImport):
             log.debug('No encoding set.')
             return
         self.ews_file = open(self.import_source, 'rb')
+        # EWS header, version '1.6'/'  3'/'  5':
+        # Offset   Field             Data type    Length    Details
+        # --------------------------------------------------------------------------------------------------
+        #       0  Filetype           string           38    Specifies the file type and version.
+        #                                                   "EasyWorship Schedule File Version  1.6" or
+        #                                                   "EasyWorship Schedule File Version    3" or
+        #                                                   "EasyWorship Schedule File Version    5"
+        # 40/48/56 Entry count        int32le           4    Number of items in the schedule
+        # 44/52/60 Entry length       int16le           2    Length of schedule entries: 0x0718 = 1816
         # Get file version
         type, = struct.unpack('<38s', self.ews_file.read(38))
         version = type.decode()[-3:]
@@ -130,22 +139,39 @@ class EasyWorshipSongImport(SongImport):
         self.import_wizard.progress_bar.setMaximum(entry_count)
         # Loop over songs
         for i in range(entry_count):
-            # Load entry metadata
+            # Load EWS entry metadata:
+            # Offset  Field                  Data type    Length    Details
+            # ------------------------------------------------------------------------------------------------
+            #      0  Title                  cstring          50
+            #    307  Author                 cstring          50    
+            #    358  Copyright              cstring         100
+            #    459  Administrator          cstring          50
+            #    800  Content pointer        int32le           4    Position of the content for this entry.
+            #    820  Content type           int32le           4    0x01 = Song, 0x02 = Scripture, 0x03 = Presentation,
+            #                                                       0x04 = Video, 0x05 = Live video, 0x07 = Image,
+            #                                                       0x08 = Audio, 0x09 = Web
+            #   1410  Song number            cstring          10
             self.set_defaults()
-            self.title = self.get_string(file_pos, 50)
-            resource = self.get_string(file_pos + 51, 255)
+            self.title = self.get_string(file_pos + 0, 50)
             authors = self.get_string(file_pos + 307, 50)
             copyright = self.get_string(file_pos + 358, 100)
             admin = self.get_string(file_pos + 459, 50)
             cont_ptr = self.get_i32(file_pos + 800)
             cont_type = self.get_i32(file_pos + 820)
-            notes = self.get_string(file_pos + 1155, 160)
             self.ccli_number = self.get_string(file_pos + 1410, 10)
             # Only handle content type 1 (songs)
             if cont_type != 1:
                 file_pos += entry_length
                 continue
             # Load song content
+            # Offset  Field              Data type    Length    Details
+            # ------------------------------------------------------------------------------------------------
+            #      0  Length             int32le           4    Length (L) of the content, including the compressed content
+            #                                                   and the following fields (14 bytes total).
+            #      4  Content            string         L-14    Content compressed with deflate.
+            #         Checksum           int32be           4    Alder-32 checksum.
+            #         (unknown)                            4    0x51 0x4b 0x03 0x04
+            #         Content length     int32le           4    Length of content after decompression
             content_length = self.get_i32(cont_ptr)
             deflated_content = self.get_bytes(cont_ptr + 4, content_length - 10)
             deflated_length = self.get_i32(cont_ptr + 4 + content_length - 6)
@@ -293,6 +319,10 @@ class EasyWorshipSongImport(SongImport):
     def set_song_import_object(self, authors, words):
         """
         Set the SongImport object members.
+        
+        :param authors: String with authons
+        :param words: Bytes with rtf-encoding
+        :return:
         """
         if authors:
             # Split up the authors
@@ -429,6 +459,10 @@ class EasyWorshipSongImport(SongImport):
     def get_bytes(self, pos, length):
         """
         Get bytes from ews_file
+        
+        :param pos: Position to read from
+        :param length: Bytes to read
+        :return: Bytes read
         """
         self.ews_file.seek(pos)
         return self.ews_file.read(length)
@@ -436,6 +470,10 @@ class EasyWorshipSongImport(SongImport):
     def get_string(self, pos, length):
         """
         Get string from ews_file
+        
+        :param pos: Position to read from
+        :param length: Characters to read
+        :return: String read
         """
         bytes = self.get_bytes(pos, length)
         mask = '<' + str(length) + 's'
@@ -445,6 +483,9 @@ class EasyWorshipSongImport(SongImport):
     def get_i16(self, pos):
         """
         Get short int from ews_file
+        
+        :param pos: Position to read from
+        :return: Short integer read
         """
 
         bytes = self.get_bytes(pos, 2)
@@ -455,6 +496,9 @@ class EasyWorshipSongImport(SongImport):
     def get_i32(self, pos):
         """
         Get long int from ews_file
+        
+        :param pos: Position to read from
+        :return: Long integer read
         """
         bytes = self.get_bytes(pos, 4)
         mask = '<i'
