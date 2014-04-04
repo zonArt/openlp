@@ -52,6 +52,7 @@ SCREEN = {
     'size': QtCore.QRect(0, 0, 1024, 768)
 }
 
+
 class TestPdfController(TestCase, TestMixin):
     """
     Test the PdfController.
@@ -82,7 +83,6 @@ class TestPdfController(TestCase, TestMixin):
         self.destroy_settings()
         shutil.rmtree(self.thumbnail_folder)
         shutil.rmtree(self.temp_folder)
-
 
     def constructor_test(self):
         """
