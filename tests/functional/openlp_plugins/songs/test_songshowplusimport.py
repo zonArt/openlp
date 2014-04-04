@@ -72,7 +72,7 @@ class TestSongShowPlusImport(TestCase):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
-            importer = SongShowPlusImport(mocked_manager)
+            importer = SongShowPlusImport(mocked_manager, filenames=[])
 
             # THEN: The importer object should not be None
             self.assertIsNotNone(importer, 'Import should not be none')
@@ -85,7 +85,7 @@ class TestSongShowPlusImport(TestCase):
         with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
-            importer = SongShowPlusImport(mocked_manager)
+            importer = SongShowPlusImport(mocked_manager, filenames=[])
             importer.import_wizard = mocked_import_wizard
             importer.stop_import_flag = True
 
@@ -106,7 +106,7 @@ class TestSongShowPlusImport(TestCase):
         with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
-            importer = SongShowPlusImport(mocked_manager)
+            importer = SongShowPlusImport(mocked_manager, filenames=[])
             importer.import_wizard = mocked_import_wizard
             importer.stop_import_flag = True
 
@@ -126,7 +126,7 @@ class TestSongShowPlusImport(TestCase):
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
-            importer = SongShowPlusImport(mocked_manager)
+            importer = SongShowPlusImport(mocked_manager, filenames=[])
 
             # WHEN: Supplied with the following arguments replicating verses being added
             test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
@@ -153,7 +153,7 @@ class TestSongShowPlusImport(TestCase):
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
-            importer = SongShowPlusImport(mocked_manager)
+            importer = SongShowPlusImport(mocked_manager, filenames=[])
 
             # WHEN: Supplied with the following arguments replicating a verse order being added
             test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),

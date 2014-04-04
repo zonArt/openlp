@@ -471,7 +471,7 @@ class SlideController(DisplayController, RegistryProperties):
                                          category=self.category,
                                          triggers=self.live_escape)
 
-    def live_escape(self):
+    def live_escape(self, field=None):
         """
         If you press ESC on the live screen it should close the display temporarily.
         """
@@ -1243,7 +1243,7 @@ class SlideController(DisplayController, RegistryProperties):
         if self.service_item:
             self.service_manager.add_service_item(self.service_item)
 
-    def on_go_live_click(self):
+    def on_go_live_click(self, field=None):
         """
         triggered by clicking the Preview slide items
         """
@@ -1256,7 +1256,7 @@ class SlideController(DisplayController, RegistryProperties):
                 self.on_media_close()
             self.on_go_live()
 
-    def on_go_live(self):
+    def on_go_live(self, field=None):
         """
         If preview copy slide item to live controller from Preview Controller
         """

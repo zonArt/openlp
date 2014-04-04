@@ -66,7 +66,7 @@ class TestSongBeamerImport(TestCase):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
-            importer = SongBeamerImport(mocked_manager)
+            importer = SongBeamerImport(mocked_manager, filenames=[])
 
             # THEN: The importer object should not be None
             self.assertIsNotNone(importer, 'Import should not be none')
@@ -79,7 +79,7 @@ class TestSongBeamerImport(TestCase):
         with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
-            importer = SongBeamerImport(mocked_manager)
+            importer = SongBeamerImport(mocked_manager, filenames=[])
             importer.import_wizard = mocked_import_wizard
             importer.stop_import_flag = True
 
@@ -100,7 +100,7 @@ class TestSongBeamerImport(TestCase):
         with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
-            importer = SongBeamerImport(mocked_manager)
+            importer = SongBeamerImport(mocked_manager, filenames=[])
             importer.import_wizard = mocked_import_wizard
             importer.stop_import_flag = True
 
@@ -127,7 +127,7 @@ class TestSongBeamerImport(TestCase):
                 mocked_add_verse = MagicMock()
                 mocked_finish = MagicMock()
                 mocked_finish.return_value = True
-                importer = SongBeamerImport(mocked_manager)
+                importer = SongBeamerImport(mocked_manager, filenames=[])
                 importer.import_wizard = mocked_import_wizard
                 importer.stop_import_flag = False
                 importer.add_verse = mocked_add_verse

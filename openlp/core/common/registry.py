@@ -62,11 +62,9 @@ class Registry(object):
         registry = cls()
         registry.service_list = {}
         registry.functions_list = {}
-        registry.running_under_test = False
-        registry.initialising = True
         # Allow the tests to remove Registry entries but not the live system
-        if 'nose' in sys.argv[0]:
-            registry.running_under_test = True
+        registry.running_under_test = 'nose' in sys.argv[0]
+        registry.initialising = True
         return registry
 
     def get(self, key):
@@ -128,7 +126,7 @@ class Registry(object):
         :param event: The function description..
         :param function: The function to be called when the event happens.
         """
-        if self.running_under_test is False:
+        if not self.running_under_test:
             trace_error_handler(log)
             log.error('Invalid Method call for key %s' % event)
             raise KeyError('Invalid Method call for key %s' % event)

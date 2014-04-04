@@ -97,7 +97,7 @@ class SongBeamerImport(SongImport):
         """
         Initialise the Song Beamer importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(SongBeamerImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
