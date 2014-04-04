@@ -120,4 +120,3 @@ class TestEditVerseForm(TestCase, TestMixin):
         # THEN: The verse text edit should have a Chorus:1 in it
         self.assertIn('---[Chorus:1]---', self.form.verse_text_edit.toPlainText(),
                       'The verse text edit should have a "Chorus 1" marker')
-

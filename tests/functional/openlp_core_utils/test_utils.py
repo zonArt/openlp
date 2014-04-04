@@ -107,7 +107,7 @@ class TestUtils(TestCase):
         """
         # GIVEN: sys.getfilesystemencoding returns "cp1252"
         with patch('openlp.core.utils.sys.getfilesystemencoding') as mocked_getfilesystemencoding, \
-             patch('openlp.core.utils.sys.getdefaultencoding') as mocked_getdefaultencoding:
+                patch('openlp.core.utils.sys.getdefaultencoding') as mocked_getdefaultencoding:
             mocked_getfilesystemencoding.return_value = 'cp1252'
 
             # WHEN: get_filesystem_encoding() is called
@@ -124,7 +124,7 @@ class TestUtils(TestCase):
         """
         # GIVEN: sys.getfilesystemencoding returns None and sys.getdefaultencoding returns "utf-8"
         with patch('openlp.core.utils.sys.getfilesystemencoding') as mocked_getfilesystemencoding, \
-             patch('openlp.core.utils.sys.getdefaultencoding') as mocked_getdefaultencoding:
+                patch('openlp.core.utils.sys.getdefaultencoding') as mocked_getdefaultencoding:
             mocked_getfilesystemencoding.return_value = None
             mocked_getdefaultencoding.return_value = 'utf-8'
 
@@ -175,7 +175,7 @@ class TestUtils(TestCase):
 
             # THEN: A tuple should be returned.
             self.assertEqual(wanted_result, result,
-                'A two-entry tuple with the directory and file name (empty) should have been returned.')
+                             'A two-entry tuple with the directory and file name (empty) should have been returned.')
 
     def clean_filename_test(self):
         """
@@ -206,7 +206,7 @@ class TestUtils(TestCase):
 
             # THEN: We get a properly sorted list
             self.assertEqual(['Aushang', '\u00C4u\u00DFerung', 'Auszug'], sorted_list,
-                'Strings should be sorted properly')
+                             'Strings should be sorted properly')
 
     def get_natural_key_test(self):
         """

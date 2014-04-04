@@ -74,4 +74,3 @@ class TestFormattingTagForm(TestCase):
 
         # THEN: setEnabled and setDefault should have been called on save_push_button
         #form.save_button.setEnabled.assert_called_with(True)
-
