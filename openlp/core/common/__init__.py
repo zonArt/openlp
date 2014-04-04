@@ -53,7 +53,7 @@ def trace_error_handler(logger):
     """
     log_string = "OpenLP Error trace"
     for tb in traceback.extract_stack():
-        log_string = ('%s\n   File %s at line %d \n\t called %s' % (log_string, tb[0], tb[1], tb[3]))
+        log_string = '%s\n   File %s at line %d \n\t called %s' % (log_string, tb[0], tb[1], tb[3])
     logger.error(log_string)
 
 
