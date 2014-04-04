@@ -311,8 +311,8 @@ class TestLib(TestCase):
             mocked_buffer.open.assert_called_with('writeonly')
             mocked_image.save.assert_called_with(mocked_buffer, "PNG")
             mocked_byte_array.toBase64.assert_called_with()
-            self.assertEqual('base64mock', result,
-                'The result should be the return value of the mocked out base64 method')
+            self.assertEqual('base64mock', result, 'The result should be the return value of the mocked out '
+                                                   'base64 method')
 
     def create_thumb_with_size_test(self):
         """

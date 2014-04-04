@@ -97,4 +97,3 @@ class TestBibleHTTP(TestCase):
 
         # THEN: We should get back a valid service item
         assert len(results.verse_list) == 36, 'The book of John should not have had any verses added or removed'
-

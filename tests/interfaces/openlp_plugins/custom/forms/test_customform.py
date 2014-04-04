@@ -88,7 +88,6 @@ class TestEditCustomForm(TestCase, TestMixin):
         self.assertEqual(self.form.title_edit.text(), '', 'The title edit should be empty')
         self.assertEqual(self.form.credit_edit.text(), '', 'The credit edit should be empty')
 
-
     def on_add_button_clicked_test(self):
         """
         Test the on_add_button_clicked_test method / add_button button.
