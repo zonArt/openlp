@@ -129,7 +129,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.toggle_disable_load_media(False)
             return
         if not os.path.exists(path):
-            log.debug('vlc media player is none')
+            log.debug('Given path does not exists')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
                                                          'Given path does not exists'))
             self.toggle_disable_load_media(False)
@@ -259,7 +259,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
 
         :param index: The index of the newly chosen title track.
         """
-        log.debug('in on_title_combo_box_changed, index: ', str(index))
+        log.debug('in on_title_combo_box_changed, index: %d', index)
         self.vlc_media_player.set_title(index)
         self.vlc_media_player.set_time(0)
         self.vlc_media_player.play()
@@ -306,7 +306,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         :param index: The index of the newly chosen audio track.
         """
         audio_track = self.audio_tracks_combobox.itemData(index)
-        log.debug('in on_audio_tracks_combobox_currentIndexChanged, index: ', str(index), ' audio_track: ', audio_track)
+        log.debug('in on_audio_tracks_combobox_currentIndexChanged, index: %d  audio_track: %s' % (index, audio_track))
         if audio_track and int(audio_track) > 0:
             self.vlc_media_player.audio_set_track(int(audio_track))
 
