@@ -62,6 +62,7 @@ class OpenLPJobs(object):
     Branch_Interface = 'Branch-03-Interface-Tests'
     Branch_Windows = 'Branch-04-Windows_Tests'
     Branch_PEP = 'Branch-05-Code-Analysis'
+    PEP_TEST = "sdafajsdklfj lajsldfk jlasdkjf lkajdf lkasjdlfkjalskdjflkajflkadsjkfl jasdlkfj laskdjflka sjdlkfjlaksdjflksajdf"
 
     Jobs = [Branch_Pull, Branch_Functional, Branch_Interface, Branch_Windows, Branch_PEP]
 
