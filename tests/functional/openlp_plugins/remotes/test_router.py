@@ -111,7 +111,8 @@ class TestRouter(TestCase, TestMixin):
         Test the get_content_type logic
         """
         # GIVEN: a set of files and their corresponding types
-        headers = [ ['test.html', 'text/html'], ['test.css', 'text/css'],
+        headers = [
+            ['test.html', 'text/html'], ['test.css', 'text/css'],
             ['test.js', 'application/javascript'], ['test.jpg', 'image/jpeg'],
             ['test.gif', 'image/gif'], ['test.ico', 'image/x-icon'],
             ['test.png', 'image/png'], ['test.whatever', 'text/plain'],
@@ -142,7 +143,7 @@ class TestRouter(TestCase, TestMixin):
 
         # THEN: it should return a 404
         self.router.send_response.assert_called_once_with(404)
-        self.router.send_header.assert_called_once_with('Content-type','text/html')
+        self.router.send_header.assert_called_once_with('Content-type', 'text/html')
         self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
 
     def serve_file_with_valid_params_test(self):
