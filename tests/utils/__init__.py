@@ -48,4 +48,3 @@ def convert_file_service_item(test_path, name, row=0):
     finally:
         open_file.close()
     return first_line
-

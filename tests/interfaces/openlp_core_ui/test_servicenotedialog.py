@@ -90,9 +90,8 @@ class TestStartNoteDialog(TestCase, TestMixin):
         with patch('PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
             self.form.text_edit.setPlainText(text)
-        okWidget = self.form.button_box.button(self.form.button_box.Save)
-        QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
+        ok_widget = self.form.button_box.button(self.form.button_box.Save)
+        QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
         # THEN the following text is returned
         self.assertEqual(self.form.text_edit.toPlainText(), text, 'The new text should be returned')
-

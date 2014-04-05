@@ -41,33 +41,33 @@ TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'easyworshipsongs'))
 SONG_TEST_DATA = [
     {'title': 'Amazing Grace',
-    'authors': ['John Newton'],
-    'copyright': 'Public Domain',
-    'ccli_number': 0,
-    'verses':
-       [('Amazing grace how sweet the sound,\nThat saved a wretch like me;\n'
-         'I once was lost, but now am found\nWas blind, but now I see.', 'v1'),
-        ('T\'was grace that taught my heart to fear,\nAnd grace my fears relieved;\n'
-         'How precious did that grace appear\nThe hour I first believed.', 'v2'),
-        ('Through many dangers, toil and snares,\nI have already come;\n'
-         '\'Tis grace has brought me safe thus far,\nAnd grace will lead me home.', 'v3'),
-        ('When we\'ve been there ten thousand years\nBright shining as the sun,\n'
-         'We\'ve no less days to sing God\'s praise\nThan when we\'ve first begun.', 'v4')],
-    'verse_order_list': []},
+     'authors': ['John Newton'],
+     'copyright': 'Public Domain',
+     'ccli_number': 0,
+     'verses':
+        [('Amazing grace how sweet the sound,\nThat saved a wretch like me;\n'
+          'I once was lost, but now am found\nWas blind, but now I see.', 'v1'),
+         ('T\'was grace that taught my heart to fear,\nAnd grace my fears relieved;\n'
+          'How precious did that grace appear\nThe hour I first believed.', 'v2'),
+         ('Through many dangers, toil and snares,\nI have already come;\n'
+          '\'Tis grace has brought me safe thus far,\nAnd grace will lead me home.', 'v3'),
+         ('When we\'ve been there ten thousand years\nBright shining as the sun,\n'
+          'We\'ve no less days to sing God\'s praise\nThan when we\'ve first begun.', 'v4')],
+     'verse_order_list': []},
     {'title': 'Beautiful Garden Of Prayer',
-    'authors': ['Eleanor Allen Schroll James H. Fillmore'],
-    'copyright': 'Public Domain',
-    'ccli_number': 0,
-    'verses':
-       [('O the beautiful garden, the garden of prayer,\nO the beautiful garden of prayer.\n'
-         'There my Savior awaits, and He opens the gates\nTo the beautiful garden of prayer.', 'c1'),
-        ('There\'s a garden where Jesus is waiting,\nThere\'s a place that is wondrously fair.\n'
-         'For it glows with the light of His presence,\n\'Tis the beautiful garden of prayer.', 'v1'),
-        ('There\'s a garden where Jesus is waiting,\nAnd I go with my burden and care.\n'
-         'Just to learn from His lips, words of comfort,\nIn the beautiful garden of prayer.', 'v2'),
-        ('There\'s a garden where Jesus is waiting,\nAnd He bids you to come meet Him there,\n'
-         'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', 'v3')],
-    'verse_order_list': []}]
+     'authors': ['Eleanor Allen Schroll James H. Fillmore'],
+     'copyright': 'Public Domain',
+     'ccli_number': 0,
+     'verses':
+     [('O the beautiful garden, the garden of prayer,\nO the beautiful garden of prayer.\n'
+       'There my Savior awaits, and He opens the gates\nTo the beautiful garden of prayer.', 'c1'),
+      ('There\'s a garden where Jesus is waiting,\nThere\'s a place that is wondrously fair.\n'
+       'For it glows with the light of His presence,\n\'Tis the beautiful garden of prayer.', 'v1'),
+      ('There\'s a garden where Jesus is waiting,\nAnd I go with my burden and care.\n'
+       'Just to learn from His lips, words of comfort,\nIn the beautiful garden of prayer.', 'v2'),
+      ('There\'s a garden where Jesus is waiting,\nAnd He bids you to come meet Him there,\n'
+       'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', 'v3')],
+     'verse_order_list': []}]
 
 EWS_SONG_TEST_DATA =\
     { 'title' : 'Vi pløjed og vi så\'de',
@@ -110,25 +110,31 @@ class TestFieldDesc:
         self.size = size
 
 TEST_DATA_ENCODING = 'cp1252'
-CODE_PAGE_MAPPINGS = [(852, 'cp1250'), (737, 'cp1253'), (775, 'cp1257'), (855, 'cp1251'), (857, 'cp1254'),
+CODE_PAGE_MAPPINGS = [
+    (852, 'cp1250'), (737, 'cp1253'), (775, 'cp1257'), (855, 'cp1251'), (857, 'cp1254'),
     (866,  'cp1251'), (869, 'cp1253'), (862, 'cp1255'), (874, 'cp874')]
-TEST_FIELD_DESCS = [TestFieldDesc('Title', FieldType.String, 50),
+TEST_FIELD_DESCS = [
+    TestFieldDesc('Title', FieldType.String, 50),
     TestFieldDesc('Text Percentage Bottom', FieldType.Int16, 2), TestFieldDesc('RecID', FieldType.Int32, 4),
     TestFieldDesc('Default Background', FieldType.Logical, 1), TestFieldDesc('Words', FieldType.Memo, 250),
     TestFieldDesc('Words', FieldType.Memo, 250), TestFieldDesc('BK Bitmap', FieldType.Blob, 10),
     TestFieldDesc('Last Modified', FieldType.Timestamp, 10)]
-TEST_FIELDS = [b'A Heart Like Thine\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0', 32868, 2147483750,
+TEST_FIELDS = [
+    b'A Heart Like Thine\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0', 32868, 2147483750,
     129, b'{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
-    b'{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;'
-    b'\\red255\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g\xBF\xBD\7\0f\r\0\0\1\0',
-    b'{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
-    b'{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;\\red255'
-    b'\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g\6\0\xEF\xBF\xBD\6\0\0\1\0', b'\0\0\0\0\0\0\0\0\0\0', 0]
+         b'{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;'
+         b'\\red255\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g\xBF\xBD\7\0f\r\0\0\1\0',
+         b'{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
+         b'{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0'
+         b'\\blue255;\\red255'
+         b'\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g\6\0\xEF\xBF\xBD\6\0\0\1\0',
+         b'\0\0\0\0\0\0\0\0\0\0', 0]
 GET_MEMO_FIELD_TEST_RESULTS = [
-    (4, b'\2', {'return': b'\2','read': (1, 3430), 'seek': (507136, (8, os.SEEK_CUR))}),
+    (4, b'\2', {'return': b'\2', 'read': (1, 3430), 'seek': (507136, (8, os.SEEK_CUR))}),
     (4, b'\3', {'return': b'', 'read': (1, ), 'seek': (507136, )}),
     (5, b'\3', {'return': b'\3', 'read': (1, 1725), 'seek': (3220111360, (41, os.SEEK_CUR), 3220111408)}),
     (5, b'\4', {'return': b'', 'read': (), 'seek': ()})]
+
 
 class TestEasyWorshipSongImport(TestCase):
     """
@@ -150,7 +156,7 @@ class TestEasyWorshipSongImport(TestCase):
         self.assertIsNotNone(field_desc_entry, 'Import should not be none')
         self.assertEquals(field_desc_entry.name, name, 'FieldDescEntry.name should be the same as the name argument')
         self.assertEquals(field_desc_entry.field_type, field_type,
-            'FieldDescEntry.type should be the same as the typeargument')
+                          'FieldDescEntry.type should be the same as the type argument')
         self.assertEquals(field_desc_entry.size, size, 'FieldDescEntry.size should be the same as the size argument')
 
     def create_importer_test(self):
@@ -179,7 +185,7 @@ class TestEasyWorshipSongImport(TestCase):
 
             # WHEN: Called with a field name that exists
             existing_fields = ['Title', 'Text Percentage Bottom', 'RecID', 'Default Background', 'Words',
-                'BK Bitmap', 'Last Modified']
+                               'BK Bitmap', 'Last Modified']
             for field_name in existing_fields:
 
                 # THEN: The item corresponding the index returned should have the same name attribute
@@ -209,7 +215,7 @@ class TestEasyWorshipSongImport(TestCase):
         # GIVEN: A mocked out SongImport class, a mocked out struct class, and a mocked out "manager" and a list of
         #       field descriptions
         with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-            patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct:
+                patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
 
@@ -240,7 +246,8 @@ class TestEasyWorshipSongImport(TestCase):
 
             # THEN: get_field should return the known results
                 self.assertEquals(return_value, result,
-                    'get_field should return "%s" when called with "%s"' % (result, TEST_FIELDS[field_index]))
+                                  'get_field should return "%s" when called with "%s"' %
+                                  (result, TEST_FIELDS[field_index]))
 
     def get_memo_field_test(self):
         """
@@ -280,7 +287,7 @@ class TestEasyWorshipSongImport(TestCase):
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager"
         with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-            patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
+                patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             mocked_os_path.isfile.side_effect = [True, False]
@@ -299,7 +306,7 @@ class TestEasyWorshipSongImport(TestCase):
         """
         # GIVEN: A mocked out SongImport class, os.path and a mocked out "manager"
         with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-            patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
+                patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             mocked_os_path.isfile.return_value = True
@@ -320,7 +327,7 @@ class TestEasyWorshipSongImport(TestCase):
         with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
             patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path, \
             patch('builtins.open') as mocked_open, \
-            patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct:
+                patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             mocked_os_path.isfile.return_value = True
@@ -335,7 +342,7 @@ class TestEasyWorshipSongImport(TestCase):
             for effect in struct_unpack_return_values:
                 self.assertIsNone(importer.do_import(), 'do_import should return None when db_size is less than 0x800')
                 self.assertEqual(mocked_open().close.call_count, 2,
-                    'The open db and memo files should have been closed')
+                                 'The open db and memo files should have been closed')
                 mocked_open().close.reset_mock()
                 self.assertIs(mocked_open().seek.called, False, 'db_file.seek should not have been called.')
 
@@ -347,7 +354,8 @@ class TestEasyWorshipSongImport(TestCase):
         with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
             patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path, \
             patch('builtins.open'), patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct, \
-            patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as mocked_retrieve_windows_encoding:
+                patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as \
+                mocked_retrieve_windows_encoding:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             mocked_os_path.isfile.return_value = True
@@ -372,7 +380,8 @@ class TestEasyWorshipSongImport(TestCase):
         # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
         #       and mocked out "author", "add_copyright", "add_verse", "finish" methods.
         with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-            patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as mocked_retrieve_windows_encoding:
+                patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as \
+                mocked_retrieve_windows_encoding:
             mocked_retrieve_windows_encoding.return_value = 'cp1252'
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
@@ -410,12 +419,12 @@ class TestEasyWorshipSongImport(TestCase):
                     self.assertEqual(importer.copyright, song_copyright)
                 if ccli_number:
                     self.assertEquals(importer.ccli_number, ccli_number, 'ccli_number for %s should be %s'
-                                                                        % (title, ccli_number))
+                                                                         % (title, ccli_number))
                 for verse_text, verse_tag in add_verse_calls:
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if verse_order_list:
-                    self.assertEquals(importer.verse_order_list, verse_order_list, 'verse_order_list for %s should be %s'
-                                                                   % (title, verse_order_list))
+                    self.assertEquals(importer.verse_order_list, verse_order_list,
+                                      'verse_order_list for %s should be %s' % (title, verse_order_list))
                 mocked_finish.assert_called_with()
 
     def ews_file_import_test(self):
