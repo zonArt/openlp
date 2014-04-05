@@ -50,7 +50,7 @@ from jenkins import Jenkins
 
 
 JENKINS_URL = 'http://ci.openlp.org/'
-REPO_REGEX = r'(.*+)(~.*)'
+REPO_REGEX = r'(.*/+)(~.*)'
 
 
 class OpenLPJobs(object):
