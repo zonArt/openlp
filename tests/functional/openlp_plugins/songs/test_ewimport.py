@@ -70,19 +70,18 @@ SONG_TEST_DATA = [
      'verse_order_list': []}]
 
 EWS_SONG_TEST_DATA =\
-    { 'title' : 'Vi pløjed og vi så\'de',
-    'authors' : ['Matthias Claudius'],
-    'verses' : 
+    {'title': 'Vi pløjed og vi så\'de',
+     'authors': ['Matthias Claudius'],
+     'verses':
         [('Vi pløjed og vi så\'de\nvor sæd i sorten jord,\nså bad vi ham os hjælpe,\nsom højt i Himlen bor,\n'
-          'og han lod snefald hegne\nmod frosten barsk og hård,\nhan lod det tø og regne\nog varme mildt i vår.', 
+          'og han lod snefald hegne\nmod frosten barsk og hård,\nhan lod det tø og regne\nog varme mildt i vår.',
           'v1'),
          ('Alle gode gaver\nde kommer ovenned,\nså tak da Gud, ja, pris dog Gud\nfor al hans kærlighed!', 'c1'),
          ('Han er jo den, hvis vilje\nopholder alle ting,\nhan klæder markens lilje\nog runder himlens ring,\n'
           'ham lyder vind og vove,\nham rører ravnes nød,\nhvi skulle ej hans småbørn\nda og få dagligt brød?', 'v2'),
          ('Ja, tak, du kære Fader,\nså mild, så rig, så rund,\nfor korn i hæs og lader,\nfor godt i allen stund!\n'
           'Vi kan jo intet give,\nsom nogen ting er værd,\nmen tag vort stakkels hjerte,\nså ringe som det er!',
-          'v3')],
-    }
+          'v3')]}
 
 
 class EasyWorshipSongImportLogger(EasyWorshipSongImport):
@@ -435,7 +434,8 @@ class TestEasyWorshipSongImport(TestCase):
         # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
         #       and mocked out "author", "add_copyright", "add_verse", "finish" methods.
         with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-            patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as mocked_retrieve_windows_encoding:
+                patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') \
+                as mocked_retrieve_windows_encoding:
             mocked_retrieve_windows_encoding.return_value = 'cp1252'
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()

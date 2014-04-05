@@ -143,7 +143,7 @@ class EasyWorshipSongImport(SongImport):
             # Offset  Field                  Data type    Length    Details
             # ------------------------------------------------------------------------------------------------
             #      0  Title                  cstring          50
-            #    307  Author                 cstring          50    
+            #    307  Author                 cstring          50
             #    358  Copyright              cstring         100
             #    459  Administrator          cstring          50
             #    800  Content pointer        int32le           4    Position of the content for this entry.
@@ -166,7 +166,7 @@ class EasyWorshipSongImport(SongImport):
             # Load song content
             # Offset  Field              Data type    Length    Details
             # ------------------------------------------------------------------------------------------------
-            #      0  Length             int32le           4    Length (L) of the content, including the compressed content
+            #      0  Length             int32le           4    Length (L) of content, including the compressed content
             #                                                   and the following fields (14 bytes total).
             #      4  Content            string         L-14    Content compressed with deflate.
             #         Checksum           int32be           4    Alder-32 checksum.
@@ -319,7 +319,7 @@ class EasyWorshipSongImport(SongImport):
     def set_song_import_object(self, authors, words):
         """
         Set the SongImport object members.
-        
+
         :param authors: String with authons
         :param words: Bytes with rtf-encoding
         :return:
@@ -459,7 +459,7 @@ class EasyWorshipSongImport(SongImport):
     def get_bytes(self, pos, length):
         """
         Get bytes from ews_file
-        
+
         :param pos: Position to read from
         :param length: Bytes to read
         :return: Bytes read
@@ -470,7 +470,7 @@ class EasyWorshipSongImport(SongImport):
     def get_string(self, pos, length):
         """
         Get string from ews_file
-        
+
         :param pos: Position to read from
         :param length: Characters to read
         :return: String read
@@ -483,7 +483,7 @@ class EasyWorshipSongImport(SongImport):
     def get_i16(self, pos):
         """
         Get short int from ews_file
-        
+
         :param pos: Position to read from
         :return: Short integer read
         """
@@ -496,7 +496,7 @@ class EasyWorshipSongImport(SongImport):
     def get_i32(self, pos):
         """
         Get long int from ews_file
-        
+
         :param pos: Position to read from
         :return: Long integer read
         """
