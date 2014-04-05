@@ -367,7 +367,7 @@ class Ui_MainWindow(object):
         self.settings_menu.setTitle(translate('OpenLP.MainWindow', '&Settings'))
         self.settings_language_menu.setTitle(translate('OpenLP.MainWindow', '&Language'))
         self.help_menu.setTitle(translate('OpenLP.MainWindow', '&Help'))
-        self.media_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Media Manager'))
+        self.media_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Library'))
         self.service_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Service Manager'))
         self.theme_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Theme Manager'))
         self.file_new_item.setText(translate('OpenLP.MainWindow', '&New'))
