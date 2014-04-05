@@ -73,7 +73,7 @@ class EasyWorshipSongImport(SongImport):
     ability to import EasyWorship song files.
     """
     def __init__(self, manager, **kwargs):
-        SongImport.__init__(self, manager, **kwargs)
+        super(EasyWorshipSongImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """

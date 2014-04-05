@@ -92,7 +92,7 @@ class SongShowPlusImport(SongImport):
         """
         Initialise the SongShow Plus importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(SongShowPlusImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
