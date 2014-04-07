@@ -594,15 +594,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.live_controller.display.setFocus()
         self.activateWindow()
         if self.arguments:
-            args = []
-            for a in self.arguments:
-                args.extend([a])
-            for arg in args:
-                filename = arg
-                if not isinstance(filename, str):
-                    filename = str(filename, sys.getfilesystemencoding())
-                if filename.endswith(('.osz', '.oszl', '.otz')):
-                    self.service_manager_contents.load_file(filename)
+            self.open_cmd_line_files()
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_Last_file()
         self.timer_version_id = self.startTimer(1000)
@@ -1362,3 +1354,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if self.new_data_path == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove('advanced/data path')
         self.application.set_normal_cursor()
+
+    def open_cmd_line_files(self):
+        """
+        Open files passed in through command line arguments
+        """
+        args = []
+        for a in self.arguments:
+            args.extend([a])
+        for arg in args:
+            filename = arg
+            if not isinstance(filename, str):
+                filename = str(filename, sys.getfilesystemencoding())
+            if filename.endswith(('.osz', '.oszl')):
+                self.service_manager_contents.load_file(filename)
