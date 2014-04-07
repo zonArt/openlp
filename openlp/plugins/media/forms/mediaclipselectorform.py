@@ -219,10 +219,34 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         time = QtCore.QTime()
         new_pos_time = time.addMSecs(vlc_ms_pos)
         self.end_timeedit.setTime(new_pos_time)
-        # If start time is after end time, update end time.
+        # If start time is after end time, update start time.
         start_time = self.start_timeedit.time()
         if start_time > new_pos_time:
             self.start_timeedit.setTime(new_pos_time)
+
+    @QtCore.pyqtSlot(QtCore.QTime)
+    def on_start_timeedit_timeChanged(self, new_time):
+        """
+        Called when start_timeedit is changed manually
+
+        :param new_time: The new time
+        """
+        # If start time is after end time, update end time.
+        end_time = self.end_timeedit.time()
+        if end_time < new_time:
+            self.end_timeedit.setTime(new_time)
+
+    @QtCore.pyqtSlot(QtCore.QTime)
+    def on_end_timeedit_timeChanged(self, new_time):
+        """
+        Called when end_timeedit is changed manually
+
+        :param new_time: The new time
+        """
+        # If start time is after end time, update start time.
+        start_time = self.start_timeedit.time()
+        if start_time > new_time:
+            self.start_timeedit.setTime(new_time)
 
     @QtCore.pyqtSlot(bool)
     def on_jump_end_pushbutton_clicked(self, clicked):
@@ -288,12 +312,15 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         # Enable subtitle track combobox is anything in it
         if len(subtitles_tracks) > 0:
             self.subtitle_tracks_combobox.setDisabled(False)
-            # First track is "deactivated", so set to next if it exists
-            if len(subtitles_tracks) > 1:
-                self.subtitle_tracks_combobox.setCurrentIndex(1)
         self.vlc_media_player.audio_set_mute(False)
         self.playback_length = self.vlc_media_player.get_length()
         self.position_horizontalslider.setMaximum(self.playback_length)
+        # setup start and end time
+        rounded_vlc_ms_length = int(round(self.playback_length / 100.0) * 100.0)
+        time = QtCore.QTime()
+        playback_length_time = time.addMSecs(rounded_vlc_ms_length)
+        self.start_timeedit.setMaximumTime(playback_length_time)
+        self.end_timeedit.setMaximumTime(playback_length_time)
         # If a title or audio track is available the player is enabled
         if self.title_combo_box.count() > 0 or len(audio_tracks) > 0:
             self.toggle_disable_player(False)

@@ -125,8 +125,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         Adds buttons to the start of the header bar.
         """
-        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=OPTICAL_ICON, text='Load optical disc',
-                                                            tooltip='Load optical disc', triggers=self.on_load_optical)
+        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=OPTICAL_ICON, text='Load CD/DVD',
+                                                            tooltip='Load CD/DVD', triggers=self.on_load_optical)
         if not VLC_AVAILABLE:
             self.load_optical.setDisabled(True)
 
