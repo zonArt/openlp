@@ -115,8 +115,8 @@ class TestSongShowPlusImport(TestCase):
 
             # THEN: do_import should return none and the progress bar setMaximum should be called with the length of
             #       import_source.
-            self.assertIsNone(importer.do_import(),
-                'do_import should return None when import_source is a list and stop_import_flag is True')
+            self.assertIsNone(importer.do_import(), 'do_import should return None when import_source is a list '
+                                                    'and stop_import_flag is True')
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(len(importer.import_source))
 
     def to_openlp_verse_tag_test(self):
@@ -129,7 +129,8 @@ class TestSongShowPlusImport(TestCase):
             importer = SongShowPlusImport(mocked_manager, filenames=[])
 
             # WHEN: Supplied with the following arguments replicating verses being added
-            test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
+            test_values = [
+                ('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
                 ('Verse 2', VerseType.tags[VerseType.Verse] + '2'),
                 ('verse1', VerseType.tags[VerseType.Verse] + '1'),
                 ('Verse', VerseType.tags[VerseType.Verse] + '1'),
@@ -143,8 +144,8 @@ class TestSongShowPlusImport(TestCase):
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
                 self.assertEquals(importer.to_openlp_verse_tag(original_tag), openlp_tag,
-                    'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
-                    % (openlp_tag, original_tag))
+                                  'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"' %
+                                  (openlp_tag, original_tag))
 
     def to_openlp_verse_tag_verse_order_test(self):
         """
@@ -156,7 +157,8 @@ class TestSongShowPlusImport(TestCase):
             importer = SongShowPlusImport(mocked_manager, filenames=[])
 
             # WHEN: Supplied with the following arguments replicating a verse order being added
-            test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
+            test_values = [
+                ('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
                 ('Verse 2', VerseType.tags[VerseType.Verse] + '2'),
                 ('verse1', VerseType.tags[VerseType.Verse] + '1'),
                 ('Verse', VerseType.tags[VerseType.Verse] + '1'),
@@ -171,5 +173,5 @@ class TestSongShowPlusImport(TestCase):
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
                 self.assertEquals(importer.to_openlp_verse_tag(original_tag, ignore_unique=True), openlp_tag,
-                    'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
-                    % (openlp_tag, original_tag))
+                                  'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"' %
+                                  (openlp_tag, original_tag))

@@ -108,7 +108,7 @@ class TestImageMediaItem(TestCase):
         Test that the save_new_images_list() saves all images in the list
         """
         # GIVEN: A list with 3 images
-        image_list = [ 'test_image_1.jpg', 'test_image_2.jpg', 'test_image_3.jpg' ]
+        image_list = ['test_image_1.jpg', 'test_image_2.jpg', 'test_image_3.jpg']
         with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list') as mocked_load_full_list:
             self.media_item.manager = MagicMock()
 
@@ -124,7 +124,7 @@ class TestImageMediaItem(TestCase):
         Test that the save_new_images_list() ignores everything in the provided list except strings
         """
         # GIVEN: A list with images and objects
-        image_list = [ 'test_image_1.jpg', None, True, ImageFilenames(), 'test_image_2.jpg' ]
+        image_list = ['test_image_1.jpg', None, True, ImageFilenames(), 'test_image_2.jpg']
         with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list') as mocked_load_full_list:
             self.media_item.manager = MagicMock()
 
@@ -171,7 +171,7 @@ class TestImageMediaItem(TestCase):
             assert self.media_item.manager.delete_object.call_count == 7, \
                 'manager.delete_object() should be called exactly 7 times'
 
-            # CLEANUP: Remove added attribute from ImageFilenames and ImageGroups
+            # CLEANUP: Remove added attribute from Image Filenames and ImageGroups
             delattr(ImageFilenames, 'group_id')
             delattr(ImageGroups, 'parent_id')
 
