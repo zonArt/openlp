@@ -73,8 +73,9 @@ class UiStrings(object):
         self.Default = translate('OpenLP.Ui', 'Default')
         self.DefaultColor = translate('OpenLP.Ui', 'Default Color:')
         self.DefaultServiceName = translate('OpenLP.Ui', 'Service %Y-%m-%d %H-%M',
-            'This may not contain any of the following characters: /\\?*|<>\[\]":+\n'
-            'See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for more information.')
+                                            'This may not contain any of the following characters: /\\?*|<>\[\]":+\n'
+                                            'See http://docs.python.org/library/datetime'
+                                            '.html#strftime-strptime-behavior for more information.')
         self.Delete = translate('OpenLP.Ui', '&Delete')
         self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
         self.Duplicate = translate('OpenLP.Ui', 'Duplicate Error')
@@ -132,7 +133,7 @@ class UiStrings(object):
         self.Service = translate('OpenLP.Ui', 'Service')
         self.Split = translate('OpenLP.Ui', 'Optional &Split')
         self.SplitToolTip = translate('OpenLP.Ui',
-            'Split a slide into two only if it does not fit on the screen as one slide.')
+                                      'Split a slide into two only if it does not fit on the screen as one slide.')
         self.StartTimeCode = translate('OpenLP.Ui', 'Start %s')
         self.StopPlaySlidesInLoop = translate('OpenLP.Ui', 'Stop Play Slides in Loop')
         self.StopPlaySlidesToEnd = translate('OpenLP.Ui', 'Stop Play Slides to End')

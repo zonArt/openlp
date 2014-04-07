@@ -33,11 +33,11 @@ from PyQt4 import QtGui
 
 from .starttimedialog import Ui_StartTimeDialog
 
-from openlp.core.common import Registry, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 
 
-class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
+class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog, RegistryProperties):
     """
     The start time dialog
     """
@@ -74,12 +74,12 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
             self.minute_finish_spin_box.value() * 60 + self.second_finish_spin_box.value()
         if end > self.item['service_item'].media_length:
             critical_error_message_box(title=translate('OpenLP.StartTime_form', 'Time Validation Error'),
-                                       message=translate('OpenLP.StartTime_form', 
+                                       message=translate('OpenLP.StartTime_form',
                                                          'Finish time is set after the end of the media item'))
             return
         elif start > end:
             critical_error_message_box(title=translate('OpenLP.StartTime_form', 'Time Validation Error'),
-                                       message=translate('OpenLP.StartTime_form', 
+                                       message=translate('OpenLP.StartTime_form',
                                                          'Start time is after the finish time of the media item'))
             return
         self.item['service_item'].start_time = start
@@ -88,20 +88,10 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
 
     def _time_split(self, seconds):
         """
-        Split time up into hours minutes and seconds from secongs
+        Split time up into hours minutes and seconds from seconds
         """
         hours = seconds // 3600
         seconds -= 3600 * hours
         minutes = seconds // 60
         seconds -= 60 * minutes
         return hours, minutes, seconds
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

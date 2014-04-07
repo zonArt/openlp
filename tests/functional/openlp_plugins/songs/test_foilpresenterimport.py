@@ -116,17 +116,17 @@ class TestFoilPresenter(TestCase):
 
     def create_foil_presenter_test(self):
         """
-        Test creating an instance of the FoilPresenter class
+        Test creating an instance of the foil_presenter class
         """
         # GIVEN: A mocked out "manager" and "SongImport" instance
         mocked_manager = MagicMock()
         mocked_song_import = MagicMock()
 
-        # WHEN: An FoilPresenter instance is created
+        # WHEN: An foil_presenter instance is created
         foil_presenter_instance = FoilPresenter(mocked_manager, mocked_song_import)
 
         # THEN: The instance should not be None
-        self.assertIsNotNone(foil_presenter_instance, 'FoilPresenter instance should not be none')
+        self.assertIsNotNone(foil_presenter_instance, 'foil_presenter instance should not be none')
 
     def no_xml_test(self):
         """
@@ -169,7 +169,7 @@ class TestFoilPresenter(TestCase):
         # WHEN: xml_to_song is called with a string without an xml encoding declaration
         foil_presenter_instance.xml_to_song('<foilpresenterfolie>')
 
-        # THEN: the string shiuld have been left intact
+        # THEN: the string should have been left intact
         self.mocked_re.compile.sub.called_with('<foilpresenterfolie>')
 
     def process_lyrics_no_verses_test(self):
@@ -188,7 +188,7 @@ class TestFoilPresenter(TestCase):
         # WHEN: _process_lyrics is called
         result = foil_presenter_instance._process_lyrics(mock_foilpresenterfolie, mocked_song)
 
-        # THEN: _process_lyrics should return None and the song_import logError method should have been called once
+        # THEN: _process_lyrics should return None and the song_import log_error method should have been called once
         self.assertIsNone(result)
-        self.mocked_song_import.logError.assert_called_once_with('Element Text', 'Translated String')
+        self.mocked_song_import.log_error.assert_called_once_with('Element Text', 'Translated String')
         self.process_lyrics_patcher.start()

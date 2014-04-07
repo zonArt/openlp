@@ -79,8 +79,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         Reimplemented method to react to resizing of the widget.
 
-        ``event``
-            The event that happened.
+        :param event: The event that happened.
         """
         size = self.clear_button.size()
         frame_width = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
@@ -100,8 +99,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         Set a new current search type.
 
-        ``identifier``
-            The search type identifier (int).
+        :param identifier: The search type identifier (int).
         """
         menu = self.menu_button.menu()
         for action in menu.actions():
@@ -122,9 +120,8 @@ class SearchEdit(QtGui.QLineEdit):
         A list of tuples to be used in the search type menu. The first item in the list will be preselected as the
         default.
 
-        ``items``
-            The list of tuples to use. The tuples should contain an integer identifier, an icon (QIcon instance or
-            string) and a title for the item in the menu. In short, they should look like this::
+         :param items:     The list of tuples to use. The tuples should contain an integer identifier, an icon (QIcon
+         instance or string) and a title for the item in the menu. In short, they should look like this::
 
                 (<identifier>, <icon>, <title>, <place holder text>)
 
@@ -162,8 +159,7 @@ class SearchEdit(QtGui.QLineEdit):
         Internally implemented slot to react to when the text in the line edit has changed so that we can show or hide
         the clear button.
 
-        ``text``
-            A :class:`~PyQt4.QtCore.QString` instance which represents the text in the line edit.
+        :param text: A :class:`~PyQt4.QtCore.QString` instance which represents the text in the line edit.
         """
         self.clear_button.setVisible(bool(text))
 
@@ -182,15 +178,7 @@ class SearchEdit(QtGui.QLineEdit):
         correct action on the button, and set the current search type (using the list of identifiers provided by the
         developer), the ``searchTypeChanged(int)`` signal is emitted with the identifier.
         """
-        sender = self.sender()
         for action in self.menu_button.menu().actions():
+            # Why is this needed?
             action.setChecked(False)
-        self.menu_button.setDefaultAction(sender)
-        self._current_search_type = sender.data()
-        # setplaceholder_text has been implemented in Qt 4.7 and in at least
-        # PyQt 4.9 (I am not sure, if it was implemented in PyQt 4.8).
-        try:
-            self.setPlaceholderText(self.menu_button.defaultAction().placeholder_text)
-        except AttributeError:
-            pass
-        self.emit(QtCore.SIGNAL('searchTypeChanged(int)'), self._current_search_type)
+        self.set_current_search_type(self.sender().data())

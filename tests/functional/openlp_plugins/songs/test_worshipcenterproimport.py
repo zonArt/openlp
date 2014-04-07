@@ -73,35 +73,37 @@ class WorshipCenterProImportLogger(WorshipCenterProImport):
 
 
 RECORDSET_TEST_DATA = [TestRecord(1, 'TITLE', 'Amazing Grace'),
-                       TestRecord(1, 'LYRICS',
-                            'Amazing grace! How&crlf;sweet the sound&crlf;That saved a wretch like me!&crlf;'
-                            'I once was lost,&crlf;but now am found;&crlf;Was blind, but now I see.&crlf;&crlf;'
-                            '\'Twas grace that&crlf;taught my heart to fear,&crlf;And grace my fears relieved;&crlf;'
-                            'How precious did&crlf;that grace appear&crlf;The hour I first believed.&crlf;&crlf;'
-                            'Through many dangers,&crlf;toils and snares,&crlf;I have already come;&crlf;'
-                            '\'Tis grace hath brought&crlf;me safe thus far,&crlf;'
-                            'And grace will lead me home.&crlf;&crlf;The Lord has&crlf;promised good to me,&crlf;'
-                            'His Word my hope secures;&crlf;He will my Shield&crlf;and Portion be,&crlf;'
-                            'As long as life endures.&crlf;&crlf;Yea, when this flesh&crlf;and heart shall fail,&crlf;'
-                            'And mortal life shall cease,&crlf;I shall possess,&crlf;within the veil,&crlf;'
-                            'A life of joy and peace.&crlf;&crlf;The earth shall soon&crlf;dissolve like snow,&crlf;'
-                            'The sun forbear to shine;&crlf;But God, Who called&crlf;me here below,&crlf;'
-                            'Shall be forever mine.&crlf;&crlf;When we\'ve been there&crlf;ten thousand years,&crlf;'
-                            'Bright shining as the sun,&crlf;We\'ve no less days to&crlf;sing God\'s praise&crlf;'
-                            'Than when we\'d first begun.&crlf;&crlf;'),
+                       TestRecord(
+                           1, 'LYRICS',
+                           'Amazing grace! How&crlf;sweet the sound&crlf;That saved a wretch like me!&crlf;'
+                           'I once was lost,&crlf;but now am found;&crlf;Was blind, but now I see.&crlf;&crlf;'
+                           '\'Twas grace that&crlf;taught my heart to fear,&crlf;And grace my fears relieved;&crlf;'
+                           'How precious did&crlf;that grace appear&crlf;The hour I first believed.&crlf;&crlf;'
+                           'Through many dangers,&crlf;toils and snares,&crlf;I have already come;&crlf;'
+                           '\'Tis grace hath brought&crlf;me safe thus far,&crlf;'
+                           'And grace will lead me home.&crlf;&crlf;The Lord has&crlf;promised good to me,&crlf;'
+                           'His Word my hope secures;&crlf;He will my Shield&crlf;and Portion be,&crlf;'
+                           'As long as life endures.&crlf;&crlf;Yea, when this flesh&crlf;and heart shall fail,&crlf;'
+                           'And mortal life shall cease,&crlf;I shall possess,&crlf;within the veil,&crlf;'
+                           'A life of joy and peace.&crlf;&crlf;The earth shall soon&crlf;dissolve like snow,&crlf;'
+                           'The sun forbear to shine;&crlf;But God, Who called&crlf;me here below,&crlf;'
+                           'Shall be forever mine.&crlf;&crlf;When we\'ve been there&crlf;ten thousand years,&crlf;'
+                           'Bright shining as the sun,&crlf;We\'ve no less days to&crlf;sing God\'s praise&crlf;'
+                           'Than when we\'d first begun.&crlf;&crlf;'),
                        TestRecord(2, 'TITLE', 'Beautiful Garden Of Prayer, The'),
-                       TestRecord(2, 'LYRICS',
-                            'There\'s a garden where&crlf;Jesus is waiting,&crlf;'
-                            'There\'s a place that&crlf;is wondrously fair,&crlf;For it glows with the&crlf;'
-                            'light of His presence.&crlf;\'Tis the beautiful&crlf;garden of prayer.&crlf;&crlf;'
-                            'Oh, the beautiful garden,&crlf;the garden of prayer!&crlf;Oh, the beautiful&crlf;'
-                            'garden of prayer!&crlf;There my Savior awaits,&crlf;and He opens the gates&crlf;'
-                            'To the beautiful&crlf;garden of prayer.&crlf;&crlf;There\'s a garden where&crlf;'
-                            'Jesus is waiting,&crlf;And I go with my&crlf;burden and care,&crlf;'
-                            'Just to learn from His&crlf;lips words of comfort&crlf;In the beautiful&crlf;'
-                            'garden of prayer.&crlf;&crlf;There\'s a garden where&crlf;Jesus is waiting,&crlf;'
-                            'And He bids you to come,&crlf;meet Him there;&crlf;Just to bow and&crlf;'
-                            'receive a new blessing&crlf;In the beautiful&crlf;garden of prayer.&crlf;&crlf;')]
+                       TestRecord(
+                           2, 'LYRICS',
+                           'There\'s a garden where&crlf;Jesus is waiting,&crlf;'
+                           'There\'s a place that&crlf;is wondrously fair,&crlf;For it glows with the&crlf;'
+                           'light of His presence.&crlf;\'Tis the beautiful&crlf;garden of prayer.&crlf;&crlf;'
+                           'Oh, the beautiful garden,&crlf;the garden of prayer!&crlf;Oh, the beautiful&crlf;'
+                           'garden of prayer!&crlf;There my Savior awaits,&crlf;and He opens the gates&crlf;'
+                           'To the beautiful&crlf;garden of prayer.&crlf;&crlf;There\'s a garden where&crlf;'
+                           'Jesus is waiting,&crlf;And I go with my&crlf;burden and care,&crlf;'
+                           'Just to learn from His&crlf;lips words of comfort&crlf;In the beautiful&crlf;'
+                           'garden of prayer.&crlf;&crlf;There\'s a garden where&crlf;Jesus is waiting,&crlf;'
+                           'And He bids you to come,&crlf;meet Him there;&crlf;Just to bow and&crlf;'
+                           'receive a new blessing&crlf;In the beautiful&crlf;garden of prayer.&crlf;&crlf;')]
 SONG_TEST_DATA = [{'title': 'Amazing Grace',
                    'verses': [
                        ('Amazing grace! How\nsweet the sound\nThat saved a wretch like me!\nI once was lost,\n'
@@ -118,7 +120,7 @@ SONG_TEST_DATA = [{'title': 'Amazing Grace',
                         'me here below,\nShall be forever mine.'),
                        ('When we\'ve been there\nten thousand years,\nBright shining as the sun,\n'
                         'We\'ve no less days to\nsing God\'s praise\nThan when we\'d first begun.')]},
-                   {'title': 'Beautiful Garden Of Prayer, The',
+                  {'title': 'Beautiful Garden Of Prayer, The',
                    'verses': [
                        ('There\'s a garden where\nJesus is waiting,\nThere\'s a place that\nis wondrously fair,\n'
                         'For it glows with the\nlight of His presence.\n\'Tis the beautiful\ngarden of prayer.'),
@@ -128,6 +130,7 @@ SONG_TEST_DATA = [{'title': 'Amazing Grace',
                         'Just to learn from His\nlips words of comfort\nIn the beautiful\ngarden of prayer.'),
                        ('There\'s a garden where\nJesus is waiting,\nAnd He bids you to come,\nmeet Him there;\n'
                         'Just to bow and\nreceive a new blessing\nIn the beautiful\ngarden of prayer.')]}]
+
 
 class TestWorshipCenterProSongImport(TestCase):
     """
@@ -152,28 +155,28 @@ class TestWorshipCenterProSongImport(TestCase):
         Test that exceptions raised by pyodbc are handled
         """
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module, a mocked out translate method,
-        #       a mocked "manager" and a mocked out logError method.
+        #       a mocked "manager" and a mocked out log_error method.
         with patch('openlp.plugins.songs.lib.worshipcenterproimport.SongImport'), \
             patch('openlp.plugins.songs.lib.worshipcenterproimport.pyodbc.connect') as mocked_pyodbc_connect, \
-            patch('openlp.plugins.songs.lib.worshipcenterproimport.translate') as mocked_translate:
+                patch('openlp.plugins.songs.lib.worshipcenterproimport.translate') as mocked_translate:
             mocked_manager = MagicMock()
             mocked_log_error = MagicMock()
             mocked_translate.return_value = 'Translated Text'
             importer = WorshipCenterProImport(mocked_manager)
-            importer.logError = mocked_log_error
+            importer.log_error = mocked_log_error
             importer.import_source = 'import_source'
             pyodbc_errors = [pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError]
             mocked_pyodbc_connect.side_effect = pyodbc_errors
 
-            # WHEN: Calling the doImport method
+            # WHEN: Calling the do_import method
             for effect in pyodbc_errors:
-                return_value = importer.doImport()
+                return_value = importer.do_import()
 
-                # THEN: doImport should return None, and pyodbc, translate & logError are called with known calls
-                self.assertIsNone(return_value, 'doImport should return None when pyodbc raises an exception.')
-                mocked_pyodbc_connect.assert_called_with( 'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
+                # THEN: do_import should return None, and pyodbc, translate & log_error are called with known calls
+                self.assertIsNone(return_value, 'do_import should return None when pyodbc raises an exception.')
+                mocked_pyodbc_connect.assert_called_with('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
                 mocked_translate.assert_called_with('SongsPlugin.WorshipCenterProImport',
-                    'Unable to connect the WorshipCenter Pro database.')
+                                                    'Unable to connect the WorshipCenter Pro database.')
                 mocked_log_error.assert_called_with('import_source', 'Translated Text')
 
     def song_import_test(self):
@@ -181,10 +184,10 @@ class TestWorshipCenterProSongImport(TestCase):
         Test that a simulated WorshipCenter Pro recordset is imported correctly
         """
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module with a simulated recordset, a mocked out
-        #       translate method,  a mocked "manager", addVerse method & mocked_finish method.
+        #       translate method,  a mocked "manager", add_verse method & mocked_finish method.
         with patch('openlp.plugins.songs.lib.worshipcenterproimport.SongImport'), \
             patch('openlp.plugins.songs.lib.worshipcenterproimport.pyodbc') as mocked_pyodbc, \
-            patch('openlp.plugins.songs.lib.worshipcenterproimport.translate') as mocked_translate:
+                patch('openlp.plugins.songs.lib.worshipcenterproimport.translate') as mocked_translate:
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             mocked_add_verse = MagicMock()
@@ -194,17 +197,16 @@ class TestWorshipCenterProSongImport(TestCase):
             importer = WorshipCenterProImportLogger(mocked_manager)
             importer.import_source = 'import_source'
             importer.import_wizard = mocked_import_wizard
-            importer.addVerse = mocked_add_verse
+            importer.add_verse = mocked_add_verse
             importer.stop_import_flag = False
             importer.finish = mocked_finish
 
-            # WHEN: Calling the doImport method
-            return_value = importer.doImport()
+            # WHEN: Calling the do_import method
+            return_value = importer.do_import()
 
-
-            # THEN: doImport should return None, and pyodbc, import_wizard, importer.title and addVerse are called with
-            #       known calls
-            self.assertIsNone(return_value, 'doImport should return None when pyodbc raises an exception.')
+            # THEN: do_import should return None, and pyodbc, import_wizard, importer.title and add_verse are called
+            # with known calls
+            self.assertIsNone(return_value, 'do_import should return None when pyodbc raises an exception.')
             mocked_pyodbc.connect.assert_called_with('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
             mocked_pyodbc.connect().cursor.assert_any_call()
             mocked_pyodbc.connect().cursor().execute.assert_called_with('SELECT ID, Field, Value FROM __SONGDATA')
@@ -214,10 +216,10 @@ class TestWorshipCenterProSongImport(TestCase):
             for song_data in SONG_TEST_DATA:
                 title_value = song_data['title']
                 self.assertIn(title_value, importer._title_assignment_list,
-                    'title should have been set to %s' % title_value)
+                              'title should have been set to %s' % title_value)
                 verse_calls = song_data['verses']
                 add_verse_call_count += len(verse_calls)
                 for call in verse_calls:
                     mocked_add_verse.assert_any_call(call)
             self.assertEqual(mocked_add_verse.call_count, add_verse_call_count,
-                'Incorrect number of calls made to addVerse')
+                             'Incorrect number of calls made to add_verse')

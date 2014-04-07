@@ -54,8 +54,8 @@ class PdfController(PresentationController):
         :param plugin: The plugin that creates the controller.
         """
         log.debug('Initialising')
+        super(PdfController, self).__init__(plugin, 'Pdf', PdfDocument)
         self.process = None
-        PresentationController.__init__(self, plugin, 'Pdf', PdfDocument)
         self.supports = ['pdf']
         self.also_supports = []
         # Determine whether mudraw or ghostscript is used
@@ -113,7 +113,7 @@ class PdfController(PresentationController):
         self.gsbin = ''
         self.also_supports = []
         # Use the user defined program if given
-        if (Settings().value('presentations/enable_pdf_program')):
+        if Settings().value('presentations/enable_pdf_program'):
             pdf_program = Settings().value('presentations/pdf_program')
             program_type = self.check_binary(pdf_program)
             if program_type == 'gs':
@@ -132,7 +132,8 @@ class PdfController(PresentationController):
                 DEVNULL = open(os.devnull, 'wb')
                 # First try to find mupdf
                 try:
-                    self.mudrawbin = check_output(['which', 'mudraw'], stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
+                    self.mudrawbin = check_output(['which', 'mudraw'],
+                                                  stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
                 except CalledProcessError:
                     self.mudrawbin = ''
                 # if mupdf isn't installed, fallback to ghostscript
@@ -192,12 +193,13 @@ class PdfDocument(PresentationDocument):
         :return: The resolution dpi to be used.
         """
         # Use a postscript script to get size of the pdf. It is assumed that all pages have same size
-        gs_resolution_script = AppLocation.get_directory(AppLocation.PluginsDir) + '/presentations/lib/ghostscript_get_resolution.ps'
+        gs_resolution_script = AppLocation.get_directory(
+            AppLocation.PluginsDir) + '/presentations/lib/ghostscript_get_resolution.ps'
         # Run the script on the pdf to get the size
         runlog = []
         try:
             runlog = check_output([self.controller.gsbin, '-dNOPAUSE', '-dNODISPLAY', '-dBATCH',
-                                   '-sFile=' + self.filepath, gs_resolution_script])
+                                   '-sFile=' + self.file_path, gs_resolution_script])
         except CalledProcessError as e:
             log.debug(' '.join(e.cmd))
             log.debug(e.output)
@@ -246,13 +248,13 @@ class PdfDocument(PresentationDocument):
                 os.makedirs(self.get_temp_folder())
             if self.controller.mudrawbin:
                 runlog = check_output([self.controller.mudrawbin, '-w', str(size.right()), '-h', str(size.bottom()),
-                                       '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.filepath])
+                                       '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path])
             elif self.controller.gsbin:
                 resolution = self.gs_get_resolution(size)
                 runlog = check_output([self.controller.gsbin, '-dSAFER', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m',
                                        '-r' + str(resolution), '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4',
                                        '-sOutputFile=' + os.path.join(self.get_temp_folder(), 'mainslide%03d.png'),
-                                       self.filepath])
+                                       self.file_path])
             created_files = sorted(os.listdir(self.get_temp_folder()))
             for fn in created_files:
                 if os.path.isfile(os.path.join(self.get_temp_folder(), fn)):

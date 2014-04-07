@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, UiStrings, translate
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
@@ -44,7 +44,7 @@ from .themewizard import Ui_ThemeWizard
 log = logging.getLogger(__name__)
 
 
-class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
+class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
     """
     This is the Theme Import Wizard, which allows easy creation and editing of
     OpenLP themes.
@@ -55,8 +55,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
-        ``parent``
-            The QWidget-derived parent of the wizard.
+        :param parent: The QWidget-derived parent of the wizard.
         """
         super(ThemeForm, self).__init__(parent)
         self.setupUi(self)
@@ -181,7 +180,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 self.theme.background_type == background_image and is_not_image_file(self.theme.background_filename):
             QtGui.QMessageBox.critical(self, translate('OpenLP.ThemeWizard', 'Background Image Empty'),
                                        translate('OpenLP.ThemeWizard', '_you have not selected a '
-                                       'background image. Please select one before continuing.'))
+                                                 'background image. Please select one before continuing.'))
             return False
         else:
             return True
@@ -542,23 +541,3 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if new_color.isValid():
             field = new_color.name()
         return field
-
-    def _get_renderer(self):
-        """
-        Adds the Renderer to the class dynamically
-        """
-        if not hasattr(self, '_renderer'):
-            self._renderer = Registry().get('renderer')
-        return self._renderer
-
-    renderer = property(_get_renderer)
-
-    def _get_theme_manager(self):
-        """
-        Adds the theme manager to the class dynamically
-        """
-        if not hasattr(self, '_theme_manager'):
-            self._theme_manager = Registry().get('theme_manager')
-        return self._theme_manager
-
-    theme_manager = property(_get_theme_manager)

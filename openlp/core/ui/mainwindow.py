@@ -41,7 +41,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate
 from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageManager, PluginStatus, ScreenList, \
     build_icon
 from openlp.core.lib.ui import UiStrings, create_action
@@ -106,8 +106,8 @@ class Ui_MainWindow(object):
         self.control_splitter.setObjectName('control_splitter')
         self.main_content_layout.addWidget(self.control_splitter)
         # Create slide controllers
-        self.preview_controller = PreviewController(self)
-        self.live_controller = LiveController(self)
+        PreviewController(self)
+        LiveController(self)
         preview_visible = Settings().value('user interface/preview panel')
         live_visible = Settings().value('user interface/live panel')
         panel_locked = Settings().value('user interface/lock panel')
@@ -460,7 +460,7 @@ class Ui_MainWindow(object):
         self.mode_live_item.setStatusTip(translate('OpenLP.MainWindow', 'Set the view mode to Live.'))
 
 
-class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
     """
     The main window.
     """
@@ -492,14 +492,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.copy_data = False
         Settings().set_up_default_values()
         self.about_form = AboutForm(self)
-        self.media_controller = MediaController()
-        self.settings_form = SettingsForm(self)
+        MediaController()
+        SettingsForm(self)
         self.formatting_tag_form = FormattingTagForm(self)
         self.shortcut_form = ShortcutListForm(self)
         # Set up the path with plugins
-        self.plugin_manager = PluginManager(self)
-        self.image_manager = ImageManager()
-        self.renderer = Renderer()
+        PluginManager(self)
+        ImageManager()
+        Renderer()
         # Set up the interface
         self.setupUi(self)
         # Define the media Dock Manager
@@ -652,7 +652,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                                            translate('OpenLP.MainWindow', 'Are you sure you want to re-run the First '
                                                      'Time Wizard?\n\nRe-running this wizard may make changes to your '
                                                      'current OpenLP configuration and possibly add songs to your '
-                                                     '#existing songs list and change your default theme.'),
+                                                     'existing songs list and change your default theme.'),
                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                              QtGui.QMessageBox.No),
                                            QtGui.QMessageBox.No)
@@ -697,11 +697,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Display an error message
 
-        ``title``
-            The title of the warning box.
-
-        ``message``
-            The message to be displayed.
+        :param title: The title of the warning box.
+        :param message: The message to be displayed.
         """
         if hasattr(self.application, 'splash'):
             self.application.splash.close()
@@ -711,11 +708,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Display a warning message
 
-        ``title``
-            The title of the warning box.
-
-        ``message``
-            The message to be displayed.
+        :param title:  The title of the warning box.
+        :param message: The message to be displayed.
         """
         if hasattr(self.application, 'splash'):
             self.application.splash.close()
@@ -725,11 +719,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Display an informational message
 
-        ``title``
-            The title of the warning box.
-
-        ``message``
-            The message to be displayed.
+        :param title: The title of the warning box.
+        :param message: The message to be displayed.
         """
         if hasattr(self.application, 'splash'):
             self.application.splash.close()
@@ -896,7 +887,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # application terminates normally.   We need to exit without saving configuration.
         QtGui.QMessageBox.information(self, translate('OpenLP.MainWindow', 'Import settings'),
                                       translate('OpenLP.MainWindow', 'OpenLP will now close.  Imported settings will '
-                                      'be applied the next time you start OpenLP.'),
+                                                'be applied the next time you start OpenLP.'),
                                       QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
         self.settings_imported = True
         self.clean_up()
@@ -1051,8 +1042,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 ret = QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'Close OpenLP'),
                                                  translate('OpenLP.MainWindow', 'Are you sure you want to close '
                                                                                 'OpenLP?'),
-                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui
-                                                 .QMessageBox.No),
+                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                                   QtGui.QMessageBox.No),
                                                  QtGui.QMessageBox.Yes)
                 if ret == QtGui.QMessageBox.Yes:
                     self.clean_up()
@@ -1067,8 +1058,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Runs all the cleanup code before OpenLP shuts down.
 
-        ``save_settings``
-            Switch to prevent saving settings. Defaults to **True**.
+        :param save_settings: Switch to prevent saving settings. Defaults to **True**.
         """
         self.image_manager.stop_manager = True
         while self.image_manager.image_thread.isRunning():
@@ -1099,11 +1089,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         This method is called from the ServiceManager to set the title of the main window.
 
-        ``modified``
-            Whether or not this service has been modified.
-
-        ``file_name``
-            The file name of the service file.
+        :param modified: Whether or not this service has been modified.
+        :param file_name: The file name of the service file.
         """
         if modified:
             title = '%s - %s*' % (UiStrings().OLPV2x, file_name)
@@ -1146,10 +1133,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Sets the visibility of the preview panel including saving the setting and updating the menu.
 
-        ``visible``
-            A bool giving the state to set the panel to
+        :param visible: A bool giving the state to set the panel to
                 True - Visible
                 False - Hidden
+
         """
         self.preview_controller.panel.setVisible(visible)
         Settings().setValue('user interface/preview panel', visible)
@@ -1183,8 +1170,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Sets the visibility of the live panel including saving the setting and updating the menu.
 
-        ``visible``
-            A bool giving the state to set the panel to
+
+        :param visible: A bool giving the state to set the panel to
                 True - Visible
                 False - Hidden
         """
@@ -1247,16 +1234,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.recent_files_menu.clear()
         for file_id, filename in enumerate(recent_files_to_display):
             log.debug('Recent file name: %s', filename)
-            action = create_action(self, '',
-                                   text='&%d %s' % (file_id + 1,
+            action = create_action(self, '', text='&%d %s' % (file_id + 1,
                                    os.path.splitext(os.path.basename(str(filename)))[0]), data=filename,
                                    triggers=self.service_manager_contents.on_recent_service_clicked)
             self.recent_files_menu.addAction(action)
         clear_recent_files_action = create_action(self, '',
                                                   text=translate('OpenLP.MainWindow', 'Clear List', 'Clear List of '
-                                                                                                   'recent files'),
+                                                                                                    'recent files'),
                                                   statustip=translate('OpenLP.MainWindow', 'Clear the list of recent '
-                                                                                          'files.'),
+                                                                                           'files.'),
                                                   enabled=bool(self.recent_files),
                                                   triggers=self.clear_recent_file_menu)
         add_actions(self.recent_files_menu, (None, clear_recent_files_action))
@@ -1266,8 +1252,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Adds a service to the list of recently used files.
 
-        ``filename``
-            The service filename to add
+        :param filename: The service filename to add
         """
         # The max_recent_files value does not have an interface and so never gets
         # actually stored in the settings therefore the default value of 20 will
@@ -1366,8 +1351,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.application.set_normal_cursor()
                 log.exception('Data copy failed %s' % str(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
-                                           translate('OpenLP.MainWindow',
-                                           'OpenLP Data directory copy failed\n\n%s').replace('%s', str(why)),
+                                           translate('OpenLP.MainWindow', 'OpenLP Data directory copy failed\n\n%s').
+                                           replace('%s', str(why)),
                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 return False
         else:
@@ -1379,17 +1364,3 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.new_data_path == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove('advanced/data path')
         self.application.set_normal_cursor()
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

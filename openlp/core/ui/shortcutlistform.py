@@ -33,7 +33,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, Settings, translate
+from openlp.core.common import RegistryProperties, Settings, translate
 from openlp.core.utils.actions import ActionList
 from .shortcutlistdialog import Ui_ShortcutListDialog
 
@@ -42,7 +42,7 @@ REMOVE_AMPERSAND = re.compile(r'&{1}')
 log = logging.getLogger(__name__)
 
 
-class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
+class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties):
     """
     The shortcut list dialog
     """
@@ -285,7 +285,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if QtGui.QMessageBox.question(self, translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
                                       translate('OpenLP.ShortcutListDialog', 'Do you want to restore all '
                                                 'shortcuts to their defaults?'),
-                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | 
+                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                         QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
             return
         self._adjust_button(self.primary_push_button, False, text='')
@@ -397,11 +397,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         Checks if the given ``changing_action `` can use the given ``key_sequence``. Returns ``True`` if the
         ``key_sequence`` can be used by the action, otherwise displays a dialog and returns ``False``.
 
-        ``changing_action``
-            The action which wants to use the ``key_sequence``.
-
-        ``key_sequence``
-            The key sequence which the action want so use.
+        :param changing_action: The action which wants to use the ``key_sequence``.
+        :param key_sequence: The key sequence which the action want so use.
         """
         is_valid = True
         for category in self.action_list.categories:
@@ -462,14 +459,3 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             button.setChecked(checked)
         if enabled is not None:
             button.setEnabled(enabled)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-

@@ -32,13 +32,13 @@ This module contains tests for the lib submodule of the Remotes plugin.
 import os
 import re
 from unittest import TestCase
-from tempfile import mkstemp
 
 from PyQt4 import QtGui
 
 from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.remotetab import RemoteTab
 from tests.functional import patch
+from tests.helpers.testmixin import TestMixin
 
 __default_settings__ = {
     'remotes/twelve hour': True,
@@ -54,7 +54,7 @@ ZERO_URL = '0.0.0.0'
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
 
 
-class TestRemoteTab(TestCase):
+class TestRemoteTab(TestCase, TestMixin):
     """
     Test the functions in the :mod:`lib` module.
     """
@@ -62,9 +62,8 @@ class TestRemoteTab(TestCase):
         """
         Create the UI
         """
-        self.fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
-        self.application = QtGui.QApplication.instance()
+        self.get_application()
+        self.build_settings()
         Settings().extend_default_settings(__default_settings__)
         self.parent = QtGui.QMainWindow()
         self.form = RemoteTab(self.parent, 'Remotes', None, None)
@@ -73,11 +72,9 @@ class TestRemoteTab(TestCase):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        del self.application
         del self.parent
         del self.form
-        os.close(self.fd)
-        os.unlink(self.ini_file)
+        self.destroy_settings()
 
     def get_ip_address_default_test(self):
         """

@@ -102,8 +102,7 @@ class Ui_FormattingTagDialog(object):
         self.edit_button_layout.addWidget(self.delete_button)
         self.edit_button_layout.addStretch()
         self.list_data_grid_layout.addLayout(self.edit_button_layout)
-        self.button_box = create_button_box(formatting_tag_dialog, 'button_box',
-            ['cancel', 'save', 'defaults'])
+        self.button_box = create_button_box(formatting_tag_dialog, 'button_box', ['cancel', 'save', 'defaults'])
         self.save_button = self.button_box.button(QtGui.QDialogButtonBox.Save)
         self.save_button.setObjectName('save_button')
         self.restore_button = self.button_box.button(QtGui.QDialogButtonBox.RestoreDefaults)

@@ -66,10 +66,8 @@ ADDITIONAL_EXT = {
 
 class PhononPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a Phonon
-    display.
+    A specialised version of the MediaPlayer class, which provides a Phonon display.
     """
-
     def __init__(self, parent):
         """
         Constructor
@@ -83,11 +81,11 @@ class PhononPlayer(MediaPlayer):
         for mime_type in Phonon.BackendCapabilities.availableMimeTypes():
             mime_type = str(mime_type)
             if mime_type.startswith('audio/'):
-                self._addToList(self.audio_extensions_list, mime_type)
+                self._add_to_list(self.audio_extensions_list, mime_type)
             elif mime_type.startswith('video/'):
-                self._addToList(self.video_extensions_list, mime_type)
+                self._add_to_list(self.video_extensions_list, mime_type)
 
-    def _addToList(self, mimetype_list, mimetype):
+    def _add_to_list(self, mime_type_list, mimetype):
         """
         Add mimetypes to the provided list
         """
@@ -95,8 +93,8 @@ class PhononPlayer(MediaPlayer):
         extensions = mimetypes.guess_all_extensions(str(mimetype))
         for extension in extensions:
             ext = '*%s' % extension
-            if ext not in mimetype_list:
-                mimetype_list.append(ext)
+            if ext not in mime_type_list:
+                mime_type_list.append(ext)
         log.info('MediaPlugin: %s extensions: %s' % (mimetype, ' '.join(extensions)))
         # Add extensions for this mimetype from self.additional_extensions.
         # This hack clears mimetypes' and operating system's shortcomings
@@ -104,10 +102,10 @@ class PhononPlayer(MediaPlayer):
         if mimetype in list(self.additional_extensions.keys()):
             for extension in self.additional_extensions[mimetype]:
                 ext = '*%s' % extension
-                if ext not in mimetype_list:
-                    mimetype_list.append(ext)
+                if ext not in mime_type_list:
+                    mime_type_list.append(ext)
             log.info('MediaPlugin: %s additional extensions: %s' %
-                (mimetype, ' '.join(self.additional_extensions[mimetype])))
+                     (mimetype, ' '.join(self.additional_extensions[mimetype])))
 
     def setup(self, display):
         """

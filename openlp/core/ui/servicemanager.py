@@ -39,8 +39,8 @@ from datetime import datetime, timedelta
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, AppLocation, Settings, ThemeLevel, OpenLPMixin, RegistryMixin, \
-    check_directory_exists, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, ThemeLevel, OpenLPMixin, \
+    RegistryMixin, check_directory_exists, UiStrings, translate
 from openlp.core.lib import OpenLPToolbar, ServiceItem, ItemCapabilities, PluginStatus, build_icon
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
@@ -306,7 +306,7 @@ class Ui_ServiceManager(object):
         event.accept()
 
 
-class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManager):
+class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManager, RegistryProperties):
     """
     Manages the services. This involves taking text strings from plugins and adding them to the service. This service
     can then be zipped up with all the resources used into one OSZ or oszl file for use on any OpenLP v2 installation.
@@ -689,8 +689,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         if self._file_name.endswith('oszl') or self.service_has_all_original_files:
             file_name = QtGui.QFileDialog.getSaveFileName(self.main_window, UiStrings().SaveService, path,
                                                           translate('OpenLP.ServiceManager',
-                                                          'OpenLP Service Files (*.osz);; OpenLP Service Files - lite '
-                                                          '(*.oszl)'))
+                                                                    'OpenLP Service Files (*.osz);; OpenLP Service '
+                                                                    'Files - lite (*.oszl)'))
         else:
             file_name = QtGui.QFileDialog.getSaveFileName(self.main_window, UiStrings().SaveService, path,
                                                           translate('OpenLP.ServiceManager',
@@ -783,7 +783,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 self.log_exception('Service file is cannot be extracted as zip: %s' % file_name)
                 QtGui.QMessageBox.information(self, translate('OpenLP.ServiceManager', 'Corrupt File'),
                                               translate('OpenLP.ServiceManager',
-                                              'This file is either corrupt or it is not an OpenLP 2 service file.'))
+                                                        'This file is either corrupt or it is not an OpenLP 2 service '
+                                                        'file.'))
             self.application.set_normal_cursor()
             return
         finally:
@@ -1253,8 +1254,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             tree_widget_item.setText(0, service_item_from_item.get_display_title())
             tips = []
             if service_item_from_item.temporary_edit:
-                tips.append('<strong>%s:</strong> <em>%s</em>' %
-                            (translate('OpenLP.ServiceManager', 'Edit'),
+                tips.append('<strong>%s:</strong> <em>%s</em>' % (translate('OpenLP.ServiceManager', 'Edit'),
                             (translate('OpenLP.ServiceManager', 'Service copy only'))))
             if service_item_from_item.theme and service_item_from_item.theme != -1:
                 tips.append('<strong>%s:</strong> <em>%s</em>' %
@@ -1492,9 +1492,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
 
     def find_service_item(self):
         """
-        Finds the first selected ServiceItem in the list and returns the position of the service_item_from_item and its selected
-        child item. For example, if the third child item (in the Slidecontroller known as slide) in the second service
-        item is selected this will return::
+        Finds the first selected ServiceItem in the list and returns the position of the service_item_from_item and its
+        selected child item. For example, if the third child item (in the Slidecontroller known as slide) in the
+        second service item is selected this will return::
 
             (1, 2)
         """
@@ -1633,67 +1633,3 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         setting_dialog = PrintServiceForm()
         setting_dialog.exec_()
-
-    def _get_renderer(self):
-        """
-        Adds the Renderer to the class dynamically
-        """
-        if not hasattr(self, '_renderer'):
-            self._renderer = Registry().get('renderer')
-        return self._renderer
-
-    renderer = property(_get_renderer)
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)
-
-    def _get_preview_controller(self):
-        """
-        Adds the preview controller to the class dynamically
-        """
-        if not hasattr(self, '_preview_controller'):
-            self._preview_controller = Registry().get('preview_controller')
-        return self._preview_controller
-
-    preview_controller = property(_get_preview_controller)
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_plugin_manager'):
-            self._plugin_manager = Registry().get('plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

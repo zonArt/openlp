@@ -52,14 +52,9 @@ def init_db(url, auto_flush=True, auto_commit=False):
     """
     Initialise and return the session and metadata for a database
 
-    ``url``
-        The database to initialise connection with
-
-    ``auto_flush``
-        Sets the flushing behaviour of the session
-
-    ``auto_commit``
-        Sets the commit behaviour of the session
+    :param url: The database to initialise connection with
+    :param auto_flush: Sets the flushing behaviour of the session
+    :param auto_commit: Sets the commit behaviour of the session
     """
     engine = create_engine(url, poolclass=NullPool)
     metadata = MetaData(bind=engine)
@@ -71,8 +66,7 @@ def get_upgrade_op(session):
     """
     Create a migration context and an operations object for performing upgrades.
 
-    ``session``
-        The SQLAlchemy session object.
+    :param session: The SQLAlchemy session object.
     """
     context = MigrationContext.configure(session.bind.connect())
     return Operations(context)
@@ -82,11 +76,8 @@ def upgrade_db(url, upgrade):
     """
     Upgrade a database.
 
-    ``url``
-        The url of the database to upgrade.
-
-    ``upgrade``
-        The python module that contains the upgrade instructions.
+    :param url: The url of the database to upgrade.
+    :param upgrade: The python module that contains the upgrade instructions.
     """
     session, metadata = init_db(url)
 
@@ -96,9 +87,10 @@ def upgrade_db(url, upgrade):
         """
         pass
 
-    metadata_table = Table('metadata', metadata,
-                           Column('key', types.Unicode(64), primary_key=True),
-                           Column('value', types.UnicodeText(), default=None)
+    metadata_table = Table(
+        'metadata', metadata,
+        Column('key', types.Unicode(64), primary_key=True),
+        Column('value', types.UnicodeText(), default=None)
     )
     metadata_table.create(checkfirst=True)
     mapper(Metadata, metadata_table)
@@ -137,13 +129,9 @@ def delete_database(plugin_name, db_file_name=None):
     """
     Remove a database file from the system.
 
-    ``plugin_name``
-        The name of the plugin to remove the database for
-
-    ``db_file_name``
-        The database file name. Defaults to None resulting in the plugin_name being used.
+    :param plugin_name: The name of the plugin to remove the database for
+    :param db_file_name: The database file name. Defaults to None resulting in the plugin_name being used.
     """
-    db_file_path = None
     if db_file_name:
         db_file_path = os.path.join(AppLocation.get_section_data_path(plugin_name), db_file_name)
     else:
@@ -175,17 +163,11 @@ class Manager(object):
         Runs the initialisation process that includes creating the connection to the database and the tables if they do
         not exist.
 
-        ``plugin_name``
-            The name to setup paths and settings section names
-
-        ``init_schema``
-            The init_schema function for this database
-
-        ``upgrade_schema``
-            The upgrade_schema function for this database
-
-        ``db_file_name``
-            The file name to use for this database. Defaults to None resulting in the plugin_name being used.
+        :param plugin_name:  The name to setup paths and settings section names
+        :param init_schema: The init_schema function for this database
+        :param db_file_name: The upgrade_schema function for this database
+        :param upgrade_mod: The file name to use for this database. Defaults to None resulting in the plugin_name
+        being used.
         """
         settings = Settings()
         settings.beginGroup(plugin_name)
@@ -208,7 +190,10 @@ class Manager(object):
                 self.db_url += '?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:
-            db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
+            try:
+                db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
+            except (SQLAlchemyError, DBAPIError):
+                log.exception('Error loading database: %s', self.db_url)
             if db_ver > up_ver:
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
@@ -229,11 +214,8 @@ class Manager(object):
         """
         Save an object to the database
 
-        ``object_instance``
-            The object to save
-
-        ``commit``
-            Commit the session with this object
+        :param object_instance: The object to save
+        :param commit:  Commit the session with this object
         """
         for try_count in range(3):
             try:
@@ -262,11 +244,8 @@ class Manager(object):
         """
         Save a list of objects to the database
 
-        ``object_list``
-            The list of objects to save
-
-        ``commit``
-            Commit the session with this object
+        :param object_list: The list of objects to save
+        :param commit: Commit the session with this object
         """
         for try_count in range(3):
             try:
@@ -295,11 +274,8 @@ class Manager(object):
         """
         Return the details of an object
 
-        ``object_class``
-            The type of object to return
-
-        ``key``
-            The unique reference or primary key for the instance to return
+        :param object_class:  The type of object to return
+        :param key: The unique reference or primary key for the instance to return
         """
         if not key:
             return object_class()
@@ -319,11 +295,8 @@ class Manager(object):
         """
         Returns an object matching specified criteria
 
-        ``object_class``
-            The type of object to return
-
-        ``filter_clause``
-            The criteria to select the object by
+        :param object_class: The type of object to return
+        :param filter_clause: The criteria to select the object by
         """
         for try_count in range(3):
             try:
@@ -340,14 +313,9 @@ class Manager(object):
         """
         Returns all the objects from the database
 
-        ``object_class``
-            The type of objects to return
-
-        ``filter_clause``
-            The filter governing selection of objects to return. Defaults to None.
-
-        ``order_by_ref``
-            Any parameters to order the returned objects by. Defaults to None.
+        :param object_class: The type of objects to return
+        :param filter_clause: The filter governing selection of objects to return. Defaults to None.
+        :param order_by_ref: Any parameters to order the returned objects by. Defaults to None.
         """
         query = self.session.query(object_class)
         if filter_clause is not None:
@@ -371,11 +339,8 @@ class Manager(object):
         """
         Returns a count of the number of objects in the database.
 
-        ``object_class``
-            The type of objects to return.
-
-        ``filter_clause``
-            The filter governing selection of objects to return. Defaults to None.
+        :param object_class: The type of objects to return.
+        :param filter_clause: The filter governing selection of objects to return. Defaults to None.
         """
         query = self.session.query(object_class)
         if filter_clause is not None:
@@ -395,11 +360,8 @@ class Manager(object):
         """
         Delete an object from the database
 
-        ``object_class``
-            The type of object to delete
-
-        ``key``
-            The unique reference or primary key for the instance to be deleted
+        :param object_class: The type of object to delete
+        :param key: The unique reference or primary key for the instance to be deleted
         """
         if key != 0:
             object_instance = self.get_object(object_class, key)
@@ -432,11 +394,8 @@ class Manager(object):
         Delete all object records. This method should only be used for simple tables and **not** ones with
         relationships. The relationships are not deleted from the database and this will lead to database corruptions.
 
-        ``object_class``
-            The type of object to delete
-
-        ``filter_clause``
-            The filter governing selection of objects to return. Defaults to None.
+        :param object_class:  The type of object to delete
+        :param filter_clause: The filter governing selection of objects to return. Defaults to None.
         """
         for try_count in range(3):
             try:

@@ -31,11 +31,11 @@ The :mod:`~openlp.core.ui.media.mediaplayer` module contains the MediaPlayer cla
 """
 import os
 
-from openlp.core.common import Registry
+from openlp.core.common import RegistryProperties
 from openlp.core.ui.media import MediaState
 
 
-class MediaPlayer(object):
+class MediaPlayer(RegistryProperties):
     """
     This is the base class media Player class to provide OpenLP with a pluggable media display framework.
     """
@@ -151,17 +151,3 @@ class MediaPlayer(object):
         Returns Information about the player
         """
         return ''
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

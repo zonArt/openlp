@@ -26,25 +26,39 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-import sys
+"""
+Mixin class with helpers
+"""
+import os
+from tempfile import mkstemp
 
-from openlp.plugins.songs.lib.opensongimport import OpenSongImport
-from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib.db import init_schema
+from PyQt4 import QtCore, QtGui
+from openlp.core.common import Settings
 
-import logging
-LOG_FILENAME = 'test_import_file.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
-from test_opensongimport import wizard_stub
+class TestMixin(object):
 
-def test(filenames):
-    manager = Manager('songs', init_schema)
-    o = OpenSongImport(manager, filenames=filenames)
-    o.import_wizard = wizard_stub()
-    o.commit = False
-    o.do_import()
-    o.print_song()
+    def get_application(self):
+        """
+        Build or reuse the Application object
+        """
+        old_app_instance = QtCore.QCoreApplication.instance()
+        if old_app_instance is None:
+            self.app = QtGui.QApplication([])
+        else:
+            self.app = old_app_instance
 
-if __name__ == "__main__":
-    test(sys.argv[1:])
+    def build_settings(self):
+        """
+        Build the settings Object and initialise it
+        """
+        Settings.setDefaultFormat(Settings.IniFormat)
+        self.fd, self.ini_file = mkstemp('.ini')
+        Settings().set_filename(self.ini_file)
+
+    def destroy_settings(self):
+        """
+        Destroy the Settings Object
+        """
+        os.close(self.fd)
+        os.unlink(Settings().fileName())

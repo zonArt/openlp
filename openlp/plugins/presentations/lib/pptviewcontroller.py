@@ -34,6 +34,7 @@ if os.name == 'nt':
     from ctypes import cdll
     from ctypes.wintypes import RECT
 
+from openlp.core.utils import AppLocation
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
 
@@ -85,8 +86,8 @@ class PptviewController(PresentationController):
             if self.process:
                 return
             log.debug('start PPTView')
-            dll_path = os.path.join(
-                self.plugin_manager.base_path, 'presentations', 'lib', 'pptviewlib', 'pptviewlib.dll')
+            dll_path = os.path.join(AppLocation.get_directory(AppLocation.AppDir),
+                                    'plugins', 'presentations', 'lib', 'pptviewlib', 'pptviewlib.dll')
             self.process = cdll.LoadLibrary(dll_path)
             if log.isEnabledFor(logging.DEBUG):
                 self.process.SetDebug(1)
@@ -124,7 +125,7 @@ class PptviewDocument(PresentationDocument):
         temp_folder = self.get_temp_folder()
         size = ScreenList().current['size']
         rect = RECT(size.x(), size.y(), size.right(), size.bottom())
-        file_path = os.path.normpath(self.filepath)
+        file_path = os.path.normpath(self.file_path)
         preview_path = os.path.join(temp_folder, 'slide')
         # Ensure that the paths are null terminated
         file_path = file_path.encode('utf-16-le') + b'\0'
@@ -228,11 +229,13 @@ class PptviewDocument(PresentationDocument):
         """
         return self.controller.process.GetSlideCount(self.ppt_id)
 
-    def goto_slide(self, slideno):
+    def goto_slide(self, slide_no):
         """
         Moves to a specific slide in the presentation.
+
+        :param slide_no: The slide the text is required for, starting at 1
         """
-        self.controller.process.GotoSlide(self.ppt_id, slideno)
+        self.controller.process.GotoSlide(self.ppt_id, slide_no)
 
     def next_step(self):
         """

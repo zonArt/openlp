@@ -58,20 +58,19 @@ class OooImport(SongImport):
     """
     def __init__(self, manager, **kwargs):
         """
-        Initialise the class. Requires a songmanager class which is passed
-        to SongImport for writing song to disk
+        Initialise the class. Requires a songmanager class which is passed to SongImport for writing song to disk
         """
         SongImport.__init__(self, manager, **kwargs)
         self.document = None
-        self.processStarted = False
+        self.process_started = False
 
-    def doImport(self):
+    def do_import(self):
         if not isinstance(self.import_source, list):
             return
         try:
-            self.startOoo()
+            self.start_ooo()
         except NoConnectException as exc:
-            self.logError(
+            self.log_error(
                 self.import_source[0],
                 translate('SongsPlugin.SongImport', 'Cannot access OpenOffice or LibreOffice'))
             log.error(exc)
@@ -82,34 +81,34 @@ class OooImport(SongImport):
                 break
             filename = str(filename)
             if os.path.isfile(filename):
-                self.openOooFile(filename)
+                self.open_ooo_file(filename)
                 if self.document:
-                    self.processOooDocument()
-                    self.closeOooFile()
+                    self.process_ooo_document()
+                    self.close_ooo_file()
                 else:
-                    self.logError(self.filepath, translate('SongsPlugin.SongImport', 'Unable to open file'))
+                    self.log_error(self.file_path, translate('SongsPlugin.SongImport', 'Unable to open file'))
             else:
-                self.logError(self.filepath, translate('SongsPlugin.SongImport', 'File not found'))
-        self.closeOoo()
+                self.log_error(self.file_path, translate('SongsPlugin.SongImport', 'File not found'))
+        self.close_ooo()
 
-    def processOooDocument(self):
+    def process_ooo_document(self):
         """
         Handle the import process for OpenOffice files. This method facilitates
         allowing subclasses to handle specific types of OpenOffice files.
         """
         if self.document.supportsService("com.sun.star.presentation.PresentationDocument"):
-            self.processPres()
+            self.process_presentation()
         if self.document.supportsService("com.sun.star.text.TextDocument"):
-            self.processDoc()
+            self.process_doc()
 
-    def startOoo(self):
+    def start_ooo(self):
         """
         Start OpenOffice.org process
         TODO: The presentation/Impress plugin may already have it running
         """
         if os.name == 'nt':
-            self.startOooProcess()
-            self.desktop = self.oooManager.createInstance('com.sun.star.frame.Desktop')
+            self.start_ooo_process()
+            self.desktop = self.ooo_manager.createInstance('com.sun.star.frame.Desktop')
         else:
             context = uno.getComponentContext()
             resolver = context.ServiceManager.createInstanceWithContext('com.sun.star.bridge.UnoUrlResolver', context)
@@ -121,7 +120,7 @@ class OooImport(SongImport):
                 except NoConnectException:
                     time.sleep(0.1)
                     log.exception("Failed to resolve uno connection")
-                    self.startOooProcess()
+                    self.start_ooo_process()
                     loop += 1
                 else:
                     manager = uno_instance.ServiceManager
@@ -129,60 +128,62 @@ class OooImport(SongImport):
                     return
             raise Exception('Unable to start LibreOffice')
 
-    def startOooProcess(self):
+    def start_ooo_process(self):
+        """
+        Start the OO Process
+        """
         try:
             if os.name == 'nt':
-                self.oooManager = Dispatch('com.sun.star.ServiceManager')
-                self.oooManager._FlagAsMethod('Bridge_GetStruct')
-                self.oooManager._FlagAsMethod('Bridge_GetValueObject')
+                self.ooo_manager = Dispatch('com.sun.star.ServiceManager')
+                self.ooo_manager._FlagAsMethod('Bridge_GetStruct')
+                self.ooo_manager._FlagAsMethod('Bridge_GetValueObject')
             else:
                 cmd = get_uno_command()
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
-            self.processStarted = True
+            self.process_started = True
         except:
-            log.exception("startOooProcess failed")
+            log.exception("start_ooo_process failed")
 
-    def openOooFile(self, filepath):
+    def open_ooo_file(self, file_path):
         """
         Open the passed file in OpenOffice.org Impress
         """
-        self.filepath = filepath
+        self.file_path = file_path
         if os.name == 'nt':
-            url = filepath.replace('\\', '/')
+            url = file_path.replace('\\', '/')
             url = url.replace(':', '|').replace(' ', '%20')
             url = 'file:///' + url
         else:
-            url = uno.systemPathToFileUrl(filepath)
+            url = uno.systemPathToFileUrl(file_path)
         properties = []
         properties = tuple(properties)
         try:
-            self.document = self.desktop.loadComponentFromURL(url, '_blank',
-                0, properties)
+            self.document = self.desktop.loadComponentFromURL(url, '_blank', 0, properties)
             if not self.document.supportsService("com.sun.star.presentation.PresentationDocument") and not \
                     self.document.supportsService("com.sun.star.text.TextDocument"):
-                self.closeOooFile()
+                self.close_ooo_file()
             else:
-                self.import_wizard.increment_progress_bar('Processing file ' + filepath, 0)
+                self.import_wizard.increment_progress_bar('Processing file ' + file_path, 0)
         except AttributeError:
-            log.exception("openOooFile failed: %s", url)
+            log.exception("open_ooo_file failed: %s", url)
         return
 
-    def closeOooFile(self):
+    def close_ooo_file(self):
         """
         Close file.
         """
         self.document.close(True)
         self.document = None
 
-    def closeOoo(self):
+    def close_ooo(self):
         """
         Close OOo. But only if we started it and not on windows
         """
-        if self.processStarted:
+        if self.process_started:
             self.desktop.terminate()
 
-    def processPres(self):
+    def process_presentation(self):
         """
         Process the file
         """
@@ -194,47 +195,52 @@ class OooImport(SongImport):
                 self.import_wizard.increment_progress_bar('Import cancelled', 0)
                 return
             slide = slides.getByIndex(slide_no)
-            slidetext = ''
+            slide_text = ''
             for idx in range(slide.getCount()):
                 shape = slide.getByIndex(idx)
                 if shape.supportsService("com.sun.star.drawing.Text"):
                     if shape.getString().strip() != '':
-                        slidetext += shape.getString().strip() + '\n\n'
-            if slidetext.strip() == '':
-                slidetext = '\f'
-            text += slidetext
-        self.processSongsText(text)
+                        slide_text += shape.getString().strip() + '\n\n'
+            if slide_text.strip() == '':
+                slide_text = '\f'
+            text += slide_text
+        self.process_songs_text(text)
         return
 
-    def processDoc(self):
+    def process_doc(self):
         """
         Process the doc file, a paragraph at a time
         """
         text = ''
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
-            paratext = ''
+            para_text = ''
             paragraph = paragraphs.nextElement()
             if paragraph.supportsService("com.sun.star.text.Paragraph"):
-                textportions = paragraph.createEnumeration()
-                while textportions.hasMoreElements():
-                    textportion = textportions.nextElement()
-                    if textportion.BreakType in (PAGE_BEFORE, PAGE_BOTH):
-                        paratext += '\f'
-                    paratext += textportion.getString()
-                    if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
-                        paratext += '\f'
-            text += paratext + '\n'
-        self.processSongsText(text)
+                text_portions = paragraph.createEnumeration()
+                while text_portions.hasMoreElements():
+                    text_portion = text_portions.nextElement()
+                    if text_portion.BreakType in (PAGE_BEFORE, PAGE_BOTH):
+                        para_text += '\f'
+                    para_text += text_portion.getString()
+                    if text_portion.BreakType in (PAGE_AFTER, PAGE_BOTH):
+                        para_text += '\f'
+            text += para_text + '\n'
+        self.process_songs_text(text)
 
-    def processSongsText(self, text):
-        songtexts = self.tidyText(text).split('\f')
-        self.setDefaults()
-        for songtext in songtexts:
-            if songtext.strip():
-                self.processSongText(songtext.strip())
-                if self.checkComplete():
+    def process_songs_text(self, text):
+        """
+        Process the songs text
+
+        :param text: The text.
+        """
+        song_texts = self.tidy_text(text).split('\f')
+        self.set_defaults()
+        for song_text in song_texts:
+            if song_text.strip():
+                self.process_song_text(song_text.strip())
+                if self.check_complete():
                     self.finish()
-                    self.setDefaults()
-        if self.checkComplete():
+                    self.set_defaults()
+        if self.check_complete():
             self.finish()

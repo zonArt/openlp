@@ -128,8 +128,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         """
         Changes the language for this spelltextedit.
 
-        ``action``
-            The action.
+        :param action: The action.
         """
         self.dictionary = enchant.Dict(action.text())
         self.highlighter.spelling_dictionary = self.dictionary
@@ -182,7 +181,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
 
     def highlightBlock(self, text):
         """
-        Highlight misspelt words in a block of text.
+        Highlight mis spelt words in a block of text.
 
         Note, this is a Qt hook.
         """

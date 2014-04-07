@@ -34,10 +34,10 @@ import sys
 import imp
 
 from openlp.core.lib import Plugin, PluginStatus
-from openlp.core.common import AppLocation, Registry, OpenLPMixin, RegistryMixin
+from openlp.core.common import AppLocation, RegistryProperties, OpenLPMixin, RegistryMixin
 
 
-class PluginManager(RegistryMixin, OpenLPMixin):
+class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
     """
     This is the Plugin manager, which loads all the plugins,
     and executes all the hooks, as and when necessary.
@@ -176,8 +176,7 @@ class PluginManager(RegistryMixin, OpenLPMixin):
         """
         Loop through all the plugins and give them an opportunity to upgrade their settings.
 
-        ``settings``
-            The Settings object containing the old settings.
+        :param settings: The Settings object containing the old settings.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
@@ -185,8 +184,7 @@ class PluginManager(RegistryMixin, OpenLPMixin):
 
     def initialise_plugins(self):
         """
-        Loop through all the plugins and give them an opportunity to
-        initialise themselves.
+        Loop through all the plugins and give them an opportunity to initialise themselves.
         """
         for plugin in self.plugins:
             self.log_info('initialising plugins %s in a %s state' % (plugin.name, plugin.is_active()))
@@ -196,8 +194,7 @@ class PluginManager(RegistryMixin, OpenLPMixin):
 
     def finalise_plugins(self):
         """
-        Loop through all the plugins and give them an opportunity to
-        clean themselves up
+        Loop through all the plugins and give them an opportunity to clean themselves up
         """
         for plugin in self.plugins:
             if plugin.is_active():
@@ -220,23 +217,3 @@ class PluginManager(RegistryMixin, OpenLPMixin):
         for plugin in self.plugins:
             if plugin.is_active():
                 plugin.new_service_created()
-
-    def _get_settings_form(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, '_settings_form'):
-            self._settings_form = Registry().get('settings_form')
-        return self._settings_form
-
-    settings_form = property(_get_settings_form)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

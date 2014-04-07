@@ -140,7 +140,7 @@ class AlertsPlugin(Plugin):
         self.weight = -3
         self.icon_path = ':/plugins/plugin_alerts.png'
         self.icon = build_icon(self.icon_path)
-        self.alerts_manager = AlertsManager(self)
+        AlertsManager(self)
         self.manager = Manager('alerts', init_schema)
         self.alert_form = AlertForm(self)
 
@@ -246,4 +246,4 @@ class AlertsPlugin(Plugin):
         align = VerticalType.Names[self.settings_tab.location]
         frame.evaluateJavaScript('update_css("%s", "%s", "%s", "%s", "%s")' %
                                  (align, self.settings_tab.font_face, self.settings_tab.font_size,
-                                 self.settings_tab.font_color, self.settings_tab.background_color))
+                                  self.settings_tab.font_color, self.settings_tab.background_color))

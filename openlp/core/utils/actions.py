@@ -258,17 +258,12 @@ class ActionList(object):
 
         **Note**: The action's objectName must be set when you want to add it!
 
-        ``action``
-            The action to add (QAction). **Note**, the action must not have an empty ``objectName``.
-
-        ``category``
-            The category this action belongs to. The category has to be a python string. . **Note**, if the category
-            is ``None``, the category and its actions are being hidden in the shortcut dialog. However, if they are
-            added, it is possible to avoid assigning shortcuts twice, which is important.
-
-        ``weight``
-            The weight specifies how important a category is. However, this only has an impact on the order the
-            categories are displayed.
+        :param action: The action to add (QAction). **Note**, the action must not have an empty ``objectName``.
+        :param category: The category this action belongs to. The category has to be a python string. . **Note**,
+        if the category is ``None``, the category and its actions are being hidden in the shortcut dialog. However,
+        if they are added, it is possible to avoid assigning shortcuts twice, which is important.
+        :param weight: The weight specifies how important a category is. However, this only has an impact on the order
+        the categories are displayed.
         """
         if category not in self.categories:
             self.categories.append(category)
@@ -300,7 +295,7 @@ class ActionList(object):
                 ActionList.shortcut_map[shortcuts[1]] = actions
             else:
                 log.warn('Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
-                    (shortcuts[1], action.objectName()))
+                         (shortcuts[1], action.objectName()))
                 shortcuts.remove(shortcuts[1])
         # Check the primary shortcut.
         existing_actions = ActionList.shortcut_map.get(shortcuts[0], [])
@@ -311,7 +306,7 @@ class ActionList(object):
             ActionList.shortcut_map[shortcuts[0]] = actions
         else:
             log.warn('Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
-                (shortcuts[0], action.objectName()))
+                     (shortcuts[0], action.objectName()))
             shortcuts.remove(shortcuts[0])
         action.setShortcuts([QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
 
@@ -319,11 +314,8 @@ class ActionList(object):
         """
         This removes an action from its category. Empty categories are automatically removed.
 
-        ``action``
-            The ``QAction`` object to be removed.
-
-        ``category``
-            The name (unicode string) of the category, which contains the action. Defaults to None.
+        :param action:  The ``QAction`` object to be removed.
+        :param category: The name (unicode string) of the category, which contains the action. Defaults to None.
         """
         if category not in self.categories:
             return
@@ -343,11 +335,8 @@ class ActionList(object):
         """
         Add an empty category to the list of categories. This is only convenient for categories with a given weight.
 
-        ``name``
-            The category's name.
-
-        ``weight``
-            The category's weight (int).
+        :param name: The category's name.
+        :param weight: The category's weight (int).
         """
         if name in self.categories:
             # Only change the weight and resort the categories again.
@@ -361,15 +350,11 @@ class ActionList(object):
     def update_shortcut_map(self, action, old_shortcuts):
         """
         Remove the action for the given ``old_shortcuts`` from the ``shortcut_map`` to ensure its up-to-dateness.
-
         **Note**: The new action's shortcuts **must** be assigned to the given ``action`` **before** calling this
         method.
 
-        ``action``
-            The action whose shortcuts are supposed to be updated in the ``shortcut_map``.
-
-        ``old_shortcuts``
-            A list of unicode keysequences.
+        :param action: The action whose shortcuts are supposed to be updated in the ``shortcut_map``.
+        :param old_shortcuts: A list of unicode key sequences.
         """
         for old_shortcut in old_shortcuts:
             # Remove action from the list of actions which are using this shortcut.
@@ -388,11 +373,8 @@ class ActionList(object):
         """
         Checks if the given ``action`` may use its assigned shortcut(s) or not. Returns ``True`` or ``False.
 
-        ``existing_actions``
-            A list of actions which already use a particular shortcut.
-
-        ``action``
-            The action which wants to use a particular shortcut.
+        :param existing_actions: A list of actions which already use a particular shortcut.
+        :param action: The action which wants to use a particular shortcut.
         """
         global_context = action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
         affected_actions = []

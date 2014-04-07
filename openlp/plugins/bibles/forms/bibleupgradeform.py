@@ -57,14 +57,9 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
-        ``parent``
-            The QWidget-derived parent of the wizard.
-
-        ``manager``
-            The Bible manager.
-
-        ``bible_plugin``
-            The Bible plugin.
+        :param parent: The QWidget-derived parent of the wizard.
+        :param manager: The Bible manager.
+        :param bible_plugin: The Bible plugin.
         """
         self.manager = manager
         self.media_item = bible_plugin.media_item
@@ -101,34 +96,34 @@ class BibleUpgradeForm(OpenLPWizard):
         if not self.currentPage() == self.progress_page:
             self.done(QtGui.QDialog.Rejected)
 
-    def onCurrentIdChanged(self, pageId):
+    def onCurrentIdChanged(self, page_id):
         """
         Perform necessary functions depending on which wizard page is active.
         """
-        if self.page(pageId) == self.progress_page:
+        if self.page(page_id) == self.progress_page:
             self.pre_wizard()
             self.perform_wizard()
             self.post_wizard()
-        elif self.page(pageId) == self.selectPage and not self.files:
+        elif self.page(page_id) == self.selectPage and not self.files:
             self.next()
 
-    def onBackupBrowseButtonClicked(self):
+    def on_backup_browse_button_clicked(self):
         """
         Show the file open dialog for the OSIS file.
         """
-        filename = QtGui.QFileDialog.getExistingDirectory(self,
-            translate('BiblesPlugin.UpgradeWizardForm', 'Select a Backup Directory'), '')
+        filename = QtGui.QFileDialog.getExistingDirectory(self, translate('BiblesPlugin.UpgradeWizardForm',
+                                                                          'Select a Backup Directory'), '')
         if filename:
             self.backupDirectoryEdit.setText(filename)
 
-    def onNoBackupCheckBoxToggled(self, checked):
+    def on_no_backup_check_box_toggled(self, checked):
         """
         Enable or disable the backup directory widgets.
         """
         self.backupDirectoryEdit.setEnabled(not checked)
         self.backupBrowseButton.setEnabled(not checked)
 
-    def backupOldBibles(self, backup_directory):
+    def backup_old_bibles(self, backup_directory):
         """
         Backup old bible databases in a given folder.
         """
@@ -152,8 +147,8 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Set up the signals used in the bible importer.
         """
-        self.backupBrowseButton.clicked.connect(self.onBackupBrowseButtonClicked)
-        self.noBackupCheckBox.toggled.connect(self.onNoBackupCheckBoxToggled)
+        self.backupBrowseButton.clicked.connect(self.on_backup_browse_button_clicked)
+        self.noBackupCheckBox.toggled.connect(self.on_no_backup_check_box_toggled)
 
     def add_custom_pages(self):
         """
@@ -243,32 +238,34 @@ class BibleUpgradeForm(OpenLPWizard):
         Allow for localisation of the bible import wizard.
         """
         self.setWindowTitle(translate('BiblesPlugin.UpgradeWizardForm', 'Bible Upgrade Wizard'))
-        self.title_label.setText(WizardStrings.HeaderStyle %
-            translate('OpenLP.Ui', 'Welcome to the Bible Upgrade Wizard'))
-        self.information_label.setText(translate('BiblesPlugin.UpgradeWizardForm',
-            'This wizard will help you to upgrade your existing Bibles from a prior version of OpenLP 2. '
-            'Click the next button below to start the upgrade process.'))
+        self.title_label.setText(WizardStrings.HeaderStyle % translate('OpenLP.Ui',
+                                                                       'Welcome to the Bible Upgrade Wizard'))
+        self.information_label.setText(
+            translate('BiblesPlugin.UpgradeWizardForm',
+                      'This wizard will help you to upgrade your existing Bibles from a prior version of OpenLP 2. '
+                      'Click the next button below to start the upgrade process.'))
         self.backup_page.setTitle(translate('BiblesPlugin.UpgradeWizardForm', 'Select Backup Directory'))
-        self.backup_page.setSubTitle(translate('BiblesPlugin.UpgradeWizardForm',
-            'Please select a backup directory for your Bibles'))
-        self.backupInfoLabel.setText(translate('BiblesPlugin.UpgradeWizardForm',
-            'Previous releases of OpenLP 2.0 are unable to use upgraded Bibles.'
-            ' This will create a backup of your current Bibles so that you can '
-            'simply copy the files back to your OpenLP data directory if you '
-            'need to revert to a previous release of OpenLP. Instructions on '
-            'how to restore the files can be found in our <a href="'
-            'http://wiki.openlp.org/faq">Frequently Asked Questions</a>.'))
-        self.selectLabel.setText(translate('BiblesPlugin.UpgradeWizardForm',
-            'Please select a backup location for your Bibles.'))
+        self.backup_page.setSubTitle(
+            translate('BiblesPlugin.UpgradeWizardForm', 'Please select a backup directory for your Bibles'))
+        self.backupInfoLabel.setText(
+            translate('BiblesPlugin.UpgradeWizardForm',
+                      'Previous releases of OpenLP 2.0 are unable to use upgraded Bibles.'
+                      ' This will create a backup of your current Bibles so that you can '
+                      'simply copy the files back to your OpenLP data directory if you '
+                      'need to revert to a previous release of OpenLP. Instructions on '
+                      'how to restore the files can be found in our <a href="'
+                      'http://wiki.openlp.org/faq">Frequently Asked Questions</a>.'))
+        self.selectLabel.setText(
+            translate('BiblesPlugin.UpgradeWizardForm', 'Please select a backup location for your Bibles.'))
         self.backupDirectoryLabel.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Backup Directory:'))
         self.noBackupCheckBox.setText(
             translate('BiblesPlugin.UpgradeWizardForm', 'There is no need to backup my Bibles'))
         self.selectPage.setTitle(translate('BiblesPlugin.UpgradeWizardForm', 'Select Bibles'))
-        self.selectPage.setSubTitle(translate('BiblesPlugin.UpgradeWizardForm',
-            'Please select the Bibles to upgrade'))
+        self.selectPage.setSubTitle(
+            translate('BiblesPlugin.UpgradeWizardForm', 'Please select the Bibles to upgrade'))
         self.progress_page.setTitle(translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading'))
-        self.progress_page.setSubTitle(translate('BiblesPlugin.UpgradeWizardForm',
-            'Please wait while your Bibles are upgraded.'))
+        self.progress_page.setSubTitle(
+            translate('BiblesPlugin.UpgradeWizardForm', 'Please wait while your Bibles are upgraded.'))
         self.progress_label.setText(WizardStrings.Ready)
         self.progress_bar.setFormat('%p%')
 
@@ -282,16 +279,18 @@ class BibleUpgradeForm(OpenLPWizard):
             if not self.noBackupCheckBox.checkState() == QtCore.Qt.Checked:
                 backup_path = self.backupDirectoryEdit.text()
                 if not backup_path:
-                    critical_error_message_box(UiStrings().EmptyField,
-                        translate('BiblesPlugin.UpgradeWizardForm',
-                            'You need to specify a backup directory for your Bibles.'))
+                    critical_error_message_box(
+                        UiStrings().EmptyField,
+                        translate('BiblesPlugin.UpgradeWizardForm', 'You need to specify a backup directory for '
+                                                                    'your Bibles.'))
                     self.backupDirectoryEdit.setFocus()
                     return False
                 else:
-                    if not self.backupOldBibles(backup_path):
-                        critical_error_message_box(UiStrings().Error,
-                            translate('BiblesPlugin.UpgradeWizardForm', 'The backup was not successful.\nTo backup your '
-                                'Bibles you need permission to write to the given directory.'))
+                    if not self.backup_old_bibles(backup_path):
+                        critical_error_message_box(
+                            UiStrings().Error,
+                            translate('BiblesPlugin.UpgradeWizardForm', 'The backup was not successful.\nTo backup '
+                                      'your Bibles you need permission to write to the given directory.'))
                         return False
             return True
         elif self.currentPage() == self.selectPage:
@@ -345,8 +344,8 @@ class BibleUpgradeForm(OpenLPWizard):
         self.includeWebBible = False
         proxy_server = None
         if not self.files:
-            self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm',
-                    'There are no Bibles that need to be upgraded.'))
+            self.progress_label.setText(
+                translate('BiblesPlugin.UpgradeWizardForm', 'There are no Bibles that need to be upgraded.'))
             self.progress_bar.hide()
             return
         max_bibles = 0
@@ -368,11 +367,11 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.success[number] = False
                 continue
             self.progress_bar.reset()
-            old_bible = OldBibleDB(self.media_item, path=self.temp_dir,
-                file=filename[0])
+            old_bible = OldBibleDB(self.media_item, path=self.temp_dir, file=filename[0])
             name = filename[1]
-            self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm',
-                'Upgrading Bible %s of %s: "%s"\nUpgrading ...') % (number + 1, max_bibles, name))
+            self.progress_label.setText(
+                translate('BiblesPlugin.UpgradeWizardForm',
+                          'Upgrading Bible %s of %s: "%s"\nUpgrading ...') % (number + 1, max_bibles, name))
             self.new_bibles[number] = BibleDB(self.media_item, path=self.path, name=name, file=filename[0])
             self.new_bibles[number].register(self.plugin.upgrade_wizard)
             metadata = old_bible.get_metadata()
@@ -409,7 +408,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     critical_error_message_box(
                         translate('BiblesPlugin.UpgradeWizardForm', 'Download Error'),
                         translate('BiblesPlugin.UpgradeWizardForm',
-                            'To upgrade your Web Bibles an Internet connection is required.'))
+                                  'To upgrade your Web Bibles an Internet connection is required.'))
                     self.increment_progress_bar(translate(
                         'BiblesPlugin.UpgradeWizardForm', 'Upgrading Bible %s of %s: "%s"\nFailed') %
                         (number + 1, max_bibles, name), self.progress_bar.maximum() - self.progress_bar.value())
@@ -420,16 +419,16 @@ class BibleUpgradeForm(OpenLPWizard):
                     meta_data['download_source'].lower())
                 if bible and bible['language_id']:
                     language_id = bible['language_id']
-                    self.new_bibles[number].save_meta('language_id',
-                        language_id)
+                    self.new_bibles[number].save_meta('language_id', language_id)
                 else:
                     language_id = self.new_bibles[number].get_language(name)
                 if not language_id:
                     log.warn('Upgrading from "%s" failed' % filename[0])
                     self.new_bibles[number].session.close()
                     del self.new_bibles[number]
-                    self.increment_progress_bar(translate('BiblesPlugin.UpgradeWizardForm',
-                        'Upgrading Bible %s of %s: "%s"\nFailed') % (number + 1, max_bibles, name),
+                    self.increment_progress_bar(
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                                  'Upgrading Bible %s of %s: "%s"\nFailed') % (number + 1, max_bibles, name),
                         self.progress_bar.maximum() - self.progress_bar.value())
                     self.success[number] = False
                     continue
@@ -438,8 +437,10 @@ class BibleUpgradeForm(OpenLPWizard):
                     if self.stop_import_flag:
                         self.success[number] = False
                         break
-                    self.increment_progress_bar(translate('BiblesPlugin.UpgradeWizardForm',
-                        'Upgrading Bible %s of %s: "%s"\nUpgrading %s ...') % (number + 1, max_bibles, name, book))
+                    self.increment_progress_bar(
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                                  'Upgrading Bible %s of %s: "%s"\nUpgrading %s ...') %
+                        (number + 1, max_bibles, name, book))
                     book_ref_id = self.new_bibles[number].\
                         get_book_ref_id_by_name(book, len(books), language_id)
                     if not book_ref_id:
@@ -450,8 +451,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         self.success[number] = False
                         break
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                    db_book = self.new_bibles[number].create_book(book,
-                        book_ref_id, book_details['testament_id'])
+                    db_book = self.new_bibles[number].create_book(book, book_ref_id, book_details['testament_id'])
                     # Try to import already downloaded verses.
                     oldbook = old_bible.get_book(book)
                     if oldbook:
@@ -463,9 +463,8 @@ class BibleUpgradeForm(OpenLPWizard):
                             if self.stop_import_flag:
                                 self.success[number] = False
                                 break
-                            self.new_bibles[number].create_verse(db_book.id,
-                                int(verse['chapter']),
-                                int(verse['verse']), str(verse['text']))
+                            self.new_bibles[number].create_verse(db_book.id, int(verse['chapter']),
+                                                                 int(verse['verse']), str(verse['text']))
                             self.application.process_events()
                         self.new_bibles[number].session.commit()
             else:
@@ -476,8 +475,9 @@ class BibleUpgradeForm(OpenLPWizard):
                     log.warn('Upgrading books from "%s" failed' % name)
                     self.new_bibles[number].session.close()
                     del self.new_bibles[number]
-                    self.increment_progress_bar(translate('BiblesPlugin.UpgradeWizardForm',
-                        'Upgrading Bible %s of %s: "%s"\nFailed') % (number + 1, max_bibles, name),
+                    self.increment_progress_bar(
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                                  'Upgrading Bible %s of %s: "%s"\nFailed') % (number + 1, max_bibles, name),
                         self.progress_bar.maximum() - self.progress_bar.value())
                     self.success[number] = False
                     continue
@@ -487,8 +487,9 @@ class BibleUpgradeForm(OpenLPWizard):
                     if self.stop_import_flag:
                         self.success[number] = False
                         break
-                    self.increment_progress_bar(translate('BiblesPlugin.UpgradeWizardForm',
-                        'Upgrading Bible %s of %s: "%s"\nUpgrading %s ...') %
+                    self.increment_progress_bar(
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                                  'Upgrading Bible %s of %s: "%s"\nUpgrading %s ...') %
                         (number + 1, max_bibles, name, book['name']))
                     book_ref_id = self.new_bibles[number].get_book_ref_id_by_name(book['name'], len(books), language_id)
                     if not book_ref_id:
@@ -498,8 +499,8 @@ class BibleUpgradeForm(OpenLPWizard):
                         self.success[number] = False
                         break
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                    db_book = self.new_bibles[number].create_book(book['name'],
-                        book_ref_id, book_details['testament_id'])
+                    db_book = self.new_bibles[number].create_book(book['name'], book_ref_id,
+                                                                  book_details['testament_id'])
                     verses = old_bible.get_verses(book['id'])
                     if not verses:
                         log.warn('No verses found to import for book "%s"', book['name'])
@@ -509,20 +510,21 @@ class BibleUpgradeForm(OpenLPWizard):
                         if self.stop_import_flag:
                             self.success[number] = False
                             break
-                        self.new_bibles[number].create_verse(db_book.id,
-                            int(verse['chapter']),
-                            int(verse['verse']), str(verse['text']))
+                        self.new_bibles[number].create_verse(db_book.id, int(verse['chapter']), int(verse['verse']),
+                                                             str(verse['text']))
                         self.application.process_events()
                     self.new_bibles[number].session.commit()
             if not self.success.get(number, True):
-                self.increment_progress_bar(translate('BiblesPlugin.UpgradeWizardForm',
-                    'Upgrading Bible %s of %s: "%s"\nFailed') % (number + 1, max_bibles, name),
+                self.increment_progress_bar(
+                    translate('BiblesPlugin.UpgradeWizardForm',
+                              'Upgrading Bible %s of %s: "%s"\nFailed') % (number + 1, max_bibles, name),
                     self.progress_bar.maximum() - self.progress_bar.value())
             else:
                 self.success[number] = True
                 self.new_bibles[number].save_meta('name', name)
-                self.increment_progress_bar(translate('BiblesPlugin.UpgradeWizardForm',
-                    'Upgrading Bible %s of %s: "%s"\nComplete') % (number + 1, max_bibles, name))
+                self.increment_progress_bar(
+                    translate('BiblesPlugin.UpgradeWizardForm',
+                              'Upgrading Bible %s of %s: "%s"\nComplete') % (number + 1, max_bibles, name))
             if number in self.new_bibles:
                 self.new_bibles[number].session.close()
         # Close the last bible's connection if possible.
@@ -550,12 +552,15 @@ class BibleUpgradeForm(OpenLPWizard):
             failed_import_text = ''
         if successful_import > 0:
             if self.includeWebBible:
-                self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm',
-                    'Upgrading Bible(s): %s successful%s\nPlease note that verses from Web Bibles will be downloaded '
-                    'on demand and so an Internet connection is required.') % (successful_import, failed_import_text))
+                self.progress_label.setText(
+                    translate('BiblesPlugin.UpgradeWizardForm',
+                              'Upgrading Bible(s): %s successful%s\nPlease note that verses from Web Bibles will be '
+                              'downloaded on demand and so an Internet connection is required.') %
+                    (successful_import, failed_import_text))
             else:
-                self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm',
-                    'Upgrading Bible(s): %s successful%s') % (successful_import, failed_import_text))
+                self.progress_label.setText(
+                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading Bible(s): %s successful%s') % (
+                        successful_import, failed_import_text))
         else:
             self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade failed.'))
         # Remove temp directory.

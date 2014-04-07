@@ -36,7 +36,7 @@ import lxml.html
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import get_text_file_string
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.common import AppLocation
@@ -111,7 +111,7 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 """
 
 
-class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
+class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties):
     """
     The :class:`~openlp.core.ui.printserviceform.PrintServiceForm` class displays a dialog for printing the service.
     """
@@ -239,23 +239,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
 
     def _add_element(self, tag, text=None, parent=None, classId=None, attribute=None):
         """
-        Creates a html element. If ``text`` is given, the element's text will
-        set and if a ``parent`` is given, the element is appended.
+        Creates a html element. If ``text`` is given, the element's text will set and if a ``parent`` is given,
+        the element is appended.
 
-        ``tag``
-            The html tag, e. g. ``u'span'``. Defaults to ``None``.
-
-        ``text``
-            The text for the tag. Defaults to ``None``.
-
-        ``parent``
-            The parent element. Defaults to ``None``.
-
-        ``classId``
-            Value for the class attribute
-
-        ``attribute``
-            Tuple name/value pair to add as an optional attribute
+        :param tag: The html tag, e. g. ``u'span'``. Defaults to ``None``.
+        :param text: The text for the tag. Defaults to ``None``.
+        :param parent: The parent element. Defaults to ``None``.
+        :param classId: Value for the class attribute
+        :param attribute: Tuple name/value pair to add as an optional attribute
         """
         if text is not None:
             element = lxml.html.fragment_fromstring(str(text), create_parent=tag)
@@ -404,23 +395,3 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         for item in self.service_manager.service_items:
             # Trigger Audit requests
             Registry().register_function('print_service_started', [item['service_item']])
-
-    def _get_service_manager(self):
-        """
-        Adds the service manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

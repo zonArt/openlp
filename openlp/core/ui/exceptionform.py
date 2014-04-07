@@ -38,7 +38,7 @@ import bs4
 import sqlalchemy
 from lxml import etree
 
-from openlp.core.common import Registry
+from openlp.core.common import RegistryProperties
 
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
@@ -93,7 +93,7 @@ from .exceptiondialog import Ui_ExceptionDialog
 log = logging.getLogger(__name__)
 
 
-class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
+class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
     """
     The exception dialog
     """
@@ -157,7 +157,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                                 '--- Exception Traceback ---\n%s\n'
                                 '--- System information ---\n%s\n'
                                 '--- Library Versions ---\n%s\n')
-        filename = QtGui.QFileDialog.getSaveFileName(self,
+        filename = QtGui.QFileDialog.getSaveFileName(
+            self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
             Settings().value(self.settings_section + '/last directory'),
             translate('OpenLP.ExceptionForm', 'Text files (*.txt *.log *.text)'))
@@ -185,14 +186,13 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         Opening systems default email client and inserting exception log and system information.
         """
         body = translate('OpenLP.ExceptionForm',
-            '*OpenLP Bug Report*\n'
-            'Version: %s\n\n'
-            '--- Details of the Exception. ---\n\n%s\n\n '
-            '--- Exception Traceback ---\n%s\n'
-            '--- System information ---\n%s\n'
-            '--- Library Versions ---\n%s\n',
-            'Please add the information that bug reports are favoured written '
-            'in English.')
+                         '*OpenLP Bug Report*\n'
+                         'Version: %s\n\n'
+                         '--- Details of the Exception. ---\n\n%s\n\n '
+                         '--- Exception Traceback ---\n%s\n'
+                         '--- System information ---\n%s\n'
+                         '--- Library Versions ---\n%s\n',
+                         'Please add the information that bug reports are favoured written in English.')
         content = self._create_report()
         source = ''
         exception = ''
@@ -260,13 +260,3 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             return '-'
         except:
             return '- (Possible non-standard UNO installation)'
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

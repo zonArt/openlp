@@ -26,36 +26,41 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Test the registry properties
+"""
+from unittest import TestCase
 
-from openlp.plugins.songs.lib.opensongimport import OpenSongImport
-from openlp.plugins.songs.lib.db import init_schema
-from openlp.core.lib.db import Manager
-import os
-import codecs
+from openlp.core.common import Registry, RegistryProperties
+from tests.functional import MagicMock
 
-import logging
-LOG_FILENAME = 'import.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
-from test_opensongimport import wizard_stub
+class TestRegistryProperties(TestCase, RegistryProperties):
+    """
+    Test the functions in the ThemeManager module
+    """
+    def setUp(self):
+        """
+        Create the Register
+        """
+        Registry.create()
 
-# Useful test function for importing a variety of different files
-# Uncomment below depending on what problem trying to make occur!
+    def no_application_test(self):
+        """
+        Test property if no registry value assigned
+        """
+        # GIVEN an Empty Registry
+        # WHEN there is no Application
+        # THEN the application should be none
+        self.assertEquals(self.application, None, 'The application value should be None')
 
-def opensong_import_lots():
-    ziploc = '/home/mjt/openlp/OpenSong_Data/'
-    files = []
-    files = [os.path.join(ziploc, 'RaoulSongs', 'Songs', 'Jesus Freak')]
-    # files.extend(glob(ziploc+u'Songs.zip'))
-    # files.extend(glob(ziploc+u'RaoulSongs.zip'))
-    # files.extend(glob(ziploc+u'SOF.zip'))
-    # files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
-    # files.extend(glob(ziploc+u'opensong_*.zip'))
-    errfile = codecs.open('import_lots_errors.txt', 'w', 'utf8')
-    manager = Manager('songs', init_schema)
-    o = OpenSongImport(manager, filenames=files)
-    o.import_wizard=wizard_stub()
-    o.do_import()
-
-if __name__ == "__main__":
-    opensong_import_lots()
+    def application_test(self):
+        """
+        Test property if registry value assigned
+        """
+        # GIVEN an Empty Registry
+        application = MagicMock()
+        # WHEN the application is registered
+        Registry().register('application', application)
+        # THEN the application should be none
+        self.assertEquals(self.application, application, 'The application value should match')

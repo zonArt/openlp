@@ -321,4 +321,3 @@ class Htmbuilder(TestCase):
 
         # THEN: THE css should be the same.
         assert FOOTER_CSS == css, 'The footer strings should be equal.'
-
