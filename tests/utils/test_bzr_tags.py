@@ -65,12 +65,9 @@ class TestBzrTags(TestCase):
         # GIVEN: A bzr branch
 
         # WHEN getting the branches tags
-        tags = []
         bzr = Popen(('bzr', 'tags'), stdout=PIPE)
         stdout = bzr.communicate()[0]
-        lines = (line.decode('utf-8') for line in stdout.splitlines())
-        for line in lines:
-            tags.append(line.split())
+        tags = [line.decode('utf-8').split() for line in stdout.splitlines()]
 
         # THEN the tags should match the accepted tags
         self.assertEqual(TAGS, tags, 'List of tags should match')
