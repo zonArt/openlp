@@ -322,8 +322,14 @@ class Ui_MainWindow(object):
         # i18n add Language Actions
         add_actions(self.settings_language_menu, (self.auto_language_item, None))
         add_actions(self.settings_language_menu, self.language_group.actions())
-        add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
-                    None, self.formatting_tag_item, self.settings_shortcuts_item, self.settings_configure_item))
+        # Order things differently in OS X so that Preferences menu item in the
+        # app menu is correct (this gets picked up automatically by Qt).
+        if sys.platform == 'darwin':
+            add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
+                        None, self.settings_configure_item, self.settings_shortcuts_item, self.formatting_tag_item))
+        else:
+            add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
+                        None, self.formatting_tag_item, self.settings_shortcuts_item, self.settings_configure_item))
         add_actions(self.tools_menu, (self.tools_add_tool_item, None))
         add_actions(self.tools_menu, (self.tools_open_data_folder, None))
         add_actions(self.tools_menu, (self.tools_first_time_wizard, None))
@@ -387,10 +393,8 @@ class Ui_MainWindow(object):
         self.import_language_item.setText(translate('OpenLP.MainWindow', '&Language'))
         self.export_theme_item.setText(translate('OpenLP.MainWindow', '&Theme'))
         self.export_language_item.setText(translate('OpenLP.MainWindow', '&Language'))
-        # Do not use config, options, setup, settings or preferences in menu item name unless it is OpenLP's preferences.
-        # Qt automatically detects the Preferences entry for the Mac OS X menu based on the name of the menu item.
-        self.settings_shortcuts_item.setText(translate('OpenLP.MainWindow', '&Shortcuts...'))
-        self.formatting_tag_item.setText(translate('OpenLP.MainWindow', '&Formatting Tags...'))
+        self.settings_shortcuts_item.setText(translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
+        self.formatting_tag_item.setText(translate('OpenLP.MainWindow', 'Configure &Formatting Tags...'))
         self.settings_configure_item.setText(translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.settings_export_item.setStatusTip(translate('OpenLP.MainWindow',
                                                'Export OpenLP settings to a specified *.config file'))
