@@ -528,7 +528,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         elif item > 0:
             item_id = (self.authors_combo_box.itemData(item))
             author = self.manager.get_object(Author, item_id)
-            if self.authors_list_view.findItems(str(author.display_name), QtCore.Qt.MatchExactly):
+            if self.authors_list_view.findItems(author.get_display_name(author_type), QtCore.Qt.MatchExactly):
                 critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm', 'This author is already in the list.'))
             else:

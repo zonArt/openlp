@@ -32,7 +32,7 @@ backend for the Songs plugin
 """
 import logging
 
-from sqlalchemy import Column, types
+from sqlalchemy import Column, ForeignKey, types
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql.expression import func, false, null, text
 
@@ -106,8 +106,15 @@ def upgrade_4(session, metadata):
     This upgrade adds a column for author type to the authors_songs table
     """
     try:
+        # Since SQLite doesn't support changing the primary key of a table, we need to recreate the table
+        # and copy the old values
         op = get_upgrade_op(session)
-        op.add_column('authors_songs', Column('author_type', types.String(), primary_key=True,
-                                              nullable=False, server_default=text('""')))
+        op.create_table('authors_songs_tmp',
+                        Column('author_id', types.Integer(), ForeignKey('authors.id'), primary_key=True),
+                        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
+                        Column('author_type', types.String(), primary_key=True, nullable=False, server_default=text('""')))
+        op.execute('INSERT INTO authors_songs_tmp SELECT author_id, song_id, "" FROM authors_songs')
+        op.drop_table('authors_songs')
+        op.rename_table('authors_songs_tmp', 'authors_songs')
     except OperationalError:
         log.info('Upgrade 4 has already been run')
