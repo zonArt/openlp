@@ -81,3 +81,19 @@ class TestUi(TestCase):
         self.assertIsInstance(btnbox, QtGui.QDialogButtonBox)
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
+
+    def test_set_case_insensitive_completer(self):
+        """
+        Test setting a case insensitive text completer for a widget
+        """
+        # GIVEN: A ComboBox and a list of strings
+        combo = QtGui.QComboBox()
+        suggestions = ['hello', 'world', 'and', 'others']
+
+        # WHEN: We set the autocompleter
+        set_case_insensitive_completer(suggestions, combo)
+
+        # THEN: The Combobox should have the autocompleter.
+        self.assertIsInstance(combo.completer(), QtGui.QCompleter)
+        self.assertEqual(QtCore.Qt.CaseInsensitive, combo.completer().caseSensitivity())
+        self.assertEqual(suggestions, combo.completer().completionModel().data())
