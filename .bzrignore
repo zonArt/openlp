@@ -5,6 +5,8 @@
 *.ropeproject
 *.e4*
 .eric4project
+.komodotools
+*.komodoproject
 list
 openlp.org 2.0.e4*
 documentation/build/html
