@@ -82,18 +82,19 @@ class TestUi(TestCase):
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
 
-    def test_set_case_insensitive_completer(self):
+    def test_create_valign_selection_widgets(self):
         """
-        Test setting a case insensitive text completer for a widget
+        Test creating a combo box for valign selection
         """
-        # GIVEN: A ComboBox and a list of strings
-        combo = QtGui.QComboBox()
-        suggestions = ['hello', 'world', 'and', 'others']
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
 
-        # WHEN: We set the autocompleter
-        set_case_insensitive_completer(suggestions, combo)
+        # WHEN: We create the widgets
+        label, combo = create_valign_selection_widgets(dialog)
 
-        # THEN: The Combobox should have the autocompleter.
-        self.assertIsInstance(combo.completer(), QtGui.QCompleter)
-        #self.assertEqual(QtCore.Qt.CaseInsensitive, combo.completer().caseSensitivity())
-        #self.assertEqual(suggestions, combo.completer().completionModel().data())
+        # THEN: We should get a label and a combobox.
+        self.assertEqual(translate('OpenLP.Ui', '&Vertical Align:'), label.text())
+        self.assertIsInstance(combo, QtGui.QComboBox)
+        self.assertEqual(combo, label.buddy())
+        for text in [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]:
+            self.assertTrue(combo.findText(text) >= 0)
