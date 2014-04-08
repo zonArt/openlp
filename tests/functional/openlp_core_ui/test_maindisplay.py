@@ -80,7 +80,7 @@ class TestMainDisplay(TestCase):
         # THEN: The controller should not be a live controller.
         self.assertEqual(main_display.is_live, True, 'The main display should be a live controller')
 
-    def set_transparency_enable_test(self):
+    def set_transparency_test(self):
         """
         Test creating an instance of the MainDisplay class
         """
