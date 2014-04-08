@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -49,7 +49,7 @@ class TestVerseReferenceList(TestCase):
         verse = 1
         version = 'testVersion'
         copyright_ = 'testCopyright'
-        permission = 'testPermision'
+        permission = 'testPermission'
 
         # WHEN: We add it to the verse list
         reference_list.add(book, chapter, verse, version, copyright_, permission)
@@ -57,9 +57,11 @@ class TestVerseReferenceList(TestCase):
         # THEN: The entries should be in the first entry of the list
         self.assertEqual(reference_list.current_index, 0, 'The current index should be 0')
         self.assertEqual(reference_list.verse_list[0]['book'], book, 'The book in first entry should be %s' % book)
-        self.assertEqual(reference_list.verse_list[0]['chapter'], chapter, 'The chapter in first entry should be %u' % chapter)
+        self.assertEqual(reference_list.verse_list[0]['chapter'], chapter, 'The chapter in first entry should be %u' %
+                                                                           chapter)
         self.assertEqual(reference_list.verse_list[0]['start'], verse, 'The start in first entry should be %u' % verse)
-        self.assertEqual(reference_list.verse_list[0]['version'], version, 'The version in first entry should be %s' % version)
+        self.assertEqual(reference_list.verse_list[0]['version'], version, 'The version in first entry should be %s' %
+                                                                           version)
         self.assertEqual(reference_list.verse_list[0]['end'], verse, 'The end in first entry should be %u' % verse)
 
     def add_next_verse_test(self):
@@ -73,7 +75,7 @@ class TestVerseReferenceList(TestCase):
         next_verse = 2
         version = 'testVersion'
         copyright_ = 'testCopyright'
-        permission = 'testPermision'
+        permission = 'testPermission'
         reference_list = VerseReferenceList()
         reference_list.add(book, chapter, verse, version, copyright_, permission)
 
@@ -83,7 +85,7 @@ class TestVerseReferenceList(TestCase):
         # THEN: The current index should be 0 and the end pointer of the entry should be '2'
         self.assertEqual(reference_list.current_index, 0, 'The current index should be 0')
         self.assertEqual(reference_list.verse_list[0]['end'], next_verse,
-            'The end in first entry should be %u' % next_verse)
+                         'The end in first entry should be %u' % next_verse)
 
     def add_another_verse_test(self):
         """
@@ -98,7 +100,7 @@ class TestVerseReferenceList(TestCase):
         another_verse = 5
         version = 'testVersion'
         copyright_ = 'testCopyright'
-        permission = 'testPermision'
+        permission = 'testPermission'
         reference_list = VerseReferenceList()
         reference_list.add(book, chapter, verse, version, copyright_, permission)
 
@@ -116,7 +118,7 @@ class TestVerseReferenceList(TestCase):
         reference_list = VerseReferenceList()
         version = 'testVersion'
         copyright_ = 'testCopyright'
-        permission = 'testPermision'
+        permission = 'testPermission'
 
         # WHEN: a not existing version will be added
         reference_list.add_version(version, copyright_, permission)
@@ -124,8 +126,8 @@ class TestVerseReferenceList(TestCase):
         # THEN: the data will be appended to the list
         self.assertEqual(len(reference_list.version_list), 1, 'The version data should be appended')
         self.assertEqual(reference_list.version_list[0],
-            {'version': version, 'copyright': copyright_, 'permission': permission},
-            'The version data should be appended')
+                         {'version': version, 'copyright': copyright_, 'permission': permission},
+                         'The version data should be appended')
 
     def add_existing_version_test(self):
         """
@@ -135,7 +137,7 @@ class TestVerseReferenceList(TestCase):
         reference_list = VerseReferenceList()
         version = 'testVersion'
         copyright_ = 'testCopyright'
-        permission = 'testPermision'
+        permission = 'testPermission'
         reference_list.add_version(version, copyright_, permission)
 
         # WHEN: an existing version will be added

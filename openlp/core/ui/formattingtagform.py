@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -93,10 +93,11 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         new_row = self.tag_table_widget.rowCount()
         self.tag_table_widget.insertRow(new_row)
         self.tag_table_widget.setItem(new_row, 0,
-            QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', 'New Tag%s') % str(new_row)))
+                                      QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', 'New Tag%s')
+                                                             % str(new_row)))
         self.tag_table_widget.setItem(new_row, 1, QtGui.QTableWidgetItem('n%s' % str(new_row)))
         self.tag_table_widget.setItem(new_row, 2,
-            QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', '<HTML here>')))
+                                      QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', '<HTML here>')))
         self.tag_table_widget.setItem(new_row, 3, QtGui.QTableWidgetItem(''))
         self.tag_table_widget.resizeRowsToContents()
         self.tag_table_widget.scrollToBottom()
@@ -119,11 +120,12 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         self.services.pre_save()
         while count < self.tag_table_widget.rowCount():
             error = self.services.validate_for_save(self.tag_table_widget.item(count, 0).text(),
-                self.tag_table_widget.item(count, 1).text(), self.tag_table_widget.item(count, 2).text(),
-                self.tag_table_widget.item(count, 3).text())
+                                                    self.tag_table_widget.item(count, 1).text(),
+                                                    self.tag_table_widget.item(count, 2).text(),
+                                                    self.tag_table_widget.item(count, 3).text())
             if error:
-                QtGui.QMessageBox.warning(self,
-                    translate('OpenLP.FormattingTagForm', 'Validation Error'), error, QtGui.QMessageBox.Ok)
+                QtGui.QMessageBox.warning(self, translate('OpenLP.FormattingTagForm', 'Validation Error'), error,
+                                          QtGui.QMessageBox.Ok)
                 self.tag_table_widget.selectRow(count)
                 return
             count += 1
@@ -141,7 +143,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         self.tag_table_widget.setRowCount(0)
         self.new_button.setEnabled(True)
         self.delete_button.setEnabled(False)
-        for linenumber, html in enumerate(FormattingTags.get_html_tags()):
+        for line_number, html in enumerate(FormattingTags.get_html_tags()):
             if html['protected']:
                 line = self.tag_table_widget_read.rowCount()
                 self.tag_table_widget_read.setRowCount(line + 1)
@@ -198,8 +200,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                 if tag:
                     self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
             if errors:
-                QtGui.QMessageBox.warning(self,
-                    translate('OpenLP.FormattingTagForm', 'Validation Error'), errors, QtGui.QMessageBox.Ok)
+                QtGui.QMessageBox.warning(self, translate('OpenLP.FormattingTagForm', 'Validation Error'), errors,
+                                          QtGui.QMessageBox.Ok)
             #self.tag_table_widget.selectRow(pre_row - 1)
             self.tag_table_widget.resizeRowsToContents()
-

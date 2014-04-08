@@ -61,6 +61,8 @@
     <file>general_email.png</file>
     <file>general_revert.png</file>
     <file>general_clone.png</file>
+    <file>general_find.png</file>
+    <file>general_back.png</file>
   </qresource>
   <qresource prefix="slides">
     <file>slide_close.png</file>

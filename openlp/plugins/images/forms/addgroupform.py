@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -49,14 +49,10 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
         """
         Show the form.
 
-        ``clear``
-            Set to False if the text input box should not be cleared when showing the dialog (default: True).
-
-        ``show_top_level_group``
-            Set to True when "-- Top level group --" should be showed as first item (default: False).
-
-        ``selected_group``
-            The ID of the group that should be selected by default when showing the dialog.
+        :param clear:  Set to False if the text input box should not be cleared when showing the dialog (default: True).
+        :param show_top_level_group:  Set to True when "-- Top level group --" should be showed as first item
+        (default: False).
+        :param selected_group: The ID of the group that should be selected by default when showing the dialog.
         """
         if clear:
             self.name_edit.clear()
@@ -76,7 +72,7 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
         """
         if not self.name_edit.text():
             critical_error_message_box(message=translate('ImagePlugin.AddGroupForm',
-                'You need to type in a group name.'))
+                                                         'You need to type in a group name.'))
             self.name_edit.setFocus()
             return False
         else:

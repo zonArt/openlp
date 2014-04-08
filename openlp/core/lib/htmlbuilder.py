@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -117,7 +117,9 @@ is the function which has to be called from outside. The generated and returned 
             display: table-cell;
             word-wrap: break-word;
             -webkit-transition: opacity 0.4s ease;
-            white-space:pre-wrap; word-wrap: break-word; text-align: left; vertical-align: top; font-family: Nimbus Sans L; font-size: 40pt; color: #FFFFFF; line-height: 100%; margin: 0;padding: 0; padding-bottom: 0; padding-left: 4px; width: 1580px; height: 810px;
+            white-space:pre-wrap; word-wrap: break-word; text-align: left; vertical-align: top; font-family: Nimbus
+            Sans L; font-size: 40pt; color: #FFFFFF; line-height: 100%; margin: 0;padding: 0; padding-bottom: 0;
+            padding-left: 4px; width: 1580px; height: 810px;
         }
         .lyricsmain {
              -webkit-text-stroke: 0.125em #000000; -webkit-text-fill-color: #FFFFFF;  text-shadow: #000000 5px 5px;
@@ -556,27 +558,16 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     """
     Build the full web paged structure for display
 
-    ``item``
-        Service Item to be displayed
-
-    ``screen``
-        Current display information
-
-    ``is_live``
-        Item is going live, rather than preview/theme building
-
-    ``background``
-        Theme background image - bytes
-
-    ``image``
-        Image media item - bytes
-
-    ``plugins``
-        The List of available plugins
+    :param item: Service Item to be displayed
+    :param screen: Current display information
+    :param is_live: Item is going live, rather than preview/theme building
+    :param background:  Theme background image - bytes
+    :param image: Image media item - bytes
+    :param plugins: The List of available plugins
     """
     width = screen['size'].width()
     height = screen['size'].height()
-    theme_data = item.themedata
+    theme_data = item.theme_data
     # Image generated and poked in
     if background:
         bgimage_src = 'src="data:image/png;base64,%s"' % background
@@ -626,11 +617,11 @@ def build_background_css(item, width):
     """
     Build the background css
 
-    ``item``
-        Service Item containing theme and location information
+    :param item: Service Item containing theme and location information
+    :param width:
     """
     width = int(width) // 2
-    theme = item.themedata
+    theme = item.theme_data
     background = 'background-color: black'
     if theme:
         if theme.background_type == BackgroundType.to_string(BackgroundType.Transparent):
@@ -660,9 +651,7 @@ def build_lyrics_css(item):
     """
     Build the lyrics display css
 
-    ``item``
-        Service Item containing theme and location information
-
+    :param item: Service Item containing theme and location information
     """
     style = """
 .lyricstable {
@@ -681,7 +670,7 @@ def build_lyrics_css(item):
     %s
 }
 """
-    theme_data = item.themedata
+    theme_data = item.theme_data
     lyricstable = ''
     lyrics = ''
     lyricsmain = ''
@@ -700,8 +689,7 @@ def build_lyrics_outline_css(theme_data):
     """
     Build the css which controls the theme outline. Also used by renderer for splitting verses
 
-    ``theme_data``
-        Object containing theme information
+    :param theme_data: Object containing theme information
     """
     if theme_data.font_main_outline:
         size = float(theme_data.font_main_outline_size) / 16
@@ -715,14 +703,9 @@ def build_lyrics_format_css(theme_data, width, height):
     """
     Build the css which controls the theme format. Also used by renderer for splitting verses
 
-    ``theme_data``
-        Object containing theme information
-
-    ``width``
-        Width of the lyrics block
-
-    ``height``
-        Height of the lyrics block
+    :param theme_data: Object containing theme information
+    :param width: Width of the lyrics block
+    :param height: Height of the lyrics block
     """
     align = HorizontalType.Names[theme_data.display_horizontal_align]
     valign = VerticalType.Names[theme_data.display_vertical_align]
@@ -739,12 +722,12 @@ def build_lyrics_format_css(theme_data, width, height):
     else:
         padding_bottom = '0'
     lyrics = '%s word-wrap: break-word; ' \
-        'text-align: %s; vertical-align: %s; font-family: %s; ' \
-        'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
-        'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx; height: %spx; ' % \
+             'text-align: %s; vertical-align: %s; font-family: %s; ' \
+             'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
+             'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx; height: %spx; ' % \
         (justify, align, valign, theme_data.font_main_name, theme_data.font_main_size,
-        theme_data.font_main_color, 100 + int(theme_data.font_main_line_adjustment), padding_bottom,
-        left_margin, width, height)
+         theme_data.font_main_color, 100 + int(theme_data.font_main_line_adjustment), padding_bottom,
+         left_margin, width, height)
     if theme_data.font_main_italics:
         lyrics += 'font-style:italic; '
     if theme_data.font_main_bold:
@@ -756,8 +739,8 @@ def build_footer_css(item, height):
     """
     Build the display of the item footer
 
-    ``item``
-        Service Item to be processed.
+    :param item: Service Item to be processed.
+    :param height:
     """
     style = """
     left: %spx;
@@ -769,10 +752,10 @@ def build_footer_css(item, height):
     text-align: left;
     white-space: nowrap;
     """
-    theme = item.themedata
+    theme = item.theme_data
     if not theme or not item.footer:
         return ''
     bottom = height - int(item.footer.y()) - int(item.footer.height())
     lyrics_html = style % (item.footer.x(), bottom, item.footer.width(),
-        theme.font_footer_name, theme.font_footer_size, theme.font_footer_color)
+                           theme.font_footer_name, theme.font_footer_size, theme.font_footer_color)
     return lyrics_html

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -45,6 +45,7 @@ from .songimport import SongImport
 
 log = logging.getLogger(__name__)
 
+
 class OpenLPSongImport(SongImport):
     """
     The :class:`OpenLPSongImport` class provides OpenLP with the ability to
@@ -54,21 +55,17 @@ class OpenLPSongImport(SongImport):
         """
         Initialise the import.
 
-        ``manager``
-            The song manager for the running OpenLP installation.
-
-        ``source_db``
-            The database providing the data to import.
+        :param manager: The song manager for the running OpenLP installation.
+        :param kwargs: The database providing the data to import.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.sourceSession = None
+        self.source_session = None
 
-    def doImport(self, progressDialog=None):
+    def do_import(self, progress_dialog=None):
         """
         Run the import for an OpenLP version 2 song database.
 
-        ``progressDialog``
-            The QProgressDialog used when importing songs from the FRW.
+        :param progress_dialog: The QProgressDialog used when importing songs from the FRW.
         """
 
         class OldAuthor(BaseModel):
@@ -77,13 +74,11 @@ class OpenLPSongImport(SongImport):
             """
             pass
 
-
         class OldBook(BaseModel):
             """
             Book model
             """
             pass
-
 
         class OldMediaFile(BaseModel):
             """
@@ -91,13 +86,11 @@ class OpenLPSongImport(SongImport):
             """
             pass
 
-
         class OldSong(BaseModel):
             """
             Song model
             """
             pass
-
 
         class OldTopic(BaseModel):
             """
@@ -107,15 +100,15 @@ class OpenLPSongImport(SongImport):
 
         # Check the file type
         if not self.import_source.endswith('.sqlite'):
-            self.logError(self.import_source,
-                translate('SongsPlugin.OpenLPSongImport', 'Not a valid OpenLP 2.0 song database.'))
+            self.log_error(self.import_source, translate('SongsPlugin.OpenLPSongImport',
+                                                         'Not a valid OpenLP 2.0 song database.'))
             return
         self.import_source = 'sqlite:///%s' % self.import_source
         # Load the db file
         engine = create_engine(self.import_source)
         source_meta = MetaData()
         source_meta.reflect(engine)
-        self.sourceSession = scoped_session(sessionmaker(bind=engine))
+        self.source_session = scoped_session(sessionmaker(bind=engine))
         if 'media_files' in list(source_meta.tables.keys()):
             has_media_files = True
         else:
@@ -135,22 +128,19 @@ class OpenLPSongImport(SongImport):
             except UnmappedClassError:
                 mapper(OldMediaFile, source_media_files_table)
         song_props = {
-            'authors': relation(OldAuthor, backref='songs',
-            secondary=source_authors_songs_table),
+            'authors': relation(OldAuthor, backref='songs', secondary=source_authors_songs_table),
             'book': relation(OldBook, backref='songs'),
-            'topics': relation(OldTopic, backref='songs',
-            secondary=source_songs_topics_table)
+            'topics': relation(OldTopic, backref='songs', secondary=source_songs_topics_table)
         }
         if has_media_files:
             if isinstance(source_media_files_songs_table, Table):
-                song_props['media_files'] = relation(OldMediaFile,
-                    backref='songs',
-                    secondary=source_media_files_songs_table)
+                song_props['media_files'] = relation(OldMediaFile, backref='songs',
+                                                     secondary=source_media_files_songs_table)
             else:
-                song_props['media_files'] = relation(OldMediaFile,
-                    backref='songs',
-                    foreign_keys=[source_media_files_table.c.song_id],
-                    primaryjoin=source_songs_table.c.id == source_media_files_table.c.song_id)
+                song_props['media_files'] = \
+                    relation(OldMediaFile, backref='songs',
+                             foreign_keys=[source_media_files_table.c.song_id],
+                             primaryjoin=source_songs_table.c.id == source_media_files_table.c.song_id)
         try:
             class_mapper(OldAuthor)
         except UnmappedClassError:
@@ -168,7 +158,7 @@ class OpenLPSongImport(SongImport):
         except UnmappedClassError:
             mapper(OldTopic, source_topics_table)
 
-        source_songs = self.sourceSession.query(OldSong).all()
+        source_songs = self.source_session.query(OldSong).all()
         if self.import_wizard:
             self.import_wizard.progress_bar.setMaximum(len(source_songs))
         for song in source_songs:
@@ -212,17 +202,17 @@ class OpenLPSongImport(SongImport):
             if has_media_files:
                 if song.media_files:
                     for media_file in song.media_files:
-                        existing_media_file = self.manager.get_object_filtered(MediaFile,
-                                MediaFile.file_name == media_file.file_name)
+                        existing_media_file = self.manager.get_object_filtered(
+                            MediaFile, MediaFile.file_name == media_file.file_name)
                         if existing_media_file:
                             new_song.media_files.append(existing_media_file)
                         else:
                             new_song.media_files.append(MediaFile.populate(file_name=media_file.file_name))
             clean_song(self.manager, new_song)
             self.manager.save_object(new_song)
-            if progressDialog:
-                progressDialog.setValue(progressDialog.value() + 1)
-                progressDialog.setLabelText(WizardStrings.ImportingType % new_song.title)
+            if progress_dialog:
+                progress_dialog.setValue(progress_dialog.value() + 1)
+                progress_dialog.setLabelText(WizardStrings.ImportingType % new_song.title)
             else:
                 self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % new_song.title)
             if self.stop_import_flag:

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -263,27 +263,27 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
-        self.tabTitleVisible = UiStrings().Advanced
+        self.tab_title_visible = UiStrings().Advanced
         self.ui_group_box.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.data_directory_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Data Location'))
         self.recent_label.setText(translate('OpenLP.AdvancedTab', 'Number of recent files to display:'))
         self.media_plugin_check_box.setText(translate('OpenLP.AdvancedTab',
-            'Remember active media manager tab on startup'))
+                                                      'Remember active media manager tab on startup'))
         self.double_click_live_check_box.setText(translate('OpenLP.AdvancedTab',
-            'Double-click to send items straight to live'))
+                                                           'Double-click to send items straight to live'))
         self.single_click_preview_check_box.setText(translate('OpenLP.AdvancedTab',
-            'Preview items when clicked in Media Manager'))
+                                                              'Preview items when clicked in Media Manager'))
         self.expand_service_item_check_box.setText(translate('OpenLP.AdvancedTab',
-            'Expand new service items on creation'))
+                                                             'Expand new service items on creation'))
         self.enable_auto_close_check_box.setText(translate('OpenLP.AdvancedTab',
-            'Enable application exit confirmation'))
+                                                           'Enable application exit confirmation'))
         self.service_name_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Default Service Name'))
         self.service_name_check_box.setText(translate('OpenLP.AdvancedTab', 'Enable default service name'))
         self.service_name_time_label.setText(translate('OpenLP.AdvancedTab', 'Date and Time:'))
         self.service_name_day.setItemText(0, translate('OpenLP.AdvancedTab', 'Monday'))
         self.service_name_day.setItemText(1, translate('OpenLP.AdvancedTab', 'Tuesday'))
         self.service_name_day.setItemText(2, translate('OpenLP.AdvancedTab', 'Wednesday'))
-        self.service_name_day.setItemText(3, translate('OpenLP.AdvancedTab', 'Thurdsday'))
+        self.service_name_day.setItemText(3, translate('OpenLP.AdvancedTab', 'Thursday'))
         self.service_name_day.setItemText(4, translate('OpenLP.AdvancedTab', 'Friday'))
         self.service_name_day.setItemText(5, translate('OpenLP.AdvancedTab', 'Saturday'))
         self.service_name_day.setItemText(6, translate('OpenLP.AdvancedTab', 'Sunday'))
@@ -293,7 +293,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_edit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.service_name_revert_button.setToolTip(
             translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') %
-                UiStrings().DefaultServiceName)
+            UiStrings().DefaultServiceName)
         self.service_name_example_label.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hide_mouse_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
         self.hide_mouse_check_box.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
@@ -306,7 +306,7 @@ class AdvancedTab(SettingsTab):
         self.data_directory_current_label.setText(translate('OpenLP.AdvancedTab', 'Current path:'))
         self.data_directory_new_label.setText(translate('OpenLP.AdvancedTab', 'Custom path:'))
         self.data_directory_browse_button.setToolTip(translate('OpenLP.AdvancedTab',
-            'Browse for new data file location.'))
+                                                               'Browse for new data file location.'))
         self.data_directory_default_button.setToolTip(
             translate('OpenLP.AdvancedTab', 'Set the data location to the default.'))
         self.data_directory_cancel_button.setText(translate('OpenLP.AdvancedTab', 'Cancel'))
@@ -317,9 +317,9 @@ class AdvancedTab(SettingsTab):
             'OpenLP.AdvancedTab', 'Copy the OpenLP data files to the new location.'))
         self.new_data_directory_has_files_label.setText(
             translate('OpenLP.AdvancedTab', '<strong>WARNING:</strong> New data directory location contains '
-                'OpenLP data files.  These files WILL be replaced during a copy.'))
+                      'OpenLP data files.  These files WILL be replaced during a copy.'))
         self.display_workaround_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Display Workarounds'))
-        self.x11_bypass_check_box.setText(translate('OpenLP.AdvancedTab','Bypass X11 Window Manager'))
+        self.x11_bypass_check_box.setText(translate('OpenLP.AdvancedTab', 'Bypass X11 Window Manager'))
         self.alternate_rows_check_box.setText(translate('OpenLP.AdvancedTab', 'Use alternating row colours in lists'))
         # Slide Limits
         self.slide_group_box.setTitle(translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
@@ -347,7 +347,7 @@ class AdvancedTab(SettingsTab):
         self.hide_mouse_check_box.setChecked(settings.value('hide mouse'))
         self.service_name_day.setCurrentIndex(settings.value('default service day'))
         self.service_name_time.setTime(QtCore.QTime(settings.value('default service hour'),
-            settings.value('default service minute')))
+                                                    settings.value('default service minute')))
         self.should_update_service_name_example = True
         self.service_name_edit.setText(settings.value('default service name'))
         default_service_enabled = settings.value('default service enabled')
@@ -375,15 +375,15 @@ class AdvancedTab(SettingsTab):
         self.current_data_path = AppLocation.get_data_path()
         if not os.path.exists(self.current_data_path):
             log.error('Data path not found %s' % self.current_data_path)
-            answer = QtGui.QMessageBox.critical(self,
-                translate('OpenLP.AdvancedTab', 'Data Directory Error'),
+            answer = QtGui.QMessageBox.critical(
+                self, translate('OpenLP.AdvancedTab', 'Data Directory Error'),
                 translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n%s\n\n'
-                'This data directory was previously changed from the OpenLP '
-                'default location.  If the new location was on removable '
-                'media, that media needs to be made available.\n\n'
-                'Click "No" to stop loading OpenLP. allowing you to fix the the problem.\n\n'
-                'Click "Yes" to reset the data directory to the default '
-                'location.').replace('%s', self.current_data_path),
+                          'This data directory was previously changed from the OpenLP '
+                          'default location.  If the new location was on removable '
+                          'media, that media needs to be made available.\n\n'
+                          'Click "No" to stop loading OpenLP. allowing you to fix the the problem.\n\n'
+                          'Click "Yes" to reset the data directory to the default '
+                          'location.').replace('%s', self.current_data_path),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                 QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.No:
@@ -513,7 +513,7 @@ class AdvancedTab(SettingsTab):
         """
         file_filters = '%s;;%s (*.*) (*)' % (get_images_filter(), UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.AdvancedTab', 'Open File'), '',
-            file_filters)
+                                                     file_filters)
         if filename:
             self.default_file_edit.setText(filename)
         self.default_file_edit.setFocus()
@@ -524,9 +524,9 @@ class AdvancedTab(SettingsTab):
         """
         old_root_path = str(self.data_directory_label.text())
         # Get the new directory location.
-        new_data_path = QtGui.QFileDialog.getExistingDirectory(
-            self, translate('OpenLP.AdvancedTab', 'Select Data Directory Location'), old_root_path,
-            options=QtGui.QFileDialog.ShowDirsOnly)
+        new_data_path = QtGui.QFileDialog.getExistingDirectory(self, translate('OpenLP.AdvancedTab',
+                                                                               'Select Data Directory Location'),
+                                                               old_root_path, options=QtGui.QFileDialog.ShowDirsOnly)
         # Set the new data path.
         if new_data_path:
             new_data_path = os.path.normpath(new_data_path)
@@ -536,12 +536,14 @@ class AdvancedTab(SettingsTab):
         else:
             return
         # Make sure they want to change the data.
-        answer = QtGui.QMessageBox.question(self,
-            translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
-            translate('OpenLP.AdvancedTab', 'Are you sure you want to change the location of the OpenLP '
-                'data directory to:\n\n%s\n\n '
-                'The data directory will be changed when OpenLP is closed.').replace('%s', new_data_path),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+        answer = QtGui.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
+                                            translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
+                                                      'location of the OpenLP data directory to:\n\n%s\n\nThe data '
+                                                      'directory will be changed when OpenLP is closed.').
+                                            replace('%s', new_data_path),
+                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                              QtGui.QMessageBox.No),
+                                            QtGui.QMessageBox.No)
         if answer != QtGui.QMessageBox.Yes:
             return
         # Check if data already exists here.
@@ -559,11 +561,14 @@ class AdvancedTab(SettingsTab):
         if self.current_data_path.lower() != new_data_path.lower():
             # Make sure they want to change the data location back to the
             # default.
-            answer = QtGui.QMessageBox.question(self,
-                translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
-                translate('OpenLP.AdvancedTab', 'Are you sure you want to change the location of the OpenLP '
-                'data directory to the default location?\n\nThis location will be used after OpenLP is closed.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+            answer = QtGui.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
+                                                translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
+                                                          'location of the OpenLP data directory to the default '
+                                                          'location?\n\nThis location will be used after OpenLP is  '
+                                                          'closed.'),
+                                                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                                  QtGui.QMessageBox.No),
+                                                QtGui.QMessageBox.No)
             if answer != QtGui.QMessageBox.Yes:
                 return
             self.check_data_overwrite(new_data_path)
@@ -586,7 +591,7 @@ class AdvancedTab(SettingsTab):
             else:
                 self.new_data_directory_has_files_label.hide()
 
-    def check_data_overwrite(self, data_path ):
+    def check_data_overwrite(self, data_path):
         """
         Check if there's already data in the target directory.
         """
@@ -596,11 +601,15 @@ class AdvancedTab(SettingsTab):
             self.data_exists = True
             # Check is they want to replace existing data.
             answer = QtGui.QMessageBox.warning(self,
-                translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
-                translate('OpenLP.AdvancedTab', 'WARNING: \n\nThe location you have selected \n\n%s\n\n'
-                'appears to contain OpenLP data files. Do you wish to replace these files with the current data files?'
-                ).replace('%s', os.path.abspath(data_path,)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+                                               translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
+                                               translate('OpenLP.AdvancedTab',
+                                                         'WARNING: \n\nThe location you have selected \n\n%s\n\n'
+                                                         'appears to contain OpenLP data files. Do you wish to '
+                                                         'replace these files with the current data files?').
+                                               replace('%s', os.path.abspath(data_path,)),
+                                               QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                                 QtGui.QMessageBox.No),
+                                               QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.Yes:
                 self.data_directory_copy_check_box.setChecked(True)
                 self.new_data_directory_has_files_label.show()
@@ -635,12 +644,11 @@ class AdvancedTab(SettingsTab):
         """
         Notify user about required restart.
 
-        ``checked``
-            The state of the check box (boolean).
+        :param checked: The state of the check box (boolean).
         """
-        QtGui.QMessageBox.information(self,
-            translate('OpenLP.AdvancedTab', 'Restart Required'),
-            translate('OpenLP.AdvancedTab', 'This change will only take effect once OpenLP has been restarted.'))
+        QtGui.QMessageBox.information(self, translate('OpenLP.AdvancedTab', 'Restart Required'),
+                                      translate('OpenLP.AdvancedTab', 'This change will only take effect once OpenLP '
+                                                                      'has been restarted.'))
 
     def on_end_slide_button_clicked(self):
         """

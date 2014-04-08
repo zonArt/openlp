@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -41,8 +41,7 @@ class Ui_ChooseGroupDialog(object):
         """
         Set up the UI.
 
-        ``choose_group_dialog``
-            The form object (not the class).
+        :param choose_group_dialog: The form object (not the class).
         """
         choose_group_dialog.setObjectName('choose_group_dialog')
         choose_group_dialog.resize(399, 119)
@@ -84,8 +83,7 @@ class Ui_ChooseGroupDialog(object):
         """
         Translate the UI on the fly.
 
-        ``choose_group_dialog``
-            The form object (not the class).
+        :param choose_group_dialog: The form object (not the class).
         """
         choose_group_dialog.setWindowTitle(translate('ImagePlugin.ChooseGroupForm', 'Select Image Group'))
         self.group_question_label.setText(translate('ImagePlugin.ChooseGroupForm', 'Add images to group:'))

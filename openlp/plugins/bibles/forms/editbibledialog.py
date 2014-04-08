@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -107,7 +107,7 @@ class Ui_EditBibleDialog(object):
         self.book_name_widget_layout = QtGui.QFormLayout(self.book_name_widget)
         self.book_name_widget_layout.setObjectName('book_name_widget_layout')
         self.book_name_label = {}
-        self.book_name_edit= {}
+        self.book_name_edit = {}
         for book in BiblesResourcesDB.get_books():
             self.book_name_label[book['abbreviation']] = QtGui.QLabel(self.book_name_widget)
             self.book_name_label[book['abbreviation']].setObjectName('book_name_label[%s]' % book['abbreviation'])
@@ -131,24 +131,28 @@ class Ui_EditBibleDialog(object):
         self.book_names = BibleStrings().BookNames
         edit_bible_dialog.setWindowTitle(translate('BiblesPlugin.EditBibleForm', 'Bible Editor'))
         # Meta tab
-        self.bible_tab_widget.setTabText( self.bible_tab_widget.indexOf(self.meta_tab),
-            translate('SongsPlugin.EditBibleForm', 'Meta Data'))
+        self.bible_tab_widget.setTabText(
+            self.bible_tab_widget.indexOf(self.meta_tab), translate('SongsPlugin.EditBibleForm', 'Meta Data'))
         self.license_details_group_box.setTitle(translate('BiblesPlugin.EditBibleForm', 'License Details'))
         self.version_name_label.setText(translate('BiblesPlugin.EditBibleForm', 'Version name:'))
         self.copyright_label.setText(translate('BiblesPlugin.EditBibleForm', 'Copyright:'))
         self.permissions_label.setText(translate('BiblesPlugin.EditBibleForm', 'Permissions:'))
         self.language_selection_group_box.setTitle(translate('BiblesPlugin.EditBibleForm', 'Default Bible Language'))
-        self.language_selection_label.setText(translate('BiblesPlugin.EditBibleForm',
-            'Book name language in search field, search results and on display:'))
+        self.language_selection_label.setText(
+            translate('BiblesPlugin.EditBibleForm', 'Book name language in search field, search results and '
+                                                    'on display:'))
         self.language_selection_combo_box.setItemText(0, translate('BiblesPlugin.EditBibleForm', 'Global Settings'))
-        self.language_selection_combo_box.setItemText(LanguageSelection.Bible + 1,
+        self.language_selection_combo_box.setItemText(
+            LanguageSelection.Bible + 1,
             translate('BiblesPlugin.EditBibleForm', 'Bible Language'))
-        self.language_selection_combo_box.setItemText(LanguageSelection.Application + 1,
-            translate('BiblesPlugin.EditBibleForm', 'Application Language'))
-        self.language_selection_combo_box.setItemText(LanguageSelection.English + 1,
+        self.language_selection_combo_box.setItemText(
+            LanguageSelection.Application + 1, translate('BiblesPlugin.EditBibleForm', 'Application Language'))
+        self.language_selection_combo_box.setItemText(
+            LanguageSelection.English + 1,
             translate('BiblesPlugin.EditBibleForm', 'English'))
         # Book name tab
-        self.bible_tab_widget.setTabText(self.bible_tab_widget.indexOf(self.book_name_tab),
+        self.bible_tab_widget.setTabText(
+            self.bible_tab_widget.indexOf(self.book_name_tab),
             translate('SongsPlugin.EditBibleForm', 'Custom Book Names'))
         for book in BiblesResourcesDB.get_books():
             self.book_name_label[book['abbreviation']].setText('%s:' % str(self.book_names[book['abbreviation']]))

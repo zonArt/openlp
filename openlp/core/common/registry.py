@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,6 +31,8 @@ Provide Registry Services
 """
 import logging
 import sys
+
+from openlp.core.common import trace_error_handler
 
 log = logging.getLogger(__name__)
 
@@ -60,36 +62,34 @@ class Registry(object):
         registry = cls()
         registry.service_list = {}
         registry.functions_list = {}
-        registry.running_under_test = False
         # Allow the tests to remove Registry entries but not the live system
-        if 'nose' in sys.argv[0]:
-            registry.running_under_test = True
+        registry.running_under_test = 'nose' in sys.argv[0]
+        registry.initialising = True
         return registry
 
     def get(self, key):
         """
         Extracts the registry value from the list based on the key passed in
 
-        ``key``
-            The service to be retrieved.
+        :param key: The service to be retrieved.
         """
         if key in self.service_list:
             return self.service_list[key]
         else:
-            log.error('Service %s not found in list' % key)
-            raise KeyError('Service %s not found in list' % key)
+            if not self.initialising:
+                trace_error_handler(log)
+                log.error('Service %s not found in list' % key)
+                raise KeyError('Service %s not found in list' % key)
 
     def register(self, key, reference):
         """
         Registers a component against a key.
 
-        ``key``
-            The service to be created this is usually a major class like "renderer" or "main_window" .
-
-        ``reference``
-            The service address to be saved.
+        :param key: The service to be created this is usually a major class like "renderer" or "main_window" .
+        :param reference: The service address to be saved.
         """
         if key in self.service_list:
+            trace_error_handler(log)
             log.error('Duplicate service exception %s' % key)
             raise KeyError('Duplicate service exception %s' % key)
         else:
@@ -100,8 +100,7 @@ class Registry(object):
         Removes the registry value from the list based on the key passed in (Only valid and active for testing
         framework).
 
-        ``key``
-            The service to be deleted.
+        :param key: The service to be deleted.
         """
         if key in self.service_list:
             del self.service_list[key]
@@ -110,13 +109,10 @@ class Registry(object):
         """
         Register an event and associated function to be called
 
-        ``event``
-            The function description like "live_display_hide" where a number of places in the code
+        :param event:  The function description like "live_display_hide" where a number of places in the code
             will/may need to respond to a single action and the caller does not need to understand or know about the
             recipients.
-
-        ``function``
-            The function to be called when the event happens.
+        :param function: The function to be called when the event happens.
         """
         if event in self.functions_list:
             self.functions_list[event].append(function)
@@ -127,13 +123,11 @@ class Registry(object):
         """
         Remove an event and associated handler
 
-        ``event``
-            The function description..
-
-        ``function``
-            The function to be called when the event happens.
+        :param event: The function description..
+        :param function: The function to be called when the event happens.
         """
-        if self.running_under_test is False:
+        if not self.running_under_test:
+            trace_error_handler(log)
             log.error('Invalid Method call for key %s' % event)
             raise KeyError('Invalid Method call for key %s' % event)
         if event in self.functions_list:
@@ -143,14 +137,9 @@ class Registry(object):
         """
         Execute all the handlers associated with the event and return an array of results.
 
-        ``event``
-            The function to be processed
-
-        ``*args``
-            Parameters to be passed to the function.
-
-        ``*kwargs``
-            Parameters to be passed to the function.
+        :param event: The function to be processed
+        :param args:  Parameters to be passed to the function.
+        :param kwargs: Parameters to be passed to the function.
         """
         results = []
         if event in self.functions_list:
@@ -161,7 +150,9 @@ class Registry(object):
                         results.append(result)
                 except TypeError:
                     # Who has called me can help in debugging
-                    import inspect
-                    log.debug(inspect.currentframe().f_back.f_locals)
+                    trace_error_handler(log)
                     log.exception('Exception for function %s', function)
+        else:
+            trace_error_handler(log)
+            log.error("Event %s called but not registered" % event)
         return results

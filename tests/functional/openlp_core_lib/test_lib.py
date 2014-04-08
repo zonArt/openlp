@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -311,8 +311,8 @@ class TestLib(TestCase):
             mocked_buffer.open.assert_called_with('writeonly')
             mocked_image.save.assert_called_with(mocked_buffer, "PNG")
             mocked_byte_array.toBase64.assert_called_with()
-            self.assertEqual('base64mock', result,
-                'The result should be the return value of the mocked out base64 method')
+            self.assertEqual('base64mock', result, 'The result should be the return value of the mocked out '
+                                                   'base64 method')
 
     def create_thumb_with_size_test(self):
         """

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,7 +29,8 @@
 
 # OOo API documentation:
 # http://api.openoffice.org/docs/common/ref/com/sun/star/presentation/XSlideShowController.html
-# http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Basic/Getting_Information_about_UNO_Objects#Inspecting_interfaces_during_debugging
+# http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/ProUNO/Basic
+#                          /Getting_Information_about_UNO_Objects#Inspecting_interfaces_during_debugging
 # http://docs.go-oo.org/sd/html/classsd_1_1SlideShow.html
 # http://www.oooforum.org/forum/viewtopic.phtml?t=5252
 # http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/Working_with_Presentations
@@ -45,6 +46,7 @@ if os.name == 'nt':
     from win32com.client import Dispatch
     import pywintypes
     # Declare an empty exception to match the exception imported from UNO
+
     class ErrorCodeIOException(Exception):
         pass
 else:
@@ -52,6 +54,7 @@ else:
         import uno
         from com.sun.star.beans import PropertyValue
         from com.sun.star.task import ErrorCodeIOException
+
         uno_available = True
     except ImportError:
         uno_available = False
@@ -183,9 +186,9 @@ class ImpressController(PresentationController):
         docs = desktop.getComponents()
         cnt = 0
         if docs.hasElements():
-            list = docs.createEnumeration()
-            while list.hasMoreElements():
-                doc = list.nextElement()
+            list_elements = docs.createEnumeration()
+            while list_elements.hasMoreElements():
+                doc = list_elements.nextElement()
                 if doc.getImplementationName() != 'com.sun.star.comp.framework.BackingComp':
                     cnt += 1
         if cnt > 0:
@@ -225,10 +228,10 @@ class ImpressDocument(PresentationDocument):
             if desktop is None:
                 self.controller.start_process()
                 desktop = self.controller.get_com_desktop()
-            url = 'file:///' + self.filepath.replace('\\', '/').replace(':', '|').replace(' ', '%20')
+            url = 'file:///' + self.file_path.replace('\\', '/').replace(':', '|').replace(' ', '%20')
         else:
             desktop = self.controller.get_uno_desktop()
-            url = uno.systemPathToFileUrl(self.filepath)
+            url = uno.systemPathToFileUrl(self.file_path)
         if desktop is None:
             return False
         self.desktop = desktop
@@ -409,11 +412,13 @@ class ImpressDocument(PresentationDocument):
         """
         return self.document.getDrawPages().getCount()
 
-    def goto_slide(self, slideno):
+    def goto_slide(self, slide_no):
         """
         Go to a specific slide (from 1).
+
+        :param slide_no: The slide the text is required for, starting at 1
         """
-        self.control.gotoSlideIndex(slideno-1)
+        self.control.gotoSlideIndex(slide_no - 1)
 
     def next_step(self):
         """
@@ -435,8 +440,7 @@ class ImpressDocument(PresentationDocument):
         """
         Returns the text on the slide.
 
-        ``slide_no``
-            The slide the text is required for, starting at 1
+        :param slide_no: The slide the text is required for, starting at 1
         """
         return self.__get_text_from_page(slide_no)
 
@@ -444,8 +448,7 @@ class ImpressDocument(PresentationDocument):
         """
         Returns the text in the slide notes.
 
-        ``slide_no``
-            The slide the notes are required for, starting at 1
+        :param slide_no: The slide the notes are required for, starting at 1
         """
         return self.__get_text_from_page(slide_no, True)
 
@@ -453,8 +456,8 @@ class ImpressDocument(PresentationDocument):
         """
         Return any text extracted from the presentation page.
 
-        ``notes``
-            A boolean. If set the method searches the notes of the slide.
+        :param slide_no: The slide the notes are required for, starting at 1
+        :param notes: A boolean. If set the method searches the notes of the slide.
         """
         text = ''
         pages = self.document.getDrawPages()

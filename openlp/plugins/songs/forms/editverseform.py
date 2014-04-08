@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -50,16 +50,18 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         super(EditVerseForm, self).__init__(parent)
         self.setupUi(self)
-        self.verse_text_edit.customContextMenuRequested.connect(self.context_menu)
         self.insert_button.clicked.connect(self.on_insert_button_clicked)
         self.split_button.clicked.connect(self.on_split_button_clicked)
         self.verse_text_edit.cursorPositionChanged.connect(self.on_cursor_position_changed)
         self.verse_type_combo_box.currentIndexChanged.connect(self.on_verse_type_combo_box_changed)
 
-    def context_menu(self, point):
-        item = self.serviceManagerList.itemAt(point)
-
     def insert_verse(self, verse_tag, verse_num=1):
+        """
+        Insert a verse
+
+        :param verse_tag: The verse tag
+        :param verse_num: The verse number
+        """
         if self.verse_text_edit.textCursor().columnNumber() != 0:
             self.verse_text_edit.insertPlainText('\n')
         verse_tag = VerseType.translated_name(verse_tag)
@@ -67,24 +69,36 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.verse_text_edit.setFocus()
 
     def on_split_button_clicked(self):
+        """
+        The split button has been pressed
+        """
         text = self.verse_text_edit.toPlainText()
         position = self.verse_text_edit.textCursor().position()
         insert_string = '[---]'
         if position and text[position-1] != '\n':
             insert_string = '\n' + insert_string
-        if position ==  len(text) or text[position] != '\n':
+        if position == len(text) or text[position] != '\n':
             insert_string += '\n'
         self.verse_text_edit.insertPlainText(insert_string)
         self.verse_text_edit.setFocus()
 
     def on_insert_button_clicked(self):
+        """
+        The insert button has been pressed
+        """
         verse_type_index = self.verse_type_combo_box.currentIndex()
         self.insert_verse(VerseType.tags[verse_type_index], self.verse_number_box.value())
 
     def on_verse_type_combo_box_changed(self):
+        """
+        The verse type combo has been changed
+        """
         self.update_suggested_verse_number()
 
     def on_cursor_position_changed(self):
+        """
+        The cursor position has been changed
+        """
         self.update_suggested_verse_number()
 
     def update_suggested_verse_number(self):
@@ -117,6 +131,13 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.verse_number_box.setValue(verse_num)
 
     def set_verse(self, text, single=False, tag='%s1' % VerseType.tags[VerseType.Verse]):
+        """
+        Save the verse
+
+        :param text: The text
+        :param single: is this a single verse
+        :param tag: The tag
+        """
         self.has_single_verse = single
         if single:
             verse_type_index = VerseType.from_tag(tag[0], None)
@@ -136,10 +157,20 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.verse_text_edit.moveCursor(QtGui.QTextCursor.End)
 
     def get_verse(self):
+        """
+        Extract the verse text
+
+        :return: The text
+        """
         return self.verse_text_edit.toPlainText(), VerseType.tags[self.verse_type_combo_box.currentIndex()], \
             str(self.verse_number_box.value())
 
     def get_all_verses(self):
+        """
+        Extract all the verses
+
+        :return: The text
+        """
         text = self.verse_text_edit.toPlainText()
         if not text.startswith('---['):
             text = '---[%s:1]---\n%s' % (VerseType.translated_names[VerseType.Verse], text)

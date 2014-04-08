@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -44,20 +44,20 @@ class TestLib(TestCase):
         """
         Mock up two songs and provide a set of lyrics for the songs_probably_equal tests.
         """
-        self.full_lyrics ='''amazing grace how sweet the sound that saved a wretch like me i once was lost but now am
+        self.full_lyrics = '''amazing grace how sweet the sound that saved a wretch like me i once was lost but now am
             found was blind but now i see  twas grace that taught my heart to fear and grace my fears relieved how
-            precious did that grace appear the hour i first believed  through many dangers toils and snares i have already
-            come tis grace that brought me safe thus far and grace will lead me home'''
-        self.short_lyrics ='''twas grace that taught my heart to fear and grace my fears relieved how precious did that
-            grace appear the hour i first believed'''
-        self.error_lyrics ='''amazing how sweet the trumpet that saved a wrench like me i once was losst but now am
+            precious did that grace appear the hour i first believed  through many dangers toils and snares i have
+            already come tis grace that brought me safe thus far and grace will lead me home'''
+        self.short_lyrics = '''twas grace that taught my heart to fear and grace my fears relieved how precious did
+        that grace appear the hour i first believed'''
+        self.error_lyrics = '''amazing how sweet the trumpet that saved a wrench like me i once was losst but now am
             found waf blind but now i see  it was grace that taught my heart to fear and grace my fears relieved how
             precious did that grace appppppppear the hour i first believedxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx snares i have
             already come to this grace that brought me safe so far and grace will lead me home'''
-        self.different_lyrics='''on a hill far away stood an old rugged cross the emblem of suffering and shame and i love
-            that old cross where the dearest and best for a world of lost sinners was slain  so ill cherish the old rugged
-            cross till my trophies at last i lay down i will cling to the old rugged cross and exchange it some day for a
-            crown'''
+        self.different_lyrics = '''on a hill far away stood an old rugged cross the emblem of suffering and shame and
+            i love that old cross where the dearest and best for a world of lost sinners was slain  so ill cherish the
+            old rugged cross till my trophies at last i lay down i will cling to the old rugged cross and exchange it
+            some day for a crown'''
         self.song1 = MagicMock()
         self.song2 = MagicMock()
 
@@ -99,7 +99,7 @@ class TestLib(TestCase):
         result = songs_probably_equal(self.song1, self.song2)
 
         # THEN: The result should be True.
-        assert result == True, 'The result should be True'
+        assert result is True, 'The result should be True'
 
     def songs_probably_equal_short_song_test(self):
         """
@@ -113,7 +113,7 @@ class TestLib(TestCase):
         result = songs_probably_equal(self.song1, self.song2)
 
         # THEN: The result should be True.
-        assert result == True, 'The result should be True'
+        assert result is True, 'The result should be True'
 
     def songs_probably_equal_error_song_test(self):
         """
@@ -127,7 +127,7 @@ class TestLib(TestCase):
         result = songs_probably_equal(self.song1, self.song2)
 
         # THEN: The result should be True.
-        assert result == True, 'The result should be True'
+        assert result is True, 'The result should be True'
 
     def songs_probably_equal_different_song_test(self):
         """
@@ -141,7 +141,7 @@ class TestLib(TestCase):
         result = songs_probably_equal(self.song1, self.song2)
 
         # THEN: The result should be False.
-        assert result == False, 'The result should be False'
+        assert result is False, 'The result should be False'
 
     def remove_typos_beginning_test(self):
         """
@@ -267,8 +267,8 @@ class TestLib(TestCase):
 
             # WHEN: We call strip_rtf on the input RTF
             result, result_enc = strip_rtf(
-               '{\\rtf1 \\ansi \\ansicpg1252 {\\fonttbl \\f0 \\fswiss \\fcharset%s Helvetica;}' \
-               '{\\colortbl ;\\red0 \\green0 \\blue0 ;}\\pard \\f0 %s}' % (charset, input))
+                '{\\rtf1 \\ansi \\ansicpg1252 {\\fonttbl \\f0 \\fswiss \\fcharset%s Helvetica;}'
+                '{\\colortbl ;\\red0 \\green0 \\blue0 ;}\\pard \\f0 %s}' % (charset, input))
 
             # THEN: The stripped text matches thed expected result
             assert result == exp_result, 'The result should be %s' % exp_result

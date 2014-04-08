@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -30,24 +30,39 @@
 The :mod:`common` module contains most of the components and libraries that make
 OpenLP work.
 """
+import re
 import os
 import logging
 import sys
+import traceback
 
 from PyQt4 import QtCore
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__+'.__init__')
+
+
+FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
+SECOND_CAMEL_REGEX = re.compile('([a-z0-9])([A-Z])')
+
+
+def trace_error_handler(logger):
+    """
+    Log the calling path of an exception
+
+    :param logger: logger to use so traceback is logged to correct class
+    """
+    log_string = "OpenLP Error trace"
+    for tb in traceback.extract_stack():
+        log_string = '%s\n   File %s at line %d \n\t called %s' % (log_string, tb[0], tb[1], tb[3])
+    logger.error(log_string)
 
 
 def check_directory_exists(directory, do_not_log=False):
     """
     Check a theme directory exists and if not create it
 
-    ``directory``
-        The directory to make sure exists
-
-    ``do_not_log``
-        To not log anything. This is need for the start up, when the log isn't ready.
+    :param directory: The directory to make sure exists
+    :param do_not_log: To not log anything. This is need for the start up, when the log isn't ready.
     """
     if not do_not_log:
         log.debug('check_directory_exists %s' % directory)
@@ -82,14 +97,12 @@ def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.Code
     A special shortcut method to wrap around the Qt4 translation functions. This abstracts the translation procedure so
     that we can change it if at a later date if necessary, without having to redo the whole of OpenLP.
 
-    ``context``
-        The translation context, used to give each string a context or a namespace.
-
-    ``text``
-        The text to put into the translation tables for translation.
-
-    ``comment``
-        An identifying string for when the same text is used in different roles within the same context.
+    :param context: The translation context, used to give each string a context or a namespace.
+    :param text: The text to put into the translation tables for translation.
+    :param comment: An identifying string for when the same text is used in different roles within the same context.
+    :param encoding:
+    :param n:
+    :param qt_translate:
     """
     return qt_translate(context, text, comment, encoding, n)
 
@@ -103,7 +116,19 @@ class SlideLimits(object):
     Wrap = 2
     Next = 3
 
+
+def de_hump(name):
+    """
+    Change any Camel Case string to python string
+    """
+    sub_name = FIRST_CAMEL_REGEX.sub(r'\1_\2', name)
+    return SECOND_CAMEL_REGEX.sub(r'\1_\2', sub_name).lower()
+
+from .openlpmixin import OpenLPMixin
+from .registry import Registry
+from .registrymixin import RegistryMixin
+from .registryproperties import RegistryProperties
 from .uistrings import UiStrings
 from .settings import Settings
 from .applocation import AppLocation
-
+from .historycombobox import HistoryComboBox

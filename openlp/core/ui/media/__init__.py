@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -35,7 +35,7 @@ from openlp.core.common import Settings
 
 from PyQt4 import QtCore
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__+'.__init__')
 
 
 class MediaState(object):
@@ -96,14 +96,10 @@ def get_media_players():
 
 def set_media_players(players_list, overridden_player='auto'):
     """
-    This method saves the configured media players and overridden player to the
-    settings
+    This method saves the configured media players and overridden player to the settings
 
-    ``players_list``
-        A list with all active media players.
-
-    ``overridden_player``
-        Here an special media player is chosen for all media actions.
+    :param players_list: A list with all active media players.
+    :param overridden_player: Here an special media player is chosen for all media actions.
     """
     log.debug('set_media_players')
     players = ','.join(players_list)

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -39,7 +39,7 @@ from PyQt4 import QtCore, QtGui, Qt
 
 from openlp.core.common import translate
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__+'.__init__')
 
 
 class ServiceItemContext(object):
@@ -89,8 +89,8 @@ def get_text_file_string(text_file):
     returns False. If there is an error loading the file or the content can't be decoded then the function will return
     None.
 
-    ``textfile``
-        The name of the file.
+    :param text_file: The name of the file.
+    :return The file as a single string
     """
     if not os.path.isfile(text_file):
         return False
@@ -114,8 +114,8 @@ def str_to_bool(string_value):
     """
     Convert a string version of a boolean into a real boolean.
 
-    ``string_value``
-        The string value to examine and convert to a boolean type.
+    :param string_value: The string value to examine and convert to a boolean type.
+    :return The correct boolean value
     """
     if isinstance(string_value, bool):
         return string_value
@@ -127,9 +127,10 @@ def build_icon(icon):
     Build a QIcon instance from an existing QIcon, a resource location, or a physical file location. If the icon is a
     QIcon instance, that icon is simply returned. If not, it builds a QIcon instance from the resource or file name.
 
-    ``icon``
+    :param icon:
         The icon to build. This can be a QIcon, a resource string in the form ``:/resource/file.png``, or a file
         location like ``/path/to/file.png``. However, the **recommended** way is to specify a resource string.
+    :return The build icon.
     """
     button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):
@@ -148,8 +149,7 @@ def image_to_byte(image):
     """
     Resize an image to fit on the current screen for the web and returns it as a byte stream.
 
-    ``image``
-        The image to converted.
+    :param image: The image to converted.
     """
     log.debug('image_to_byte - start')
     byte_array = QtCore.QByteArray()
@@ -166,18 +166,12 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     """
     Create a thumbnail from the given image path and depending on ``return_icon`` it returns an icon from this thumb.
 
-    ``image_path``
-        The image file to create the icon from.
-
-    ``thumb_path``
-        The filename to save the thumbnail to.
-
-    ``return_icon``
-        States if an icon should be build and returned from the thumb. Defaults to ``True``.
-
-    ``size``
-        Allows to state a own size (QtCore.QSize) to use. Defaults to ``None``, which means that a default height of 88
-        is used.
+    :param image_path: The image file to create the icon from.
+    :param thumb_path: The filename to save the thumbnail to.
+    :param return_icon: States if an icon should be build and returned from the thumb. Defaults to ``True``.
+    :param size: Allows to state a own size (QtCore.QSize) to use. Defaults to ``None``, which means that a default
+     height of 88 is used.
+    :return The final icon.
     """
     ext = os.path.splitext(thumb_path)[1].lower()
     reader = QtGui.QImageReader(image_path)
@@ -191,9 +185,9 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     if not return_icon:
         return
     if os.path.exists(thumb_path):
-        return build_icon(str(thumb_path))
+        return build_icon(thumb_path)
     # Fallback for files with animation support.
-    return build_icon(str(image_path))
+    return build_icon(image_path)
 
 
 def validate_thumb(file_path, thumb_path):
@@ -201,11 +195,9 @@ def validate_thumb(file_path, thumb_path):
     Validates whether an file's thumb still exists and if is up to date. **Note**, you must **not** call this function,
     before checking the existence of the file.
 
-    ``file_path``
-        The path to the file. The file **must** exist!
-
-    ``thumb_path``
-        The path to the thumb.
+    :param file_path: The path to the file. The file **must** exist!
+    :param thumb_path: The path to the thumb.
+    :return True, False if the image has changed since the thumb was created.
     """
     if not os.path.exists(thumb_path):
         return False
@@ -218,19 +210,12 @@ def resize_image(image_path, width, height, background='#000000'):
     """
     Resize an image to fit on the current screen.
 
-    ``image_path``
-        The path to the image to resize.
-
-    ``width``
-        The new image width.
-
-    ``height``
-        The new image height.
-
-    ``background``
-        The background colour. Defaults to black.
-
     DO NOT REMOVE THE DEFAULT BACKGROUND VALUE!
+
+    :param image_path: The path to the image to resize.
+    :param width: The new image width.
+    :param height: The new image height.
+    :param background: The background colour. Defaults to black.
     """
     log.debug('resize_image - start')
     reader = QtGui.QImageReader(image_path)
@@ -265,15 +250,12 @@ def check_item_selected(list_widget, message):
     """
     Check if a list item is selected so an action may be performed on it
 
-    ``list_widget``
-        The list to check for selected items
-
-    ``message``
-        The message to give the user if no item is selected
+    :param list_widget: The list to check for selected items
+    :param message: The message to give the user if no item is selected
     """
     if not list_widget.selectedIndexes():
         QtGui.QMessageBox.information(list_widget.parent(),
-            translate('OpenLP.MediaManagerItem', 'No Items Selected'), message)
+                                      translate('OpenLP.MediaManagerItem', 'No Items Selected'), message)
         return False
     return True
 
@@ -281,6 +263,8 @@ def check_item_selected(list_widget, message):
 def clean_tags(text):
     """
     Remove Tags from text for display
+
+    :param text: Text to be cleaned
     """
     text = text.replace('<br>', '\n')
     text = text.replace('{br}', '\n')
@@ -294,6 +278,8 @@ def clean_tags(text):
 def expand_tags(text):
     """
     Expand tags HTML for display
+
+    :param text: The text to be expanded.
     """
     for tag in FormattingTags.get_html_tags():
         text = text.replace(tag['start tag'], tag['start html'])
@@ -304,11 +290,11 @@ def expand_tags(text):
 def create_separated_list(string_list):
     """
     Returns a string that represents a join of a list of strings with a localized separator. This function corresponds
+
     to QLocale::createSeparatedList which was introduced in Qt 4.8 and implements the algorithm from
     http://www.unicode.org/reports/tr35/#ListPatterns
 
-    ``string_list``
-        List of unicode strings
+     :param string_list: List of unicode strings
     """
     if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion('4.9') and \
             LooseVersion(Qt.qVersion()) >= LooseVersion('4.8'):
@@ -319,17 +305,17 @@ def create_separated_list(string_list):
         return string_list[0]
     elif len(string_list) == 2:
         return translate('OpenLP.core.lib', '%s and %s',
-            'Locale list separator: 2 items') % (string_list[0], string_list[1])
+                         'Locale list separator: 2 items') % (string_list[0], string_list[1])
     else:
         merged = translate('OpenLP.core.lib', '%s, and %s',
-            'Locale list separator: end') % (string_list[-2], string_list[-1])
+                           'Locale list separator: end') % (string_list[-2], string_list[-1])
         for index in reversed(list(range(1, len(string_list) - 2))):
             merged = translate('OpenLP.core.lib', '%s, %s',
-                'Locale list separator: middle') % (string_list[index], merged)
+                               'Locale list separator: middle') % (string_list[index], merged)
         return translate('OpenLP.core.lib', '%s, %s', 'Locale list separator: start') % (string_list[0], merged)
 
 
-from .registry import Registry
+from .filedialog import FileDialog
 from .screen import ScreenList
 from .listwidgetwithdnd import ListWidgetWithDnD
 from .treewidgetwithdnd import TreeWidgetWithDnD
@@ -345,4 +331,3 @@ from .dockwidget import OpenLPDockWidget
 from .imagemanager import ImageManager
 from .renderer import Renderer
 from .mediamanageritem import MediaManagerItem
-

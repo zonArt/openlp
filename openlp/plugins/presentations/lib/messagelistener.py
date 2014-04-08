@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -28,11 +28,13 @@
 ###############################################################################
 
 import logging
+import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from openlp.core.ui import HideMode
+from openlp.core.lib import ServiceItemContext, ServiceItem
 
 log = logging.getLogger(__name__)
 
@@ -69,6 +71,7 @@ class Controller(object):
             return
         self.doc.slidenumber = slide_no
         self.hide_mode = hide_mode
+        log.debug('add_handler, slide_number: %d' % slide_no)
         if self.is_live:
             if hide_mode == HideMode.Screen:
                 Registry().execute('live_display_hide', HideMode.Screen)
@@ -281,7 +284,7 @@ class Controller(object):
 
 class MessageListener(object):
     """
-    This is the Presentation listener who acts on events from the slide controller and passes the messages on the the
+    This is the Presentation listener who acts on events from the slide controller and passes the messages on the
     correct presentation handlers
     """
     log.info('Message Listener loaded')
@@ -316,19 +319,48 @@ class MessageListener(object):
         hide_mode = message[2]
         file = item.get_frame_path()
         self.handler = item.processor
-        if self.handler == self.media_item.Automatic:
-            self.handler = self.media_item.findControllerByType(file)
+        # When starting presentation from the servicemanager we convert
+        # PDF/XPS-serviceitems into image-serviceitems. When started from the mediamanager
+        # the conversion has already been done at this point.
+        if file.endswith('.pdf') or file.endswith('.xps'):
+            log.debug('Converting from pdf/xps to images for serviceitem with file %s', file)
+            # Create a copy of the original item, and then clear the original item so it can be filled with images
+            item_cpy = copy.copy(item)
+            item.__init__(None)
+            if is_live:
+                self.media_item.generate_slide_data(item, item_cpy, False, False, ServiceItemContext.Live, file)
+            else:
+                self.media_item.generate_slide_data(item, item_cpy, False, False, ServiceItemContext.Preview, file)
+            # Some of the original serviceitem attributes is needed in the new serviceitem
+            item.footer = item_cpy.footer
+            item.from_service = item_cpy.from_service
+            item.iconic_representation = item_cpy.iconic_representation
+            item.image_border = item_cpy.image_border
+            item.main = item_cpy.main
+            item.theme_data = item_cpy.theme_data
+            # When presenting PDF or XPS, we are using the image presentation code,
+            # so handler & processor is set to None, and we skip adding the handler.
+            self.handler = None
+        if self.handler == self.media_item.automatic:
+            self.handler = self.media_item.find_controller_by_type(file)
             if not self.handler:
                 return
         if is_live:
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
+        # When presenting PDF or XPS, we are using the image presentation code,
+        # so handler & processor is set to None, and we skip adding the handler.
+        if self.handler is None:
+            self.controller = controller
+        else:
+            controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
 
     def slide(self, message):
         """
         React to the message to move to a specific slide.
+
+        :param message: The message {1} is_live {2} slide
         """
         is_live = message[1]
         slide = message[2]
@@ -340,6 +372,8 @@ class MessageListener(object):
     def first(self, message):
         """
         React to the message to move to the first slide.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -350,6 +384,8 @@ class MessageListener(object):
     def last(self, message):
         """
         React to the message to move to the last slide.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -360,6 +396,8 @@ class MessageListener(object):
     def next(self, message):
         """
         React to the message to move to the next animation/slide.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -370,6 +408,8 @@ class MessageListener(object):
     def previous(self, message):
         """
         React to the message to move to the previous animation/slide.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -380,6 +420,8 @@ class MessageListener(object):
     def shutdown(self, message):
         """
         React to message to shutdown the presentation. I.e. end the show and close the file.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -390,6 +432,8 @@ class MessageListener(object):
     def hide(self, message):
         """
         React to the message to show the desktop.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:
@@ -398,6 +442,8 @@ class MessageListener(object):
     def blank(self, message):
         """
         React to the message to blank the display.
+
+        :param message: The message {1} is_live {2} slide
         """
         is_live = message[1]
         hide_mode = message[2]
@@ -407,6 +453,8 @@ class MessageListener(object):
     def unblank(self, message):
         """
         React to the message to unblank the display.
+
+        :param message: The message {1} is_live
         """
         is_live = message[1]
         if is_live:

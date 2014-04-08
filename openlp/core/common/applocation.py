@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -69,15 +69,14 @@ class AppLocation(object):
         """
         Return the appropriate directory according to the directory type.
 
-        ``dir_type``
-            The directory type you want, for instance the data directory. Default *AppLocation.AppDir*
+        :param dir_type: The directory type you want, for instance the data directory. Default *AppLocation.AppDir*
         """
         if dir_type == AppLocation.AppDir:
             return get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
         elif dir_type == AppLocation.PluginsDir:
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
             return get_frozen_path(os.path.join(app_path, 'plugins'),
-                os.path.join(os.path.split(openlp.__file__)[0], 'plugins'))
+                                   os.path.join(os.path.split(openlp.__file__)[0], 'plugins'))
         elif dir_type == AppLocation.VersionDir:
             return get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
         elif dir_type == AppLocation.LanguageDir:
@@ -106,10 +105,9 @@ class AppLocation(object):
         """
         Get a list of files from the data files path.
 
-        ``section``
-            Defaults to *None*. The section of code getting the files - used to load from a section's data subdirectory.
-
-        ``extension``
+        :param section: Defaults to *None*. The section of code getting the files - used to load from a section's
+        data subdirectory.
+        :param extension:
             Defaults to *None*. The extension to search for. For example::
 
                 u'.png'

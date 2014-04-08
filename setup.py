@@ -5,8 +5,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
@@ -41,8 +41,7 @@ def try_int(s):
     Convert string s to an integer if possible. Fail silently and return
     the string as-is if it isn't an integer.
 
-    ``s``
-    The string to try to convert.
+    :param s: The string to try to convert.
     """
     try:
         return int(s)
@@ -54,8 +53,7 @@ def natural_sort_key(s):
     """
     Return a tuple by which s is sorted.
 
-    ``s``
-        A string value from the list we want to sort.
+    :param s: A string value from the list we want to sort.
     """
     return list(map(try_int, SPLIT_ALPHA_DIGITS.findall(s)))
 
@@ -64,11 +62,8 @@ def natural_compare(a, b):
     """
     Compare two strings naturally and return the result.
 
-    ``a``
-        A string to compare.
-
-    ``b``
-        A string to compare.
+    :param a:  A string to compare.
+    :param b: A string to compare.
     """
     return cmp(natural_sort_key(a), natural_sort_key(b))
 
@@ -111,9 +106,9 @@ try:
     # If they are equal, then this tree is tarball with the source for the release. We do not want the revision number
     # in the version string.
     if tree_revision == tag_revision:
-        version_string =  tag_version
+        version_string = tag_version
     else:
-        version_string =  '%s-bzr%s' % (tag_version, tree_revision)
+        version_string = '%s-bzr%s' % (tag_version, tree_revision)
     ver_file = open(VERSION_FILE, 'w')
     ver_file.write(version_string)
 except:
@@ -128,7 +123,9 @@ setup(
     version=version_string,
     description="Open source Church presentation and lyrics projection application.",
     long_description="""\
-OpenLP (previously openlp.org) is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if PowerPoint is installed) for church worship using a computer and a data projector.""",
+OpenLP (previously openlp.org) is free church presentation software, or lyrics projection software, used to display
+slides of songs, Bible verses, videos, images, and even presentations (if PowerPoint is installed) for church worship
+using a computer and a data projector.""",
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: MacOS X',
@@ -163,7 +160,7 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
         'Topic :: Multimedia :: Sound/Audio',
         'Topic :: Multimedia :: Video',
         'Topic :: Religion'
-    ], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    ],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords='open source church presentation lyrics projection song bible display project',
     author='Raoul Snyman',
     author_email='raoulsnyman@openlp.org',

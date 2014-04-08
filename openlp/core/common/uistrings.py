@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -73,8 +73,9 @@ class UiStrings(object):
         self.Default = translate('OpenLP.Ui', 'Default')
         self.DefaultColor = translate('OpenLP.Ui', 'Default Color:')
         self.DefaultServiceName = translate('OpenLP.Ui', 'Service %Y-%m-%d %H-%M',
-            'This may not contain any of the following characters: /\\?*|<>\[\]":+\n'
-            'See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for more information.')
+                                            'This may not contain any of the following characters: /\\?*|<>\[\]":+\n'
+                                            'See http://docs.python.org/library/datetime'
+                                            '.html#strftime-strptime-behavior for more information.')
         self.Delete = translate('OpenLP.Ui', '&Delete')
         self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
         self.Duplicate = translate('OpenLP.Ui', 'Duplicate Error')
@@ -83,6 +84,8 @@ class UiStrings(object):
         self.Error = translate('OpenLP.Ui', 'Error')
         self.Export = translate('OpenLP.Ui', 'Export')
         self.File = translate('OpenLP.Ui', 'File')
+        self.FileNotFound = translate('OpenLP.Ui', 'File Not Found')
+        self.FileNotFoundMessage = translate('OpenLP.Ui', 'File %s not found.\nPlease try selecting it individually.')
         self.FontSizePtUnit = translate('OpenLP.Ui', 'pt', 'Abbreviated font pointsize unit')
         self.Help = translate('OpenLP.Ui', 'Help')
         self.Hours = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')
@@ -130,7 +133,7 @@ class UiStrings(object):
         self.Service = translate('OpenLP.Ui', 'Service')
         self.Split = translate('OpenLP.Ui', 'Optional &Split')
         self.SplitToolTip = translate('OpenLP.Ui',
-            'Split a slide into two only if it does not fit on the screen as one slide.')
+                                      'Split a slide into two only if it does not fit on the screen as one slide.')
         self.StartTimeCode = translate('OpenLP.Ui', 'Start %s')
         self.StopPlaySlidesInLoop = translate('OpenLP.Ui', 'Stop Play Slides in Loop')
         self.StopPlaySlidesToEnd = translate('OpenLP.Ui', 'Stop Play Slides to End')

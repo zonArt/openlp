@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,16 +31,16 @@ The :mod:`serviceitem` provides the service item functionality including the
 type and capability of an item.
 """
 
-import cgi
 import datetime
+import html
 import logging
 import os
 import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Settings, translate
-from openlp.core.lib import ImageSource, Registry, build_icon, clean_tags, expand_tags
+from openlp.core.common import RegistryProperties, Settings, translate
+from openlp.core.lib import ImageSource, build_icon, clean_tags, expand_tags
 
 log = logging.getLogger(__name__)
 
@@ -127,7 +127,7 @@ class ItemCapabilities(object):
     CanAutoStartForLive = 16
 
 
-class ServiceItem(object):
+class ServiceItem(RegistryProperties):
     """
     The service item is a base class for the plugins to use to interact with
     the service manager, the slide controller, and the projection screen
@@ -139,8 +139,7 @@ class ServiceItem(object):
         """
         Set up the service item.
 
-        ``plugin``
-            The plugin that this service item belongs to.
+        :param plugin: The plugin that this service item belongs to.
         """
         if plugin:
             self.name = plugin.name
@@ -161,7 +160,7 @@ class ServiceItem(object):
         self.capabilities = []
         self.is_valid = True
         self.icon = None
-        self.themedata = None
+        self.theme_data = None
         self.main = None
         self.footer = None
         self.bg_image_bytes = None
@@ -186,8 +185,7 @@ class ServiceItem(object):
 
     def _new_item(self):
         """
-        Method to set the internal id of the item. This is used to compare
-        service items to see if they are the same.
+        Method to set the internal id of the item. This is used to compare service items to see if they are the same.
         """
         self.unique_identifier = str(uuid.uuid1())
         self.validate_item()
@@ -196,8 +194,7 @@ class ServiceItem(object):
         """
         Add an ItemCapability to a ServiceItem
 
-        ``capability``
-            The capability to add
+        :param capability: The capability to add
         """
         self.capabilities.append(capability)
 
@@ -205,30 +202,25 @@ class ServiceItem(object):
         """
         Tell the caller if a ServiceItem has a capability
 
-        ``capability``
-            The capability to test for
+        :param capability: The capability to test for
         """
         return capability in self.capabilities
 
     def add_icon(self, icon):
         """
-        Add an icon to the service item. This is used when displaying the
-        service item in the service manager.
+        Add an icon to the service item. This is used when displaying the service item in the service manager.
 
-        ``icon``
-            A string to an icon in the resources or on disk.
+        :param icon: A string to an icon in the resources or on disk.
         """
         self.icon = icon
         self.iconic_representation = build_icon(icon)
 
     def render(self, provides_own_theme_data=False):
         """
-        The render method is what generates the frames for the screen and
-        obtains the display information from the renderer. At this point all
-        slides are built for the given display size.
+        The render method is what generates the frames for the screen and obtains the display information from the
+        renderer. At this point all slides are built for the given display size.
 
-        ``provides_own_theme_data``
-            This switch disables the usage of the item's theme. However, this is
+        :param provides_own_theme_data: This switch disables the usage of the item's theme. However, this is
             disabled by default. If this is used, it has to be taken care, that
             the renderer knows the correct theme data. However, this is needed
             for the theme manager.
@@ -238,12 +230,11 @@ class ServiceItem(object):
         self.bg_image_bytes = None
         if not provides_own_theme_data:
             self.renderer.set_item_theme(self.theme)
-            self.themedata, self.main, self.footer = self.renderer.pre_render()
+            self.theme_data, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
             log.debug('Formatting slides: %s' % self.title)
-            # Save rendered pages to this dict. In the case that a slide is used
-            # twice we can use the pages saved to the dict instead of rendering
-            # them again.
+            # Save rendered pages to this dict. In the case that a slide is used twice we can use the pages saved to
+            # the dict instead of rendering them again.
             previous_pages = {}
             for slide in self._raw_frames:
                 verse_tag = slide['verseTag']
@@ -254,11 +245,11 @@ class ServiceItem(object):
                     previous_pages[verse_tag] = (slide['raw_slide'], pages)
                 for page in pages:
                     page = page.replace('<br>', '{br}')
-                    html = expand_tags(cgi.escape(page.rstrip()))
+                    html_data = expand_tags(html.escape(page.rstrip()))
                     self._display_frames.append({
                         'title': clean_tags(page),
                         'text': clean_tags(page.rstrip()),
-                        'html': html.replace('&amp;nbsp;', '&nbsp;'),
+                        'html': html_data.replace('&amp;nbsp;', '&nbsp;'),
                         'verseTag': verse_tag
                     })
         elif self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command:
@@ -277,11 +268,9 @@ class ServiceItem(object):
         """
         Add an image slide to the service item.
 
-        ``path``
-            The directory in which the image file is located.
-
-        ``title``
-            A title for the slide in the service item.
+        :param path: The directory in which the image file is located.
+        :param title: A title for the slide in the service item.
+        :param background:
         """
         if background:
             self.image_border = background
@@ -294,8 +283,8 @@ class ServiceItem(object):
         """
         Add a text slide to the service item.
 
-        ``raw_slide``
-            The raw text of the slide.
+        :param raw_slide: The raw text of the slide.
+        :param verse_tag:
         """
         if verse_tag:
             verse_tag = verse_tag.upper()
@@ -308,14 +297,9 @@ class ServiceItem(object):
         """
         Add a slide from a command.
 
-        ``path``
-            The title of the slide in the service item.
-
-        ``file_name``
-            The title of the slide in the service item.
-
-        ``image``
-            The command of/for the slide.
+        :param path: The title of the slide in the service item.
+        :param file_name: The title of the slide in the service item.
+        :param image: The command of/for the slide.
         """
         self.service_item_type = ServiceItemType.Command
         self._raw_frames.append({'title': file_name, 'image': image, 'path': path})
@@ -323,8 +307,7 @@ class ServiceItem(object):
 
     def get_service_repr(self, lite_save):
         """
-        This method returns some text which can be saved into the service
-        file to represent this item.
+        This method returns some text which can be saved into the service file to represent this item.
         """
         service_header = {
             'name': self.name,
@@ -366,21 +349,17 @@ class ServiceItem(object):
                 service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path']})
         return {'header': service_header, 'data': service_data}
 
-    def set_from_service(self, serviceitem, path=None):
+    def set_from_service(self, service_item, path=None):
         """
-        This method takes a service item from a saved service file (passed
-        from the ServiceManager) and extracts the data actually required.
+        This method takes a service item from a saved service file (passed from the ServiceManager) and extracts the
+        data actually required.
 
-        ``serviceitem``
-            The item to extract data from.
-
-        ``path``
-            Defaults to *None*. This is the service manager path for things
-            which have their files saved with them or None when the saved
-            service is lite and the original file paths need to be preserved..
+        :param service_item: The item to extract data from.
+        :param path: Defaults to *None*. This is the service manager path for things which have their files saved
+        with them or None when the saved service is lite and the original file paths need to be preserved.
         """
         log.debug('set_from_service called with path %s' % path)
-        header = serviceitem['serviceitem']['header']
+        header = service_item['serviceitem']['header']
         self.title = header['title']
         self.name = header['name']
         self.service_item_type = header['type']
@@ -416,21 +395,21 @@ class ServiceItem(object):
                 self.background_audio.append(os.path.join(path, filename))
         self.theme_overwritten = header.get('theme_overwritten', False)
         if self.service_item_type == ServiceItemType.Text:
-            for slide in serviceitem['serviceitem']['data']:
+            for slide in service_item['serviceitem']['data']:
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
-            settings_section = serviceitem['serviceitem']['header']['name']
+            settings_section = service_item['serviceitem']['header']['name']
             background = QtGui.QColor(Settings().value(settings_section + '/background color'))
             if path:
                 self.has_original_files = False
-                for text_image in serviceitem['serviceitem']['data']:
+                for text_image in service_item['serviceitem']['data']:
                     filename = os.path.join(path, text_image)
                     self.add_from_image(filename, text_image, background)
             else:
-                for text_image in serviceitem['serviceitem']['data']:
+                for text_image in service_item['serviceitem']['data']:
                     self.add_from_image(text_image['path'], text_image['title'], background)
         elif self.service_item_type == ServiceItemType.Command:
-            for text_image in serviceitem['serviceitem']['data']:
+            for text_image in service_item['serviceitem']['data']:
                 if not self.title:
                     self.title = text_image['title']
                 if path:
@@ -455,11 +434,9 @@ class ServiceItem(object):
     def merge(self, other):
         """
         Updates the unique_identifier with the value from the original one
-        The unique_identifier is unique for a given service item but this allows one to
-        replace an original version.
+        The unique_identifier is unique for a given service item but this allows one to replace an original version.
 
-        ``other``
-            The service item to be merged with
+        :param other: The service item to be merged with
         """
         self.unique_identifier = other.unique_identifier
         self.notes = other.notes
@@ -526,8 +503,7 @@ class ServiceItem(object):
         """
         Stores the media length of the item
 
-        ``length``
-            The length of the media item
+        :param length: The length of the media item
         """
         self.media_length = length
         if length > 0:
@@ -545,8 +521,8 @@ class ServiceItem(object):
     def get_rendered_frame(self, row):
         """
         Returns the correct frame for a given list and renders it if required.
-        ``row``
-            The service item slide to be returned
+
+        :param row: The service item slide to be returned
         """
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames[row]['html'].split('\n')[0]
@@ -611,8 +587,7 @@ class ServiceItem(object):
         """
         updates the theme in the service item
 
-        ``theme``
-            The new theme to be replaced in the service item
+        :param theme: The new theme to be replaced in the service item
         """
         self.theme_overwritten = (theme is None)
         self.theme = theme
@@ -653,23 +628,3 @@ class ServiceItem(object):
                     if file_suffix.lower() not in suffix_list:
                         self.is_valid = False
                         break
-
-    def _get_renderer(self):
-        """
-        Adds the Renderer to the class dynamically
-        """
-        if not hasattr(self, '_renderer'):
-            self._renderer = Registry().get('renderer')
-        return self._renderer
-
-    renderer = property(_get_renderer)
-
-    def _get_image_manager(self):
-        """
-        Adds the image manager to the class dynamically
-        """
-        if not hasattr(self, '_image_manager'):
-            self._image_manager = Registry().get('image_manager')
-        return self._image_manager
-
-    image_manager = property(_get_image_manager)
