@@ -302,7 +302,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
             self.authors.append(author.display_name)
         set_case_insensitive_completer(self.authors, self.authors_combo_box)
 
-        #Types
+        # Types
         self.author_types_combo_box.clear()
         self.author_types_combo_box.addItem('')
         # Don't iterate over the dictionary to give them this specific order
@@ -689,7 +689,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                         verse_index = VerseType.from_loose_input(verse_name)
                         verse_tag = VerseType.tags[verse_index]
                         # Later we need to handle v1a as well.
-                        #regex = re.compile(r'(\d+\w.)')
+                        # regex = re.compile(r'(\d+\w.)')
                         regex = re.compile(r'\D*(\d+)\D*')
                         match = regex.match(verse_num)
                         if match:
