@@ -81,3 +81,18 @@ class TestUi(TestCase):
         self.assertIsInstance(btnbox, QtGui.QDialogButtonBox)
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
+
+    def test_create_horizontal_adjusting_combo_box(self):
+        """
+        Test creating a horizontal adjusting combo box
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create the combobox
+        combo = create_horizontal_adjusting_combo_box(dialog, 'combo1')
+
+        # THEN: We should get a ComboBox
+        self.assertIsInstance(combo, QtGui.QComboBox)
+        self.assertEqual('combo1', combo.objectName())
+        self.assertEqual(QtGui.QComboBox.AdjustToMinimumContentsLength, combo.sizeAdjustPolicy())
