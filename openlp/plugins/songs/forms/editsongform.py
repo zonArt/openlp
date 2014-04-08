@@ -308,6 +308,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         # Don't iterate over the dictionary to give them this specific order
         self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Words], AuthorType.Words)
         self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Music], AuthorType.Music)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.WordsAndMusic], AuthorType.WordsAndMusic)
         self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Translation], AuthorType.Translation)
 
     def load_topics(self):

@@ -71,7 +71,7 @@ from lxml import etree, objectify
 from openlp.core.common import translate
 from openlp.core.lib import FormattingTags
 from openlp.plugins.songs.lib import VerseType, clean_song
-from openlp.plugins.songs.lib.db import Author, AuthorSong, Book, Song, Topic
+from openlp.plugins.songs.lib.db import Author, AuthorSong, AuthorType, Book, Song, Topic
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
@@ -274,7 +274,13 @@ class OpenLyrics(object):
             for author_song in song.authors_songs:
                 element = self._add_text_to_element('author', authors, author_song.author.display_name)
                 if author_song.author_type:
-                    element.set('type', author_song.author_type)
+                    # Handle the special case 'words+music': Need to create two separate authors for that
+                    if author_song.author_type == AuthorType.WordsAndMusic:
+                        element.set('type', AuthorType.Words)
+                        element = self._add_text_to_element('author', authors, author_song.author.display_name)
+                        element.set('type', AuthorType.Music)
+                    else:
+                        element.set('type', author_song.author_type)
         book = self.manager.get_object_filtered(Book, Book.id == song.song_book_id)
         if book is not None:
             book = book.name

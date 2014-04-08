@@ -66,13 +66,17 @@ class AuthorType(object):
     """
     Enumeration for Author types.
     They are defined by OpenLyrics: http://openlyrics.info/dataformat.html#authors
+
+    The 'words+music' type is not an official type, but is provided for convenience.
     """
     Words = 'words'
     Music = 'music'
+    WordsAndMusic = 'words+music'
     Translation = 'translation'
     Types = {
         Words: translate('OpenLP.Ui', 'Words'),
         Music: translate('OpenLP.Ui', 'Music'),
+        WordsAndMusic: translate('OpenLP.Ui', 'Words and Music'),
         Translation: translate('OpenLP.Ui', 'Translation')
     }
 
