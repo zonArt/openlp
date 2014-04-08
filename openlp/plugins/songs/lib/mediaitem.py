@@ -470,6 +470,7 @@ class SongMediaItem(MediaManagerItem):
         """
         authors_words = []
         authors_music = []
+        authors_words_music = []
         authors_translation = []
         authors_none = []
         for author_song in song.authors_songs:
@@ -477,11 +478,13 @@ class SongMediaItem(MediaManagerItem):
                 authors_words.append(author_song.author.display_name)
             elif author_song.author_type == AuthorType.Music:
                 authors_music.append(author_song.author.display_name)
+            elif author_song.author_type == AuthorType.WordsAndMusic:
+                authors_words_music.append(author_song.author.display_name)
             elif author_song.author_type == AuthorType.Translation:
                 authors_translation.append(author_song.author.display_name)
             else:
                 authors_none.append(author_song.author.display_name)
-        authors_all = authors_words + authors_music + authors_translation + authors_none
+        authors_all = authors_words_music + authors_words + authors_music + authors_translation + authors_none
         item.audit = [
             song.title, authors_all, song.copyright, str(song.ccli_number)
         ]
@@ -490,6 +493,9 @@ class SongMediaItem(MediaManagerItem):
         if authors_none:
             item.raw_footer.append("%s: %s" % (translate('OpenLP.Ui', 'Written by'),
                                                create_separated_list(authors_none)))
+        if authors_words_music:
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.WordsAndMusic],
+                                               create_separated_list(authors_words_music)))
         if authors_words:
             item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Words],
                                                create_separated_list(authors_words)))
@@ -499,8 +505,6 @@ class SongMediaItem(MediaManagerItem):
         if authors_translation:
             item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Translation],
                                                create_separated_list(authors_translation)))
-        if not authors_all:  # No authors defined
-            item.raw_footer.append(SongStrings.AuthorUnknown)
         item.raw_footer.append(song.copyright)
         if Settings().value('core/ccli number'):
             item.raw_footer.append(translate('SongsPlugin.MediaItem',
