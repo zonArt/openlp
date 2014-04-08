@@ -561,7 +561,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         Return a book by name or abbreviation.
 
         :param name: The name or abbreviation of the book.
-        :param lower: True if the comparsion should be only lowercase
+        :param lower: True if the comparison should be only lowercase
         """
         log.debug('BiblesResourcesDB.get_book("%s")', name)
         if not isinstance(name, str):
