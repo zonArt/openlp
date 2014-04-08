@@ -118,7 +118,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: I get the following Array returned
-        self.assertEqual(service_item.raw_footer, ['My Song', 'Author Unknown', 'My copyright', 'CCLI License: 1234'],
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 1234'],
                          'The array should be returned correctly with a song, an author, copyright and ccli')
 
         # WHEN: I amend the CCLI value
@@ -126,5 +126,5 @@ class TestMediaItem(TestCase, TestMixin):
         self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: I would get an amended footer string
-        self.assertEqual(service_item.raw_footer, ['My Song', 'Author Unknown', 'My copyright', 'CCLI License: 4321'],
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 4321'],
                          'The array should be returned correctly with a song, an author, copyright and amended ccli')
