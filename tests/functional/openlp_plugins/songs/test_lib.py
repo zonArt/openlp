@@ -1,13 +1,39 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 This module contains tests for the lib submodule of the Songs plugin.
 """
-
 from unittest import TestCase
-
-from mock import patch, MagicMock
 
 from openlp.plugins.songs.lib import VerseType, clean_string, clean_title, strip_rtf
 from openlp.plugins.songs.lib.songcompare import songs_probably_equal, _remove_typos, _op_length
+from tests.functional import patch, MagicMock
 
 
 class TestLib(TestCase):
@@ -18,20 +44,20 @@ class TestLib(TestCase):
         """
         Mock up two songs and provide a set of lyrics for the songs_probably_equal tests.
         """
-        self.full_lyrics ='''amazing grace how sweet the sound that saved a wretch like me i once was lost but now am
+        self.full_lyrics = '''amazing grace how sweet the sound that saved a wretch like me i once was lost but now am
             found was blind but now i see  twas grace that taught my heart to fear and grace my fears relieved how
-            precious did that grace appear the hour i first believed  through many dangers toils and snares i have already
-            come tis grace that brought me safe thus far and grace will lead me home'''
-        self.short_lyrics ='''twas grace that taught my heart to fear and grace my fears relieved how precious did that
-            grace appear the hour i first believed'''
-        self.error_lyrics ='''amazing how sweet the trumpet that saved a wrench like me i once was losst but now am
+            precious did that grace appear the hour i first believed  through many dangers toils and snares i have
+            already come tis grace that brought me safe thus far and grace will lead me home'''
+        self.short_lyrics = '''twas grace that taught my heart to fear and grace my fears relieved how precious did
+        that grace appear the hour i first believed'''
+        self.error_lyrics = '''amazing how sweet the trumpet that saved a wrench like me i once was losst but now am
             found waf blind but now i see  it was grace that taught my heart to fear and grace my fears relieved how
             precious did that grace appppppppear the hour i first believedxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx snares i have
             already come to this grace that brought me safe so far and grace will lead me home'''
-        self.different_lyrics='''on a hill far away stood an old rugged cross the emblem of suffering and shame and i love
-            that old cross where the dearest and best for a world of lost sinners was slain  so ill cherish the old rugged
-            cross till my trophies at last i lay down i will cling to the old rugged cross and exchange it some day for a
-            crown'''
+        self.different_lyrics = '''on a hill far away stood an old rugged cross the emblem of suffering and shame and
+            i love that old cross where the dearest and best for a world of lost sinners was slain  so ill cherish the
+            old rugged cross till my trophies at last i lay down i will cling to the old rugged cross and exchange it
+            some day for a crown'''
         self.song1 = MagicMock()
         self.song2 = MagicMock()
 
@@ -68,12 +94,12 @@ class TestLib(TestCase):
         # GIVEN: Two equal songs.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.full_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be True.
-        assert result == True, 'The result should be True'
+        assert result is True, 'The result should be True'
 
     def songs_probably_equal_short_song_test(self):
         """
@@ -82,12 +108,12 @@ class TestLib(TestCase):
         # GIVEN: A song and a short version of the same song.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.short_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be True.
-        assert result == True, 'The result should be True'
+        assert result is True, 'The result should be True'
 
     def songs_probably_equal_error_song_test(self):
         """
@@ -96,12 +122,12 @@ class TestLib(TestCase):
         # GIVEN: A song and the same song with lots of errors.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.error_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be True.
-        assert result == True, 'The result should be True'
+        assert result is True, 'The result should be True'
 
     def songs_probably_equal_different_song_test(self):
         """
@@ -110,12 +136,12 @@ class TestLib(TestCase):
         # GIVEN: Two different songs.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.different_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be False.
-        assert result == False, 'The result should be False'
+        assert result is False, 'The result should be False'
 
     def remove_typos_beginning_test(self):
         """
@@ -241,8 +267,8 @@ class TestLib(TestCase):
 
             # WHEN: We call strip_rtf on the input RTF
             result, result_enc = strip_rtf(
-               '{\\rtf1 \\ansi \\ansicpg1252 {\\fonttbl \\f0 \\fswiss \\fcharset%s Helvetica;}' \
-               '{\\colortbl ;\\red0 \\green0 \\blue0 ;}\\pard \\f0 %s}' % (charset, input))
+                '{\\rtf1 \\ansi \\ansicpg1252 {\\fonttbl \\f0 \\fswiss \\fcharset%s Helvetica;}'
+                '{\\colortbl ;\\red0 \\green0 \\blue0 ;}\\pard \\f0 %s}' % (charset, input))
 
             # THEN: The stripped text matches thed expected result
             assert result == exp_result, 'The result should be %s' % exp_result

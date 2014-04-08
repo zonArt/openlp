@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -30,15 +30,14 @@
 import logging
 import os
 
-from openlp.core.lib import Registry, Settings, translate
-from openlp.core.utils import AppLocation, delete_file
+from openlp.core.common import RegistryProperties, AppLocation, Settings, translate
+from openlp.core.utils import delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 from .csvbible import CSVBible
 from .http import HTTPBible
 from .opensong import OpenSongBible
 from .osis import OSISBible
-
 
 
 log = logging.getLogger(__name__)
@@ -57,10 +56,9 @@ class BibleFormat(object):
     @staticmethod
     def get_class(format):
         """
-        Return the appropriate imeplementation class.
+        Return the appropriate implementation class.
 
-        ``format``
-            The Bible format.
+        :param format: The Bible format.
         """
         if format == BibleFormat.OSIS:
             return OSISBible
@@ -86,7 +84,7 @@ class BibleFormat(object):
         ]
 
 
-class BibleManager(object):
+class BibleManager(RegistryProperties):
     """
     The Bible manager which holds and manages all the Bibles.
     """
@@ -94,9 +92,8 @@ class BibleManager(object):
 
     def __init__(self, parent):
         """
-        Finds all the bibles defined for the system and creates an interface
-        object for each bible containing connection information. Throws
-        Exception if no Bibles are found.
+        Finds all the bibles defined for the system and creates an interface object for each bible containing
+        connection information. Throws Exception if no Bibles are found.
 
         Init confirms the bible exists and stores the database path.
         """
@@ -114,9 +111,8 @@ class BibleManager(object):
 
     def reload_bibles(self):
         """
-        Reloads the Bibles from the available Bible databases on disk. If a web
-        Bible is encountered, an instance of HTTPBible is loaded instead of the
-        BibleDB class.
+        Reloads the Bibles from the available Bible databases on disk. If a web Bible is encountered, an instance
+        of HTTPBible is loaded instead of the BibleDB class.
         """
         log.debug('Reload bibles')
         files = AppLocation.get_files(self.settings_section, self.suffix)
@@ -146,7 +142,7 @@ class BibleManager(object):
                 download_name = self.db_cache[name].get_object(BibleMeta, 'download_name').value
                 meta_proxy = self.db_cache[name].get_object(BibleMeta, 'proxy_server')
                 web_bible = HTTPBible(self.parent, path=self.path, file=filename, download_source=source.value,
-                    download_name=download_name)
+                                      download_name=download_name)
                 if meta_proxy:
                     web_bible.proxy_server = meta_proxy.value
                 self.db_cache[name] = web_bible
@@ -156,8 +152,7 @@ class BibleManager(object):
         """
         Sets the reference to the dialog with the progress bar on it.
 
-        ``dialog``
-            The reference to the import wizard.
+        :param wizard: The reference to the import wizard.
         """
         self.import_wizard = wizard
 
@@ -165,11 +160,8 @@ class BibleManager(object):
         """
         Register a bible in the bible cache, and then import the verses.
 
-        ``type``
-            What type of Bible, one of the ``BibleFormat`` values.
-
-        ``**kwargs``
-            Keyword arguments to send to the actual importer class.
+        :param type: What type of Bible, one of the ``BibleFormat`` values.
+        :param kwargs: Keyword arguments to send to the actual importer class.
         """
         class_ = BibleFormat.get_class(type)
         kwargs['path'] = self.path
@@ -182,8 +174,7 @@ class BibleManager(object):
         """
         Delete a bible completely.
 
-        ``name``
-            The name of the bible.
+        :param name: The name of the bible.
         """
         log.debug('BibleManager.delete_bible("%s")', name)
         bible = self.db_cache[name]
@@ -202,8 +193,7 @@ class BibleManager(object):
         """
         Returns a list of Bible books, and the number of chapters in that book.
 
-        ``bible``
-            Unicode. The Bible to get the list of books from.
+        :param bible: Unicode. The Bible to get the list of books from.
         """
         log.debug('BibleManager.get_books("%s")', bible)
         return [
@@ -219,11 +209,8 @@ class BibleManager(object):
         """
         Returns a book object by given id.
 
-        ``bible``
-            Unicode. The Bible to get the list of books from.
-
-        ``id``
-            Unicode. The book_reference_id to get the book for.
+        :param bible: Unicode. The Bible to get the list of books from.
+        :param id: Unicode. The book_reference_id to get the book for.
         """
         log.debug('BibleManager.get_book_by_id("%s", "%s")', bible, id)
         return self.db_cache[bible].get_book_by_book_ref_id(id)
@@ -232,22 +219,17 @@ class BibleManager(object):
         """
         Returns the number of Chapters for a given book.
 
-        ``bible``
-            Unicode. The Bible to get the list of books from.
-
-        ``book``
-            The book object to get the chapter count for.
+        :param bible: Unicode. The Bible to get the list of books from.
+        :param book: The book object to get the chapter count for.
         """
         log.debug('BibleManager.get_book_chapter_count ("%s", "%s")', bible, book.name)
         return self.db_cache[bible].get_chapter_count(book)
 
     def get_verse_count(self, bible, book, chapter):
         """
-        Returns all the number of verses for a given
-        book and chapterMaxBibleBookVerses.
+        Returns all the number of verses for a given book and chapterMaxBibleBookVerses.
         """
-        log.debug('BibleManager.get_verse_count("%s", "%s", %s)',
-            bible, book, chapter)
+        log.debug('BibleManager.get_verse_count("%s", "%s", %s)', bible, book, chapter)
         language_selection = self.get_language_selection(bible)
         book_ref_id = self.db_cache[bible].get_book_ref_id_by_localised_name(book, language_selection)
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
@@ -260,16 +242,14 @@ class BibleManager(object):
         log.debug('BibleManager.get_verse_count_by_book_ref_id("%s", "%s", "%s")', bible, book_ref_id, chapter)
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
-    def get_verses(self, bible, versetext, book_ref_id=False, show_error=True):
+    def get_verses(self, bible, verse_text, book_ref_id=False, show_error=True):
         """
         Parses a scripture reference, fetches the verses from the Bible
         specified, and returns a list of ``Verse`` objects.
 
-        ``bible``
-            Unicode. The Bible to use.
-
-        ``versetext``
-            Unicode. The scripture reference. Valid scripture references are:
+        :param bible: Unicode. The Bible to use.
+        :param verse_text:
+             Unicode. The scripture reference. Valid scripture references are:
 
                 - Genesis 1
                 - Genesis 1-2
@@ -279,55 +259,53 @@ class BibleManager(object):
                 - Genesis 1:1-2:10
                 - Genesis 1:1-10,2:1-10
 
-        ``book_ref_id``
-            Unicode. The book referece id from the book in versetext.
+        :param book_ref_id:  Unicode. The book reference id from the book in verse_text.
             For second bible this is necessary.
+        :param show_error:
         """
-        log.debug('BibleManager.get_verses("%s", "%s")', bible, versetext)
+        log.debug('BibleManager.get_verses("%s", "%s")', bible, verse_text)
         if not bible:
             if show_error:
                 self.main_window.information_message(
                     translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
-                    translate('BiblesPlugin.BibleManager',
-                        'There are no Bibles currently installed. Please use the '
-                        'Import Wizard to install one or more Bibles.')
-                    )
+                    translate('BiblesPlugin.BibleManager', 'There are no Bibles currently installed. Please use the '
+                              'Import Wizard to install one or more Bibles.')
+                )
             return None
         language_selection = self.get_language_selection(bible)
-        reflist = parse_reference(versetext, self.db_cache[bible],
-            language_selection, book_ref_id)
-        if reflist:
-            return self.db_cache[bible].get_verses(reflist, show_error)
+        ref_list = parse_reference(verse_text, self.db_cache[bible], language_selection, book_ref_id)
+        if ref_list:
+            return self.db_cache[bible].get_verses(ref_list, show_error)
         else:
             if show_error:
-                reference_seperators = {
+                reference_separators = {
                     'verse': get_reference_separator('sep_v_display'),
                     'range': get_reference_separator('sep_r_display'),
                     'list': get_reference_separator('sep_l_display')}
                 self.main_window.information_message(
                     translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
                     translate('BiblesPlugin.BibleManager', 'Your scripture reference is either not supported by '
-                    'OpenLP or is invalid. Please make sure your reference '
-                    'conforms to one of the following patterns or consult the manual:\n\n'
-                    'Book Chapter\n'
-                    'Book Chapter%(range)sChapter\n'
-                    'Book Chapter%(verse)sVerse%(range)sVerse\n'
-                    'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
-                    '%(range)sVerse\n'
-                    'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
-                    '%(verse)sVerse%(range)sVerse\n'
-                    'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse',
-                    'Please pay attention to the appended "s" of the wildcards '
-                    'and refrain from translating the words inside the names in the brackets.') % reference_seperators
-                    )
+                              'OpenLP or is invalid. Please make sure your reference '
+                              'conforms to one of the following patterns or consult the manual:\n\n'
+                              'Book Chapter\n'
+                              'Book Chapter%(range)sChapter\n'
+                              'Book Chapter%(verse)sVerse%(range)sVerse\n'
+                              'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
+                              '%(range)sVerse\n'
+                              'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
+                              '%(verse)sVerse%(range)sVerse\n'
+                              'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse',
+                              'Please pay attention to the appended "s" of the wildcards '
+                              'and refrain from translating the words inside the names in the brackets.')
+                    % reference_separators
+                )
             return None
 
     def get_language_selection(self, bible):
         """
         Returns the language selection of a bible.
 
-        ``bible``
-            Unicode. The Bible to get the language selection from.
+        :param bible:  Unicode. The Bible to get the language selection from.
         """
         log.debug('BibleManager.get_language_selection("%s")', bible)
         language_selection = self.get_meta_data(bible, 'book_name_language')
@@ -347,34 +325,29 @@ class BibleManager(object):
         """
         Does a verse search for the given bible and text.
 
-        ``bible``
-            The bible to search in (unicode).
-
-        ``second_bible``
-            The second bible (unicode). We do not search in this bible.
-
-        ``text``
-            The text to search for (unicode).
+        :param bible: The bible to search in (unicode).
+        :param second_bible: The second bible (unicode). We do not search in this bible.
+        :param text: The text to search for (unicode).
         """
         log.debug('BibleManager.verse_search("%s", "%s")', bible, text)
         if not bible:
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
                 translate('BiblesPlugin.BibleManager',
-                    'There are no Bibles currently installed. Please use the Import Wizard to install one or more'
-                    ' Bibles.')
-                )
+                          'There are no Bibles currently installed. Please use the Import Wizard to install one or '
+                          'more Bibles.')
+            )
             return None
         # Check if the bible or second_bible is a web bible.
-        webbible = self.db_cache[bible].get_object(BibleMeta, 'download_source')
-        second_webbible = ''
+        web_bible = self.db_cache[bible].get_object(BibleMeta, 'download_source')
+        second_web_bible = ''
         if second_bible:
-            second_webbible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
-        if webbible or second_webbible:
+            second_web_bible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
+        if web_bible or second_web_bible:
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
                 translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.')
-                )
+            )
             return None
         if text:
             return self.db_cache[bible].verse_search(text)
@@ -382,23 +355,20 @@ class BibleManager(object):
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
                 translate('BiblesPlugin.BibleManager', 'You did not enter a search keyword.\nYou can separate '
-                    'different keywords by a space to search for all of your keywords and you can separate '
-                    'them by a comma to search for one of them.')
-                )
+                          'different keywords by a space to search for all of your keywords and you can separate '
+                          'them by a comma to search for one of them.')
+            )
             return None
 
-    def save_meta_data(self, bible, version, copyright, permissions,
-        book_name_language=None):
+    def save_meta_data(self, bible, version, copyright, permissions, book_name_language=None):
         """
         Saves the bibles meta data.
         """
-        log.debug('save_meta data %s, %s, %s, %s',
-            bible, version, copyright, permissions)
+        log.debug('save_meta data %s, %s, %s, %s', bible, version, copyright, permissions)
         self.db_cache[bible].save_meta('name', version)
         self.db_cache[bible].save_meta('copyright', copyright)
         self.db_cache[bible].save_meta('permissions', permissions)
-        self.db_cache[bible].save_meta('book_name_language',
-            book_name_language)
+        self.db_cache[bible].save_meta('book_name_language', book_name_language)
 
     def get_meta_data(self, bible, key):
         """
@@ -434,16 +404,5 @@ class BibleManager(object):
         """
         for bible in self.db_cache:
             self.db_cache[bible].finalise()
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
 
 __all__ = ['BibleFormat']

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,7 +33,8 @@ plugin.
 import logging
 import re
 
-from openlp.core.lib import Settings, translate
+from openlp.core.common import Settings
+from openlp.core.lib import translate
 
 
 log = logging.getLogger(__name__)
@@ -181,9 +182,10 @@ def update_reference_separators():
     """
     Updates separators and matches for parsing and formating scripture references.
     """
-    default_separators = translate('BiblesPlugin',
-        ':|v|V|verse|verses;;-|to;;,|and;;end Double-semicolon delimited separators for parsing references. '
-        'Consult the developers for further information.').split(';;')
+    default_separators = \
+        translate('BiblesPlugin',
+                  ':|v|V|verse|verses;;-|to;;,|and;;end Double-semicolon delimited separators for parsing references. '
+                  'Consult the developers for further information.').split(';;')
     settings = Settings()
     settings.beginGroup('bibles')
     custom_separators = [
@@ -205,8 +207,7 @@ def update_reference_separators():
         for character in '\\.^$*+?{}[]()':
             source_string = source_string.replace(character, '\\' + character)
         # add various unicode alternatives
-        source_string = source_string.replace('-',
-            '(?:[-\u00AD\u2010\u2011\u2012\u2013\u2014\u2212\uFE63\uFF0D])')
+        source_string = source_string.replace('-', '(?:[-\u00AD\u2010\u2011\u2012\u2014\u2014\u2212\uFE63\uFF0D])')
         source_string = source_string.replace(',', '(?:[,\u201A])')
         REFERENCE_SEPARATORS['sep_%s' % role] = '\s*(?:%s)\s*' % source_string
         REFERENCE_SEPARATORS['sep_%s_default' % role] = default_separators[index]
@@ -217,17 +218,17 @@ def update_reference_separators():
     REFERENCE_MATCHES['range'] = re.compile('^\s*%s\s*$' % range_regex, re.UNICODE)
     REFERENCE_MATCHES['range_separator'] = re.compile(REFERENCE_SEPARATORS['sep_l'], re.UNICODE)
     # full reference match: <book>(<range>(,(?!$)|(?=$)))+
-    REFERENCE_MATCHES['full'] = re.compile('^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
-        '(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$' \
-        % dict(list(REFERENCE_SEPARATORS.items()) + [('range_regex', range_regex)]), re.UNICODE)
+    REFERENCE_MATCHES['full'] = \
+        re.compile('^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
+                   '(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$'
+                   % dict(list(REFERENCE_SEPARATORS.items()) + [('range_regex', range_regex)]), re.UNICODE)
 
 
 def get_reference_separator(separator_type):
     """
     Provides separators for parsing and formatting scripture references.
 
-    ``separator_type``
-        The role and format of the separator.
+    :param separator_type: The role and format of the separator.
     """
     if not REFERENCE_SEPARATORS:
         update_reference_separators()
@@ -238,8 +239,7 @@ def get_reference_match(match_type):
     """
     Provides matches for parsing scripture references strings.
 
-    ``match_type``
-        The type of match is ``range_separator``, ``range`` or ``full``.
+    :param match_type:  The type of match is ``range_separator``, ``range`` or ``full``.
     """
     if not REFERENCE_MATCHES:
         update_reference_separators()
@@ -251,19 +251,10 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
     This is the next generation über-awesome function that takes a person's typed in string and converts it to a list
     of references to be queried from the Bible database files.
 
-    ``reference``
-        A string. The Bible reference to parse.
-
-    ``bible``
-        A object. The Bible database object.
-
-    ``language_selection``
-        An int. The language selection the user has choosen in settings section.
-
-    ``book_ref_id``
-        A string. The book reference id.
-
-    Returns ``None`` or a reference list.
+    :param reference: A string. The Bible reference to parse.
+    :param bible:  A object. The Bible database object.
+    :param language_selection:  An int. The language selection the user has chosen in settings section.
+    :param book_ref_id: A string. The book reference id.
 
     The reference list is a list of tuples, with each tuple structured like this::
 
@@ -409,15 +400,9 @@ class SearchResults(object):
         """
         Create the search result object.
 
-        ``book``
-            The book of the Bible.
-
-        ``chapter``
-            The chapter of the book.
-
-        ``verse_list``
-            The list of verses for this reading.
-
+        :param book: The book of the Bible.
+        :param chapter: The chapter of the book.
+        :param verse_list: The list of verses for this reading.
         """
         self.book = book
         self.chapter = chapter

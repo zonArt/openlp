@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,7 +29,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, Settings, UiStrings, translate
+from openlp.core.common import Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab
 from openlp.core.lib.ui import create_valign_selection_widgets
 
 
@@ -113,6 +114,9 @@ class AlertsTab(SettingsTab):
         self.font_preview.setText(UiStrings().OLPV2x)
 
     def on_background_color_button_clicked(self):
+        """
+        The background color has been changed.
+        """
         new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.background_color), self)
         if new_color.isValid():
             self.background_color = new_color.name()
@@ -120,9 +124,15 @@ class AlertsTab(SettingsTab):
             self.update_display()
 
     def on_font_combo_box_clicked(self):
+        """
+        The Font Combo was changed.
+        """
         self.update_display()
 
     def on_font_color_button_clicked(self):
+        """
+        The Font Color button has clicked.
+        """
         new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.font_color), self)
         if new_color.isValid():
             self.font_color = new_color.name()
@@ -130,14 +140,24 @@ class AlertsTab(SettingsTab):
             self.update_display()
 
     def on_timeout_spin_box_changed(self):
+        """
+        The Time out spin box has changed.
+
+        """
         self.timeout = self.timeout_spin_box.value()
         self.changed = True
 
     def on_font_size_spin_box_changed(self):
+        """
+        The font size spin box has changed.
+        """
         self.font_size = self.font_size_spin_box.value()
         self.update_display()
 
     def load(self):
+        """
+        Load the settings into the UI.
+        """
         settings = Settings()
         settings.beginGroup(self.settings_section)
         self.timeout = settings.value('timeout')
@@ -159,6 +179,9 @@ class AlertsTab(SettingsTab):
         self.changed = False
 
     def save(self):
+        """
+        Save the changes on exit of the Settings dialog.
+        """
         settings = Settings()
         settings.beginGroup(self.settings_section)
         # Check value has changed as no event handles this field
@@ -178,6 +201,9 @@ class AlertsTab(SettingsTab):
         self.changed = False
 
     def update_display(self):
+        """
+        Update the preview display after changes have been made,
+        """
         font = QtGui.QFont()
         font.setFamily(self.font_combo_box.currentFont().family())
         font.setBold(True)

@@ -1,18 +1,47 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 Module to test the EditCustomForm.
 """
 from unittest import TestCase
-from mock import MagicMock, patch
 
 from PyQt4 import QtGui, QtTest, QtCore
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 # Import needed due to import problems.
 from openlp.plugins.custom.lib.mediaitem import CustomMediaItem
 from openlp.plugins.custom.forms.editcustomform import EditCustomForm
+from tests.interfaces import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
 
 
-class TestEditCustomForm(TestCase):
+class TestEditCustomForm(TestCase, TestMixin):
     """
     Test the EditCustomForm.
     """
@@ -21,7 +50,7 @@ class TestEditCustomForm(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        self.get_application()
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
         media_item = MagicMock()
@@ -34,7 +63,6 @@ class TestEditCustomForm(TestCase):
         """
         del self.form
         del self.main_window
-        del self.app
 
     def load_themes_test(self):
         """
@@ -59,7 +87,6 @@ class TestEditCustomForm(TestCase):
         # THEN: The line edits should not contain any text.
         self.assertEqual(self.form.title_edit.text(), '', 'The title edit should be empty')
         self.assertEqual(self.form.credit_edit.text(), '', 'The credit edit should be empty')
-
 
     def on_add_button_clicked_test(self):
         """

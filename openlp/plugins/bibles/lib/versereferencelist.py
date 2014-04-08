@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,6 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+
 class VerseReferenceList(object):
     """
     The VerseReferenceList class encapsulates a list of verse references, but maintains the order in which they were
@@ -41,18 +42,15 @@ class VerseReferenceList(object):
     def add(self, book, chapter, verse, version, copyright, permission):
         self.add_version(version, copyright, permission)
         if not self.verse_list or self.verse_list[self.current_index]['book'] != book:
-            self.verse_list.append({'version': version, 'book': book,
-                'chapter': chapter, 'start': verse, 'end': verse})
+            self.verse_list.append({'version': version, 'book': book, 'chapter': chapter, 'start': verse, 'end': verse})
             self.current_index += 1
         elif self.verse_list[self.current_index]['chapter'] != chapter:
-            self.verse_list.append({'version': version, 'book': book,
-                'chapter': chapter, 'start': verse, 'end': verse})
+            self.verse_list.append({'version': version, 'book': book, 'chapter': chapter, 'start': verse, 'end': verse})
             self.current_index += 1
         elif (self.verse_list[self.current_index]['end'] + 1) == verse:
             self.verse_list[self.current_index]['end'] = verse
         else:
-            self.verse_list.append({'version': version, 'book': book,
-                'chapter': chapter, 'start': verse, 'end': verse})
+            self.verse_list.append({'version': version, 'book': book, 'chapter': chapter, 'start': verse, 'end': verse})
             self.current_index += 1
 
     def add_version(self, version, copyright, permission):

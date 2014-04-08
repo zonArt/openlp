@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,7 +33,7 @@ import re
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, UiStrings, translate
+from openlp.core.common import RegistryProperties, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 from .editbibledialog import Ui_EditBibleDialog
 from openlp.plugins.bibles.lib import BibleStrings
@@ -41,7 +41,8 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
-class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
+
+class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog, RegistryProperties):
     """
     Class to manage the editing of a bible
     """
@@ -57,12 +58,13 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         self.setupUi(self)
         self.manager = manager
 
-    def loadBible(self, bible):
+    def load_bible(self, bible):
         """
         Loads a bible.
 
         ``bible``
-            The name of the bible.
+
+        :param bible: The name of the bible.
         """
         log.debug('Load Bible')
         self.bible = bible
@@ -73,18 +75,20 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         if book_name_language and book_name_language.value != 'None':
             self.language_selection_combo_box.setCurrentIndex(int(book_name_language.value) + 1)
         self.books = {}
-        self.webbible = self.manager.get_meta_data(self.bible, 'download_source')
-        if self.webbible:
-            self.book_name_notice.setText(translate('BiblesPlugin.EditBibleForm',
-                'This is a Web Download Bible.\nIt is not possible to customize the Book Names.'))
+        self.web_bible = self.manager.get_meta_data(self.bible, 'download_source')
+        if self.web_bible:
+            self.book_name_notice.setText(
+                translate('BiblesPlugin.EditBibleForm',
+                          'This is a Web Download Bible.\nIt is not possible to customize the Book Names.'))
             self.scroll_area.hide()
         else:
-            self.book_name_notice.setText(translate('BiblesPlugin.EditBibleForm',
-                'To use the customized book names, "Bible language" must be selected on the Meta Data tab or, '
-                'if "Global settings" is selected, on the Bible page in Configure OpenLP.'))
+            self.book_name_notice.setText(
+                translate('BiblesPlugin.EditBibleForm',
+                          'To use the customized book names, "Bible language" must be selected on the Meta Data tab '
+                          'or, if "Global settings" is selected, on the Bible page in Configure OpenLP.'))
             for book in BiblesResourcesDB.get_books():
                 self.books[book['abbreviation']] = self.manager.get_book_by_id(self.bible, book['id'])
-                if self.books[book['abbreviation']] and not self.webbible:
+                if self.books[book['abbreviation']] and not self.web_bible:
                     self.book_name_edit[book['abbreviation']].setText(self.books[book['abbreviation']].name)
                 else:
                     # It is necessary to remove the Widget otherwise there still
@@ -113,19 +117,19 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         book_name_language = self.language_selection_combo_box.currentIndex() - 1
         if book_name_language == -1:
             book_name_language = None
-        if not self.validateMeta(version, copyright):
+        if not self.validate_meta(version, copyright):
             return
-        if not self.webbible:
+        if not self.web_bible:
             custom_names = {}
             for abbr, book in self.books.items():
                 if book:
                     custom_names[abbr] = self.book_name_edit[abbr].text()
                     if book.name != custom_names[abbr]:
-                        if not self.validateBook(custom_names[abbr], abbr):
+                        if not self.validate_book(custom_names[abbr], abbr):
                             return
         self.application.set_busy_cursor()
         self.manager.save_meta_data(self.bible, version, copyright, permissions, book_name_language)
-        if not self.webbible:
+        if not self.web_bible:
             for abbr, book in self.books.items():
                 if book:
                     if book.name != custom_names[abbr]:
@@ -135,47 +139,52 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         self.application.set_normal_cursor()
         QtGui.QDialog.accept(self)
 
-    def validateMeta(self, name, copyright):
+    def validate_meta(self, name, copyright):
         """
         Validate the Meta before saving.
         """
         if not name:
             self.version_name_edit.setFocus()
-            critical_error_message_box(UiStrings().EmptyField,
+            critical_error_message_box(
+                UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm', 'You need to specify a version name for your Bible.'))
             return False
         elif not copyright:
             self.copyright_edit.setFocus()
-            critical_error_message_box(UiStrings().EmptyField,
+            critical_error_message_box(
+                UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
-                'You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.'))
+                          'You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked '
+                          'as such.'))
             return False
-        elif self.manager.exists(name) and self.manager.get_meta_data(self.bible, 'name').value != \
-            name:
+        elif self.manager.exists(name) and self.manager.get_meta_data(self.bible, 'name').value != name:
             self.version_name_edit.setFocus()
-            critical_error_message_box(translate('BiblesPlugin.BibleEditForm', 'Bible Exists'),
+            critical_error_message_box(
+                translate('BiblesPlugin.BibleEditForm', 'Bible Exists'),
                 translate('BiblesPlugin.BibleEditForm', 'This Bible already exists. Please import '
-                'a different Bible or first delete the existing one.'))
+                          'a different Bible or first delete the existing one.'))
             return False
         return True
 
-    def validateBook(self, new_book_name, abbreviation):
+    def validate_book(self, new_book_name, abbreviation):
         """
         Validate a book.
         """
         book_regex = re.compile('[\d]*[^\d]+$')
         if not new_book_name:
             self.book_name_edit[abbreviation].setFocus()
-            critical_error_message_box(UiStrings().EmptyField,
+            critical_error_message_box(
+                UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm', 'You need to specify a book name for "%s".') %
-                    self.book_names[abbreviation])
+                self.book_names[abbreviation])
             return False
         elif not book_regex.match(new_book_name):
             self.book_name_edit[abbreviation].setFocus()
-            critical_error_message_box(UiStrings().EmptyField,
+            critical_error_message_box(
+                UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
-                    'The book name "%s" is not correct.\nNumbers can only be used at the beginning and must\nbe '
-                    'followed by one or more non-numeric characters.') % new_book_name)
+                          'The book name "%s" is not correct.\nNumbers can only be used at the beginning and must\nbe '
+                          'followed by one or more non-numeric characters.') % new_book_name)
             return False
         for abbr, book in self.books.items():
             if book:
@@ -186,20 +195,6 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                     critical_error_message_box(
                         translate('BiblesPlugin.BibleEditForm', 'Duplicate Book Name'),
                         translate('BiblesPlugin.BibleEditForm', 'The Book Name "%s" has been entered more than once.')
-                            % new_book_name)
+                        % new_book_name)
                     return False
         return True
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

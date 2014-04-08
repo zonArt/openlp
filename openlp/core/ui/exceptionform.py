@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -38,7 +38,7 @@ import bs4
 import sqlalchemy
 from lxml import etree
 
-from openlp.core.lib import Registry
+from openlp.core.common import RegistryProperties
 
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
@@ -76,12 +76,6 @@ try:
 except ImportError:
     ICU_VERSION = '-'
 try:
-    import cherrypy
-    CHERRYPY_VERSION = cherrypy.__version__
-except ImportError:
-    CHERRYPY_VERSION = '-'
-
-try:
     WEBKIT_VERSION = QtWebKit.qWebKitVersion()
 except AttributeError:
     WEBKIT_VERSION = '-'
@@ -91,7 +85,7 @@ try:
 except ImportError:
     VLC_VERSION = '-'
 
-from openlp.core.lib import UiStrings, Settings, translate
+from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.utils import get_application_version
 
 from .exceptiondialog import Ui_ExceptionDialog
@@ -99,7 +93,7 @@ from .exceptiondialog import Ui_ExceptionDialog
 log = logging.getLogger(__name__)
 
 
-class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
+class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
     """
     The exception dialog
     """
@@ -107,7 +101,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Constructor.
         """
-        super(ExceptionForm, self).__init__(self.main_window)
+        super(ExceptionForm, self).__init__()
         self.setupUi(self)
         self.settings_section = 'crashreport'
 
@@ -140,7 +134,6 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             'Chardet: %s\n' % CHARDET_VERSION + \
             'PyEnchant: %s\n' % ENCHANT_VERSION + \
             'Mako: %s\n' % MAKO_VERSION + \
-            'CherryPy: %s\n' % CHERRYPY_VERSION + \
             'pyICU: %s\n' % ICU_VERSION + \
             'pyUNO bridge: %s\n' % self._pyuno_import() + \
             'VLC: %s\n' % VLC_VERSION
@@ -151,20 +144,21 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 system += 'Desktop: GNOME\n'
             elif os.environ.get('DESKTOP_SESSION') == 'xfce':
                 system += 'Desktop: Xfce\n'
-        return (openlp_version, description, traceback, system, libraries)
+        return openlp_version, description, traceback, system, libraries
 
     def on_save_report_button_clicked(self):
         """
         Saving exception log and system information to a file.
         """
         report_text = translate('OpenLP.ExceptionForm',
-            '**OpenLP Bug Report**\n'
-            'Version: %s\n\n'
-            '--- Details of the Exception. ---\n\n%s\n\n '
-            '--- Exception Traceback ---\n%s\n'
-            '--- System information ---\n%s\n'
-            '--- Library Versions ---\n%s\n')
-        filename = QtGui.QFileDialog.getSaveFileName(self,
+                                '**OpenLP Bug Report**\n'
+                                'Version: %s\n\n'
+                                '--- Details of the Exception. ---\n\n%s\n\n '
+                                '--- Exception Traceback ---\n%s\n'
+                                '--- System information ---\n%s\n'
+                                '--- Library Versions ---\n%s\n')
+        filename = QtGui.QFileDialog.getSaveFileName(
+            self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
             Settings().value(self.settings_section + '/last directory'),
             translate('OpenLP.ExceptionForm', 'Text files (*.txt *.log *.text)'))
@@ -192,14 +186,13 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         Opening systems default email client and inserting exception log and system information.
         """
         body = translate('OpenLP.ExceptionForm',
-            '*OpenLP Bug Report*\n'
-            'Version: %s\n\n'
-            '--- Details of the Exception. ---\n\n%s\n\n '
-            '--- Exception Traceback ---\n%s\n'
-            '--- System information ---\n%s\n'
-            '--- Library Versions ---\n%s\n',
-            'Please add the information that bug reports are favoured written '
-            'in English.')
+                         '*OpenLP Bug Report*\n'
+                         'Version: %s\n\n'
+                         '--- Details of the Exception. ---\n\n%s\n\n '
+                         '--- Exception Traceback ---\n%s\n'
+                         '--- System information ---\n%s\n'
+                         '--- Library Versions ---\n%s\n',
+                         'Please add the information that bug reports are favoured written in English.')
         content = self._create_report()
         source = ''
         exception = ''
@@ -209,12 +202,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             if ':' in line:
                 exception = line.split('\n')[-1].split(':')[0]
         subject = 'Bug report: %s in %s' % (exception, source)
-        mailto_url = QtCore.QUrl('mailto:bugs@openlp.org')
-        mailto_url.addQueryItem('subject', subject)
-        mailto_url.addQueryItem('body', body % content)
+        mail_to_url = QtCore.QUrl('mailto:bugs@openlp.org')
+        mail_to_url.addQueryItem('subject', subject)
+        mail_to_url.addQueryItem('body', body % content)
         if self.file_attachment:
-            mailto_url.addQueryItem('attach', self.file_attachment)
-        QtGui.QDesktopServices.openUrl(mailto_url)
+            mail_to_url.addQueryItem('attach', self.file_attachment)
+        QtGui.QDesktopServices.openUrl(mail_to_url)
 
     def on_description_updated(self):
         """
@@ -233,9 +226,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Attache files to the bug report e-mail.
         """
-        files = QtGui.QFileDialog.getOpenFileName(
-            self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
-                Settings().value(self.settings_section + '/last directory'), '%s (*.*) (*)' % UiStrings().AllFiles)
+        files = QtGui.QFileDialog.getOpenFileName(self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
+                                                  Settings().value(self.settings_section + '/last directory'),
+                                                  '%s (*.*) (*)' % UiStrings().AllFiles)
         log.info('New files(s) %s', str(files))
         if files:
             self.file_attachment = str(files)
@@ -267,13 +260,3 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             return '-'
         except:
             return '- (Possible non-standard UNO installation)'
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

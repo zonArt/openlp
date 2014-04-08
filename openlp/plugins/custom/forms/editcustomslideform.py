@@ -5,8 +5,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -30,7 +30,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from .editcustomslidedialog import Ui_CustomSlideEditDialog
 
@@ -57,8 +57,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         Set the text for slide_text_edit.
 
-        ``text``
-            The text (unicode).
+        :param text: The text (unicode).
         """
         self.slide_text_edit.clear()
         if text:
@@ -87,7 +86,9 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
 
     def insert_single_line_text_at_cursor(self, text):
         """
-        Adds ``text`` in a single line at the cursor position.
+        Adds a single line at the cursor position.
+
+        :param text: The text to be inserted
         """
         full_text = self.slide_text_edit.toPlainText()
         position = self.slide_text_edit.textCursor().position()

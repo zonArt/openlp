@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,7 +31,7 @@ The UI widgets for the service item edit dialog
 """
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import create_button_box, create_button
 
 
@@ -55,13 +55,13 @@ class Ui_ServiceItemEditDialog(object):
         self.button_layout = QtGui.QVBoxLayout()
         self.button_layout.setObjectName('button_layout')
         self.delete_button = create_button(serviceItemEditDialog, 'deleteButton', role='delete',
-            click=serviceItemEditDialog.on_delete_button_clicked)
+                                           click=serviceItemEditDialog.on_delete_button_clicked)
         self.button_layout.addWidget(self.delete_button)
         self.button_layout.addStretch()
         self.up_button = create_button(serviceItemEditDialog, 'up_button', role='up',
-            click=serviceItemEditDialog.on_up_button_clicked)
+                                       click=serviceItemEditDialog.on_up_button_clicked)
         self.down_button = create_button(serviceItemEditDialog, 'down_button', role='down',
-            click=serviceItemEditDialog.on_down_button_clicked)
+                                         click=serviceItemEditDialog.on_down_button_clicked)
         self.button_layout.addWidget(self.up_button)
         self.button_layout.addWidget(self.down_button)
         self.dialog_layout.addLayout(self.button_layout, 0, 1)

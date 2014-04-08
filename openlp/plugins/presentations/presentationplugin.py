@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -35,21 +35,23 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation, translate
+from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 
 
 log = logging.getLogger(__name__)
 
 
-__default_settings__ = {
-        'presentations/override app': QtCore.Qt.Unchecked,
-        'presentations/Impress': QtCore.Qt.Checked,
-        'presentations/Powerpoint': QtCore.Qt.Checked,
-        'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
-        'presentations/presentations files': []
-}
+__default_settings__ = {'presentations/override app': QtCore.Qt.Unchecked,
+                        'presentations/enable_pdf_program': QtCore.Qt.Unchecked,
+                        'presentations/pdf_program': '',
+                        'presentations/Impress': QtCore.Qt.Checked,
+                        'presentations/Powerpoint': QtCore.Qt.Checked,
+                        'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
+                        'presentations/Pdf': QtCore.Qt.Checked,
+                        'presentations/presentations files': []
+                        }
 
 
 class PresentationPlugin(Plugin):
@@ -109,8 +111,7 @@ class PresentationPlugin(Plugin):
         """
         Create the Media Manager List.
         """
-        self.media_item = PresentationMediaItem(
-            self.main_window.media_dock_manager.media_dock, self, self.icon, self.controllers)
+        self.media_item = PresentationMediaItem(self.main_window.media_dock_manager.media_dock, self, self.controllers)
 
     def register_controllers(self, controller):
         """
@@ -145,10 +146,10 @@ class PresentationPlugin(Plugin):
         Return information about this plugin.
         """
         about_text = translate('PresentationPlugin', '<strong>Presentation '
-            'Plugin</strong><br />The presentation plugin provides the '
-            'ability to show presentations using a number of different '
-            'programs. The choice of available presentation programs is '
-            'available to the user in a drop down box.')
+                               'Plugin</strong><br />The presentation plugin provides the '
+                               'ability to show presentations using a number of different '
+                               'programs. The choice of available presentation programs is '
+                               'available to the user in a drop down box.')
         return about_text
 
     def set_plugin_text_strings(self):

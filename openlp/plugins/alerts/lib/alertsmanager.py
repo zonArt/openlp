@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,25 +31,17 @@ The :mod:`~openlp.plugins.alerts.lib.alertsmanager` module contains the part of 
 displaying of alerts.
 """
 
-import logging
-
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, translate
+from openlp.core.common import OpenLPMixin, RegistryMixin, Registry, RegistryProperties, translate
 
 
-log = logging.getLogger(__name__)
-
-
-class AlertsManager(QtCore.QObject):
+class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperties):
     """
     AlertsManager manages the settings of Alerts.
     """
-    log.info('Alert Manager loaded')
-
     def __init__(self, parent):
         super(AlertsManager, self).__init__(parent)
-        Registry().register('alerts_manager', self)
         self.timer_id = 0
         self.alert_list = []
         Registry().register_function('live_display_active', self.generate_alert)
@@ -59,6 +51,8 @@ class AlertsManager(QtCore.QObject):
     def alert_text(self, message):
         """
         Called via a alerts_text event. Message is single element array containing text.
+
+        :param message: The message text to be displayed
         """
         if message:
             self.display_alert(message[0])
@@ -67,10 +61,9 @@ class AlertsManager(QtCore.QObject):
         """
         Called from the Alert Tab to display an alert.
 
-        ``text``
-            display text
+        :param text: The text to display
         """
-        log.debug('display alert called %s' % text)
+        self.log_debug('display alert called %s' % text)
         if text:
             self.alert_list.append(text)
             if self.timer_id != 0:
@@ -84,7 +77,6 @@ class AlertsManager(QtCore.QObject):
         """
         Format and request the Alert and start the timer.
         """
-        log.debug('Generate Alert called')
         if not self.alert_list:
             return
         text = self.alert_list.pop(0)
@@ -98,33 +90,11 @@ class AlertsManager(QtCore.QObject):
         """
         Time has finished so if our time then request the next Alert if there is one and reset the timer.
 
-        ``event``
-            the QT event that has been triggered.
+        :param event: the QT event that has been triggered.
         """
-        log.debug('timer event')
         if event.timerId() == self.timer_id:
-            alertTab = self.parent().settings_tab
-            self.live_controller.display.alert('', alertTab.location)
+            alert_tab = self.parent().settings_tab
+            self.live_controller.display.alert('', alert_tab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generate_alert()
-
-    def _get_live_controller(self):
-        """
-        Adds the live controller to the class dynamically
-        """
-        if not hasattr(self, '_live_controller'):
-            self._live_controller = Registry().get('live_controller')
-        return self._live_controller
-
-    live_controller = property(_get_live_controller)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

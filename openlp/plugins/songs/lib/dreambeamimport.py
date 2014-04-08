@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -39,6 +39,7 @@ from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
+
 
 class DreamBeamImport(SongImport):
     """
@@ -83,7 +84,7 @@ class DreamBeamImport(SongImport):
         * \*.xml
     """
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive a single file or a list of files to import.
         """
@@ -92,18 +93,19 @@ class DreamBeamImport(SongImport):
             for file in self.import_source:
                 if self.stop_import_flag:
                     return
-                self.setDefaults()
+                self.set_defaults()
                 parser = etree.XMLParser(remove_blank_text=True)
                 try:
                     parsed_file = etree.parse(open(file, 'r'), parser)
                 except etree.XMLSyntaxError:
                     log.exception('XML syntax error in file %s' % file)
-                    self.logError(file, SongStrings.XMLSyntaxError)
+                    self.log_error(file, SongStrings.XMLSyntaxError)
                     continue
                 xml = etree.tostring(parsed_file).decode()
                 song_xml = objectify.fromstring(xml)
                 if song_xml.tag != 'DreamSong':
-                    self.logError(file,
+                    self.log_error(
+                        file,
                         translate('SongsPlugin.DreamBeamImport', 'Invalid DreamBeam song file. Missing DreamSong tag.'))
                     continue
                 if hasattr(song_xml, 'Version'):
@@ -118,18 +120,18 @@ class DreamBeamImport(SongImport):
                         author_copyright = song_xml.Author.text
                     if hasattr(song_xml, 'SongLyrics'):
                         for lyrics_item in song_xml.SongLyrics.iterchildren():
-                            verse_type =  lyrics_item.get('Type')
+                            verse_type = lyrics_item.get('Type')
                             verse_number = lyrics_item.get('Number')
                             verse_text = str(lyrics_item.text)
-                            self.addVerse(verse_text, ('%s%s' % (verse_type[:1], verse_number)))
+                            self.add_verse(verse_text, ('%s%s' % (verse_type[:1], verse_number)))
                     if hasattr(song_xml, 'Collection'):
-                        self.songBookName = str(song_xml.Collection.text)
+                        self.song_book_name = str(song_xml.Collection.text)
                     if hasattr(song_xml, 'Number'):
-                        self.songNumber = str(song_xml.Number.text)
+                        self.song_number = str(song_xml.Number.text)
                     if hasattr(song_xml, 'Sequence'):
-                        for LyricsSequenceItem in (song_xml.Sequence.iterchildren()):
-                            self.verseOrderList.append("%s%s" % (LyricsSequenceItem.get('Type')[:1],
-                                LyricsSequenceItem.get('Number')))
+                        for lyrics_sequence_item in (song_xml.Sequence.iterchildren()):
+                            self.verse_order_list.append("%s%s" % (lyrics_sequence_item.get('Type')[:1],
+                                                         lyrics_sequence_item.get('Number')))
                     if hasattr(song_xml, 'Notes'):
                         self.comments = str(song_xml.Notes.text)
                 else:
@@ -138,15 +140,14 @@ class DreamBeamImport(SongImport):
                     if hasattr(song_xml.Text1, 'Text'):
                         self.lyrics = str(song_xml.Text1.Text.text)
                         for verse in self.lyrics.split('\n\n\n'):
-                            self.addVerse(verse)
+                            self.add_verse(verse)
                     if hasattr(song_xml.Text2, 'Text'):
                         author_copyright = song_xml.Text2.Text.text
                 if author_copyright:
                     author_copyright = str(author_copyright)
-                    if author_copyright.find(
-                        str(SongStrings.CopyrightSymbol)) >= 0:
-                        self.addCopyright(author_copyright)
+                    if author_copyright.find(str(SongStrings.CopyrightSymbol)) >= 0:
+                        self.add_copyright(author_copyright)
                     else:
                         self.parse_author(author_copyright)
                 if not self.finish():
-                    self.logError(file)
+                    self.log_error(file)

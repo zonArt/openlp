@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,7 +29,7 @@
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import translate
+from openlp.core.common import Registry, translate
 from openlp.plugins.alerts.lib.db import AlertItem
 
 from .alertdialog import Ui_AlertDialog
@@ -46,8 +46,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.manager = plugin.manager
         self.plugin = plugin
         self.item_id = None
-        # TODO: Use Registry()
-        super(AlertForm, self).__init__(self.plugin.main_window)
+        super(AlertForm, self).__init__(Registry().get('main_window'))
         self.setupUi(self)
         self.display_button.clicked.connect(self.on_display_clicked)
         self.display_close_button.clicked.connect(self.on_display_close_clicked)
@@ -113,9 +112,10 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         if not self.alert_text_edit.text():
             QtGui.QMessageBox.information(self,
-                translate('AlertsPlugin.AlertForm', 'New Alert'),
-                translate('AlertsPlugin.AlertForm', 'You haven\'t specified any text for your alert. \n'
-                    'Please type in some text before clicking New.'))
+                                          translate('AlertsPlugin.AlertForm', 'New Alert'),
+                                          translate('AlertsPlugin.AlertForm',
+                                                    'You haven\'t specified any text for your alert. \n'
+                                                    'Please type in some text before clicking New.'))
         else:
             alert = AlertItem()
             alert.text = self.alert_text_edit.text()
@@ -153,10 +153,10 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         List item has been double clicked to display it.
         """
         item = self.alert_list_widget.selectedIndexes()[0]
-        bitem = self.alert_list_widget.item(item.row())
-        self.trigger_alert(bitem.text())
-        self.alert_text_edit.setText(bitem.text())
-        self.item_id = bitem.data(QtCore.Qt.UserRole)
+        list_item = self.alert_list_widget.item(item.row())
+        self.trigger_alert(list_item.text())
+        self.alert_text_edit.setText(list_item.text())
+        self.item_id = list_item.data(QtCore.Qt.UserRole)
         self.save_button.setEnabled(False)
 
     def on_single_click(self):
@@ -164,9 +164,9 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         List item has been single clicked to add it to the edit field so it can be changed.
         """
         item = self.alert_list_widget.selectedIndexes()[0]
-        bitem = self.alert_list_widget.item(item.row())
-        self.alert_text_edit.setText(bitem.text())
-        self.item_id = bitem.data(QtCore.Qt.UserRole)
+        list_item = self.alert_list_widget.item(item.row())
+        self.alert_text_edit.setText(list_item.text())
+        self.item_id = list_item.data(QtCore.Qt.UserRole)
         # If the alert does not contain '<>' we clear the ParameterEdit field.
         if self.alert_text_edit.text().find('<>') == -1:
             self.parameter_edit.setText('')
@@ -176,26 +176,30 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         Prepares the alert text for displaying.
 
-        ``text``
-            The alert text (unicode).
+        :param text: The alert text.
         """
         if not text:
             return False
         # We found '<>' in the alert text, but the ParameterEdit field is empty.
-        if text.find('<>') != -1 and not self.parameter_edit.text() and QtGui.QMessageBox.question(self,
-                translate('AlertsPlugin.AlertForm', 'No Parameter Found'),
-                translate('AlertsPlugin.AlertForm', 'You have not entered a parameter to be replaced.\n'
-                    'Do you want to continue anyway?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+        if text.find('<>') != -1 and not self.parameter_edit.text() and \
+            QtGui.QMessageBox.question(self,
+                                       translate('AlertsPlugin.AlertForm', 'No Parameter Found'),
+                                       translate('AlertsPlugin.AlertForm',
+                                                 'You have not entered a parameter to be replaced.\n'
+                                                 'Do you want to continue anyway?'),
+                                       QtGui.QMessageBox.StandardButtons(
+                                           QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameter_edit.setFocus()
             return False
         # The ParameterEdit field is not empty, but we have not found '<>'
         # in the alert text.
-        elif text.find('<>') == -1 and self.parameter_edit.text() and QtGui.QMessageBox.question(self,
-                translate('AlertsPlugin.AlertForm', 'No Placeholder Found'),
-                translate('AlertsPlugin.AlertForm', 'The alert text does not contain \'<>\'.\n'
-                    'Do you want to continue anyway?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+        elif text.find('<>') == -1 and self.parameter_edit.text() and \
+            QtGui.QMessageBox.question(self,
+                                       translate('AlertsPlugin.AlertForm', 'No Placeholder Found'),
+                                       translate('AlertsPlugin.AlertForm', 'The alert text does not contain \'<>\'.\n'
+                                                 'Do you want to continue anyway?'),
+                                       QtGui.QMessageBox.StandardButtons(
+                                           QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameter_edit.setFocus()
             return False
         text = text.replace('<>', self.parameter_edit.text())
@@ -207,8 +211,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         Called when the *alert_list_widget*'s current row has been changed. This enables or disables buttons which
         require an item to act on.
 
-        ``row``
-            The row (int). If there is no current row, the value is -1.
+        :param row: The row (int). If there is no current row, the value is -1.
         """
         if row == -1:
             self.display_button.setEnabled(False)

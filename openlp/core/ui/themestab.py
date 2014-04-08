@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,8 +33,8 @@ The Themes configuration tab
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, Settings, SettingsTab, UiStrings, translate
-from openlp.core.lib.theme import ThemeLevel
+from openlp.core.common import Registry, Settings, ThemeLevel, UiStrings, translate
+from openlp.core.lib import SettingsTab
 from openlp.core.lib.ui import find_and_set_in_combo_box
 
 
@@ -92,7 +92,7 @@ class ThemesTab(SettingsTab):
         self.global_level_label.setObjectName('global_level_label')
         self.level_layout.addRow(self.global_level_radio_button, self.global_level_label)
         label_top_margin = (self.song_level_radio_button.sizeHint().height() -
-            self.song_level_label.sizeHint().height()) // 2
+                            self.song_level_label.sizeHint().height()) // 2
         for label in [self.song_level_label, self.service_level_label, self.global_level_label]:
             rect = label.rect()
             rect.setTop(rect.top() + label_top_margin)
@@ -115,16 +115,16 @@ class ThemesTab(SettingsTab):
         self.level_group_box.setTitle(translate('OpenLP.ThemesTab', 'Theme Level'))
         self.song_level_radio_button.setText(translate('OpenLP.ThemesTab', 'S&ong Level'))
         self.song_level_label.setText(translate('OpenLP.ThemesTab', 'Use the theme from each song '
-            'in the database. If a song doesn\'t have a theme associated with '
-            'it, then use the service\'s theme. If the service doesn\'t have '
-            'a theme, then use the global theme.'))
+                                      'in the database. If a song doesn\'t have a theme associated with '
+                                      'it, then use the service\'s theme. If the service doesn\'t have '
+                                      'a theme, then use the global theme.'))
         self.service_level_radio_button.setText(translate('OpenLP.ThemesTab', '&Service Level'))
         self.service_level_label.setText(translate('OpenLP.ThemesTab', 'Use the theme from the service, '
-            'overriding any of the individual songs\' themes. If the '
-            'service doesn\'t have a theme, then use the global theme.'))
+                                         'overriding any of the individual songs\' themes. If the '
+                                         'service doesn\'t have a theme, then use the global theme.'))
         self.global_level_radio_button.setText(translate('OpenLP.ThemesTab', '&Global Level'))
         self.global_level_label.setText(translate('OpenLP.ThemesTab', 'Use the global theme, overriding '
-            'any themes associated with either the service or the songs.'))
+                                        'any themes associated with either the service or the songs.'))
 
     def load(self):
         """
@@ -156,12 +156,6 @@ class ThemesTab(SettingsTab):
             self.settings_form.register_post_process('theme_update_global')
         self.tab_visited = False
 
-    def post_set_up(self):
-        """
-        After setting things up...
-        """
-        Registry().execute('theme_update_global')
-
     def on_song_level_button_clicked(self):
         """
         Set the theme level
@@ -192,8 +186,7 @@ class ThemesTab(SettingsTab):
         """
         Called from ThemeManager when the Themes have changed.
 
-        ``theme_list``
-            The list of available themes::
+        :param theme_list: The list of available themes::
 
                 [u'Bible Theme', u'Song Theme']
         """

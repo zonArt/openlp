@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -34,7 +34,7 @@ import logging
 
 import pyodbc
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -51,17 +51,17 @@ class WorshipCenterProImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive a single file to import.
         """
         try:
-           conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s' % self.import_source)
+            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s' % self.import_source)
         except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError) as e:
             log.warn('Unable to connect the WorshipCenter Pro database %s. %s', self.import_source, str(e))
             # Unfortunately no specific exception type
-            self.logError(self.import_source,
-                translate('SongsPlugin.WorshipCenterProImport', 'Unable to connect the WorshipCenter Pro database.'))
+            self.log_error(self.import_source, translate('SongsPlugin.WorshipCenterProImport',
+                                                         'Unable to connect the WorshipCenter Pro database.'))
             return
         cursor = conn.cursor()
         cursor.execute('SELECT ID, Field, Value FROM __SONGDATA')
@@ -76,10 +76,10 @@ class WorshipCenterProImport(SongImport):
         for song in songs:
             if self.stop_import_flag:
                 break
-            self.setDefaults()
+            self.set_defaults()
             self.title = songs[song]['TITLE']
             lyrics = songs[song]['LYRICS'].strip('&crlf;&crlf;')
             for verse in lyrics.split('&crlf;&crlf;'):
                 verse = verse.replace('&crlf;', '\n')
-                self.addVerse(verse)
+                self.add_verse(verse)
             self.finish()

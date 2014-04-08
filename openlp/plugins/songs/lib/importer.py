@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,7 +32,7 @@ The :mod:`importer` modules provides the general song import functionality.
 import os
 import logging
 
-from openlp.core.lib import translate, UiStrings
+from openlp.core.common import translate, UiStrings
 from openlp.core.ui.wizard import WizardStrings
 from .opensongimport import OpenSongImport
 from .easyslidesimport import EasySlidesImport
@@ -82,6 +82,7 @@ if os.name == 'nt':
     except ImportError:
         log.exception('Error importing %s', 'WorshipCenterProImport')
 
+
 class SongFormatSelect(object):
     """
     This is a special enumeration class listing available file selection modes.
@@ -99,47 +100,47 @@ class SongFormat(object):
 
     Required attributes for each song format:
 
-    ``u'class'``
+    ``'class'``
         Import class, e.g. ``OpenLyricsImport``
 
-    ``u'name'``
-        Name of the format, e.g. ``u'OpenLyrics'``
+    ``'name'``
+        Name of the format, e.g. ``'OpenLyrics'``
 
-    ``u'prefix'``
-        Prefix for Qt objects. Use mixedCase, e.g. ``u'openLyrics'``
-        See ``SongImportForm.addFileSelectItem()``
+    ``'prefix'``
+        Prefix for Qt objects. Use mixedCase, e.g. ``'open_lyrics'``
+        See ``SongImportForm.add_file_select_item()``
 
     Optional attributes for each song format:
 
-    ``u'canDisable'``
+    ``'canDisable'``
         Whether song format importer is disablable.
-        If ``True``, then ``u'disabledLabelText'`` must also be defined.
+        If ``True``, then ``'disabledLabelText'`` must also be defined.
 
-    ``u'availability'``
+    ``'availability'``
         Whether song format importer is available.
 
-    ``u'selectMode'``
+    ``'selectMode'``
         Whether format accepts single file, multiple files, or single folder
         (as per ``SongFormatSelect`` options).
 
-    ``u'filter'``
+    ``'filter'``
         File extension filter for ``QFileDialog``.
 
     Optional/custom text Strings for ``SongImportForm`` widgets:
 
-    ``u'comboBoxText'``
-        Combo box selector (default value is the format's ``u'name'``).
+    ``'comboBoxText'``
+        Combo box selector (default value is the format's ``'name'``).
 
-    ``u'disabledLabelText'``
+    ``'disabledLabelText'``
         Required for disablable song formats.
 
-    ``u'getFilesTitle'``
-        Title for ``QFileDialog`` (default includes the format's ``u'name'``).
+    ``'getFilesTitle'``
+        Title for ``QFileDialog`` (default includes the format's ``'name'``).
 
-    ``u'invalidSourceMsg'``
-        Message displayed if ``isValidSource()`` returns ``False``.
+    ``'invalidSourceMsg'``
+        Message displayed if ``is_valid_source()`` returns ``False``.
 
-    ``u'descriptionText'``
+    ``'descriptionText'``
         Short description (1-2 lines) about the song format.
     """
     # Song formats (ordered alphabetically after Generic)
@@ -184,7 +185,7 @@ class SongFormat(object):
         OpenLyrics: {
             'class': OpenLyricsImport,
             'name': 'OpenLyrics',
-            'prefix': 'openLyrics',
+            'prefix': 'open_lyrics',
             'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2.0 Exported Song')
         },
@@ -200,8 +201,8 @@ class SongFormat(object):
             'prefix': 'generic',
             'canDisable': True,
             'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
-                'The generic document/presentation importer has been disabled '
-                'because OpenLP cannot access OpenOffice or LibreOffice.'),
+                                           'The generic document/presentation importer has been disabled '
+                                           'because OpenLP cannot access OpenOffice or LibreOffice.'),
             'getFilesTitle': translate('SongsPlugin.ImportWizardForm', 'Select Document/Presentation Files')
         },
         CCLI: {
@@ -241,13 +242,12 @@ class SongFormat(object):
             'prefix': 'mediaShout',
             'canDisable': True,
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm',
-                'MediaShout Database'),
+            'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm', 'MediaShout Database'),
             'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
-                'The MediaShout importer is only supported on Windows. It has '
-                'been disabled due to a missing Python module. If you want to '
-                'use this importer, you will need to install the "pyodbc" '
-                'module.')
+                                           'The MediaShout importer is only supported on Windows. It has '
+                                           'been disabled due to a missing Python module. If you want to '
+                                           'use this importer, you will need to install the "pyodbc" '
+                                           'module.')
         },
         OpenSong: {
             'class': OpenSongImport,
@@ -259,15 +259,14 @@ class SongFormat(object):
             'name': 'PowerSong 1.0',
             'prefix': 'powerSong',
             'selectMode': SongFormatSelect.SingleFolder,
-            'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm',
-                'You need to specify a valid PowerSong 1.0 database folder.')
+            'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm', 'You need to specify a valid PowerSong 1.0 '
+                                                                          'database folder.')
         },
         SongBeamer: {
             'class': SongBeamerImport,
             'name': 'SongBeamer',
             'prefix': 'songBeamer',
-            'filter': '%s (*.sng)' % translate('SongsPlugin.ImportWizardForm',
-                'SongBeamer Files')
+            'filter': '%s (*.sng)' % translate('SongsPlugin.ImportWizardForm', 'SongBeamer Files')
         },
         SongPro: {
             'class': SongProImport,
@@ -277,7 +276,7 @@ class SongFormat(object):
             'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'SongPro Text Files'),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'SongPro (Export File)'),
             'descriptionText': translate('SongsPlugin.ImportWizardForm',
-                'In SongPro, export your songs using the File -> Export menu')
+                                         'In SongPro, export your songs using the File -> Export menu')
         },
         SongShowPlus: {
             'class': SongShowPlusImport,
@@ -291,8 +290,8 @@ class SongFormat(object):
             'canDisable': True,
             'filter': '%s (*.rtf)' % translate('SongsPlugin.ImportWizardForm', 'Songs Of Fellowship Song Files'),
             'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
-                'The Songs of Fellowship importer has been disabled because '
-                'OpenLP cannot access OpenOffice or LibreOffice.')
+                                           'The Songs of Fellowship importer has been disabled because '
+                                           'OpenLP cannot access OpenOffice or LibreOffice.')
         },
         SundayPlus: {
             'class': SundayPlusImport,
@@ -304,8 +303,7 @@ class SongFormat(object):
             'class': WowImport,
             'name': 'Words of Worship',
             'prefix': 'wordsOfWorship',
-            'filter': '%s (*.wsg *.wow-song)' %
-                translate('SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
+            'filter': '%s (*.wsg *.wow-song)' % translate('SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
         },
         WorshipCenterPro: {
             'name': 'WorshipCenter Pro',
@@ -314,8 +312,9 @@ class SongFormat(object):
             'selectMode': SongFormatSelect.SingleFile,
             'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm', 'WorshipCenter Pro Song Files'),
             'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
-                'The WorshipCenter Pro importer is only supported on Windows. It has been disabled due to a missing '
-                'Python module. If you want to use this importer, you will need to install the "pyodbc" module.')
+                                           'The WorshipCenter Pro importer is only supported on Windows. It has been '
+                                           'disabled due to a missing Python module. If you want to use this '
+                                           'importer, you will need to install the "pyodbc" module.')
         },
         ZionWorx: {
             'class': ZionWorxImport,
@@ -324,9 +323,9 @@ class SongFormat(object):
             'selectMode': SongFormatSelect.SingleFile,
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'ZionWorx (CSV)'),
             'descriptionText': translate('SongsPlugin.ImportWizardForm',
-                'First convert your ZionWorx database to a CSV text file, as '
-                'explained in the <a href="http://manual.openlp.org/songs.html'
-                '#importing-from-zionworx">User Manual</a>.')
+                                         'First convert your ZionWorx database to a CSV text file, as '
+                                         'explained in the <a href="http://manual.openlp.org/songs.html'
+                                         '#importing-from-zionworx">User Manual</a>.')
         }
     }
 
@@ -362,11 +361,8 @@ class SongFormat(object):
         """
         Return requested song format attribute(s).
 
-        ``format``
-            A song format from SongFormat.
-
-        ``*attributes``
-            Zero or more song format attributes from SongFormat.
+        :param format:  A song format from SongFormat.
+        :param attributes: Zero or more song format attributes from SongFormat.
 
         Return type depends on number of supplied attributes:
 

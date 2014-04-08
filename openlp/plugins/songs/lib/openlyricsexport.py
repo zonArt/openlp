@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,22 +27,22 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlyricsexport` module provides the functionality for exporting
-songs from the database to the OpenLyrics format.
+The :mod:`openlyricsexport` module provides the functionality for exporting songs from the database to the OpenLyrics
+format.
 """
 import logging
 import os
 
 from lxml import etree
 
-from openlp.core.lib import Registry, check_directory_exists, translate
+from openlp.core.common import RegistryProperties, check_directory_exists, translate
 from openlp.core.utils import clean_filename
 from openlp.plugins.songs.lib.xml import OpenLyrics
 
 log = logging.getLogger(__name__)
 
 
-class OpenLyricsExport(object):
+class OpenLyricsExport(RegistryProperties):
     """
     This provides the Openlyrics export.
     """
@@ -62,15 +62,15 @@ class OpenLyricsExport(object):
         Export the songs.
         """
         log.debug('started OpenLyricsExport')
-        openLyrics = OpenLyrics(self.manager)
+        open_lyrics = OpenLyrics(self.manager)
         self.parent.progress_bar.setMaximum(len(self.songs))
         for song in self.songs:
             self.application.process_events()
             if self.parent.stop_export_flag:
                 return False
-            self.parent.increment_progress_bar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
-                song.title)
-            xml = openLyrics.song_to_xml(song)
+            self.parent.increment_progress_bar(
+                translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') % song.title)
+            xml = open_lyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml.encode()))
             filename = '%s (%s)' % (song.title, ', '.join([author.display_name for author in song.authors]))
             filename = clean_filename(filename)
@@ -78,20 +78,6 @@ class OpenLyricsExport(object):
             filename = '%s.xml' % filename[0:250 - len(self.save_path)]
             # Pass a file object, because lxml does not cope with some special
             # characters in the path (see lp:757673 and lp:744337).
-            tree.write(open(os.path.join(self.save_path, filename), 'wb'),
-                encoding='utf-8', xml_declaration=True, pretty_print=True)
+            tree.write(open(os.path.join(self.save_path, filename), 'wb'), encoding='utf-8', xml_declaration=True,
+                       pretty_print=True)
         return True
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

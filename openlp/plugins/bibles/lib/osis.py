@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,8 +33,7 @@ import chardet
 import codecs
 import re
 
-from openlp.core.lib import translate
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation, translate
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -85,8 +84,8 @@ class OSISBible(BibleDB):
         success = True
         last_chapter = 0
         match_count = 0
-        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
-            'Detecting encoding (this may take a few minutes)...'))
+        self.wizard.increment_progress_bar(
+            translate('BiblesPlugin.OsisImport', 'Detecting encoding (this may take a few minutes)...'))
         try:
             detect_file = open(self.filename, 'r')
             details = chardet.detect(detect_file.read(1048576))
@@ -102,7 +101,7 @@ class OSISBible(BibleDB):
             osis = codecs.open(self.filename, 'r', details['encoding'])
             repl = replacement
             language_id = False
-            # Decide if the bible propably contains only NT or AT and NT or
+            # Decide if the bible probably contains only NT or AT and NT or
             # AT, NT and Apocrypha
             if lines_in_file < 11500:
                 book_count = 27
@@ -132,7 +131,7 @@ class OSISBible(BibleDB):
                     if not language_id:
                         language_id = self.get_language(bible_name)
                         if not language_id:
-                            log.exception('Importing books from "%s" failed' % self.filename)
+                            log.error('Importing books from "%s" failed' % self.filename)
                             return False
                     match_count += 1
                     book = str(match.group(1))
@@ -141,7 +140,7 @@ class OSISBible(BibleDB):
                     verse_text = match.group(4)
                     book_ref_id = self.get_book_ref_id_by_name(book, book_count, language_id)
                     if not book_ref_id:
-                        log.exception('Importing books from "%s" failed' % self.filename)
+                        log.error('Importing books from "%s" failed' % self.filename)
                         return False
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                     if not db_book or db_book.name != book_details['name']:
@@ -155,10 +154,11 @@ class OSISBible(BibleDB):
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
-                        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport', 'Importing %s %s...',
-                            'Importing <book name> <chapter>...') % (book_details['name'], chapter))
+                        self.wizard.increment_progress_bar(
+                            translate('BiblesPlugin.OsisImport', 'Importing %s %s...',
+                                      'Importing <book name> <chapter>...') % (book_details['name'], chapter))
                         last_chapter = chapter
-                    # All of this rigmarol below is because the mod2osis tool from the Sword library embeds XML in the
+                    # All of this rigmarole below is because the mod2osis tool from the Sword library embeds XML in the
                     # OSIS but neglects to enclose the verse text (with XML) in <[CDATA[ ]]> tags.
                     verse_text = self.note_regex.sub('', verse_text)
                     verse_text = self.title_regex.sub('', verse_text)

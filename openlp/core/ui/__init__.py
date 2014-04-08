@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,6 +29,7 @@
 """
 The :mod:`ui` module provides the core user interface for OpenLP
 """
+from PyQt4 import QtGui
 
 
 class HideMode(object):
@@ -77,6 +78,29 @@ class DisplayControllerType(object):
     Plugin = 2
 
 
+class SingleColumnTableWidget(QtGui.QTableWidget):
+    """
+    Class to for a single column table widget to use for the verse table widget.
+    """
+
+    def __init__(self, parent):
+        """
+        Constructor
+        """
+        super(SingleColumnTableWidget, self).__init__(parent)
+        self.horizontalHeader().setVisible(False)
+        self.setColumnCount(1)
+
+    def resizeEvent(self, event):
+        """
+        Resize the first column together with the widget.
+        """
+        QtGui.QTableWidget.resizeEvent(self, event)
+        if self.columnCount():
+            self.setColumnWidth(0, event.size().width())
+            self.resizeRowsToContents()
+
+
 from .firsttimeform import FirstTimeForm
 from .firsttimelanguageform import FirstTimeLanguageForm
 from .themelayoutform import ThemeLayoutForm
@@ -86,7 +110,7 @@ from .starttimeform import StartTimeForm
 from .maindisplay import MainDisplay, Display
 from .servicenoteform import ServiceNoteForm
 from .serviceitemeditform import ServiceItemEditForm
-from .slidecontroller import SlideController, DisplayController
+from .slidecontroller import SlideController, DisplayController, PreviewController, LiveController
 from .splashscreen import SplashScreen
 from .generaltab import GeneralTab
 from .themestab import ThemesTab
@@ -95,13 +119,14 @@ from .aboutform import AboutForm
 from .pluginform import PluginForm
 from .settingsform import SettingsForm
 from .formattingtagform import FormattingTagForm
+from .formattingtagcontroller import FormattingTagController
 from .shortcutlistform import ShortcutListForm
 from .mediadockmanager import MediaDockManager
 from .servicemanager import ServiceManager
 from .thememanager import ThemeManager
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager',
-    'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm', 'ThemeForm',
-    'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay', 'Display', 'ServiceNoteForm',
-    'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
-    'FormattingTagForm', 'ShortcutListForm']
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeForm',
+           'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm',
+           'Display', 'ServiceNoteForm', 'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay',
+           'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
+           'FormattingTagForm', 'ShortcutListForm', 'FormattingTagController', 'SingleColumnTableWidget']

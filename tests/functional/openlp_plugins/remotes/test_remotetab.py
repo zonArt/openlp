@@ -1,17 +1,44 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 This module contains tests for the lib submodule of the Remotes plugin.
 """
 import os
 import re
-
 from unittest import TestCase
-from tempfile import mkstemp
-from mock import patch
-
-from openlp.core.lib import Settings
-from openlp.plugins.remotes.lib.remotetab import RemoteTab
 
 from PyQt4 import QtGui
+
+from openlp.core.common import Settings
+from openlp.plugins.remotes.lib.remotetab import RemoteTab
+from tests.functional import patch
+from tests.helpers.testmixin import TestMixin
 
 __default_settings__ = {
     'remotes/twelve hour': True,
@@ -23,13 +50,11 @@ __default_settings__ = {
     'remotes/authentication enabled': False,
     'remotes/ip address': '0.0.0.0'
 }
-
 ZERO_URL = '0.0.0.0'
-
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
 
 
-class TestRemoteTab(TestCase):
+class TestRemoteTab(TestCase, TestMixin):
     """
     Test the functions in the :mod:`lib` module.
     """
@@ -37,9 +62,8 @@ class TestRemoteTab(TestCase):
         """
         Create the UI
         """
-        fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
-        self.application = QtGui.QApplication.instance()
+        self.get_application()
+        self.build_settings()
         Settings().extend_default_settings(__default_settings__)
         self.parent = QtGui.QMainWindow()
         self.form = RemoteTab(self.parent, 'Remotes', None, None)
@@ -48,10 +72,9 @@ class TestRemoteTab(TestCase):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        del self.application
         del self.parent
         del self.form
-        os.unlink(self.ini_file)
+        self.destroy_settings()
 
     def get_ip_address_default_test(self):
         """
@@ -60,7 +83,8 @@ class TestRemoteTab(TestCase):
         # WHEN: the default ip address is given
         ip_address = self.form.get_ip_address(ZERO_URL)
         # THEN: the default ip address will be returned
-        self.assertTrue(re.match('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', ip_address), 'The return value should be a valid ip address')
+        self.assertTrue(re.match('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', ip_address),
+                        'The return value should be a valid ip address')
 
     def get_ip_address_with_ip_test(self):
         """
@@ -79,10 +103,10 @@ class TestRemoteTab(TestCase):
         Test the set_urls function with standard defaults
         """
         # GIVEN: A mocked location
-        with patch('openlp.core.utils.applocation.Settings') as mocked_class, \
-            patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
-            patch('openlp.core.utils.applocation.check_directory_exists') as mocked_check_directory_exists, \
-            patch('openlp.core.utils.applocation.os') as mocked_os:
+        with patch('openlp.core.common.Settings') as mocked_class, \
+                patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
+                patch('openlp.core.common.check_directory_exists') as mocked_check_directory_exists, \
+                patch('openlp.core.common.applocation.os') as mocked_os:
             # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
             mocked_settings = mocked_class.return_value
             mocked_settings.contains.return_value = False
@@ -96,7 +120,7 @@ class TestRemoteTab(TestCase):
             # THEN: the following screen values should be set
             self.assertEqual(self.form.address_edit.text(), ZERO_URL, 'The default URL should be set on the screen')
             self.assertEqual(self.form.https_settings_group_box.isEnabled(), False,
-                            'The Https box should not be enabled')
+                             'The Https box should not be enabled')
             self.assertEqual(self.form.https_settings_group_box.isChecked(), False,
                              'The Https checked box should note be Checked')
             self.assertEqual(self.form.user_login_group_box.isChecked(), False,
@@ -107,10 +131,10 @@ class TestRemoteTab(TestCase):
         Test the set_urls function with certificate available
         """
         # GIVEN: A mocked location
-        with patch('openlp.core.utils.applocation.Settings') as mocked_class, \
-            patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
-            patch('openlp.core.utils.applocation.check_directory_exists') as mocked_check_directory_exists, \
-            patch('openlp.core.utils.applocation.os') as mocked_os:
+        with patch('openlp.core.common.Settings') as mocked_class, \
+                patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
+                patch('openlp.core.common.check_directory_exists') as mocked_check_directory_exists, \
+                patch('openlp.core.common.applocation.os') as mocked_os:
             # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
             mocked_settings = mocked_class.return_value
             mocked_settings.contains.return_value = False

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -28,23 +28,22 @@
 ###############################################################################
 
 import logging
-
-from PyQt4 import QtGui
+import time
 
 from openlp.core.lib import Plugin, StringContent, translate, build_icon
-from openlp.plugins.remotes.lib import RemoteTab, HttpServer
+from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
 
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        'remotes/twelve hour': True,
-        'remotes/port': 4316,
-        'remotes/https port': 4317,
-        'remotes/https enabled': False,
-        'remotes/user id': 'openlp',
-        'remotes/password': 'password',
-        'remotes/authentication enabled': False,
-        'remotes/ip address': '0.0.0.0'
+    'remotes/twelve hour': True,
+    'remotes/port': 4316,
+    'remotes/https port': 4317,
+    'remotes/https enabled': False,
+    'remotes/user id': 'openlp',
+    'remotes/password': 'password',
+    'remotes/authentication enabled': False,
+    'remotes/ip address': '0.0.0.0'
 }
 
 
@@ -67,8 +66,7 @@ class RemotesPlugin(Plugin):
         """
         log.debug('initialise')
         super(RemotesPlugin, self).initialise()
-        self.server = HttpServer()
-        self.server.start_server()
+        self.server = OpenLPServer()
 
     def finalise(self):
         """
@@ -77,7 +75,7 @@ class RemotesPlugin(Plugin):
         log.debug('finalise')
         super(RemotesPlugin, self).finalise()
         if self.server:
-            self.server.close()
+            self.server.stop_server()
             self.server = None
 
     def about(self):
@@ -85,9 +83,9 @@ class RemotesPlugin(Plugin):
         Information about this plugin
         """
         about_text = translate('RemotePlugin', '<strong>Remote Plugin</strong>'
-            '<br />The remote plugin provides the ability to send messages to '
-            'a running version of OpenLP on a different computer via a web '
-            'browser or through the remote API.')
+                               '<br />The remote plugin provides the ability to send messages to '
+                               'a running version of OpenLP on a different computer via a web '
+                               'browser or through the remote API.')
         return about_text
 
     def set_plugin_text_strings(self):
@@ -109,5 +107,6 @@ class RemotesPlugin(Plugin):
         Called when Config is changed to restart the server on new address or port
         """
         log.debug('remote config changed')
-        self.main_window.information_message(translate('RemotePlugin', 'Configuration Change'),
-            translate('RemotePlugin', 'OpenLP will need to be restarted for the Remote changes to become active.'))
+        self.finalise()
+        time.sleep(0.5)
+        self.initialise()

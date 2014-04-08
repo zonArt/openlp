@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,16 +29,17 @@
 """
 The actual print service dialog
 """
-import cgi
 import datetime
 import os
+import html
+import lxml.html
 
 from PyQt4 import QtCore, QtGui
-from lxml import html
 
-from openlp.core.lib import Settings, UiStrings, Registry, translate, get_text_file_string
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
+from openlp.core.lib import get_text_file_string
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation
 
 DEFAULT_CSS = """/*
 Edit this file to customize the service order print. Note, that not all CSS
@@ -110,7 +111,7 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 """
 
 
-class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
+class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties):
     """
     The :class:`~openlp.core.ui.printserviceform.PrintServiceForm` class displays a dialog for printing the service.
     """
@@ -174,7 +175,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             custom_css = DEFAULT_CSS
         self._add_element('style', custom_css, html_data.head, attribute=('type', 'text/css'))
         self._add_element('body', parent=html_data)
-        self._add_element('h1', cgi.escape(self.title_line_edit.text()), html_data.body, classId='serviceTitle')
+        self._add_element('h1', html.escape(self.title_line_edit.text()), html_data.body, classId='serviceTitle')
         for index, item in enumerate(self.service_manager.service_items):
             self._add_preview_item(html_data.body, item['service_item'], index)
         # Add the custom service notes:
@@ -182,8 +183,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             div = self._add_element('div', parent=html_data.body, classId='customNotes')
             self._add_element(
                 'span', translate('OpenLP.ServiceManager', 'Custom Service Notes: '), div, classId='customNotesTitle')
-            self._add_element('span', cgi.escape(self.footer_text_edit.toPlainText()), div, classId='customNotesText')
-        self.document.setHtml(html.tostring(html_data).decode())
+            self._add_element('span', html.escape(self.footer_text_edit.toPlainText()), div, classId='customNotesText')
+        self.document.setHtml(lxml.html.tostring(html_data).decode())
         self.preview_widget.updatePreview()
 
     def _add_preview_item(self, body, item, index):
@@ -194,7 +195,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # Add the title of the service item.
         item_title = self._add_element('h2', parent=div, classId='itemTitle')
         self._add_element('img', parent=item_title, attribute=('src', item.icon))
-        self._add_element('span', '&nbsp;' + cgi.escape(item.get_display_title()), item_title)
+        self._add_element('span', '&nbsp;' + html.escape(item.get_display_title()), item_title)
         if self.slide_text_check_box.isChecked():
             # Add the text of the service item.
             if item.is_text():
@@ -218,14 +219,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             foot_text = item.foot_text
             foot_text = foot_text.partition('<br>')[2]
             if foot_text:
-                foot_text = cgi.escape(foot_text.replace('<br>', '\n'))
+                foot_text = html.escape(foot_text.replace('<br>', '\n'))
                 self._add_element('div', foot_text.replace('\n', '<br>'), parent=div, classId='itemFooter')
         # Add service items' notes.
         if self.notes_check_box.isChecked():
             if item.notes:
                 p = self._add_element('div', classId='itemNotes', parent=div)
                 self._add_element('span', translate('OpenLP.ServiceManager', 'Notes: '), p, classId='itemNotesTitle')
-                self._add_element('span', cgi.escape(item.notes).replace('\n', '<br>'), p, classId='itemNotesText')
+                self._add_element('span', html.escape(item.notes).replace('\n', '<br>'), p, classId='itemNotesText')
         # Add play length of media files.
         if item.is_media() and self.meta_data_check_box.isChecked():
             tme = item.media_length
@@ -238,28 +239,19 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
 
     def _add_element(self, tag, text=None, parent=None, classId=None, attribute=None):
         """
-        Creates a html element. If ``text`` is given, the element's text will
-        set and if a ``parent`` is given, the element is appended.
+        Creates a html element. If ``text`` is given, the element's text will set and if a ``parent`` is given,
+        the element is appended.
 
-        ``tag``
-            The html tag, e. g. ``u'span'``. Defaults to ``None``.
-
-        ``text``
-            The text for the tag. Defaults to ``None``.
-
-        ``parent``
-            The parent element. Defaults to ``None``.
-
-        ``classId``
-            Value for the class attribute
-
-        ``attribute``
-            Tuple name/value pair to add as an optional attribute
+        :param tag: The html tag, e. g. ``u'span'``. Defaults to ``None``.
+        :param text: The text for the tag. Defaults to ``None``.
+        :param parent: The parent element. Defaults to ``None``.
+        :param classId: Value for the class attribute
+        :param attribute: Tuple name/value pair to add as an optional attribute
         """
         if text is not None:
-            element = html.fragment_fromstring(str(text), create_parent=tag)
+            element = lxml.html.fragment_fromstring(str(text), create_parent=tag)
         else:
-            element = html.Element(tag)
+            element = lxml.html.Element(tag)
         if parent is not None:
             parent.append(element)
         if classId is not None:
@@ -403,23 +395,3 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         for item in self.service_manager.service_items:
             # Trigger Audit requests
             Registry().register_function('print_service_started', [item['service_item']])
-
-    def _get_service_manager(self):
-        """
-        Adds the service manager to the class dynamically
-        """
-        if not hasattr(self, '_service_manager'):
-            self._service_manager = Registry().get('service_manager')
-        return self._service_manager
-
-    service_manager = property(_get_service_manager)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

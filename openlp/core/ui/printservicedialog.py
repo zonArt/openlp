@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,7 +31,8 @@ The UI widgets of the print service dialog.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SpellTextEdit, UiStrings, build_icon, translate
+from openlp.core.common import UiStrings, translate
+from openlp.core.lib import SpellTextEdit, build_icon
 
 
 class ZoomSize(object):
@@ -64,7 +65,7 @@ class Ui_PrintServiceDialog(object):
         self.toolbar.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self.print_button = self.toolbar.addAction(build_icon(':/general/general_print.png'),
-            translate('OpenLP.PrintServiceForm', 'Print'))
+                                                   translate('OpenLP.PrintServiceForm', 'Print'))
         self.options_button = QtGui.QToolButton(self.toolbar)
         self.options_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self.options_button.setIcon(build_icon(':/system/system_configure.png'))
@@ -72,9 +73,9 @@ class Ui_PrintServiceDialog(object):
         self.toolbar.addWidget(self.options_button)
         self.toolbar.addSeparator()
         self.plain_copy = self.toolbar.addAction(build_icon(':/system/system_edit_copy.png'),
-            translate('OpenLP.PrintServiceForm', 'Copy'))
+                                                 translate('OpenLP.PrintServiceForm', 'Copy'))
         self.html_copy = self.toolbar.addAction(build_icon(':/system/system_edit_copy.png'),
-            translate('OpenLP.PrintServiceForm', 'Copy as HTML'))
+                                                translate('OpenLP.PrintServiceForm', 'Copy as HTML'))
         self.toolbar.addSeparator()
         self.zoom_in_button = QtGui.QToolButton(self.toolbar)
         self.zoom_in_button.setIcon(build_icon(':/general/general_zoom_in.png'))
