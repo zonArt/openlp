@@ -545,7 +545,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Run a set of actions when an author in the list is selected (mainly enable the delete button).
         """
-        self.author_remove_button.setEnabled(True)
+        if self.authors_list_view.count() > 1:
+            self.author_remove_button.setEnabled(True)
 
     def on_author_remove_button_clicked(self):
         """
