@@ -88,31 +88,22 @@ class TestMainDisplay(TestCase):
         display = MagicMock()
         main_display = MainDisplay(display)
 
-        # WHEN: MainDisplay.set_transparency is called with a true value"
+        # WHEN: We enable transparency
         main_display.set_transparency(True)
 
-        # THEN: check MainDisplay.setAutoFillBackground, MainDisplay.setStyleSheet, MainDisplay.setAttribute,
-        assert main_display.StyleSheet == "QGraphicsView {background: transparent; border: 0px;}", \
-            'MainDisplay instance should be transparent'
-        assert main_display.getAutoFillBackground == False, \
-            'MainDisplay instance should be without background auto fill'
-        assert main_display.getAttribute(QtCore.Qt.WA_TranslucentBackground) == True, \
-            'MainDisplay hasnt translusent background'
+        # THEN: There should be a Stylesheet
+        self.assertEqual('QGraphicsView {background: transparent; border: 0px;}', main_display.styleSheet(),
+                         'MainDisplay instance should be transparent')
+        self.assertFalse(main_display.autoFillBackground(),
+                         'MainDisplay instance should be without background auto fill')
+        self.assertTrue(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
+                        'MainDisplay hasnt translucent background')
 
-    def set_transparency_disable_test(self):
-        """
-        Test creating an instance of the MainDisplay class
-        """
-        # GIVEN: get an instance of MainDisplay
-        display = MagicMock()
-        main_display = MainDisplay(display)
-
-        # WHEN: MainDisplay.set_transparency is called with a False value"
+        # WHEN: We disable transparency
         main_display.set_transparency(False)
 
-        # THEN: check MainDisplay.setAutoFillBackground, MainDisplay.setStyleSheet, MainDisplay.setAttribute,
-        assert main_display.StyleSheet == "QGraphicsView {}", \
-            'MainDisplay instance should not be transparent'
-        assert main_display.getAutoFillBackground == True, 'MainDisplay instance should be with background auto fill'
-        assert main_display.getAttribute(QtCore.Qt.WA_TranslucentBackground) == True, \
-            'MainDisplay hasnt translusent background'
+        # THEN: The Stylesheet should be empty
+        self.assertEqual('QGraphicsView {}', main_display.styleSheet(),
+                         'MainDisplay instance should not be transparent')
+        self.assertFalse(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
+                        'MainDisplay hasnt translucent background')
