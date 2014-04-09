@@ -42,71 +42,59 @@
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="10" column="4">
-     <widget class="QPushButton" name="close_pushbutton">
+    <item row="0" column="2" colspan="2">
+     <widget class="QComboBox" name="media_path_combobox">
       <property name="enabled">
        <bool>true</bool>
       </property>
-      <property name="text">
-       <string>Close</string>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="editable">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
-    <item row="6" column="1">
-     <widget class="QPushButton" name="pause_pushbutton">
+    <item row="7" column="2">
+     <widget class="QTimeEdit" name="start_timeedit">
       <property name="enabled">
        <bool>true</bool>
       </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>../images/media_playback_pause.png</normaloff>../images/media_playback_pause.png</iconset>
+      <property name="displayFormat">
+       <string>HH:mm:ss.z</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="0">
-     <widget class="QPushButton" name="play_pushbutton">
+    <item row="8" column="2">
+     <widget class="QTimeEdit" name="end_timeedit">
       <property name="enabled">
        <bool>true</bool>
       </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>../images/media_playback_start.png</normaloff>../images/media_playback_start.png</iconset>
+      <property name="displayFormat">
+       <string>HH:mm:ss.z</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="0" colspan="2">
-     <widget class="QLabel" name="media_path_label">
+    <item row="7" column="3">
+     <widget class="QPushButton" name="set_start_pushbutton">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="text">
-       <string>Media path</string>
+       <string>Set current position as start point</string>
       </property>
      </widget>
     </item>
-    <item row="10" column="2">
-     <widget class="QPushButton" name="preview_pushbutton">
+    <item row="0" column="4">
+     <widget class="QPushButton" name="load_disc_pushbutton">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="text">
-       <string>Preview current clip</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0" colspan="2">
-     <widget class="QLabel" name="start_point_label">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Start point</string>
+       <string>Load disc</string>
       </property>
      </widget>
     </item>
@@ -126,83 +114,17 @@
       </property>
      </spacer>
     </item>
-    <item row="7" column="2">
-     <widget class="QTimeEdit" name="start_timeedit">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="displayFormat">
-       <string>HH:mm:ss.z</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="4">
-     <widget class="QPushButton" name="jump_end_pushbutton">
+    <item row="6" column="0">
+     <widget class="QPushButton" name="play_pushbutton">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="text">
-       <string>Jump to end point</string>
+       <string/>
       </property>
-     </widget>
-    </item>
-    <item row="4" column="0" colspan="2">
-     <widget class="QLabel" name="subtitle_track_label">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Subtitle track</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="3">
-     <widget class="QPushButton" name="set_end_pushbutton">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Set current position as end point</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="3">
-     <widget class="QPushButton" name="set_start_pushbutton">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Set current position as start point</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0" colspan="2">
-     <widget class="QLabel" name="audio_track_label">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Audio track</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="4">
-     <widget class="QPushButton" name="load_disc_pushbutton">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Load disc</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="4">
-     <widget class="QTimeEdit" name="media_position_timeedit">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="displayFormat">
-       <string>HH:mm:ss.z</string>
+      <property name="icon">
+       <iconset>
+        <normaloff>../images/media_playback_start.png</normaloff>../images/media_playback_start.png</iconset>
       </property>
      </widget>
     </item>
@@ -216,23 +138,10 @@
       </property>
      </widget>
     </item>
-    <item row="7" column="4">
-     <widget class="QPushButton" name="jump_start_pushbutton">
+    <item row="4" column="2" colspan="2">
+     <widget class="QComboBox" name="subtitle_tracks_combobox">
       <property name="enabled">
        <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Jump to start point</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="2">
-     <widget class="QTimeEdit" name="end_timeedit">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="displayFormat">
-       <string>HH:mm:ss.z</string>
       </property>
      </widget>
     </item>
@@ -246,6 +155,23 @@
       </property>
      </widget>
     </item>
+    <item row="3" column="2" colspan="2">
+     <widget class="QComboBox" name="audio_tracks_combobox">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="3">
+     <widget class="QPushButton" name="set_end_pushbutton">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Set current position as end point</string>
+      </property>
+     </widget>
+    </item>
     <item row="10" column="3">
      <widget class="QPushButton" name="save_pushbutton">
       <property name="enabled">
@@ -256,59 +182,53 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="2" colspan="2">
-     <widget class="QComboBox" name="media_path_combobox">
+    <item row="10" column="4">
+     <widget class="QPushButton" name="close_pushbutton">
       <property name="enabled">
        <bool>true</bool>
       </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="editable">
-       <bool>true</bool>
+      <property name="text">
+       <string>Close</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="2" colspan="2">
-     <widget class="QSlider" name="position_horizontalslider">
+    <item row="7" column="0" colspan="2">
+     <widget class="QLabel" name="start_point_label">
       <property name="enabled">
        <bool>true</bool>
       </property>
-      <property name="tracking">
-       <bool>false</bool>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="invertedAppearance">
-       <bool>false</bool>
+      <property name="text">
+       <string>Start point</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="2" colspan="2">
-     <widget class="QComboBox" name="title_combo_box">
+    <item row="7" column="4">
+     <widget class="QPushButton" name="jump_start_pushbutton">
       <property name="enabled">
        <bool>true</bool>
       </property>
-      <property name="currentText" stdset="0">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="2" colspan="2">
-     <widget class="QComboBox" name="audio_tracks_combobox">
-      <property name="enabled">
-       <bool>true</bool>
+      <property name="text">
+       <string>Jump to start point</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="2" colspan="2">
-     <widget class="QComboBox" name="subtitle_tracks_combobox">
+    <item row="3" column="0" colspan="2">
+     <widget class="QLabel" name="audio_track_label">
       <property name="enabled">
        <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Audio track</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="4">
+     <widget class="QTimeEdit" name="media_position_timeedit">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="displayFormat">
+       <string>HH:mm:ss.z</string>
       </property>
      </widget>
     </item>
@@ -331,6 +251,62 @@
       </property>
      </widget>
     </item>
+    <item row="4" column="0" colspan="2">
+     <widget class="QLabel" name="subtitle_track_label">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Subtitle track</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="4">
+     <widget class="QPushButton" name="jump_end_pushbutton">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Jump to end point</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2">
+     <widget class="QLabel" name="media_path_label">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Media path</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2" colspan="2">
+     <widget class="QComboBox" name="title_combo_box">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="currentText" stdset="0">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1" colspan="3">
+     <widget class="QSlider" name="position_horizontalslider">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="tracking">
+       <bool>false</bool>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="invertedAppearance">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
  </widget>
@@ -341,7 +317,6 @@
   <tabstop>audio_tracks_combobox</tabstop>
   <tabstop>subtitle_tracks_combobox</tabstop>
   <tabstop>play_pushbutton</tabstop>
-  <tabstop>pause_pushbutton</tabstop>
   <tabstop>position_horizontalslider</tabstop>
   <tabstop>media_position_timeedit</tabstop>
   <tabstop>start_timeedit</tabstop>
@@ -350,7 +325,6 @@
   <tabstop>end_timeedit</tabstop>
   <tabstop>set_end_pushbutton</tabstop>
   <tabstop>jump_end_pushbutton</tabstop>
-  <tabstop>preview_pushbutton</tabstop>
   <tabstop>save_pushbutton</tabstop>
   <tabstop>close_pushbutton</tabstop>
  </tabstops>

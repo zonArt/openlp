@@ -130,6 +130,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         # GIVEN: Mocked methods and some entries in the title combobox.
         with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
             self.form.exec_()
+            self.form.vlc_media_player.get_length.return_value = 1000
             self.form.audio_tracks_combobox.itemData = MagicMock()
             self.form.subtitle_tracks_combobox.itemData = MagicMock()
             self.form.audio_tracks_combobox.itemData.return_value = None
@@ -138,7 +139,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
             self.form.title_combo_box.insertItem(1, 'Test Title 1')
 
             # WHEN: There exists audio and subtitle tracks and the index is updated.
-                self.form.vlc_media_player.audio_get_track_description.return_value = [(-1, b'Disabled'),
+            self.form.vlc_media_player.audio_get_track_description.return_value = [(-1, b'Disabled'),
                                                                                    (0, b'Audio Track 1')]
             self.form.vlc_media_player.video_get_spu_description.return_value = [(-1, b'Disabled'),
                                                                                  (0, b'Subtitle Track 1')]

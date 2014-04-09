@@ -68,6 +68,11 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.toggle_disable_load_media(False)
         # most actions auto-connect due to the functions name, so only a few left to do
         self.close_pushbutton.clicked.connect(self.reject)
+        # setup play/pause icon
+        self.play_icon = QtGui.QIcon()
+        self.play_icon.addPixmap(QtGui.QPixmap(":/slides/media_playback_start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pause_icon = QtGui.QIcon()
+        self.pause_icon.addPixmap(QtGui.QPixmap(":/slides/media_playback_pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def reject(self):
         """
@@ -175,22 +180,19 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.toggle_disable_load_media(False)
 
     @QtCore.pyqtSlot(bool)
-    def on_pause_pushbutton_clicked(self, clicked):
-        """
-        Pause the playback
-
-        :param clicked: Given from signal, not used.
-        """
-        self.vlc_media_player.pause()
-
-    @QtCore.pyqtSlot(bool)
     def on_play_pushbutton_clicked(self, clicked):
         """
-        Start the playback
+        Toggle the playback
 
         :param clicked: Given from signal, not used.
         """
-        self.vlc_media_player.play()
+        if self.vlc_media_player.get_state() == vlc.State.Playing:
+            self.vlc_media_player.pause()
+            self.play_pushbutton.setIcon(self.play_icon)
+        else:
+            self.vlc_media_player.play()
+            self.media_state_wait(vlc.State.Playing)
+            self.play_pushbutton.setIcon(self.pause_icon)
 
     @QtCore.pyqtSlot(bool)
     def on_set_start_pushbutton_clicked(self, clicked):
@@ -394,7 +396,6 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         :param action: If True elements are disabled, if False they are enabled.
         """
         self.play_pushbutton.setDisabled(action)
-        self.pause_pushbutton.setDisabled(action)
         self.position_horizontalslider.setDisabled(action)
         self.media_position_timeedit.setDisabled(action)
         self.start_timeedit.setDisabled(action)
@@ -403,7 +404,6 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.end_timeedit.setDisabled(action)
         self.set_end_pushbutton.setDisabled(action)
         self.jump_end_pushbutton.setDisabled(action)
-        self.preview_pushbutton.setDisabled(action)
         self.save_pushbutton.setDisabled(action)
 
     @QtCore.pyqtSlot(bool)
