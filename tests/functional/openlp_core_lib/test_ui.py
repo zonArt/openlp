@@ -81,3 +81,28 @@ class TestUi(TestCase):
         self.assertIsInstance(btnbox, QtGui.QDialogButtonBox)
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
+
+    def test_create_action(self):
+        """
+        Test creating an action
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create an action
+        action = create_action(dialog, 'my_action')
+
+        # THEN: We should get a QAction
+        self.assertIsInstance(action, QtGui.QAction)
+        self.assertEqual('my_action', action.objectName())
+
+        # WHEN: We create an action with some properties
+        action = create_action(dialog, 'my_action', text='my text', icon=':/wizards/wizard_firsttime.bmp',
+                               tooltip='my tooltip', statustip='my statustip')
+
+        # THEN: These properties should be set
+        self.assertIsInstance(action, QtGui.QAction)
+        self.assertEqual('my text', action.text())
+        self.assertIsInstance(action.icon(), QtGui.QIcon)
+        self.assertEqual('my tooltip', action.toolTip())
+        self.assertEqual('my statustip', action.statusTip())
