@@ -240,7 +240,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         try:
             self.session.commit()
         except OperationalError:
-            # Wait 10ms and try again.
+            # Wait 10ms and try again (lp#1154467)
             time.sleep(0.01)
             self.session.commit()
 
