@@ -37,7 +37,7 @@ from openlp.plugins.songs.lib.openlyricsimport import OpenLyricsImport
 from openlp.plugins.songs.lib.songimport import SongImport
 
 
-class TestSongBeamerImport(TestCase):
+class TestOpenLyricsImport(TestCase):
     """
     Test the functions in the :mod:`openlyricsimport` module.
     """
