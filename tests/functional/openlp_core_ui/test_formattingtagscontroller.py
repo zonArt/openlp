@@ -72,9 +72,10 @@ class TestFormattingTagController(TestCase):
 
             # THEN: The result should match the predetermined value.
             self.assertTrue(result == test['gen'],
-                'Function should handle end tag correctly : %s and %s for %s ' % (test['gen'], result, test['start']))
-            self.assertTrue(error == test['valid'],
-                'Function should not generate unexpected error messages : %s ' % error)
+                            'Function should handle end tag correctly : %s and %s for %s ' %
+                            (test['gen'], result, test['start']))
+            self.assertTrue(error == test['valid'], 'Function should not generate unexpected error messages : %s ' %
+                                                    error)
 
     def test_start_tag_changed_processes_correctly(self):
         """
@@ -94,10 +95,10 @@ class TestFormattingTagController(TestCase):
             error, result = self.services.start_tag_changed(test['start'], test['end'])
 
             # THEN: The result should match the predetermined value.
-            self.assertTrue(result == test['gen'],
-                'Function should handle end tag correctly : %s and %s ' % (test['gen'], result))
-            self.assertTrue(error == test['valid'],
-                'Function should not generate unexpected error messages : %s ' % error)
+            self.assertTrue(result == test['gen'], 'Function should handle end tag correctly : %s and %s ' %
+                                                   (test['gen'], result))
+            self.assertTrue(error == test['valid'], 'Function should not generate unexpected error messages : %s ' %
+                                                    error)
 
     def test_start_html_to_end_html(self):
         """
@@ -112,5 +113,5 @@ class TestFormattingTagController(TestCase):
             result = self.services.start_html_to_end_html(test1)
 
             # THEN: The result should match the predetermined value.
-            self.assertTrue(result == test2, 'Calculated end tag should be valid: %s and %s = %s'
-                % (test1, test2, result))
+            self.assertTrue(result == test2, 'Calculated end tag should be valid: %s and %s = %s' %
+                                             (test1, test2, result))

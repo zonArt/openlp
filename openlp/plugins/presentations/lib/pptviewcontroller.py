@@ -87,7 +87,7 @@ class PptviewController(PresentationController):
                 return
             log.debug('start PPTView')
             dll_path = os.path.join(AppLocation.get_directory(AppLocation.AppDir),
-                                    'presentations', 'lib', 'pptviewlib', 'pptviewlib.dll')
+                                    'plugins', 'presentations', 'lib', 'pptviewlib', 'pptviewlib.dll')
             self.process = cdll.LoadLibrary(dll_path)
             if log.isEnabledFor(logging.DEBUG):
                 self.process.SetDebug(1)
