@@ -154,7 +154,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         if 'path' in kwargs:
             self.path = kwargs['path']
         self.wizard = None
-        Registry().execute('openlp_stop_wizard', self.stop_import)
+        Registry().register_function('openlp_stop_wizard', self.stop_import)
 
     def stop_import(self):
         """
