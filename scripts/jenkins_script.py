@@ -51,6 +51,8 @@ from jenkins import Jenkins
 
 JENKINS_URL = 'http://ci.openlp.org/'
 REPO_REGEX = r'(.*/+)(~.*)'
+# Allows us to black list token. So when we change the token, we can display a proper message to the user.
+OLD_TOKENS = []
 
 
 class OpenLPJobs(object):
@@ -62,7 +64,6 @@ class OpenLPJobs(object):
     Branch_Interface = 'Branch-03-Interface-Tests'
     Branch_Windows = 'Branch-04-Windows_Tests'
     Branch_PEP = 'Branch-05-Code-Analysis'
-    PEP_TEST = "sdafajsdklfj lajsldfk jlasdkjf lkajdf lkasjdlfkjalskdjflkajflkadsjkfl jasdlkfj laskdjflka sjdlkfjlaksdjflksajdf"
 
     Jobs = [Branch_Pull, Branch_Functional, Branch_Interface, Branch_Windows, Branch_PEP]
 
@@ -82,14 +83,25 @@ class JenkinsTrigger(object):
         """
         Ask our jenkins server to build the "Branch-01-Pull" job.
         """
-        self.jenkins_instance.job(OpenLPJobs.Branch_Pull).build({'BRANCH_NAME': self.repo_name}, token=self.token)
+        bzr = Popen(('bzr', 'whoami'), stdout=PIPE, stderr=PIPE)
+        raw_output, error = bzr.communicate()
+        # We just want the name (not the email).
+        name = ' '.join(raw_output.decode().split()[:-1])
+        cause = 'Build triggered by %s (%s)' % (name, self.repo_name)
+        self.jenkins_instance.job(OpenLPJobs.Branch_Pull).build(
+            {'BRANCH_NAME': self.repo_name, 'cause': cause}, token=self.token)
 
     def print_output(self):
         """
         Print the status information of the build tirggered.
         """
-        print("Add this to your merge proposal:")
-        print("--------------------------------")
+        print('Add this to your merge proposal:')
+        print('--------------------------------')
+        bzr = Popen(('bzr', 'revno'), stdout=PIPE, stderr=PIPE)
+        raw_output, error = bzr.communicate()
+        revno = raw_output.decode().strip()
+        print('%s (revision %s)' % (get_repo_name(), revno))
+
         for job in OpenLPJobs.Jobs:
             self.__print_build_info(job)
 
@@ -116,10 +128,6 @@ class JenkinsTrigger(object):
         result_string = build.info['result']
         url = build.info['url']
         print('[%s] %s' % (result_string, url))
-        # On failure open the browser.
-        #if result_string == "FAILURE":
-        #    url += 'console'
-        #    Popen(('xdg-open', url), stderr=PIPE)
 
 
 def get_repo_name():
@@ -150,41 +158,32 @@ def get_repo_name():
             if match:
                 repo_name = 'lp:%s' % match.group(2)
                 break
-    repo_name = repo_name.strip('/')
-
-    # Did we find the branch name?
-    if not repo_name:
-        for line in output_list:
-            # Check if the branch was pushed.
-            if 'Shared repository with trees (format: 2a)' in line:
-                print('Not a branch. cd to a branch.')
-                return
-        print('Not a branch. Have you pushed it to launchpad?')
-        return
-    return repo_name
+    return repo_name.strip('/')
 
 
 def main():
     usage = 'Usage: python %prog TOKEN [options]'
 
     parser = OptionParser(usage=usage)
-    parser.add_option('-d', '--disable-output', dest='enable_output', action="store_false", default=True,
+    parser.add_option('-d', '--disable-output', dest='enable_output', action='store_false', default=True,
                       help='Disable output.')
-    parser.add_option('-b', '--open-browser', dest='open_browser', action="store_true", default=False,
+    parser.add_option('-b', '--open-browser', dest='open_browser', action='store_true', default=False,
                       help='Opens the jenkins page in your browser.')
-    #parser.add_option('-e', '--open-browser-on-error', dest='open_browser_on_error', action="store_true",
-    #                  default=False, help='Opens the jenkins page in your browser in case a test fails.')
     options, args = parser.parse_args(sys.argv)
 
     if len(args) == 2:
         if not get_repo_name():
+            print('Not a branch. Have you pushed it to launchpad? Did you cd to the branch?')
             return
         token = args[-1]
+        if token in OLD_TOKENS:
+            print('Your token is not valid anymore. Get the most recent one.')
+            return
         jenkins_trigger = JenkinsTrigger(token)
         try:
             jenkins_trigger.trigger_build()
         except HTTPError as e:
-            print("Wrong token.")
+            print('Wrong token.')
             return
         # Open the browser before printing the output.
         if options.open_browser:
