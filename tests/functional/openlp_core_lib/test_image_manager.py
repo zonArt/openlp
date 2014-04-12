@@ -89,7 +89,6 @@ class TestImageManager(TestCase, TestMixin):
             self.image_manager.get_image(TEST_PATH, 'church1.jpg')
         self.assertNotEquals(context.exception, '', 'KeyError exception should have been thrown for missing image')
 
-
     def process_cache_test(self):
         """
         Test the process_cache method
