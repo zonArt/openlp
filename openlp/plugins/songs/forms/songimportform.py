@@ -99,7 +99,8 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
                 self.format_widgets[song_format]['removeButton'].clicked.connect(self.on_remove_button_clicked)
             else:
                 self.format_widgets[song_format]['browseButton'].clicked.connect(self.on_browse_button_clicked)
-                self.format_widgets[song_format]['file_path_edit'].textChanged.connect(self.on_filepath_edit_text_changed)
+                self.format_widgets[song_format]['file_path_edit'].textChanged.\
+                    connect(self.on_filepath_edit_text_changed)
 
     def add_custom_pages(self):
         """
@@ -163,7 +164,8 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
                 f_label = 'Filename:'
                 if select_mode == SongFormatSelect.SingleFolder:
                     f_label = 'Folder:'
-                self.format_widgets[format_list]['filepathLabel'].setText(translate('SongsPlugin.ImportWizardForm', f_label))
+                self.format_widgets[format_list]['filepathLabel'].setText(
+                    translate('SongsPlugin.ImportWizardForm', f_label))
         for format_list in self.disablable_formats:
             self.format_widgets[format_list]['disabled_label'].setText(SongFormat.get(format_list, 'disabledLabelText'))
         self.progress_page.setTitle(WizardStrings.Importing)
@@ -244,7 +246,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
         if file_names:
             listbox.addItems(file_names)
             Settings().setValue(self.plugin.settings_section + '/last directory import',
-                os.path.split(str(file_names[0]))[0])
+                                os.path.split(str(file_names[0]))[0])
 
     def get_list_of_files(self, list_box):
         """

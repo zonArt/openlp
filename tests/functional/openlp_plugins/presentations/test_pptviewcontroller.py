@@ -30,18 +30,78 @@
 This module contains tests for the pptviewcontroller module of the Presentations plugin.
 """
 import os
+import shutil
+if os.name == 'nt':
+    from ctypes import cdll
+
+from tempfile import mkdtemp
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
 
-from openlp.plugins.presentations.lib.pptviewcontroller import PptviewDocument
+from openlp.plugins.presentations.lib.pptviewcontroller import PptviewDocument, PptviewController
 
+
+class TestPptviewController(TestCase, TestMixin):
+    """
+    Test the PptviewController Class
+    """
 #TODO: Items left to test
 #   PptviewController
-#       __init__
-#       check_availablecheck_installed
 #       start_process(self)
 #       kill
+
+    def setUp(self):
+        """
+        Set up the patches and mocks need for all tests.
+        """
+        self.get_application()
+        self.build_settings()
+        self.mock_plugin = MagicMock()
+        self.temp_folder = mkdtemp()
+        self.mock_plugin.settings_section = self.temp_folder
+
+    def tearDown(self):
+        """
+        Stop the patches
+        """
+        self.destroy_settings()
+        shutil.rmtree(self.temp_folder)
+
+    def constructor_test(self):
+        """
+        Test the Constructor from the PptViewController
+        """
+        # GIVEN: No presentation controller
+        controller = None
+
+        # WHEN: The presentation controller object is created
+        controller = PptviewController(plugin=self.mock_plugin)
+
+        # THEN: The name of the presentation controller should be correct
+        self.assertEqual('Powerpoint Viewer', controller.name,
+                         'The name of the presentation controller should be correct')
+
+    def check_available_test(self):
+        """
+        Test check_available / check_installed
+        """
+        # GIVEN: A mocked dll loader and a controller
+        with patch('ctypes.cdll.LoadLibrary') as mocked_load_library:
+            mocked_process = MagicMock()
+            mocked_process.CheckInstalled.return_value = True
+            mocked_load_library.return_value = mocked_process
+            controller = PptviewController(plugin=self.mock_plugin)
+
+            # WHEN: check_available is called
+            available = controller.check_available()
+
+            # THEN: On windows it should return True, on other platforms False
+            if os.name == 'nt':
+                self.assertTrue(available, 'check_available should return True on windows.')
+            else:
+                self.assertFalse(available, 'check_available should return False when not on windows.')
 
 
 class TestPptviewDocument(TestCase):

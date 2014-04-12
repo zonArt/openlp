@@ -191,7 +191,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_remove_button.setObjectName('song_remove_button')
         self.song_remove_button.setIcon(build_icon(':/songs/song_delete.png'))
         self.song_remove_button.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.song_vertical_layout.addWidget(self.song_remove_button, alignment = QtCore.Qt.AlignHCenter)
+        self.song_vertical_layout.addWidget(self.song_remove_button, alignment=QtCore.Qt.AlignHCenter)
 
     def retranslateUi(self):
         self.song_remove_button.setText('Remove')

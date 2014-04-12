@@ -493,9 +493,9 @@ class SongMediaItem(MediaManagerItem):
             # FIXME: This file seems to be an old one (prior to 1.9.5), which means, that the search title
             # (data_string[u'title']) is probably wrong. We add "@" to search title and hope that we do not add any
             # duplicate. This should work for songs without alternate title.
-            search_results = self.plugin.manager.get_all_objects(Song,
-                Song.search_title == (re.compile(r'\W+', re.UNICODE).sub(' ',
-                item.data_string['title'].strip()) + '@').strip().lower(), Song.search_title.asc())
+            temp = (re.compile(r'\W+', re.UNICODE).sub(' ', item.data_string['title'].strip()) + '@').strip().lower()
+            search_results = \
+                self.plugin.manager.get_all_objects(Song, Song.search_title == temp, Song.search_title.asc())
         else:
             search_results = self.plugin.manager.get_all_objects(
                 Song, Song.search_title == item.data_string['title'], Song.search_title.asc())

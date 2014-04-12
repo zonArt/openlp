@@ -122,7 +122,7 @@ class PowerSongImport(SongImport):
                         parse_error = True
                         self.log_error(os.path.basename(file), str(
                             translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Unexpected byte value.')) %
-                                ps_string)
+                            ps_string)
                         break
                     else:
                         if label == 'TITLE':
@@ -145,7 +145,7 @@ class PowerSongImport(SongImport):
             if not found_copyright:
                 self.log_error(self.title, str(
                     translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "COPYRIGHTLINE" header.')) %
-                        ps_string)
+                    ps_string)
                 continue
             # Check that file had at least one verse
             if not self.verses:

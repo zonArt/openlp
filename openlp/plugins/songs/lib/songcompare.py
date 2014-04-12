@@ -114,7 +114,7 @@ def _remove_typos(diff):
     if len(diff) >= 3:
         for index in range(len(diff) - 3, -1, -1):
             if _op_length(diff[index]) >= MIN_FRAGMENT_SIZE and diff[index + 1][0] != "equal" and \
-                _op_length(diff[index + 1]) <= MAX_TYPO_SIZE and _op_length(diff[index + 2]) >= MIN_FRAGMENT_SIZE:
+                    _op_length(diff[index + 1]) <= MAX_TYPO_SIZE and _op_length(diff[index + 2]) >= MIN_FRAGMENT_SIZE:
                 del diff[index + 1]
     # Remove typo at the end of the string.
     if len(diff) >= 2:

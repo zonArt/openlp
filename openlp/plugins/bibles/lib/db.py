@@ -80,23 +80,20 @@ def init_schema(url):
 
     meta_table = Table('metadata', metadata,
                        Column('key', types.Unicode(255), primary_key=True, index=True),
-                       Column('value', types.Unicode(255)),
-    )
+                       Column('value', types.Unicode(255)),)
 
     book_table = Table('book', metadata,
                        Column('id', types.Integer, primary_key=True),
                        Column('book_reference_id', types.Integer, index=True),
                        Column('testament_reference_id', types.Integer),
-                       Column('name', types.Unicode(50), index=True),
-    )
+                       Column('name', types.Unicode(50), index=True),)
     verse_table = Table('verse', metadata,
                         Column('id', types.Integer, primary_key=True, index=True),
                         Column('book_id', types.Integer, ForeignKey(
                             'book.id'), index=True),
                         Column('chapter', types.Integer, index=True),
                         Column('verse', types.Integer, index=True),
-                        Column('text', types.UnicodeText, index=True),
-    )
+                        Column('text', types.UnicodeText, index=True),)
 
     try:
         class_mapper(BibleMeta)
@@ -157,7 +154,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         if 'path' in kwargs:
             self.path = kwargs['path']
         self.wizard = None
-        Registry().execute('openlp_stop_wizard', self.stop_import)
+        Registry().register_function('openlp_stop_wizard', self.stop_import)
 
     def stop_import(self):
         """
@@ -194,7 +191,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         :param testament: *Defaults to 1.* The testament_reference_id from
             bibles_resources.sqlite of the testament this book belongs to.
         """
-        log.debug('BibleDB.create_book("%s", "%s")', name, bk_ref_id)
+        log.debug('BibleDB.create_book("%s", "%s")' % (name, bk_ref_id))
         book = Book.populate(name=name, book_reference_id=bk_ref_id, testament_reference_id=testament)
         self.save_object(book)
         return book
@@ -205,7 +202,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
 
         :param book: The book object
         """
-        log.debug('BibleDB.update_book("%s")', book.name)
+        log.debug('BibleDB.update_book("%s")' % book.name)
         return self.save_object(book)
 
     def delete_book(self, db_book):
@@ -214,7 +211,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
 
         :param db_book: The book object.
         """
-        log.debug('BibleDB.delete_book("%s")', db_book.name)
+        log.debug('BibleDB.delete_book("%s")' % db_book.name)
         if self.delete_object(Book, db_book.id):
             return True
         return False
@@ -225,9 +222,10 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
 
         :param book_id: The id of the book being appended.
         :param chapter: The chapter number.
-        :param text_list: A dict of the verses to be inserted. The key is the verse number, and the value is the verse text.
+        :param text_list: A dict of the verses to be inserted. The key is the verse number, and the value is the
+        verse text.
         """
-        log.debug('BibleDBcreate_chapter("%s", "%s")', book_id, chapter)
+        log.debug('BibleDBcreate_chapter("%s", "%s")' % (book_id, chapter))
         # Text list has book and chapter as first two elements of the array.
         for verse_number, verse_text in text_list.items():
             verse = Verse.populate(
@@ -269,7 +267,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         """
         if not isinstance(value, str):
             value = str(value)
-        log.debug('BibleDB.save_meta("%s/%s")', key, value)
+        log.debug('BibleDB.save_meta("%s/%s")' % (key, value))
         meta = self.get_object(BibleMeta, key)
         if meta:
             meta.value = value
@@ -283,7 +281,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
 
         :param book: The name of the book to return.
         """
-        log.debug('BibleDB.get_book("%s")', book)
+        log.debug('BibleDB.get_book("%s")' % book)
         return self.get_object_filtered(Book, Book.name.like(book + '%'))
 
     def get_books(self):
@@ -294,17 +292,17 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         log.debug('BibleDB.get_books()')
         return self.get_all_objects(Book, order_by_ref=Book.id)
 
-    def get_book_by_book_ref_id(self, id):
+    def get_book_by_book_ref_id(self, ref_id):
         """
         Return a book object from the database.
 
-        :param id: The reference id of the book to return.
+        :param ref_id: The reference id of the book to return.
         """
-        log.debug('BibleDB.get_book_by_book_ref_id("%s")', id)
-        return self.get_object_filtered(Book, Book.book_reference_id.like(id))
+        log.debug('BibleDB.get_book_by_book_ref_id("%s")' % ref_id)
+        return self.get_object_filtered(Book, Book.book_reference_id.like(ref_id))
 
     def get_book_ref_id_by_name(self, book, maxbooks, language_id=None):
-        log.debug('BibleDB.get_book_ref_id_by_name:("%s", "%s")', book, language_id)
+        log.debug('BibleDB.get_book_ref_id_by_name:("%s", "%s")' % (book, language_id))
         book_id = None
         if BiblesResourcesDB.get_book(book, True):
             book_temp = BiblesResourcesDB.get_book(book, True)
@@ -330,7 +328,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         :param book: The name of the book, according to the selected language.
         :param language_selection:  The language selection the user has chosen in the settings section of the Bible.
         """
-        log.debug('get_book_ref_id_by_localised_name("%s", "%s")', book, language_selection)
+        log.debug('get_book_ref_id_by_localised_name("%s", "%s")' % (book, language_selection))
         from openlp.plugins.bibles.lib import LanguageSelection, BibleStrings
         book_names = BibleStrings().BookNames
         # escape reserved characters
@@ -378,14 +376,14 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
                 [(u'35', 1, 1, 1), (u'35', 2, 2, 3)]
         :param show_error:
         """
-        log.debug('BibleDB.get_verses("%s")', reference_list)
+        log.debug('BibleDB.get_verses("%s")' % reference_list)
         verse_list = []
         book_error = False
         for book_id, chapter, start_verse, end_verse in reference_list:
             db_book = self.get_book_by_book_ref_id(book_id)
             if db_book:
                 book_id = db_book.book_reference_id
-                log.debug('Book name corrected to "%s"', db_book.name)
+                log.debug('Book name corrected to "%s"' % db_book.name)
                 if end_verse == -1:
                     end_verse = self.get_verse_count(book_id, chapter)
                 verses = self.session.query(Verse) \
@@ -397,7 +395,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
                     .all()
                 verse_list.extend(verses)
             else:
-                log.debug('OpenLP failed to find book with id "%s"', book_id)
+                log.debug('OpenLP failed to find book with id "%s"' % book_id)
                 book_error = True
         if book_error and show_error:
             critical_error_message_box(
@@ -416,7 +414,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
             contains spaces, it will split apart and AND'd on the list of
             values.
         """
-        log.debug('BibleDB.verse_search("%s")', text)
+        log.debug('BibleDB.verse_search("%s")' % text)
         verses = self.session.query(Verse)
         if text.find(',') > -1:
             keywords = ['%%%s%%' % keyword.strip() for keyword in text.split(',')]
@@ -435,9 +433,9 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
 
         :param book: The book object to get the chapter count for.
         """
-        log.debug('BibleDB.get_chapter_count("%s")', book.name)
+        log.debug('BibleDB.get_chapter_count("%s")' % book.name)
         count = self.session.query(func.max(Verse.chapter)).join(Book).filter(
-            Book.book_reference_id==book.book_reference_id).scalar()
+            Book.book_reference_id == book.book_reference_id).scalar()
         if not count:
             return 0
         return count
@@ -449,7 +447,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         :param book_ref_id: The book reference id.
         :param chapter: The chapter to get the verse count for.
         """
-        log.debug('BibleDB.get_verse_count("%s", "%s")', book_ref_id, chapter)
+        log.debug('BibleDB.get_verse_count("%s", "%s")' % (book_ref_id, chapter))
         count = self.session.query(func.max(Verse.verse)).join(Book) \
             .filter(Book.book_reference_id == book_ref_id) \
             .filter(Verse.chapter == chapter) \
@@ -563,9 +561,9 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         Return a book by name or abbreviation.
 
         :param name: The name or abbreviation of the book.
-        :param lower: True if the comparsion should be only lowercase
+        :param lower: True if the comparison should be only lowercase
         """
-        log.debug('BiblesResourcesDB.get_book("%s")', name)
+        log.debug('BiblesResourcesDB.get_book("%s")' % name)
         if not isinstance(name, str):
             name = str(name)
         if lower:
@@ -594,7 +592,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
         :param string: The string to search for in the book names or abbreviations.
         """
-        log.debug('BiblesResourcesDB.get_book_like("%s")', string)
+        log.debug('BiblesResourcesDB.get_book_like("%s")' % string)
         if not isinstance(string, str):
             name = str(string)
         books = BiblesResourcesDB.run_sql(
@@ -613,17 +611,17 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             return None
 
     @staticmethod
-    def get_book_by_id(id):
+    def get_book_by_id(book_id):
         """
         Return a book by id.
 
-        :param id: The id of the book.
+        :param book_id: The id of the book.
         """
-        log.debug('BiblesResourcesDB.get_book_by_id("%s")', id)
-        if not isinstance(id, int):
-            id = int(id)
+        log.debug('BiblesResourcesDB.get_book_by_id("%s")' % book_id)
+        if not isinstance(book_id, int):
+            book_id = int(book_id)
         books = BiblesResourcesDB.run_sql(
-            'SELECT id, testament_id, name, abbreviation, chapters FROM book_reference WHERE id = ?', (id, ))
+            'SELECT id, testament_id, name, abbreviation, chapters FROM book_reference WHERE id = ?', (book_id, ))
         if books:
             return {
                 'id': books[0][0],
@@ -643,7 +641,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         :param book_ref_id: The id of a book.
         :param chapter: The chapter number.
         """
-        log.debug('BiblesResourcesDB.get_chapter("%s", "%s")', book_ref_id, chapter)
+        log.debug('BiblesResourcesDB.get_chapter("%s", "%s")' % (book_ref_id, chapter))
         if not isinstance(chapter, int):
             chapter = int(chapter)
         chapters = BiblesResourcesDB.run_sql(
@@ -666,7 +664,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
         :param book_ref_id: The id of the book.
         """
-        log.debug('BiblesResourcesDB.get_chapter_count("%s")', book_ref_id)
+        log.debug('BiblesResourcesDB.get_chapter_count("%s")' % book_ref_id)
         details = BiblesResourcesDB.get_book_by_id(book_ref_id)
         if details:
             return details['chapters']
@@ -680,7 +678,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         :param book_ref_id: The id of the book.
         :param chapter: The number of the chapter.
         """
-        log.debug('BiblesResourcesDB.get_verse_count("%s", "%s")', book_ref_id, chapter)
+        log.debug('BiblesResourcesDB.get_verse_count("%s", "%s")' % (book_ref_id, chapter))
         details = BiblesResourcesDB.get_chapter(book_ref_id, chapter)
         if details:
             return details['verse_count']
@@ -693,7 +691,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
         :param source: The name or abbreviation of the book.
         """
-        log.debug('BiblesResourcesDB.get_download_source("%s")', source)
+        log.debug('BiblesResourcesDB.get_download_source("%s")' % source)
         if not isinstance(source, str):
             source = str(source)
         source = source.title()
@@ -714,12 +712,12 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
         :param source: The source of the web_bible.
         """
-        log.debug('BiblesResourcesDB.get_webbibles("%s")', source)
+        log.debug('BiblesResourcesDB.get_webbibles("%s")' % source)
         if not isinstance(source, str):
             source = str(source)
         source = BiblesResourcesDB.get_download_source(source)
-        bibles = BiblesResourcesDB.run_sql('SELECT id, name, abbreviation, '
-            'language_id, download_source_id FROM webbibles WHERE download_source_id = ?', (source['id'],))
+        bibles = BiblesResourcesDB.run_sql('SELECT id, name, abbreviation, language_id, download_source_id '
+                                           'FROM webbibles WHERE download_source_id = ?', (source['id'],))
         if bibles:
             return [{
                 'id': bible[0],
@@ -739,7 +737,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         :param abbreviation: The abbreviation of the web_bible.
         :param source: The source of the web_bible.
         """
-        log.debug('BiblesResourcesDB.get_webbibles("%s", "%s")', abbreviation, source)
+        log.debug('BiblesResourcesDB.get_webbibles("%s", "%s")' % (abbreviation, source))
         if not isinstance(abbreviation, str):
             abbreviation = str(abbreviation)
         if not isinstance(source, str):
@@ -767,7 +765,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         :param name: The name to search the id.
         :param language_id: The language_id for which language should be searched
         """
-        log.debug('BiblesResourcesDB.get_alternative_book_name("%s", "%s")', name, language_id)
+        log.debug('BiblesResourcesDB.get_alternative_book_name("%s", "%s")' % (name, language_id))
         if language_id:
             books = BiblesResourcesDB.run_sql(
                 'SELECT book_reference_id, name FROM alternative_book_names WHERE language_id = ? ORDER BY id',
@@ -786,7 +784,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
         :param name: The name or abbreviation of the language.
         """
-        log.debug('BiblesResourcesDB.get_language("%s")', name)
+        log.debug('BiblesResourcesDB.get_language("%s")' % name)
         if not isinstance(name, str):
             name = str(name)
         language = BiblesResourcesDB.run_sql(
@@ -824,10 +822,9 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         log.debug('BiblesResourcesDB.get_testament_reference()')
         testaments = BiblesResourcesDB.run_sql('SELECT id, name FROM testament_reference ORDER BY id')
         return [
-            {
-            'id': testament[0],
-            'name': str(testament[1])
-            }
+            {'id': testament[0],
+             'name': str(testament[1])
+             }
             for testament in testaments
         ]
 
@@ -883,7 +880,7 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         :param name: The name to search the id.
         :param language_id: The language_id for which language should be searched
         """
-        log.debug('AlternativeBookNamesDB.get_book_reference_id("%s", "%s")', name, language_id)
+        log.debug('AlternativeBookNamesDB.get_book_reference_id("%s", "%s")' % (name, language_id))
         if language_id:
             books = AlternativeBookNamesDB.run_sql(
                 'SELECT book_reference_id, name FROM alternative_book_names WHERE language_id = ?', (language_id, ))
@@ -904,8 +901,8 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         :param book_reference_id: The book_reference_id of the book.
         :param language_id: The language to which the alternative book name belong.
         """
-        log.debug('AlternativeBookNamesDB.create_alternative_book_name("%s", "%s", "%s")',
-                  name, book_reference_id, language_id)
+        log.debug('AlternativeBookNamesDB.create_alternative_book_name("%s", "%s", "%s")' %
+                  (name, book_reference_id, language_id))
         return AlternativeBookNamesDB.run_sql(
             'INSERT INTO alternative_book_names(book_reference_id, language_id, name) '
             'VALUES (?, ?, ?)', (book_reference_id, language_id, name), True)
@@ -934,7 +931,7 @@ class OldBibleDB(QtCore.QObject, Manager):
         QtCore.QObject.__init__(self)
         if 'path' not in kwargs:
             raise KeyError('Missing keyword argument "path".')
-        if  'file' not in kwargs:
+        if 'file' not in kwargs:
             raise KeyError('Missing keyword argument "file".')
         if 'path' in kwargs:
             self.path = kwargs['path']

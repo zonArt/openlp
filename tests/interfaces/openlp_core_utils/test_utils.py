@@ -86,4 +86,3 @@ class TestUtils(TestCase, TestMixin):
 
         # THEN the result is false
         assert result is True, 'The file is not an image file so the test should return True'
-

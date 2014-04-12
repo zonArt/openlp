@@ -132,7 +132,8 @@ class PdfController(PresentationController):
                 DEVNULL = open(os.devnull, 'wb')
                 # First try to find mupdf
                 try:
-                    self.mudrawbin = check_output(['which', 'mudraw'], stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
+                    self.mudrawbin = check_output(['which', 'mudraw'],
+                                                  stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
                 except CalledProcessError:
                     self.mudrawbin = ''
                 # if mupdf isn't installed, fallback to ghostscript
@@ -192,7 +193,8 @@ class PdfDocument(PresentationDocument):
         :return: The resolution dpi to be used.
         """
         # Use a postscript script to get size of the pdf. It is assumed that all pages have same size
-        gs_resolution_script = AppLocation.get_directory(AppLocation.PluginsDir) + '/presentations/lib/ghostscript_get_resolution.ps'
+        gs_resolution_script = AppLocation.get_directory(
+            AppLocation.PluginsDir) + '/presentations/lib/ghostscript_get_resolution.ps'
         # Run the script on the pdf to get the size
         runlog = []
         try:

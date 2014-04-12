@@ -108,4 +108,3 @@ class TestFormattingTags(TestCase):
 
             # THEN: The lists should now be identical.
             assert old_tags_list == FormattingTags.get_html_tags(), 'The lists should be identical.'
-

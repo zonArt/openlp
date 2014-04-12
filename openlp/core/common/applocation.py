@@ -76,7 +76,7 @@ class AppLocation(object):
         elif dir_type == AppLocation.PluginsDir:
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
             return get_frozen_path(os.path.join(app_path, 'plugins'),
-                os.path.join(os.path.split(openlp.__file__)[0], 'plugins'))
+                                   os.path.join(os.path.split(openlp.__file__)[0], 'plugins'))
         elif dir_type == AppLocation.VersionDir:
             return get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
         elif dir_type == AppLocation.LanguageDir:

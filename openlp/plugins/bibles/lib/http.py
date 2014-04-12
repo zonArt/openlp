@@ -32,7 +32,9 @@ The :mod:`http` module enables OpenLP to retrieve scripture from bible websites.
 import logging
 import re
 import socket
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 from html.parser import HTMLParseError
 
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -487,7 +489,7 @@ class HTTPBible(BibleDB, RegistryProperties):
                       (self.download_source, self.download_name))
             return False
         self.wizard.progress_bar.setMaximum(len(books) + 2)
-        self.wizard.increment_progress_bar(translate( 'BiblesPlugin.HTTPBible', 'Registering Language...'))
+        self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible', 'Registering Language...'))
         bible = BiblesResourcesDB.get_webbible(self.download_name, self.download_source.lower())
         if bible['language_id']:
             language_id = bible['language_id']

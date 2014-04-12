@@ -32,6 +32,7 @@ from PyQt4 import QtGui, QtCore
 from ctypes import *
 from ctypes.wintypes import RECT
 
+
 class PPTViewer(QtGui.QWidget):
     """
     Standalone Test Harness for the pptviewlib library
@@ -169,16 +170,16 @@ class PPTViewer(QtGui.QWidget):
         app.processEvents()
 
     def openClick(self):
-        oldid = self.pptid;
+        oldid = self.pptid
         rect = RECT(int(self.xEdit.text()), int(self.yEdit.text()),
-            int(self.widthEdit.text()), int(self.heightEdit.text()))
+                    int(self.widthEdit.text()), int(self.heightEdit.text()))
         filename = str(self.pptEdit.text().replace('/', '\\'))
         folder = str(self.folderEdit.text().replace('/', '\\'))
         print(filename, folder)
         self.pptid = self.pptdll.OpenPPT(filename, None, rect, folder)
         print('id: ' + str(self.pptid))
         if oldid >= 0:
-            self.pptdll.ClosePPT(oldid);
+            self.pptdll.ClosePPT(oldid)
         slides = self.pptdll.GetSlideCount(self.pptid)
         print('slidecount: ' + str(slides))
         self.total.setNum(self.pptdll.GetSlideCount(self.pptid))
@@ -201,8 +202,7 @@ class PPTViewer(QtGui.QWidget):
         app.processEvents()
 
     def openDialog(self):
-        self.pptEdit.setText(QtGui.QFileDialog.getOpenFileName(self,
-            'Open file'))
+        self.pptEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 'Open file'))
 
 if __name__ == '__main__':
     pptdll = cdll.LoadLibrary(r'pptviewlib.dll')

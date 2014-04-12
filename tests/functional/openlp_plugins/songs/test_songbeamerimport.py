@@ -66,7 +66,7 @@ class TestSongBeamerImport(TestCase):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
-            importer = SongBeamerImport(mocked_manager)
+            importer = SongBeamerImport(mocked_manager, filenames=[])
 
             # THEN: The importer object should not be None
             self.assertIsNotNone(importer, 'Import should not be none')
@@ -79,7 +79,7 @@ class TestSongBeamerImport(TestCase):
         with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
-            importer = SongBeamerImport(mocked_manager)
+            importer = SongBeamerImport(mocked_manager, filenames=[])
             importer.import_wizard = mocked_import_wizard
             importer.stop_import_flag = True
 
@@ -100,7 +100,7 @@ class TestSongBeamerImport(TestCase):
         with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
-            importer = SongBeamerImport(mocked_manager)
+            importer = SongBeamerImport(mocked_manager, filenames=[])
             importer.import_wizard = mocked_import_wizard
             importer.stop_import_flag = True
 
@@ -110,7 +110,7 @@ class TestSongBeamerImport(TestCase):
             # THEN: do_import should return none and the progress bar setMaximum should be called with the length of
             #       import_source.
             self.assertIsNone(importer.do_import(),
-                'do_import should return None when import_source is a list and stop_import_flag is True')
+                              'do_import should return None when import_source is a list and stop_import_flag is True')
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(len(importer.import_source))
 
     def file_import_test(self):
@@ -127,7 +127,7 @@ class TestSongBeamerImport(TestCase):
                 mocked_add_verse = MagicMock()
                 mocked_finish = MagicMock()
                 mocked_finish.return_value = True
-                importer = SongBeamerImport(mocked_manager)
+                importer = SongBeamerImport(mocked_manager, filenames=[])
                 importer.import_wizard = mocked_import_wizard
                 importer.stop_import_flag = False
                 importer.add_verse = mocked_add_verse
@@ -147,9 +147,9 @@ class TestSongBeamerImport(TestCase):
                 for verse_text, verse_tag in add_verse_calls:
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if song_book_name:
-                    self.assertEquals(importer.song_book_name, song_book_name, 'song_book_name for %s should be "%s"'
-                        % (song_file, song_book_name))
+                    self.assertEquals(importer.song_book_name, song_book_name, 'song_book_name for %s should be "%s"' %
+                                                                               (song_file, song_book_name))
                 if song_number:
-                    self.assertEquals(importer.song_number, song_number, 'song_number for %s should be %s'
-                        % (song_file, song_number))
+                    self.assertEquals(importer.song_number, song_number, 'song_number for %s should be %s' %
+                                                                         (song_file, song_number))
                 mocked_finish.assert_called_with()

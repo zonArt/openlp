@@ -34,6 +34,7 @@ if os.name == 'nt':
     from ctypes import cdll
     from ctypes.wintypes import RECT
 
+from openlp.core.utils import AppLocation
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
 
@@ -85,8 +86,8 @@ class PptviewController(PresentationController):
             if self.process:
                 return
             log.debug('start PPTView')
-            dll_path = os.path.join(
-                self.plugin_manager.base_path, 'presentations', 'lib', 'pptviewlib', 'pptviewlib.dll')
+            dll_path = os.path.join(AppLocation.get_directory(AppLocation.AppDir),
+                                    'plugins', 'presentations', 'lib', 'pptviewlib', 'pptviewlib.dll')
             self.process = cdll.LoadLibrary(dll_path)
             if log.isEnabledFor(logging.DEBUG):
                 self.process.SetDebug(1)
