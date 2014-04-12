@@ -38,7 +38,7 @@ import traceback
 
 from PyQt4 import QtCore
 
-log = logging.getLogger(__name__+'.__init__')
+log = logging.getLogger(__name__ + '.__init__')
 
 
 FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')

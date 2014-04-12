@@ -394,12 +394,12 @@ class Ui_MainWindow(object):
         self.settings_shortcuts_item.setText(translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
         self.formatting_tag_item.setText(translate('OpenLP.MainWindow', 'Configure &Formatting Tags...'))
         self.settings_configure_item.setText(translate('OpenLP.MainWindow', '&Configure OpenLP...'))
-        self.settings_export_item.setStatusTip(translate('OpenLP.MainWindow',
-                                               'Export OpenLP settings to a specified *.config file'))
+        self.settings_export_item.setStatusTip(
+            translate('OpenLP.MainWindow', 'Export OpenLP settings to a specified *.config file'))
         self.settings_export_item.setText(translate('OpenLP.MainWindow', 'Settings'))
-        self.settings_import_item.setStatusTip(translate('OpenLP.MainWindow',
-                                               'Import OpenLP settings from a specified *.config file previously '
-                                               'exported on this or another machine'))
+        self.settings_import_item.setStatusTip(
+            translate('OpenLP.MainWindow', 'Import OpenLP settings from a specified *.config file previously '
+                                           'exported on this or another machine'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
         self.view_media_manager_item.setText(translate('OpenLP.MainWindow', '&Media Manager'))
         self.view_media_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Media Manager'))
@@ -860,7 +860,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 section = 'general'
                 section_key = section + "/" + key
             # Make sure it's a valid section for us.
-            if not section in setting_sections:
+            if section not in setting_sections:
                 continue
         # We have a good file, import it.
         for section_key in import_keys:
