@@ -216,6 +216,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             if not self.media_controller.media_length(service_item):
                 return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
+        service_item.add_capability(ItemCapabilities.CanEditTitle)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         if Settings().value(self.settings_section + '/media auto start') == QtCore.Qt.Checked:
             service_item.will_auto_start = True

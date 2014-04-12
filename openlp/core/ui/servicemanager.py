@@ -234,6 +234,8 @@ class Ui_ServiceManager(object):
         self.menu = QtGui.QMenu()
         self.edit_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Edit Item'),
                                                 icon=':/general/general_edit.png', triggers=self.remote_edit)
+        self.rename_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Rename...'),
+                                                  icon=':/general/general_edit.png', triggers=self.on_service_item_rename)
         self.maintain_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
                                                     icon=':/general/general_edit.png',
                                                     triggers=self.on_service_item_edit_form)
@@ -848,6 +850,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             pos = item.data(0, QtCore.Qt.UserRole)
         service_item = self.service_items[pos - 1]
         self.edit_action.setVisible(False)
+        self.rename_action.setVisible(False)
         self.create_custom_action.setVisible(False)
         self.maintain_action.setVisible(False)
         self.notes_action.setVisible(False)
@@ -855,6 +858,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         self.auto_start_action.setVisible(False)
         if service_item['service_item'].is_capable(ItemCapabilities.CanEdit) and service_item['service_item'].edit_id:
             self.edit_action.setVisible(True)
+        if service_item['service_item'].is_capable(ItemCapabilities.CanEditTitle):
+            self.rename_action.setVisible(True)
         if service_item['service_item'].is_capable(ItemCapabilities.CanMaintain):
             self.maintain_action.setVisible(True)
         if item.parent() is None:
@@ -1481,6 +1486,22 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 on_remote_edit(self.service_items[item]['service_item'].edit_id)
             if new_item:
                 self.add_service_item(new_item, replace=True)
+
+    def on_service_item_rename(self):
+        """
+        Opens a dialog to rename the service item.
+        """
+        item = self.find_service_item()[0]
+        if not self.service_items[item]['service_item'].is_capable(ItemCapabilities.CanEditTitle):
+            return
+        title = self.service_items[item]['service_item'].title
+        title, ok = QtGui.QInputDialog.getText(self, translate('OpenLP.ServiceManager', 'Rename item title'),
+                                               translate('OpenLP.ServiceManager', 'Title:'),
+                                               QtGui.QLineEdit.Normal, self.trUtf8(title))
+        if ok:
+            self.service_items[item]['service_item'].title = title
+            self.repaint_service_list(item, -1)
+            self.set_modified()
 
     def create_custom(self, field=None):
         """
