@@ -1039,7 +1039,6 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.preview_widget.change_slide(row)
         self.update_preview()
-        Registry().execute('slidecontroller_%s_changed' % self.type_prefix, row)
 
     def update_preview(self):
         """

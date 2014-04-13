@@ -313,6 +313,7 @@ class TestServiceManager(TestCase, TestMixin):
             self.service_manager.notes_action.setVisible = MagicMock()
             self.service_manager.time_action.setVisible = MagicMock()
             self.service_manager.auto_start_action.setVisible = MagicMock()
+            self.service_manager.rename_action.setVisible = MagicMock()
 
             # WHEN: Show the context menu.
             self.service_manager.context_menu(q_point)
@@ -329,6 +330,8 @@ class TestServiceManager(TestCase, TestMixin):
                 'The action should be set invisible.'
             self.service_manager.auto_start_action.setVisible.assert_called_with(True), \
                 'The action should be set visible.'
+            self.service_manager.rename_action.setVisible.assert_called_once_with(False), \
+                'The action should be set invisible.'
 
     def click_on_new_service_test(self):
         """
