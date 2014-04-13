@@ -68,6 +68,16 @@ class OpenLPJobs(object):
     Jobs = [Branch_Pull, Branch_Functional, Branch_Interface, Branch_Windows, Branch_PEP]
 
 
+class Colour(object):
+    """
+    This class holds values which can be used to print coloured text.
+    """
+    RED_START = '\033[1;31m'
+    RED_END = '\033[1;m'
+    GREEN_START = '\033[1;32m'
+    GREEN_END = '\033[1;m'
+
+
 class JenkinsTrigger(object):
     def __init__(self, token):
         """
@@ -125,7 +135,12 @@ class JenkinsTrigger(object):
             time.sleep(1)
         build = job.last_build
         build.wait()
-        result_string = build.info['result']
+        if build.info['result'] == 'SUCCESS':
+            # Make 'SUCCESS' green.
+            result_string = '%s%s%s' % (Colour.GREEN_START, build.info['result'], Colour.GREEN_END)
+        else:
+            # Make 'FAILURE' red.
+            result_string = '%s%s%s' % (Colour.RED_START, build.info['result'], Colour.RED_END)
         url = build.info['url']
         print('[%s] %s' % (result_string, url))
 
