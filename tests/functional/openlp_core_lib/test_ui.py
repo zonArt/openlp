@@ -88,7 +88,7 @@ class TestUi(TestCase):
         """
         # GIVEN: A dialog
         dialog = QtGui.QDialog()
-        
+
         # WHEN: We create the button
         btn = create_button(dialog, 'my_btn')
 
@@ -120,7 +120,7 @@ class TestUi(TestCase):
         """
         # GIVEN: A dialog
         dialog = QtGui.QDialog()
-        
+
         # WHEN: We create the widgets
         label, combo = create_valign_selection_widgets(dialog)
 
