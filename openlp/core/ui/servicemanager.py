@@ -235,7 +235,8 @@ class Ui_ServiceManager(object):
         self.edit_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Edit Item'),
                                                 icon=':/general/general_edit.png', triggers=self.remote_edit)
         self.rename_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Rename...'),
-                                                  icon=':/general/general_edit.png', triggers=self.on_service_item_rename)
+                                                  icon=':/general/general_edit.png',
+                                                  triggers=self.on_service_item_rename)
         self.maintain_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
                                                     icon=':/general/general_edit.png',
                                                     triggers=self.on_service_item_edit_form)

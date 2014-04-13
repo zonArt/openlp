@@ -46,18 +46,16 @@ from openlp.plugins.songs.lib.songcompare import songs_probably_equal
 log = logging.getLogger(__name__)
 
 
-class SongIterator(object):
+def song_generator(songs):
     """
-    This class implements an iterator for the song duplicate finder. The iterator returns a tuple of two songs. When
-    completely iterated then all songs have once been returned combined with any other songs.
-    """
-    def __init__(self, songs):
-        self.songs = songs
+    This is a generator function to return tuples of two songs. When completed then all songs have once been returned
+    combined with any other songs.
 
-    def __iter__(self):
-        for outer_song_counter in range(len(self.songs) - 1):
-            for inner_song_counter in range(outer_song_counter + 1, len(self.songs)):
-                yield (self.songs[outer_song_counter], self.songs[inner_song_counter])
+    :param songs: All songs in the database.
+    """
+    for outer_song_counter in range(len(songs) - 1):
+        for inner_song_counter in range(outer_song_counter + 1, len(songs)):
+            yield (songs[outer_song_counter], songs[inner_song_counter])
 
 
 class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
@@ -185,8 +183,7 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
                 # Create a worker/process pool to check the songs.
                 process_number = max(1, multiprocessing.cpu_count() - 1)
                 pool = multiprocessing.Pool(process_number)
-                song_list = SongIterator(songs)
-                result = pool.imap_unordered(songs_probably_equal, song_list, 30)
+                result = pool.imap_unordered(songs_probably_equal, song_generator(songs), 30)
                 # Do not accept any further tasks. Also this closes the processes if all tasks are done.
                 pool.close()
                 # While the processes are still working, start to look at the results.
