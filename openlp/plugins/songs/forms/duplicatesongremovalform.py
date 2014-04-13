@@ -200,6 +200,7 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
                     duplicate_added = self.add_duplicates_to_song_list(song1, song2)
                     if duplicate_added:
                         self.found_duplicates_edit.appendPlainText(song1.title + "  =  " + song2.title)
+                self.review_total_count = len(self.duplicate_song_list)
                 if self.duplicate_song_list:
                     self.button(QtGui.QWizard.NextButton).show()
                 else:
