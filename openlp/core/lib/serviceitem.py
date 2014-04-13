@@ -108,6 +108,9 @@ class ItemCapabilities(object):
     ``CanAutoStartForLive``
             The capability to ignore the do not play if display blank flag.
 
+    ``CanEditTitle``
+            The capability to edit the title of the item
+
     """
     CanPreview = 1
     CanEdit = 2
@@ -125,6 +128,7 @@ class ItemCapabilities(object):
     CanWordSplit = 14
     HasBackgroundAudio = 15
     CanAutoStartForLive = 16
+    CanEditTitle = 17
 
 
 class ServiceItem(RegistryProperties):
@@ -423,7 +427,7 @@ class ServiceItem(RegistryProperties):
         """
         Returns the title of the service item.
         """
-        if self.is_text():
+        if self.is_text() or ItemCapabilities.CanEditTitle in self.capabilities:
             return self.title
         else:
             if len(self._raw_frames) > 1:
