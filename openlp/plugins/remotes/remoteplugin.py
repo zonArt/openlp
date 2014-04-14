@@ -30,6 +30,8 @@
 import logging
 import time
 
+from PyQt4 import QtGui
+
 from openlp.core.lib import Plugin, StringContent, translate, build_icon
 from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
 
@@ -67,6 +69,13 @@ class RemotesPlugin(Plugin):
         log.debug('initialise')
         super(RemotesPlugin, self).initialise()
         self.server = OpenLPServer()
+        self.default_theme_label = QtGui.QToolButton(self.main_window.status_bar)
+        self.default_theme_label.setCheckable(False)
+        self.default_theme_label.setAutoRaise(True)
+        self.default_theme_label.setObjectName('default_theme_label')
+        self.main_window.status_bar.insertPermanentWidget(2, self.default_theme_label)
+        self.default_theme_label.hide()
+        self.server.default_theme_label = self.default_theme_label
 
     def finalise(self):
         """
@@ -108,5 +117,5 @@ class RemotesPlugin(Plugin):
         """
         log.debug('remote config changed')
         self.finalise()
-        time.sleep(0.5)
+        time.sleep(1)
         self.initialise()

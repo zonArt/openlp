@@ -38,9 +38,10 @@ import os
 import logging
 import time
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation, Settings
+from openlp.core.common import AppLocation, Settings, RegistryProperties
+from openlp.core.lib import build_icon
 
 from openlp.plugins.remotes.lib import HttpRouter
 
@@ -95,12 +96,13 @@ class HttpThread(QtCore.QThread):
         self.http_server.start_server()
 
 
-class OpenLPServer():
+class OpenLPServer(RegistryProperties):
     def __init__(self):
         """
         Initialise the http server, and start the server of the correct type http / https
         """
-        log.debug('Initialise httpserver')
+        super(OpenLPServer, self).__init__()
+        log.debug('Initialise OpenLP')
         self.settings_section = 'remotes'
         self.http_thread = HttpThread(self)
         self.http_thread.start()
@@ -112,24 +114,46 @@ class OpenLPServer():
         address = Settings().value(self.settings_section + '/ip address')
         if Settings().value(self.settings_section + '/https enabled'):
             port = Settings().value(self.settings_section + '/https port')
-            self.httpd = HTTPSServer((address, port), CustomHandler)
-            log.debug('Started ssl httpd...')
+            self.start_server_instance(address, port, HTTPSServer)
         else:
             port = Settings().value(self.settings_section + '/port')
-            loop = 1
-            while loop < 3:
-                try:
-                    self.httpd = ThreadingHTTPServer((address, port), CustomHandler)
-                except OSError:
-                    loop += 1
-                    time.sleep(0.1)
-                except:
-                    log.error('Failed to start server ')
-            log.debug('Started non ssl httpd...')
+            self.start_server_instance(address, port, ThreadingHTTPServer)
         if hasattr(self, 'httpd') and self.httpd:
             self.httpd.serve_forever()
+            icon = QtGui.QImage(':/remote/network_server.png')
+            icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            overlay = QtGui.QImage(':/remote/network_ssl.png')
+            overlay = overlay.scaled(40, 40, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            painter = QtGui.QPainter(icon)
+            painter.drawImage(0, 0, overlay)
+            painter.end()
+            print("Hi")
+            self.default_theme_label.setText("hello")
+            self.default_theme_label.setIcon(build_icon(icon))
+            self.default_theme_label.show()
         else:
             log.debug('Failed to start server')
+
+    def start_server_instance(self, address, port, server_class):
+        """
+        Start the server
+
+        :param address: The server address
+        :param port: The run port
+        :param server_class: the class to start
+        """
+        loop = 1
+        while loop < 4:
+            try:
+                self.httpd = server_class((address, port), CustomHandler)
+                log.debug("Server started for class %s %s %d" % (server_class, address, port))
+            except OSError:
+                log.debug("failed to start http server thread state %d %s" %
+                          (loop, self.http_thread.isRunning() is True))
+                loop += 1
+                time.sleep(0.1)
+            except:
+                log.error('Failed to start server ')
 
     def stop_server(self):
         """
