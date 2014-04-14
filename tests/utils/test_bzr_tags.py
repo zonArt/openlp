@@ -29,6 +29,7 @@
 """
 Package to test for proper bzr tags.
 """
+import os
 
 from unittest import TestCase
 
@@ -63,11 +64,12 @@ class TestBzrTags(TestCase):
         Test for proper bzr tags
         """
         # GIVEN: A bzr branch
+        path = os.path.dirname(__file__)
 
         # WHEN getting the branches tags
-        bzr = Popen(('bzr', 'tags'), stdout=PIPE)
+        bzr = Popen(('bzr', 'tags', '--directory=' + path), stdout=PIPE)
         stdout = bzr.communicate()[0]
         tags = [line.decode('utf-8').split() for line in stdout.splitlines()]
 
         # THEN the tags should match the accepted tags
-        self.assertEqual(TAGS, tags, 'List of tags should match')
+        self.assertEqual(TAGS, tags, path)
