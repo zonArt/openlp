@@ -38,7 +38,7 @@ import traceback
 
 from PyQt4 import QtCore
 
-log = logging.getLogger(__name__+'.__init__')
+log = logging.getLogger(__name__ + '.__init__')
 
 
 FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
@@ -51,8 +51,10 @@ def trace_error_handler(logger):
 
     :param logger: logger to use so traceback is logged to correct class
     """
+    log_string = "OpenLP Error trace"
     for tb in traceback.extract_stack():
-        logger.error('Called by ' + tb[3] + ' at line ' + str(tb[1]) + ' in ' + tb[0])
+        log_string = '%s\n   File %s at line %d \n\t called %s' % (log_string, tb[0], tb[1], tb[3])
+    logger.error(log_string)
 
 
 def check_directory_exists(directory, do_not_log=False):
@@ -74,6 +76,9 @@ def check_directory_exists(directory, do_not_log=False):
 def get_frozen_path(frozen_option, non_frozen_option):
     """
     Return a path based on the system status.
+
+    :param frozen_option:
+    :param non_frozen_option:
     """
     if hasattr(sys, 'frozen') and sys.frozen == 1:
         return frozen_option

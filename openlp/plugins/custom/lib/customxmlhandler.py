@@ -51,7 +51,7 @@ from lxml import etree, objectify
 log = logging.getLogger(__name__)
 
 
-#TODO: These classes need to be refactored into a single class.
+# TODO: These classes need to be refactored into a single class.
 class CustomXMLBuilder(object):
     """
     This class builds the XML used to describe songs.

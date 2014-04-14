@@ -69,4 +69,3 @@ class TestTheme(TestCase):
                         'The theme should have a font_footer_name of Arial')
         self.assertTrue(default_theme.font_main_bold is False, 'The theme should have a font_main_bold of false')
         self.assertTrue(len(default_theme.__dict__) == 47, 'The theme should have 47 variables')
-

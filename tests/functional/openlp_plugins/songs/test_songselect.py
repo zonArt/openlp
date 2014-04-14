@@ -352,7 +352,7 @@ class TestSongSelect(TestCase):
         """
         # GIVEN: A song to save, and some mocked out objects
         with patch('openlp.plugins.songs.lib.songselect.clean_song') as mocked_clean_song, \
-                    patch('openlp.plugins.songs.lib.songselect.Author') as MockedAuthor:
+                patch('openlp.plugins.songs.lib.songselect.Author') as MockedAuthor:
             song_dict = {
                 'title': 'Arky Arky',
                 'authors': ['Public Domain'],

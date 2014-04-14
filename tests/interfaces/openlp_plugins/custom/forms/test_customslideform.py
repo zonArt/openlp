@@ -92,4 +92,3 @@ class TestEditCustomSlideForm(TestCase, TestMixin):
 
             # THEN: The dialog should have focus.
             mocked_set_focus.assert_called_with()
-

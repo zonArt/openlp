@@ -119,4 +119,3 @@ class TestRegistry(TestCase):
 
     def dummy_function_2(self):
         return "function_2"
-

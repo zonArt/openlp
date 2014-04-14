@@ -27,50 +27,47 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.ui.formattingtagsform package.
+Package to test for proper bzr tags.
 """
+
 from unittest import TestCase
 
-from tests.functional import MagicMock, patch
+from subprocess import Popen, PIPE
 
-from openlp.core.ui.formattingtagform import FormattingTagForm
+TAGS = [
+    ['1.9.0', '1'],
+    ['1.9.1', '775'],
+    ['1.9.2', '890'],
+    ['1.9.3', '1063'],
+    ['1.9.4', '1196'],
+    ['1.9.5', '1421'],
+    ['1.9.6', '1657'],
+    ['1.9.7', '1761'],
+    ['1.9.8', '1856'],
+    ['1.9.9', '1917'],
+    ['1.9.10', '2003'],
+    ['1.9.11', '2039'],
+    ['1.9.12', '2063'],
+    ['2.0', '2118'],
+    ['2.0.1', '?'],
+    ['2.0.2', '?'],
+    ['2.0.3', '?'],
+    ['2.1.0', '2119']
+]
 
-# TODO: Tests Still TODO
-# __init__
-# exec_
-# on_new_clicked
-# on_delete_clicked
-# on_saved_clicked
-# _reloadTable
 
+class TestBzrTags(TestCase):
 
-class TestFormattingTagForm(TestCase):
-
-    def setUp(self):
-        self.init_patcher = patch('openlp.core.ui.formattingtagform.FormattingTagForm.__init__')
-        self.qdialog_patcher = patch('openlp.core.ui.formattingtagform.QtGui.QDialog')
-        self.ui_formatting_tag_dialog_patcher = patch('openlp.core.ui.formattingtagform.Ui_FormattingTagDialog')
-        self.mocked_init = self.init_patcher.start()
-        self.mocked_qdialog = self.qdialog_patcher.start()
-        self.mocked_ui_formatting_tag_dialog = self.ui_formatting_tag_dialog_patcher.start()
-        self.mocked_init.return_value = None
-
-    def tearDown(self):
-        self.init_patcher.stop()
-        self.qdialog_patcher.stop()
-        self.ui_formatting_tag_dialog_patcher.stop()
-
-    def test_on_text_edited(self):
+    def bzr_tags_test(self):
         """
-        Test that the appropriate actions are preformed when on_text_edited is called
+        Test for proper bzr tags
         """
+        # GIVEN: A bzr branch
 
-        # GIVEN: An instance of the Formatting Tag Form and a mocked save_push_button
-        form = FormattingTagForm()
-        form.save_button = MagicMock()
+        # WHEN getting the branches tags
+        bzr = Popen(('bzr', 'tags'), stdout=PIPE)
+        stdout = bzr.communicate()[0]
+        tags = [line.decode('utf-8').split() for line in stdout.splitlines()]
 
-        # WHEN: on_text_edited is called with an arbitrary value
-        #form.on_text_edited('text')
-
-        # THEN: setEnabled and setDefault should have been called on save_push_button
-        #form.save_button.setEnabled.assert_called_with(True)
+        # THEN the tags should match the accepted tags
+        self.assertEqual(TAGS, tags, 'List of tags should match')

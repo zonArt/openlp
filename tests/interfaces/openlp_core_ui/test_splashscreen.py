@@ -27,40 +27,34 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Functional tests to test the AppLocation class and related methods.
+Test the openlp.core.ui.splashscreen class.
 """
-
 from unittest import TestCase
 
-from openlp.core.common import de_hump
+from PyQt4 import QtGui
+
+from openlp.core.ui import SplashScreen
+from tests.helpers.testmixin import TestMixin
 
 
-class TestInitFunctions(TestCase):
-    """
-    A test suite to test out various functions in the __init__ class.
-    """
-    def de_hump_conversion_test(self):
+class TestSplashScreen(TestCase, TestMixin):
+    def setUp(self):
+        self.get_application()
+        self.main_window = QtGui.QMainWindow()
+
+    def tearDown(self):
         """
-        Test the de_hump function with a class name
+        Delete all the C++ objects at the end so that we don't have a segfault
         """
-        # GIVEN: a Class name in Camel Case
-        string = "MyClass"
+        del self.app
+        del self.main_window
 
-        # WHEN: we call de_hump
-        new_string = de_hump(string)
-
-        # THEN: the new string should be converted to python format
-        self.assertTrue(new_string == "my_class", 'The class name should have been converted')
-
-    def de_hump_static_test(self):
+    def setupUi_test(self):
         """
-        Test the de_hump function with a python string
+        Test if the setupUi method....
         """
-        # GIVEN: a Class name in Camel Case
-        string = "my_class"
+        # GIVEN: A splash screen instance.
+        splash = SplashScreen()
 
-        # WHEN: we call de_hump
-        new_string = de_hump(string)
-
-        # THEN: the new string should be converted to python format
-        self.assertTrue(new_string == "my_class", 'The class name should have been preserved')
+        # THEN: Check if the splash has a setupUi method.
+        assert hasattr(splash, 'setupUi'), 'The Splash Screen should have a setupUi() method.'

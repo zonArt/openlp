@@ -28,15 +28,15 @@
 ###############################################################################
 
 """
-The :mod:`http` module contains the API web server. This is a lightweight web
-server used by remotes to interact with OpenLP. It uses JSON to communicate with
-the remotes.
+The :mod:`http` module contains the API web server. This is a lightweight web server used by remotes to interact
+with OpenLP. It uses JSON to communicate with the remotes.
 """
 
 import ssl
 import socket
 import os
 import logging
+import time
 
 from PyQt4 import QtCore
 
@@ -53,8 +53,8 @@ log = logging.getLogger(__name__)
 class CustomHandler(BaseHTTPRequestHandler, HttpRouter):
     """
     Stateless session handler to handle the HTTP request and process it.
-    This class handles just the overrides to the base methods and the logic to invoke the
-    methods within the HttpRouter class.
+    This class handles just the overrides to the base methods and the logic to invoke the methods within the HttpRouter
+    class.
     DO not try change the structure as this is as per the documentation.
     """
 
@@ -116,9 +116,20 @@ class OpenLPServer():
             log.debug('Started ssl httpd...')
         else:
             port = Settings().value(self.settings_section + '/port')
-            self.httpd = ThreadingHTTPServer((address, port), CustomHandler)
+            loop = 1
+            while loop < 3:
+                try:
+                    self.httpd = ThreadingHTTPServer((address, port), CustomHandler)
+                except OSError:
+                    loop += 1
+                    time.sleep(0.1)
+                except:
+                    log.error('Failed to start server ')
             log.debug('Started non ssl httpd...')
-        self.httpd.serve_forever()
+        if hasattr(self, 'httpd') and self.httpd:
+            self.httpd.serve_forever()
+        else:
+            log.debug('Failed to start server')
 
     def stop_server(self):
         """

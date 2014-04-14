@@ -115,4 +115,3 @@ class TestBibleManager(TestCase, TestMixin):
         verses = self.manager.get_verse_count_by_book_ref_id('tests', 54, 3)
         # THEN the chapter count should be returned
         self.assertEqual(16, verses, '1 Timothy v3 should have 16 verses returned from the bible')
-

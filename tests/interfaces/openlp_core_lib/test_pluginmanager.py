@@ -95,4 +95,3 @@ class TestPluginManager(TestCase, TestMixin):
         assert 'songusage' in plugin_names, 'There should be a "songusage" plugin.'
         assert 'alerts' in plugin_names, 'There should be a "alerts" plugin.'
         assert 'remotes' in plugin_names, 'There should be a "remotes" plugin.'
-

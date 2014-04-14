@@ -106,9 +106,9 @@ try:
     # If they are equal, then this tree is tarball with the source for the release. We do not want the revision number
     # in the version string.
     if tree_revision == tag_revision:
-        version_string =  tag_version
+        version_string = tag_version
     else:
-        version_string =  '%s-bzr%s' % (tag_version, tree_revision)
+        version_string = '%s-bzr%s' % (tag_version, tree_revision)
     ver_file = open(VERSION_FILE, 'w')
     ver_file.write(version_string)
 except:
@@ -123,7 +123,9 @@ setup(
     version=version_string,
     description="Open source Church presentation and lyrics projection application.",
     long_description="""\
-OpenLP (previously openlp.org) is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if PowerPoint is installed) for church worship using a computer and a data projector.""",
+OpenLP (previously openlp.org) is free church presentation software, or lyrics projection software, used to display
+slides of songs, Bible verses, videos, images, and even presentations (if PowerPoint is installed) for church worship
+using a computer and a data projector.""",
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: MacOS X',
@@ -158,7 +160,7 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
         'Topic :: Multimedia :: Sound/Audio',
         'Topic :: Multimedia :: Video',
         'Topic :: Religion'
-    ], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    ],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords='open source church presentation lyrics projection song bible display project',
     author='Raoul Snyman',
     author_email='raoulsnyman@openlp.org',

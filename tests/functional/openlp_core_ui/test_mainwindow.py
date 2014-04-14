@@ -27,23 +27,22 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.ui.mainwindow package.
+Package to test openlp.core.ui.mainwindow package.
 """
+import os
+
 from unittest import TestCase
 
-
-from openlp.core.common import Registry
 from openlp.core.ui.mainwindow import MainWindow
-from tests.interfaces import MagicMock, patch
+from openlp.core.common.registry import Registry
+from tests.utils.constants import TEST_RESOURCES_PATH
 from tests.helpers.testmixin import TestMixin
+from tests.functional import MagicMock, patch
 
 
 class TestMainWindow(TestCase, TestMixin):
 
     def setUp(self):
-        """
-        Create the UI
-        """
         Registry.create()
         self.registry = Registry()
         self.get_application()
@@ -60,28 +59,39 @@ class TestMainWindow(TestCase, TestMixin):
                 patch('openlp.core.ui.mainwindow.OpenLPDockWidget') as mocked_dock_widget, \
                 patch('openlp.core.ui.mainwindow.QtGui.QToolBox') as mocked_q_tool_box_class, \
                 patch('openlp.core.ui.mainwindow.QtGui.QMainWindow.addDockWidget') as mocked_add_dock_method, \
-                patch('openlp.core.ui.mainwindow.ServiceManager') as mocked_service_manager, \
                 patch('openlp.core.ui.mainwindow.ThemeManager') as mocked_theme_manager, \
                 patch('openlp.core.ui.mainwindow.Renderer') as mocked_renderer:
             self.main_window = MainWindow()
 
     def tearDown(self):
-        """
-        Delete all the C++ objects at the end so that we don't have a segfault
-        """
         del self.main_window
 
-    def restore_current_media_manager_item_test(self):
+    def cmd_line_file_test(self):
         """
-        Regression test for bug #1152509.
+        Test that passing a service file from the command line loads the service.
         """
-        # GIVEN: Mocked Settings().value method.
-        with patch('openlp.core.ui.mainwindow.Settings.value') as mocked_value:
-            # save current plugin: True; current media plugin: 2
-            mocked_value.side_effect = [True, 2]
+        # GIVEN a service as an argument to openlp
+        service = os.path.join(TEST_RESOURCES_PATH, 'service', 'test.osz')
+        self.main_window.arguments = [service]
+        with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
 
-            # WHEN: Call the restore method.
-            self.main_window.restore_current_media_manager_item()
+            # WHEN the argument is processed
+            self.main_window.open_cmd_line_files()
 
-            # THEN: The current widget should have been set.
-            self.main_window.media_tool_box.setCurrentIndex.assert_called_with(2)
+            # THEN the service from the arguments is loaded
+            mocked_load_path.assert_called_with(service), 'load_path should have been called with the service\'s path'
+
+    def cmd_line_arg_test(self):
+        """
+        Test that passing a non service file does nothing.
+        """
+        # GIVEN a non service file as an argument to openlp
+        service = os.path.join('openlp.py')
+        self.main_window.arguments = [service]
+        with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
+
+            # WHEN the argument is processed
+            self.main_window.open_cmd_line_files()
+
+            # THEN the file should not be opened
+            assert not mocked_load_path.called, 'load_path should not have been called'

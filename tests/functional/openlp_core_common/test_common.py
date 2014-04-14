@@ -27,50 +27,57 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.ui.formattingtagsform package.
+Functional tests to test the AppLocation class and related methods.
 """
+
 from unittest import TestCase
 
+from openlp.core.common import de_hump, trace_error_handler
 from tests.functional import MagicMock, patch
 
-from openlp.core.ui.formattingtagform import FormattingTagForm
 
-# TODO: Tests Still TODO
-# __init__
-# exec_
-# on_new_clicked
-# on_delete_clicked
-# on_saved_clicked
-# _reloadTable
-
-
-class TestFormattingTagForm(TestCase):
-
-    def setUp(self):
-        self.init_patcher = patch('openlp.core.ui.formattingtagform.FormattingTagForm.__init__')
-        self.qdialog_patcher = patch('openlp.core.ui.formattingtagform.QtGui.QDialog')
-        self.ui_formatting_tag_dialog_patcher = patch('openlp.core.ui.formattingtagform.Ui_FormattingTagDialog')
-        self.mocked_init = self.init_patcher.start()
-        self.mocked_qdialog = self.qdialog_patcher.start()
-        self.mocked_ui_formatting_tag_dialog = self.ui_formatting_tag_dialog_patcher.start()
-        self.mocked_init.return_value = None
-
-    def tearDown(self):
-        self.init_patcher.stop()
-        self.qdialog_patcher.stop()
-        self.ui_formatting_tag_dialog_patcher.stop()
-
-    def test_on_text_edited(self):
+class TestCommonFunctions(TestCase):
+    """
+    A test suite to test out various functions in the openlp.core.common module.
+    """
+    def de_hump_conversion_test(self):
         """
-        Test that the appropriate actions are preformed when on_text_edited is called
+        Test the de_hump function with a class name
         """
+        # GIVEN: a Class name in Camel Case
+        string = "MyClass"
 
-        # GIVEN: An instance of the Formatting Tag Form and a mocked save_push_button
-        form = FormattingTagForm()
-        form.save_button = MagicMock()
+        # WHEN: we call de_hump
+        new_string = de_hump(string)
 
-        # WHEN: on_text_edited is called with an arbitrary value
-        #form.on_text_edited('text')
+        # THEN: the new string should be converted to python format
+        self.assertTrue(new_string == "my_class", 'The class name should have been converted')
 
-        # THEN: setEnabled and setDefault should have been called on save_push_button
-        #form.save_button.setEnabled.assert_called_with(True)
+    def de_hump_static_test(self):
+        """
+        Test the de_hump function with a python string
+        """
+        # GIVEN: a Class name in Camel Case
+        string = "my_class"
+
+        # WHEN: we call de_hump
+        new_string = de_hump(string)
+
+        # THEN: the new string should be converted to python format
+        self.assertTrue(new_string == "my_class", 'The class name should have been preserved')
+
+    def trace_error_handler_test(self):
+        """
+        Test the trace_error_handler() method
+        """
+        # GIVEN: Mocked out objects
+        with patch('openlp.core.common.traceback') as mocked_traceback:
+            mocked_traceback.extract_stack.return_value = [('openlp.fake', 56, None, 'trace_error_handler_test')]
+            mocked_logger = MagicMock()
+
+            # WHEN: trace_error_handler() is called
+            trace_error_handler(mocked_logger)
+
+            # THEN: The mocked_logger.error() method should have been called with the correct parameters
+            mocked_logger.error.assert_called_with('OpenLP Error trace\n   File openlp.fake at line 56 \n\t called trace_error_handler_test')
+

@@ -80,7 +80,8 @@ class TestPptviewController(TestCase, TestMixin):
         controller = PptviewController(plugin=self.mock_plugin)
 
         # THEN: The name of the presentation controller should be correct
-        self.assertEqual('Powerpoint Viewer', controller.name, 'The name of the presentation controller should be correct')
+        self.assertEqual('Powerpoint Viewer', controller.name,
+                         'The name of the presentation controller should be correct')
 
     def check_available_test(self):
         """
@@ -98,9 +99,9 @@ class TestPptviewController(TestCase, TestMixin):
 
             # THEN: On windows it should return True, on other platforms False
             if os.name == 'nt':
-               self.assertTrue(available, 'check_available should return True on windows.')
+                self.assertTrue(available, 'check_available should return True on windows.')
             else:
-               self.assertFalse(available, 'check_available should return False when not on windows.')
+                self.assertFalse(available, 'check_available should return False when not on windows.')
 
 
 class TestPptviewDocument(TestCase):
