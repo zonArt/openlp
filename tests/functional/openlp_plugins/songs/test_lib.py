@@ -141,7 +141,7 @@ class TestLib(TestCase):
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal((self.song1, self.song2))
 
-        # THEN: The result should be Nonw.
+        # THEN: The result should be None.
         assert result is None, 'The result should be None'
 
     def remove_typos_beginning_test(self):
