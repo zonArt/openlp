@@ -102,8 +102,8 @@ class TestRenderer(TestCase):
         result = renderer._get_start_tags(given_raw_text)
 
         # THEN: Check if the correct tuple is returned.
-        self.assertEqual(result, expected_tuple), 'A tuple should be returned '
-        '(fixed-text, opening tags, html opening tags).'
+        self.assertEqual(result, expected_tuple), 'A tuple should be returned containing the text with correct ' \
+            'tags, the opening tags, and the opening html tags.'
 
     def _word_split_test(self):
         """
