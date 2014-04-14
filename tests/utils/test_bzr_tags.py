@@ -27,9 +27,47 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlp` module contains all the project produced OpenLP functionality
+Package to test for proper bzr tags.
 """
 
-from openlp import core, plugins
+from unittest import TestCase
 
-__all__ = ['core', 'plugins']
+from subprocess import Popen, PIPE
+
+TAGS = [
+    ['1.9.0', '1'],
+    ['1.9.1', '775'],
+    ['1.9.2', '890'],
+    ['1.9.3', '1063'],
+    ['1.9.4', '1196'],
+    ['1.9.5', '1421'],
+    ['1.9.6', '1657'],
+    ['1.9.7', '1761'],
+    ['1.9.8', '1856'],
+    ['1.9.9', '1917'],
+    ['1.9.10', '2003'],
+    ['1.9.11', '2039'],
+    ['1.9.12', '2063'],
+    ['2.0', '2118'],
+    ['2.0.1', '?'],
+    ['2.0.2', '?'],
+    ['2.0.3', '?'],
+    ['2.1.0', '2119']
+]
+
+
+class TestBzrTags(TestCase):
+
+    def bzr_tags_test(self):
+        """
+        Test for proper bzr tags
+        """
+        # GIVEN: A bzr branch
+
+        # WHEN getting the branches tags
+        bzr = Popen(('bzr', 'tags'), stdout=PIPE)
+        stdout = bzr.communicate()[0]
+        tags = [line.decode('utf-8').split() for line in stdout.splitlines()]
+
+        # THEN the tags should match the accepted tags
+        self.assertEqual(TAGS, tags, 'List of tags should match')

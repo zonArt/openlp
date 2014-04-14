@@ -156,12 +156,12 @@ class PresentationPlugin(Plugin):
         """
         Called to define all translatable texts of the plugin.
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('PresentationPlugin', 'Presentation', 'name singular'),
             'plural': translate('PresentationPlugin', 'Presentations', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {
             'title': translate('PresentationPlugin', 'Presentations', 'container title')
         }
