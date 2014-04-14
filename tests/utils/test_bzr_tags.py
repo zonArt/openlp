@@ -72,4 +72,4 @@ class TestBzrTags(TestCase):
         tags = [line.decode('utf-8').split() for line in stdout.splitlines()]
 
         # THEN the tags should match the accepted tags
-        self.assertEqual(TAGS, tags, path)
+        self.assertEqual(TAGS, tags, 'List of tags should match')
