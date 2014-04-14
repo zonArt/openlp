@@ -137,7 +137,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         for player in list(self.media_players.values()):
             if player.is_active:
                 for item in player.audio_extensions_list:
-                    if not item in self.audio_extensions_list:
+                    if item not in self.audio_extensions_list:
                         self.audio_extensions_list.append(item)
                         suffix_list.append(item[2:])
         self.video_extensions_list = []
@@ -184,8 +184,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return False
         saved_players, overridden_player = get_media_players()
         invalid_media_players = \
-            [mediaPlayer for mediaPlayer in saved_players if not mediaPlayer in self.media_players or
-                not self.media_players[mediaPlayer].check_available()]
+            [media_player for media_player in saved_players if media_player not in self.media_players or
+                not self.media_players[media_player].check_available()]
         if invalid_media_players:
             for invalidPlayer in invalid_media_players:
                 saved_players.remove(invalidPlayer)

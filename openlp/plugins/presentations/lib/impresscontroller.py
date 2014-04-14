@@ -377,8 +377,6 @@ class ImpressDocument(PresentationDocument):
         Stop the presentation, remove from screen.
         """
         log.debug('stop presentation OpenOffice')
-        # deactivate should hide the screen according to docs, but doesn't
-        #self.control.deactivate()
         self.presentation.end()
         self.control = None
 

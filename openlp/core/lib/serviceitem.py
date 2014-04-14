@@ -387,7 +387,7 @@ class ServiceItem(RegistryProperties):
         self.will_auto_start = header.get('will_auto_start', False)
         self.processor = header.get('processor', None)
         self.has_original_files = True
-        #TODO Remove me in 2,3 build phase
+        # TODO: Remove me in 2,3 build phase
         if self.is_capable(ItemCapabilities.HasDetailedTitleDisplay):
             self.capabilities.remove(ItemCapabilities.HasDetailedTitleDisplay)
             self.processor = self.title
