@@ -95,7 +95,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.reset_action.setToolTip(UiStrings().ResetLiveBG)
         self.automatic = UiStrings().Automatic
         self.display_type_label.setText(translate('MediaPlugin.MediaItem', 'Use Player:'))
-        #self.rebuild_players()
 
     def required_icons(self):
         """
@@ -141,7 +140,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         if index == 0:
             set_media_players(player)
         else:
-            set_media_players(player, player[index-1])
+            set_media_players(player, player[index - 1])
 
     def on_reset_click(self):
         """

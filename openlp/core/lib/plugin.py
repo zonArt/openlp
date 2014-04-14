@@ -101,7 +101,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
     ``add_import_menu_item(import_menu)``
         Add an item to the Import menu.
 
-    ``add_export_menu_Item(export_menu)``
+    ``add_export_menu_item(export_menu)``
         Add an item to the Export menu.
 
     ``create_settings_tab()``
@@ -226,7 +226,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         pass
 
-    def add_export_menu_Item(self, export_menu):
+    def add_export_menu_item(self, export_menu):
         """
         Create a menu item and add it to the "Export" menu.
 
@@ -329,22 +329,24 @@ class Plugin(QtCore.QObject, RegistryProperties):
     def set_plugin_ui_text_strings(self, tooltips):
         """
         Called to define all translatable texts of the plugin
+
+        :param tooltips:
         """
-        ## Load Action ##
+        # Load Action
         self.__set_name_text_string(StringContent.Load, UiStrings().Load, tooltips['load'])
-        ## Import Action ##
+        # Import Action
         self.__set_name_text_string(StringContent.Import, UiStrings().Import, tooltips['import'])
-        ## New Action ##
+        # New Action
         self.__set_name_text_string(StringContent.New, UiStrings().Add, tooltips['new'])
-        ## Edit Action ##
+        # Edit Action
         self.__set_name_text_string(StringContent.Edit, UiStrings().Edit, tooltips['edit'])
-        ## Delete Action ##
+        # Delete Action
         self.__set_name_text_string(StringContent.Delete, UiStrings().Delete, tooltips['delete'])
-        ## Preview Action ##
+        # Preview Action
         self.__set_name_text_string(StringContent.Preview, UiStrings().Preview, tooltips['preview'])
-        ## Send Live Action ##
+        # Send Live Action
         self.__set_name_text_string(StringContent.Live, UiStrings().Live, tooltips['live'])
-        ## Add to Service Action ##
+        # Add to Service Action
         self.__set_name_text_string(StringContent.Service, UiStrings().Service, tooltips['service'])
 
     def __set_name_text_string(self, name, title, tooltip):

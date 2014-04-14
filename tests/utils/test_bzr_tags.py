@@ -27,40 +27,47 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Functional tests to test the AppLocation class and related methods.
+Package to test for proper bzr tags.
 """
 
 from unittest import TestCase
 
-from openlp.core.common import de_hump
+from subprocess import Popen, PIPE
+
+TAGS = [
+    ['1.9.0', '1'],
+    ['1.9.1', '775'],
+    ['1.9.2', '890'],
+    ['1.9.3', '1063'],
+    ['1.9.4', '1196'],
+    ['1.9.5', '1421'],
+    ['1.9.6', '1657'],
+    ['1.9.7', '1761'],
+    ['1.9.8', '1856'],
+    ['1.9.9', '1917'],
+    ['1.9.10', '2003'],
+    ['1.9.11', '2039'],
+    ['1.9.12', '2063'],
+    ['2.0', '2118'],
+    ['2.0.1', '?'],
+    ['2.0.2', '?'],
+    ['2.0.3', '?'],
+    ['2.1.0', '2119']
+]
 
 
-class TestInitFunctions(TestCase):
-    """
-    A test suite to test out various functions in the __init__ class.
-    """
-    def de_hump_conversion_test(self):
+class TestBzrTags(TestCase):
+
+    def bzr_tags_test(self):
         """
-        Test the de_hump function with a class name
+        Test for proper bzr tags
         """
-        # GIVEN: a Class name in Camel Case
-        string = "MyClass"
+        # GIVEN: A bzr branch
 
-        # WHEN: we call de_hump
-        new_string = de_hump(string)
+        # WHEN getting the branches tags
+        bzr = Popen(('bzr', 'tags'), stdout=PIPE)
+        stdout = bzr.communicate()[0]
+        tags = [line.decode('utf-8').split() for line in stdout.splitlines()]
 
-        # THEN: the new string should be converted to python format
-        self.assertTrue(new_string == "my_class", 'The class name should have been converted')
-
-    def de_hump_static_test(self):
-        """
-        Test the de_hump function with a python string
-        """
-        # GIVEN: a Class name in Camel Case
-        string = "my_class"
-
-        # WHEN: we call de_hump
-        new_string = de_hump(string)
-
-        # THEN: the new string should be converted to python format
-        self.assertTrue(new_string == "my_class", 'The class name should have been preserved')
+        # THEN the tags should match the accepted tags
+        self.assertEqual(TAGS, tags, 'List of tags should match')
