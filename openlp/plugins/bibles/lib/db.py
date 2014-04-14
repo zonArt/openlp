@@ -649,10 +649,10 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             'chapter, verse_count FROM chapters WHERE book_reference_id = ?', (book_ref_id,))
         try:
             return {
-                'id': chapters[chapter-1][0],
-                'book_reference_id': chapters[chapter-1][1],
-                'chapter': chapters[chapter-1][2],
-                'verse_count': chapters[chapter-1][3]
+                'id': chapters[chapter - 1][0],
+                'book_reference_id': chapters[chapter - 1][1],
+                'chapter': chapters[chapter - 1][2],
+                'verse_count': chapters[chapter - 1][3]
             }
         except (IndexError, TypeError):
             return None
@@ -846,13 +846,13 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
             file_path = os.path.join(
                 AppLocation.get_directory(AppLocation.DataDir), 'bibles', 'alternative_book_names.sqlite')
             if not os.path.exists(file_path):
-                #create new DB, create table alternative_book_names
+                # create new DB, create table alternative_book_names
                 AlternativeBookNamesDB.conn = sqlite3.connect(file_path)
                 AlternativeBookNamesDB.conn.execute(
                     'CREATE TABLE alternative_book_names(id INTEGER NOT NULL, '
                     'book_reference_id INTEGER, language_id INTEGER, name VARCHAR(50), PRIMARY KEY (id))')
             else:
-                #use existing DB
+                # use existing DB
                 AlternativeBookNamesDB.conn = sqlite3.connect(file_path)
             AlternativeBookNamesDB.cursor = AlternativeBookNamesDB.conn.cursor()
         return AlternativeBookNamesDB.cursor

@@ -401,7 +401,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         :param suffix_list: New Suffix's to be supported
         """
         for suffix in suffix_list:
-            if not suffix in self.suffixes:
+            if suffix not in self.suffixes:
                 self.suffixes.append(suffix)
 
     def on_new_service_clicked(self, field=None):
@@ -631,7 +631,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         for item in self.service_items:
             self.main_window.increment_progress_bar()
             service_item = item['service_item'].get_service_repr(self._save_lite)
-            #TODO: check for file item on save.
+            # TODO: check for file item on save.
             service.append({'serviceitem': service_item})
             self.main_window.increment_progress_bar()
         service_content = json.dumps(service)
@@ -756,8 +756,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                     items = json.load(file_to)
                 else:
                     critical_error_message_box(message=translate('OpenLP.ServiceManager',
-                                               'The service file you are trying to open is in an old format.\n '
-                                               'Please save it using OpenLP 2.0.2 or greater.'))
+                                                                 'The service file you are trying to open is in an old '
+                                                                 'format.\n Please save it using OpenLP 2.0.2 or '
+                                                                 'greater.'))
                     return
                 file_to.close()
                 self.new_file()

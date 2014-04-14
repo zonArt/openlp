@@ -94,5 +94,5 @@ class VerseReferenceList(object):
                 result = result + ', ' + version['permission']
         result = result.rstrip()
         if result.endswith(','):
-            return result[:len(result)-1]
+            return result[:len(result) - 1]
         return result
