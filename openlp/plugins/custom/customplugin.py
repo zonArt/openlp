@@ -43,7 +43,7 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
     'custom/db type': 'sqlite',
-    'custom/last search type':  CustomSearch.Titles,
+    'custom/last search type': CustomSearch.Titles,
     'custom/display footer': True,
     'custom/add custom from service': True
 }
@@ -97,12 +97,12 @@ class CustomPlugin(Plugin):
         """
         Called to define all translatable texts of the plugin
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('CustomPlugin', 'Custom Slide', 'name singular'),
             'plural': translate('CustomPlugin', 'Custom Slides', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {
             'title': translate('CustomPlugin', 'Custom Slides', 'container title')
         }
