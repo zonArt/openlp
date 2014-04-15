@@ -675,6 +675,7 @@ class OpenLyrics(object):
         sxml = SongXML()
         verses = {}
         verse_def_list = []
+        verse_order = self._text(properties.verseOrder).split(' ') if hasattr(properties, 'verseOrder') else []
         try:
             lyrics = song_xml.lyrics
         except AttributeError:
@@ -717,13 +718,17 @@ class OpenLyrics(object):
             else:
                 verses[(verse_tag, verse_number, lang, translit, verse_part)] = text
                 verse_def_list.append((verse_tag, verse_number, lang, translit, verse_part))
+            # Update verse order when the verse name has changed
+            if verse_def != verse_tag + verse_number + verse_part:
+                for i in range(len(verse_order)):
+                    if verse_order[i] == verse_def:
+                        verse_order[i] = verse_tag + verse_number + verse_part
         # We have to use a list to keep the order, as dicts are not sorted.
         for verse in verse_def_list:
             sxml.add_verse_to_lyrics(verse[0], verse[1], verses[verse], verse[2])
         song_obj.lyrics = str(sxml.extract_xml(), 'utf-8')
         # Process verse order
-        if hasattr(properties, 'verseOrder'):
-            song_obj.verse_order = self._text(properties.verseOrder)
+        song_obj.verse_order = ' '.join(verse_order)
 
     def _process_songbooks(self, properties, song):
         """

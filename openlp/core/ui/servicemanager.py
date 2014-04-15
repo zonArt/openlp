@@ -235,7 +235,8 @@ class Ui_ServiceManager(object):
         self.edit_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Edit Item'),
                                                 icon=':/general/general_edit.png', triggers=self.remote_edit)
         self.rename_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Rename...'),
-                                                  icon=':/general/general_edit.png', triggers=self.on_service_item_rename)
+                                                  icon=':/general/general_edit.png',
+                                                  triggers=self.on_service_item_rename)
         self.maintain_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
                                                     icon=':/general/general_edit.png',
                                                     triggers=self.on_service_item_edit_form)
@@ -1488,9 +1489,11 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             if new_item:
                 self.add_service_item(new_item, replace=True)
 
-    def on_service_item_rename(self):
+    def on_service_item_rename(self, field=None):
         """
         Opens a dialog to rename the service item.
+
+        :param field: Not used, but PyQt needs this.
         """
         item = self.find_service_item()[0]
         if not self.service_items[item]['service_item'].is_capable(ItemCapabilities.CanEditTitle):
