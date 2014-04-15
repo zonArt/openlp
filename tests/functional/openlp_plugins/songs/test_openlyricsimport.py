@@ -30,11 +30,29 @@
 This module contains tests for the OpenLyrics song importer.
 """
 
+import os
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
 from openlp.plugins.songs.lib.openlyricsimport import OpenLyricsImport
 from openlp.plugins.songs.lib.songimport import SongImport
+
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                         '..', '..', '..', 'resources', 'openlyricssongs'))
+SONG_TEST_DATA = {
+    'Mám zde přítele, Pána Ježíše.xml': {
+        'title': 'Mám zde přítele',
+        'verses': [
+            ('Mám zde přítele,\nPána Ježíše,\na na rámě jeho spoléhám;\nv něm své stěstí mám,\n\
+             pokoj nalézám,\nkdyž na rámě jeho spoléhám!', 'v1'),
+            ('Boží rámě\nje v soužení náš pevný hrad;\nBoží rámě,\nuč se na ně vždycky spoléhat!', 'c'),
+            ('Jak je sladké být,\nv jeho družině,\nkdyž na rámě jeho spoléhám,\njak se života\ncesta zjasňuje\n\
+             když na rámě Boží spoléhám!', 'v2'),
+            ('Čeho bych se bál,\nčeho strachoval,\nkdyž na rámě Boží spoléhám?\nMír je v duši mé,\n\
+             když On blízko je,\nkdyž na rámě jeho spoléhám.', 'v')
+        ]
+    }
+}
 
 
 class TestOpenLyricsImport(TestCase):
@@ -54,3 +72,25 @@ class TestOpenLyricsImport(TestCase):
 
             # THEN: The importer should be an instance of SongImport
             self.assertIsInstance(importer, SongImport)
+
+    @patch('openlp.plugins.songs.lib.db.Song')
+    @patch('openlp.plugins.songs.lib.songbeamerimport.SongImport')
+    def file_import_test(self, mock_songimport, mock_song):
+        """
+        Test the actual import of real song files and check that the imported data is correct.
+        """
+
+        # GIVEN: Test files with a mocked out "manager" and a mocked out "import_wizard"
+        for song_file in SONG_TEST_DATA:
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            importer = OpenLyricsImport(mocked_manager, filenames=[])
+            importer.import_wizard = mocked_import_wizard
+
+            # WHEN: Importing each file
+            importer.import_source = [os.path.join(TEST_PATH, song_file)]
+            song = importer.do_import()
+
+            # THEN: the song title should be as expected
+            self.assertEqual(song.title, SONG_TEST_DATA[song_file]['title'],
+                             'title for %s should be "%s"' % (song_file, SONG_TEST_DATA[song_file]['title']))
