@@ -44,7 +44,6 @@ class Ui_ThemeLayoutDialog(object):
         Set up the UI
         """
         themeLayoutDialog.setObjectName('themeLayoutDialogDialog')
-        #themeLayoutDialog.resize(300, 200)
         self.preview_layout = QtGui.QVBoxLayout(themeLayoutDialog)
         self.preview_layout.setObjectName('preview_layout')
         self.preview_area = QtGui.QWidget(themeLayoutDialog)
