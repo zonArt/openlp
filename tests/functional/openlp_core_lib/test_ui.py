@@ -131,3 +131,17 @@ class TestUi(TestCase):
         for text in [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]:
             self.assertTrue(combo.findText(text) >= 0)
 
+    def test_create_horizontal_adjusting_combo_box(self):
+        """
+        Test creating a horizontal adjusting combo box
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create the combobox
+        combo = create_horizontal_adjusting_combo_box(dialog, 'combo1')
+
+        # THEN: We should get a ComboBox
+        self.assertIsInstance(combo, QtGui.QComboBox)
+        self.assertEqual('combo1', combo.objectName())
+        self.assertEqual(QtGui.QComboBox.AdjustToMinimumContentsLength, combo.sizeAdjustPolicy())
