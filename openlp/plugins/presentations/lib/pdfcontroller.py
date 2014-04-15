@@ -74,7 +74,7 @@ class PdfController(PresentationController):
         runlog = ''
         log.debug('testing program_path: %s', program_path)
         try:
-            runlog = check_output([program_path,  '--help'], stderr=STDOUT)
+            runlog = check_output([program_path, '--help'], stderr=STDOUT)
         except CalledProcessError as e:
             runlog = e.output
         except Exception:
@@ -183,7 +183,7 @@ class PdfDocument(PresentationDocument):
         self.image_files = []
         self.num_pages = -1
 
-    def gs_get_resolution(self,  size):
+    def gs_get_resolution(self, size):
         """
         Only used when using ghostscript
         Ghostscript can't scale automatically while keeping aspect like mupdf, so we need
@@ -236,7 +236,7 @@ class PdfDocument(PresentationDocument):
         if os.path.isfile(os.path.join(self.get_temp_folder(), 'mainslide001.png')):
             created_files = sorted(os.listdir(self.get_temp_folder()))
             for fn in created_files:
-                if os.path.isfile(os.path.join(self.get_temp_folder(),  fn)):
+                if os.path.isfile(os.path.join(self.get_temp_folder(), fn)):
                     self.image_files.append(os.path.join(self.get_temp_folder(), fn))
             self.num_pages = len(self.image_files)
             return True

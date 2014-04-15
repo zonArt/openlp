@@ -174,34 +174,11 @@ FLASH_HTML = """
 <div id="flash" class="size" style="visibility:hidden"></div>
 """
 
-VIDEO_EXT = [
-    '*.3gp',
-    '*.3gpp',
-    '*.3g2',
-    '*.3gpp2',
-    '*.aac',
-    '*.flv',
-    '*.f4a',
-    '*.f4b',
-    '*.f4p',
-    '*.f4v',
-    '*.mov',
-    '*.m4a',
-    '*.m4b',
-    '*.m4p',
-    '*.m4v',
-    '*.mkv',
-    '*.mp4',
-    '*.ogv',
-    '*.webm',
-    '*.mpg', '*.wmv', '*.mpeg', '*.avi',
-    '*.swf'
-]
+VIDEO_EXT = ['*.3gp', '*.3gpp', '*.3g2', '*.3gpp2', '*.aac', '*.flv', '*.f4a', '*.f4b', '*.f4p', '*.f4v', '*.mov',
+             '*.m4a', '*.m4b', '*.m4p', '*.m4v', '*.mkv', '*.mp4', '*.ogv', '*.webm', '*.mpg', '*.wmv', '*.mpeg',
+             '*.avi', '*.swf']
 
-AUDIO_EXT = [
-    '*.mp3',
-    '*.ogg'
-]
+AUDIO_EXT = ['*.mp3', '*.ogg']
 
 
 class WebkitPlayer(MediaPlayer):
@@ -411,10 +388,9 @@ class WebkitPlayer(MediaPlayer):
         """
         Return some information about this player
         """
-        return(translate('Media.player', 'Webkit is a media player which runs '
-               'inside a web browser. This player allows text over video to be '
-               'rendered.') +
-               '<br/> <strong>' + translate('Media.player', 'Audio') +
-               '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' +
-               translate('Media.player', 'Video') + '</strong><br/>' +
-               str(VIDEO_EXT) + '<br/>')
+        part1 = translate('Media.player', 'Webkit is a media player which runs inside a web browser. This player '
+                                          'allows text over video to be rendered.')
+        part2 = translate('Media.player', 'Audio')
+        part3 = translate('Media.player', 'Video')
+        return part1 + '<br/> <strong>' + part2 + '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' + part3 + \
+            '</strong><br/>' + str(VIDEO_EXT) + '<br/>'

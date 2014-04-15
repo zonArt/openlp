@@ -75,7 +75,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         text = self.verse_text_edit.toPlainText()
         position = self.verse_text_edit.textCursor().position()
         insert_string = '[---]'
-        if position and text[position-1] != '\n':
+        if position and text[position - 1] != '\n':
             insert_string = '\n' + insert_string
         if position == len(text) or text[position] != '\n':
             insert_string += '\n'
