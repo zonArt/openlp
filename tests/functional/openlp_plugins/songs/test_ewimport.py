@@ -139,10 +139,10 @@ class TestEasyWorshipSongImport(TestCase):
 
         # THEN:
         self.assertIsNotNone(field_desc_entry, 'Import should not be none')
-        self.assertEquals(field_desc_entry.name, name, 'FieldDescEntry.name should be the same as the name argument')
-        self.assertEquals(field_desc_entry.field_type, field_type,
+        self.assertEqual(field_desc_entry.name, name, 'FieldDescEntry.name should be the same as the name argument')
+        self.assertEqual(field_desc_entry.field_type, field_type,
                           'FieldDescEntry.type should be the same as the type argument')
-        self.assertEquals(field_desc_entry.size, size, 'FieldDescEntry.size should be the same as the size argument')
+        self.assertEqual(field_desc_entry.size, size, 'FieldDescEntry.size should be the same as the size argument')
 
     def create_importer_test(self):
         """
@@ -174,7 +174,7 @@ class TestEasyWorshipSongImport(TestCase):
             for field_name in existing_fields:
 
                 # THEN: The item corresponding the index returned should have the same name attribute
-                self.assertEquals(importer.field_descriptions[importer.find_field(field_name)].name, field_name)
+                self.assertEqual(importer.field_descriptions[importer.find_field(field_name)].name, field_name)
 
     def find_non_existing_field_test(self):
         """
@@ -230,7 +230,7 @@ class TestEasyWorshipSongImport(TestCase):
                 return_value = importer.get_field(field_index)
 
             # THEN: get_field should return the known results
-                self.assertEquals(return_value, result,
+                self.assertEqual(return_value, result,
                                   'get_field should return "%s" when called with "%s"' %
                                   (result, TEST_FIELDS[field_index]))
 
@@ -257,7 +257,7 @@ class TestEasyWorshipSongImport(TestCase):
                 get_field_seek_calls = test_results[2]['seek']
 
                 # THEN: get_field should return the appropriate value with the appropriate mocked objects being called
-                self.assertEquals(importer.get_field(field_index), get_field_result)
+                self.assertEqual(importer.get_field(field_index), get_field_result)
                 for call in get_field_read_calls:
                     mocked_memo_file.read.assert_any_call(call)
                 for call in get_field_seek_calls:
@@ -403,11 +403,11 @@ class TestEasyWorshipSongImport(TestCase):
                 if song_copyright:
                     self.assertEqual(importer.copyright, song_copyright)
                 if ccli_number:
-                    self.assertEquals(importer.ccli_number, ccli_number, 'ccli_number for %s should be %s'
+                    self.assertEqual(importer.ccli_number, ccli_number, 'ccli_number for %s should be %s'
                                                                          % (title, ccli_number))
                 for verse_text, verse_tag in add_verse_calls:
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if verse_order_list:
-                    self.assertEquals(importer.verse_order_list, verse_order_list,
+                    self.assertEqual(importer.verse_order_list, verse_order_list,
                                       'verse_order_list for %s should be %s' % (title, verse_order_list))
                 mocked_finish.assert_called_with()
