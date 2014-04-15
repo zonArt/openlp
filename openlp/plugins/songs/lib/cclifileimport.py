@@ -270,13 +270,13 @@ class CCLIFileImport(SongImport):
                         verse_text = ''
                         verse_start = False
             else:
-                #line_number=0, song title
+                # line_number=0, song title
                 if line_number == 0:
                     self.title = clean_line
                     line_number += 1
-                #line_number=1, verses
+                # line_number=1, verses
                 elif line_number == 1:
-                    #line_number=1, ccli number, first line after verses
+                    # line_number=1, ccli number, first line after verses
                     if clean_line.startswith('CCLI'):
                         line_number += 1
                         ccli_parts = clean_line.split(' ')
@@ -319,21 +319,21 @@ class CCLIFileImport(SongImport):
                             # last part. Add l so as to keep the CRLF
                             verse_text = verse_text + line
                 else:
-                    #line_number=2, copyright
+                    # line_number=2, copyright
                     if line_number == 2:
                         line_number += 1
                         if clean_line.startswith('©'):
                             self.copyright = clean_line
                         else:
                             song_author = clean_line
-                    #n=3, authors
+                    # n=3, authors
                     elif line_number == 3:
                         line_number += 1
                         if song_author:
                             self.copyright = clean_line
                         else:
                             song_author = clean_line
-                    #line_number=4, comments lines before last line
+                    # line_number=4, comments lines before last line
                     elif line_number == 4 and not clean_line.startswith('CCL'):
                         self.comments += clean_line
         # split on known separators

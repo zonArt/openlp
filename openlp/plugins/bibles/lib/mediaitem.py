@@ -480,6 +480,10 @@ class BibleMediaItem(MediaManagerItem):
                 self.reload_bibles()
 
     def on_delete_click(self):
+        """
+        When the delete button is pressed
+        """
+        bible = None
         if self.quickTab.isVisible():
             bible = self.quickVersionComboBox.currentText()
         elif self.advancedTab.isVisible():
@@ -488,8 +492,9 @@ class BibleMediaItem(MediaManagerItem):
             if QtGui.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
                     translate('BiblesPlugin.MediaItem', 'Are you sure you want to completely delete "%s" Bible from '
-                              'OpenLP?\n\nYou will need to re-import this Bible to use it again.') % bible,
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
+                                                        'OpenLP?\n\nYou will need to re-import this Bible to use it '
+                                                        'again.') % bible,
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             self.plugin.manager.delete_bible(bible)
@@ -752,7 +757,7 @@ class BibleMediaItem(MediaManagerItem):
                     log.exception('The second_search_results does not have as many verses as the search_results.')
                     break
                 bible_text = '%s %d%s%d (%s, %s)' % (book, verse.chapter, verse_separator, verse.verse, version,
-                             second_version)
+                                                     second_version)
             else:
                 bible_text = '%s %d%s%d (%s)' % (book, verse.chapter, verse_separator, verse.verse, version)
             bible_verse = QtGui.QListWidgetItem(bible_text)
@@ -840,6 +845,7 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanWordSplit)
+        service_item.add_capability(ItemCapabilities.CanEditTitle)
         # Service Item: Title
         service_item.title = create_separated_list(raw_title)
         # Service Item: Theme

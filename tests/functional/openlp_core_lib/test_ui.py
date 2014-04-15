@@ -82,6 +82,23 @@ class TestUi(TestCase):
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
 
+    def test_create_valign_selection_widgets(self):
+        """
+        Test creating a combo box for valign selection
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create the widgets
+        label, combo = create_valign_selection_widgets(dialog)
+
+        # THEN: We should get a label and a combobox.
+        self.assertEqual(translate('OpenLP.Ui', '&Vertical Align:'), label.text())
+        self.assertIsInstance(combo, QtGui.QComboBox)
+        self.assertEqual(combo, label.buddy())
+        for text in [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]:
+            self.assertTrue(combo.findText(text) >= 0)
+
     def test_create_horizontal_adjusting_combo_box(self):
         """
         Test creating a horizontal adjusting combo box

@@ -95,15 +95,15 @@ class Ui_ExceptionDialog(object):
         Translate the widgets on the fly.
         """
         exception_dialog.setWindowTitle(translate('OpenLP.ExceptionDialog', 'Error Occurred'))
-        self.description_explanation.setText(translate('OpenLP.ExceptionDialog',
-                                             'Please enter a description of what you were doing to cause this error '
-                                             '\n(Minimum 20 characters)'))
-        self.message_label.setText(translate('OpenLP.ExceptionDialog', 'Oops! '
-                                             'OpenLP hit a problem, and couldn\'t recover. The text in the box '
-                                             'below contains information that might be helpful to the OpenLP '
-                                             'developers, so please e-mail it to bugs@openlp.org, along with a '
-                                             'detailed description of what you were doing when the problem '
-                                             'occurred.'))
+        self.description_explanation.setText(
+            translate('OpenLP.ExceptionDialog', 'Please enter a description of what you were doing to cause this error '
+                                                '\n(Minimum 20 characters)'))
+        self.message_label.setText(
+            translate('OpenLP.ExceptionDialog', 'Oops! OpenLP hit a problem, and couldn\'t recover. The text in the '
+                                                'box below contains information that might be helpful to the OpenLP '
+                                                'developers, so please e-mail it to bugs@openlp.org, along with a '
+                                                'detailed description of what you were doing when the problem '
+                                                'occurred.'))
         self.send_report_button.setText(translate('OpenLP.ExceptionDialog', 'Send E-Mail'))
         self.save_report_button.setText(translate('OpenLP.ExceptionDialog', 'Save to File'))
         self.attach_tile_button.setText(translate('OpenLP.ExceptionDialog', 'Attach File'))
