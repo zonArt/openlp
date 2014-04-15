@@ -133,7 +133,6 @@ class TestImageManager(TestCase, TestMixin):
             # Because empty() is not reliable, wait a litte; just to make sure.
             time.sleep(0.1)
             # THEN: The images' priority reflect how they were processed.
-            assert self.image_manager._conversion_queue.qsize() == 0,
             self.assertEqual(self.image_manager._conversion_queue.qsize(), 0, "The queue should be empty.")
             self.assertEqual(self.get_image_priority(image1), Priority.Lowest,
                              "The image should have not been requested (=Lowest)")
