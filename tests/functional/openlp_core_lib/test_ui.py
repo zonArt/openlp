@@ -82,6 +82,38 @@ class TestUi(TestCase):
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
 
+    def test_create_button(self):
+        """
+        Test creating a button
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create the button
+        btn = create_button(dialog, 'my_btn')
+
+        # THEN: We should get a button with a name
+        self.assertIsInstance(btn, QtGui.QPushButton)
+        self.assertEqual('my_btn', btn.objectName())
+        self.assertTrue(btn.isEnabled())
+
+        # WHEN: We create a button with some attributes
+        btn = create_button(dialog, 'my_btn', text='Hello', tooltip='How are you?', enabled=False)
+
+        # THEN: We should get a button with those attributes
+        self.assertIsInstance(btn, QtGui.QPushButton)
+        self.assertEqual('Hello', btn.text())
+        self.assertEqual('How are you?', btn.toolTip())
+        self.assertFalse(btn.isEnabled())
+
+        # WHEN: We create a toolbutton
+        btn = create_button(dialog, 'my_btn', btn_class='toolbutton')
+
+        # THEN: We should get a toolbutton
+        self.assertIsInstance(btn, QtGui.QToolButton)
+        self.assertEqual('my_btn', btn.objectName())
+        self.assertTrue(btn.isEnabled())
+
     def test_create_valign_selection_widgets(self):
         """
         Test creating a combo box for valign selection
