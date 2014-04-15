@@ -48,13 +48,13 @@ import sys
 from inspect import getargspec
 
 __version__ = "N/A"
-build_date  = "Mon Apr  1 23:47:38 2013"
+build_date  = "Tue Jul  2 10:35:53 2013"
 
 if sys.version_info[0] > 2:
     str = str
-    str = str
+    unicode = str
     bytes = bytes
-    str = (str, bytes)
+    basestring = (str, bytes)
     PYTHON3 = True
     def str_to_bytes(s):
         """Translate string or bytes to bytes.
@@ -73,14 +73,14 @@ if sys.version_info[0] > 2:
             return b
 else:
     str = str
-    str = str
+    unicode = unicode
     bytes = str
-    str = str
+    basestring = basestring
     PYTHON3 = False
     def str_to_bytes(s):
         """Translate string or bytes to bytes.
         """
-        if isinstance(s, str):
+        if isinstance(s, unicode):
             return s.encode(sys.getfilesystemencoding())
         else:
             return s
@@ -89,7 +89,7 @@ else:
         """Translate bytes to unicode string.
         """
         if isinstance(b, str):
-            return str(b, sys.getfilesystemencoding())
+            return unicode(b, sys.getfilesystemencoding())
         else:
             return b
 
@@ -110,7 +110,7 @@ def find_lib():
         p = find_library('libvlc.dll')
         if p is None:
             try:  # some registry settings
-                import winreg as w  # leaner than win32api, win32con
+                import _winreg as w  # leaner than win32api, win32con
                 for r in w.HKEY_LOCAL_MACHINE, w.HKEY_CURRENT_USER:
                     try:
                         r = w.OpenKey(r, 'Software\\VideoLAN\\VLC')
@@ -168,7 +168,7 @@ class VLCException(Exception):
     pass
 
 try:
-    _Ints = (int, int)
+    _Ints = (int, long)
 except NameError:  # no long in Python 3+
     _Ints =  int
 _Seqs = (list, tuple)
@@ -326,6 +326,9 @@ class _Enum(ctypes.c_uint):
     def __str__(self):
         n = self._enum_names_.get(self.value, '') or ('FIXME_(%r)' % (self.value,))
         return '.'.join((self.__class__.__name__, n))
+
+    def __hash__(self):
+        return self.value
 
     def __repr__(self):
         return '.'.join((self.__class__.__module__, self.__str__()))
@@ -1294,7 +1297,7 @@ class Instance(_Ctype):
             i = args[0]
             if isinstance(i, _Ints):
                 return _Constructor(cls, i)
-            elif isinstance(i, str):
+            elif isinstance(i, basestring):
                 args = i.strip().split()
             elif isinstance(i, _Seqs):
                 args = i
@@ -2078,7 +2081,7 @@ class MediaList(_Ctype):
         @param mrl: a media instance or a MRL.
         @return: 0 on success, -1 if the media list is read-only.
         """
-        if isinstance(mrl, str):
+        if isinstance(mrl, basestring):
             mrl = (self.get_instance() or get_default_instance()).media_new(mrl)
         return libvlc_media_list_add_media(self, mrl)
 
@@ -3350,6 +3353,39 @@ def libvlc_event_type_name(event_type):
         _Cfunction('libvlc_event_type_name', ((1,),), None,
                     ctypes.c_char_p, ctypes.c_uint)
     return f(event_type)
+
+def libvlc_log_get_context(ctx):
+    '''Gets debugging informations about a log message: the name of the VLC module
+    emitting the message and the message location within the source code.
+    The returned module name and file name will be NULL if unknown.
+    The returned line number will similarly be zero if unknown.
+    @param ctx: message context (as passed to the @ref libvlc_log_cb callback).
+    @return: module module name storage (or NULL), file source code file name storage (or NULL), line source code file line number storage (or NULL).
+    @version: LibVLC 2.1.0 or later.
+    '''
+    f = _Cfunctions.get('libvlc_log_get_context', None) or \
+        _Cfunction('libvlc_log_get_context', ((1,), (2,), (2,), (2,),), None,
+                    None, Log_ptr, ListPOINTER(ctypes.c_char_p), ListPOINTER(ctypes.c_char_p), ctypes.POINTER(ctypes.c_uint))
+    return f(ctx)
+
+def libvlc_log_get_object(ctx, id):
+    '''Gets VLC object informations about a log message: the type name of the VLC
+    object emitting the message, the object header if any and a temporaly-unique
+    object identifier. These informations are mainly meant for B{manual}
+    troubleshooting.
+    The returned type name may be "generic" if unknown, but it cannot be NULL.
+    The returned header will be NULL if unset; in current versions, the header
+    is used to distinguish for VLM inputs.
+    The returned object ID will be zero if the message is not associated with
+    any VLC object.
+    @param ctx: message context (as passed to the @ref libvlc_log_cb callback).
+    @return: name object name storage (or NULL), header object header (or NULL), line source code file line number storage (or NULL).
+    @version: LibVLC 2.1.0 or later.
+    '''
+    f = _Cfunctions.get('libvlc_log_get_object', None) or \
+        _Cfunction('libvlc_log_get_object', ((1,), (2,), (2,), (1,),), None,
+                    None, Log_ptr, ListPOINTER(ctypes.c_char_p), ListPOINTER(ctypes.c_char_p), ctypes.POINTER(ctypes.c_uint))
+    return f(ctx, id)
 
 def libvlc_log_unset(p_instance):
     '''Unsets the logging callback for a LibVLC instance. This is rarely needed:
@@ -5827,7 +5863,7 @@ def libvlc_vlm_get_event_manager(p_instance):
 #  libvlc_printerr
 #  libvlc_set_exit_handler
 
-# 15 function(s) not wrapped as methods:
+# 17 function(s) not wrapped as methods:
 #  libvlc_audio_output_device_list_release
 #  libvlc_audio_output_list_release
 #  libvlc_clearerr
@@ -5838,6 +5874,8 @@ def libvlc_vlm_get_event_manager(p_instance):
 #  libvlc_get_changeset
 #  libvlc_get_compiler
 #  libvlc_get_version
+#  libvlc_log_get_context
+#  libvlc_log_get_object
 #  libvlc_media_tracks_release
 #  libvlc_module_description_list_release
 #  libvlc_new
@@ -5910,9 +5948,9 @@ def debug_callback(event, *args, **kwds):
     '''
     l = ['event %s' % (event.type,)]
     if args:
-        l.extend(list(map(str, args)))
+        l.extend(map(str, args))
     if kwds:
-        l.extend(sorted('%s=%s' % t for t in list(kwds.items())))
+        l.extend(sorted('%s=%s' % t for t in kwds.items()))
     print('Debug callback (%s)' % ', '.join(l))
 
 if __name__ == '__main__':

@@ -50,8 +50,8 @@ class TestDB(TestCase):
         """
         # GIVEN: Mocked out SQLAlchemy calls and return objects, and an in-memory SQLite database URL
         with patch('openlp.core.lib.db.create_engine') as mocked_create_engine, \
-            patch('openlp.core.lib.db.MetaData') as MockedMetaData, \
-            patch('openlp.core.lib.db.sessionmaker') as mocked_sessionmaker, \
+                patch('openlp.core.lib.db.MetaData') as MockedMetaData, \
+                patch('openlp.core.lib.db.sessionmaker') as mocked_sessionmaker, \
                 patch('openlp.core.lib.db.scoped_session') as mocked_scoped_session:
             mocked_engine = MagicMock()
             mocked_metadata = MagicMock()

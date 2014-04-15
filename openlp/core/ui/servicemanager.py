@@ -234,6 +234,8 @@ class Ui_ServiceManager(object):
         self.menu = QtGui.QMenu()
         self.edit_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Edit Item'),
                                                 icon=':/general/general_edit.png', triggers=self.remote_edit)
+        self.rename_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Rename...'),
+                                                  icon=':/general/general_edit.png', triggers=self.on_service_item_rename)
         self.maintain_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
                                                     icon=':/general/general_edit.png',
                                                     triggers=self.on_service_item_edit_form)
@@ -399,7 +401,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         :param suffix_list: New Suffix's to be supported
         """
         for suffix in suffix_list:
-            if not suffix in self.suffixes:
+            if suffix not in self.suffixes:
                 self.suffixes.append(suffix)
 
     def on_new_service_clicked(self, field=None):
@@ -629,7 +631,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         for item in self.service_items:
             self.main_window.increment_progress_bar()
             service_item = item['service_item'].get_service_repr(self._save_lite)
-            #TODO: check for file item on save.
+            # TODO: check for file item on save.
             service.append({'serviceitem': service_item})
             self.main_window.increment_progress_bar()
         service_content = json.dumps(service)
@@ -754,8 +756,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                     items = json.load(file_to)
                 else:
                     critical_error_message_box(message=translate('OpenLP.ServiceManager',
-                                               'The service file you are trying to open is in an old format.\n '
-                                               'Please save it using OpenLP 2.0.2 or greater.'))
+                                                                 'The service file you are trying to open is in an old '
+                                                                 'format.\n Please save it using OpenLP 2.0.2 or '
+                                                                 'greater.'))
                     return
                 file_to.close()
                 self.new_file()
@@ -848,6 +851,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             pos = item.data(0, QtCore.Qt.UserRole)
         service_item = self.service_items[pos - 1]
         self.edit_action.setVisible(False)
+        self.rename_action.setVisible(False)
         self.create_custom_action.setVisible(False)
         self.maintain_action.setVisible(False)
         self.notes_action.setVisible(False)
@@ -855,6 +859,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         self.auto_start_action.setVisible(False)
         if service_item['service_item'].is_capable(ItemCapabilities.CanEdit) and service_item['service_item'].edit_id:
             self.edit_action.setVisible(True)
+        if service_item['service_item'].is_capable(ItemCapabilities.CanEditTitle):
+            self.rename_action.setVisible(True)
         if service_item['service_item'].is_capable(ItemCapabilities.CanMaintain):
             self.maintain_action.setVisible(True)
         if item.parent() is None:
@@ -1481,6 +1487,22 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 on_remote_edit(self.service_items[item]['service_item'].edit_id)
             if new_item:
                 self.add_service_item(new_item, replace=True)
+
+    def on_service_item_rename(self):
+        """
+        Opens a dialog to rename the service item.
+        """
+        item = self.find_service_item()[0]
+        if not self.service_items[item]['service_item'].is_capable(ItemCapabilities.CanEditTitle):
+            return
+        title = self.service_items[item]['service_item'].title
+        title, ok = QtGui.QInputDialog.getText(self, translate('OpenLP.ServiceManager', 'Rename item title'),
+                                               translate('OpenLP.ServiceManager', 'Title:'),
+                                               QtGui.QLineEdit.Normal, self.trUtf8(title))
+        if ok:
+            self.service_items[item]['service_item'].title = title
+            self.repaint_service_list(item, -1)
+            self.set_modified()
 
     def create_custom(self, field=None):
         """
