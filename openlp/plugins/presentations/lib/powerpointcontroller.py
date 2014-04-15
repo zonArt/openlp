@@ -247,7 +247,7 @@ class PowerpointDocument(PresentationDocument):
             Starts a presentation from the beginning.
             """
             log.debug('start_presentation')
-            #SlideShowWindow measures its size/position by points, not pixels
+            # SlideShowWindow measures its size/position by points, not pixels
             try:
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
             except win32ui.error:

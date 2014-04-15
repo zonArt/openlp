@@ -211,9 +211,9 @@ class Ui_FirstTimeWizard(object):
         first_time_wizard.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'First Time Wizard'))
         self.title_label.setText('<span style="font-size:14pt; font-weight:600;">%s</span>' %
                                  translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
-        self.information_label.setText(translate('OpenLP.FirstTimeWizard',
-                                       'This wizard will help you to configure OpenLP for initial use. '
-                                       'Click the next button below to start.'))
+        self.information_label.setText(
+            translate('OpenLP.FirstTimeWizard', 'This wizard will help you to configure OpenLP for initial use. '
+                                                'Click the next button below to start.'))
         self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
         self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
         self.songs_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))

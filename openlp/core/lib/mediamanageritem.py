@@ -168,29 +168,29 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
         Create buttons for the media item toolbar
         """
         toolbar_actions = []
-        ## Import Button ##
+        # Import Button
         if self.has_import_icon:
             toolbar_actions.append(['Import', StringContent.Import,
                                     ':/general/general_import.png', self.on_import_click])
-        ## Load Button ##
+        # Load Button
         if self.has_file_icon:
             toolbar_actions.append(['Load', StringContent.Load, ':/general/general_open.png', self.on_file_click])
-        ## New Button ##
+        # New Button
         if self.has_new_icon:
             toolbar_actions.append(['New', StringContent.New, ':/general/general_new.png', self.on_new_click])
-        ## Edit Button ##
+        # Edit Button
         if self.has_edit_icon:
             toolbar_actions.append(['Edit', StringContent.Edit, ':/general/general_edit.png', self.on_edit_click])
-        ## Delete Button ##
+        # Delete Button
         if self.has_delete_icon:
             toolbar_actions.append(['Delete', StringContent.Delete,
                                     ':/general/general_delete.png', self.on_delete_click])
-        ## Preview ##
+        # Preview
         toolbar_actions.append(['Preview', StringContent.Preview,
                                 ':/general/general_preview.png', self.on_preview_click])
-        ## Live Button ##
+        # Live Button
         toolbar_actions.append(['Live', StringContent.Live, ':/general/general_live.png', self.on_live_click])
-        ## Add to service Button ##
+        # Add to service Button
         toolbar_actions.append(['Service', StringContent.Service, ':/general/general_add.png', self.on_add_click])
         for action in toolbar_actions:
             if action[0] == StringContent.Preview:

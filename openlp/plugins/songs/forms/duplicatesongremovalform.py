@@ -114,7 +114,7 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
         self.review_layout.addWidget(self.review_scroll_area)
         self.review_page_id = self.addPage(self.review_page)
         # Add a dummy page to the end, to prevent the finish button to appear and the next button do disappear on the
-        #review page.
+        # review page.
         self.dummy_page = QtGui.QWizardPage()
         self.dummy_page_id = self.addPage(self.dummy_page)
 
@@ -217,12 +217,12 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
         duplicate_added = False
         for duplicate_group in self.duplicate_song_list:
             # Skip the first song in the duplicate lists, since the first one has to be an earlier song.
-            if search_song in duplicate_group and not duplicate_song in duplicate_group:
+            if search_song in duplicate_group and duplicate_song not in duplicate_group:
                 duplicate_group.append(duplicate_song)
                 duplicate_group_found = True
                 duplicate_added = True
                 break
-            elif not search_song in duplicate_group and duplicate_song in duplicate_group:
+            elif search_song not in duplicate_group and duplicate_song in duplicate_group:
                 duplicate_group.append(search_song)
                 duplicate_group_found = True
                 duplicate_added = True

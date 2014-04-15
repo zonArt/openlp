@@ -683,14 +683,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                         separator = parts.find(':')
                         if separator >= 0:
                             verse_name = parts[0:separator].strip()
-                            verse_num = parts[separator+1:].strip()
+                            verse_num = parts[separator + 1:].strip()
                         else:
                             verse_name = parts
                             verse_num = '1'
                         verse_index = VerseType.from_loose_input(verse_name)
                         verse_tag = VerseType.tags[verse_index]
                         # Later we need to handle v1a as well.
-                        # regex = re.compile(r'(\d+\w.)')
                         regex = re.compile(r'\D*(\d+)\D*')
                         match = regex.match(verse_num)
                         if match:

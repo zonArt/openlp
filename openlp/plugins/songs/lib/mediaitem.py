@@ -96,7 +96,7 @@ class SongMediaItem(MediaManagerItem):
 
     def add_end_header_bar(self):
         self.toolbar.addSeparator()
-        ## Song Maintenance Button ##
+        # Song Maintenance Button
         self.maintenance_action = self.toolbar.add_toolbar_action('maintenance_action',
                                                                   icon=':/songs/song_maintenance.png',
                                                                   triggers=self.on_song_maintenance_click)
@@ -265,7 +265,7 @@ class SongMediaItem(MediaManagerItem):
                 # Do not display temporary songs
                 if song.temporary:
                     continue
-                if song_number and not song_number in song.song_number:
+                if song_number and song_number not in song.song_number:
                     continue
                 song_detail = '%s - %s (%s)' % (book.name, song.song_number, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
