@@ -162,7 +162,7 @@ class TestUi(TestCase):
 
         # WHEN: We create an action with some properties
         action = create_action(dialog, 'my_action', text='my text', icon=':/wizards/wizard_firsttime.bmp',
-                               tooltip='my tooltip', statustip='my statustip')
+        tooltip='my tooltip', statustip='my statustip')
 
         # THEN: These properties should be set
         self.assertIsInstance(action, QtGui.QAction)

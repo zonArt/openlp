@@ -137,7 +137,7 @@ class SongBeamerImport(SongImport):
                 if line.startswith('#') and not read_verses:
                     self.parseTags(line)
                 elif line.startswith('--'):
-                    # --- and -- allowed for page-breaks (difference in Songbeamer only in printout)
+                # --- and -- allowed for page-breaks (difference in Songbeamer only in printout)
                     if self.current_verse:
                         self.replace_html_tags()
                         self.add_verse(self.current_verse, self.current_verse_type)

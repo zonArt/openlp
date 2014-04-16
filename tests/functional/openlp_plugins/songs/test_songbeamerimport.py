@@ -91,7 +91,7 @@ class TestSongBeamerImport(TestCase):
                 # THEN: do_import should return none and the progress bar maximum should not be set.
                 self.assertIsNone(importer.do_import(), 'do_import should return None when import_source is not a list')
                 self.assertEqual(mocked_import_wizard.progress_bar.setMaximum.called, False,
-                                 'setMaxium on import_wizard.progress_bar should not have been called')
+                                  'setMaxium on import_wizard.progress_bar should not have been called')
 
     def valid_import_source_test(self):
         """
@@ -149,10 +149,10 @@ class TestSongBeamerImport(TestCase):
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if song_book_name:
                     self.assertEqual(importer.song_book_name, song_book_name, 'song_book_name for %s should be "%s"' %
-                                     (song_file, song_book_name))
+                                                                               (song_file, song_book_name))
                 if song_number:
                     self.assertEqual(importer.song_number, song_number, 'song_number for %s should be %s' %
-                                     (song_file, song_number))
+                                                                         (song_file, song_number))
                 mocked_finish.assert_called_with()
 
     def check_verse_marks_test(self):

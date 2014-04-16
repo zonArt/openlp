@@ -106,4 +106,4 @@ class TestMainDisplay(TestCase):
         self.assertEqual('QGraphicsView {}', main_display.styleSheet(),
                          'MainDisplay instance should not be transparent')
         self.assertFalse(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
-                         'MainDisplay hasnt translucent background')
+                        'MainDisplay hasnt translucent background')
