@@ -129,7 +129,6 @@ class TestLib(TestCase):
         # THEN: The result should be a tuple of songs..
         assert result == (self.song1, self.song2), 'The result should be the tuble of songs'
 
-
     def songs_probably_equal_different_song_test(self):
         """
         Test the songs_probably_equal function with two different songs.

@@ -40,6 +40,7 @@ class TestCommonFunctions(TestCase):
     """
     A test suite to test out various functions in the openlp.core.common module.
     """
+
     def de_hump_conversion_test(self):
         """
         Test the de_hump function with a class name
@@ -79,5 +80,5 @@ class TestCommonFunctions(TestCase):
             trace_error_handler(mocked_logger)
 
             # THEN: The mocked_logger.error() method should have been called with the correct parameters
-            mocked_logger.error.assert_called_with('OpenLP Error trace\n   File openlp.fake at line 56 \n\t called trace_error_handler_test')
-
+            mocked_logger.error.assert_called_with(
+                'OpenLP Error trace\n   File openlp.fake at line 56 \n\t called trace_error_handler_test')
