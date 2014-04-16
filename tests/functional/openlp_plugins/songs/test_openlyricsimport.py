@@ -73,24 +73,22 @@ class TestOpenLyricsImport(TestCase):
             # THEN: The importer should be an instance of SongImport
             self.assertIsInstance(importer, SongImport)
 
-    @patch('openlp.plugins.songs.lib.db.Song')
-    @patch('openlp.plugins.songs.lib.songbeamerimport.SongImport')
-    def file_import_test(self, mock_songimport, mock_song):
+    def file_import_test(self):
         """
-        Test the actual import of real song files and check that the imported data is correct.
+        Test the actual import of real song files and check that the importer is called.
         """
-
         # GIVEN: Test files with a mocked out "manager" and a mocked out "import_wizard"
         for song_file in SONG_TEST_DATA:
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OpenLyricsImport(mocked_manager, filenames=[])
             importer.import_wizard = mocked_import_wizard
+            importer.open_lyrics = MagicMock()
+            importer.open_lyrics.xml_to_song = MagicMock()
 
             # WHEN: Importing each file
             importer.import_source = [os.path.join(TEST_PATH, song_file)]
-            song = importer.do_import()
+            importer.do_import()
 
-            # THEN: the song title should be as expected
-            self.assertEqual(song.title, SONG_TEST_DATA[song_file]['title'],
-                             'title for %s should be "%s"' % (song_file, SONG_TEST_DATA[song_file]['title']))
+            # THEN: The xml_to_song() method should have been called
+            self.assertTrue(importer.open_lyrics.xml_to_song.called)
