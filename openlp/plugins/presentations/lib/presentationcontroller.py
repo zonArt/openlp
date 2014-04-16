@@ -122,8 +122,10 @@ class PresentationDocument(object):
         a file, e.g. thumbnails
         """
         try:
-            shutil.rmtree(self.get_thumbnail_folder())
-            shutil.rmtree(self.get_temp_folder())
+            if os.path.exists(self.get_thumbnail_folder()):
+                shutil.rmtree(self.get_thumbnail_folder())
+            if os.path.exists(self.get_temp_folder()):
+                shutil.rmtree(self.get_temp_folder())
         except OSError:
             log.exception('Failed to delete presentation controller files')
 

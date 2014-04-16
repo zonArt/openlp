@@ -79,3 +79,31 @@ class TestMainDisplay(TestCase):
 
         # THEN: The controller should not be a live controller.
         self.assertEqual(main_display.is_live, True, 'The main display should be a live controller')
+
+    def set_transparency_test(self):
+        """
+        Test creating an instance of the MainDisplay class
+        """
+        # GIVEN: get an instance of MainDisplay
+        display = MagicMock()
+        main_display = MainDisplay(display)
+
+        # WHEN: We enable transparency
+        main_display.set_transparency(True)
+
+        # THEN: There should be a Stylesheet
+        self.assertEqual('QGraphicsView {background: transparent; border: 0px;}', main_display.styleSheet(),
+                         'MainDisplay instance should be transparent')
+        self.assertFalse(main_display.autoFillBackground(),
+                         'MainDisplay instance should be without background auto fill')
+        self.assertTrue(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
+                        'MainDisplay hasnt translucent background')
+
+        # WHEN: We disable transparency
+        main_display.set_transparency(False)
+
+        # THEN: The Stylesheet should be empty
+        self.assertEqual('QGraphicsView {}', main_display.styleSheet(),
+                         'MainDisplay instance should not be transparent')
+        self.assertFalse(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
+                        'MainDisplay hasnt translucent background')

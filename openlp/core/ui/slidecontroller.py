@@ -495,14 +495,14 @@ class SlideController(DisplayController, RegistryProperties):
             self.on_theme_display(False)
             self.on_hide_display(False)
 
-    def service_previous(self):
+    def service_previous(self, field=None):
         """
         Live event to select the previous service item from the service manager.
         """
         self.keypress_queue.append(ServiceItemAction.Previous)
         self._process_queue()
 
-    def service_next(self):
+    def service_next(self, field=None):
         """
         Live event to select the next service item from the service manager.
         """
