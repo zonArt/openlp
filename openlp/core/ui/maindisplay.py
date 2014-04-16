@@ -168,8 +168,10 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         """
         if enabled:
             self.setAutoFillBackground(False)
+            self.setStyleSheet("QGraphicsView {background: transparent; border: 0px;}")
         else:
             self.setAttribute(QtCore.Qt.WA_NoSystemBackground, False)
+            self.setStyleSheet("QGraphicsView {}")
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
         self.repaint()
 
