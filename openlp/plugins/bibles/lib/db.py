@@ -32,9 +32,11 @@ import logging
 import os
 import re
 import sqlite3
+import time
 
 from PyQt4 import QtCore
 from sqlalchemy import Column, ForeignKey, Table, or_, types, func
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
@@ -235,7 +237,12 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
                 text=verse_text
             )
             self.session.add(verse)
-        self.session.commit()
+        try:
+            self.session.commit()
+        except OperationalError:
+            # Wait 10ms and try again (lp#1154467)
+            time.sleep(0.01)
+            self.session.commit()
 
     def create_verse(self, book_id, chapter, verse, text):
         """
