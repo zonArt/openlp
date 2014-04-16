@@ -73,13 +73,13 @@ class OpenSongBible(BibleDB):
         log.debug('Starting OpenSong import from "%s"' % self.filename)
         if not isinstance(self.filename, str):
             self.filename = str(self.filename, 'utf8')
-        file = None
+        import_file = None
         success = True
         try:
             # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
             # detection, and the two mechanisms together interfere with each other.
-            file = open(self.filename, 'r')
-            opensong = objectify.parse(file)
+            import_file = open(self.filename, 'rb')
+            opensong = objectify.parse(import_file)
             bible = opensong.getroot()
             language_id = self.get_language(bible_name)
             if not language_id:
@@ -93,7 +93,7 @@ class OpenSongBible(BibleDB):
                     log.error('Importing books from "%s" failed' % self.filename)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                db_book = self.create_book(str(book.attrib['n']), book_ref_id, book_details['testament_id'])
+                db_book = self.create_book(book.attrib['n'], book_ref_id, book_details['testament_id'])
                 chapter_number = 0
                 for chapter in book.c:
                     if self.stop_import_flag:
@@ -122,8 +122,8 @@ class OpenSongBible(BibleDB):
                             verse_number += 1
                         self.create_verse(db_book.id, chapter_number, verse_number, self.get_text(verse))
                     self.wizard.increment_progress_bar(
-                        translate('BiblesPlugin.Opensong', 'Importing %s %s...',
-                                  'Importing <book name> <chapter>...')) % (db_book.name, chapter_number)
+                        translate('BiblesPlugin.Opensong', 'Importing %(bookname)s %(chapter)s...' %
+                                  {'bookname':db_book.name, 'chapter': chapter_number}))
                 self.session.commit()
             self.application.process_events()
         except etree.XMLSyntaxError as inst:
@@ -137,8 +137,8 @@ class OpenSongBible(BibleDB):
             log.exception('Loading Bible from OpenSong file failed')
             success = False
         finally:
-            if file:
-                file.close()
+            if import_file:
+                import_file.close()
         if self.stop_import_flag:
             return False
         else:
