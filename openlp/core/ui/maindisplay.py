@@ -352,7 +352,6 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                 self.hide_display(self.hide_mode)
             # Only continue if the visibility wasn't changed during method call.
             elif was_visible == self.isVisible():
-
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
