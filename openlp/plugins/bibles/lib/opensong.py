@@ -123,7 +123,7 @@ class OpenSongBible(BibleDB):
                         self.create_verse(db_book.id, chapter_number, verse_number, self.get_text(verse))
                     self.wizard.increment_progress_bar(
                         translate('BiblesPlugin.Opensong', 'Importing %(bookname)s %(chapter)s...' %
-                                  {'bookname':db_book.name, 'chapter': chapter_number}))
+                                  {'bookname': db_book.name, 'chapter': chapter_number}))
                 self.session.commit()
             self.application.process_events()
         except etree.XMLSyntaxError as inst:
