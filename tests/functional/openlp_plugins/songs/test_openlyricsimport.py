@@ -40,20 +40,8 @@ from openlp.plugins.songs.lib.songimport import SongImport
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'openlyricssongs'))
 SONG_TEST_DATA = {
-    #'Mám zde přítele, Pána Ježíše.xml': {
-    #    'title': 'Mám zde přítele',
-    #    'verses': [
-    #        ('Mám zde přítele,\nPána Ježíše,\na na rámě jeho spoléhám;\nv něm své stěstí mám,\n\
-    #         pokoj nalézám,\nkdyž na rámě jeho spoléhám!', 'v1'),
-    #        ('Boží rámě\nje v soužení náš pevný hrad;\nBoží rámě,\nuč se na ně vždycky spoléhat!', 'c'),
-    #        ('Jak je sladké být,\nv jeho družině,\nkdyž na rámě jeho spoléhám,\njak se života\ncesta zjasňuje\n\
-    #         když na rámě Boží spoléhám!', 'v2'),
-    #        ('Čeho bych se bál,\nčeho strachoval,\nkdyž na rámě Boží spoléhám?\nMír je v duši mé,\n\
-    #         když On blízko je,\nkdyž na rámě jeho spoléhám.', 'v')
-    #    ]
-    #},
-    'What a friend we have in Jesus.xml': {
-        'title': 'What A Friend We Have In Jesus',
+    'Mám zde přítele, Pána Ježíše.xml': {
+        'title': 'Mám zde přítele',
         'verses': [
             ('Mám zde přítele,\nPána Ježíše,\na na rámě jeho spoléhám;\nv něm své stěstí mám,\n\
              pokoj nalézám,\nkdyž na rámě jeho spoléhám!', 'v1'),
@@ -61,7 +49,24 @@ SONG_TEST_DATA = {
             ('Jak je sladké být,\nv jeho družině,\nkdyž na rámě jeho spoléhám,\njak se života\ncesta zjasňuje\n\
              když na rámě Boží spoléhám!', 'v2'),
             ('Čeho bych se bál,\nčeho strachoval,\nkdyž na rámě Boží spoléhám?\nMír je v duši mé,\n\
-             když On blízko je,\nkdyž na rámě jeho spoléhám.', 'v')
+             když On blízko je,\nkdyž na rámě jeho spoléhám.', 'v3')
+        ]
+    },
+    'What a friend we have in Jesus.xml': {
+        'title': 'What A Friend We Have In Jesus',
+        'verses': [
+            ('What a friend we have in Jesus, All ours sins and griefs to bear;\n\
+             What a privilege to carry, Everything to God in prayer!\n\
+             O what peace we often forfeit, O what needless pain we bear;\n\
+             All because we do not carry, Everything to God in prayer!', 'v1'),
+            ('Have we trials and temptations? Is there trouble anywhere?\n\
+             We should never be discouraged, Take it to the Lord in prayer.\n\
+             Can we find a friend so faithful? Who will all our sorrows share?\n\
+             Jesus knows our every weakness; Take it to the Lord in prayer.', 'v2'),
+            ('Are we weak and heavy laden, Cumbered with a load of care?\n\
+             Precious Saviour still our refuge; Take it to the Lord in prayer.\n\
+             Do thy friends despise forsake thee? Take it to the Lord in prayer!\n\
+             In His arms He’ll take and shield thee; Thou wilt find a solace there.', 'v3')
         ]
     }
 }
