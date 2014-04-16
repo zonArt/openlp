@@ -40,8 +40,20 @@ from openlp.plugins.songs.lib.songimport import SongImport
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'openlyricssongs'))
 SONG_TEST_DATA = {
-    'Mám zde přítele, Pána Ježíše.xml': {
-        'title': 'Mám zde přítele',
+    #'Mám zde přítele, Pána Ježíše.xml': {
+    #    'title': 'Mám zde přítele',
+    #    'verses': [
+    #        ('Mám zde přítele,\nPána Ježíše,\na na rámě jeho spoléhám;\nv něm své stěstí mám,\n\
+    #         pokoj nalézám,\nkdyž na rámě jeho spoléhám!', 'v1'),
+    #        ('Boží rámě\nje v soužení náš pevný hrad;\nBoží rámě,\nuč se na ně vždycky spoléhat!', 'c'),
+    #        ('Jak je sladké být,\nv jeho družině,\nkdyž na rámě jeho spoléhám,\njak se života\ncesta zjasňuje\n\
+    #         když na rámě Boží spoléhám!', 'v2'),
+    #        ('Čeho bych se bál,\nčeho strachoval,\nkdyž na rámě Boží spoléhám?\nMír je v duši mé,\n\
+    #         když On blízko je,\nkdyž na rámě jeho spoléhám.', 'v')
+    #    ]
+    #},
+    'What a friend we have in Jesus.xml': {
+        'title': 'What A Friend We Have In Jesus',
         'verses': [
             ('Mám zde přítele,\nPána Ježíše,\na na rámě jeho spoléhám;\nv něm své stěstí mám,\n\
              pokoj nalézám,\nkdyž na rámě jeho spoléhám!', 'v1'),
@@ -75,7 +87,7 @@ class TestOpenLyricsImport(TestCase):
 
     def file_import_test(self):
         """
-        Test the actual import of real song files and check that the importer is called.
+        Test the actual import of real song files
         """
         # GIVEN: Test files with a mocked out "manager" and a mocked out "import_wizard"
         for song_file in SONG_TEST_DATA:
