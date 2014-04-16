@@ -320,7 +320,7 @@ class Ui_MainWindow(object):
         # i18n add Language Actions
         add_actions(self.settings_language_menu, (self.auto_language_item, None))
         add_actions(self.settings_language_menu, self.language_group.actions())
-       # Qt on OS X look for keywords in the menu items title to determine which menu items get added to the main menu.
+        # Qt on OS X look for keywords in the menu items title to determine which menu items get added to the main menu.
         # If we are running on Mac OS X the menu items whose title contains those keywords but don't belong in the main
         # menu need to be marked as such with QAction.NoRole.
         if sys.platform == 'darwin':
