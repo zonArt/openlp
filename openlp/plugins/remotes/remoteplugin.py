@@ -28,7 +28,6 @@
 ###############################################################################
 
 import logging
-import time
 
 from PyQt4 import QtGui
 
@@ -69,13 +68,13 @@ class RemotesPlugin(Plugin):
         log.debug('initialise')
         super(RemotesPlugin, self).initialise()
         self.server = OpenLPServer()
-        self.default_theme_label = QtGui.QToolButton(self.main_window.status_bar)
-        self.default_theme_label.setCheckable(False)
-        self.default_theme_label.setAutoRaise(True)
-        self.default_theme_label.setObjectName('default_theme_label')
-        self.main_window.status_bar.insertPermanentWidget(2, self.default_theme_label)
-        self.default_theme_label.hide()
-        self.server.default_theme_label = self.default_theme_label
+        self.remote_server_icon = QtGui.QToolButton(self.main_window.status_bar)
+        self.remote_server_icon.setCheckable(False)
+        self.remote_server_icon.setAutoRaise(True)
+        self.remote_server_icon.setObjectName('remote_server_icon')
+        self.main_window.status_bar.insertPermanentWidget(2, self.remote_server_icon)
+        self.settings_tab.remote_server_icon = self.remote_server_icon
+        self.settings_tab.generate_icon()
 
     def finalise(self):
         """
@@ -113,9 +112,11 @@ class RemotesPlugin(Plugin):
 
     def config_update(self):
         """
-        Called when Config is changed to restart the server on new address or port
+        Called when Config is changed to requests a restart with the server on new address or port
         """
         log.debug('remote config changed')
-        self.finalise()
-        time.sleep(1)
-        self.initialise()
+        QtGui.QMessageBox.information(self.main_window,
+                                      translate('RemotePlugin', 'Server Config Change'),
+                                      translate('RemotePlugin', 'Server configuration changes will require a restart '
+                                                'to take effect.'),
+                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))

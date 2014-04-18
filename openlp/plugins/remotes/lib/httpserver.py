@@ -38,10 +38,9 @@ import os
 import logging
 import time
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from openlp.core.common import AppLocation, Settings, RegistryProperties
-from openlp.core.lib import build_icon
 
 from openlp.plugins.remotes.lib import HttpRouter
 
@@ -72,7 +71,21 @@ class CustomHandler(BaseHTTPRequestHandler, HttpRouter):
         self.do_post_processor()
 
 
-class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
+class StoppableHttpServer(HTTPServer):
+    """
+    Http server that reacts to self.stop flag
+    """
+
+    def serve_forever(self):
+        """
+        Handle one request at a time until stopped.
+        """
+        self.stop = False
+        while not self.stop:
+            self.handle_request()
+
+
+class ThreadingHTTPServer(ThreadingMixIn, StoppableHttpServer):
     pass
 
 
@@ -95,6 +108,10 @@ class HttpThread(QtCore.QThread):
         """
         self.http_server.start_server()
 
+    def stop(self):
+        log.debug("stop called")
+        self.http_server.stop = True
+
 
 class OpenLPServer(RegistryProperties):
     def __init__(self):
@@ -112,25 +129,19 @@ class OpenLPServer(RegistryProperties):
         Start the correct server and save the handler
         """
         address = Settings().value(self.settings_section + '/ip address')
-        if Settings().value(self.settings_section + '/https enabled'):
+        self.address = address
+        self.is_secure = Settings().value(self.settings_section + '/https enabled')
+        self.needs_authentication = Settings().value(self.settings_section + '/authentication enabled')
+        if self.is_secure:
             port = Settings().value(self.settings_section + '/https port')
+            self.port = port
             self.start_server_instance(address, port, HTTPSServer)
         else:
             port = Settings().value(self.settings_section + '/port')
+            self.port = port
             self.start_server_instance(address, port, ThreadingHTTPServer)
         if hasattr(self, 'httpd') and self.httpd:
             self.httpd.serve_forever()
-            icon = QtGui.QImage(':/remote/network_server.png')
-            icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
-            overlay = QtGui.QImage(':/remote/network_ssl.png')
-            overlay = overlay.scaled(40, 40, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
-            painter = QtGui.QPainter(icon)
-            painter.drawImage(0, 0, overlay)
-            painter.end()
-            print("Hi")
-            self.default_theme_label.setText("hello")
-            self.default_theme_label.setIcon(build_icon(icon))
-            self.default_theme_label.show()
         else:
             log.debug('Failed to start server')
 
@@ -149,7 +160,7 @@ class OpenLPServer(RegistryProperties):
                 log.debug("Server started for class %s %s %d" % (server_class, address, port))
             except OSError:
                 log.debug("failed to start http server thread state %d %s" %
-                          (loop, self.http_thread.isRunning() is True))
+                          (loop, self.http_thread.isRunning()))
                 loop += 1
                 time.sleep(0.1)
             except:
@@ -159,12 +170,13 @@ class OpenLPServer(RegistryProperties):
         """
         Stop the server
         """
-        self.http_thread.exit(0)
+        if self.http_thread.isRunning():
+            self.http_thread.stop()
         self.httpd = None
         log.debug('Stopped the server.')
 
 
-class HTTPSServer(HTTPServer):
+class HTTPSServer(StoppableHttpServer):
     def __init__(self, address, handler):
         """
         Initialise the secure handlers for the SSL server if required.s

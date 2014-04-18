@@ -32,7 +32,7 @@ import os.path
 from PyQt4 import QtCore, QtGui, QtNetwork
 
 from openlp.core.common import AppLocation, Settings, translate
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTab, build_icon
 
 ZERO_URL = '0.0.0.0'
 
@@ -234,6 +234,7 @@ class RemoteTab(SettingsTab):
         """
         Load the configuration and update the server configuration if necessary
         """
+        self.is_secure = Settings().value(self.settings_section + '/https enabled')
         self.port_spin_box.setValue(Settings().value(self.settings_section + '/port'))
         self.https_port_spin_box.setValue(Settings().value(self.settings_section + '/https port'))
         self.address_edit.setText(Settings().value(self.settings_section + '/ip address'))
@@ -263,9 +264,7 @@ class RemoteTab(SettingsTab):
                 Settings().value(self.settings_section + '/port') != self.port_spin_box.value() or \
                 Settings().value(self.settings_section + '/https port') != self.https_port_spin_box.value() or \
                 Settings().value(self.settings_section + '/https enabled') != \
-                self.https_settings_group_box.isChecked() or \
-                Settings().value(self.settings_section + '/authentication enabled') != \
-                self.user_login_group_box.isChecked():
+                self.https_settings_group_box.isChecked():
             self.settings_form.register_post_process('remotes_config_updated')
         Settings().setValue(self.settings_section + '/port', self.port_spin_box.value())
         Settings().setValue(self.settings_section + '/https port', self.https_port_spin_box.value())
@@ -275,6 +274,7 @@ class RemoteTab(SettingsTab):
         Settings().setValue(self.settings_section + '/authentication enabled', self.user_login_group_box.isChecked())
         Settings().setValue(self.settings_section + '/user id', self.user_id.text())
         Settings().setValue(self.settings_section + '/password', self.password.text())
+        self.generate_icon()
 
     def on_twelve_hour_check_box_changed(self, check_state):
         """
@@ -290,3 +290,25 @@ class RemoteTab(SettingsTab):
         Invert the HTTP group box based on Https group settings
         """
         self.http_settings_group_box.setEnabled(not self.https_settings_group_box.isChecked())
+
+    def generate_icon(self):
+        """
+        Generate icon for main window
+        """
+        self.remote_server_icon.hide()
+        icon = QtGui.QImage(':/remote/network_server.png')
+        icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        if self.is_secure:
+            overlay = QtGui.QImage(':/remote/network_ssl.png')
+            overlay = overlay.scaled(60, 60, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            painter = QtGui.QPainter(icon)
+            painter.drawImage(0, 0, overlay)
+            painter.end()
+        if Settings().value(self.settings_section + '/authentication enabled'):
+            overlay = QtGui.QImage(':/remote/network_auth.png')
+            overlay = overlay.scaled(60, 60, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            painter = QtGui.QPainter(icon)
+            painter.drawImage(20, 0, overlay)
+            painter.end()
+        self.remote_server_icon.setIcon(build_icon(icon))
+        self.remote_server_icon.show()

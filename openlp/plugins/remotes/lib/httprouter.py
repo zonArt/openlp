@@ -149,11 +149,11 @@ class HttpRouter(RegistryProperties):
         """
         Initialise the router stack and any other variables.
         """
-        authcode = "%s:%s" % (Settings().value('remotes/user id'), Settings().value('remotes/password'))
+        auth_code = "%s:%s" % (Settings().value('remotes/user id'), Settings().value('remotes/password'))
         try:
-            self.auth = base64.b64encode(authcode)
+            self.auth = base64.b64encode(auth_code)
         except TypeError:
-            self.auth = base64.b64encode(authcode.encode()).decode()
+            self.auth = base64.b64encode(auth_code.encode()).decode()
         self.routes = [
             ('^/$', {'function': self.serve_file, 'secure': False}),
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
@@ -376,7 +376,6 @@ class HttpRouter(RegistryProperties):
         Examines the extension of the file and determines what the content_type should be, defaults to text/plain
         Returns the extension and the content_type
         """
-        content_type = 'text/plain'
         ext = os.path.splitext(file_name)[1]
         content_type = FILE_TYPES.get(ext, 'text/plain')
         return ext, content_type
@@ -439,7 +438,7 @@ class HttpRouter(RegistryProperties):
         if plugin.status == PluginStatus.Active:
             try:
                 text = json.loads(self.request_data)['request']['text']
-            except KeyError as ValueError:
+            except KeyError:
                 return self.do_http_error()
             text = urllib.parse.unquote(text)
             self.alerts_manager.emit(QtCore.SIGNAL('alerts_text'), [text])
@@ -488,7 +487,7 @@ class HttpRouter(RegistryProperties):
         if self.request_data:
             try:
                 data = json.loads(self.request_data)['request']['id']
-            except KeyError as ValueError:
+            except KeyError:
                 return self.do_http_error()
             log.info(data)
             # This slot expects an int within a list.
@@ -547,7 +546,7 @@ class HttpRouter(RegistryProperties):
         """
         try:
             text = json.loads(self.request_data)['request']['text']
-        except KeyError as ValueError:
+        except KeyError:
             return self.do_http_error()
         text = urllib.parse.unquote(text)
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
@@ -563,12 +562,12 @@ class HttpRouter(RegistryProperties):
         Go live on an item of type ``plugin``.
         """
         try:
-            id = json.loads(self.request_data)['request']['id']
-        except KeyError as ValueError:
+            request_id = json.loads(self.request_data)['request']['id']
+        except KeyError:
             return self.do_http_error()
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
-            plugin.media_item.emit(QtCore.SIGNAL('%s_go_live' % plugin_name), [id, True])
+            plugin.media_item.emit(QtCore.SIGNAL('%s_go_live' % plugin_name), [request_id, True])
         return self.do_http_success()
 
     def add_to_service(self, plugin_name):
@@ -576,11 +575,11 @@ class HttpRouter(RegistryProperties):
         Add item of type ``plugin_name`` to the end of the service.
         """
         try:
-            id = json.loads(self.request_data)['request']['id']
-        except KeyError as ValueError:
+            request_id = json.loads(self.request_data)['request']['id']
+        except KeyError:
             return self.do_http_error()
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
-            item_id = plugin.media_item.create_item_from_id(id)
+            item_id = plugin.media_item.create_item_from_id(request_id)
             plugin.media_item.emit(QtCore.SIGNAL('%s_add_to_service' % plugin_name), [item_id, True])
         self.do_http_success()
