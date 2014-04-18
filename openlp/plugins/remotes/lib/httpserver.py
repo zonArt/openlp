@@ -71,21 +71,7 @@ class CustomHandler(BaseHTTPRequestHandler, HttpRouter):
         self.do_post_processor()
 
 
-class StoppableHttpServer(HTTPServer):
-    """
-    Http server that reacts to self.stop flag
-    """
-
-    def serve_forever(self):
-        """
-        Handle one request at a time until stopped.
-        """
-        self.stop = False
-        while not self.stop:
-            self.handle_request()
-
-
-class ThreadingHTTPServer(ThreadingMixIn, StoppableHttpServer):
+class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     pass
 
 
@@ -176,7 +162,7 @@ class OpenLPServer(RegistryProperties):
         log.debug('Stopped the server.')
 
 
-class HTTPSServer(StoppableHttpServer):
+class HTTPSServer(HTTPServer):
     def __init__(self, address, handler):
         """
         Initialise the secure handlers for the SSL server if required.s
