@@ -104,4 +104,4 @@ class TestBibleManager(TestCase, TestMixin):
         results = parse_reference('1 Timothy 1:1-2:1', self.manager.db_cache['tests'], MagicMock(), 54)
         # THEN a verse array should be returned
         self.assertEqual([(54, 1, 1, -1), (54, 2, 1, 1)], results, "The bible verses should matches the expected "
-                                                                    "results")
+                                                                   "results")
