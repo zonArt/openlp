@@ -35,7 +35,7 @@ from bs4 import BeautifulSoup
 from tests.functional import patch, MagicMock
 from openlp.plugins.bibles.lib.http import BSExtract
 
-#TODO: Items left to test
+# TODO: Items left to test
 #   BGExtract
 #       __init__
 #       _remove_elements
@@ -68,7 +68,7 @@ class TestBSExtract(TestCase):
     """
     Test the BSExtractClass
     """
-    #TODO: Items left to test
+    # TODO: Items left to test
     #   BSExtract
     #       __init__
     #       get_bible_chapter

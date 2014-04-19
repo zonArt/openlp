@@ -452,6 +452,7 @@ class HttpRouter(RegistryProperties):
         """
         Perform an action on the slide controller.
         """
+        log.debug("controller_text var = %s" % var)
         current_item = self.live_controller.service_item
         data = []
         if current_item:

@@ -115,14 +115,14 @@ class JenkinsTrigger(object):
         url = build.info['url']
         print('[%s] %s' % (result_string, url))
         # On failure open the browser.
-        #if result_string == "FAILURE":
+        # if result_string == "FAILURE":
         #    url += 'console'
         #    Popen(('xdg-open', url), stderr=PIPE)
 
 
 def get_repo_name():
     """
-    This returns the name of branch of the wokring directory. For example it returns *lp:~googol/openlp/render*.
+    This returns the name of branch of the working directory. For example it returns *lp:~googol/openlp/render*.
     """
     # Run the bzr command.
     bzr = Popen(('bzr', 'info'), stdout=PIPE, stderr=PIPE)
@@ -166,7 +166,7 @@ def main():
                       help='Disable output.')
     parser.add_option('-b', '--open-browser', dest='open_browser', action="store_true", default=False,
                       help='Opens the jenkins page in your browser.')
-    #parser.add_option('-e', '--open-browser-on-error', dest='open_browser_on_error', action="store_true",
+    # parser.add_option('-e', '--open-browser-on-error', dest='open_browser_on_error', action="store_true",
     #                  default=False, help='Opens the jenkins page in your browser in case a test fails.')
     options, args = parser.parse_args(sys.argv)
 
@@ -177,7 +177,7 @@ def main():
         jenkins_trigger = JenkinsTrigger(token)
         try:
             jenkins_trigger.trigger_build()
-        except HTTPError as e:
+        except HTTPError:
             print("Wrong token.")
             return
         # Open the browser before printing the output.
