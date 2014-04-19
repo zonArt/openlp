@@ -2,6 +2,7 @@
 *.*~
 \#*\#
 *.eric4project
+*.eric5project
 *.ropeproject
 *.e4*
 .eric4project

@@ -180,4 +180,4 @@ class TestBSExtract(TestCase):
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')
         self.assertFalse(self.mock_log.error.called, 'log.error should not have been called')
         self.assertFalse(self.mock_send_error_message.called, 'send_error_message should not have been called')
-        self.assertEquals(result, ['Genesis', 'Leviticus'])
+        self.assertEqual(result, ['Genesis', 'Leviticus'])

@@ -27,49 +27,46 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test for proper bzr tags.
+Package to test the openlp.core.ui.firsttimeform package.
 """
-import os
-
 from unittest import TestCase
 
-from subprocess import Popen, PIPE
+from tests.functional import MagicMock
 
-TAGS = [
-    ['1.9.0', '1'],
-    ['1.9.1', '775'],
-    ['1.9.2', '890'],
-    ['1.9.3', '1063'],
-    ['1.9.4', '1196'],
-    ['1.9.5', '1421'],
-    ['1.9.6', '1657'],
-    ['1.9.7', '1761'],
-    ['1.9.8', '1856'],
-    ['1.9.9', '1917'],
-    ['1.9.10', '2003'],
-    ['1.9.11', '2039'],
-    ['1.9.12', '2063'],
-    ['2.0', '2118'],
-    ['2.0.1', '?'],
-    ['2.0.2', '?'],
-    ['2.0.3', '?'],
-    ['2.1.0', '2119']
-]
+from tests.helpers.testmixin import TestMixin
+from openlp.core.common import Registry
+from openlp.core.ui.firsttimeform import FirstTimeForm
 
 
-class TestBzrTags(TestCase):
+class TestFirstTimeForm(TestCase, TestMixin):
 
-    def bzr_tags_test(self):
+    def setUp(self):
+        screens = MagicMock()
+        self.get_application()
+        Registry.create()
+        Registry().register('application', self.app)
+        self.first_time_form = FirstTimeForm(screens)
+
+    def test_access_to_config(self):
         """
-        Test for proper bzr tags
+        Test if we can access the First Time Form's config file
         """
-        # GIVEN: A bzr branch
-        path = os.path.dirname(__file__)
+        # GIVEN A new First Time Form instance.
 
-        # WHEN getting the branches tags
-        bzr = Popen(('bzr', 'tags', '--directory=' + path), stdout=PIPE)
-        stdout = bzr.communicate()[0]
-        tags = [line.decode('utf-8').split() for line in stdout.splitlines()]
+        # WHEN The default First Time Form is built.
 
-        # THEN the tags should match the accepted tags
-        self.assertEqual(TAGS, tags, 'List of tags should match')
+        # THEN The First Time Form web configuration file should be accessable.
+        self.assertTrue(self.first_time_form.web_access,
+                        'First Time Wizard\'s web configuration file should be available')
+
+    def test_parsable_config(self):
+        """
+        Test if the First Time Form's config file is parsable
+        """
+        # GIVEN A new First Time Form instance.
+
+        # WHEN The default First Time Form is built.
+
+        # THEN The First Time Form web configuration file should be parsable
+        self.assertTrue(self.first_time_form.songs_url,
+                        'First Time Wizard\'s web configuration file should be parsable')
