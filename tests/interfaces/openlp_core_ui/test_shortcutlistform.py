@@ -64,14 +64,13 @@ class TestShortcutform(TestCase, TestMixin):
         """
         # GIVEN: A button.
         button = QtGui.QPushButton()
-        checked= True
+        checked = True
         enabled = True
         text = "new!"
 
         # WHEN: Call the method.
         with patch('PyQt4.QtGui.QPushButton.setChecked') as mocked_check_method:
             self.form._adjust_button(button, checked, enabled, text)
-
 
             # THEN: The button should be changed.
             self.assertEqual(button.text(), text, "The text should match.")
