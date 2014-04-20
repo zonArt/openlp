@@ -70,7 +70,7 @@ class TestFormattingTagForm(TestCase):
         form.save_button = MagicMock()
 
         # WHEN: on_text_edited is called with an arbitrary value
-        #form.on_text_edited('text')
+        # form.on_text_edited('text')
 
         # THEN: setEnabled and setDefault should have been called on save_push_button
-        #form.save_button.setEnabled.assert_called_with(True)
+        # form.save_button.setEnabled.assert_called_with(True)

@@ -47,7 +47,7 @@ class TestPptviewController(TestCase, TestMixin):
     """
     Test the PptviewController Class
     """
-#TODO: Items left to test
+# TODO: Items left to test
 #   PptviewController
 #       start_process(self)
 #       kill
@@ -108,7 +108,7 @@ class TestPptviewDocument(TestCase):
     """
     Test the PptviewDocument Class
     """
-    #TODO: Items left to test
+    # TODO: Items left to test
     #   PptviewDocument
     #       __init__
     #       create_thumbnails
