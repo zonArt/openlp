@@ -248,6 +248,9 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         elif item.is_capable(ItemCapabilities.CanSoftBreak):
             pages = []
             if '[---]' in text:
+                # Remove two or more option slide breaks next to each other (causing infinite loop).
+                while u'\n[---]\n[---]\n' in text:
+                    text = text.replace(u'\n[---]\n[---]\n', u'\n[---]\n')
                 while True:
                     slides = text.split('\n[---]\n', 2)
                     # If there are (at least) two occurrences of [---] we use the first two slides (and neglect the last
