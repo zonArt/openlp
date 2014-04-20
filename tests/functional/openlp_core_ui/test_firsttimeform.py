@@ -27,9 +27,46 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlp` module contains all the project produced OpenLP functionality
+Package to test the openlp.core.ui.firsttimeform package.
 """
+from unittest import TestCase
 
-from openlp import core, plugins
+from tests.functional import MagicMock
 
-__all__ = ['core', 'plugins']
+from tests.helpers.testmixin import TestMixin
+from openlp.core.common import Registry
+from openlp.core.ui.firsttimeform import FirstTimeForm
+
+
+class TestFirstTimeForm(TestCase, TestMixin):
+
+    def setUp(self):
+        screens = MagicMock()
+        self.get_application()
+        Registry.create()
+        Registry().register('application', self.app)
+        self.first_time_form = FirstTimeForm(screens)
+
+    def test_access_to_config(self):
+        """
+        Test if we can access the First Time Form's config file
+        """
+        # GIVEN A new First Time Form instance.
+
+        # WHEN The default First Time Form is built.
+
+        # THEN The First Time Form web configuration file should be accessable.
+        self.assertTrue(self.first_time_form.web_access,
+                        'First Time Wizard\'s web configuration file should be available')
+
+    def test_parsable_config(self):
+        """
+        Test if the First Time Form's config file is parsable
+        """
+        # GIVEN A new First Time Form instance.
+
+        # WHEN The default First Time Form is built.
+
+        # THEN The First Time Form web configuration file should be parsable
+        self.assertTrue(self.first_time_form.songs_url,
+                        'First Time Wizard\'s web configuration file should be parsable')

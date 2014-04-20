@@ -67,7 +67,7 @@ class ThemeScreenshotThread(QtCore.QThread):
             title = config.get('theme_%s' % theme, 'title')
             filename = config.get('theme_%s' % theme, 'filename')
             screenshot = config.get('theme_%s' % theme, 'screenshot')
-            urllib.request.urlretrieve('%s%s' % (self.parent().web, screenshot),
+            urllib.request.urlretrieve('%s%s' % (self.parent().themes_url, screenshot),
                                        os.path.join(gettempdir(), 'openlp', screenshot))
             item = QtGui.QListWidgetItem(title, self.parent().themes_list_widget)
             item.setData(QtCore.Qt.UserRole, filename)
@@ -96,6 +96,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         if self.web_access:
             files = self.web_access.read()
             self.config.read_string(files.decode())
+            self.web = self.config.get('general', 'base url')
+            self.songs_url = self.web + self.config.get('songs', 'directory') + '/'
+            self.bibles_url = self.web + self.config.get('bibles', 'directory') + '/'
+            self.themes_url = self.web + self.config.get('themes', 'directory') + '/'
         self.update_screen_list_combo()
         self.was_download_cancelled = False
         self.theme_screenshot_thread = None
@@ -341,7 +345,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
             item = self.songs_list_widget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole)
-                size = self._get_file_size('%s%s' % (self.web, filename))
+                size = self._get_file_size('%s%s' % (self.songs_url, filename))
                 self.max_progress += size
         # Loop through the Bibles list and increase for each selected item
         iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
@@ -350,7 +354,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
             item = iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                 filename = item.data(0, QtCore.Qt.UserRole)
-                size = self._get_file_size('%s%s' % (self.web, filename))
+                size = self._get_file_size('%s%s' % (self.bibles_url, filename))
                 self.max_progress += size
             iterator += 1
         # Loop through the themes list and increase for each selected item
@@ -359,7 +363,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
             item = self.themes_list_widget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole)
-                size = self._get_file_size('%s%s' % (self.web, filename))
+                size = self._get_file_size('%s%s' % (self.themes_url, filename))
                 self.max_progress += size
         if self.max_progress:
             # Add on 2 for plugins status setting plus a "finished" point.
@@ -435,7 +439,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
                     self._increment_progress_bar(self.downloading % filename, 0)
                     self.previous_size = 0
                     destination = os.path.join(songs_destination, str(filename))
-                    self.url_get_file('%s%s' % (self.web, filename), destination)
+                    self.url_get_file('%s%s' % (self.songs_url, filename), destination)
             # Download Bibles
             bibles_iterator = QtGui.QTreeWidgetItemIterator(
                 self.bibles_tree_widget)
@@ -445,7 +449,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
                     bible = item.data(0, QtCore.Qt.UserRole)
                     self._increment_progress_bar(self.downloading % bible, 0)
                     self.previous_size = 0
-                    self.url_get_file('%s%s' % (self.web, bible), os.path.join(bibles_destination, bible))
+                    self.url_get_file('%s%s' % (self.bibles_url, bible), os.path.join(bibles_destination, bible))
                 bibles_iterator += 1
             # Download themes
             for i in range(self.themes_list_widget.count()):
@@ -454,7 +458,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
                     theme = item.data(QtCore.Qt.UserRole)
                     self._increment_progress_bar(self.downloading % theme, 0)
                     self.previous_size = 0
-                    self.url_get_file('%s%s' % (self.web, theme), os.path.join(themes_destination, theme))
+                    self.url_get_file('%s%s' % (self.themes_url, theme), os.path.join(themes_destination, theme))
         # Set Default Display
         if self.display_combo_box.currentIndex() != -1:
             Settings().setValue('core/monitor', self.display_combo_box.currentIndex())

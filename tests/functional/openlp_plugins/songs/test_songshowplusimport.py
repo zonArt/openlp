@@ -95,7 +95,7 @@ class TestSongShowPlusImport(TestCase):
 
                 # THEN: do_import should return none and the progress bar maximum should not be set.
                 self.assertIsNone(importer.do_import(), 'do_import should return None when import_source is not a list')
-                self.assertEquals(mocked_import_wizard.progress_bar.setMaximum.called, False,
+                self.assertEqual(mocked_import_wizard.progress_bar.setMaximum.called, False,
                                   'setMaximum on import_wizard.progress_bar should not have been called')
 
     def valid_import_source_test(self):
@@ -143,7 +143,7 @@ class TestSongShowPlusImport(TestCase):
 
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
-                self.assertEquals(importer.to_openlp_verse_tag(original_tag), openlp_tag,
+                self.assertEqual(importer.to_openlp_verse_tag(original_tag), openlp_tag,
                                   'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"' %
                                   (openlp_tag, original_tag))
 
@@ -172,6 +172,6 @@ class TestSongShowPlusImport(TestCase):
 
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
-                self.assertEquals(importer.to_openlp_verse_tag(original_tag, ignore_unique=True), openlp_tag,
+                self.assertEqual(importer.to_openlp_verse_tag(original_tag, ignore_unique=True), openlp_tag,
                                   'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"' %
                                   (openlp_tag, original_tag))

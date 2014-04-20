@@ -27,40 +27,30 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Functional tests to test the AppLocation class and related methods.
+This module contains tests for the ZionWorx song importer.
 """
 
 from unittest import TestCase
 
-from openlp.core.common import de_hump
+from tests.functional import MagicMock, patch
+from openlp.plugins.songs.lib.zionworximport import ZionWorxImport
+from openlp.plugins.songs.lib.songimport import SongImport
 
 
-class TestInitFunctions(TestCase):
+class TestZionWorxImport(TestCase):
     """
-    A test suite to test out various functions in the __init__ class.
+    Test the functions in the :mod:`zionworximport` module.
     """
-    def de_hump_conversion_test(self):
+    def create_importer_test(self):
         """
-        Test the de_hump function with a class name
+        Test creating an instance of the ZionWorx file importer
         """
-        # GIVEN: a Class name in Camel Case
-        string = "MyClass"
+        # GIVEN: A mocked out SongImport class, and a mocked out "manager"
+        with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
+            mocked_manager = MagicMock()
 
-        # WHEN: we call de_hump
-        new_string = de_hump(string)
+            # WHEN: An importer object is created
+            importer = ZionWorxImport(mocked_manager, filenames=[])
 
-        # THEN: the new string should be converted to python format
-        self.assertTrue(new_string == "my_class", 'The class name should have been converted')
-
-    def de_hump_static_test(self):
-        """
-        Test the de_hump function with a python string
-        """
-        # GIVEN: a Class name in Camel Case
-        string = "my_class"
-
-        # WHEN: we call de_hump
-        new_string = de_hump(string)
-
-        # THEN: the new string should be converted to python format
-        self.assertTrue(new_string == "my_class", 'The class name should have been preserved')
+            # THEN: The importer should be an instance of SongImport
+            self.assertIsInstance(importer, SongImport)
