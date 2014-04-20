@@ -95,12 +95,12 @@ class ImagePlugin(Plugin):
         """
         Called to define all translatable texts of the plugin.
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('ImagePlugin', 'Image', 'name singular'),
             'plural': translate('ImagePlugin', 'Images', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {'title': translate('ImagePlugin', 'Images', 'container title')}
         # Middle Header Bar
         tooltips = {

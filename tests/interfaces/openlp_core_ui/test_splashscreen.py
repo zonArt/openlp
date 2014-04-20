@@ -27,9 +27,34 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlp` module contains all the project produced OpenLP functionality
+Test the openlp.core.ui.splashscreen class.
 """
+from unittest import TestCase
 
-from openlp import core, plugins
+from PyQt4 import QtGui
 
-__all__ = ['core', 'plugins']
+from openlp.core.ui import SplashScreen
+from tests.helpers.testmixin import TestMixin
+
+
+class TestSplashScreen(TestCase, TestMixin):
+    def setUp(self):
+        self.get_application()
+        self.main_window = QtGui.QMainWindow()
+
+    def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        del self.app
+        del self.main_window
+
+    def setupUi_test(self):
+        """
+        Test if the setupUi method....
+        """
+        # GIVEN: A splash screen instance.
+        splash = SplashScreen()
+
+        # THEN: Check if the splash has a setupUi method.
+        assert hasattr(splash, 'setupUi'), 'The Splash Screen should have a setupUi() method.'

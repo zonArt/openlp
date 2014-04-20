@@ -108,8 +108,12 @@ class ItemCapabilities(object):
     ``CanAutoStartForLive``
             The capability to ignore the do not play if display blank flag.
 
+    ``CanEditTitle``
+            The capability to edit the title of the item
+
     ``IsOptical``
             .Determines is the service_item is based on an optical device
+
     """
     CanPreview = 1
     CanEdit = 2
@@ -127,7 +131,8 @@ class ItemCapabilities(object):
     CanWordSplit = 14
     HasBackgroundAudio = 15
     CanAutoStartForLive = 16
-    IsOptical = 17
+    CanEditTitle = 17
+    IsOptical = 18
 
 
 class ServiceItem(RegistryProperties):
@@ -386,7 +391,7 @@ class ServiceItem(RegistryProperties):
         self.will_auto_start = header.get('will_auto_start', False)
         self.processor = header.get('processor', None)
         self.has_original_files = True
-        #TODO Remove me in 2,3 build phase
+        # TODO: Remove me in 2,3 build phase
         if self.is_capable(ItemCapabilities.HasDetailedTitleDisplay):
             self.capabilities.remove(ItemCapabilities.HasDetailedTitleDisplay)
             self.processor = self.title
@@ -429,7 +434,8 @@ class ServiceItem(RegistryProperties):
         """
         Returns the title of the service item.
         """
-        if self.is_text() or self.is_capable(ItemCapabilities.IsOptical):
+        if self.is_text() or self.is_capable(ItemCapabilities.IsOptical) \
+                or self.is_capable(temCapabilities.CanEditTitle):
             return self.title
         else:
             if len(self._raw_frames) > 1:

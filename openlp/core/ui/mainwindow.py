@@ -56,29 +56,27 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 log = logging.getLogger(__name__)
 
 MEDIA_MANAGER_STYLE = """
-  QToolBox {
+QToolBox {
     padding-bottom: 2px;
-  }
-  QToolBox::tab {
+}
+QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(button), stop: 0.5 palette(button),
-        stop: 1.0 palette(mid));
-    border: 1px groove palette(mid);
-    border-radius: 5px;
-  }
-  QToolBox::tab:selected {
+        stop: 0 palette(button), stop: 1.0 palette(mid));
+    border: 1px solid palette(mid);
+    border-radius: 3px;
+}
+QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(light), stop: 0.5 palette(midlight),
-        stop: 1.0 palette(dark));
-    border: 1px groove palette(dark);
+        stop: 0 palette(light), stop: 1.0 palette(button));
+    border: 1px solid palette(mid);
     font-weight: bold;
-  }
+}
 """
 
 PROGRESSBAR_STYLE = """
-    QProgressBar{
-       height: 10px;
-    }
+QProgressBar{
+    height: 10px;
+}
 """
 
 
@@ -369,7 +367,7 @@ class Ui_MainWindow(object):
         self.settings_menu.setTitle(translate('OpenLP.MainWindow', '&Settings'))
         self.settings_language_menu.setTitle(translate('OpenLP.MainWindow', '&Language'))
         self.help_menu.setTitle(translate('OpenLP.MainWindow', '&Help'))
-        self.media_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Media Manager'))
+        self.media_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Library'))
         self.service_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Service Manager'))
         self.theme_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Theme Manager'))
         self.file_new_item.setText(translate('OpenLP.MainWindow', '&New'))
@@ -396,12 +394,12 @@ class Ui_MainWindow(object):
         self.settings_shortcuts_item.setText(translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
         self.formatting_tag_item.setText(translate('OpenLP.MainWindow', 'Configure &Formatting Tags...'))
         self.settings_configure_item.setText(translate('OpenLP.MainWindow', '&Configure OpenLP...'))
-        self.settings_export_item.setStatusTip(translate('OpenLP.MainWindow',
-                                               'Export OpenLP settings to a specified *.config file'))
+        self.settings_export_item.setStatusTip(
+            translate('OpenLP.MainWindow', 'Export OpenLP settings to a specified *.config file'))
         self.settings_export_item.setText(translate('OpenLP.MainWindow', 'Settings'))
-        self.settings_import_item.setStatusTip(translate('OpenLP.MainWindow',
-                                               'Import OpenLP settings from a specified *.config file previously '
-                                               'exported on this or another machine'))
+        self.settings_import_item.setStatusTip(
+            translate('OpenLP.MainWindow', 'Import OpenLP settings from a specified *.config file previously '
+                                           'exported on this or another machine'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
         self.view_media_manager_item.setText(translate('OpenLP.MainWindow', '&Media Manager'))
         self.view_media_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Media Manager'))
@@ -598,13 +596,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.live_controller.display.setFocus()
         self.activateWindow()
         if self.arguments:
-            args = []
-            for a in self.arguments:
-                args.extend([a])
-            filename = args[0]
-            if not isinstance(filename, str):
-                filename = str(filename, sys.getfilesystemencoding())
-            self.service_manager_contents.load_file(filename)
+            self.open_cmd_line_files()
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_Last_file()
         self.timer_version_id = self.startTimer(1000)
@@ -868,7 +860,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 section = 'general'
                 section_key = section + "/" + key
             # Make sure it's a valid section for us.
-            if not section in setting_sections:
+            if section not in setting_sections:
                 continue
         # We have a good file, import it.
         for section_key in import_keys:
@@ -1364,3 +1356,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if self.new_data_path == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove('advanced/data path')
         self.application.set_normal_cursor()
+
+    def open_cmd_line_files(self):
+        """
+        Open files passed in through command line arguments
+        """
+        args = []
+        for a in self.arguments:
+            args.extend([a])
+        for arg in args:
+            filename = arg
+            if not isinstance(filename, str):
+                filename = str(filename, sys.getfilesystemencoding())
+            if filename.endswith(('.osz', '.oszl')):
+                self.service_manager_contents.load_file(filename)
