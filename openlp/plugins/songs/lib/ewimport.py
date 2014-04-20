@@ -78,8 +78,6 @@ class EasyWorshipSongImport(SongImport):
     def do_import(self):
         """
         Determines the type of file to import and calls the appropiate method
-
-        :return:
         """
         if self.import_source.lower().endswith('ews'):
             self.import_ews()
@@ -92,8 +90,6 @@ class EasyWorshipSongImport(SongImport):
         The full spec of the ews files can be found here:
         https://github.com/meinders/lithium-ews/blob/master/docs/ews%20file%20format.md
         or here: http://wiki.openlp.org/Development:EasyWorship_EWS_Format
-
-        :return:
         """
         # Open ews file if it exists
         if not os.path.isfile(self.import_source):
@@ -196,8 +192,6 @@ class EasyWorshipSongImport(SongImport):
     def import_db(self):
         """
         Import the songs from the database
-
-        :return:
         """
         # Open the DB and MB files if they exist
         import_source_mb = self.import_source.replace('.DB', '.MB')
@@ -322,7 +316,6 @@ class EasyWorshipSongImport(SongImport):
 
         :param authors: String with authons
         :param words: Bytes with rtf-encoding
-        :return:
         """
         if authors:
             # Split up the authors
@@ -380,7 +373,6 @@ class EasyWorshipSongImport(SongImport):
         Find a field in the descriptions
 
         :param field_name: field to find
-        :return:
         """
         return [i for i, x in enumerate(self.field_descriptions) if x.name == field_name][0]
 
@@ -417,7 +409,7 @@ class EasyWorshipSongImport(SongImport):
         Extract the field
 
         :param field_desc_index: Field index value
-        :return:
+        :return: The field value
         """
         field = self.fields[field_desc_index]
         field_desc = self.field_descriptions[field_desc_index]
