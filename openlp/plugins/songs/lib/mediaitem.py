@@ -192,7 +192,7 @@ class SongMediaItem(MediaManagerItem):
             song_number = False
             if not search_results:
                 search_keywords = search_keywords.rpartition(' ')
-                search_string = '%' + search_keywords + '%'
+                search_string = '%' + search_keywords[0] + '%'
                 search_results = self.plugin.manager.get_all_objects(Book,
                                                                      Book.name.like(search_string), Book.name.asc())
                 song_number = re.sub(r'[^0-9]', '', search_keywords[2])

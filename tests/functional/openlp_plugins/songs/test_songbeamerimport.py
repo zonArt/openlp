@@ -49,7 +49,8 @@ SONG_TEST_DATA = {
             ('4. Lobsingt seiner Treu´,\ndie immerdar neu,\nbis Er uns zur Herrlichket führet!\n\n', 'v')
         ],
         'song_book_name': 'Glaubenslieder I',
-        'song_number': "1"
+        'song_number': "1",
+        'authors': ['Carl Brockhaus', 'Johann Jakob Vetter']
     }
 }
 
@@ -140,6 +141,7 @@ class TestSongBeamerImport(TestCase):
                 add_verse_calls = SONG_TEST_DATA[song_file]['verses']
                 song_book_name = SONG_TEST_DATA[song_file]['song_book_name']
                 song_number = SONG_TEST_DATA[song_file]['song_number']
+                song_authors = SONG_TEST_DATA[song_file]['authors']
 
                 # THEN: do_import should return none, the song data should be as expected, and finish should have been
                 #       called.
@@ -148,11 +150,14 @@ class TestSongBeamerImport(TestCase):
                 for verse_text, verse_tag in add_verse_calls:
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if song_book_name:
-                    self.assertEqual(importer.song_book_name, song_book_name, 'song_book_name for %s should be "%s"' %
-                                                                              (song_file, song_book_name))
+                    self.assertEqual(importer.song_book_name, song_book_name,
+                                     'song_book_name for %s should be "%s"' % (song_file, song_book_name))
                 if song_number:
-                    self.assertEqual(importer.song_number, song_number, 'song_number for %s should be %s' %
-                                                                        (song_file, song_number))
+                    self.assertEqual(importer.song_number, song_number,
+                                     'song_number for %s should be %s' % (song_file, song_number))
+                if song_authors:
+                    for author in importer.authors:
+                        self.assertIn(author, song_authors)
                 mocked_finish.assert_called_with()
 
     def check_verse_marks_test(self):

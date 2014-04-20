@@ -53,7 +53,7 @@ class OpenLyricsImport(SongImport):
         Initialise the Open Lyrics importer.
         """
         log.debug('initialise OpenLyricsImport')
-        SongImport.__init__(self, manager, **kwargs)
+        super(OpenLyricsImport, self).__init__(manager, **kwargs)
         self.open_lyrics = OpenLyrics(self.manager)
 
     def do_import(self):
@@ -69,7 +69,7 @@ class OpenLyricsImport(SongImport):
             try:
                 # Pass a file object, because lxml does not cope with some
                 # special characters in the path (see lp:757673 and lp:744337).
-                parsed_file = etree.parse(open(file_path, 'r'), parser)
+                parsed_file = etree.parse(open(file_path, 'rb'), parser)
                 xml = etree.tostring(parsed_file).decode()
                 self.open_lyrics.xml_to_song(xml)
             except etree.XMLSyntaxError:
