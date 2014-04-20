@@ -435,7 +435,7 @@ class ServiceItem(RegistryProperties):
         Returns the title of the service item.
         """
         if self.is_text() or self.is_capable(ItemCapabilities.IsOptical) \
-                or self.is_capable(temCapabilities.CanEditTitle):
+                or self.is_capable(ItemCapabilities.CanEditTitle):
             return self.title
         else:
             if len(self._raw_frames) > 1:
