@@ -1334,7 +1334,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if self.copy_data:
             log.info('Copying data to new path')
             try:
-                self.showStatusMessage(
+                self.show_status_message(
                     translate('OpenLP.MainWindow', 'Copying OpenLP data to new data directory location - %s '
                               '- Please wait for copy to finish').replace('%s', self.new_data_path))
                 dir_util.copy_tree(old_data_path, self.new_data_path)
