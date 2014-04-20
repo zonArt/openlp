@@ -432,7 +432,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         Background Image button pushed.
         """
         images_filter = get_images_filter()
-        images_filter = '%s;;%s (*.*) (*)' % (images_filter, UiStrings().AllFiles)
+        images_filter = '%s;;%s (*.*)' % (images_filter, UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.ThemeWizard', 'Select Image'), '',
                                                      images_filter)
         if filename:
