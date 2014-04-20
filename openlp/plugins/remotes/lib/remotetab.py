@@ -310,5 +310,5 @@ class RemoteTab(SettingsTab):
             painter = QtGui.QPainter(icon)
             painter.drawImage(20, 0, overlay)
             painter.end()
-        self.remote_server_icon.setIcon(build_icon(icon))
+        self.remote_server_icon.setPixmap(QtGui.QPixmap.fromImage(icon))
         self.remote_server_icon.show()

@@ -30,7 +30,6 @@
 The actual plugin view form
 """
 import logging
-import os
 
 from PyQt4 import QtGui
 

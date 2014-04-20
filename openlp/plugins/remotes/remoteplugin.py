@@ -68,12 +68,20 @@ class RemotesPlugin(Plugin):
         log.debug('initialise')
         super(RemotesPlugin, self).initialise()
         self.server = OpenLPServer()
-        self.remote_server_icon = QtGui.QToolButton(self.main_window.status_bar)
-        self.remote_server_icon.setCheckable(False)
-        self.remote_server_icon.setAutoRaise(True)
-        self.remote_server_icon.setObjectName('remote_server_icon')
-        self.main_window.status_bar.insertPermanentWidget(2, self.remote_server_icon)
-        self.settings_tab.remote_server_icon = self.remote_server_icon
+        if not hasattr(self, 'remote_server_icon'):
+            self.remote_server_icon = QtGui.QLabel(self.main_window.status_bar)
+            size_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+            size_policy.setHorizontalStretch(0)
+            size_policy.setVerticalStretch(0)
+            size_policy.setHeightForWidth(self.remote_server_icon.sizePolicy().hasHeightForWidth())
+            self.remote_server_icon.setSizePolicy(size_policy)
+            self.remote_server_icon.setFrameShadow(QtGui.QFrame.Plain)
+            self.remote_server_icon.setLineWidth(1)
+            self.remote_server_icon.setScaledContents(True)
+            self.remote_server_icon.setFixedSize(20, 20)
+            self.remote_server_icon.setObjectName('remote_server_icon')
+            self.main_window.status_bar.insertPermanentWidget(2, self.remote_server_icon)
+            self.settings_tab.remote_server_icon = self.remote_server_icon
         self.settings_tab.generate_icon()
 
     def finalise(self):
