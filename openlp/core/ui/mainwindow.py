@@ -1364,8 +1364,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         args = []
         for a in self.arguments:
             args.extend([a])
-        for arg in args:
-            filename = arg
+        for filename in args:
             if not isinstance(filename, str):
                 filename = str(filename, sys.getfilesystemencoding())
             if filename.endswith(('.osz', '.oszl')):
