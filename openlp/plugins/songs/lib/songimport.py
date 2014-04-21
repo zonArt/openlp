@@ -188,6 +188,55 @@ class SongImport(QtCore.QObject):
             self.title = lines[0]
         self.add_verse(text)
 
+    def parse_song_book_name_and_number(self, book_and_number):
+        """
+        Build the book name and song number from a single string
+        """
+        # Turn 'Spring Harvest 1997 No. 34' or
+        # 'Spring Harvest 1997 (34)' or
+        # 'Spring Harvest 1997 34' into
+        # Book name:'Spring Harvest 1997' and
+        # Song number: 34
+        #
+        # Also, turn 'NRH231.' into
+        # Book name:'NRH' and
+        # Song number: 231
+        
+        book_and_number = book_and_number.strip()
+        if book_and_number == '':
+            return
+        book_and_number = book_and_number.replace('No.', ' ')
+        if ' ' in book_and_number:
+            parts = book_and_number.split(' ')
+            self.song_book_name = ' '.join(parts[:-1])
+            self.song_number = parts[-1].strip('()')
+        else:
+            # Something like 'ABC123.'
+            match = re.match(r'(.*\D)(\d+)', book_and_number)
+            match_num = re.match(r'(\d+)', book_and_number)
+            if match:
+                # Name and number
+                self.song_book_name = match.group(1)
+                self.song_number = match.group(2)
+            # These last two cases aren't tested yet, but
+            # are here in an attempt to do something vaguely
+            # sensible if we get a string in a different format
+            elif match_num:
+                # Number only
+                self.song_number = match_num.group(1)
+            else:
+                # Name only
+                self.song_book_name = book_and_number
+
+    def add_comment(self, comment):
+        """
+        Build the comments field
+        """
+        if self.comments.find(comment) >= 0:
+            return
+        if comment != '':
+            self.comments += comment.strip() + '\n'
+
     def add_copyright(self, copyright):
         """
         Build the copyright field

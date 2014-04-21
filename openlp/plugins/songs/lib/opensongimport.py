@@ -107,9 +107,14 @@ class OpenSongImport(SongImport):
         """
         Initialise the class.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(OpenSongImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
+        """
+        Receive a single file or a list of files to import.
+        """
+        if not isinstance(self.import_source, list):
+            return
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             if self.stop_import_flag:
@@ -141,19 +146,39 @@ class OpenSongImport(SongImport):
             'author': self.parse_author,
             'title': 'title',
             'aka': 'alternate_title',
-            'hymn_number': 'song_number'
+            'hymn_number': self.parse_song_book_name_and_number,
+            'user1': self.add_comment,
+            'user2': self.add_comment,
+            'user3': self.add_comment
         }
         for attr, fn_or_string in list(decode.items()):
             if attr in fields:
                 ustring = str(root.__getattr__(attr))
                 if isinstance(fn_or_string, str):
-                    setattr(self, fn_or_string, ustring)
+                    match = re.match('(\D*)(\d+.*)', ustring)
+                    if match:
+                        setattr(self, fn_or_string, int(ustring))
+                    else:
+                        setattr(self, fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
-        if 'theme' in fields and str(root.theme) not in self.topics:
-            self.topics.append(str(root.theme))
-        if 'alttheme' in fields and str(root.alttheme) not in self.topics:
-            self.topics.append(str(root.alttheme))
+        # Themes look like "God: Awe/Wonder", but we just want
+        # "Awe" and "Wonder".  We use a set to ensure each topic
+        # is only added once, in case it is already there, which
+        # is actually quite likely if the alttheme is set
+        topics = set(self.topics)
+        if 'theme' in fields:
+            theme = str(root.theme)
+            subthemes = theme[theme.find(':')+1:].split('/')
+            for topic in subthemes:
+                topics.add(topic.strip())
+        if 'alttheme' in fields:
+            theme = str(root.alttheme)
+            subthemes = theme[theme.find(':')+1:].split('/')
+            for topic in subthemes:
+                topics.add(topic.strip())
+        self.topics = list(topics)
+        self.topics.sort()
         # data storage while importing
         verses = {}
         # keep track of verses appearance order
@@ -209,8 +234,9 @@ class OpenSongImport(SongImport):
             # Tidy text and remove the ____s from extended words
             this_line = self.tidy_text(this_line)
             this_line = this_line.replace('_', '')
-            this_line = this_line.replace('|', '\n')
+            this_line = this_line.replace('||', '\n[---]\n')
             this_line = this_line.strip()
+            this_line = this_line.replace('|', '\n')
             verses[verse_tag][verse_num][inst].append(this_line)
         # done parsing
         # add verses in original order
