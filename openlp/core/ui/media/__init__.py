@@ -90,7 +90,7 @@ def get_media_players():
             overridden_player = 'auto'
     else:
         overridden_player = ''
-    saved_players_list = saved_players.replace('[', '').replace(']', '').split(',')
+    saved_players_list = saved_players.replace('[', '').replace(']', '').split(',') if saved_players else []
     return saved_players_list, overridden_player
 
 

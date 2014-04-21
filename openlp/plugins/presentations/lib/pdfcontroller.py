@@ -204,19 +204,19 @@ class PdfDocument(PresentationDocument):
             log.debug(' '.join(e.cmd))
             log.debug(e.output)
         # Extract the pdf resolution from output, the format is " Size: x: <width>, y: <height>"
-        width = 0
-        height = 0
+        width = 0.0
+        height = 0.0
         for line in runlog.splitlines():
             try:
-                width = int(re.search('.*Size: x: (\d+\.?\d*), y: \d+.*', line.decode()).group(1))
-                height = int(re.search('.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line.decode()).group(1))
+                width = float(re.search('.*Size: x: (\d+\.?\d*), y: \d+.*', line.decode()).group(1))
+                height = float(re.search('.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line.decode()).group(1))
                 break
             except AttributeError:
-                pass
+                continue
         # Calculate the ratio from pdf to screen
         if width > 0 and height > 0:
-            width_ratio = size.right() / float(width)
-            height_ratio = size.bottom() / float(height)
+            width_ratio = size.right() / width
+            height_ratio = size.bottom() / height
             # return the resolution that should be used. 72 is default.
             if width_ratio > height_ratio:
                 return int(height_ratio * 72)

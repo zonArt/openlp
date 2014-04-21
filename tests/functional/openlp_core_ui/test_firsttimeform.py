@@ -27,55 +27,46 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlyricsimport` module provides the functionality for importing
-songs which are saved as OpenLyrics files.
+Package to test the openlp.core.ui.firsttimeform package.
 """
+from unittest import TestCase
 
-import logging
-import os
+from tests.functional import MagicMock
 
-from lxml import etree
-
-from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib.songimport import SongImport
-from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib.xml import OpenLyrics, OpenLyricsError
-
-log = logging.getLogger(__name__)
+from tests.helpers.testmixin import TestMixin
+from openlp.core.common import Registry
+from openlp.core.ui.firsttimeform import FirstTimeForm
 
 
-class OpenLyricsImport(SongImport):
-    """
-    This provides the Openlyrics import.
-    """
-    def __init__(self, manager, **kwargs):
+class TestFirstTimeForm(TestCase, TestMixin):
+
+    def setUp(self):
+        screens = MagicMock()
+        self.get_application()
+        Registry.create()
+        Registry().register('application', self.app)
+        self.first_time_form = FirstTimeForm(screens)
+
+    def test_access_to_config(self):
         """
-        Initialise the Open Lyrics importer.
+        Test if we can access the First Time Form's config file
         """
-        log.debug('initialise OpenLyricsImport')
-        super(OpenLyricsImport, self).__init__(manager, **kwargs)
-        self.open_lyrics = OpenLyrics(self.manager)
+        # GIVEN A new First Time Form instance.
 
-    def do_import(self):
+        # WHEN The default First Time Form is built.
+
+        # THEN The First Time Form web configuration file should be accessable.
+        self.assertTrue(self.first_time_form.web_access,
+                        'First Time Wizard\'s web configuration file should be available')
+
+    def test_parsable_config(self):
         """
-        Imports the songs.
+        Test if the First Time Form's config file is parsable
         """
-        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
-        parser = etree.XMLParser(remove_blank_text=True)
-        for file_path in self.import_source:
-            if self.stop_import_flag:
-                return
-            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
-            try:
-                # Pass a file object, because lxml does not cope with some
-                # special characters in the path (see lp:757673 and lp:744337).
-                parsed_file = etree.parse(open(file_path, 'rb'), parser)
-                xml = etree.tostring(parsed_file).decode()
-                self.open_lyrics.xml_to_song(xml)
-            except etree.XMLSyntaxError:
-                log.exception('XML syntax error in file %s' % file_path)
-                self.log_error(file_path, SongStrings.XMLSyntaxError)
-            except OpenLyricsError as exception:
-                log.exception('OpenLyricsException %d in file %s: %s' %
-                              (exception.type, file_path, exception.log_message))
-                self.log_error(file_path, exception.display_message)
+        # GIVEN A new First Time Form instance.
+
+        # WHEN The default First Time Form is built.
+
+        # THEN The First Time Form web configuration file should be parsable
+        self.assertTrue(self.first_time_form.songs_url,
+                        'First Time Wizard\'s web configuration file should be parsable')

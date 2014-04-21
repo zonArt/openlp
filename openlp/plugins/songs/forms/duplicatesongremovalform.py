@@ -31,6 +31,7 @@ The duplicate song removal logic for OpenLP.
 """
 
 import logging
+import multiprocessing
 import os
 
 from PyQt4 import QtCore, QtGui
@@ -43,6 +44,18 @@ from openlp.plugins.songs.forms.songreviewwidget import SongReviewWidget
 from openlp.plugins.songs.lib.songcompare import songs_probably_equal
 
 log = logging.getLogger(__name__)
+
+
+def song_generator(songs):
+    """
+    This is a generator function to return tuples of two songs. When completed then all songs have once been returned
+    combined with any other songs.
+
+    :param songs: All songs in the database.
+    """
+    for outer_song_counter in range(len(songs) - 1):
+        for inner_song_counter in range(outer_song_counter + 1, len(songs)):
+            yield (songs[outer_song_counter], songs[inner_song_counter])
 
 
 class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
@@ -167,24 +180,31 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
                 max_progress_count = max_songs * (max_songs - 1) // 2
                 self.duplicate_search_progress_bar.setMaximum(max_progress_count)
                 songs = self.plugin.manager.get_all_objects(Song)
-                for outer_song_counter in range(max_songs - 1):
-                    for inner_song_counter in range(outer_song_counter + 1, max_songs):
-                        if songs_probably_equal(songs[outer_song_counter], songs[inner_song_counter]):
-                            duplicate_added = self.add_duplicates_to_song_list(
-                                songs[outer_song_counter], songs[inner_song_counter])
-                            if duplicate_added:
-                                self.found_duplicates_edit.appendPlainText(
-                                    songs[outer_song_counter].title + "  =  " + songs[inner_song_counter].title)
-                        self.duplicate_search_progress_bar.setValue(self.duplicate_search_progress_bar.value() + 1)
-                        # The call to process_events() will keep the GUI responsive.
-                        self.application.process_events()
-                        if self.break_search:
-                            return
+                # Create a worker/process pool to check the songs.
+                process_number = max(1, multiprocessing.cpu_count() - 1)
+                pool = multiprocessing.Pool(process_number)
+                result = pool.imap_unordered(songs_probably_equal, song_generator(songs), 30)
+                # Do not accept any further tasks. Also this closes the processes if all tasks are done.
+                pool.close()
+                # While the processes are still working, start to look at the results.
+                for song_tuple in result:
+                    self.duplicate_search_progress_bar.setValue(self.duplicate_search_progress_bar.value() + 1)
+                    # The call to process_events() will keep the GUI responsive.
+                    self.application.process_events()
+                    if self.break_search:
+                        pool.terminate()
+                        return
+                    if song_tuple is None:
+                        continue
+                    song1, song2 = song_tuple
+                    duplicate_added = self.add_duplicates_to_song_list(song1, song2)
+                    if duplicate_added:
+                        self.found_duplicates_edit.appendPlainText(song1.title + "  =  " + song2.title)
                 self.review_total_count = len(self.duplicate_song_list)
-                if self.review_total_count == 0:
-                    self.notify_no_duplicates()
-                else:
+                if self.duplicate_song_list:
                     self.button(QtGui.QWizard.NextButton).show()
+                else:
+                    self.notify_no_duplicates()
             finally:
                 self.application.set_normal_cursor()
         elif page_id == self.review_page_id:

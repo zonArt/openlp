@@ -228,7 +228,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         files = QtGui.QFileDialog.getOpenFileName(self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
                                                   Settings().value(self.settings_section + '/last directory'),
-                                                  '%s (*.*) (*)' % UiStrings().AllFiles)
+                                                  '%s (*)' % UiStrings().AllFiles)
         log.info('New files(s) %s', str(files))
         if files:
             self.file_attachment = str(files)
