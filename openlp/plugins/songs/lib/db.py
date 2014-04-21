@@ -48,7 +48,7 @@ class Author(BaseModel):
     """
     def get_display_name(self, author_type=None):
         if author_type:
-            return "%s: %s" % (AuthorType.Types[author_type], self.display_name)
+            return "%s (%s)" % (self.display_name, AuthorType.Types[author_type])
         return self.display_name
 
 
