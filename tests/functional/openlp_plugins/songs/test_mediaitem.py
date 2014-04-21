@@ -76,19 +76,19 @@ class TestMediaItem(TestCase, TestMixin):
         mock_author.display_name = 'my author'
         mock_author_song = MagicMock()
         mock_author_song.author = mock_author
-        mock_author_song.author_type=AuthorType.Music
+        mock_author_song.author_type = AuthorType.Music
         mock_song.authors_songs.append(mock_author_song)
         mock_author = MagicMock()
         mock_author.display_name = 'another author'
         mock_author_song = MagicMock()
         mock_author_song.author = mock_author
-        mock_author_song.author_type=AuthorType.Words
+        mock_author_song.author_type = AuthorType.Words
         mock_song.authors_songs.append(mock_author_song)
         mock_author = MagicMock()
         mock_author.display_name = 'translator'
         mock_author_song = MagicMock()
         mock_author_song.author = mock_author
-        mock_author_song.author_type=AuthorType.Translation
+        mock_author_song.author_type = AuthorType.Translation
         mock_song.authors_songs.append(mock_author_song)
         mock_song.copyright = 'My copyright'
         service_item = ServiceItem(None)

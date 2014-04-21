@@ -112,7 +112,8 @@ def upgrade_4(session, metadata):
         op.create_table('authors_songs_tmp',
                         Column('author_id', types.Integer(), ForeignKey('authors.id'), primary_key=True),
                         Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
-                        Column('author_type', types.String(), primary_key=True, nullable=False, server_default=text('""')))
+                        Column('author_type', types.String(), primary_key=True,
+                               nullable=False, server_default=text('""')))
         op.execute('INSERT INTO authors_songs_tmp SELECT author_id, song_id, "" FROM authors_songs')
         op.drop_table('authors_songs')
         op.rename_table('authors_songs_tmp', 'authors_songs')
