@@ -75,7 +75,7 @@ class ImageMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.on_new_prompt = translate('ImagePlugin.MediaItem', 'Select Image(s)')
         file_formats = get_images_filter()
-        self.on_new_file_masks = '%s;;%s (*.*) (*)' % (file_formats, UiStrings().AllFiles)
+        self.on_new_file_masks = '%s;;%s (*)' % (file_formats, UiStrings().AllFiles)
         self.add_group_action.setText(UiStrings().AddGroup)
         self.add_group_action.setToolTip(UiStrings().AddGroup)
         self.replace_action.setText(UiStrings().ReplaceBG)
