@@ -72,6 +72,7 @@ class SongImportTestHelper(TestCase):
         """
         Clean up
         """
+        print(str(self.mocked_add_verse.call_args_list))
         self.add_copyright_patcher.stop()
         self.add_verse_patcher.stop()
         self.finish_patcher.stop()
