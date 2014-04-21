@@ -125,9 +125,6 @@ class Ui_EditSongDialog(object):
         self.authors_combo_box = create_combo_box(self.authors_group_box, 'authors_combo_box')
         self.author_add_layout.addWidget(self.authors_combo_box)
         self.author_types_combo_box = create_combo_box(self.authors_group_box, 'author_types_combo_box', editable=False)
-        # Need to give these boxes some min width, else they are too small
-        self.authors_combo_box.setMinimumWidth(150)
-        self.author_types_combo_box.setMinimumWidth(80)
         self.author_type_layout.addWidget(self.author_types_combo_box)
         self.author_add_button = QtGui.QPushButton(self.authors_group_box)
         self.author_add_button.setObjectName('author_add_button')
