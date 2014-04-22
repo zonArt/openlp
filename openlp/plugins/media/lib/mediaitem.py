@@ -41,8 +41,9 @@ from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adj
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path
 from openlp.core.utils import get_locale_key
-from openlp.plugins.media.forms.mediaclipselectorform import MediaClipSelectorForm
 from openlp.core.ui.media.vlcplayer import VLC_AVAILABLE
+if VLC_AVAILABLE:
+    from openlp.plugins.media.forms.mediaclipselectorform import MediaClipSelectorForm
 
 
 log = logging.getLogger(__name__)
