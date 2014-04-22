@@ -36,8 +36,94 @@ from PyQt4 import QtGui, QtCore
 from openlp.core.common import Settings
 from openlp.core.utils import ActionList
 from openlp.core.utils.actions import CategoryActionList
-from tests.functional import MagicMock
+from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
+
+
+class TestCategoryActionList(TestCase):
+    def setUp(self):
+        """
+        Create an instance and a few example actions.
+        """
+        self.action1 = MagicMock()
+        self.action1.text.return_value = 'first'
+        self.action2 = MagicMock()
+        self.action2.text.return_value = 'second'
+        self.list = CategoryActionList()
+
+    def tearDown(self):
+        """
+        Clean up
+        """
+        del self.list
+
+    def contains_test(self):
+        """
+        Test the __contains__() method
+        """
+        # GIVEN: The list.
+        # WHEN: Add an action
+        self.list.append(self.action1)
+        # THEN:
+        self.assertTrue(self.action1 in self.list)
+        self.assertFalse(self.action2 in self.list)
+
+    def len_test(self):
+        """
+        Test the __len__ method
+        """
+        # GIVEN: The list.
+        # WHEN:
+        # THEN: Check the length.
+        self.assertEqual(len(self.list), 0, "The length should be 0.")
+
+        # GIVEN: The list.
+        # WHEN: Append an action.
+        self.list.append(self.action1)
+
+        # THEN: Check the length.
+        self.assertEqual(len(self.list), 1, "The length should be 1.")
+
+    def append_test(self):
+        """
+        Test the append() method
+        """
+        # GIVEN: The list.
+        # WHEN: Append an action.
+        self.list.append(self.action1)
+        self.list.append(self.action2)
+
+        # THEN: Check if the actions are in the list and check if they have the correct weights.
+        self.assertTrue(self.action1 in self.list)
+        self.assertTrue(self.action2 in self.list)
+        self.assertEqual(self.list[0], (0, self.action1))
+        self.assertEqual(self.list[1], (1, self.action2))
+
+    def add_test(self):
+        """
+        Test the add() method
+        """
+        # GIVEN: The list.
+        # WHEN: Append actions.
+        self.list.add(self.action1, 42)
+        self.list.add(self.action2, 99)
+
+        # THEN: Check if they were added and have the specified weights.
+        self.assertTrue(self.action1 in self.list)
+        self.assertTrue(self.action2 in self.list)
+        self.assertEqual(self.list[0], (42, self.action1))
+        self.assertEqual(self.list[1], (99, self.action2))
+
+    def remove_test(self):
+        """
+        Test the remove() method
+        """
+        # GIVEN: The list
+        # WHEN: Delete an item from the list.
+        self.list.remove(self.action1)
+
+        # THEN: Now the element should not be in the list anymore.
+        self.assertFalse(self.action1 in self.list)
 
 
 class TestActionList(TestCase, TestMixin):
@@ -152,62 +238,3 @@ class TestActionList(TestCase, TestMixin):
         assert len(action3.shortcuts()) == 2, 'The action should have two shortcut assigned.'
         assert len(action_with_same_shortcuts3.shortcuts()) == 2, 'The action should have two shortcuts assigned.'
 
-
-class TestCategoryActionList(TestCase):
-    def setUp(self):
-        """
-        """
-        self.added_action = MagicMock()
-        self.added_action.text = MagicMock('first')
-        self.not_added_action = MagicMock('second')
-        self.not_added_action.text = MagicMock()
-        self.list = CategoryActionList()
-        self.list.add(self.added_action, 10)
-
-    def tearDown(self):
-        """
-
-        """
-        del self.list
-
-    def len_test(self):
-        """
-        Test the __len__ method
-        """
-        # GIVEN: The list.
-
-        # WHEN: Check the length
-        length = len(self.list)
-
-        # THEN:
-        self.assertEqual(length, 1, "The length should be 1.")
-
-        # GIVEN: A list with an item.
-        self.list.append(self.not_added_action)
-
-        # WHEN: Check the length.
-        length = len(self.list)
-
-        # THEN:
-        self.assertEqual(length, 2, "The length should be 2.")
-
-    def remove_test(self):
-        """
-        Test the remove() method
-        """
-        # GIVEN: The list
-
-        # WHEN: Delete an item from the list.
-        self.list.remove(self.added_action)
-
-        # THEN: Now the element should not be in the list anymore.
-        self.assertFalse(self.added_action in self.list)
-
-    def contains_test(self):
-        """
-        Test the __contains__() method
-        """
-        # GIVEN: The list.
-        # WHEN: Do nothing.
-        # THEN: A not added item should not be in the list.
-        self.assertFalse(self.not_added_action in self.list)
