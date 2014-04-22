@@ -201,7 +201,6 @@ class SongImport(QtCore.QObject):
         # Also, turn 'NRH231.' into
         # Book name:'NRH' and
         # Song number: 231
-        
         book_and_number = book_and_number.strip()
         if book_and_number == '':
             return
