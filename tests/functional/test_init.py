@@ -27,57 +27,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Functional tests to test the AppLocation class and related methods.
+Package to test the openlp.core.__init__ package.
 """
+import os
 
 from unittest import TestCase
+from unittest.mock import MagicMock, patch
+from PyQt4 import QtCore
 
-from openlp.core.common import de_hump, trace_error_handler
-from tests.functional import MagicMock, patch
+from openlp.core import OpenLP
+from tests.helpers.testmixin import TestMixin
 
 
-class TestCommonFunctions(TestCase):
-    """
-    A test suite to test out various functions in the openlp.core.common module.
-    """
-    def de_hump_conversion_test(self):
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
+
+
+class TestInit(TestCase, TestMixin):
+    def setUp(self):
+        with patch('openlp.core.common.OpenLPMixin.__init__') as constructor:
+            constructor.return_value = None
+            self.openlp = OpenLP(list())
+
+    def tearDown(self):
+        del self.openlp
+
+    def event_test(self):
         """
-        Test the de_hump function with a class name
+        Test the reimplemented event method
         """
-        # GIVEN: a Class name in Camel Case
-        string = "MyClass"
+        # GIVEN: A file path and a QEvent.
+        file_path = os.path.join(TEST_PATH, 'church.jpg')
+        mocked_file_method = MagicMock(return_value=file_path)
+        event = QtCore.QEvent(QtCore.QEvent.FileOpen)
+        event.file = mocked_file_method
 
-        # WHEN: we call de_hump
-        new_string = de_hump(string)
+        # WHEN: Call the vent method.
+        result = self.openlp.event(event)
 
-        # THEN: the new string should be converted to python format
-        self.assertTrue(new_string == "my_class", 'The class name should have been converted')
-
-    def de_hump_static_test(self):
-        """
-        Test the de_hump function with a python string
-        """
-        # GIVEN: a Class name in Camel Case
-        string = "my_class"
-
-        # WHEN: we call de_hump
-        new_string = de_hump(string)
-
-        # THEN: the new string should be converted to python format
-        self.assertTrue(new_string == "my_class", 'The class name should have been preserved')
-
-    def trace_error_handler_test(self):
-        """
-        Test the trace_error_handler() method
-        """
-        # GIVEN: Mocked out objects
-        with patch('openlp.core.common.traceback') as mocked_traceback:
-            mocked_traceback.extract_stack.return_value = [('openlp.fake', 56, None, 'trace_error_handler_test')]
-            mocked_logger = MagicMock()
-
-            # WHEN: trace_error_handler() is called
-            trace_error_handler(mocked_logger)
-
-            # THEN: The mocked_logger.error() method should have been called with the correct parameters
-            mocked_logger.error.assert_called_with(
-                'OpenLP Error trace\n   File openlp.fake at line 56 \n\t called trace_error_handler_test')
+        # THEN: The path should be inserted.
+        self.assertTrue(result, "The method should have returned True.")
+        mocked_file_method.assert_called_once_with()
+        self.assertEqual(self.openlp.args[0], file_path, "The path should be in args.")
