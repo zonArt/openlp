@@ -27,55 +27,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlyricsimport` module provides the functionality for importing
-songs which are saved as OpenLyrics files.
+Package to test the openlp.core.__init__ package.
 """
-
-import logging
 import os
 
-from lxml import etree
+from unittest import TestCase
+from unittest.mock import MagicMock, patch
+from PyQt4 import QtCore
 
-from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib.songimport import SongImport
-from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib.xml import OpenLyrics, OpenLyricsError
-
-log = logging.getLogger(__name__)
+from openlp.core import OpenLP
+from tests.helpers.testmixin import TestMixin
 
 
-class OpenLyricsImport(SongImport):
-    """
-    This provides the Openlyrics import.
-    """
-    def __init__(self, manager, **kwargs):
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
+
+
+class TestInit(TestCase, TestMixin):
+    def setUp(self):
+        with patch('openlp.core.common.OpenLPMixin.__init__') as constructor:
+            constructor.return_value = None
+            self.openlp = OpenLP(list())
+
+    def tearDown(self):
+        del self.openlp
+
+    def event_test(self):
         """
-        Initialise the Open Lyrics importer.
+        Test the reimplemented event method
         """
-        log.debug('initialise OpenLyricsImport')
-        super(OpenLyricsImport, self).__init__(manager, **kwargs)
-        self.open_lyrics = OpenLyrics(self.manager)
+        # GIVEN: A file path and a QEvent.
+        file_path = os.path.join(TEST_PATH, 'church.jpg')
+        mocked_file_method = MagicMock(return_value=file_path)
+        event = QtCore.QEvent(QtCore.QEvent.FileOpen)
+        event.file = mocked_file_method
 
-    def do_import(self):
-        """
-        Imports the songs.
-        """
-        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
-        parser = etree.XMLParser(remove_blank_text=True)
-        for file_path in self.import_source:
-            if self.stop_import_flag:
-                return
-            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
-            try:
-                # Pass a file object, because lxml does not cope with some
-                # special characters in the path (see lp:757673 and lp:744337).
-                parsed_file = etree.parse(open(file_path, 'rb'), parser)
-                xml = etree.tostring(parsed_file).decode()
-                self.open_lyrics.xml_to_song(xml)
-            except etree.XMLSyntaxError:
-                log.exception('XML syntax error in file %s' % file_path)
-                self.log_error(file_path, SongStrings.XMLSyntaxError)
-            except OpenLyricsError as exception:
-                log.exception('OpenLyricsException %d in file %s: %s' %
-                              (exception.type, file_path, exception.log_message))
-                self.log_error(file_path, exception.display_message)
+        # WHEN: Call the vent method.
+        result = self.openlp.event(event)
+
+        # THEN: The path should be inserted.
+        self.assertTrue(result, "The method should have returned True.")
+        mocked_file_method.assert_called_once_with()
+        self.assertEqual(self.openlp.args[0], file_path, "The path should be in args.")

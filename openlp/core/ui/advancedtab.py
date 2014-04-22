@@ -511,7 +511,7 @@ class AdvancedTab(SettingsTab):
         """
         Select an image for the default display screen.
         """
-        file_filters = '%s;;%s (*.*) (*)' % (get_images_filter(), UiStrings().AllFiles)
+        file_filters = '%s;;%s (*.*)' % (get_images_filter(), UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.AdvancedTab', 'Open File'), '',
                                                      file_filters)
         if filename:

@@ -141,7 +141,7 @@ class TestEasyWorshipSongImport(TestCase):
         self.assertIsNotNone(field_desc_entry, 'Import should not be none')
         self.assertEqual(field_desc_entry.name, name, 'FieldDescEntry.name should be the same as the name argument')
         self.assertEqual(field_desc_entry.field_type, field_type,
-                          'FieldDescEntry.type should be the same as the type argument')
+                         'FieldDescEntry.type should be the same as the type argument')
         self.assertEqual(field_desc_entry.size, size, 'FieldDescEntry.size should be the same as the size argument')
 
     def create_importer_test(self):
@@ -229,10 +229,10 @@ class TestEasyWorshipSongImport(TestCase):
             for field_index, result in field_results:
                 return_value = importer.get_field(field_index)
 
-            # THEN: get_field should return the known results
+                # THEN: get_field should return the known results
                 self.assertEqual(return_value, result,
-                                  'get_field should return "%s" when called with "%s"' %
-                                  (result, TEST_FIELDS[field_index]))
+                                 'get_field should return "%s" when called with "%s"' %
+                                 (result, TEST_FIELDS[field_index]))
 
     def get_memo_field_test(self):
         """
@@ -403,11 +403,11 @@ class TestEasyWorshipSongImport(TestCase):
                 if song_copyright:
                     self.assertEqual(importer.copyright, song_copyright)
                 if ccli_number:
-                    self.assertEqual(importer.ccli_number, ccli_number, 'ccli_number for %s should be %s'
-                                                                         % (title, ccli_number))
+                    self.assertEqual(importer.ccli_number, ccli_number,
+                                     'ccli_number for %s should be %s' % (title, ccli_number))
                 for verse_text, verse_tag in add_verse_calls:
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if verse_order_list:
                     self.assertEqual(importer.verse_order_list, verse_order_list,
-                                      'verse_order_list for %s should be %s' % (title, verse_order_list))
+                                     'verse_order_list for %s should be %s' % (title, verse_order_list))
                 mocked_finish.assert_called_with()

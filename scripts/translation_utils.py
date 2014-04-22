@@ -96,7 +96,7 @@ class CommandStack(object):
         return len(self.data)
 
     def __getitem__(self, index):
-        if not index in self.data:
+        if index not in self.data:
             return None
         elif self.data[index].get('arguments'):
             return self.data[index]['command'], self.data[index]['arguments']
