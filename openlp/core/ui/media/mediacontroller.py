@@ -38,7 +38,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.common import OpenLPMixin, Registry, RegistryMixin, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import OpenLPToolbar, ItemCapabilities
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players, parse_optical_path
+from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players,\
+    parse_optical_path
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.common import AppLocation
 from openlp.core.ui import DisplayControllerType
@@ -373,7 +374,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 log.debug('video is optical and live')
                 path = service_item.get_frame_path()
                 (name, title, audio_track, subtitle_track, start, end) = parse_optical_path(path)
-                is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display, controller)
+                is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display,
+                                                    controller)
             else:
                 log.debug('video is not optical and live')
                 is_valid = self._check_file_type(controller, display, service_item)
@@ -391,7 +393,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 log.debug('video is optical and preview')
                 path = service_item.get_frame_path()
                 (name, title, audio_track, subtitle_track, start, end) = parse_optical_path(path)
-                is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display, controller)
+                is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display,
+                                                    controller)
             else:
                 log.debug('video is not optical and preview')
                 is_valid = self._check_file_type(controller, display, service_item)
@@ -460,7 +463,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         self.media_reset(controller)
         # Setup media info
         controller.media_info = MediaInfo()
-        #controller.media_info.volume = 0
         controller.media_info.file_info = QtCore.QFileInfo(filename)
         controller.media_info.media_type = MediaType.DVD
         controller.media_info.start_time = start/1000

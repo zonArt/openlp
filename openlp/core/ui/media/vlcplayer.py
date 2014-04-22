@@ -212,7 +212,7 @@ class VlcPlayer(MediaPlayer):
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             log.debug('vlc play, starttime set')
             start_time = controller.media_info.start_time
-        log.debug('mediatype: ' +str(controller.media_info.media_type))
+        log.debug('mediatype: ' + str(controller.media_info.media_type))
         # Set tracks for the optical device
         if controller.media_info.media_type == MediaType.DVD:
             log.debug('vlc play, playing started')

@@ -74,9 +74,11 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.close_pushbutton.clicked.connect(self.reject)
         # setup play/pause icon
         self.play_icon = QtGui.QIcon()
-        self.play_icon.addPixmap(QtGui.QPixmap(":/slides/media_playback_start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.play_icon.addPixmap(QtGui.QPixmap(":/slides/media_playback_start.png"), QtGui.QIcon.Normal,
+                                 QtGui.QIcon.Off)
         self.pause_icon = QtGui.QIcon()
-        self.pause_icon.addPixmap(QtGui.QPixmap(":/slides/media_playback_pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pause_icon.addPixmap(QtGui.QPixmap(":/slides/media_playback_pause.png"), QtGui.QIcon.Normal,
+                                  QtGui.QIcon.Off)
 
     def reject(self):
         """
@@ -519,7 +521,8 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                 if device_props.Get('org.freedesktop.UDisks.Device', 'DeviceIsDrive'):
                     drive_props = device_props.Get('org.freedesktop.UDisks.Device', 'DriveMediaCompatibility')
                     if any('optical' in prop for prop in drive_props):
-                        self.media_path_combobox.addItem(device_props.Get('org.freedesktop.UDisks.Device', 'DeviceFile'))
+                        self.media_path_combobox.addItem(device_props.Get('org.freedesktop.UDisks.Device',
+                                                                          'DeviceFile'))
         elif sys.platform.startswith('darwin'):
             # Look for DVD folders in devices to find optical devices
             volumes = os.listdir('/Volumes')
