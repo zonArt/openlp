@@ -26,6 +26,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+
+
 from PyQt4 import QtCore, QtGui
 from openlp.core.common import translate
 
@@ -129,6 +131,7 @@ class Ui_MediaClipSelector(object):
         self.gridLayout.addWidget(self.audio_track_label, 3, 0, 1, 2)
         self.media_position_timeedit = QtGui.QTimeEdit(self.centralwidget)
         self.media_position_timeedit.setEnabled(True)
+        self.media_position_timeedit.setReadOnly(True)
         self.media_position_timeedit.setObjectName("media_position_timeedit")
         self.gridLayout.addWidget(self.media_position_timeedit, 6, 4, 1, 1)
         self.media_view_frame = QtGui.QFrame(self.centralwidget)
