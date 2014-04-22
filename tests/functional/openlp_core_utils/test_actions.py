@@ -32,11 +32,11 @@ Package to test the openlp.core.utils.actions package.
 from unittest import TestCase
 
 from PyQt4 import QtGui, QtCore
-from mock import MagicMock
 
 from openlp.core.common import Settings
 from openlp.core.utils import ActionList
 from openlp.core.utils.actions import CategoryActionList
+from tests.functional import MagicMock
 from tests.helpers.testmixin import TestMixin
 
 
