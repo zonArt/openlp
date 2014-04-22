@@ -278,7 +278,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         check_directory_exists(self.service_path)
         self.load_list(Settings().value(self.settings_section + '/media files'))
         self.rebuild_players()
-        self.media_clip_selector_form = MediaClipSelectorForm(self, self.main_window, None)
+        if VLC_AVAILABLE:
+            self.media_clip_selector_form = MediaClipSelectorForm(self, self.main_window, None)
 
     def rebuild_players(self):
         """

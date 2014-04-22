@@ -43,7 +43,16 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.common import translate
 from openlp.plugins.media.forms.mediaclipselectordialog import Ui_MediaClipSelector
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.media.vendor import vlc
+try:
+    from openlp.core.ui.media.vendor import vlc
+except (ImportError, NameError, NotImplementedError):
+    pass
+except OSError as e:
+    if sys.platform.startswith('win'):
+        if not isinstance(e, WindowsError) and e.winerror != 126:
+            raise
+    else:
+        raise
 
 log = logging.getLogger(__name__)
 

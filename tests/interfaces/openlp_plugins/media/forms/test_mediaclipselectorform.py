@@ -29,7 +29,13 @@
 """
 Module to test the MediaClipSelectorForm.
 """
-from unittest import TestCase
+
+import os
+from unittest import TestCase, SkipTest
+from openlp.core.ui.media.vlcplayer import VLC_AVAILABLE
+
+if os.name == 'nt' and not VLC_AVAILABLE:
+    raise SkipTest('Windows without VLC, skipping this test since it cannot run without vlc')
 
 from PyQt4 import QtGui, QtTest, QtCore
 
