@@ -32,9 +32,11 @@ Package to test the openlp.core.utils.actions package.
 from unittest import TestCase
 
 from PyQt4 import QtGui, QtCore
+from mock import MagicMock
 
 from openlp.core.common import Settings
 from openlp.core.utils import ActionList
+from openlp.core.utils.actions import CategoryActionList
 from tests.helpers.testmixin import TestMixin
 
 
@@ -149,3 +151,63 @@ class TestActionList(TestCase, TestMixin):
         # THEN: Both action should keep their shortcuts.
         assert len(action3.shortcuts()) == 2, 'The action should have two shortcut assigned.'
         assert len(action_with_same_shortcuts3.shortcuts()) == 2, 'The action should have two shortcuts assigned.'
+
+
+class TestCategoryActionList(TestCase):
+    def setUp(self):
+        """
+        """
+        self.added_action = MagicMock()
+        self.added_action.text = MagicMock('first')
+        self.not_added_action = MagicMock('second')
+        self.not_added_action.text = MagicMock()
+        self.list = CategoryActionList()
+        self.list.add(self.added_action, 10)
+
+    def tearDown(self):
+        """
+
+        """
+        del self.list
+
+    def len_test(self):
+        """
+        Test the __len__ method
+        """
+        # GIVEN: The list.
+
+        # WHEN: Check the length
+        length = len(self.list)
+
+        # THEN:
+        self.assertEqual(length, 1, "The length should be 1.")
+
+        # GIVEN: A list with an item.
+        self.list.append(self.not_added_action)
+
+        # WHEN: Check the length.
+        length = len(self.list)
+
+        # THEN:
+        self.assertEqual(length, 2, "The length should be 2.")
+
+    def remove_test(self):
+        """
+        Test the remove() method
+        """
+        # GIVEN: The list
+
+        # WHEN: Delete an item from the list.
+        self.list.remove(self.added_action)
+
+        # THEN: Now the element should not be in the list anymore.
+        self.assertFalse(self.added_action in self.list)
+
+    def contains_test(self):
+        """
+        Test the __contains__() method
+        """
+        # GIVEN: The list.
+        # WHEN: Do nothing.
+        # THEN: A not added item should not be in the list.
+        self.assertFalse(self.not_added_action in self.list)

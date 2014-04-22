@@ -69,6 +69,7 @@ class CategoryActionList(object):
         """
         Implement the __getitem__() method to make this class a dictionary type
         """
+        assert False
         for weight, action in self.actions:
             if action.text() == key:
                 return action
@@ -78,7 +79,10 @@ class CategoryActionList(object):
         """
         Implement the __contains__() method to make this class a dictionary type
         """
-        return item in self
+        for weight, action in self.actions:
+            if action.text() == item:
+                return True
+        return False
 
     def __len__(self):
         """
@@ -107,10 +111,7 @@ class CategoryActionList(object):
         """
         Implement the has_key() method to make this class a dictionary type
         """
-        for weight, action in self.actions:
-            if action.text() == key:
-                return True
-        return False
+        return key in self
 
     def append(self, name):
         """
@@ -270,7 +271,7 @@ class ActionList(object):
         settings = Settings()
         settings.beginGroup('shortcuts')
         # Get the default shortcut from the config.
-        action.defaultShortcuts = settings.get_default_value(action.objectName())
+        action.default_shortcuts = settings.get_default_value(action.objectName())
         if weight is None:
             self.categories[category].actions.append(action)
         else:
