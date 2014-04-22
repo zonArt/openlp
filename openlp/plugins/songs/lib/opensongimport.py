@@ -45,11 +45,11 @@ class OpenSongImport(SongImport):
     """
     Import songs exported from OpenSong
 
-    The format is described loosly on the `OpenSong File Format Specification
+    The format is described loosely on the `OpenSong File Format Specification
     <http://www.opensong.org/d/manual/song_file_format_specification>`_ page on the OpenSong web site. However, it
     doesn't describe the <lyrics> section, so here's an attempt:
 
-    If the first charachter of a line is a space, then the rest of that line is lyrics. If it is not a space the
+    If the first character of a line is a space, then the rest of that line is lyrics. If it is not a space the
     following applies.
 
     Verses can be expressed in one of 2 ways, either in complete verses, or by line grouping, i.e. grouping all line 1's
@@ -93,11 +93,18 @@ class OpenSongImport(SongImport):
 
     All verses are imported and tagged appropriately.
 
-    Guitar chords can be provided "above" the lyrics (the line is preceeded by a period "."), and one or more "_" can
+    Guitar chords can be provided "above" the lyrics (the line is preceded by a period "."), and one or more "_" can
     be used to signify long-drawn-out words. Chords and "_" are removed by this importer. For example::
 
         . A7        Bm
         1 Some____ Words
+
+    Lines that contain only whitespace are ignored.
+    | indicates a blank line, and || a new slide.
+
+        Slide 1 Line 1|Slide 1 Line 2||Slide 2 Line 1|Slide 2 Line 2
+
+    Lines beginning with ; are comments
 
     The <presentation> tag is used to populate the OpenLP verse display order field. The Author and Copyright tags are
     also imported to the appropriate places.
@@ -193,7 +200,7 @@ class OpenSongImport(SongImport):
         else:
             lyrics = ''
         for this_line in lyrics.split('\n'):
-            if not this_line:
+            if not this_line.strip():
                 continue
             # skip this line if it is a comment
             if this_line.startswith(';'):
@@ -236,7 +243,12 @@ class OpenSongImport(SongImport):
             this_line = this_line.replace('_', '')
             this_line = this_line.replace('||', '\n[---]\n')
             this_line = this_line.strip()
-            this_line = this_line.replace('|', '\n')
+            # If the line consists solely of a '|', then just use the implicit newline
+            # Otherwise, add a newline for each '|'
+            if this_line == '|':
+                this_line = ''
+            else:
+                this_line = this_line.replace('|', '\n')
             verses[verse_tag][verse_num][inst].append(this_line)
         # done parsing
         # add verses in original order

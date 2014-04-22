@@ -13,6 +13,11 @@
   <user2> </user2>
   <user3> </user3>
   <lyrics>[V]
+;Test the chords format
+;Chords beging with .
+;Verses begin with their verse number
+;Link words with _
+;Comments begin with ;
 .       D              D7           G          D     
 1A______ma________zing grace! How   sweet the  sound!
 2'Twas  grace     that taught my    heart to   fear,
