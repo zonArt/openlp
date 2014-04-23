@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, UiStrings,\
     translate
-from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, ServiceItem, ServiceItemContext, \
+from openlp.core.lib import ItemCapabilities, MediaManagerItem, MediaType, ServiceItem, ServiceItemContext, \
     build_icon, check_item_selected
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
@@ -95,7 +95,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.reset_action.setToolTip(UiStrings().ResetLiveBG)
         self.automatic = UiStrings().Automatic
         self.display_type_label.setText(translate('MediaPlugin.MediaItem', 'Use Player:'))
-        #self.rebuild_players()
 
     def required_icons(self):
         """
@@ -141,7 +140,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         if index == 0:
             set_media_players(player)
         else:
-            set_media_players(player, player[index-1])
+            set_media_players(player, player[index - 1])
 
     def on_reset_click(self):
         """
@@ -161,7 +160,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         Called to replace Live background with the media selected.
         """
         if check_item_selected(self.list_view,
-                               translate('MediaPlugin.MediaItem', 
+                               translate('MediaPlugin.MediaItem',
                                          'You must select a media file to replace the background with.')):
             item = self.list_view.currentItem()
             filename = item.data(QtCore.Qt.UserRole)
@@ -170,12 +169,12 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 service_item.title = 'webkit'
                 service_item.processor = 'webkit'
                 (path, name) = os.path.split(filename)
-                service_item.add_from_command(path, name,CLAPPERBOARD)
+                service_item.add_from_command(path, name, CLAPPERBOARD)
                 if self.media_controller.video(DisplayControllerType.Live, service_item, video_behind_text=True):
                     self.reset_action.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
-                                               translate('MediaPlugin.MediaItem', 
+                                               translate('MediaPlugin.MediaItem',
                                                          'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
@@ -216,6 +215,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             if not self.media_controller.media_length(service_item):
                 return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
+        service_item.add_capability(ItemCapabilities.CanEditTitle)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         if Settings().value(self.settings_section + '/media auto start') == QtCore.Qt.Checked:
             service_item.will_auto_start = True

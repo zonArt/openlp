@@ -74,7 +74,7 @@ class PdfController(PresentationController):
         runlog = ''
         log.debug('testing program_path: %s', program_path)
         try:
-            runlog = check_output([program_path,  '--help'], stderr=STDOUT)
+            runlog = check_output([program_path, '--help'], stderr=STDOUT)
         except CalledProcessError as e:
             runlog = e.output
         except Exception:
@@ -132,7 +132,8 @@ class PdfController(PresentationController):
                 DEVNULL = open(os.devnull, 'wb')
                 # First try to find mupdf
                 try:
-                    self.mudrawbin = check_output(['which', 'mudraw'], stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
+                    self.mudrawbin = check_output(['which', 'mudraw'],
+                                                  stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
                 except CalledProcessError:
                     self.mudrawbin = ''
                 # if mupdf isn't installed, fallback to ghostscript
@@ -182,7 +183,7 @@ class PdfDocument(PresentationDocument):
         self.image_files = []
         self.num_pages = -1
 
-    def gs_get_resolution(self,  size):
+    def gs_get_resolution(self, size):
         """
         Only used when using ghostscript
         Ghostscript can't scale automatically while keeping aspect like mupdf, so we need
@@ -192,7 +193,8 @@ class PdfDocument(PresentationDocument):
         :return: The resolution dpi to be used.
         """
         # Use a postscript script to get size of the pdf. It is assumed that all pages have same size
-        gs_resolution_script = AppLocation.get_directory(AppLocation.PluginsDir) + '/presentations/lib/ghostscript_get_resolution.ps'
+        gs_resolution_script = AppLocation.get_directory(
+            AppLocation.PluginsDir) + '/presentations/lib/ghostscript_get_resolution.ps'
         # Run the script on the pdf to get the size
         runlog = []
         try:
@@ -202,19 +204,19 @@ class PdfDocument(PresentationDocument):
             log.debug(' '.join(e.cmd))
             log.debug(e.output)
         # Extract the pdf resolution from output, the format is " Size: x: <width>, y: <height>"
-        width = 0
-        height = 0
+        width = 0.0
+        height = 0.0
         for line in runlog.splitlines():
             try:
-                width = int(re.search('.*Size: x: (\d+\.?\d*), y: \d+.*', line.decode()).group(1))
-                height = int(re.search('.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line.decode()).group(1))
+                width = float(re.search('.*Size: x: (\d+\.?\d*), y: \d+.*', line.decode()).group(1))
+                height = float(re.search('.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line.decode()).group(1))
                 break
             except AttributeError:
-                pass
+                continue
         # Calculate the ratio from pdf to screen
         if width > 0 and height > 0:
-            width_ratio = size.right() / float(width)
-            height_ratio = size.bottom() / float(height)
+            width_ratio = size.right() / width
+            height_ratio = size.bottom() / height
             # return the resolution that should be used. 72 is default.
             if width_ratio > height_ratio:
                 return int(height_ratio * 72)
@@ -234,7 +236,7 @@ class PdfDocument(PresentationDocument):
         if os.path.isfile(os.path.join(self.get_temp_folder(), 'mainslide001.png')):
             created_files = sorted(os.listdir(self.get_temp_folder()))
             for fn in created_files:
-                if os.path.isfile(os.path.join(self.get_temp_folder(),  fn)):
+                if os.path.isfile(os.path.join(self.get_temp_folder(), fn)):
                     self.image_files.append(os.path.join(self.get_temp_folder(), fn))
             self.num_pages = len(self.image_files)
             return True

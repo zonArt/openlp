@@ -175,10 +175,10 @@ class PresentationTab(SettingsTab):
         if pdf_program == '':
             enable_pdf_program = 0
         if pdf_program != Settings().value(self.settings_section + '/pdf_program'):
-            Settings().setValue(self.settings_section + '/pdf_program',  pdf_program)
+            Settings().setValue(self.settings_section + '/pdf_program', pdf_program)
             changed = True
         if enable_pdf_program != Settings().value(self.settings_section + '/enable_pdf_program'):
-            Settings().setValue(self.settings_section + '/enable_pdf_program',  enable_pdf_program)
+            Settings().setValue(self.settings_section + '/enable_pdf_program', enable_pdf_program)
             changed = True
         if changed:
             self.settings_form.register_post_process('mediaitem_suffix_reset')

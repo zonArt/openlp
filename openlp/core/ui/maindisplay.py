@@ -168,8 +168,10 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         """
         if enabled:
             self.setAutoFillBackground(False)
+            self.setStyleSheet("QGraphicsView {background: transparent; border: 0px;}")
         else:
             self.setAttribute(QtCore.Qt.WA_NoSystemBackground, False)
+            self.setStyleSheet("QGraphicsView {}")
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
         self.repaint()
 
@@ -350,7 +352,6 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                 self.hide_display(self.hide_mode)
             # Only continue if the visibility wasn't changed during method call.
             elif was_visible == self.isVisible():
-
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
@@ -601,4 +602,3 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         :param signal: The signal to be fired
         """
         QtCore.QObject.connect(self.media_object, signal, slot)
-

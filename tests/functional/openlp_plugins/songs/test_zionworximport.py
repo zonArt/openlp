@@ -26,25 +26,31 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-import sys
+"""
+This module contains tests for the ZionWorx song importer.
+"""
 
-from openlp.plugins.songs.lib.opensongimport import OpenSongImport
-from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib.db import init_schema
+from unittest import TestCase
 
-import logging
-LOG_FILENAME = 'test_import_file.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
+from tests.functional import MagicMock, patch
+from openlp.plugins.songs.lib.zionworximport import ZionWorxImport
+from openlp.plugins.songs.lib.songimport import SongImport
 
-from test_opensongimport import wizard_stub
 
-def test(filenames):
-    manager = Manager('songs', init_schema)
-    o = OpenSongImport(manager, filenames=filenames)
-    o.import_wizard = wizard_stub()
-    o.commit = False
-    o.do_import()
-    o.print_song()
+class TestZionWorxImport(TestCase):
+    """
+    Test the functions in the :mod:`zionworximport` module.
+    """
+    def create_importer_test(self):
+        """
+        Test creating an instance of the ZionWorx file importer
+        """
+        # GIVEN: A mocked out SongImport class, and a mocked out "manager"
+        with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
+            mocked_manager = MagicMock()
 
-if __name__ == "__main__":
-    test(sys.argv[1:])
+            # WHEN: An importer object is created
+            importer = ZionWorxImport(mocked_manager, filenames=[])
+
+            # THEN: The importer should be an instance of SongImport
+            self.assertIsInstance(importer, SongImport)

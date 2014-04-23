@@ -263,7 +263,7 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
-        self.tabTitleVisible = UiStrings().Advanced
+        self.tab_title_visible = UiStrings().Advanced
         self.ui_group_box.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.data_directory_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Data Location'))
         self.recent_label.setText(translate('OpenLP.AdvancedTab', 'Number of recent files to display:'))
@@ -319,7 +319,7 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.AdvancedTab', '<strong>WARNING:</strong> New data directory location contains '
                       'OpenLP data files.  These files WILL be replaced during a copy.'))
         self.display_workaround_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Display Workarounds'))
-        self.x11_bypass_check_box.setText(translate('OpenLP.AdvancedTab','Bypass X11 Window Manager'))
+        self.x11_bypass_check_box.setText(translate('OpenLP.AdvancedTab', 'Bypass X11 Window Manager'))
         self.alternate_rows_check_box.setText(translate('OpenLP.AdvancedTab', 'Use alternating row colours in lists'))
         # Slide Limits
         self.slide_group_box.setTitle(translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
@@ -375,7 +375,8 @@ class AdvancedTab(SettingsTab):
         self.current_data_path = AppLocation.get_data_path()
         if not os.path.exists(self.current_data_path):
             log.error('Data path not found %s' % self.current_data_path)
-            answer = QtGui.QMessageBox.critical(self, translate('OpenLP.AdvancedTab', 'Data Directory Error'),
+            answer = QtGui.QMessageBox.critical(
+                self, translate('OpenLP.AdvancedTab', 'Data Directory Error'),
                 translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n%s\n\n'
                           'This data directory was previously changed from the OpenLP '
                           'default location.  If the new location was on removable '
@@ -510,7 +511,7 @@ class AdvancedTab(SettingsTab):
         """
         Select an image for the default display screen.
         """
-        file_filters = '%s;;%s (*.*) (*)' % (get_images_filter(), UiStrings().AllFiles)
+        file_filters = '%s;;%s (*.*)' % (get_images_filter(), UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.AdvancedTab', 'Open File'), '',
                                                      file_filters)
         if filename:
@@ -537,8 +538,9 @@ class AdvancedTab(SettingsTab):
         # Make sure they want to change the data.
         answer = QtGui.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
                                             translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
-                                            'location of the OpenLP data directory to:\n\n%s\n\nThe data directory '
-                                            'will be changed when OpenLP is closed.').replace('%s', new_data_path),
+                                                      'location of the OpenLP data directory to:\n\n%s\n\nThe data '
+                                                      'directory will be changed when OpenLP is closed.').
+                                            replace('%s', new_data_path),
                                             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                               QtGui.QMessageBox.No),
                                             QtGui.QMessageBox.No)
@@ -561,8 +563,9 @@ class AdvancedTab(SettingsTab):
             # default.
             answer = QtGui.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
                                                 translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
-                                                'location of the OpenLP data directory to the default location?\n\nThis'
-                                                ' location will be used after OpenLP is closed.'),
+                                                          'location of the OpenLP data directory to the default '
+                                                          'location?\n\nThis location will be used after OpenLP is  '
+                                                          'closed.'),
                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                                   QtGui.QMessageBox.No),
                                                 QtGui.QMessageBox.No)
@@ -588,7 +591,7 @@ class AdvancedTab(SettingsTab):
             else:
                 self.new_data_directory_has_files_label.hide()
 
-    def check_data_overwrite(self, data_path ):
+    def check_data_overwrite(self, data_path):
         """
         Check if there's already data in the target directory.
         """
@@ -602,8 +605,8 @@ class AdvancedTab(SettingsTab):
                                                translate('OpenLP.AdvancedTab',
                                                          'WARNING: \n\nThe location you have selected \n\n%s\n\n'
                                                          'appears to contain OpenLP data files. Do you wish to '
-                                                         'replace these files with the current data files?').replace
-                                                         ('%s', os.path.abspath(data_path,)),
+                                                         'replace these files with the current data files?').
+                                               replace('%s', os.path.abspath(data_path,)),
                                                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                                  QtGui.QMessageBox.No),
                                                QtGui.QMessageBox.No)

@@ -42,7 +42,8 @@ class TestFileDialog(TestCase):
         # THEN: The returned value should be an empty QStringList and os.path.exists should not have been called
         assert not self.mocked_os.path.exists.called
         self.assertEqual(result, [],
-            'FileDialog.getOpenFileNames should return and empty list when QFileDialog.getOpenFileNames is canceled')
+                         'FileDialog.getOpenFileNames should return and empty list when QFileDialog.getOpenFileNames '
+                         'is canceled')
 
     def returned_file_list_test(self):
         """
@@ -53,7 +54,7 @@ class TestFileDialog(TestCase):
         self.mocked_qt_gui.reset()
 
         # GIVEN: A List of known values as a return value from QFileDialog.getOpenFileNames and a list of valid
-        #		file names.
+        # file names.
         self.mocked_qt_gui.QFileDialog.getOpenFileNames.return_value = [
             '/Valid File', '/url%20encoded%20file%20%231', '/non-existing']
         self.mocked_os.path.exists.side_effect = lambda file_name: file_name in [
@@ -70,5 +71,5 @@ class TestFileDialog(TestCase):
         self.mocked_os.path.exists.assert_callde_with('/non-existing')
         self.mocked_os.path.exists.assert_callde_with('/non-existing')
         self.mocked_qt_gui.QmessageBox.information.called_with(self.mocked_parent, UiStrings().FileNotFound,
-            UiStrings().FileNotFoundMessage % '/non-existing')
+                                                               UiStrings().FileNotFoundMessage % '/non-existing')
         self.assertEqual(result, ['/Valid File', '/url encoded file #1'], 'The returned file list is incorrect')

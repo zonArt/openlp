@@ -132,7 +132,7 @@ class SongsPlugin(Plugin):
         )
         import_menu.addAction(self.import_songselect_item)
 
-    def add_export_menu_Item(self, export_menu):
+    def add_export_menu_item(self, export_menu):
         """
         Give the Songs plugin the opportunity to add items to the **Export** menu.
 
@@ -261,12 +261,12 @@ class SongsPlugin(Plugin):
         """
         Called to define all translatable texts of the plugin
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('SongsPlugin', 'Song', 'name singular'),
             'plural': translate('SongsPlugin', 'Songs', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {
             'title': translate('SongsPlugin', 'Songs', 'container title')
         }
@@ -342,7 +342,7 @@ class SongsPlugin(Plugin):
         """
         Remove temporary songs from the database
         """
-        songs = self.manager.get_all_objects(Song, Song.temporary == True)
+        songs = self.manager.get_all_objects(Song, Song.temporary is True)
         for song in songs:
             self.manager.delete_object(Song, song.id)
 

@@ -298,10 +298,10 @@ class FoilPresenter(object):
                 temp = copyright.partition('Rechte')
                 copyright = temp[0]
             markers = ['Text +u\.?n?d? +Melodie[\w\,\. ]*:',
-                'Text +u\.?n?d? +Musik', 'T & M', 'Melodie und Satz',
-                'Text[\w\,\. ]*:', 'Melodie', 'Musik', 'Satz',
-                'Weise', '[dD]eutsch', '[dD]t[\.\:]', 'Englisch',
-                '[oO]riginal', 'Bearbeitung', '[R|r]efrain']
+                       'Text +u\.?n?d? +Musik', 'T & M', 'Melodie und Satz',
+                       'Text[\w\,\. ]*:', 'Melodie', 'Musik', 'Satz',
+                       'Weise', '[dD]eutsch', '[dD]t[\.\:]', 'Englisch',
+                       '[oO]riginal', 'Bearbeitung', '[R|r]efrain']
             for marker in markers:
                 copyright = re.compile(marker).sub('<marker>', copyright, re.U)
             copyright = re.compile('(?<=<marker>) *:').sub('', copyright)
@@ -324,12 +324,9 @@ class FoilPresenter(object):
                 for tempx in temp:
                     author_temp.append(tempx)
                 for author in author_temp:
-                    regex = '^[\/,;\-\s\.]+|[\/,;\-\s\.]+$|'\
-                        '\s*[0-9]{4}\s*[\-\/]?\s*([0-9]{4})?[\/,;\-\s\.]*$'
+                    regex = '^[\/,;\-\s\.]+|[\/,;\-\s\.]+$|\s*[0-9]{4}\s*[\-\/]?\s*([0-9]{4})?[\/,;\-\s\.]*$'
                     author = re.compile(regex).sub('', author)
-                    author = re.compile(
-                        '[0-9]{1,2}\.\s?J(ahr)?h\.|um\s*$|vor\s*$').sub('',
-                        author)
+                    author = re.compile('[0-9]{1,2}\.\s?J(ahr)?h\.|um\s*$|vor\s*$').sub('', author)
                     author = re.compile('[N|n]ach.*$').sub('', author)
                     author = author.strip()
                     if re.search('\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s', author, re.U):

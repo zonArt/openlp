@@ -54,9 +54,9 @@ class TestAppLocation(TestCase):
             # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
             mocked_settings = mocked_class.return_value
             mocked_settings.contains.return_value = False
-            mocked_get_directory.return_value = os.path.join('test','dir')
+            mocked_get_directory.return_value = os.path.join('test', 'dir')
             mocked_check_directory_exists.return_value = True
-            mocked_os.path.normpath.return_value = os.path.join('test','dir')
+            mocked_os.path.normpath.return_value = os.path.join('test', 'dir')
 
             # WHEN: we call AppLocation.get_data_path()
             data_path = AppLocation.get_data_path()
@@ -64,8 +64,8 @@ class TestAppLocation(TestCase):
             # THEN: check that all the correct methods were called, and the result is correct
             mocked_settings.contains.assert_called_with('advanced/data path')
             mocked_get_directory.assert_called_with(AppLocation.DataDir)
-            mocked_check_directory_exists.assert_called_with(os.path.join('test','dir'))
-            self.assertEqual(os.path.join('test','dir'), data_path, 'Result should be "test/dir"')
+            mocked_check_directory_exists.assert_called_with(os.path.join('test', 'dir'))
+            self.assertEqual(os.path.join('test', 'dir'), data_path, 'Result should be "test/dir"')
 
     def get_data_path_with_custom_location_test(self):
         """
@@ -110,14 +110,14 @@ class TestAppLocation(TestCase):
         with patch('openlp.core.common.AppLocation.get_data_path') as mocked_get_data_path, \
                 patch('openlp.core.common.applocation.os.listdir') as mocked_listdir:
             # GIVEN: Our mocked modules/methods.
-            mocked_get_data_path.return_value = os.path.join('test','dir')
+            mocked_get_data_path.return_value = os.path.join('test', 'dir')
             mocked_listdir.return_value = copy.deepcopy(FILE_LIST)
 
             # When: Get the list of files.
             result = AppLocation.get_files('section', '.mp3')
 
             # Then: Check if the section parameter was used correctly.
-            mocked_listdir.assert_called_with(os.path.join('test','dir','section'))
+            mocked_listdir.assert_called_with(os.path.join('test', 'dir', 'section'))
 
             # Then: check if the file lists are identical.
             self.assertListEqual(['file5.mp3', 'file6.mp3'], result, 'The file lists should be identical.')
@@ -129,15 +129,15 @@ class TestAppLocation(TestCase):
         with patch('openlp.core.common.AppLocation.get_data_path') as mocked_get_data_path, \
                 patch('openlp.core.common.applocation.check_directory_exists') as mocked_check_directory_exists:
             # GIVEN: A mocked out AppLocation.get_data_path()
-            mocked_get_data_path.return_value = os.path.join('test','dir')
+            mocked_get_data_path.return_value = os.path.join('test', 'dir')
             mocked_check_directory_exists.return_value = True
 
             # WHEN: we call AppLocation.get_data_path()
             data_path = AppLocation.get_section_data_path('section')
 
             # THEN: check that all the correct methods were called, and the result is correct
-            mocked_check_directory_exists.assert_called_with(os.path.join('test','dir','section'))
-            self.assertEqual(os.path.join('test','dir','section'), data_path, 'Result should be "test/dir/section"')
+            mocked_check_directory_exists.assert_called_with(os.path.join('test', 'dir', 'section'))
+            self.assertEqual(os.path.join('test', 'dir', 'section'), data_path, 'Result should be "test/dir/section"')
 
     def get_directory_for_app_dir_test(self):
         """
@@ -145,13 +145,13 @@ class TestAppLocation(TestCase):
         """
         # GIVEN: A mocked out _get_frozen_path function
         with patch('openlp.core.common.applocation.get_frozen_path') as mocked_get_frozen_path:
-            mocked_get_frozen_path.return_value = os.path.join('app','dir')
+            mocked_get_frozen_path.return_value = os.path.join('app', 'dir')
 
             # WHEN: We call AppLocation.get_directory
             directory = AppLocation.get_directory(AppLocation.AppDir)
 
             # THEN: check that the correct directory is returned
-            self.assertEqual(os.path.join('app','dir'), directory, 'Directory should be "app/dir"')
+            self.assertEqual(os.path.join('app', 'dir'), directory, 'Directory should be "app/dir"')
 
     def get_directory_for_plugins_dir_test(self):
         """

@@ -108,6 +108,9 @@ class ItemCapabilities(object):
     ``CanAutoStartForLive``
             The capability to ignore the do not play if display blank flag.
 
+    ``CanEditTitle``
+            The capability to edit the title of the item
+
     ``HasDisplayTitle``
             The item contains 'displaytitle' on every frame which should be
             preferred over 'title' when displaying the item
@@ -135,9 +138,10 @@ class ItemCapabilities(object):
     CanWordSplit = 14
     HasBackgroundAudio = 15
     CanAutoStartForLive = 16
-    HasDisplayTitle = 17
-    HasNotes = 18
-    HasThumbnails = 19
+    CanEditTitle = 17
+    HasDisplayTitle = 18
+    HasNotes = 19
+    HasThumbnails = 20
 
 
 class ServiceItem(RegistryProperties):
@@ -398,7 +402,7 @@ class ServiceItem(RegistryProperties):
         self.will_auto_start = header.get('will_auto_start', False)
         self.processor = header.get('processor', None)
         self.has_original_files = True
-        #TODO Remove me in 2,3 build phase
+        # TODO: Remove me in 2,3 build phase
         if self.is_capable(ItemCapabilities.HasDetailedTitleDisplay):
             self.capabilities.remove(ItemCapabilities.HasDetailedTitleDisplay)
             self.processor = self.title
@@ -439,7 +443,7 @@ class ServiceItem(RegistryProperties):
         """
         Returns the title of the service item.
         """
-        if self.is_text():
+        if self.is_text() or ItemCapabilities.CanEditTitle in self.capabilities:
             return self.title
         else:
             if len(self._raw_frames) > 1:

@@ -73,7 +73,7 @@ class EasyWorshipSongImport(SongImport):
     ability to import EasyWorship song files.
     """
     def __init__(self, manager, **kwargs):
-        SongImport.__init__(self, manager, **kwargs)
+        super(EasyWorshipSongImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
@@ -305,7 +305,7 @@ class EasyWorshipSongImport(SongImport):
         elif field_desc.field_type == FieldType.Logical:
             return field ^ 0x80 == 1
         elif field_desc.field_type == FieldType.Memo or field_desc.field_type == FieldType.Blob:
-            block_start, blob_size = struct.unpack_from('<II', field, len(field)-10)
+            block_start, blob_size = struct.unpack_from('<II', field, len(field) - 10)
             sub_block = block_start & 0xff
             block_start &= ~0xff
             self.memo_file.seek(block_start)

@@ -37,14 +37,14 @@ from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer, WebSocketManager
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        'remotes/twelve hour': True,
-        'remotes/port': 4316,
-        'remotes/https port': 4317,
-        'remotes/https enabled': False,
-        'remotes/user id': 'openlp',
-        'remotes/password': 'password',
-        'remotes/authentication enabled': False,
-        'remotes/ip address': '0.0.0.0'
+    'remotes/twelve hour': True,
+    'remotes/port': 4316,
+    'remotes/https port': 4317,
+    'remotes/https enabled': False,
+    'remotes/user id': 'openlp',
+    'remotes/password': 'password',
+    'remotes/authentication enabled': False,
+    'remotes/ip address': '0.0.0.0'
 }
 
 
@@ -100,12 +100,12 @@ class RemotesPlugin(Plugin):
         """
         Called to define all translatable texts of the plugin
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('RemotePlugin', 'Remote', 'name singular'),
             'plural': translate('RemotePlugin', 'Remotes', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {
             'title': translate('RemotePlugin', 'Remote', 'container title')
         }

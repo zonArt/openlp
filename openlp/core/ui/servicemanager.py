@@ -234,6 +234,9 @@ class Ui_ServiceManager(object):
         self.menu = QtGui.QMenu()
         self.edit_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Edit Item'),
                                                 icon=':/general/general_edit.png', triggers=self.remote_edit)
+        self.rename_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Rename...'),
+                                                  icon=':/general/general_edit.png',
+                                                  triggers=self.on_service_item_rename)
         self.maintain_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
                                                     icon=':/general/general_edit.png',
                                                     triggers=self.on_service_item_edit_form)
@@ -399,7 +402,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         :param suffix_list: New Suffix's to be supported
         """
         for suffix in suffix_list:
-            if not suffix in self.suffixes:
+            if suffix not in self.suffixes:
                 self.suffixes.append(suffix)
 
     def on_new_service_clicked(self, field=None):
@@ -629,7 +632,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         for item in self.service_items:
             self.main_window.increment_progress_bar()
             service_item = item['service_item'].get_service_repr(self._save_lite)
-            #TODO: check for file item on save.
+            # TODO: check for file item on save.
             service.append({'serviceitem': service_item})
             self.main_window.increment_progress_bar()
         service_content = json.dumps(service)
@@ -689,8 +692,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         if self._file_name.endswith('oszl') or self.service_has_all_original_files:
             file_name = QtGui.QFileDialog.getSaveFileName(self.main_window, UiStrings().SaveService, path,
                                                           translate('OpenLP.ServiceManager',
-                                                          'OpenLP Service Files (*.osz);; OpenLP Service Files - lite '
-                                                          '(*.oszl)'))
+                                                                    'OpenLP Service Files (*.osz);; OpenLP Service '
+                                                                    'Files - lite (*.oszl)'))
         else:
             file_name = QtGui.QFileDialog.getSaveFileName(self.main_window, UiStrings().SaveService, path,
                                                           translate('OpenLP.ServiceManager',
@@ -754,8 +757,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                     items = json.load(file_to)
                 else:
                     critical_error_message_box(message=translate('OpenLP.ServiceManager',
-                                               'The service file you are trying to open is in an old format.\n '
-                                               'Please save it using OpenLP 2.0.2 or greater.'))
+                                                                 'The service file you are trying to open is in an old '
+                                                                 'format.\n Please save it using OpenLP 2.0.2 or '
+                                                                 'greater.'))
                     return
                 file_to.close()
                 self.new_file()
@@ -783,7 +787,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 self.log_exception('Service file is cannot be extracted as zip: %s' % file_name)
                 QtGui.QMessageBox.information(self, translate('OpenLP.ServiceManager', 'Corrupt File'),
                                               translate('OpenLP.ServiceManager',
-                                              'This file is either corrupt or it is not an OpenLP 2 service file.'))
+                                                        'This file is either corrupt or it is not an OpenLP 2 service '
+                                                        'file.'))
             self.application.set_normal_cursor()
             return
         finally:
@@ -847,6 +852,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             pos = item.data(0, QtCore.Qt.UserRole)
         service_item = self.service_items[pos - 1]
         self.edit_action.setVisible(False)
+        self.rename_action.setVisible(False)
         self.create_custom_action.setVisible(False)
         self.maintain_action.setVisible(False)
         self.notes_action.setVisible(False)
@@ -854,6 +860,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         self.auto_start_action.setVisible(False)
         if service_item['service_item'].is_capable(ItemCapabilities.CanEdit) and service_item['service_item'].edit_id:
             self.edit_action.setVisible(True)
+        if service_item['service_item'].is_capable(ItemCapabilities.CanEditTitle):
+            self.rename_action.setVisible(True)
         if service_item['service_item'].is_capable(ItemCapabilities.CanMaintain):
             self.maintain_action.setVisible(True)
         if item.parent() is None:
@@ -1253,8 +1261,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             tree_widget_item.setText(0, service_item_from_item.get_display_title())
             tips = []
             if service_item_from_item.temporary_edit:
-                tips.append('<strong>%s:</strong> <em>%s</em>' %
-                            (translate('OpenLP.ServiceManager', 'Edit'),
+                tips.append('<strong>%s:</strong> <em>%s</em>' % (translate('OpenLP.ServiceManager', 'Edit'),
                             (translate('OpenLP.ServiceManager', 'Service copy only'))))
             if service_item_from_item.theme and service_item_from_item.theme != -1:
                 tips.append('<strong>%s:</strong> <em>%s</em>' %
@@ -1489,6 +1496,24 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             if new_item:
                 self.add_service_item(new_item, replace=True)
 
+    def on_service_item_rename(self, field=None):
+        """
+        Opens a dialog to rename the service item.
+
+        :param field: Not used, but PyQt needs this.
+        """
+        item = self.find_service_item()[0]
+        if not self.service_items[item]['service_item'].is_capable(ItemCapabilities.CanEditTitle):
+            return
+        title = self.service_items[item]['service_item'].title
+        title, ok = QtGui.QInputDialog.getText(self, translate('OpenLP.ServiceManager', 'Rename item title'),
+                                               translate('OpenLP.ServiceManager', 'Title:'),
+                                               QtGui.QLineEdit.Normal, self.trUtf8(title))
+        if ok:
+            self.service_items[item]['service_item'].title = title
+            self.repaint_service_list(item, -1)
+            self.set_modified()
+
     def create_custom(self, field=None):
         """
         Saves the current text item as a custom slide
@@ -1499,9 +1524,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
 
     def find_service_item(self):
         """
-        Finds the first selected ServiceItem in the list and returns the position of the service_item_from_item and its selected
-        child item. For example, if the third child item (in the Slidecontroller known as slide) in the second service
-        item is selected this will return::
+        Finds the first selected ServiceItem in the list and returns the position of the service_item_from_item and its
+        selected child item. For example, if the third child item (in the Slidecontroller known as slide) in the
+        second service item is selected this will return::
 
             (1, 2)
         """

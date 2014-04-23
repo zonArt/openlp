@@ -32,4 +32,3 @@ The :mod:`resources` module contains a bunch of resources for OpenLP.
 DO NOT REMOVE THIS FILE, IT IS REQUIRED FOR INCLUDING THE RESOURCES ON SOME
 PLATFORMS!
 """
-

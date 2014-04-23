@@ -212,9 +212,9 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_export_menu()
         plugin_manager.hook_export_menu()
 
-        # THEN: The add_export_menu_Item() method should not have been called
-        self.assertEqual(0, mocked_plugin.add_export_menu_Item.call_count,
-                         'The add_export_menu_Item() method should not have been called.')
+        # THEN: The add_export_menu_item() method should not have been called
+        self.assertEqual(0, mocked_plugin.add_export_menu_item.call_count,
+                         'The add_export_menu_item() method should not have been called.')
 
     def hook_export_menu_with_active_plugin_test(self):
         """
@@ -229,8 +229,8 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_export_menu()
         plugin_manager.hook_export_menu()
 
-        # THEN: The add_export_menu_Item() method should have been called
-        mocked_plugin.add_export_menu_Item.assert_called_with(self.mocked_main_window.file_export_menu)
+        # THEN: The add_export_menu_item() method should have been called
+        mocked_plugin.add_export_menu_item.assert_called_with(self.mocked_main_window.file_export_menu)
 
     def hook_upgrade_plugin_settings_with_disabled_plugin_test(self):
         """
@@ -264,7 +264,7 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_upgrade_plugin_settings()
         plugin_manager.hook_upgrade_plugin_settings(settings)
 
-        # THEN: The add_export_menu_Item() method should have been called
+        # THEN: The add_export_menu_item() method should have been called
         mocked_plugin.upgrade_settings.assert_called_with(settings)
 
     def hook_tools_menu_with_disabled_plugin_test(self):

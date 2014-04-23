@@ -39,7 +39,7 @@ from PyQt4 import QtCore, QtGui, Qt
 
 from openlp.core.common import translate
 
-log = logging.getLogger(__name__+'.__init__')
+log = logging.getLogger(__name__ + '.__init__')
 
 
 class ServiceItemContext(object):

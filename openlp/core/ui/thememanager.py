@@ -517,7 +517,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         """
         ret = QtGui.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
                                          translate('OpenLP.ThemeManager',
-                                         'Theme %s already exists. Do you want to replace it?')
+                                                   'Theme %s already exists. Do you want to replace it?')
                                          .replace('%s', theme_name),
                                          QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                            QtGui.QMessageBox.No),

@@ -150,5 +150,5 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
 
         :param function:  The function to be called
         """
-        if not function in self.processes:
+        if function not in self.processes:
             self.processes.append(function)

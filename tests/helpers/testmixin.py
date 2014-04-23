@@ -53,13 +53,12 @@ class TestMixin(object):
         Build the settings Object and initialise it
         """
         Settings.setDefaultFormat(Settings.IniFormat)
-        fd, self.ini_file = mkstemp('.ini')
+        self.fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
 
     def destroy_settings(self):
         """
         Destroy the Settings Object
         """
-        if hasattr(self, 'fd'):
-            os.close(self.fd)
+        os.close(self.fd)
         os.unlink(Settings().fileName())

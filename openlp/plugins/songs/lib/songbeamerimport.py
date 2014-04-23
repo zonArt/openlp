@@ -56,11 +56,15 @@ class SongBeamerTypes(object):
         'Zwischenspiel': VerseType.tags[VerseType.Bridge],
         'Pre-Chorus': VerseType.tags[VerseType.PreChorus],
         'Pre-Refrain': VerseType.tags[VerseType.PreChorus],
+        'Misc': VerseType.tags[VerseType.Other],
         'Pre-Bridge': VerseType.tags[VerseType.Other],
         'Pre-Coda': VerseType.tags[VerseType.Other],
+        'Part': VerseType.tags[VerseType.Other],
+        'Teil': VerseType.tags[VerseType.Other],
         'Unbekannt': VerseType.tags[VerseType.Other],
         'Unknown': VerseType.tags[VerseType.Other],
-        'Unbenannt': VerseType.tags[VerseType.Other]
+        'Unbenannt': VerseType.tags[VerseType.Other],
+        '$$M=': VerseType.tags[VerseType.Other]
     }
 
 
@@ -97,7 +101,7 @@ class SongBeamerImport(SongImport):
         """
         Initialise the Song Beamer importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(SongBeamerImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
@@ -132,7 +136,8 @@ class SongBeamerImport(SongImport):
                 line = str(line).strip()
                 if line.startswith('#') and not read_verses:
                     self.parseTags(line)
-                elif line.startswith('---'):
+                elif line.startswith('--'):
+                    # --- and -- allowed for page-breaks (difference in Songbeamer only in printout)
                     if self.current_verse:
                         self.replace_html_tags()
                         self.add_verse(self.current_verse, self.current_verse_type)
@@ -281,5 +286,8 @@ class SongBeamerImport(SongImport):
                 # If we have a digit, we append it to current_verse_type.
                 if marks[1].isdigit():
                     self.current_verse_type += marks[1]
+            return True
+        elif marks[0].startswith('$$M='):  # this verse-mark cannot be numbered
+            self.current_verse_type = SongBeamerTypes.MarkTypes['$$M=']
             return True
         return False

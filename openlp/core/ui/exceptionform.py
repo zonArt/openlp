@@ -157,7 +157,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
                                 '--- Exception Traceback ---\n%s\n'
                                 '--- System information ---\n%s\n'
                                 '--- Library Versions ---\n%s\n')
-        filename = QtGui.QFileDialog.getSaveFileName(self,
+        filename = QtGui.QFileDialog.getSaveFileName(
+            self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
             Settings().value(self.settings_section + '/last directory'),
             translate('OpenLP.ExceptionForm', 'Text files (*.txt *.log *.text)'))
@@ -185,14 +186,13 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
         Opening systems default email client and inserting exception log and system information.
         """
         body = translate('OpenLP.ExceptionForm',
-            '*OpenLP Bug Report*\n'
-            'Version: %s\n\n'
-            '--- Details of the Exception. ---\n\n%s\n\n '
-            '--- Exception Traceback ---\n%s\n'
-            '--- System information ---\n%s\n'
-            '--- Library Versions ---\n%s\n',
-            'Please add the information that bug reports are favoured written '
-            'in English.')
+                         '*OpenLP Bug Report*\n'
+                         'Version: %s\n\n'
+                         '--- Details of the Exception. ---\n\n%s\n\n '
+                         '--- Exception Traceback ---\n%s\n'
+                         '--- System information ---\n%s\n'
+                         '--- Library Versions ---\n%s\n',
+                         'Please add the information that bug reports are favoured written in English.')
         content = self._create_report()
         source = ''
         exception = ''
@@ -228,7 +228,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         files = QtGui.QFileDialog.getOpenFileName(self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
                                                   Settings().value(self.settings_section + '/last directory'),
-                                                  '%s (*.*) (*)' % UiStrings().AllFiles)
+                                                  '%s (*)' % UiStrings().AllFiles)
         log.info('New files(s) %s', str(files))
         if files:
             self.file_attachment = str(files)

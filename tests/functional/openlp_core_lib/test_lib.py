@@ -311,8 +311,8 @@ class TestLib(TestCase):
             mocked_buffer.open.assert_called_with('writeonly')
             mocked_image.save.assert_called_with(mocked_buffer, "PNG")
             mocked_byte_array.toBase64.assert_called_with()
-            self.assertEqual('base64mock', result,
-                'The result should be the return value of the mocked out base64 method')
+            self.assertEqual('base64mock', result, 'The result should be the return value of the mocked out '
+                                                   'base64 method')
 
     def create_thumb_with_size_test(self):
         """
@@ -482,7 +482,7 @@ class TestLib(TestCase):
             # WHEN: we run the validate_thumb() function
 
             # THEN: we should have called a few functions, and the result should be True
-            #mocked_os.path.exists.assert_called_with(thumb_path)
+            # mocked_os.path.exists.assert_called_with(thumb_path)
 
     def validate_thumb_file_exists_and_older_test(self):
         """

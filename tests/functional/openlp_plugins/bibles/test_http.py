@@ -35,7 +35,7 @@ from bs4 import BeautifulSoup
 from tests.functional import patch, MagicMock
 from openlp.plugins.bibles.lib.http import BSExtract
 
-#TODO: Items left to test
+# TODO: Items left to test
 #   BGExtract
 #       __init__
 #       _remove_elements
@@ -68,7 +68,7 @@ class TestBSExtract(TestCase):
     """
     Test the BSExtractClass
     """
-    #TODO: Items left to test
+    # TODO: Items left to test
     #   BSExtract
     #       __init__
     #       get_bible_chapter
@@ -116,7 +116,8 @@ class TestBSExtract(TestCase):
         self.mock_get_soup_for_bible_ref.assert_called_once_with(
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')
         self.assertIsNone(result,
-            'BSExtract.get_books_from_http should return None when get_soup_for_bible_ref returns a false value')
+                          'BSExtract.get_books_from_http should return None when get_soup_for_bible_ref returns a '
+                          'false value')
 
     def get_books_from_http_no_content_test(self):
         """
@@ -146,7 +147,8 @@ class TestBSExtract(TestCase):
         self.mock_log.error.assert_called_once_with('No books found in the Bibleserver response.')
         self.mock_send_error_message.assert_called_once_with('parse')
         self.assertIsNone(result,
-            'BSExtract.get_books_from_http should return None when get_soup_for_bible_ref returns a false value')
+                          'BSExtract.get_books_from_http should return None when get_soup_for_bible_ref returns a '
+                          'false value')
 
     def get_books_from_http_content_test(self):
         """
@@ -178,4 +180,4 @@ class TestBSExtract(TestCase):
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')
         self.assertFalse(self.mock_log.error.called, 'log.error should not have been called')
         self.assertFalse(self.mock_send_error_message.called, 'send_error_message should not have been called')
-        self.assertEquals(result, ['Genesis', 'Leviticus'])
+        self.assertEqual(result, ['Genesis', 'Leviticus'])

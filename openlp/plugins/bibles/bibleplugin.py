@@ -88,8 +88,6 @@ class BiblePlugin(Plugin):
         self.import_bible_item.setVisible(True)
         action_list = ActionList.get_instance()
         action_list.add_action(self.import_bible_item, UiStrings().Import)
-        # Do not add the action to the list yet.
-        #action_list.add_action(self.export_bible_item, UiStrings().Export)
         # Set to invisible until we can export bibles
         self.export_bible_item.setVisible(False)
         self.tools_upgrade_item.setVisible(bool(self.manager.old_bible_databases))
@@ -104,7 +102,6 @@ class BiblePlugin(Plugin):
         action_list = ActionList.get_instance()
         action_list.remove_action(self.import_bible_item, UiStrings().Import)
         self.import_bible_item.setVisible(False)
-        #action_list.remove_action(self.export_bible_item, UiStrings().Export)
         self.export_bible_item.setVisible(False)
 
     def app_startup(self):
@@ -113,21 +110,29 @@ class BiblePlugin(Plugin):
         """
         super(BiblePlugin, self).app_startup()
         if self.manager.old_bible_databases:
-            if QtGui.QMessageBox.information(self.main_window,
-                translate('OpenLP', 'Information'),
-                translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your existing Bibles.\n'
-                          'Should OpenLP upgrade now?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \
+            if QtGui.QMessageBox.information(
+                    self.main_window, translate('OpenLP', 'Information'),
+                    translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your '
+                                        'existing Bibles.\nShould OpenLP upgrade now?'),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \
                     QtGui.QMessageBox.Yes:
                 self.on_tools_upgrade_Item_triggered()
 
     def add_import_menu_item(self, import_menu):
+        """
+
+        :param import_menu:
+        """
         self.import_bible_item = create_action(import_menu, 'importBibleItem',
                                                text=translate('BiblesPlugin', '&Bible'), visible=False,
                                                triggers=self.on_bible_import_click)
         import_menu.addAction(self.import_bible_item)
 
-    def add_export_menu_Item(self, export_menu):
+    def add_export_menu_item(self, export_menu):
+        """
+
+        :param export_menu:
+        """
         self.export_bible_item = create_action(export_menu, 'exportBibleItem',
                                                text=translate('BiblesPlugin', '&Bible'), visible=False)
         export_menu.addAction(self.export_bible_item)
@@ -190,12 +195,12 @@ class BiblePlugin(Plugin):
         """
         Called to define all translatable texts of the plugin
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('BiblesPlugin', 'Bible', 'name singular'),
             'plural': translate('BiblesPlugin', 'Bibles', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {
             'title': translate('BiblesPlugin', 'Bibles', 'container title')
         }

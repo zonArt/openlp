@@ -145,4 +145,3 @@ class TestAuthorsForm(TestCase, TestMixin):
 
         # THEN: The display_name_edit should have the correct value
         self.assertEqual(self.form.display_edit.text(), display_name, 'The display name should be set correctly')
-

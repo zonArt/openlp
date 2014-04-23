@@ -63,7 +63,6 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         self.services = FormattingTagController()
         self.tag_table_widget.itemSelectionChanged.connect(self.on_row_selected)
         self.new_button.clicked.connect(self.on_new_clicked)
-        #self.save_button.clicked.connect(self.on_saved_clicked)
         self.delete_button.clicked.connect(self.on_delete_clicked)
         self.tag_table_widget.currentCellChanged.connect(self.on_current_cell_changed)
         self.button_box.rejected.connect(self.close)
@@ -202,6 +201,4 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
             if errors:
                 QtGui.QMessageBox.warning(self, translate('OpenLP.FormattingTagForm', 'Validation Error'), errors,
                                           QtGui.QMessageBox.Ok)
-            #self.tag_table_widget.selectRow(pre_row - 1)
             self.tag_table_widget.resizeRowsToContents()
-

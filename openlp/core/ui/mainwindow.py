@@ -56,29 +56,27 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 log = logging.getLogger(__name__)
 
 MEDIA_MANAGER_STYLE = """
-  QToolBox {
+QToolBox {
     padding-bottom: 2px;
-  }
-  QToolBox::tab {
+}
+QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(button), stop: 0.5 palette(button),
-        stop: 1.0 palette(mid));
-    border: 1px groove palette(mid);
-    border-radius: 5px;
-  }
-  QToolBox::tab:selected {
+        stop: 0 palette(button), stop: 1.0 palette(mid));
+    border: 1px solid palette(mid);
+    border-radius: 3px;
+}
+QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(light), stop: 0.5 palette(midlight),
-        stop: 1.0 palette(dark));
-    border: 1px groove palette(dark);
+        stop: 0 palette(light), stop: 1.0 palette(button));
+    border: 1px solid palette(mid);
     font-weight: bold;
-  }
+}
 """
 
 PROGRESSBAR_STYLE = """
-    QProgressBar{
-       height: 10px;
-    }
+QProgressBar{
+    height: 10px;
+}
 """
 
 
@@ -369,7 +367,7 @@ class Ui_MainWindow(object):
         self.settings_menu.setTitle(translate('OpenLP.MainWindow', '&Settings'))
         self.settings_language_menu.setTitle(translate('OpenLP.MainWindow', '&Language'))
         self.help_menu.setTitle(translate('OpenLP.MainWindow', '&Help'))
-        self.media_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Media Manager'))
+        self.media_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Library'))
         self.service_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Service Manager'))
         self.theme_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Theme Manager'))
         self.file_new_item.setText(translate('OpenLP.MainWindow', '&New'))
@@ -396,12 +394,12 @@ class Ui_MainWindow(object):
         self.settings_shortcuts_item.setText(translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
         self.formatting_tag_item.setText(translate('OpenLP.MainWindow', 'Configure &Formatting Tags...'))
         self.settings_configure_item.setText(translate('OpenLP.MainWindow', '&Configure OpenLP...'))
-        self.settings_export_item.setStatusTip(translate('OpenLP.MainWindow',
-                                               'Export OpenLP settings to a specified *.config file'))
+        self.settings_export_item.setStatusTip(
+            translate('OpenLP.MainWindow', 'Export OpenLP settings to a specified *.config file'))
         self.settings_export_item.setText(translate('OpenLP.MainWindow', 'Settings'))
-        self.settings_import_item.setStatusTip(translate('OpenLP.MainWindow',
-                                               'Import OpenLP settings from a specified *.config file previously '
-                                               'exported on this or another machine'))
+        self.settings_import_item.setStatusTip(
+            translate('OpenLP.MainWindow', 'Import OpenLP settings from a specified *.config file previously '
+                                           'exported on this or another machine'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
         self.view_media_manager_item.setText(translate('OpenLP.MainWindow', '&Media Manager'))
         self.view_media_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Media Manager'))
@@ -598,13 +596,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.live_controller.display.setFocus()
         self.activateWindow()
         if self.arguments:
-            args = []
-            for a in self.arguments:
-                args.extend([a])
-            filename = args[0]
-            if not isinstance(filename, str):
-                filename = str(filename, sys.getfilesystemencoding())
-            self.service_manager_contents.load_file(filename)
+            self.open_cmd_line_files()
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_Last_file()
         self.timer_version_id = self.startTimer(1000)
@@ -652,7 +644,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                                            translate('OpenLP.MainWindow', 'Are you sure you want to re-run the First '
                                                      'Time Wizard?\n\nRe-running this wizard may make changes to your '
                                                      'current OpenLP configuration and possibly add songs to your '
-                                                     '#existing songs list and change your default theme.'),
+                                                     'existing songs list and change your default theme.'),
                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                                                                              QtGui.QMessageBox.No),
                                            QtGui.QMessageBox.No)
@@ -868,7 +860,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 section = 'general'
                 section_key = section + "/" + key
             # Make sure it's a valid section for us.
-            if not section in setting_sections:
+            if section not in setting_sections:
                 continue
         # We have a good file, import it.
         for section_key in import_keys:
@@ -887,7 +879,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         # application terminates normally.   We need to exit without saving configuration.
         QtGui.QMessageBox.information(self, translate('OpenLP.MainWindow', 'Import settings'),
                                       translate('OpenLP.MainWindow', 'OpenLP will now close.  Imported settings will '
-                                      'be applied the next time you start OpenLP.'),
+                                                'be applied the next time you start OpenLP.'),
                                       QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
         self.settings_imported = True
         self.clean_up()
@@ -1042,8 +1034,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 ret = QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'Close OpenLP'),
                                                  translate('OpenLP.MainWindow', 'Are you sure you want to close '
                                                                                 'OpenLP?'),
-                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui
-                                                 .QMessageBox.No),
+                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                                   QtGui.QMessageBox.No),
                                                  QtGui.QMessageBox.Yes)
                 if ret == QtGui.QMessageBox.Yes:
                     self.clean_up()
@@ -1234,16 +1226,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.recent_files_menu.clear()
         for file_id, filename in enumerate(recent_files_to_display):
             log.debug('Recent file name: %s', filename)
-            action = create_action(self, '',
-                                   text='&%d %s' % (file_id + 1,
+            action = create_action(self, '', text='&%d %s' % (file_id + 1,
                                    os.path.splitext(os.path.basename(str(filename)))[0]), data=filename,
                                    triggers=self.service_manager_contents.on_recent_service_clicked)
             self.recent_files_menu.addAction(action)
         clear_recent_files_action = create_action(self, '',
                                                   text=translate('OpenLP.MainWindow', 'Clear List', 'Clear List of '
-                                                                                                   'recent files'),
+                                                                                                    'recent files'),
                                                   statustip=translate('OpenLP.MainWindow', 'Clear the list of recent '
-                                                                                          'files.'),
+                                                                                           'files.'),
                                                   enabled=bool(self.recent_files),
                                                   triggers=self.clear_recent_file_menu)
         add_actions(self.recent_files_menu, (None, clear_recent_files_action))
@@ -1352,8 +1343,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 self.application.set_normal_cursor()
                 log.exception('Data copy failed %s' % str(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
-                                           translate('OpenLP.MainWindow',
-                                           'OpenLP Data directory copy failed\n\n%s').replace('%s', str(why)),
+                                           translate('OpenLP.MainWindow', 'OpenLP Data directory copy failed\n\n%s').
+                                           replace('%s', str(why)),
                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 return False
         else:
@@ -1366,4 +1357,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             settings.remove('advanced/data path')
         self.application.set_normal_cursor()
 
-
+    def open_cmd_line_files(self):
+        """
+        Open files passed in through command line arguments
+        """
+        args = []
+        for a in self.arguments:
+            args.extend([a])
+        for arg in args:
+            filename = arg
+            if not isinstance(filename, str):
+                filename = str(filename, sys.getfilesystemencoding())
+            if filename.endswith(('.osz', '.oszl')):
+                self.service_manager_contents.load_file(filename)

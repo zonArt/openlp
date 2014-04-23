@@ -152,9 +152,9 @@ class SongExportForm(OpenLPWizard):
         self.setWindowTitle(translate('SongsPlugin.ExportWizardForm', 'Song Export Wizard'))
         self.title_label.setText(WizardStrings.HeaderStyle %
                                  translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
-        self.information_label.setText(translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
-                                       ' export your songs to the open and free <strong>OpenLyrics </strong> worship '
-                                       'song format.'))
+        self.information_label.setText(
+            translate('SongsPlugin.ExportWizardForm', 'This wizard will help to export your songs to the open and free '
+                                                      '<strong>OpenLyrics </strong> worship song format.'))
         self.available_songs_page.setTitle(translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.available_songs_page.setSubTitle(translate('SongsPlugin.ExportWizardForm',
                                               'Check the songs you want to export.'))

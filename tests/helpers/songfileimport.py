@@ -89,7 +89,7 @@ class SongImportTestHelper(TestCase):
         """
         Import the given file and check that it has imported correctly
         """
-        importer = self.importer_class(self.mocked_manager)
+        importer = self.importer_class(self.mocked_manager, filenames=[source_file_name])
         importer.import_wizard = self.mocked_import_wizard
         importer.stop_import_flag = False
         importer.topics = []
@@ -110,34 +110,33 @@ class SongImportTestHelper(TestCase):
         # THEN: do_import should return none, the song data should be as expected, and finish should have been
         #       called.
         self.assertIsNone(importer.do_import(), 'do_import should return None when it has completed')
-        self.assertEquals(importer.title, title, 'title for %s should be "%s"' % (source_file_name, title))
+        self.assertEqual(importer.title, title, 'title for %s should be "%s"' % (source_file_name, title))
         for author in author_calls:
             self.mocked_parse_author.assert_any_call(author)
         if song_copyright:
             self.mocked_add_copyright.assert_called_with(song_copyright)
         if ccli_number:
-            self.assertEquals(importer.ccli_number, ccli_number, 'ccli_number for %s should be %s'
-                % (source_file_name, ccli_number))
+            self.assertEqual(importer.ccli_number, ccli_number,
+                             'ccli_number for %s should be %s' % (source_file_name, ccli_number))
         for verse_text, verse_tag in add_verse_calls:
             self.mocked_add_verse.assert_any_call(verse_text, verse_tag)
         if topics:
-            self.assertEquals(importer.topics, topics, 'topics for %s should be %s' % (source_file_name, topics))
+            self.assertEqual(importer.topics, topics, 'topics for %s should be %s' % (source_file_name, topics))
         if comments:
-            self.assertEquals(importer.comments, comments, 'comments for %s should be "%s"'
-                % (source_file_name, comments))
+            self.assertEqual(importer.comments, comments,
+                             'comments for %s should be "%s"' % (source_file_name, comments))
         if song_book_name:
-            self.assertEquals(importer.song_book_name, song_book_name, 'song_book_name for %s should be "%s"'
-                % (source_file_name, song_book_name))
+            self.assertEqual(importer.song_book_name, song_book_name,
+                             'song_book_name for %s should be "%s"' % (source_file_name, song_book_name))
         if song_number:
-            self.assertEquals(importer.song_number, song_number, 'song_number for %s should be %s'
-                % (source_file_name, song_number))
+            self.assertEqual(importer.song_number, song_number,
+                             'song_number for %s should be %s' % (source_file_name, song_number))
         if verse_order_list:
-            self.assertEquals(importer.verse_order_list, [], 'verse_order_list for %s should be %s'
-                % (source_file_name, verse_order_list))
+            self.assertEqual(importer.verse_order_list, [],
+                             'verse_order_list for %s should be %s' % (source_file_name, verse_order_list))
         self.mocked_finish.assert_called_with()
 
     def _get_data(self, data, key):
         if key in data:
             return data[key]
         return ''
-

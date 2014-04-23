@@ -207,12 +207,12 @@ class AlertsPlugin(Plugin):
         """
         Called to define all translatable texts of the plugin
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('AlertsPlugin', 'Alert', 'name singular'),
             'plural': translate('AlertsPlugin', 'Alerts', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {
             'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
@@ -246,4 +246,4 @@ class AlertsPlugin(Plugin):
         align = VerticalType.Names[self.settings_tab.location]
         frame.evaluateJavaScript('update_css("%s", "%s", "%s", "%s", "%s")' %
                                  (align, self.settings_tab.font_face, self.settings_tab.font_size,
-                                 self.settings_tab.font_color, self.settings_tab.background_color))
+                                  self.settings_tab.font_color, self.settings_tab.background_color))

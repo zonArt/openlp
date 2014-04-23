@@ -137,7 +137,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         for player in list(self.media_players.values()):
             if player.is_active:
                 for item in player.audio_extensions_list:
-                    if not item in self.audio_extensions_list:
+                    if item not in self.audio_extensions_list:
                         self.audio_extensions_list.append(item)
                         suffix_list.append(item[2:])
         self.video_extensions_list = []
@@ -184,8 +184,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return False
         saved_players, overridden_player = get_media_players()
         invalid_media_players = \
-            [mediaPlayer for mediaPlayer in saved_players if not mediaPlayer in self.media_players or
-                not self.media_players[mediaPlayer].check_available()]
+            [media_player for media_player in saved_players if media_player not in self.media_players or
+                not self.media_players[media_player].check_available()]
         if invalid_media_players:
             for invalidPlayer in invalid_media_players:
                 saved_players.remove(invalidPlayer)
@@ -383,7 +383,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         if not is_valid:
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                translate('MediaPlugin.MediaItem', 'Unsupported File'))
+                                       translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         # dont care about actual theme, set a black background
         if controller.is_live and not controller.media_info.is_background:
@@ -402,7 +402,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         if autoplay:
             if not self.media_play(controller):
                 critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                    translate('MediaPlugin.MediaItem', 'Unsupported File'))
+                                           translate('MediaPlugin.MediaItem', 'Unsupported File'))
                 return False
         self.set_controls_visible(controller, True)
         log.debug('use %s controller' % self.current_media_players[controller.controller_type])
@@ -506,7 +506,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         else:
             self.media_volume(controller, controller.media_info.volume)
         if status:
-            display.frame.evaluateJavaScript('show_blank("desktop");')
+            if not controller.media_info.is_background:
+                display.frame.evaluateJavaScript('show_blank("desktop");')
             self.current_media_players[controller.controller_type].set_visible(display, True)
             # Flash needs to be played and will not AutoPlay
             if controller.media_info.is_flash:
@@ -517,7 +518,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 controller.mediabar.actions['playbackPause'].setVisible(True)
             controller.mediabar.actions['playbackStop'].setVisible(True)
             if controller.is_live:
-                if controller.hide_menu.defaultAction().isChecked():
+                if controller.hide_menu.defaultAction().isChecked() and not controller.media_info.is_background:
                     controller.hide_menu.defaultAction().trigger()
         # Start Timer for ui updates
         if not self.timer.isActive():
@@ -644,9 +645,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return
         display = self._define_display(self.live_controller)
         if self.live_controller.controller_type in self.current_media_players and \
-            self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
-            self.current_media_players[self.live_controller.controller_type].pause(display)
-            self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
+                self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
+                self.current_media_players[self.live_controller.controller_type].pause(display)
+                self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
 
     def media_blank(self, msg):
         """

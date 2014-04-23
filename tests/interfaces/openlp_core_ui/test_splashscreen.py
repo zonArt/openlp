@@ -26,36 +26,35 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Test the openlp.core.ui.splashscreen class.
+"""
+from unittest import TestCase
 
-from openlp.plugins.songs.lib.opensongimport import OpenSongImport
-from openlp.plugins.songs.lib.db import init_schema
-from openlp.core.lib.db import Manager
-import os
-import codecs
+from PyQt4 import QtGui
 
-import logging
-LOG_FILENAME = 'import.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
+from openlp.core.ui import SplashScreen
+from tests.helpers.testmixin import TestMixin
 
-from test_opensongimport import wizard_stub
 
-# Useful test function for importing a variety of different files
-# Uncomment below depending on what problem trying to make occur!
+class TestSplashScreen(TestCase, TestMixin):
+    def setUp(self):
+        self.get_application()
+        self.main_window = QtGui.QMainWindow()
 
-def opensong_import_lots():
-    ziploc = '/home/mjt/openlp/OpenSong_Data/'
-    files = []
-    files = [os.path.join(ziploc, 'RaoulSongs', 'Songs', 'Jesus Freak')]
-    # files.extend(glob(ziploc+u'Songs.zip'))
-    # files.extend(glob(ziploc+u'RaoulSongs.zip'))
-    # files.extend(glob(ziploc+u'SOF.zip'))
-    # files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
-    # files.extend(glob(ziploc+u'opensong_*.zip'))
-    errfile = codecs.open('import_lots_errors.txt', 'w', 'utf8')
-    manager = Manager('songs', init_schema)
-    o = OpenSongImport(manager, filenames=files)
-    o.import_wizard=wizard_stub()
-    o.do_import()
+    def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        del self.app
+        del self.main_window
 
-if __name__ == "__main__":
-    opensong_import_lots()
+    def setupUi_test(self):
+        """
+        Test if the setupUi method....
+        """
+        # GIVEN: A splash screen instance.
+        splash = SplashScreen()
+
+        # THEN: Check if the splash has a setupUi method.
+        assert hasattr(splash, 'setupUi'), 'The Splash Screen should have a setupUi() method.'

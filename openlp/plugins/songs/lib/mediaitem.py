@@ -96,7 +96,7 @@ class SongMediaItem(MediaManagerItem):
 
     def add_end_header_bar(self):
         self.toolbar.addSeparator()
-        ## Song Maintenance Button ##
+        # Song Maintenance Button
         self.maintenance_action = self.toolbar.add_toolbar_action('maintenance_action',
                                                                   icon=':/songs/song_maintenance.png',
                                                                   triggers=self.on_song_maintenance_click)
@@ -192,7 +192,7 @@ class SongMediaItem(MediaManagerItem):
             song_number = False
             if not search_results:
                 search_keywords = search_keywords.rpartition(' ')
-                search_string = '%' + search_keywords + '%'
+                search_string = '%' + search_keywords[0] + '%'
                 search_results = self.plugin.manager.get_all_objects(Book,
                                                                      Book.name.like(search_string), Book.name.asc())
                 song_number = re.sub(r'[^0-9]', '', search_keywords[2])
@@ -266,7 +266,7 @@ class SongMediaItem(MediaManagerItem):
                 # Do not display temporary songs
                 if song.temporary:
                     continue
-                if song_number and not song_number in song.song_number:
+                if song_number and song_number not in song.song_number:
                     continue
                 song_detail = '%s - %s (%s)' % (book.name, song.song_number, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
@@ -493,9 +493,9 @@ class SongMediaItem(MediaManagerItem):
             # FIXME: This file seems to be an old one (prior to 1.9.5), which means, that the search title
             # (data_string[u'title']) is probably wrong. We add "@" to search title and hope that we do not add any
             # duplicate. This should work for songs without alternate title.
-            search_results = self.plugin.manager.get_all_objects(Song,
-                Song.search_title == (re.compile(r'\W+', re.UNICODE).sub(' ',
-                item.data_string['title'].strip()) + '@').strip().lower(), Song.search_title.asc())
+            temp = (re.compile(r'\W+', re.UNICODE).sub(' ', item.data_string['title'].strip()) + '@').strip().lower()
+            search_results = \
+                self.plugin.manager.get_all_objects(Song, Song.search_title == temp, Song.search_title.asc())
         else:
             search_results = self.plugin.manager.get_all_objects(
                 Song, Song.search_title == item.data_string['title'], Song.search_title.asc())

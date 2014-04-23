@@ -75,7 +75,7 @@ class ImageMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.on_new_prompt = translate('ImagePlugin.MediaItem', 'Select Image(s)')
         file_formats = get_images_filter()
-        self.on_new_file_masks = '%s;;%s (*.*) (*)' % (file_formats, UiStrings().AllFiles)
+        self.on_new_file_masks = '%s;;%s (*)' % (file_formats, UiStrings().AllFiles)
         self.add_group_action.setText(UiStrings().AddGroup)
         self.add_group_action.setToolTip(UiStrings().AddGroup)
         self.replace_action.setText(UiStrings().ReplaceBG)
@@ -327,7 +327,8 @@ class ImageMediaItem(MediaManagerItem):
 
         :param images: A List of Image Filenames objects that will be used to reload the mediamanager list.
         :param initial_load: When set to False, the busy cursor and progressbar will be shown while loading images.
-        :param open_group: ImageGroups object of the group that must be expanded after reloading the list in the interface.
+        :param open_group: ImageGroups object of the group that must be expanded after reloading the list in the
+        interface.
         """
         if not initial_load:
             self.application.set_busy_cursor()
@@ -462,7 +463,8 @@ class ImageMediaItem(MediaManagerItem):
 
         :param images_list: A List of strings containing image filenames
         :param group_id: The ID of the group to save the images in
-        :param reload_list: This boolean is set to True when the list in the interface should be reloaded after saving the new images
+        :param reload_list: This boolean is set to True when the list in the interface should be reloaded after saving
+        the new images
         """
         for filename in images_list:
             if not isinstance(filename, str):
@@ -548,6 +550,7 @@ class ImageMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanAppend)
+        service_item.add_capability(ItemCapabilities.CanEditTitle)
         # force a nonexistent theme
         service_item.theme = -1
         missing_items_file_names = []

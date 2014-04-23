@@ -92,7 +92,7 @@ class SongShowPlusImport(SongImport):
         """
         Initialise the SongShow Plus importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(SongShowPlusImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
@@ -140,7 +140,7 @@ class SongShowPlusImport(SongImport):
                 elif block_key == AUTHOR:
                     authors = self.decode(data).split(" / ")
                     for author in authors:
-                        if author.find(",") !=-1:
+                        if author.find(",") != -1:
                             author_parts = author.split(", ")
                             author = author_parts[1] + " " + author_parts[0]
                         self.parse_author(author)

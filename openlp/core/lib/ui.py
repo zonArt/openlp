@@ -74,11 +74,13 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
     :param name: A string which is set as object name.
     :param standard_buttons: A list of strings for the used buttons. It might contain: ``ok``, ``save``, ``cancel``,
     ``close``, and ``defaults``.
-    :param custom_buttons: A list of additional buttons. If a item is a instance of QtGui.QAbstractButton it is added
-    with QDialogButtonBox.ActionRole. Other wise the item has to be a tuple of a button and a ButtonRole.
+    :param custom_buttons: A list of additional buttons. If an item is an instance of QtGui.QAbstractButton it is added
+    with QDialogButtonBox.ActionRole. Otherwise the item has to be a tuple of a Button and a ButtonRole.
     """
     if custom_buttons is None:
         custom_buttons = []
+    if standard_buttons is None:
+        standard_buttons = []
     buttons = QtGui.QDialogButtonBox.NoButton
     if 'ok' in standard_buttons:
         buttons |= QtGui.QDialogButtonBox.Ok
@@ -171,7 +173,7 @@ def create_button(parent, name, **kwargs):
             kwargs.setdefault('tooltip', translate('OpenLP.Ui', 'Move selection down one position.'))
         else:
             log.warn('The role "%s" is not defined in create_push_button().', role)
-    if kwargs.pop('class', '') == 'toolbutton':
+    if kwargs.pop('btn_class', '') == 'toolbutton':
         button = QtGui.QToolButton(parent)
     else:
         button = QtGui.QPushButton(parent)
