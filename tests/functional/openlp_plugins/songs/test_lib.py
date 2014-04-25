@@ -445,9 +445,9 @@ class TestVerseType(TestCase):
             # THEN: The result should be VerseType.Chorus
             self.assertEqual(result, VerseType.Chorus, 'The result should be VerseType.Chorus, but was "%s"' % result)
 
-    def from_tag_with_invalid_default_test(self):
+    def from_tag_with_invalid_intdefault_test(self):
         """
-        Test that the from_tag() method returns a sane default when passed an invalid tag and an invalid default.
+        Test that the from_tag() method returns a sane default when passed an invalid tag and an invalid int default.
         """
         # GIVEN: A mocked out translate() function that just returns what it was given
         with patch('openlp.plugins.songs.lib.translate') as mocked_translate:
@@ -458,3 +458,31 @@ class TestVerseType(TestCase):
 
             # THEN: The result should be VerseType.Other
             self.assertEqual(result, VerseType.Other, 'The result should be VerseType.Other, but was "%s"' % result)
+
+    def from_tag_with_invalid_default_test(self):
+        """
+        Test that the from_tag() method returns a sane default when passed an invalid tag and an invalid default.
+        """
+        # GIVEN: A mocked out translate() function that just returns what it was given
+        with patch('openlp.plugins.songs.lib.translate') as mocked_translate:
+            mocked_translate.side_effect = lambda x, y: y
+
+            # WHEN: We run the from_tag() method with an invalid verse type, we get the specified default back
+            result = VerseType.from_tag('@', 'asdf')
+
+            # THEN: The result should be VerseType.Other
+            self.assertEqual(result, VerseType.Other, 'The result should be VerseType.Other, but was "%s"' % result)
+
+    def from_tag_with_none_default_test(self):
+        """
+        Test that the from_tag() method returns a sane default when passed an invalid tag and None as default.
+        """
+        # GIVEN: A mocked out translate() function that just returns what it was given
+        with patch('openlp.plugins.songs.lib.translate') as mocked_translate:
+            mocked_translate.side_effect = lambda x, y: y
+
+            # WHEN: We run the from_tag() method with an invalid verse type, we get the specified default back
+            result = VerseType.from_tag('m', None)
+
+            # THEN: The result should be VerseType.Other
+            self.assertIsNone(result, 'The result should be None, but was "%s"' % result)

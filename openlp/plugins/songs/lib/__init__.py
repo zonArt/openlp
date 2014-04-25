@@ -206,14 +206,14 @@ class VerseType(object):
         Return the VerseType for a given tag
 
         :param verse_tag: The string to return a VerseType for
-        :param default: Default return value if no matching tag is found
+        :param default: Default return value if no matching tag is found (a valid VerseType or None)
         :return: A VerseType of the tag
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.names) > default:
+        if default in range(0,len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
@@ -231,7 +231,7 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.translated_tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.names) > default:
+        if default in range(0,len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
