@@ -119,15 +119,15 @@ class CategoryActionList(object):
         self.actions.append((weight, action))
         self.actions.sort(key=lambda act: act[0])
 
-    def remove(self, remove_action):
+    def remove(self, action):
         """
         Remove an action
         """
-        for action in self.actions:
-            if action[1] == remove_action:
-                self.actions.remove(action)
+        for item in self.actions:
+            if item[1] == action:
+                self.actions.remove(item)
                 return
-        raise ValueError('Action "%s" does not exist.' % remove_action)
+        raise ValueError('Action "%s" does not exist.' % action)
 
 
 class CategoryList(object):
