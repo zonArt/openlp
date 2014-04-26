@@ -400,10 +400,11 @@ class TestEasyWorshipSongImport(TestCase):
 
             # WHEN: Importing each file
             importer.import_source = os.path.join(TEST_PATH, 'Songs.DB')
+            import_result = importer.do_import()
 
             # THEN: do_import should return none, the song data should be as expected, and finish should have been
             #       called.
-            self.assertIsNone(importer.do_import(), 'do_import should return None when it has completed')
+            self.assertIsNone(import_result, 'do_import should return None when it has completed')
             for song_data in SONG_TEST_DATA:
                 title = song_data['title']
                 author_calls = song_data['authors']
@@ -455,11 +456,12 @@ class TestEasyWorshipSongImport(TestCase):
 
             # WHEN: Importing ews file
             importer.import_source = os.path.join(TEST_PATH, 'test1.ews')
+            import_result = importer.do_import()
 
             # THEN: do_import should return none, the song data should be as expected, and finish should have been
             #       called.
             title = EWS_SONG_TEST_DATA['title']
-            self.assertIsNone(importer.do_import(), 'do_import should return None when it has completed')
+            self.assertIsNone(import_result, 'do_import should return None when it has completed')
             self.assertIn(title, importer._title_assignment_list, 'title for should be "%s"' % title)
             mocked_add_author.assert_any_call(EWS_SONG_TEST_DATA['authors'][0])
             for verse_text, verse_tag in EWS_SONG_TEST_DATA['verses']:
