@@ -484,5 +484,5 @@ class TestVerseType(TestCase):
             # WHEN: We run the from_tag() method with an invalid verse type, we get the specified default back
             result = VerseType.from_tag('m', None)
 
-            # THEN: The result should be VerseType.Other
+            # THEN: The result should be None
             self.assertIsNone(result, 'The result should be None, but was "%s"' % result)

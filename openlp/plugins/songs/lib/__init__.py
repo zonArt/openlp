@@ -213,7 +213,7 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return num
-        if default in range(0,len(VerseType.names)) or default is None:
+        if default in range(0, len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
@@ -231,7 +231,7 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.translated_tags):
             if verse_tag == tag:
                 return num
-        if default in range(0,len(VerseType.names)) or default is None:
+        if default in range(0, len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
