@@ -66,7 +66,6 @@ class TestCategoryActionList(TestCase):
 
         # WHEN: Add an action.
         returned_action = self.list[0]
-        print(returned_action)
 
         # THEN: Check if the correct action was returned.
         self.assertEqual(self.action1, returned_action)
