@@ -36,7 +36,7 @@ from PyQt4 import QtGui, QtCore
 from openlp.core.common import Settings
 from openlp.core.utils import ActionList
 from openlp.core.utils.actions import CategoryActionList
-from tests.functional import MagicMock, patch
+from tests.functional import MagicMock
 from tests.helpers.testmixin import TestMixin
 
 
@@ -57,6 +57,23 @@ class TestCategoryActionList(TestCase):
         """
         del self.list
 
+    def get_test(self):
+        """
+        Test the __getitem__() method
+        """
+        # GIVEN: The list.
+        self.list.append(self.action1)
+
+        # WHEN: Add an action.
+        returned_action = self.list[0]
+        print(returned_action)
+
+        # THEN: Check if the correct action was returned.
+        self.assertEqual(self.action1, returned_action)
+
+        # THEN: Test if an exception is raised when trying to access a non existing item.
+        self.assertRaises(KeyError, self.list.__getitem__, 1)
+
     def contains_test(self):
         """
         Test the __contains__() method
@@ -64,7 +81,8 @@ class TestCategoryActionList(TestCase):
         # GIVEN: The list.
         # WHEN: Add an action
         self.list.append(self.action1)
-        # THEN:
+
+        # THEN: The actions should (not) be in the list.
         self.assertTrue(self.action1 in self.list)
         self.assertFalse(self.action2 in self.list)
 
@@ -73,7 +91,7 @@ class TestCategoryActionList(TestCase):
         Test the __len__ method
         """
         # GIVEN: The list.
-        # WHEN:
+        # WHEN: Do nothing.
         # THEN: Check the length.
         self.assertEqual(len(self.list), 0, "The length should be 0.")
 
@@ -96,23 +114,27 @@ class TestCategoryActionList(TestCase):
         # THEN: Check if the actions are in the list and check if they have the correct weights.
         self.assertTrue(self.action1 in self.list)
         self.assertTrue(self.action2 in self.list)
-        self.assertEqual(self.list[0], (0, self.action1))
-        self.assertEqual(self.list[1], (1, self.action2))
+        self.assertEqual(self.list[0], self.action1)
+        self.assertEqual(self.list[1], self.action2)
 
     def add_test(self):
         """
         Test the add() method
         """
-        # GIVEN: The list.
-        # WHEN: Append actions.
-        self.list.add(self.action1, 42)
-        self.list.add(self.action2, 99)
+        # GIVEN: The list and weights.
+        action1_weight = 42
+        action2_weight = 41
+
+        # WHEN: Add actions and their weights.
+        self.list.add(self.action1, action1_weight)
+        self.list.add(self.action2, action2_weight)
 
         # THEN: Check if they were added and have the specified weights.
         self.assertTrue(self.action1 in self.list)
         self.assertTrue(self.action2 in self.list)
-        self.assertEqual(self.list[0], (42, self.action1))
-        self.assertEqual(self.list[1], (99, self.action2))
+        # Now check if action1 is second and action2 is first (due to their weights).
+        self.assertEqual(self.list[0], self.action2)
+        self.assertEqual(self.list[1], self.action1)
 
     def remove_test(self):
         """

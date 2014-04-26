@@ -70,7 +70,7 @@ class CategoryActionList(object):
         Implement the __getitem__() method to make this class a dictionary type
         """
         try:
-            return self.actions[key]
+            return self.actions[key][1]
         except:
             raise KeyError('Action "%s" does not exist.' % key)
 
