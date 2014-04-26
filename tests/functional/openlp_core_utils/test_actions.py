@@ -72,7 +72,7 @@ class TestCategoryActionList(TestCase):
         self.assertEqual(self.action1, returned_action)
 
         # THEN: Test if an exception is raised when trying to access a non existing item.
-        self.assertRaises(KeyError, self.list.__getitem__, 1)
+        self.assertRaises(IndexError, self.list.__getitem__, 1)
 
     def contains_test(self):
         """
@@ -141,11 +141,16 @@ class TestCategoryActionList(TestCase):
         Test the remove() method
         """
         # GIVEN: The list
+        self.list.append(self.action1)
+
         # WHEN: Delete an item from the list.
         self.list.remove(self.action1)
 
         # THEN: Now the element should not be in the list anymore.
         self.assertFalse(self.action1 in self.list)
+
+        # THEN: Check if an exception is raised when trying to remove a not present action.
+        self.assertRaises(ValueError, self.list.remove, self.action2)
 
 
 class TestActionList(TestCase, TestMixin):

@@ -69,17 +69,14 @@ class CategoryActionList(object):
         """
         Implement the __getitem__() method to make this class a dictionary type
         """
-        try:
-            return self.actions[key][1]
-        except:
-            raise KeyError('Action "%s" does not exist.' % key)
+        return self.actions[key][1]
 
-    def __contains__(self, item):
+    def __contains__(self, key):
         """
         Implement the __contains__() method to make this class a dictionary type
         """
         for weight, action in self.actions:
-            if action == item:
+            if action == key:
                 return True
         return False
 
@@ -106,12 +103,6 @@ class CategoryActionList(object):
             self.index += 1
             return self.actions[self.index - 1][1]
 
-    def has_key(self, key):
-        """
-        Implement the has_key() method to make this class a dictionary type
-        """
-        return key in self
-
     def append(self, action):
         """
         Append an action
@@ -136,6 +127,7 @@ class CategoryActionList(object):
             if action[1] == remove_action:
                 self.actions.remove(action)
                 return
+        raise ValueError('Action "%s" does not exist.' % remove_action)
 
 
 class CategoryList(object):
