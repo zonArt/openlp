@@ -170,9 +170,9 @@ class CategoryList(object):
             self.index += 1
             return self.categories[self.index - 1]
 
-    def has_key(self, key):
+    def __contains__(self, key):
         """
-        Implement the has_key() method to make this class like a dictionary
+        Implement the __contains__() method to make this class like a dictionary
         """
         for category in self.categories:
             if category.name == key:
@@ -186,10 +186,7 @@ class CategoryList(object):
         weight = 0
         if self.categories:
             weight = self.categories[-1].weight + 1
-        if actions:
-            self.add(name, weight, actions)
-        else:
-            self.add(name, weight)
+        self.add(name, weight, actions)
 
     def add(self, name, weight=0, actions=None):
         """
