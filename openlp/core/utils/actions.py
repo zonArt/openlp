@@ -209,6 +209,8 @@ class CategoryList(object):
         for category in self.categories:
             if category.name == name:
                 self.categories.remove(category)
+                return
+        raise ValueError('Category "%s" does not exist.' % name)
 
 
 class ActionList(object):
