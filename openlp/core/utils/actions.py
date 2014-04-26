@@ -65,12 +65,6 @@ class CategoryActionList(object):
         self.index = 0
         self.actions = []
 
-    def __getitem__(self, key):
-        """
-        Implement the __getitem__() method to make this class a dictionary type
-        """
-        return self.actions[key][1]
-
     def __contains__(self, key):
         """
         Implement the __contains__() method to make this class a dictionary type

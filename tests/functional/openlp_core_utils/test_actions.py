@@ -57,22 +57,6 @@ class TestCategoryActionList(TestCase):
         """
         del self.list
 
-    def get_test(self):
-        """
-        Test the __getitem__() method
-        """
-        # GIVEN: The list.
-        self.list.append(self.action1)
-
-        # WHEN: Add an action.
-        returned_action = self.list[0]
-
-        # THEN: Check if the correct action was returned.
-        self.assertEqual(self.action1, returned_action)
-
-        # THEN: Test if an exception is raised when trying to access a non existing item.
-        self.assertRaises(IndexError, self.list.__getitem__, 1)
-
     def contains_test(self):
         """
         Test the __contains__() method
@@ -113,8 +97,8 @@ class TestCategoryActionList(TestCase):
         # THEN: Check if the actions are in the list and check if they have the correct weights.
         self.assertTrue(self.action1 in self.list)
         self.assertTrue(self.action2 in self.list)
-        self.assertEqual(self.list[0], self.action1)
-        self.assertEqual(self.list[1], self.action2)
+        self.assertEqual(self.list.actions[0], (0, self.action1))
+        self.assertEqual(self.list.actions[1], (1, self.action2))
 
     def add_test(self):
         """
@@ -132,8 +116,8 @@ class TestCategoryActionList(TestCase):
         self.assertTrue(self.action1 in self.list)
         self.assertTrue(self.action2 in self.list)
         # Now check if action1 is second and action2 is first (due to their weights).
-        self.assertEqual(self.list[0], self.action2)
-        self.assertEqual(self.list[1], self.action1)
+        self.assertEqual(self.list.actions[0], (41, self.action2))
+        self.assertEqual(self.list.actions[1], (42, self.action1))
 
     def remove_test(self):
         """
