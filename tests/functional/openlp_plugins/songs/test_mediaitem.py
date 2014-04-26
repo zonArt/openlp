@@ -10,6 +10,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.common import Registry, Settings
 from openlp.core.lib import ServiceItem
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
+from openlp.plugins.songs.lib.db import AuthorType
 from tests.functional import patch, MagicMock
 from tests.helpers.testmixin import TestMixin
 
@@ -45,10 +46,12 @@ class TestMediaItem(TestCase, TestMixin):
         # GIVEN: A Song and a Service Item
         mock_song = MagicMock()
         mock_song.title = 'My Song'
+        mock_song.authors_songs = []
         mock_author = MagicMock()
         mock_author.display_name = 'my author'
-        mock_song.authors = []
-        mock_song.authors.append(mock_author)
+        mock_author_song = MagicMock()
+        mock_author_song.author = mock_author
+        mock_song.authors_songs.append(mock_author_song)
         mock_song.copyright = 'My copyright'
         service_item = ServiceItem(None)
 
@@ -56,7 +59,7 @@ class TestMediaItem(TestCase, TestMixin):
         author_list = self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: I get the following Array returned
-        self.assertEqual(service_item.raw_footer, ['My Song', 'my author', 'My copyright'],
+        self.assertEqual(service_item.raw_footer, ['My Song', 'Written by: my author', 'My copyright'],
                          'The array should be returned correctly with a song, one author and copyright')
         self.assertEqual(author_list, ['my author'],
                          'The author list should be returned correctly with one author')
@@ -68,13 +71,25 @@ class TestMediaItem(TestCase, TestMixin):
         # GIVEN: A Song and a Service Item
         mock_song = MagicMock()
         mock_song.title = 'My Song'
+        mock_song.authors_songs = []
         mock_author = MagicMock()
         mock_author.display_name = 'my author'
-        mock_song.authors = []
-        mock_song.authors.append(mock_author)
+        mock_author_song = MagicMock()
+        mock_author_song.author = mock_author
+        mock_author_song.author_type = AuthorType.Music
+        mock_song.authors_songs.append(mock_author_song)
         mock_author = MagicMock()
         mock_author.display_name = 'another author'
-        mock_song.authors.append(mock_author)
+        mock_author_song = MagicMock()
+        mock_author_song.author = mock_author
+        mock_author_song.author_type = AuthorType.Words
+        mock_song.authors_songs.append(mock_author_song)
+        mock_author = MagicMock()
+        mock_author.display_name = 'translator'
+        mock_author_song = MagicMock()
+        mock_author_song.author = mock_author
+        mock_author_song.author_type = AuthorType.Translation
+        mock_song.authors_songs.append(mock_author_song)
         mock_song.copyright = 'My copyright'
         service_item = ServiceItem(None)
 
@@ -82,22 +97,19 @@ class TestMediaItem(TestCase, TestMixin):
         author_list = self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: I get the following Array returned
-        self.assertEqual(service_item.raw_footer, ['My Song', 'my author and another author', 'My copyright'],
+        self.assertEqual(service_item.raw_footer, ['My Song', 'Words: another author', 'Music: my author',
+                                                   'Translation: translator',  'My copyright'],
                          'The array should be returned correctly with a song, two authors and copyright')
-        self.assertEqual(author_list, ['my author', 'another author'],
+        self.assertEqual(author_list, ['another author', 'my author', 'translator'],
                          'The author list should be returned correctly with two authors')
 
     def build_song_footer_base_ccli_test(self):
         """
-        Test build songs footer with basic song and two authors
+        Test build songs footer with basic song and a CCLI number
         """
         # GIVEN: A Song and a Service Item and a configured CCLI license
         mock_song = MagicMock()
         mock_song.title = 'My Song'
-        mock_author = MagicMock()
-        mock_author.display_name = 'my author'
-        mock_song.authors = []
-        mock_song.authors.append(mock_author)
         mock_song.copyright = 'My copyright'
         service_item = ServiceItem(None)
         Settings().setValue('core/ccli number', '1234')
@@ -106,7 +118,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: I get the following Array returned
-        self.assertEqual(service_item.raw_footer, ['My Song', 'my author', 'My copyright', 'CCLI License: 1234'],
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 1234'],
                          'The array should be returned correctly with a song, an author, copyright and ccli')
 
         # WHEN: I amend the CCLI value
@@ -114,5 +126,5 @@ class TestMediaItem(TestCase, TestMixin):
         self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: I would get an amended footer string
-        self.assertEqual(service_item.raw_footer, ['My Song', 'my author', 'My copyright', 'CCLI License: 4321'],
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 4321'],
                          'The array should be returned correctly with a song, an author, copyright and amended ccli')
