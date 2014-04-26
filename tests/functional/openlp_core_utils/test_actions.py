@@ -264,4 +264,3 @@ class TestActionList(TestCase, TestMixin):
         # THEN: Both action should keep their shortcuts.
         assert len(action3.shortcuts()) == 2, 'The action should have two shortcut assigned.'
         assert len(action_with_same_shortcuts3.shortcuts()) == 2, 'The action should have two shortcuts assigned.'
-
