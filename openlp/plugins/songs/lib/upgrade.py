@@ -39,7 +39,7 @@ from sqlalchemy.sql.expression import func, false, null, text
 from openlp.core.lib.db import get_upgrade_op
 
 log = logging.getLogger(__name__)
-__version__ = 3
+__version__ = 4
 
 
 def upgrade_1(session, metadata):
