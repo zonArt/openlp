@@ -27,25 +27,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlp.plugins.songs.lib.ui` module provides standard UI components
-for the songs plugin.
+Package to test the openlp.core.__init__ package.
 """
-from openlp.core.lib import translate
+import os
+
+from unittest import TestCase
+from unittest.mock import MagicMock, patch
+from PyQt4 import QtCore
+
+from openlp.core import OpenLP
+from tests.helpers.testmixin import TestMixin
 
 
-class SongStrings(object):
-    """
-    Provide standard strings for use throughout the songs plugin.
-    """
-    # These strings should need a good reason to be retranslated elsewhere.
-    Author = translate('OpenLP.Ui', 'Author', 'Singular')
-    Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
-    AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown')  # Used to populate the database.
-    CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
-    SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
-    SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
-    SongIncomplete = translate('OpenLP.Ui', 'Title and/or verses not found')
-    SongMaintenance = translate('OpenLP.Ui', 'Song Maintenance')
-    Topic = translate('OpenLP.Ui', 'Topic', 'Singular')
-    Topics = translate('OpenLP.Ui', 'Topics', 'Plural')
-    XMLSyntaxError = translate('OpenLP.Ui', 'XML syntax error')
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
+
+
+class TestInit(TestCase, TestMixin):
+    def setUp(self):
+        with patch('openlp.core.common.OpenLPMixin.__init__') as constructor:
+            constructor.return_value = None
+            self.openlp = OpenLP(list())
+
+    def tearDown(self):
+        del self.openlp
+
+    def event_test(self):
+        """
+        Test the reimplemented event method
+        """
+        # GIVEN: A file path and a QEvent.
+        file_path = os.path.join(TEST_PATH, 'church.jpg')
+        mocked_file_method = MagicMock(return_value=file_path)
+        event = QtCore.QEvent(QtCore.QEvent.FileOpen)
+        event.file = mocked_file_method
+
+        # WHEN: Call the vent method.
+        result = self.openlp.event(event)
+
+        # THEN: The path should be inserted.
+        self.assertTrue(result, "The method should have returned True.")
+        mocked_file_method.assert_called_once_with()
+        self.assertEqual(self.openlp.args[0], file_path, "The path should be in args.")

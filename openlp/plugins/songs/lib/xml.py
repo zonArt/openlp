@@ -71,7 +71,7 @@ from lxml import etree, objectify
 from openlp.core.common import translate
 from openlp.core.lib import FormattingTags
 from openlp.plugins.songs.lib import VerseType, clean_song
-from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+from openlp.plugins.songs.lib.db import Author, AuthorSong, AuthorType, Book, Song, Topic
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
@@ -166,7 +166,7 @@ class OpenLyrics(object):
     supported by the :class:`OpenLyrics` class:
 
     ``<authors>``
-        OpenLP does not support the attribute *type* and *lang*.
+        OpenLP does not support the attribute *lang*.
 
     ``<chord>``
         This property is not supported.
@@ -269,10 +269,18 @@ class OpenLyrics(object):
                 'verseOrder', properties, song.verse_order.lower())
         if song.ccli_number:
             self._add_text_to_element('ccliNo', properties, song.ccli_number)
-        if song.authors:
+        if song.authors_songs:
             authors = etree.SubElement(properties, 'authors')
-            for author in song.authors:
-                self._add_text_to_element('author', authors, author.display_name)
+            for author_song in song.authors_songs:
+                element = self._add_text_to_element('author', authors, author_song.author.display_name)
+                if author_song.author_type:
+                    # Handle the special case 'words+music': Need to create two separate authors for that
+                    if author_song.author_type == AuthorType.WordsAndMusic:
+                        element.set('type', AuthorType.Words)
+                        element = self._add_text_to_element('author', authors, author_song.author.display_name)
+                        element.set('type', AuthorType.Music)
+                    else:
+                        element.set('type', author_song.author_type)
         book = self.manager.get_object_filtered(Book, Book.id == song.song_book_id)
         if book is not None:
             book = book.name
@@ -501,16 +509,20 @@ class OpenLyrics(object):
         if hasattr(properties, 'authors'):
             for author in properties.authors.author:
                 display_name = self._text(author)
+                author_type = author.get('type', '')
                 if display_name:
-                    authors.append(display_name)
-        for display_name in authors:
+                    authors.append((display_name, author_type))
+        for (display_name, author_type) in authors:
             author = self.manager.get_object_filtered(Author, Author.display_name == display_name)
             if author is None:
                 # We need to create a new author, as the author does not exist.
                 author = Author.populate(display_name=display_name,
                                          last_name=display_name.split(' ')[-1],
                                          first_name=' '.join(display_name.split(' ')[:-1]))
-            song.authors.append(author)
+            author_song = AuthorSong()
+            author_song.author = author
+            author_song.author_type = author_type
+            song.authors_songs.append(author_song)
 
     def _process_cclinumber(self, properties, song):
         """
