@@ -69,6 +69,20 @@ SONG_TEST_DATA = [
        'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', 'v3')],
      'verse_order_list': []}]
 
+EWS_SONG_TEST_DATA =\
+    {'title': 'Vi pløjed og vi så\'de',
+     'authors': ['Matthias Claudius'],
+     'verses':
+        [('Vi pløjed og vi så\'de\nvor sæd i sorten jord,\nså bad vi ham os hjælpe,\nsom højt i Himlen bor,\n'
+          'og han lod snefald hegne\nmod frosten barsk og hård,\nhan lod det tø og regne\nog varme mildt i vår.',
+          'v1'),
+         ('Alle gode gaver\nde kommer ovenned,\nså tak da Gud, ja, pris dog Gud\nfor al hans kærlighed!', 'c1'),
+         ('Han er jo den, hvis vilje\nopholder alle ting,\nhan klæder markens lilje\nog runder himlens ring,\n'
+          'ham lyder vind og vove,\nham rører ravnes nød,\nhvi skulle ej hans småbørn\nda og få dagligt brød?', 'v2'),
+         ('Ja, tak, du kære Fader,\nså mild, så rig, så rund,\nfor korn i hæs og lader,\nfor godt i allen stund!\n'
+          'Vi kan jo intet give,\nsom nogen ting er værd,\nmen tag vort stakkels hjerte,\nså ringe som det er!',
+          'v3')]}
+
 
 class EasyWorshipSongImportLogger(EasyWorshipSongImport):
     """
@@ -357,9 +371,9 @@ class TestEasyWorshipSongImport(TestCase):
                 self.assertIsNone(importer.do_import(), 'do_import should return None when db_size is less than 0x800')
                 mocked_retrieve_windows_encoding.assert_call(encoding)
 
-    def file_import_test(self):
+    def db_file_import_test(self):
         """
-        Test the actual import of real song files and check that the imported data is correct.
+        Test the actual import of real song database files and check that the imported data is correct.
         """
 
         # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
@@ -386,10 +400,11 @@ class TestEasyWorshipSongImport(TestCase):
 
             # WHEN: Importing each file
             importer.import_source = os.path.join(TEST_PATH, 'Songs.DB')
+            import_result = importer.do_import()
 
             # THEN: do_import should return none, the song data should be as expected, and finish should have been
             #       called.
-            self.assertIsNone(importer.do_import(), 'do_import should return None when it has completed')
+            self.assertIsNone(import_result, 'do_import should return None when it has completed')
             for song_data in SONG_TEST_DATA:
                 title = song_data['title']
                 author_calls = song_data['authors']
@@ -411,3 +426,44 @@ class TestEasyWorshipSongImport(TestCase):
                     self.assertEqual(importer.verse_order_list, verse_order_list,
                                      'verse_order_list for %s should be %s' % (title, verse_order_list))
                 mocked_finish.assert_called_with()
+
+    def ews_file_import_test(self):
+        """
+        Test the actual import of song from ews file and check that the imported data is correct.
+        """
+
+        # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
+        #       and mocked out "author", "add_copyright", "add_verse", "finish" methods.
+        with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
+                patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') \
+                as mocked_retrieve_windows_encoding:
+            mocked_retrieve_windows_encoding.return_value = 'cp1252'
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            mocked_add_author = MagicMock()
+            mocked_add_verse = MagicMock()
+            mocked_finish = MagicMock()
+            mocked_title = MagicMock()
+            mocked_finish.return_value = True
+            importer = EasyWorshipSongImportLogger(mocked_manager)
+            importer.import_wizard = mocked_import_wizard
+            importer.stop_import_flag = False
+            importer.add_author = mocked_add_author
+            importer.add_verse = mocked_add_verse
+            importer.title = mocked_title
+            importer.finish = mocked_finish
+            importer.topics = []
+
+            # WHEN: Importing ews file
+            importer.import_source = os.path.join(TEST_PATH, 'test1.ews')
+            import_result = importer.do_import()
+
+            # THEN: do_import should return none, the song data should be as expected, and finish should have been
+            #       called.
+            title = EWS_SONG_TEST_DATA['title']
+            self.assertIsNone(import_result, 'do_import should return None when it has completed')
+            self.assertIn(title, importer._title_assignment_list, 'title for should be "%s"' % title)
+            mocked_add_author.assert_any_call(EWS_SONG_TEST_DATA['authors'][0])
+            for verse_text, verse_tag in EWS_SONG_TEST_DATA['verses']:
+                mocked_add_verse.assert_any_call(verse_text, verse_tag)
+            mocked_finish.assert_called_with()
