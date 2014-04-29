@@ -44,7 +44,7 @@ from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
 from openlp.plugins.songs.forms.songexportform import SongExportForm
 from openlp.plugins.songs.lib import VerseType, clean_string, delete_song
-from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
+from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
 
@@ -234,8 +234,7 @@ class SongMediaItem(MediaManagerItem):
             if song.temporary:
                 continue
             author_list = [author.display_name for author in song.authors]
-            song_title = str(song.title)
-            song_detail = '%s (%s)' % (song_title, create_separated_list(author_list))
+            song_detail = '%s (%s)' % (song.title, create_separated_list(author_list)) if author_list else song.title
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
@@ -464,23 +463,53 @@ class SongMediaItem(MediaManagerItem):
     def generate_footer(self, item, song):
         """
         Generates the song footer based on a song and adds details to a service item.
-        author_list is only required for initial song generation.
 
         :param item: The service item to be amended
         :param song: The song to be used to generate the footer
+        :return: List of all authors (only required for initial song generation)
         """
-        author_list = [str(author.display_name) for author in song.authors]
+        authors_words = []
+        authors_music = []
+        authors_words_music = []
+        authors_translation = []
+        authors_none = []
+        for author_song in song.authors_songs:
+            if author_song.author_type == AuthorType.Words:
+                authors_words.append(author_song.author.display_name)
+            elif author_song.author_type == AuthorType.Music:
+                authors_music.append(author_song.author.display_name)
+            elif author_song.author_type == AuthorType.WordsAndMusic:
+                authors_words_music.append(author_song.author.display_name)
+            elif author_song.author_type == AuthorType.Translation:
+                authors_translation.append(author_song.author.display_name)
+            else:
+                authors_none.append(author_song.author.display_name)
+        authors_all = authors_words_music + authors_words + authors_music + authors_translation + authors_none
         item.audit = [
-            song.title, author_list, song.copyright, str(song.ccli_number)
+            song.title, authors_all, song.copyright, str(song.ccli_number)
         ]
         item.raw_footer = []
         item.raw_footer.append(song.title)
-        item.raw_footer.append(create_separated_list(author_list))
+        if authors_none:
+            item.raw_footer.append("%s: %s" % (translate('OpenLP.Ui', 'Written by'),
+                                               create_separated_list(authors_none)))
+        if authors_words_music:
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.WordsAndMusic],
+                                               create_separated_list(authors_words_music)))
+        if authors_words:
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Words],
+                                               create_separated_list(authors_words)))
+        if authors_music:
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Music],
+                                               create_separated_list(authors_music)))
+        if authors_translation:
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Translation],
+                                               create_separated_list(authors_translation)))
         item.raw_footer.append(song.copyright)
         if Settings().value('core/ccli number'):
             item.raw_footer.append(translate('SongsPlugin.MediaItem',
                                              'CCLI License: ') + Settings().value('core/ccli number'))
-        return author_list
+        return authors_all
 
     def service_load(self, item):
         """

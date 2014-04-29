@@ -197,7 +197,7 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         """
         Run the wizard.
         """
-        self.setDefaults()
+        self.set_defaults()
         return QtGui.QWizard.exec_(self)
 
     def reject(self):

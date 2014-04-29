@@ -304,7 +304,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
         """
         self.source_page.emit(QtCore.SIGNAL('completeChanged()'))
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set default form values for the song import wizard.
         """
