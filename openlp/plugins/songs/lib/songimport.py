@@ -202,7 +202,7 @@ class SongImport(QtCore.QObject):
         # Book name:'NRH' and
         # Song number: 231
         book_and_number = book_and_number.strip()
-        if book_and_number == '':
+        if not book_and_number:
             return
         book_and_number = book_and_number.replace('No.', ' ')
         if ' ' in book_and_number:
@@ -233,7 +233,7 @@ class SongImport(QtCore.QObject):
         """
         if self.comments.find(comment) >= 0:
             return
-        if comment != '':
+        if comment:
             self.comments += comment.strip() + '\n'
 
     def add_copyright(self, copyright):
@@ -242,7 +242,7 @@ class SongImport(QtCore.QObject):
         """
         if self.copyright.find(copyright) >= 0:
             return
-        if self.copyright != '':
+        if self.copyright:
             self.copyright += ' '
         self.copyright += copyright
 

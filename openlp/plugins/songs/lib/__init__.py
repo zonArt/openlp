@@ -278,7 +278,7 @@ class VerseType(object):
             if verse_index is None:
                 verse_index = VerseType.from_string(verse_name, default)
         elif len(verse_name) == 1:
-            verse_index = VerseType.from_translated_tag(verse_name, None)
+            verse_index = VerseType.from_translated_tag(verse_name, default)
             if verse_index is None:
                 verse_index = VerseType.from_tag(verse_name, default)
         else:

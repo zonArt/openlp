@@ -33,7 +33,7 @@ song files from third party applications.
 import json
 from unittest import TestCase
 
-from tests.functional import patch, MagicMock
+from tests.functional import patch, MagicMock, call
 
 
 class SongImportTestHelper(TestCase):
@@ -118,8 +118,11 @@ class SongImportTestHelper(TestCase):
         if ccli_number:
             self.assertEqual(importer.ccli_number, ccli_number,
                              'ccli_number for %s should be %s' % (source_file_name, ccli_number))
+        expected_calls = []
         for verse_text, verse_tag in add_verse_calls:
             self.mocked_add_verse.assert_any_call(verse_text, verse_tag)
+            expected_calls.append(call(verse_text, verse_tag))
+        self.mocked_add_verse.assert_has_calls(expected_calls, any_order=False)
         if topics:
             self.assertEqual(importer.topics, topics, 'topics for %s should be %s' % (source_file_name, topics))
         if comments:

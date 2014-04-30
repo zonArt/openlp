@@ -56,6 +56,8 @@ class TestOpenSongFileImport(SongImportTestHelper):
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
         self.file_import(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer'),
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.json')))
+        self.file_import(os.path.join(TEST_PATH, 'One, Two, Three, Four, Five'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'One, Two, Three, Four, Five.json')))
 
 
 class TestOpenSongImport(TestCase):

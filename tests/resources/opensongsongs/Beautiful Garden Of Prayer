@@ -16,12 +16,21 @@
 ;Test breaks and newlines
 ;A single | on the end of a line adds an extra \n
 ;Blank lines are ignored, even with a space prefix
+;We also check that the chorus is added after the verses, despite the order in the file
 [V1]
  There's a garden where Jesus is waiting,
  
  There's a place that is wondrously fair.
  For it glows with the light of His presence,|
  'Tis the beautiful garden of prayer.
+
+;A double || on a line adds a new slide
+[C]
+ O the beautiful garden, the garden of prayer,
+ O the beautiful garden of prayer.
+ There my Savior awaits, and He opens the gates
+ ||
+ To the beautiful garden of prayer.
 
 ;A double || on the end of a line adds a new slide
 [V2]
@@ -37,14 +46,6 @@
  Just to bow and receive a new blessing,
  |
  In the beautiful garden of prayer.
-
-;A double || on a line adds a new slide
-[C]
- O the beautiful garden, the garden of prayer,
- O the beautiful garden of prayer.
- There my Savior awaits, and He opens the gates
- ||
- To the beautiful garden of prayer.
 </lyrics>
   <hymn_number>DS0</hymn_number>
   <key></key>

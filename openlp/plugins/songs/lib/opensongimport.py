@@ -162,8 +162,7 @@ class OpenSongImport(SongImport):
             if attr in fields:
                 ustring = str(root.__getattr__(attr))
                 if isinstance(fn_or_string, str):
-                    match = re.match('(\D*)(\d+.*)', ustring)
-                    if match:
+                    if attr in ['ccli']:
                         setattr(self, fn_or_string, int(ustring))
                     else:
                         setattr(self, fn_or_string, ustring)
@@ -261,7 +260,14 @@ class OpenSongImport(SongImport):
             verse_def = '%s%s' % (verse_tag, verse_num[:length])
             verse_joints[verse_def] = '%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
                 if verse_def in verse_joints else lines
-        for verse_def, lines in verse_joints.items():
+        # Parsing the dictionary produces the elements in a non-intuitive order.  While it "works", it's not a
+        # natural layout should the user come back to edit the song.  Instead we sort by the verse type, so that we
+        # get all the verses in order (v1, v2, ...), then the chorus(es), bridge(s), pre-chorus(es) etc.  We use a
+        # tuple for the key, since tuples naturally sort in this manner.
+        verse_defs = sorted(verse_joints.keys(),
+                            key=lambda verse_def: (VerseType.from_tag(verse_def[0]), int(verse_def[1:])))
+        for verse_def in verse_defs:
+            lines = verse_joints[verse_def]
             self.add_verse(lines, verse_def)
         if not self.verses:
             self.add_verse('')
@@ -282,6 +288,8 @@ class OpenSongImport(SongImport):
                     # Assume it's no.1 if there are no digits
                     verse_tag = verse_def
                     verse_num = '1'
+                verse_index = VerseType.from_loose_input(verse_tag)
+                verse_tag = VerseType.tags[verse_index]
                 verse_def = '%s%s' % (verse_tag, verse_num)
                 if verse_num in verses.get(verse_tag, {}):
                     self.verse_order_list.append(verse_def)
