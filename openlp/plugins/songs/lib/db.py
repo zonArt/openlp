@@ -35,17 +35,50 @@ import re
 
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation, reconstructor
-from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func, text
 
 from openlp.core.lib.db import BaseModel, init_db
 from openlp.core.utils import get_natural_key
+from openlp.core.lib import translate
 
 
 class Author(BaseModel):
     """
     Author model
     """
+    def get_display_name(self, author_type=None):
+        if author_type:
+            return "%s (%s)" % (self.display_name, AuthorType.Types[author_type])
+        return self.display_name
+
+
+class AuthorSong(BaseModel):
+    """
+    Relationship between Authors and Songs (many to many).
+    Need to define this relationship table explicit to get access to the
+    Association Object (author_type).
+    http://docs.sqlalchemy.org/en/latest/orm/relationships.html#association-object
+    """
     pass
+
+
+class AuthorType(object):
+    """
+    Enumeration for Author types.
+    They are defined by OpenLyrics: http://openlyrics.info/dataformat.html#authors
+
+    The 'words+music' type is not an official type, but is provided for convenience.
+    """
+    Words = 'words'
+    Music = 'music'
+    WordsAndMusic = 'words+music'
+    Translation = 'translation'
+    Types = {
+        Words: translate('OpenLP.Ui', 'Words'),
+        Music: translate('OpenLP.Ui', 'Music'),
+        WordsAndMusic: translate('OpenLP.Ui', 'Words and Music'),
+        Translation: translate('OpenLP.Ui', 'Translation')
+    }
 
 
 class Book(BaseModel):
@@ -67,6 +100,7 @@ class Song(BaseModel):
     """
     Song model
     """
+
     def __init__(self):
         self.sort_key = []
 
@@ -120,6 +154,7 @@ def init_schema(url):
 
         * author_id
         * song_id
+        * author_type
 
     **media_files Table**
         * id
@@ -230,7 +265,8 @@ def init_schema(url):
     authors_songs_table = Table(
         'authors_songs', metadata,
         Column('author_id', types.Integer(), ForeignKey('authors.id'), primary_key=True),
-        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True)
+        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
+        Column('author_type', types.String(), primary_key=True, nullable=False, server_default=text('""'))
     )
 
     # Definition of the "songs_topics" table
@@ -241,10 +277,15 @@ def init_schema(url):
     )
 
     mapper(Author, authors_table)
+    mapper(AuthorSong, authors_songs_table, properties={
+        'author': relation(Author)
+    })
     mapper(Book, song_books_table)
     mapper(MediaFile, media_files_table)
     mapper(Song, songs_table, properties={
-        'authors': relation(Author, backref='songs', secondary=authors_songs_table, lazy=False),
+        # Use the authors_songs relation when you need access to the 'author_type' attribute.
+        'authors_songs': relation(AuthorSong, cascade="all, delete-orphan"),
+        'authors': relation(Author, secondary=authors_songs_table),
         'book': relation(Book, backref='songs'),
         'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
         'topics': relation(Topic, backref='songs', secondary=songs_topics_table)

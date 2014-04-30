@@ -114,10 +114,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         """
         Run the wizard.
         """
-        self.setDefaults()
+        self.set_defaults()
         return QtGui.QWizard.exec_(self)
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set up display at start of theme edit.
         """
