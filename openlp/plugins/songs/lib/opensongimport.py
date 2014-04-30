@@ -163,7 +163,10 @@ class OpenSongImport(SongImport):
                 ustring = str(root.__getattr__(attr))
                 if isinstance(fn_or_string, str):
                     if attr in ['ccli']:
-                        setattr(self, fn_or_string, int(ustring))
+                        if ustring:
+                            setattr(self, fn_or_string, int(ustring))
+                        else:
+                            setattr(self, fn_or_string, None)
                     else:
                         setattr(self, fn_or_string, ustring)
                 else:
