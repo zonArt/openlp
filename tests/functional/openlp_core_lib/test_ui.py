@@ -82,6 +82,38 @@ class TestUi(TestCase):
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
 
+    def test_create_button(self):
+        """
+        Test creating a button
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create the button
+        btn = create_button(dialog, 'my_btn')
+
+        # THEN: We should get a button with a name
+        self.assertIsInstance(btn, QtGui.QPushButton)
+        self.assertEqual('my_btn', btn.objectName())
+        self.assertTrue(btn.isEnabled())
+
+        # WHEN: We create a button with some attributes
+        btn = create_button(dialog, 'my_btn', text='Hello', tooltip='How are you?', enabled=False)
+
+        # THEN: We should get a button with those attributes
+        self.assertIsInstance(btn, QtGui.QPushButton)
+        self.assertEqual('Hello', btn.text())
+        self.assertEqual('How are you?', btn.toolTip())
+        self.assertFalse(btn.isEnabled())
+
+        # WHEN: We create a toolbutton
+        btn = create_button(dialog, 'my_btn', btn_class='toolbutton')
+
+        # THEN: We should get a toolbutton
+        self.assertIsInstance(btn, QtGui.QToolButton)
+        self.assertEqual('my_btn', btn.objectName())
+        self.assertTrue(btn.isEnabled())
+
     def test_create_valign_selection_widgets(self):
         """
         Test creating a combo box for valign selection
@@ -98,3 +130,43 @@ class TestUi(TestCase):
         self.assertEqual(combo, label.buddy())
         for text in [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]:
             self.assertTrue(combo.findText(text) >= 0)
+
+    def test_create_horizontal_adjusting_combo_box(self):
+        """
+        Test creating a horizontal adjusting combo box
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create the combobox
+        combo = create_horizontal_adjusting_combo_box(dialog, 'combo1')
+
+        # THEN: We should get a ComboBox
+        self.assertIsInstance(combo, QtGui.QComboBox)
+        self.assertEqual('combo1', combo.objectName())
+        self.assertEqual(QtGui.QComboBox.AdjustToMinimumContentsLength, combo.sizeAdjustPolicy())
+
+    def test_create_action(self):
+        """
+        Test creating an action
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create an action
+        action = create_action(dialog, 'my_action')
+
+        # THEN: We should get a QAction
+        self.assertIsInstance(action, QtGui.QAction)
+        self.assertEqual('my_action', action.objectName())
+
+        # WHEN: We create an action with some properties
+        action = create_action(dialog, 'my_action', text='my text', icon=':/wizards/wizard_firsttime.bmp',
+                               tooltip='my tooltip', statustip='my statustip')
+
+        # THEN: These properties should be set
+        self.assertIsInstance(action, QtGui.QAction)
+        self.assertEqual('my text', action.text())
+        self.assertIsInstance(action.icon(), QtGui.QIcon)
+        self.assertEqual('my tooltip', action.toolTip())
+        self.assertEqual('my statustip', action.statusTip())

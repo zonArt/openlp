@@ -32,9 +32,11 @@ import logging
 import os
 import re
 import sqlite3
+import time
 
 from PyQt4 import QtCore
 from sqlalchemy import Column, ForeignKey, Table, or_, types, func
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
@@ -235,7 +237,12 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
                 text=verse_text
             )
             self.session.add(verse)
-        self.session.commit()
+        try:
+            self.session.commit()
+        except OperationalError:
+            # Wait 10ms and try again (lp#1154467)
+            time.sleep(0.01)
+            self.session.commit()
 
     def create_verse(self, book_id, chapter, verse, text):
         """
@@ -649,10 +656,10 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             'chapter, verse_count FROM chapters WHERE book_reference_id = ?', (book_ref_id,))
         try:
             return {
-                'id': chapters[chapter-1][0],
-                'book_reference_id': chapters[chapter-1][1],
-                'chapter': chapters[chapter-1][2],
-                'verse_count': chapters[chapter-1][3]
+                'id': chapters[chapter - 1][0],
+                'book_reference_id': chapters[chapter - 1][1],
+                'chapter': chapters[chapter - 1][2],
+                'verse_count': chapters[chapter - 1][3]
             }
         except (IndexError, TypeError):
             return None
@@ -846,13 +853,13 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
             file_path = os.path.join(
                 AppLocation.get_directory(AppLocation.DataDir), 'bibles', 'alternative_book_names.sqlite')
             if not os.path.exists(file_path):
-                #create new DB, create table alternative_book_names
+                # create new DB, create table alternative_book_names
                 AlternativeBookNamesDB.conn = sqlite3.connect(file_path)
                 AlternativeBookNamesDB.conn.execute(
                     'CREATE TABLE alternative_book_names(id INTEGER NOT NULL, '
                     'book_reference_id INTEGER, language_id INTEGER, name VARCHAR(50), PRIMARY KEY (id))')
             else:
-                #use existing DB
+                # use existing DB
                 AlternativeBookNamesDB.conn = sqlite3.connect(file_path)
             AlternativeBookNamesDB.cursor = AlternativeBookNamesDB.conn.cursor()
         return AlternativeBookNamesDB.cursor

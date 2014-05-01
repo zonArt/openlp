@@ -35,7 +35,7 @@ from bs4 import BeautifulSoup
 from tests.functional import patch, MagicMock
 from openlp.plugins.bibles.lib.http import BSExtract
 
-#TODO: Items left to test
+# TODO: Items left to test
 #   BGExtract
 #       __init__
 #       _remove_elements
@@ -68,7 +68,7 @@ class TestBSExtract(TestCase):
     """
     Test the BSExtractClass
     """
-    #TODO: Items left to test
+    # TODO: Items left to test
     #   BSExtract
     #       __init__
     #       get_bible_chapter
@@ -180,4 +180,4 @@ class TestBSExtract(TestCase):
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')
         self.assertFalse(self.mock_log.error.called, 'log.error should not have been called')
         self.assertFalse(self.mock_send_error_message.called, 'send_error_message should not have been called')
-        self.assertEquals(result, ['Genesis', 'Leviticus'])
+        self.assertEqual(result, ['Genesis', 'Leviticus'])

@@ -90,7 +90,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         self.footer_font_combo_box.activated.connect(self.update_theme)
         self.footer_size_spin_box.valueChanged.connect(self.update_theme)
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set up display at start of theme edit.
         """
@@ -261,7 +261,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         log.debug('Editing theme %s' % self.theme.theme_name)
         self.temp_background_filename = ''
         self.update_theme_allowed = False
-        self.setDefaults()
+        self.set_defaults()
         self.update_theme_allowed = True
         self.theme_name_label.setVisible(not edit)
         self.theme_name_edit.setVisible(not edit)
@@ -432,7 +432,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         Background Image button pushed.
         """
         images_filter = get_images_filter()
-        images_filter = '%s;;%s (*.*) (*)' % (images_filter, UiStrings().AllFiles)
+        images_filter = '%s;;%s (*.*)' % (images_filter, UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.ThemeWizard', 'Select Image'), '',
                                                      images_filter)
         if filename:

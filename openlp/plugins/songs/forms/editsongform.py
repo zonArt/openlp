@@ -42,7 +42,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, UiStri
 from openlp.core.lib import FileDialog, PluginStatus, MediaType, create_separated_list
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.lib import VerseType, clean_song
-from openlp.plugins.songs.lib.db import Book, Song, Author, Topic, MediaFile
+from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorSong, AuthorType, Topic, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
 from openlp.plugins.songs.forms.editsongdialog import Ui_EditSongDialog
@@ -122,12 +122,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
             combo.setItemData(row, obj.id)
         set_case_insensitive_completer(cache, combo)
 
-    def _add_author_to_list(self, author):
+    def _add_author_to_list(self, author, author_type):
         """
         Add an author to the author list.
         """
-        author_item = QtGui.QListWidgetItem(str(author.display_name))
-        author_item.setData(QtCore.Qt.UserRole, author.id)
+        author_item = QtGui.QListWidgetItem(author.get_display_name(author_type))
+        author_item.setData(QtCore.Qt.UserRole, (author.id, author_type))
         self.authors_list_view.addItem(author_item)
 
     def _extract_verse_order(self, verse_order):
@@ -217,8 +217,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         if self.authors_list_view.count() == 0:
             self.song_tab_widget.setCurrentIndex(1)
             self.authors_list_view.setFocus()
-            critical_error_message_box(
-                message=translate('SongsPlugin.EditSongForm', 'You need to have an author for this song.'))
+            critical_error_message_box(message=translate('SongsPlugin.EditSongForm',
+                                                         'You need to have an author for this song.'))
             return False
         if self.verse_order_edit.text():
             result = self._validate_verse_list(self.verse_order_edit.text(), self.verse_list_widget.rowCount())
@@ -301,6 +301,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
             self.authors_combo_box.setItemData(row, author.id)
             self.authors.append(author.display_name)
         set_case_insensitive_completer(self.authors, self.authors_combo_box)
+
+        # Types
+        self.author_types_combo_box.clear()
+        self.author_types_combo_box.addItem('')
+        # Don't iterate over the dictionary to give them this specific order
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Words], AuthorType.Words)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Music], AuthorType.Music)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.WordsAndMusic], AuthorType.WordsAndMusic)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Translation], AuthorType.Translation)
 
     def load_topics(self):
         """
@@ -454,10 +463,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.tag_rows()
         # clear the results
         self.authors_list_view.clear()
-        for author in self.song.authors:
-            author_name = QtGui.QListWidgetItem(str(author.display_name))
-            author_name.setData(QtCore.Qt.UserRole, author.id)
-            self.authors_list_view.addItem(author_name)
+        for author_song in self.song.authors_songs:
+            self._add_author_to_list(author_song.author, author_song.author_type)
         # clear the results
         self.topics_list_view.clear()
         for topic in self.song.topics:
@@ -496,6 +503,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         item = int(self.authors_combo_box.currentIndex())
         text = self.authors_combo_box.currentText().strip(' \r\n\t')
+        author_type = self.author_types_combo_box.itemData(self.author_types_combo_box.currentIndex())
         # This if statement is for OS X, which doesn't seem to work well with
         # the QCompleter auto-completion class. See bug #812628.
         if text in self.authors:
@@ -513,7 +521,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                     author = Author.populate(first_name=text.rsplit(' ', 1)[0], last_name=text.rsplit(' ', 1)[1],
                                              display_name=text)
                 self.manager.save_object(author)
-                self._add_author_to_list(author)
+                self._add_author_to_list(author, author_type)
                 self.load_authors()
                 self.authors_combo_box.setCurrentIndex(0)
             else:
@@ -521,11 +529,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         elif item > 0:
             item_id = (self.authors_combo_box.itemData(item))
             author = self.manager.get_object(Author, item_id)
-            if self.authors_list_view.findItems(str(author.display_name), QtCore.Qt.MatchExactly):
+            if self.authors_list_view.findItems(author.get_display_name(author_type), QtCore.Qt.MatchExactly):
                 critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm', 'This author is already in the list.'))
             else:
-                self._add_author_to_list(author)
+                self._add_author_to_list(author, author_type)
             self.authors_combo_box.setCurrentIndex(0)
         else:
             QtGui.QMessageBox.warning(
@@ -675,14 +683,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                         separator = parts.find(':')
                         if separator >= 0:
                             verse_name = parts[0:separator].strip()
-                            verse_num = parts[separator+1:].strip()
+                            verse_num = parts[separator + 1:].strip()
                         else:
                             verse_name = parts
                             verse_num = '1'
                         verse_index = VerseType.from_loose_input(verse_name)
                         verse_tag = VerseType.tags[verse_index]
                         # Later we need to handle v1a as well.
-                        #regex = re.compile(r'(\d+\w.)')
                         regex = re.compile(r'\D*(\d+)\D*')
                         match = regex.match(verse_num)
                         if match:
@@ -906,13 +913,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         else:
             self.song.theme_name = None
         self._process_lyrics()
-        self.song.authors = []
+        self.song.authors_songs = []
         for row in range(self.authors_list_view.count()):
             item = self.authors_list_view.item(row)
-            author_id = (item.data(QtCore.Qt.UserRole))
-            author = self.manager.get_object(Author, author_id)
-            if author is not None:
-                self.song.authors.append(author)
+            author_song = AuthorSong()
+            author_song.author_id = item.data(QtCore.Qt.UserRole)[0]
+            author_song.author_type = item.data(QtCore.Qt.UserRole)[1]
+            self.song.authors_songs.append(author_song)
         self.song.topics = []
         for row in range(self.topics_list_view.count()):
             item = self.topics_list_view.item(row)

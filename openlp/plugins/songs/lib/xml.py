@@ -71,7 +71,7 @@ from lxml import etree, objectify
 from openlp.core.common import translate
 from openlp.core.lib import FormattingTags
 from openlp.plugins.songs.lib import VerseType, clean_song
-from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+from openlp.plugins.songs.lib.db import Author, AuthorSong, AuthorType, Book, Song, Topic
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
@@ -166,7 +166,7 @@ class OpenLyrics(object):
     supported by the :class:`OpenLyrics` class:
 
     ``<authors>``
-        OpenLP does not support the attribute *type* and *lang*.
+        OpenLP does not support the attribute *lang*.
 
     ``<chord>``
         This property is not supported.
@@ -269,10 +269,18 @@ class OpenLyrics(object):
                 'verseOrder', properties, song.verse_order.lower())
         if song.ccli_number:
             self._add_text_to_element('ccliNo', properties, song.ccli_number)
-        if song.authors:
+        if song.authors_songs:
             authors = etree.SubElement(properties, 'authors')
-            for author in song.authors:
-                self._add_text_to_element('author', authors, author.display_name)
+            for author_song in song.authors_songs:
+                element = self._add_text_to_element('author', authors, author_song.author.display_name)
+                if author_song.author_type:
+                    # Handle the special case 'words+music': Need to create two separate authors for that
+                    if author_song.author_type == AuthorType.WordsAndMusic:
+                        element.set('type', AuthorType.Words)
+                        element = self._add_text_to_element('author', authors, author_song.author.display_name)
+                        element.set('type', AuthorType.Music)
+                    else:
+                        element.set('type', author_song.author_type)
         book = self.manager.get_object_filtered(Book, Book.id == song.song_book_id)
         if book is not None:
             book = book.name
@@ -501,16 +509,20 @@ class OpenLyrics(object):
         if hasattr(properties, 'authors'):
             for author in properties.authors.author:
                 display_name = self._text(author)
+                author_type = author.get('type', '')
                 if display_name:
-                    authors.append(display_name)
-        for display_name in authors:
+                    authors.append((display_name, author_type))
+        for (display_name, author_type) in authors:
             author = self.manager.get_object_filtered(Author, Author.display_name == display_name)
             if author is None:
                 # We need to create a new author, as the author does not exist.
                 author = Author.populate(display_name=display_name,
                                          last_name=display_name.split(' ')[-1],
                                          first_name=' '.join(display_name.split(' ')[:-1]))
-            song.authors.append(author)
+            author_song = AuthorSong()
+            author_song.author = author
+            author_song.author_type = author_type
+            song.authors_songs.append(author_song)
 
     def _process_cclinumber(self, properties, song):
         """
@@ -675,6 +687,7 @@ class OpenLyrics(object):
         sxml = SongXML()
         verses = {}
         verse_def_list = []
+        verse_order = self._text(properties.verseOrder).split(' ') if hasattr(properties, 'verseOrder') else []
         try:
             lyrics = song_xml.lyrics
         except AttributeError:
@@ -717,13 +730,17 @@ class OpenLyrics(object):
             else:
                 verses[(verse_tag, verse_number, lang, translit, verse_part)] = text
                 verse_def_list.append((verse_tag, verse_number, lang, translit, verse_part))
+            # Update verse order when the verse name has changed
+            if verse_def != verse_tag + verse_number + verse_part:
+                for i in range(len(verse_order)):
+                    if verse_order[i] == verse_def:
+                        verse_order[i] = verse_tag + verse_number + verse_part
         # We have to use a list to keep the order, as dicts are not sorted.
         for verse in verse_def_list:
             sxml.add_verse_to_lyrics(verse[0], verse[1], verses[verse], verse[2])
         song_obj.lyrics = str(sxml.extract_xml(), 'utf-8')
         # Process verse order
-        if hasattr(properties, 'verseOrder'):
-            song_obj.verse_order = self._text(properties.verseOrder)
+        song_obj.verse_order = ' '.join(verse_order)
 
     def _process_songbooks(self, properties, song):
         """

@@ -28,7 +28,8 @@
 ###############################################################################
 
 import logging
-import time
+
+from PyQt4 import QtGui
 
 from openlp.core.lib import Plugin, StringContent, translate, build_icon
 from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
@@ -67,6 +68,21 @@ class RemotesPlugin(Plugin):
         log.debug('initialise')
         super(RemotesPlugin, self).initialise()
         self.server = OpenLPServer()
+        if not hasattr(self, 'remote_server_icon'):
+            self.remote_server_icon = QtGui.QLabel(self.main_window.status_bar)
+            size_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+            size_policy.setHorizontalStretch(0)
+            size_policy.setVerticalStretch(0)
+            size_policy.setHeightForWidth(self.remote_server_icon.sizePolicy().hasHeightForWidth())
+            self.remote_server_icon.setSizePolicy(size_policy)
+            self.remote_server_icon.setFrameShadow(QtGui.QFrame.Plain)
+            self.remote_server_icon.setLineWidth(1)
+            self.remote_server_icon.setScaledContents(True)
+            self.remote_server_icon.setFixedSize(20, 20)
+            self.remote_server_icon.setObjectName('remote_server_icon')
+            self.main_window.status_bar.insertPermanentWidget(2, self.remote_server_icon)
+            self.settings_tab.remote_server_icon = self.remote_server_icon
+        self.settings_tab.generate_icon()
 
     def finalise(self):
         """
@@ -92,21 +108,23 @@ class RemotesPlugin(Plugin):
         """
         Called to define all translatable texts of the plugin
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('RemotePlugin', 'Remote', 'name singular'),
             'plural': translate('RemotePlugin', 'Remotes', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {
             'title': translate('RemotePlugin', 'Remote', 'container title')
         }
 
     def config_update(self):
         """
-        Called when Config is changed to restart the server on new address or port
+        Called when Config is changed to requests a restart with the server on new address or port
         """
         log.debug('remote config changed')
-        self.finalise()
-        time.sleep(0.5)
-        self.initialise()
+        QtGui.QMessageBox.information(self.main_window,
+                                      translate('RemotePlugin', 'Server Config Change'),
+                                      translate('RemotePlugin', 'Server configuration changes will require a restart '
+                                                'to take effect.'),
+                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))

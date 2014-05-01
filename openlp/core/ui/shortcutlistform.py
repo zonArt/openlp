@@ -244,10 +244,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
             self.primary_push_button.setChecked(False)
             self.alternate_push_button.setChecked(False)
         else:
-            if action.defaultShortcuts:
-                primary_label_text = action.defaultShortcuts[0].toString()
-                if len(action.defaultShortcuts) == 2:
-                    alternate_label_text = action.defaultShortcuts[1].toString()
+            if action.default_shortcuts:
+                primary_label_text = action.default_shortcuts[0].toString()
+                if len(action.default_shortcuts) == 2:
+                    alternate_label_text = action.default_shortcuts[1].toString()
             shortcuts = self._action_shortcuts(action)
             # We do not want to loose pending changes, that is why we have to keep the text when, this function has not
             # been triggered by a signal.
@@ -292,7 +292,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
         self._adjust_button(self.alternate_push_button, False, text='')
         for category in self.action_list.categories:
             for action in category.actions:
-                self.changed_actions[action] = action.defaultShortcuts
+                self.changed_actions[action] = action.default_shortcuts
         self.refresh_shortcut_list()
 
     def on_default_radio_button_clicked(self, toggled):
@@ -306,7 +306,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
         if action is None:
             return
         temp_shortcuts = self._action_shortcuts(action)
-        self.changed_actions[action] = action.defaultShortcuts
+        self.changed_actions[action] = action.default_shortcuts
         self.refresh_shortcut_list()
         primary_button_text = ''
         alternate_button_text = ''
@@ -357,8 +357,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
             return
         shortcuts = self._action_shortcuts(action)
         new_shortcuts = []
-        if action.defaultShortcuts:
-            new_shortcuts.append(action.defaultShortcuts[0])
+        if action.default_shortcuts:
+            new_shortcuts.append(action.default_shortcuts[0])
             # We have to check if the primary default shortcut is available. But  we only have to check, if the action
             # has a default primary shortcut (an "empty" shortcut is always valid and if the action does not have a
             # default primary shortcut, then the alternative shortcut (not the default one) will become primary
@@ -383,8 +383,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
         new_shortcuts = []
         if shortcuts:
             new_shortcuts.append(shortcuts[0])
-        if len(action.defaultShortcuts) == 2:
-            new_shortcuts.append(action.defaultShortcuts[1])
+        if len(action.default_shortcuts) == 2:
+            new_shortcuts.append(action.default_shortcuts[1])
         if len(new_shortcuts) == 2:
             if not self._validiate_shortcut(action, new_shortcuts[1]):
                 return
