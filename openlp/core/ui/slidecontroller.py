@@ -45,6 +45,13 @@ from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.listpreviewwidget import ListPreviewWidget
 
+try:
+    from openlp.plugins.songs.lib import VerseType
+    SONGS_PLUGIN_AVAILABLE = True
+except ImportError:
+    SONGS_PLUGIN_AVAILABLE = False
+
+
 # Threshold which has to be trespassed to toggle.
 HIDE_MENU_THRESHOLD = 27
 AUDIO_TIME_LABEL_STYLESHEET = 'background-color: palette(background); ' \
@@ -400,11 +407,6 @@ class SlideController(DisplayController, RegistryProperties):
         For example to jump to "V3" you have to press "V" and afterwards but within a time frame of 350ms
         you have to press "3".
         """
-        try:
-            from openlp.plugins.songs.lib import VerseType
-            SONGS_PLUGIN_AVAILABLE = True
-        except ImportError:
-            SONGS_PLUGIN_AVAILABLE = False
         sender_name = self.sender().objectName()
         verse_type = sender_name[15:] if sender_name[:15] == 'shortcutAction_' else ''
         if SONGS_PLUGIN_AVAILABLE:
@@ -494,38 +496,6 @@ class SlideController(DisplayController, RegistryProperties):
             self.on_blank_display(False)
             self.on_theme_display(False)
             self.on_hide_display(False)
-
-    def service_previous(self, field=None):
-        """
-        Live event to select the previous service item from the service manager.
-        """
-        self.keypress_queue.append(ServiceItemAction.Previous)
-        self._process_queue()
-
-    def service_next(self, field=None):
-        """
-        Live event to select the next service item from the service manager.
-        """
-        self.keypress_queue.append(ServiceItemAction.Next)
-        self._process_queue()
-
-    def _process_queue(self):
-        """
-        Process the service item request queue.  The key presses can arrive
-        faster than the processing so implement a FIFO queue.
-        """
-        if self.keypress_queue:
-            while len(self.keypress_queue) and not self.keypress_loop:
-                self.keypress_loop = True
-                keypress_command = self.keypress_queue.popleft()
-                if keypress_command == ServiceItemAction.Previous:
-                    self.service_manager.previous_item()
-                elif keypress_command == ServiceItemAction.PreviousLastSlide:
-                    # Go to the last slide of the previous item
-                    self.service_manager.previous_item(last_slide=True)
-                else:
-                    self.service_manager.next_item()
-            self.keypress_loop = False
 
     def screen_size_changed(self):
         """
@@ -1382,3 +1352,35 @@ class LiveController(RegistryMixin, OpenLPMixin, SlideController):
         process the bootstrap post setup request
         """
         self.post_set_up()
+
+    def service_previous(self, field=None):
+        """
+        Live event to select the previous service item from the service manager.
+        """
+        self.keypress_queue.append(ServiceItemAction.Previous)
+        self._process_queue()
+
+    def service_next(self, field=None):
+        """
+        Live event to select the next service item from the service manager.
+        """
+        self.keypress_queue.append(ServiceItemAction.Next)
+        self._process_queue()
+
+    def _process_queue(self):
+        """
+        Process the service item request queue. The key presses can arrive faster than the processing so implement a
+        FIFO queue.
+        """
+        if self.keypress_queue:
+            while len(self.keypress_queue) and not self.keypress_loop:
+                self.keypress_loop = True
+                keypress_command = self.keypress_queue.popleft()
+                if keypress_command == ServiceItemAction.Previous:
+                    self.service_manager.previous_item()
+                elif keypress_command == ServiceItemAction.PreviousLastSlide:
+                    # Go to the last slide of the previous item
+                    self.service_manager.previous_item(last_slide=True)
+                else:
+                    self.service_manager.next_item()
+            self.keypress_loop = False
