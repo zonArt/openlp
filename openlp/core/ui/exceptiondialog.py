@@ -30,7 +30,7 @@
 The GUI widgets of the exception dialog.
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button, create_button_box

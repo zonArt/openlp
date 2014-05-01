@@ -63,8 +63,7 @@ class ScreenList(object):
         """
         Initialise the screen list.
 
-        ``desktop``
-            A ``QDesktopWidget`` object.
+        :param desktop:  A QDesktopWidget object.
         """
         screen_list = cls()
         screen_list.desktop = desktop
@@ -153,9 +152,9 @@ class ScreenList(object):
         :param screen: A dict with the screen properties::
 
                 {
-                    u'primary': True,
-                    u'number': 0,
-                    u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
+                    'primary': True,
+                    'number': 0,
+                    'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
                 }
         """
         log.info('Screen %d found with resolution %s' % (screen['number'], screen['size']))

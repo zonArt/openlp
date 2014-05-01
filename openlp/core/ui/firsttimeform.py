@@ -170,6 +170,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         elif self.currentId() == FirstTimePage.Progress:
             return -1
         elif self.currentId() == FirstTimePage.NoInternet:
+            print(1111)
             return FirstTimePage.Progress
         elif self.currentId() == FirstTimePage.Themes:
             self.application.set_busy_cursor()
@@ -199,8 +200,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
                 self.no_internet_label.setText(self.no_internet_text + self.cancelWizardText)
         elif page_id == FirstTimePage.Defaults:
             self.theme_combo_box.clear()
-            for iter in range(self.themes_list_widget.count()):
-                item = self.themes_list_widget.item(iter)
+            for index in range(self.themes_list_widget.count()):
+                item = self.themes_list_widget.item(index)
                 if item.checkState() == QtCore.Qt.Checked:
                     self.theme_combo_box.addItem(item.text())
             if self.has_run_wizard:
@@ -292,13 +293,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         """
         themes = self.config.get('themes', 'files')
         themes = themes.split(',')
-        for theme in themes:
-            filename = self.config.get('theme_%s' % theme, 'filename')
+        for index, theme in enumerate(themes):
             screenshot = self.config.get('theme_%s' % theme, 'screenshot')
-            for index in range(self.themes_list_widget.count()):
-                item = self.themes_list_widget.item(index)
-                if item.data(QtCore.Qt.UserRole) == filename:
-                    break
+            item = self.themes_list_widget.item(index)
             item.setIcon(build_icon(os.path.join(gettempdir(), 'openlp', screenshot)))
 
     def _get_file_size(self, url):

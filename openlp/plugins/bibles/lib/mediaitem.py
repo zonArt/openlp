@@ -837,7 +837,6 @@ class BibleMediaItem(MediaManagerItem):
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
             raw_slides.append(bible_text.lstrip())
-            bible_text = ''
         # Service Item: Capabilities
         if self.settings.layout_style == LayoutStyle.Continuous and not second_bible:
             # Split the line but do not replace line breaks in renderer.
