@@ -121,7 +121,7 @@ class SongShowPlusImport(SongImport):
                     null, verse_no, = struct.unpack("BB", song_data.read(2))
                 elif block_key == CUSTOM_VERSE:
                     null, verse_name_length, = struct.unpack("BB", song_data.read(2))
-                    verse_name = song_data.read(verse_name_length)
+                    verse_name = self.decode(song_data.read(verse_name_length))
                 length_descriptor_size, = struct.unpack("B", song_data.read(1))
                 log.debug(length_descriptor_size)
                 # Detect if/how long the length descriptor is
@@ -147,7 +147,10 @@ class SongShowPlusImport(SongImport):
                 elif block_key == COPYRIGHT:
                     self.add_copyright(self.decode(data))
                 elif block_key == CCLI_NO:
-                    self.ccli_number = int(data)
+                    try:
+                        self.ccli_number = int(data)
+                    except ValueError:
+                        continue
                 elif block_key == VERSE:
                     self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
                 elif block_key == CHORUS:
