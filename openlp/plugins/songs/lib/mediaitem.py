@@ -518,16 +518,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug('service_load')
         if self.plugin.status != PluginStatus.Active or not item.data_string:
             return
-        if item.data_string['title'].find('@') == -1:
-            # FIXME: This file seems to be an old one (prior to 1.9.5), which means, that the search title
-            # (data_string[u'title']) is probably wrong. We add "@" to search title and hope that we do not add any
-            # duplicate. This should work for songs without alternate title.
-            temp = (re.compile(r'\W+', re.UNICODE).sub(' ', item.data_string['title'].strip()) + '@').strip().lower()
-            search_results = \
-                self.plugin.manager.get_all_objects(Song, Song.search_title == temp, Song.search_title.asc())
-        else:
-            search_results = self.plugin.manager.get_all_objects(
-                Song, Song.search_title == item.data_string['title'], Song.search_title.asc())
+        search_results = self.plugin.manager.get_all_objects(
+            Song, Song.search_title == item.data_string['title'], Song.search_title.asc())
         edit_id = 0
         add_song = True
         if search_results:
