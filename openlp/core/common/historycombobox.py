@@ -53,7 +53,7 @@ class HistoryComboBox(QtGui.QComboBox):
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.setInsertPolicy(QtGui.QComboBox.InsertAtTop)
 
-    def keyPressEvlent(self, event):
+    def keyPressEvent(self, event):
         """
         Override the inherited keyPressEvent method to emit the ``returnPressed`` signal and to save the current text to
         the dropdown list.
