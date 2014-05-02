@@ -129,7 +129,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
 
             class MyPlugin(Plugin):
                 def __init__(self):
-                    super(MyPlugin, self).__init__('MyPlugin', version=u'0.1')
+                    super(MyPlugin, self).__init__('MyPlugin', version='0.1')
 
         :param name: Defaults to *None*. The name of the plugin.
         :param default_settings: A dict containing the plugin's settings. The value to each key is the default value

@@ -930,7 +930,7 @@ class BibleMediaItem(MediaManagerItem):
 
         curly brackets or no brackets at all. For example::
 
-            u'{su}1:1{/su}'
+            '{su}1:1{/su}'
 
         :param old_chapter: The previous verse's chapter number (int).
         :param chapter: The chapter number (int).

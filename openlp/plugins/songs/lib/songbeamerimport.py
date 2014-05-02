@@ -171,7 +171,7 @@ class SongBeamerImport(SongImport):
 
         :param line: The line in the file. It should consist of a tag and a value for this tag (unicode)::
 
-                u'#Title=Nearer my God to Thee'
+                '#Title=Nearer my God to Thee'
         """
         tag_val = line.split('=', 1)
         if len(tag_val) == 1:

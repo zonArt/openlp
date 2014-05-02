@@ -242,7 +242,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties)
         Creates a html element. If ``text`` is given, the element's text will set and if a ``parent`` is given,
         the element is appended.
 
-        :param tag: The html tag, e. g. ``u'span'``. Defaults to ``None``.
+        :param tag: The html tag, e. g. ``'span'``. Defaults to ``None``.
         :param text: The text for the tag. Defaults to ``None``.
         :param parent: The parent element. Defaults to ``None``.
         :param classId: Value for the class attribute
