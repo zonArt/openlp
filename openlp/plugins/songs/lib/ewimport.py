@@ -281,7 +281,7 @@ class EasyWorshipSongImport(SongImport):
                 raw_record = db_file.read(record_size)
                 self.fields = self.record_structure.unpack(raw_record)
                 self.set_defaults()
-                self.title = self.get_field(fi_title).decode()
+                self.title = self.get_field(fi_title).decode('unicode-escape')
                 # Get remaining fields.
                 copy = self.get_field(fi_copy)
                 admin = self.get_field(fi_admin)
@@ -289,16 +289,16 @@ class EasyWorshipSongImport(SongImport):
                 authors = self.get_field(fi_author)
                 words = self.get_field(fi_words)
                 if copy:
-                    self.copyright = copy.decode()
+                    self.copyright = copy.decode('unicode-escape')
                 if admin:
                     if copy:
                         self.copyright += ', '
                     self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
-                                                'Administered by %s') % admin.decode()
+                                                'Administered by %s') % admin.decode('unicode-escape')
                 if ccli:
-                    self.ccli_number = ccli.decode()
+                    self.ccli_number = ccli.decode('unicode-escape')
                 if authors:
-                    authors = authors.decode()
+                    authors = authors.decode('unicode-escape')
                 else:
                     authors = ''
                 # Set the SongImport object members.
@@ -328,7 +328,20 @@ class EasyWorshipSongImport(SongImport):
                 self.add_author(author_name.strip())
         if words:
             # Format the lyrics
-            result = strip_rtf(words.decode(), self.encoding)
+            result = None
+            decoded_words = None
+            try:
+                decoded_words = words.decode()
+            except UnicodeDecodeError:
+                log.debug('The unicode chars in the rtf was not escaped in the expected manor, doing it manually.')
+                newbytes = bytearray()
+                for b in words:
+                    if b > 127:
+                        newbytes += bytearray(b'\\\'') + bytearray(str(hex(b))[-2:].encode())
+                    else:
+                        newbytes.append(b)
+                decoded_words = newbytes.decode()
+            result = strip_rtf(decoded_words, self.encoding)
             if result is None:
                 return
             words, self.encoding = result
