@@ -333,7 +333,7 @@ class EasyWorshipSongImport(SongImport):
             try:
                 decoded_words = words.decode()
             except UnicodeDecodeError:
-                log.debug('The unicode chars in the rtf was not escaped in the expected manor, doing it manually.')
+                # The unicode chars in the rtf was not escaped in the expected manor, doing it manually.
                 newbytes = bytearray()
                 for b in words:
                     if b > 127:

@@ -153,13 +153,14 @@ class TestEasyWorshipSongImport(TestCase):
     """
     Test the functions in the :mod:`ewimport` module.
     """
-    def setUp(self):
+    """def setUp(self):
         self.songimport_patcher = patch('openlp.plugins.songs.lib.ewimport.EasyWorshipSongImport.__init__')
         self.mocked_songimport = self.songimport_patcher.start()
         self.mocked_songimport.return_value = None
     
     def tearDown(self):
         self.songimport_patcher.stop()
+    """
         
     def create_field_desc_entry_test(self):
         """
@@ -489,3 +490,37 @@ class TestEasyWorshipSongImport(TestCase):
             for verse_text, verse_tag in EWS_SONG_TEST_DATA['verses']:
                 mocked_add_verse.assert_any_call(verse_text, verse_tag)
             mocked_finish.assert_called_with()
+
+    def import_rtf_unescaped_unicode_test(self):
+        """
+        Test import of rtf without the expected escaping of unicode
+        """
+        
+        # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
+        #       and mocked out "author", "add_copyright", "add_verse", "finish" methods.
+        with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
+                patch('openlp.plugins.songs.lib.ewimport.strip_rtf') as mocked_strip_rtf, \
+                patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') \
+                as mocked_retrieve_windows_encoding:
+            mocked_retrieve_windows_encoding.return_value = 'cp1252'
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            mocked_add_author = MagicMock()
+            mocked_add_verse = MagicMock()
+            mocked_finish = MagicMock()
+            mocked_title = MagicMock()
+            mocked_finish.return_value = True
+            importer = EasyWorshipSongImportLogger(mocked_manager)
+            importer.import_wizard = mocked_import_wizard
+            importer.stop_import_flag = False
+            importer.add_author = mocked_add_author
+            importer.add_verse = mocked_add_verse
+            importer.title = mocked_title
+            importer.finish = mocked_finish
+            importer.topics = []
+
+            # WHEN: running set_song_import_object on a verse string without the needed escaping
+            importer.set_song_import_object('Test Author', b'Det som var fr\x86n begynnelsen')
+
+            # THEN: The escaping shoud be added
+            mocked_strip_rtf.assert_called_with("Det som var fr\'86n begynnelsen", 'cp1252')
