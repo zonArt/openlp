@@ -434,7 +434,7 @@ def strip_rtf(text, default_encoding=None):
     # Current font is the font tag we last met.
     font = ''
     # Character encoding is defined inside fonttable.
-    # font_table could contain eg u'0': u'cp1252'
+    # font_table could contain eg '0': u'cp1252'
     font_table = {'': ''}
     # Stack of things to keep track of when entering/leaving groups.
     stack = []

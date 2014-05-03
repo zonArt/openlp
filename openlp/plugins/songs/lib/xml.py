@@ -344,7 +344,7 @@ class OpenLyrics(object):
         """
         Tests the given text for not closed formatting tags and returns a tuple consisting of two unicode strings::
 
-            (u'{st}{r}', u'{/r}{/st}')
+            ('{st}{r}', '{/r}{/st}')
 
         The first unicode string are the start tags (for the next slide). The second unicode string are the end tags.
 

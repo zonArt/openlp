@@ -68,8 +68,7 @@ class Settings(QtCore.QSettings):
     ``__obsolete_settings__``
         Each entry is structured in the following way::
 
-            (u'general/enable slide loop',  u'advanced/slide limits',
-                [(SlideLimits.Wrap, True), (SlideLimits.End, False)])
+            ('general/enable slide loop', 'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)])
 
         The first entry is the *old key*; it will be removed.
 

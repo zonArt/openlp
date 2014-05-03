@@ -110,7 +110,7 @@ class AppLocation(object):
         :param extension:
             Defaults to *None*. The extension to search for. For example::
 
-                u'.png'
+                '.png'
         """
         path = AppLocation.get_data_path()
         if section:

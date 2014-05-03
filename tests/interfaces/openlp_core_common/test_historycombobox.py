@@ -27,34 +27,39 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Test the openlp.core.ui.splashscreen class.
+Module to test the :mod:`~openlp.core.common.historycombobox` module.
 """
+
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui, QtTest
 
-from openlp.core.ui import SplashScreen
+from openlp.core.common import Registry
+from openlp.core.common import HistoryComboBox
 from tests.helpers.testmixin import TestMixin
+from tests.interfaces import MagicMock, patch
 
 
-class TestSplashScreen(TestCase, TestMixin):
+class TestHistoryComboBox(TestCase, TestMixin):
     def setUp(self):
+        Registry.create()
         self.get_application()
         self.main_window = QtGui.QMainWindow()
+        Registry().register('main_window', self.main_window)
+        self.combo = HistoryComboBox(self.main_window)
 
     def tearDown(self):
-        """
-        Delete all the C++ objects at the end so that we don't have a segfault
-        """
-        del self.app
-        del self.main_window
+        del self.combo
 
-    def setupUi_test(self):
+    def getItems_test(self):
         """
-        Test if the setupUi method....
+        Test the getItems() method
         """
-        # GIVEN: A splash screen instance.
-        splash = SplashScreen()
+        # GIVEN: The combo.
 
-        # THEN: Check if the splash has a setupUi method.
-        assert hasattr(splash, 'setupUi'), 'The Splash Screen should have a setupUi() method.'
+        # WHEN: Add two items.
+        self.combo.addItem('test1')
+        self.combo.addItem('test2')
+
+        # THEN: The list of items should contain both strings.
+        self.assertEqual(self.combo.getItems(), ['test1', 'test2'])

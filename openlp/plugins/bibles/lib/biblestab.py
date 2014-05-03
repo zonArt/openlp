@@ -405,7 +405,7 @@ class BiblesTab(SettingsTab):
         :param theme_list:
             The list of available themes::
 
-                [u'Bible Theme', u'Song Theme']
+                ['Bible Theme', 'Song Theme']
         """
         self.bible_theme_combo_box.clear()
         self.bible_theme_combo_box.addItem('')
