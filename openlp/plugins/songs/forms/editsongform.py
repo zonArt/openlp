@@ -107,6 +107,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.audio_list_widget.setAlternatingRowColors(True)
         self.find_verse_split = re.compile('---\[\]---\n', re.UNICODE)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
+        self.find_tags = re.compile(u'\{/?\w+\}', re.UNICODE)
 
     def _load_objects(self, cls, combo, cache):
         """
@@ -234,7 +235,42 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                 self.manager.save_object(book)
             else:
                 return False
+        # Validate tags (lp#1199639)
+        misplaced_tags = []
+        for i in range(self.verse_list_widget.rowCount()):
+            item = self.verse_list_widget.item(i, 0)
+            tags = self.find_tags.findall(item.text())
+            if not self._validate_tags(tags):
+                field = item.data(QtCore.Qt.UserRole)
+                misplaced_tags.append('%s %s' % (VerseType.translated_name(field[0]), field[1:]))
+        if misplaced_tags:
+            critical_error_message_box(
+                message=translate('SongsPlugin.EditSongForm',
+                                  'There are misplaced formatting tags in the following verses:\n\n%s\n\n'
+                                  'Please correct these tags before continuing.' % ', '.join(misplaced_tags)))
+            return False
         return True
+
+    def _validate_tags(self, _tags):
+        """
+        Validates a list of tags
+        Deletes the first affiliated tag pair which is located side by side in the list
+        and call itself recursively with the shortened tag list.
+        If there is any misplaced tag in the list, either the length of the tag list is not even,
+        or the function won't find any tag pairs side by side.
+        If there is no misplaced tag, the length of the list will be zero on any recursive run.
+
+        :return: True if the function can't find any mismatched tags. Else False.
+        """
+        if len(_tags) == 0:
+            return True
+        if len(_tags) % 2 != 0:
+            return False
+        for i in range(len(_tags)-1):
+            if _tags[i+1] == "{/" + _tags[i][1:]:
+                del _tags[i:i+2]
+                return self._validate_tags(_tags)
+        return False
 
     def _process_lyrics(self):
         """
