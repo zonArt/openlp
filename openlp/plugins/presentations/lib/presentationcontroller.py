@@ -354,7 +354,7 @@ class PresentationController(object):
             class MyPresentationController(PresentationController):
                 def __init__(self, plugin):
                     PresentationController.__init(
-                        self, plugin, u'My Presenter App')
+                        self, plugin, 'My Presenter App')
 
         :param plugin:  Defaults to *None*. The presentationplugin object
         :param name: Name of the application, to appear in the application

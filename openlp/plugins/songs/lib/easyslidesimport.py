@@ -292,7 +292,7 @@ class EasySlidesImport(SongImport):
         return True
 
     def _extract_region(self, line):
-        # this was true already: line[0:7] == u'[region':
+        # this was true already: line[0:7] == '[region':
         """
         Extract the region from text
 

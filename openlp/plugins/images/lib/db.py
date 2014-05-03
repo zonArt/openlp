@@ -31,7 +31,7 @@ The :mod:`db` module provides the database and schema that is the backend for th
 """
 
 from sqlalchemy import Column, ForeignKey, Table, types
-from sqlalchemy.orm import mapper, relation, reconstructor
+from sqlalchemy.orm import mapper
 
 from openlp.core.lib.db import BaseModel, init_db
 

@@ -27,41 +27,52 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The About dialog.
+Package to test the openlp.core.ui.shortcutform package.
 """
+from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui, QtTest
 
-from .aboutdialog import Ui_AboutDialog
-from openlp.core.lib import translate
-from openlp.core.utils import get_application_version
+from openlp.core.common import Registry
+from openlp.core.ui.shortcutlistform import ShortcutListForm
+from tests.interfaces import patch
+from tests.helpers.testmixin import TestMixin
 
 
-class AboutForm(QtGui.QDialog, Ui_AboutDialog):
-    """
-    The About dialog
-    """
+class TestShortcutform(TestCase, TestMixin):
 
-    def __init__(self, parent):
+    def setUp(self):
         """
-        Do some initialisation stuff
+        Create the UI
         """
-        super(AboutForm, self).__init__(parent)
-        application_version = get_application_version()
-        self.setupUi(self)
-        about_text = self.about_text_edit.toPlainText()
-        about_text = about_text.replace('<version>', application_version['version'])
-        if application_version['build']:
-            build_text = translate('OpenLP.AboutForm', ' build %s') % application_version['build']
-        else:
-            build_text = ''
-        about_text = about_text.replace('<revision>', build_text)
-        self.about_text_edit.setPlainText(about_text)
-        self.volunteer_button.clicked.connect(self.on_volunteer_button_clicked)
+        Registry.create()
+        self.get_application()
+        self.main_window = QtGui.QMainWindow()
+        Registry().register('main_window', self.main_window)
+        self.form = ShortcutListForm()
 
-    def on_volunteer_button_clicked(self):
+    def tearDown(self):
         """
-        Launch a web browser and go to the contribute page on the site.
+        Delete all the C++ objects at the end so that we don't have a segfault
         """
-        import webbrowser
-        webbrowser.open_new('http://openlp.org/en/contribute')
+        del self.form
+        del self.main_window
+
+    def adjust_button_test(self):
+        """
+        Test the _adjust_button() method
+        """
+        # GIVEN: A button.
+        button = QtGui.QPushButton()
+        checked = True
+        enabled = True
+        text = "new!"
+
+        # WHEN: Call the method.
+        with patch('PyQt4.QtGui.QPushButton.setChecked') as mocked_check_method:
+            self.form._adjust_button(button, checked, enabled, text)
+
+            # THEN: The button should be changed.
+            self.assertEqual(button.text(), text, "The text should match.")
+            mocked_check_method.assert_called_once_with(True)
+            self.assertEqual(button.isEnabled(), enabled, "The button should be disabled.")

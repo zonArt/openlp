@@ -65,20 +65,14 @@ class CategoryActionList(object):
         self.index = 0
         self.actions = []
 
-    def __getitem__(self, key):
-        """
-        Implement the __getitem__() method to make this class a dictionary type
-        """
-        for weight, action in self.actions:
-            if action.text() == key:
-                return action
-        raise KeyError('Action "%s" does not exist.' % key)
-
-    def __contains__(self, item):
+    def __contains__(self, key):
         """
         Implement the __contains__() method to make this class a dictionary type
         """
-        return item in self
+        for weight, action in self.actions:
+            if action == key:
+                return True
+        return False
 
     def __len__(self):
         """
@@ -103,23 +97,14 @@ class CategoryActionList(object):
             self.index += 1
             return self.actions[self.index - 1][1]
 
-    def has_key(self, key):
-        """
-        Implement the has_key() method to make this class a dictionary type
-        """
-        for weight, action in self.actions:
-            if action.text() == key:
-                return True
-        return False
-
-    def append(self, name):
+    def append(self, action):
         """
         Append an action
         """
         weight = 0
         if self.actions:
             weight = self.actions[-1][0] + 1
-        self.add(name, weight)
+        self.add(action, weight)
 
     def add(self, action, weight=0):
         """
@@ -128,14 +113,15 @@ class CategoryActionList(object):
         self.actions.append((weight, action))
         self.actions.sort(key=lambda act: act[0])
 
-    def remove(self, remove_action):
+    def remove(self, action):
         """
         Remove an action
         """
-        for action in self.actions:
-            if action[1] == remove_action:
-                self.actions.remove(action)
+        for item in self.actions:
+            if item[1] == action:
+                self.actions.remove(item)
                 return
+        raise ValueError('Action "%s" does not exist.' % action)
 
 
 class CategoryList(object):
@@ -184,9 +170,9 @@ class CategoryList(object):
             self.index += 1
             return self.categories[self.index - 1]
 
-    def has_key(self, key):
+    def __contains__(self, key):
         """
-        Implement the has_key() method to make this class like a dictionary
+        Implement the __contains__() method to make this class like a dictionary
         """
         for category in self.categories:
             if category.name == key:
@@ -200,10 +186,7 @@ class CategoryList(object):
         weight = 0
         if self.categories:
             weight = self.categories[-1].weight + 1
-        if actions:
-            self.add(name, weight, actions)
-        else:
-            self.add(name, weight)
+        self.add(name, weight, actions)
 
     def add(self, name, weight=0, actions=None):
         """
@@ -226,6 +209,8 @@ class CategoryList(object):
         for category in self.categories:
             if category.name == name:
                 self.categories.remove(category)
+                return
+        raise ValueError('Category "%s" does not exist.' % name)
 
 
 class ActionList(object):
@@ -270,7 +255,7 @@ class ActionList(object):
         settings = Settings()
         settings.beginGroup('shortcuts')
         # Get the default shortcut from the config.
-        action.defaultShortcuts = settings.get_default_value(action.objectName())
+        action.default_shortcuts = settings.get_default_value(action.objectName())
         if weight is None:
             self.categories[category].actions.append(action)
         else:

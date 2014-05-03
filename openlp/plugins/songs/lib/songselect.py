@@ -146,14 +146,14 @@ class SongSelectImport(object):
         try:
             song_page = BeautifulSoup(self.opener.open(song['link']).read(), 'lxml')
         except (TypeError, HTTPError) as e:
-            log.exception(u'Could not get song from SongSelect, %s', e)
+            log.exception('Could not get song from SongSelect, %s', e)
             return None
         if callback:
             callback()
         try:
             lyrics_page = BeautifulSoup(self.opener.open(song['link'] + '/lyrics').read(), 'lxml')
         except (TypeError, HTTPError):
-            log.exception(u'Could not get lyrics from SongSelect')
+            log.exception('Could not get lyrics from SongSelect')
             return None
         if callback:
             callback()
