@@ -132,7 +132,7 @@ class TestMediaItem(TestCase, TestMixin):
         """
         Test build songs footer with basic song and a songbook
         """
-        # GIVEN: A Song and a Service Item and a configured CCLI license
+        # GIVEN: A Song and a Service Item
         mock_song = MagicMock()
         mock_song.title = 'My Song'
         mock_song.copyright = 'My copyright'

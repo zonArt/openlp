@@ -461,7 +461,7 @@ class SongMediaItem(MediaManagerItem):
             service_item.background_audio = [m.file_name for m in song.media_files]
         return True
 
-    def generate_footer(self, item: ServiceItem, song: Song):
+    def generate_footer(self, item, song):
         """
         Generates the song footer based on a song and adds details to a service item.
 
