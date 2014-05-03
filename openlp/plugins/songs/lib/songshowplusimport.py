@@ -147,10 +147,10 @@ class SongShowPlusImport(SongImport):
                 elif block_key == COPYRIGHT:
                     self.add_copyright(self.decode(data))
                 elif block_key == CCLI_NO:
-                    try:
-                        self.ccli_number = int(data)
-                    except ValueError:
-                        continue
+                    # Try to get the CCLI number even if the field contains additional text
+                    match = re.search(r'\d+', self.decode(data))
+                    if match:
+                        self.ccli_number = int(match.group())
                 elif block_key == VERSE:
                     self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
                 elif block_key == CHORUS:
