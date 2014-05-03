@@ -43,8 +43,8 @@ class Ui_AuthorsDialog(object):
         Set up the UI for the dialog.
         """
         authors_dialog.setObjectName('authors_dialog')
+        authorsDialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         authors_dialog.resize(300, 10)
-        authors_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
         authors_dialog.setModal(True)
         self.dialog_layout = QtGui.QVBoxLayout(authors_dialog)
         self.dialog_layout.setObjectName('dialog_layout')

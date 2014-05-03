@@ -46,6 +46,7 @@ class Ui_ThemeWizard(object):
         Set up the UI
         """
         themeWizard.setObjectName('OpenLP.ThemeWizard')
+        themeWizard.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         themeWizard.setModal(True)
         themeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         themeWizard.setOptions(QtGui.QWizard.IndependentPages |

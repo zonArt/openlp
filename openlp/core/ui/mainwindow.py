@@ -89,7 +89,7 @@ class Ui_MainWindow(object):
         Set up the user interface
         """
         main_window.setObjectName('MainWindow')
-        main_window.setWindowIcon(build_icon(':/icon/openlp-logo-64x64.png'))
+        main_window.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
         main_window.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets.
         self.main_content = QtGui.QWidget(main_window)
