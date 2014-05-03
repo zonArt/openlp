@@ -36,8 +36,8 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
-from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, check_item_selected, \
-    create_separated_list
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItem, ServiceItemContext, \
+    check_item_selected, create_separated_list
 from openlp.core.lib.ui import create_widget_action
 from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
@@ -460,7 +460,7 @@ class SongMediaItem(MediaManagerItem):
             service_item.background_audio = [m.file_name for m in song.media_files]
         return True
 
-    def generate_footer(self, item, song):
+    def generate_footer(self, item: ServiceItem, song: Song):
         """
         Generates the song footer based on a song and adds details to a service item.
 
@@ -506,6 +506,8 @@ class SongMediaItem(MediaManagerItem):
             item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Translation],
                                                create_separated_list(authors_translation)))
         item.raw_footer.append(song.copyright)
+        if Settings().value('songs/display songbook') and song.book:
+            item.raw_footer.append("%s #%s" % (song.book.name, song.song_number))
         if Settings().value('core/ccli number'):
             item.raw_footer.append(translate('SongsPlugin.MediaItem',
                                              'CCLI License: ') + Settings().value('core/ccli number'))
