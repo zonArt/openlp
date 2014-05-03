@@ -237,11 +237,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                 return False
         # Validate tags (lp#1199639)
         misplaced_tags = []
+        verse_tags = []
         for i in range(self.verse_list_widget.rowCount()):
             item = self.verse_list_widget.item(i, 0)
             tags = self.find_tags.findall(item.text())
+            field = item.data(QtCore.Qt.UserRole)
+            verse_tags.append(field)
             if not self._validate_tags(tags):
-                field = item.data(QtCore.Qt.UserRole)
                 misplaced_tags.append('%s %s' % (VerseType.translated_name(field[0]), field[1:]))
         if misplaced_tags:
             critical_error_message_box(
@@ -249,6 +251,17 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                                   'There are misplaced formatting tags in the following verses:\n\n%s\n\n'
                                   'Please correct these tags before continuing.' % ', '.join(misplaced_tags)))
             return False
+        for tag in verse_tags:
+            if verse_tags.count(tag) > 26:
+                # lp#1310523: OpenLyrics allows only a-z variants of one verse:
+                # http://openlyrics.info/dataformat.html#verse-name
+                critical_error_message_box(message=translate(
+                    'SongsPlugin.EditSongForm', 'You have %(count)s verses named %(name)s %(number)s. '
+                                                'You can have at most 26 verses with the same name' %
+                                                {'count': verse_tags.count(tag),
+                                                 'name': VerseType.translated_name(tag[0]),
+                                                 'number': tag[1:]}))
+                return False
         return True
 
     def _validate_tags(self, _tags):
