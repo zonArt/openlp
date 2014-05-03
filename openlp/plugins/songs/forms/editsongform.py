@@ -264,7 +264,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                 return False
         return True
 
-    def _validate_tags(self, _tags):
+    def _validate_tags(self, tags):
         """
         Validates a list of tags
         Deletes the first affiliated tag pair which is located side by side in the list
@@ -273,16 +273,17 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         or the function won't find any tag pairs side by side.
         If there is no misplaced tag, the length of the list will be zero on any recursive run.
 
+        :param tags: A list of tags
         :return: True if the function can't find any mismatched tags. Else False.
         """
-        if len(_tags) == 0:
+        if len(tags) == 0:
             return True
-        if len(_tags) % 2 != 0:
+        if len(tags) % 2 != 0:
             return False
-        for i in range(len(_tags)-1):
-            if _tags[i+1] == "{/" + _tags[i][1:]:
-                del _tags[i:i+2]
-                return self._validate_tags(_tags)
+        for i in range(len(tags)-1):
+            if tags[i+1] == "{/" + tags[i][1:]:
+                del tags[i:i+2]
+                return self._validate_tags(tags)
         return False
 
     def _process_lyrics(self):
