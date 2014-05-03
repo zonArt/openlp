@@ -124,7 +124,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug('config_updated')
         self.search_as_you_type = Settings().value(self.settings_section + '/search as type')
         self.update_service_on_edit = Settings().value(self.settings_section + '/update service on edit')
-        self.add_song_from_service = Settings().value(self.settings_section + '/add song from service',)
+        self.add_song_from_service = Settings().value(self.settings_section + '/add song from service')
+        self.display_songbook = Settings().value(self.settings_section + '/display songbook')
 
     def retranslateUi(self):
         self.search_text_label.setText('%s:' % UiStrings().Search)
@@ -506,7 +507,7 @@ class SongMediaItem(MediaManagerItem):
             item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Translation],
                                                create_separated_list(authors_translation)))
         item.raw_footer.append(song.copyright)
-        if Settings().value('songs/display songbook') and song.book:
+        if self.display_songbook and song.book:
             item.raw_footer.append("%s #%s" % (song.book.name, song.song_number))
         if Settings().value('core/ccli number'):
             item.raw_footer.append(translate('SongsPlugin.MediaItem',
