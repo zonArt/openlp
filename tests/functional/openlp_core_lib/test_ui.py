@@ -170,3 +170,30 @@ class TestUi(TestCase):
         self.assertEqual(combo, label.buddy())
         for text in [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]:
             self.assertTrue(combo.findText(text) >= 0)
+
+    def test_find_and_set_in_combo_box(self):
+        """
+        Test finding a string in a combo box and setting it as the selected item if present
+        """
+        # GIVEN: A ComboBox
+        combo = QtGui.QComboBox()
+        combo.addItems(['One', 'Two', 'Three'])
+        combo.setCurrentIndex(1)
+
+        # WHEN: We call the method with a non-existing value and set_missing=False
+        find_and_set_in_combo_box(combo, 'Four', set_missing=False)
+
+        # THEN: The index should not have changed
+        self.assertEqual(1, combo.currentIndex())
+
+        # WHEN: We call the method with a non-existing value
+        find_and_set_in_combo_box(combo, 'Four')
+
+        # THEN: The index should have been reset
+        self.assertEqual(0, combo.currentIndex())
+
+        # WHEN: We call the method with the default behavior
+        find_and_set_in_combo_box(combo, 'Three')
+
+        # THEN: The index should have changed
+        self.assertEqual(2, combo.currentIndex())
