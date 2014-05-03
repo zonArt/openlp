@@ -482,7 +482,7 @@ class TestLib(TestCase):
             # WHEN: we run the validate_thumb() function
 
             # THEN: we should have called a few functions, and the result should be True
-            #mocked_os.path.exists.assert_called_with(thumb_path)
+            # mocked_os.path.exists.assert_called_with(thumb_path)
 
     def validate_thumb_file_exists_and_older_test(self):
         """

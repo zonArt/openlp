@@ -78,7 +78,7 @@ class BibleUpgradeForm(OpenLPWizard):
         Set up the UI for the bible wizard.
         """
         super(BibleUpgradeForm, self).setupUi(image)
-        Registry().execute('openlp_stop_wizard', self.stop_import)
+        Registry().register_function('openlp_stop_wizard', self.stop_import)
 
     def stop_import(self):
         """
@@ -307,7 +307,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if self.currentPage() == self.progress_page:
             return True
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set default values for the wizard pages.
         """

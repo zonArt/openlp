@@ -38,7 +38,7 @@ import traceback
 
 from PyQt4 import QtCore
 
-log = logging.getLogger(__name__+'.__init__')
+log = logging.getLogger(__name__ + '.__init__')
 
 
 FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
@@ -76,6 +76,9 @@ def check_directory_exists(directory, do_not_log=False):
 def get_frozen_path(frozen_option, non_frozen_option):
     """
     Return a path based on the system status.
+
+    :param frozen_option:
+    :param non_frozen_option:
     """
     if hasattr(sys, 'frozen') and sys.frozen == 1:
         return frozen_option

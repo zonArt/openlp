@@ -552,10 +552,10 @@ class HTTPBible(BibleDB, RegistryProperties):
                 self.application.set_busy_cursor()
                 search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verse_list():
-                    ## We have found a book of the bible lets check to see
-                    ## if it was there. By reusing the returned book name
-                    ## we get a correct book. For example it is possible
-                    ## to request ac and get Acts back.
+                    # We have found a book of the bible lets check to see
+                    # if it was there. By reusing the returned book name
+                    # we get a correct book. For example it is possible
+                    # to request ac and get Acts back.
                     book_name = search_results.book
                     self.application.process_events()
                     # Check to see if book/chapter exists.

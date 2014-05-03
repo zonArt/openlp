@@ -161,7 +161,7 @@ class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.add_export_menu_Item(self.main_window.file_export_menu)
+                plugin.add_export_menu_item(self.main_window.file_export_menu)
 
     def hook_tools_menu(self):
         """

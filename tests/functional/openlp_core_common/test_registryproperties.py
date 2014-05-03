@@ -52,7 +52,7 @@ class TestRegistryProperties(TestCase, RegistryProperties):
         # GIVEN an Empty Registry
         # WHEN there is no Application
         # THEN the application should be none
-        self.assertEquals(self.application, None, 'The application value should be None')
+        self.assertEqual(self.application, None, 'The application value should be None')
 
     def application_test(self):
         """
@@ -63,4 +63,4 @@ class TestRegistryProperties(TestCase, RegistryProperties):
         # WHEN the application is registered
         Registry().register('application', application)
         # THEN the application should be none
-        self.assertEquals(self.application, application, 'The application value should match')
+        self.assertEqual(self.application, application, 'The application value should match')

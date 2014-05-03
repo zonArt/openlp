@@ -75,7 +75,7 @@ class ImageMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.on_new_prompt = translate('ImagePlugin.MediaItem', 'Select Image(s)')
         file_formats = get_images_filter()
-        self.on_new_file_masks = '%s;;%s (*.*) (*)' % (file_formats, UiStrings().AllFiles)
+        self.on_new_file_masks = '%s;;%s (*)' % (file_formats, UiStrings().AllFiles)
         self.add_group_action.setText(UiStrings().AddGroup)
         self.add_group_action.setToolTip(UiStrings().AddGroup)
         self.replace_action.setText(UiStrings().ReplaceBG)
@@ -550,6 +550,7 @@ class ImageMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanAppend)
+        service_item.add_capability(ItemCapabilities.CanEditTitle)
         # force a nonexistent theme
         service_item.theme = -1
         missing_items_file_names = []

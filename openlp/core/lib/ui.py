@@ -173,7 +173,7 @@ def create_button(parent, name, **kwargs):
             kwargs.setdefault('tooltip', translate('OpenLP.Ui', 'Move selection down one position.'))
         else:
             log.warn('The role "%s" is not defined in create_push_button().', role)
-    if kwargs.pop('class', '') == 'toolbutton':
+    if kwargs.pop('btn_class', '') == 'toolbutton':
         button = QtGui.QToolButton(parent)
     else:
         button = QtGui.QPushButton(parent)
