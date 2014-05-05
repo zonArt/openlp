@@ -74,6 +74,7 @@ class EasyWorshipSongImport(SongImport):
     """
     def __init__(self, manager, **kwargs):
         super(EasyWorshipSongImport, self).__init__(manager, **kwargs)
+        self.entry_error_log = ''
 
     def do_import(self):
         """
@@ -183,7 +184,12 @@ class EasyWorshipSongImport(SongImport):
             self.set_song_import_object(authors, inflated_content)
             if self.stop_import_flag:
                 break
-            if not self.finish():
+            if self.entry_error_log:
+                self.log_error(self.import_source,
+                               translate('SongsPlugin.EasyWorshipSongImport', '"%s" could not be imported. %s')
+                               % (self.title, self.entry_error_log))
+                self.entry_error_log = ''
+            elif not self.finish():
                 self.log_error(self.import_source)
             # Set file_pos for next entry
             file_pos += entry_length
@@ -305,7 +311,12 @@ class EasyWorshipSongImport(SongImport):
                 self.set_song_import_object(authors, words)
                 if self.stop_import_flag:
                     break
-                if not self.finish():
+                if self.entry_error_log:
+                    self.log_error(self.import_source,
+                                   translate('SongsPlugin.EasyWorshipSongImport', '"%s" could not be imported. %s')
+                                   % (self.title, self.entry_error_log))
+                    self.entry_error_log = ''
+                elif not self.finish():
                     self.log_error(self.import_source)
         db_file.close()
         self.memo_file.close()
@@ -333,16 +344,14 @@ class EasyWorshipSongImport(SongImport):
             try:
                 decoded_words = words.decode()
             except UnicodeDecodeError:
-                # The unicode chars in the rtf was not escaped in the expected manor, doing it manually.
-                newbytes = bytearray()
-                for b in words:
-                    if b > 127:
-                        newbytes += bytearray(b'\\\'') + bytearray(str(hex(b))[-2:].encode())
-                    else:
-                        newbytes.append(b)
-                decoded_words = newbytes.decode()
+                # The unicode chars in the rtf was not escaped in the expected manor
+                self.entry_error_log = translate('SongsPlugin.EasyWorshipSongImport',
+                                                 'Unexpected data formatting.')
+                return
             result = strip_rtf(decoded_words, self.encoding)
             if result is None:
+                self.entry_error_log = translate('SongsPlugin.EasyWorshipSongImport',
+                                                 'No song text found.')
                 return
             words, self.encoding = result
             verse_type = VerseType.tags[VerseType.Verse]
