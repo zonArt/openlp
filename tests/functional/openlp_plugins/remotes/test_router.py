@@ -92,7 +92,6 @@ class TestRouter(TestCase, TestMixin):
         Test the router control functionality
         """
         # GIVEN: A testing set of Routes
-        #router = HttpRouter()
         mocked_function = MagicMock()
         test_route = [
             (r'^/stage/api/poll$', {'function': mocked_function, 'secure': False}),
