@@ -107,6 +107,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.audio_list_widget.setAlternatingRowColors(True)
         self.find_verse_split = re.compile('---\[\]---\n', re.UNICODE)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
+        self.find_tags = re.compile(u'\{/?\w+\}', re.UNICODE)
 
     def _load_objects(self, cls, combo, cache):
         """
@@ -234,7 +235,56 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                 self.manager.save_object(book)
             else:
                 return False
+        # Validate tags (lp#1199639)
+        misplaced_tags = []
+        verse_tags = []
+        for i in range(self.verse_list_widget.rowCount()):
+            item = self.verse_list_widget.item(i, 0)
+            tags = self.find_tags.findall(item.text())
+            field = item.data(QtCore.Qt.UserRole)
+            verse_tags.append(field)
+            if not self._validate_tags(tags):
+                misplaced_tags.append('%s %s' % (VerseType.translated_name(field[0]), field[1:]))
+        if misplaced_tags:
+            critical_error_message_box(
+                message=translate('SongsPlugin.EditSongForm',
+                                  'There are misplaced formatting tags in the following verses:\n\n%s\n\n'
+                                  'Please correct these tags before continuing.' % ', '.join(misplaced_tags)))
+            return False
+        for tag in verse_tags:
+            if verse_tags.count(tag) > 26:
+                # lp#1310523: OpenLyrics allows only a-z variants of one verse:
+                # http://openlyrics.info/dataformat.html#verse-name
+                critical_error_message_box(message=translate(
+                    'SongsPlugin.EditSongForm', 'You have %(count)s verses named %(name)s %(number)s. '
+                                                'You can have at most 26 verses with the same name' %
+                                                {'count': verse_tags.count(tag),
+                                                 'name': VerseType.translated_name(tag[0]),
+                                                 'number': tag[1:]}))
+                return False
         return True
+
+    def _validate_tags(self, tags):
+        """
+        Validates a list of tags
+        Deletes the first affiliated tag pair which is located side by side in the list
+        and call itself recursively with the shortened tag list.
+        If there is any misplaced tag in the list, either the length of the tag list is not even,
+        or the function won't find any tag pairs side by side.
+        If there is no misplaced tag, the length of the list will be zero on any recursive run.
+
+        :param tags: A list of tags
+        :return: True if the function can't find any mismatched tags. Else False.
+        """
+        if len(tags) == 0:
+            return True
+        if len(tags) % 2 != 0:
+            return False
+        for i in range(len(tags)-1):
+            if tags[i+1] == "{/" + tags[i][1:]:
+                del tags[i:i+2]
+                return self._validate_tags(tags)
+        return False
 
     def _process_lyrics(self):
         """

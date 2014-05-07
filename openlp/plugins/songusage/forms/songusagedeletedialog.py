@@ -30,6 +30,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box
 
 
@@ -44,6 +45,7 @@ class Ui_SongUsageDeleteDialog(object):
         :param song_usage_delete_dialog:
         """
         song_usage_delete_dialog.setObjectName('song_usage_delete_dialog')
+        song_usage_delete_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         song_usage_delete_dialog.resize(291, 243)
         self.vertical_layout = QtGui.QVBoxLayout(song_usage_delete_dialog)
         self.vertical_layout.setSpacing(8)

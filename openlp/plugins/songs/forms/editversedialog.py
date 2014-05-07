@@ -37,6 +37,7 @@ from openlp.plugins.songs.lib import VerseType
 class Ui_EditVerseDialog(object):
     def setupUi(self, edit_verse_dialog):
         edit_verse_dialog.setObjectName('edit_verse_dialog')
+        edit_verse_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         edit_verse_dialog.resize(400, 400)
         edit_verse_dialog.setModal(True)
         self.dialog_layout = QtGui.QVBoxLayout(edit_verse_dialog)
