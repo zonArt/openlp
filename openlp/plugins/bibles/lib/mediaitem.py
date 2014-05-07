@@ -60,7 +60,6 @@ class BibleMediaItem(MediaManagerItem):
     log.info('Bible Media Item loaded')
 
     def __init__(self, parent, plugin):
-        self.icon_path = 'songs/song'
         self.lock_icon = build_icon(':/bibles/bibles_search_lock.png')
         self.unlock_icon = build_icon(':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin)
@@ -172,6 +171,7 @@ class BibleMediaItem(MediaManagerItem):
         self.page_layout.addWidget(tab)
         tab.setVisible(False)
         lock_button.toggled.connect(self.on_lock_button_toggled)
+        second_combo_box.currentIndexChanged.connect(self.on_second_bible_combobox_index_changed)
         setattr(self, prefix + 'VersionLabel', version_label)
         setattr(self, prefix + 'VersionComboBox', version_combo_box)
         setattr(self, prefix + 'SecondLabel', second_label)
@@ -263,11 +263,15 @@ class BibleMediaItem(MediaManagerItem):
     def config_update(self):
         log.debug('config_update')
         if Settings().value(self.settings_section + '/second bibles'):
+            self.quickSecondLabel.setVisible(True)
+            self.quickSecondComboBox.setVisible(True)
             self.advancedSecondLabel.setVisible(True)
             self.advancedSecondComboBox.setVisible(True)
             self.quickSecondLabel.setVisible(True)
             self.quickSecondComboBox.setVisible(True)
         else:
+            self.quickSecondLabel.setVisible(False)
+            self.quickSecondComboBox.setVisible(False)
             self.advancedSecondLabel.setVisible(False)
             self.advancedSecondComboBox.setVisible(False)
             self.quickSecondLabel.setVisible(False)
@@ -458,6 +462,17 @@ class BibleMediaItem(MediaManagerItem):
                         books.append(data['name'] + ' ')
                 books.sort(key=get_locale_key)
         set_case_insensitive_completer(books, self.quick_search_edit)
+
+    def on_second_bible_combobox_index_changed(self, selection):
+        """
+        Activate the style combobox only when no second bible is selected
+        """
+        if selection == 0:
+            self.quickStyleComboBox.setEnabled(True)
+            self.advancedStyleComboBox.setEnabled(True)
+        else:
+            self.quickStyleComboBox.setEnabled(False)
+            self.advancedStyleComboBox.setEnabled(False)
 
     def on_import_click(self):
         if not hasattr(self, 'import_wizard'):

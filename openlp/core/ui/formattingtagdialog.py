@@ -45,6 +45,7 @@ class Ui_FormattingTagDialog(object):
         Set up the UI
         """
         formatting_tag_dialog.setObjectName('formatting_tag_dialog')
+        formatting_tag_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         formatting_tag_dialog.resize(725, 548)
         self.list_data_grid_layout = QtGui.QVBoxLayout(formatting_tag_dialog)
         self.list_data_grid_layout.setMargin(8)
