@@ -42,7 +42,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, UiStri
 from openlp.core.lib import FileDialog, PluginStatus, MediaType, create_separated_list
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.lib import VerseType, clean_song
-from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorSong, AuthorType, Topic, MediaFile
+from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorType, Topic, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
 from openlp.plugins.songs.forms.editsongdialog import Ui_EditSongDialog
@@ -916,10 +916,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.song.authors_songs = []
         for row in range(self.authors_list_view.count()):
             item = self.authors_list_view.item(row)
-            author_song = AuthorSong()
-            author_song.author_id = item.data(QtCore.Qt.UserRole)[0]
-            author_song.author_type = item.data(QtCore.Qt.UserRole)[1]
-            self.song.authors_songs.append(author_song)
+            self.song.add_author(self.manager.get_object(Author, item.data(QtCore.Qt.UserRole)[0]),
+                                 item.data(QtCore.Qt.UserRole)[1])
         self.song.topics = []
         for row in range(self.topics_list_view.count()):
             item = self.topics_list_view.item(row)
