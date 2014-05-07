@@ -524,15 +524,15 @@ class SongMediaItem(MediaManagerItem):
         add_song = True
         if search_results:
             for song in search_results:
-                author_list = item.data_string['authors']
+                author_list = item.data_string['authors'].split(', ')
                 same_authors = True
                 for author in song.authors:
                     if author.display_name in author_list:
-                        author_list = author_list.replace(author.display_name, '', 1)
+                        author_list = author_list.remove(author.display_name)
                     else:
                         same_authors = False
                         break
-                if same_authors and author_list.strip(', ') == '':
+                if same_authors and not author_list:
                     add_song = False
                     edit_id = song.id
                     break
