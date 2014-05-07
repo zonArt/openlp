@@ -151,6 +151,8 @@ class SongShowPlusImport(SongImport):
                     match = re.search(r'\d+', self.decode(data))
                     if match:
                         self.ccli_number = int(match.group())
+                    else:
+                        log.warn("Can't parse CCLI Number from string: %s" % self.decode(data))
                 elif block_key == VERSE:
                     self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
                 elif block_key == CHORUS:
