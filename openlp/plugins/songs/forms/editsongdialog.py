@@ -43,8 +43,8 @@ class Ui_EditSongDialog(object):
     """
     def setupUi(self, edit_song_dialog):
         edit_song_dialog.setObjectName('edit_song_dialog')
+        edit_song_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         edit_song_dialog.resize(650, 400)
-        edit_song_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
         edit_song_dialog.setModal(True)
         self.dialog_layout = QtGui.QVBoxLayout(edit_song_dialog)
         self.dialog_layout.setSpacing(8)

@@ -32,3 +32,4 @@ tests.kdev4
 *.orig
 __pycache__
 *.dll
+.directory

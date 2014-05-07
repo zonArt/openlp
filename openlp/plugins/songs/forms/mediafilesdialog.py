@@ -42,10 +42,10 @@ class Ui_MediaFilesDialog(object):
         Set up the user interface.
         """
         media_files_dialog.setObjectName('media_files_dialog')
+        media_files_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         media_files_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
         media_files_dialog.resize(400, 300)
         media_files_dialog.setModal(True)
-        media_files_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
         self.files_vertical_layout = QtGui.QVBoxLayout(media_files_dialog)
         self.files_vertical_layout.setSpacing(8)
         self.files_vertical_layout.setMargin(8)

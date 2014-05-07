@@ -68,7 +68,7 @@ class SundayPlusImport(SongImport):
         for filename in self.import_source:
             if self.stop_import_flag:
                 return
-            song_file = open(filename)
+            song_file = open(filename, 'rb')
             self.do_import_file(song_file)
             song_file.close()
 
@@ -103,7 +103,7 @@ class SundayPlusImport(SongImport):
             # Now we are looking for the name.
             if data[i:i + 1] == '#':
                 name_end = data.find(':', i + 1)
-                name = data[i + 1:name_end]
+                name = data[i + 1:name_end].upper()
                 i = name_end + 1
                 while data[i:i + 1] == ' ':
                     i += 1
@@ -129,13 +129,13 @@ class SundayPlusImport(SongImport):
                     value = data[i:end]
                 # If we are in the main group.
                 if not cell:
-                    if name == 'title':
+                    if name == 'TITLE':
                         self.title = self.decode(self.unescape(value))
-                    elif name == 'Author':
+                    elif name == 'AUTHOR':
                         author = self.decode(self.unescape(value))
                         if len(author):
                             self.add_author(author)
-                    elif name == 'Copyright':
+                    elif name == 'COPYRIGHT':
                         self.copyright = self.decode(self.unescape(value))
                     elif name[0:4] == 'CELL':
                         self.parse(value, cell=name[4:])
@@ -147,12 +147,12 @@ class SundayPlusImport(SongImport):
                             verse_type = VerseType.tags[VerseType.from_loose_input(value[0])]
                             if len(value) >= 2 and value[-1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
                                 verse_type = "%s%s" % (verse_type, value[-1])
-                    elif name == 'Hotkey':
-                        # Hotkey always appears after MARKER_NAME, so it
+                    elif name == 'HOTKEY':
+                        # HOTKEY always appears after MARKER_NAME, so it
                         # effectively overrides MARKER_NAME, if present.
                         if len(value) and value in list(HOTKEY_TO_VERSE_TYPE.keys()):
                             verse_type = HOTKEY_TO_VERSE_TYPE[value]
-                    if name == 'rtf':
+                    if name == 'RTF':
                         value = self.unescape(value)
                         result = strip_rtf(value, self.encoding)
                         if result is None:

@@ -56,6 +56,7 @@ class Ui_PrintServiceDialog(object):
         Set up the UI
         """
         print_service_dialog.setObjectName('print_service_dialog')
+        print_service_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         print_service_dialog.resize(664, 594)
         self.main_layout = QtGui.QVBoxLayout(print_service_dialog)
         self.main_layout.setSpacing(0)
