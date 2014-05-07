@@ -203,6 +203,6 @@ class SongSelectImport(object):
                 author = Author.populate(first_name=author_name.rsplit(' ', 1)[0],
                                          last_name=author_name.rsplit(' ', 1)[1],
                                          display_name=author_name)
-            db_song.authors.add_author(author)
+            db_song.add_author(author)
         self.db_manager.save_object(db_song)
         return db_song

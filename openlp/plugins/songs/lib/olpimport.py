@@ -187,7 +187,7 @@ class OpenLPSongImport(SongImport):
                         first_name=author.first_name,
                         last_name=author.last_name,
                         display_name=author.display_name)
-                new_song.authors.add_author(existing_author)
+                new_song.add_author(existing_author)
             if song.book:
                 existing_song_book = self.manager.get_object_filtered(Book, Book.name == song.book.name)
                 if existing_song_book is None:
