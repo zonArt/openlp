@@ -114,32 +114,32 @@ class Song(BaseModel):
         """
         self.sort_key = get_natural_key(self.title)
 
-    def add_author(self, author, author_type=None, ignore_type=False):
+    def add_author(self, author, author_type=None):
         """
         Add an author to the song if it not yet exists
 
-        :return: True if the author has been added successfully. False if it was already there.
+        :param author: Author object
+        :param author_type: AuthorType constant or None
         """
         for author_song in self.authors_songs:
-            if author_song.author == author and (ignore_type or author_song.author_type == author_type):
-                return False
+            if author_song.author == author and author_song.author_type == author_type:
+                return
         new_author_song = AuthorSong()
         new_author_song.author = author
         new_author_song.author_type = author_type
         self.authors_songs.append(new_author_song)
-        return True
 
-    def remove_author(self, author, author_type=None, ignore_type=False):
+    def remove_author(self, author, author_type=None):
         """
         Remove an existing author from the song
 
-        :return: True if the author has been removed successfully. False if it could not be found.
+        :param author: Author object
+        :param author_type: AuthorType constant or None
         """
         for author_song in self.authors_songs:
-            if author_song.author == author and (ignore_type or author_song.author_type == author_type):
+            if author_song.author == author and author_song.author_type == author_type:
                 self.authors_songs.remove(author_song)
-                return True
-        return False
+                return
 
 
 class Topic(BaseModel):
