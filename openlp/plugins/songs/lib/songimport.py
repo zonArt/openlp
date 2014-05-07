@@ -325,7 +325,7 @@ class SongImport(QtCore.QObject):
                 author = Author.populate(display_name=author_text,
                                          last_name=author_text.split(' ')[-1],
                                          first_name=' '.join(author_text.split(' ')[:-1]))
-            song.authors.append(author)
+            song.authors.add_author(author)
         if self.song_book_name:
             song_book = self.manager.get_object_filtered(Book, Book.name == self.song_book_name)
             if song_book is None:

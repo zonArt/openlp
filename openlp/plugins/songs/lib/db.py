@@ -114,6 +114,33 @@ class Song(BaseModel):
         """
         self.sort_key = get_natural_key(self.title)
 
+    def add_author(self, author, author_type=None, ignore_type=False):
+        """
+        Add an author to the song if it not yet exists
+
+        :return: True if the author has been added successfully. False if it was already there.
+        """
+        for author_song in self.authors_songs:
+            if author_song.author == author and (ignore_type or author_song.author_type == author_type):
+                return False
+        new_author_song = AuthorSong()
+        new_author_song.author = author
+        new_author_song.author_type = author_type
+        self.authors_songs.append(new_author_song)
+        return True
+
+    def remove_author(self, author, author_type=None, ignore_type=False):
+        """
+        Remove an existing author from the song
+
+        :return: True if the author has been removed successfully. False if it could not be found.
+        """
+        for author_song in self.authors_songs:
+            if author_song.author == author and (ignore_type or author_song.author_type == author_type):
+                self.authors_songs.remove(author_song)
+                return True
+        return False
+
 
 class Topic(BaseModel):
     """
@@ -283,9 +310,10 @@ def init_schema(url):
     mapper(Book, song_books_table)
     mapper(MediaFile, media_files_table)
     mapper(Song, songs_table, properties={
-        # Use the authors_songs relation when you need access to the 'author_type' attribute.
+        # Use the authors_songs relation when you need access to the 'author_type' attribute
+        # or when creating new relations
         'authors_songs': relation(AuthorSong, cascade="all, delete-orphan"),
-        'authors': relation(Author, secondary=authors_songs_table),
+        'authors': relation(Author, secondary=authors_songs_table, viewonly=True),
         'book': relation(Book, backref='songs'),
         'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
         'topics': relation(Topic, backref='songs', secondary=songs_topics_table)
