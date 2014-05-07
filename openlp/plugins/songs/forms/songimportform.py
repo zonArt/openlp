@@ -231,11 +231,11 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
         """
         Opens a QFileDialog and writes the filenames to the given listbox.
 
-        :param title: The title of the dialog (unicode).
+        :param title: The title of the dialog (str).
         :param listbox: A listbox (QListWidget).
-        :param filters: The file extension filters. It should contain the file descriptions
-            as well as the file extensions. For example::
-                u'SongBeamer Files (*.sng)'
+        :param filters: The file extension filters. It should contain the file descriptions as well as the file
+            extensions. For example::
+                'SongBeamer Files (*.sng)'
         """
         if filters:
             filters += ';;'
@@ -304,7 +304,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
         """
         self.source_page.emit(QtCore.SIGNAL('completeChanged()'))
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set default form values for the song import wizard.
         """

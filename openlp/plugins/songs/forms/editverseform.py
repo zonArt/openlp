@@ -122,8 +122,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         text = text[:position + 4]
         match = VERSE_REGEX.match(text)
         if match:
-            # TODO: Not used, remove?
-            # verse_tag = match.group(1)
             try:
                 verse_num = int(match.group(2)) + 1
             except ValueError:

@@ -30,12 +30,14 @@
 from PyQt4 import QtGui
 
 from openlp.core.common import translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box
 
 
 class Ui_LanguageDialog(object):
     def setupUi(self, language_dialog):
         language_dialog.setObjectName('language_dialog')
+        language_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         language_dialog.resize(400, 165)
         self.language_layout = QtGui.QVBoxLayout(language_dialog)
         self.language_layout.setSpacing(8)

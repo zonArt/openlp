@@ -319,8 +319,6 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
     def on_search_finished(self):
         """
         Slot which is called when the search is completed.
-
-        :param songs:
         """
         self.application.process_events()
         self.search_progress_bar.setVisible(False)

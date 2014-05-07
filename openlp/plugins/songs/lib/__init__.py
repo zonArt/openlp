@@ -206,14 +206,14 @@ class VerseType(object):
         Return the VerseType for a given tag
 
         :param verse_tag: The string to return a VerseType for
-        :param default: Default return value if no matching tag is found
+        :param default: Default return value if no matching tag is found (a valid VerseType or None)
         :return: A VerseType of the tag
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.names) > default:
+        if default in range(0, len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
@@ -231,7 +231,7 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.translated_tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.names) > default:
+        if default in range(0, len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
@@ -390,7 +390,7 @@ def clean_song(manager, song):
     verses = SongXML().get_verses(song.lyrics)
     song.search_lyrics = ' '.join([clean_string(verse[1]) for verse in verses])
     # The song does not have any author, add one.
-    if not song.authors:
+    if not song.authors and not song.authors_songs:  # Need to check both relations
         name = SongStrings.AuthorUnknown
         author = manager.get_object_filtered(Author, Author.display_name == name)
         if author is None:
@@ -434,7 +434,7 @@ def strip_rtf(text, default_encoding=None):
     # Current font is the font tag we last met.
     font = ''
     # Character encoding is defined inside fonttable.
-    # font_table could contain eg u'0': u'cp1252'
+    # font_table could contain eg '0': u'cp1252'
     font_table = {'': ''}
     # Stack of things to keep track of when entering/leaving groups.
     stack = []

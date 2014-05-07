@@ -44,7 +44,7 @@ class Ui_AboutDialog(object):
         Set up the UI for the dialog.
         """
         about_dialog.setObjectName('about_dialog')
-        about_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
+        about_dialog.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
         self.about_dialog_layout = QtGui.QVBoxLayout(about_dialog)
         self.about_dialog_layout.setObjectName('about_dialog_layout')
         self.logo_label = QtGui.QLabel(about_dialog)

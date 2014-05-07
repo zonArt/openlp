@@ -113,7 +113,7 @@ def get_application_version():
     """
     Returns the application version of the running instance of OpenLP::
 
-        {u'full': u'1.9.4-bzr1249', u'version': u'1.9.4', u'build': u'bzr1249'}
+        {'full': '1.9.4-bzr1249', 'version': '1.9.4', 'build': 'bzr1249'}
     """
     global APPLICATION_VERSION
     if APPLICATION_VERSION:

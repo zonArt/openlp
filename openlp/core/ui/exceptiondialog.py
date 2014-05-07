@@ -30,9 +30,9 @@
 The GUI widgets of the exception dialog.
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button, create_button_box
 
 
@@ -45,6 +45,7 @@ class Ui_ExceptionDialog(object):
         Set up the UI.
         """
         exception_dialog.setObjectName('exception_dialog')
+        exception_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         self.exception_layout = QtGui.QVBoxLayout(exception_dialog)
         self.exception_layout.setObjectName('exception_layout')
         self.message_layout = QtGui.QHBoxLayout()

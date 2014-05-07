@@ -118,6 +118,7 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         """
         Set up the wizard UI.
         """
+        self.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         self.setModal(True)
         self.setWizardStyle(QtGui.QWizard.ModernStyle)
         self.setOptions(QtGui.QWizard.IndependentPages |
@@ -197,7 +198,7 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         """
         Run the wizard.
         """
-        self.setDefaults()
+        self.set_defaults()
         return QtGui.QWizard.exec_(self)
 
     def reject(self):
@@ -279,7 +280,7 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         :param filters: The file extension filters. It should contain the file description
             as well as the file extension. For example::
 
-                u'OpenLP 2.0 Databases (*.sqlite)'
+                'OpenLP 2.0 Databases (*.sqlite)'
         """
         if filters:
             filters += ';;'

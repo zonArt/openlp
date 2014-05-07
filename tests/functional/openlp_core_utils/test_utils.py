@@ -250,7 +250,7 @@ class TestUtils(TestCase):
 
             # THEN: The user agent is a Linux (or ChromeOS) user agent
             result = 'Linux' in user_agent or 'CrOS' in user_agent
-            self.assertTrue(result, u'The user agent should be a valid Linux user agent')
+            self.assertTrue(result, 'The user agent should be a valid Linux user agent')
 
     def get_user_agent_windows_test(self):
         """
@@ -265,7 +265,7 @@ class TestUtils(TestCase):
             user_agent = _get_user_agent()
 
             # THEN: The user agent is a Linux (or ChromeOS) user agent
-            self.assertIn('Windows', user_agent, u'The user agent should be a valid Windows user agent')
+            self.assertIn('Windows', user_agent, 'The user agent should be a valid Windows user agent')
 
     def get_user_agent_macos_test(self):
         """
@@ -280,7 +280,7 @@ class TestUtils(TestCase):
             user_agent = _get_user_agent()
 
             # THEN: The user agent is a Linux (or ChromeOS) user agent
-            self.assertIn('Mac OS X', user_agent, u'The user agent should be a valid OS X user agent')
+            self.assertIn('Mac OS X', user_agent, 'The user agent should be a valid OS X user agent')
 
     def get_user_agent_default_test(self):
         """
@@ -295,7 +295,7 @@ class TestUtils(TestCase):
             user_agent = _get_user_agent()
 
             # THEN: The user agent is a Linux (or ChromeOS) user agent
-            self.assertIn('NetBSD', user_agent, u'The user agent should be the default user agent')
+            self.assertIn('NetBSD', user_agent, 'The user agent should be the default user agent')
 
     def get_web_page_no_url_test(self):
         """

@@ -314,7 +314,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
     def get_list(self, type=MediaType.Audio):
         media = Settings().value(self.settings_section + '/media files')
         media.sort(key=lambda filename: get_locale_key(os.path.split(str(filename))[1]))
-        extension = []
         if type == MediaType.Audio:
             extension = self.media_controller.audio_extensions_list
         else:

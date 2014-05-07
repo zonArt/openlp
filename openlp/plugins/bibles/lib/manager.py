@@ -54,19 +54,19 @@ class BibleFormat(object):
     WebDownload = 3
 
     @staticmethod
-    def get_class(format):
+    def get_class(bible_format):
         """
         Return the appropriate implementation class.
 
-        :param format: The Bible format.
+        :param bible_format: The Bible format.
         """
-        if format == BibleFormat.OSIS:
+        if bible_format == BibleFormat.OSIS:
             return OSISBible
-        elif format == BibleFormat.CSV:
+        elif bible_format == BibleFormat.CSV:
             return CSVBible
-        elif format == BibleFormat.OpenSong:
+        elif bible_format == BibleFormat.OpenSong:
             return OpenSongBible
-        elif format == BibleFormat.WebDownload:
+        elif bible_format == BibleFormat.WebDownload:
             return HTTPBible
         else:
             return None
