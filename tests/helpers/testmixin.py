@@ -62,3 +62,9 @@ class TestMixin(object):
         """
         os.close(self.fd)
         os.unlink(Settings().fileName())
+
+
+
+
+
+
