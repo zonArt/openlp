@@ -30,17 +30,14 @@
 This module contains tests for the db submodule of the Songs plugin.
 """
 from unittest import TestCase
-from tests.functional import patch, MagicMock
 
 from openlp.plugins.songs.lib.db import Song, Author, AuthorType
 
 
 class TestDB(TestCase):
     """
-    Test the functions in the :mod:`lib` module.
+    Test the functions in the :mod:`db` module.
     """
-    def setUp(self):
-        pass
 
     def test_add_author(self):
         """
@@ -114,4 +111,4 @@ class TestDB(TestCase):
 
         # THEN: It should have been removed and the other author should still be there
         self.assertEqual(1, len(song.authors_songs))
-        self.assertEqual(None ,song.authors_songs[0].author_type)
+        self.assertEqual(None, song.authors_songs[0].author_type)
