@@ -128,7 +128,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 4321'],
                          'The array should be returned correctly with a song, an author, copyright and amended ccli')
 
-        def build_song_footer_base_songbook_test(self):
+    def build_song_footer_base_songbook_test(self):
         """
         Test build songs footer with basic song and a songbook
         """
