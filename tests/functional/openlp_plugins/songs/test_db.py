@@ -80,7 +80,7 @@ class TestDB(TestCase):
         self.assertEqual(1, len(song.authors_songs))
         self.assertEqual("Max", song.authors_songs[0].author.first_name)
         self.assertEqual("Mustermann", song.authors_songs[0].author.last_name)
-        self.assertEqual(AuthorType.Words ,song.authors_songs[0].author_type)
+        self.assertEqual(AuthorType.Words, song.authors_songs[0].author_type)
 
     def test_remove_author(self):
         """
@@ -90,8 +90,6 @@ class TestDB(TestCase):
         song = Song()
         song.authors_songs = []
         author = Author()
-        author.first_name = "Max"
-        author.last_name = "Mustermann"
         song.add_author(author)
 
         # WHEN: We remove the author
@@ -108,8 +106,6 @@ class TestDB(TestCase):
         song = Song()
         song.authors_songs = []
         author = Author()
-        author.first_name = "Max"
-        author.last_name = "Mustermann"
         song.add_author(author)
         song.add_author(author, AuthorType.Translation)
 
