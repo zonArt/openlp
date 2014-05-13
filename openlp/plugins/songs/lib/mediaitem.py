@@ -524,15 +524,7 @@ class SongMediaItem(MediaManagerItem):
         add_song = True
         if search_results:
             for song in search_results:
-                author_list = item.data_string['authors'].split(', ')
-                same_authors = True
-                for author in song.authors:
-                    if author.display_name in author_list:
-                        author_list = author_list.remove(author.display_name)
-                    else:
-                        same_authors = False
-                        break
-                if same_authors and not author_list:
+                if self._authors_match(song, item.data_string['authors']):
                     add_song = False
                     edit_id = song.id
                     break
@@ -557,6 +549,24 @@ class SongMediaItem(MediaManagerItem):
         item.edit_id = edit_id
         self.generate_footer(item, song)
         return item
+
+    def _authors_match(self, song, authors):
+        """
+        Checks whether authors from a song in the database match the authors of the song to be imported.
+
+        :param song: A list of authors from the song in the database
+        :param authors: A string with authors from the song to be imported
+        :return: True when Authors do match, else false.
+        """
+        author_list = authors.split(', ')
+        for author in song.authors:
+            if author.display_name in author_list:
+                author_list = author_list.remove(author.display_name)
+            else:
+                return False
+        # List must be empty at the end
+        return not author_list
+
 
     def search(self, string, show_error):
         """
