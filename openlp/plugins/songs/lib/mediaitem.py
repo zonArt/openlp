@@ -556,17 +556,16 @@ class SongMediaItem(MediaManagerItem):
 
         :param song: A list of authors from the song in the database
         :param authors: A string with authors from the song to be imported
-        :return: True when Authors do match, else false.
+        :return: True when Authors do match, else False.
         """
         author_list = authors.split(', ')
         for author in song.authors:
             if author.display_name in author_list:
-                author_list = author_list.remove(author.display_name)
+                author_list.remove(author.display_name)
             else:
                 return False
         # List must be empty at the end
         return not author_list
-
 
     def search(self, string, show_error):
         """
