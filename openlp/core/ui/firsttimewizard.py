@@ -34,6 +34,7 @@ from PyQt4 import QtCore, QtGui
 import sys
 
 from openlp.core.common import translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import add_welcome_page
 
 
@@ -60,6 +61,7 @@ class Ui_FirstTimeWizard(object):
         Set up the UI.
         """
         first_time_wizard.setObjectName('first_time_wizard')
+        first_time_wizard.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         first_time_wizard.resize(550, 386)
         first_time_wizard.setModal(True)
         first_time_wizard.setWizardStyle(QtGui.QWizard.ModernStyle)

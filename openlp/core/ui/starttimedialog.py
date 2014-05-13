@@ -32,6 +32,7 @@ The UI widgets for the time dialog
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import UiStrings, translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box
 
 
@@ -44,6 +45,7 @@ class Ui_StartTimeDialog(object):
         Set up the UI
         """
         StartTimeDialog.setObjectName('StartTimeDialog')
+        StartTimeDialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         StartTimeDialog.resize(350, 10)
         self.dialog_layout = QtGui.QGridLayout(StartTimeDialog)
         self.dialog_layout.setObjectName('dialog_layout')
