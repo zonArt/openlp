@@ -173,12 +173,16 @@ class TestMediaItem(TestCase, TestMixin):
         author3.display_name = "Max Mustermann"
         song.authors.append(author3)
         authors_str = "Hans Wurst, Max Mustermann, Max Mustermann"
-        authors_str_wrong = "Hans Wurst, Max Mustermann"
 
         # WHEN: Checking for matching
-        correct_result = self.media_item._authors_match(song, authors_str)
-        wrong_result = self.media_item._authors_match(song, authors_str_wrong)
+        result = self.media_item._authors_match(song, authors_str)
 
         # THEN: They should match
-        self.assertTrue(correct_result)
-        self.assertFalse(wrong_result)
+        self.assertTrue(result, "Authors should match")
+
+        # WHEN: An author is missing in the string
+        authors_str = "Hans Wurst, Max Mustermann"
+        result = self.media_item._authors_match(song, authors_str)
+
+        # THEN: They should not match
+        self.assertFalse(result, "Authors should not match")
