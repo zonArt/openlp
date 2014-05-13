@@ -1,8 +1,6 @@
 """
 This module contains tests for the lib submodule of the Songs plugin.
 """
-import os
-from tempfile import mkstemp
 from unittest import TestCase
 
 from PyQt4 import QtCore, QtGui
@@ -29,6 +27,7 @@ class TestMediaItem(TestCase, TestMixin):
         with patch('openlp.core.lib.mediamanageritem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
             self.media_item = SongMediaItem(None, MagicMock())
+            self.media_item.display_songbook = False
         self.get_application()
         self.build_settings()
         QtCore.QLocale.setDefault(QtCore.QLocale('en_GB'))
@@ -128,6 +127,32 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: I would get an amended footer string
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 4321'],
                          'The array should be returned correctly with a song, an author, copyright and amended ccli')
+
+        def build_song_footer_base_songbook_test(self):
+        """
+        Test build songs footer with basic song and a songbook
+        """
+        # GIVEN: A Song and a Service Item
+        mock_song = MagicMock()
+        mock_song.title = 'My Song'
+        mock_song.copyright = 'My copyright'
+        mock_song.book = MagicMock()
+        mock_song.book.name = "My songbook"
+        mock_song.song_number = 12
+        service_item = ServiceItem(None)
+
+        # WHEN: I generate the Footer with default settings
+        self.media_item.generate_footer(service_item, mock_song)
+
+        # THEN: The songbook should not be in the footer
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright'])
+
+        # WHEN: I activate the "display songbook" option
+        self.media_item.display_songbook = True
+        self.media_item.generate_footer(service_item, mock_song)
+
+        # THEN: The songbook should be in the footer
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12'])
 
     def match_authors_test(self):
         """

@@ -353,7 +353,7 @@ class ImageMediaItem(MediaManagerItem):
                     icon = build_icon(thumb)
                 else:
                     icon = create_thumb(imageFile.filename, thumb)
-            item_name = QtGui.QTreeWidgetItem(filename)
+            item_name = QtGui.QTreeWidgetItem([filename])
             item_name.setText(0, filename)
             item_name.setIcon(0, icon)
             item_name.setToolTip(0, imageFile.filename)

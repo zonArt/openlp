@@ -31,11 +31,11 @@ Package to test the openlp.core.ui.firsttimeform package.
 """
 from unittest import TestCase
 
-from tests.functional import MagicMock
-
-from tests.helpers.testmixin import TestMixin
 from openlp.core.common import Registry
 from openlp.core.ui.firsttimeform import FirstTimeForm
+
+from tests.functional import MagicMock
+from tests.helpers.testmixin import TestMixin
 
 
 class TestFirstTimeForm(TestCase, TestMixin):
