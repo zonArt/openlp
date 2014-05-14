@@ -70,8 +70,10 @@ class ZefaniaBible(BibleDB):
                 return False
             zefania_bible_tree = etree.parse(import_file)
             num_books = int(zefania_bible_tree.xpath("count(//BIBLEBOOK)"))
-            # Strip tags we don't use
+            # Strip tags we don't use - keep content
             etree.strip_tags(zefania_bible_tree, ('STYLE', 'GRAM', 'NOTE', 'SUP', 'XREF'))
+            # Strip tags we don't use - remove content
+            etree.strip_elements(zefania_bible_tree, ('PROLOG', 'REMARK', 'CAPTION', 'MEDIA'), with_tail=False)
             xmlbible = zefania_bible_tree.getroot()
             for BIBLEBOOK in xmlbible:
                 book_ref_id = self.get_book_ref_id_by_name(str(BIBLEBOOK.get('bname')), num_books)
