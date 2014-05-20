@@ -97,6 +97,7 @@ class ZefaniaBible(BibleDB):
                 self.session.commit()
             self.application.process_events()
         except Exception as e:
+            print(str(e))
             critical_error_message_box(
                 message=translate('BiblesPlugin.ZefaniaImport',
                                   'Incorrect Bible file type supplied. Zefania Bibles may be '

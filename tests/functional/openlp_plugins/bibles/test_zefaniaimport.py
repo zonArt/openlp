@@ -70,11 +70,20 @@ class TestZefaniaImport(TestCase):
     """
 
     def setUp(self):
-        self.construtor_patcher = patch('openlp.plugins.bibles.lib.zefania.BibleDB')
+        self.construtor_patcher = patch('openlp.plugins.bibles.lib.db.Registry')
         self.construtor_patcher.start()
+        self.get_lang_patcher = patch('openlp.plugins.bibles.lib.db.Manager')
+        self.get_lang_patcher.start()
+        self.brdb = patch('openlp.plugins.bibles.lib.zefania.BiblesResourcesDB')
+        self.brdb.start()
+        self.qt_core = patch('openlp.plugins.bibles.lib.db.QtCore')
+        self.qt_core.start()
 
     def tearDown(self):
         self.construtor_patcher.stop()
+        self.get_lang_patcher.stop()
+        self.brdb.stop()
+        self.qt_core.stop()
 
     def create_importer_test(self):
         """
@@ -86,7 +95,7 @@ class TestZefaniaImport(TestCase):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
-            importer = ZefaniaBible(mocked_manager, filename='')
+            importer = ZefaniaBible(mocked_manager, path='.', name='.', filename='')
 
             # THEN: The importer should be an instance of SongImport
             self.assertIsInstance(importer, BibleDB)
@@ -96,21 +105,27 @@ class TestZefaniaImport(TestCase):
         Test the actual import of real song files
         """
         # GIVEN: Test files with a mocked out "manager" and a mocked out "import_wizard"
-        #with patch('openlp.plugins.bibles.lib.zefania.BibleDB'):
+        #with patch('openlp.plugins.bibles.lib.zefania.BiblesResourcesDB') as brdb:
         if True:
             for bible_file in ZEFANIA_TEST_DATA:
                 mocked_manager = MagicMock()
                 mocked_import_wizard = MagicMock()
-                importer = ZefaniaBible(mocked_manager, filename='')
-                importer.import_wizard = mocked_import_wizard
+                importer = ZefaniaBible(mocked_manager, path='.', name='.', filename='')
+                importer.wizard = mocked_import_wizard
+                #importer.wizard.increment_progress_bar = MagicMock()
                 importer.get_book_ref_id_by_name = MagicMock()
                 importer.get_book_ref_id_by_name.return_value = { 'id': 1, 'testament_id': 1, 'name': 'Genesis',
                                                                   'abbreviation': 'Gen', 'chapters': 1 }
                 importer.create_verse = MagicMock()
+                importer.create_book = MagicMock()
+                importer.session = MagicMock()
+                importer.get_language = MagicMock()
+                importer.get_language.return_value = 'Danish'
+                importer.application.process_events = MagicMock()
 
                 # WHEN: Importing each file
                 importer.filename = os.path.join(TEST_PATH, bible_file)
-                importer.do_import()
+                importer.do_import('Dansk Version')
 
                 # THEN: The create_verse() method should have been called
                 self.assertTrue(importer.create_verse.called)
