@@ -32,6 +32,7 @@ The layout of the theme
 from PyQt4 import QtGui
 
 from openlp.core.common import translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box
 
 
@@ -44,6 +45,7 @@ class Ui_ThemeLayoutDialog(object):
         Set up the UI
         """
         themeLayoutDialog.setObjectName('themeLayoutDialogDialog')
+        themeLayoutDialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         self.preview_layout = QtGui.QVBoxLayout(themeLayoutDialog)
         self.preview_layout.setObjectName('preview_layout')
         self.preview_area = QtGui.QWidget(themeLayoutDialog)

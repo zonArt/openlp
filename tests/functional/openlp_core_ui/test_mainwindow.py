@@ -34,6 +34,7 @@ import os
 from unittest import TestCase
 
 from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.lib.ui import UiStrings
 from openlp.core.common.registry import Registry
 from tests.utils.constants import TEST_RESOURCES_PATH
 from tests.helpers.testmixin import TestMixin
@@ -95,3 +96,41 @@ class TestMainWindow(TestCase, TestMixin):
 
             # THEN the file should not be opened
             assert not mocked_load_path.called, 'load_path should not have been called'
+
+    def main_window_title_test(self):
+        """
+        Test that running a new instance of OpenLP set the window title correctly
+        """
+        # GIVEN a newly opened OpenLP instance
+
+        # WHEN no changes are made to the service
+
+        # THEN the main window's title shoud be the same as the OLPV2x string in the UiStrings class
+        self.assertEqual(self.main_window.windowTitle(), UiStrings().OLPV2x,
+                         'The main window\'s title should be the same as the OLPV2x string in UiStrings class')
+
+    def set_service_modifed_test(self):
+        """
+        Test that when setting the service's title the main window's title is set correctly
+        """
+        # GIVEN a newly opened OpenLP instance
+
+        # WHEN set_service_modified is called with with the modified flag set true and a file name
+        self.main_window.set_service_modified(True, 'test.osz')
+
+        # THEN the main window's title should be set to the
+        self.assertEqual(self.main_window.windowTitle(), '%s - %s*' % (UiStrings().OLPV2x, 'test.osz'),
+                         'The main window\'s title should be set to "<the contents of UiStrings().OLPV2x> - test.osz*"')
+
+    def set_service_unmodified_test(self):
+        """
+        Test that when setting the service's title the main window's title is set correctly
+        """
+        # GIVEN a newly opened OpenLP instance
+
+        # WHEN set_service_modified is called with with the modified flag set False and a file name
+        self.main_window.set_service_modified(False, 'test.osz')
+
+        # THEN the main window's title should be set to the
+        self.assertEqual(self.main_window.windowTitle(), '%s - %s' % (UiStrings().OLPV2x, 'test.osz'),
+                         'The main window\'s title should be set to "<the contents of UiStrings().OLPV2x> - test.osz"')

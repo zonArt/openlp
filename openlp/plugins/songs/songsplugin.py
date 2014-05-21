@@ -63,6 +63,7 @@ __default_settings__ = {
     'songs/search as type': False,
     'songs/add song from service': True,
     'songs/display songbar': True,
+    'songs/display songbook': False,
     'songs/last directory import': '',
     'songs/last directory export': '',
     'songs/songselect username': '',

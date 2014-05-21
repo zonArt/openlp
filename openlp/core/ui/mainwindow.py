@@ -89,7 +89,7 @@ class Ui_MainWindow(object):
         Set up the user interface
         """
         main_window.setObjectName('MainWindow')
-        main_window.setWindowIcon(build_icon(':/icon/openlp-logo-64x64.png'))
+        main_window.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
         main_window.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets.
         self.main_content = QtGui.QWidget(main_window)
@@ -320,14 +320,14 @@ class Ui_MainWindow(object):
         # i18n add Language Actions
         add_actions(self.settings_language_menu, (self.auto_language_item, None))
         add_actions(self.settings_language_menu, self.language_group.actions())
-        # Order things differently in OS X so that Preferences menu item in the
-        # app menu is correct (this gets picked up automatically by Qt).
+        # Qt on OS X looks for keywords in the menu items title to determine which menu items get added to the main
+        # menu. If we are running on Mac OS X the menu items whose title contains those keywords but don't belong in the
+        # main menu need to be marked as such with QAction.NoRole.
         if sys.platform == 'darwin':
-            add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
-                        None, self.settings_configure_item, self.settings_shortcuts_item, self.formatting_tag_item))
-        else:
-            add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
-                        None, self.formatting_tag_item, self.settings_shortcuts_item, self.settings_configure_item))
+            self.settings_shortcuts_item.setMenuRole(QtGui.QAction.NoRole)
+            self.formatting_tag_item.setMenuRole(QtGui.QAction.NoRole)
+        add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
+                    None, self.formatting_tag_item, self.settings_shortcuts_item, self.settings_configure_item))
         add_actions(self.tools_menu, (self.tools_add_tool_item, None))
         add_actions(self.tools_menu, (self.tools_open_data_folder, None))
         add_actions(self.tools_menu, (self.tools_first_time_wizard, None))

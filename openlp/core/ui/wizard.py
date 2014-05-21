@@ -119,6 +119,7 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         """
         Set up the wizard UI.
         """
+        self.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         self.setModal(True)
         self.setWizardStyle(QtGui.QWizard.ModernStyle)
         self.setOptions(QtGui.QWizard.IndependentPages |

@@ -67,7 +67,21 @@ SONG_TEST_DATA = [
        'Just to learn from His lips, words of comfort,\nIn the beautiful garden of prayer.', 'v2'),
       ('There\'s a garden where Jesus is waiting,\nAnd He bids you to come meet Him there,\n'
        'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', 'v3')],
-     'verse_order_list': []}]
+     'verse_order_list': []},
+    {'title': 'Vi pløjed og vi så\'de',
+     'authors': ['Matthias Claudius'],
+     'copyright': 'Public Domain',
+     'ccli_number': 0,
+     'verses':
+        [('Vi pløjed og vi så\'de\nvor sæd i sorten jord,\nså bad vi ham os hjælpe,\nsom højt i Himlen bor,\n'
+          'og han lod snefald hegne\nmod frosten barsk og hård,\nhan lod det tø og regne\nog varme mildt i vår.',
+          'v1'),
+         ('Alle gode gaver\nde kommer ovenned,\nså tak da Gud, ja, pris dog Gud\nfor al hans kærlighed!', 'c1'),
+         ('Han er jo den, hvis vilje\nopholder alle ting,\nhan klæder markens lilje\nog runder himlens ring,\n'
+          'ham lyder vind og vove,\nham rører ravnes nød,\nhvi skulle ej hans småbørn\nda og få dagligt brød?', 'v2'),
+         ('Ja, tak, du kære Fader,\nså mild, så rig, så rund,\nfor korn i hæs og lader,\nfor godt i allen stund!\n'
+          'Vi kan jo intet give,\nsom nogen ting er værd,\nmen tag vort stakkels hjerte,\nså ringe som det er!', 'v3')],
+        'verse_order_list': []}]
 
 EWS_SONG_TEST_DATA =\
     {'title': 'Vi pløjed og vi så\'de',
@@ -139,6 +153,7 @@ class TestEasyWorshipSongImport(TestCase):
     """
     Test the functions in the :mod:`ewimport` module.
     """
+
     def create_field_desc_entry_test(self):
         """
         Test creating an instance of the :class`FieldDescEntry` class.
@@ -467,3 +482,22 @@ class TestEasyWorshipSongImport(TestCase):
             for verse_text, verse_tag in EWS_SONG_TEST_DATA['verses']:
                 mocked_add_verse.assert_any_call(verse_text, verse_tag)
             mocked_finish.assert_called_with()
+
+    def import_rtf_unescaped_unicode_test(self):
+        """
+        Test import of rtf without the expected escaping of unicode
+        """
+
+        # GIVEN: A mocked out SongImport class, a mocked out "manager" and mocked out "author" method.
+        with patch('openlp.plugins.songs.lib.ewimport.SongImport'):
+            mocked_manager = MagicMock()
+            mocked_add_author = MagicMock()
+            importer = EasyWorshipSongImportLogger(mocked_manager)
+            importer.add_author = mocked_add_author
+            importer.encoding = 'cp1252'
+
+            # WHEN: running set_song_import_object on a verse string without the needed escaping
+            importer.set_song_import_object('Test Author', b'Det som var fr\x86n begynnelsen')
+
+            # THEN: The import should fail
+            self.assertEquals(importer.entry_error_log, 'Unexpected data formatting.', 'Import should fail')
