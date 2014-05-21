@@ -194,7 +194,7 @@ def download_translations():
         password = getpass('   Transifex password: ')
     # First get the list of languages
     url = SERVER_URL + 'resource/ents/'
-    base64string = base64.encodbytes('%s:%s' % (username, password))[:-1]
+    base64string = base64.encodebytes('%s:%s' % (username, password))[:-1]
     auth_header = 'Basic %s' % base64string
     request = urllib.request.Request(url + '?details')
     request.add_header('Authorization', auth_header)
