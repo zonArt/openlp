@@ -29,8 +29,6 @@
 """
 The :mod:`~openlp.core.ui.media.mediaplayer` module contains the MediaPlayer class.
 """
-import os
-
 from openlp.core.common import RegistryProperties
 from openlp.core.ui.media import MediaState
 

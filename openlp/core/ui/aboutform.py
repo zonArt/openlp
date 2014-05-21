@@ -30,7 +30,7 @@
 The About dialog.
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from .aboutdialog import Ui_AboutDialog
 from openlp.core.lib import translate

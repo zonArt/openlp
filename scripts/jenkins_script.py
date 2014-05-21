@@ -148,7 +148,7 @@ class JenkinsTrigger(object):
 
 def get_repo_name():
     """
-    This returns the name of branch of the wokring directory. For example it returns *lp:~googol/openlp/render*.
+    This returns the name of branch of the working directory. For example it returns *lp:~googol/openlp/render*.
     """
     # Run the bzr command.
     bzr = Popen(('bzr', 'info'), stdout=PIPE, stderr=PIPE)
@@ -198,7 +198,7 @@ def main():
         jenkins_trigger = JenkinsTrigger(token)
         try:
             jenkins_trigger.trigger_build()
-        except HTTPError as e:
+        except HTTPError:
             print('Wrong token.')
             return
         # Open the browser before printing the output.

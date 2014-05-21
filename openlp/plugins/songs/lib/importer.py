@@ -153,19 +153,20 @@ class SongFormat(object):
     CCLI = 3
     DreamBeam = 4
     EasySlides = 5
-    EasyWorship = 6
-    FoilPresenter = 7
-    MediaShout = 8
-    OpenSong = 9
-    PowerSong = 10
-    SongBeamer = 11
-    SongPro = 12
-    SongShowPlus = 13
-    SongsOfFellowship = 14
-    SundayPlus = 15
-    WordsOfWorship = 16
-    WorshipCenterPro = 17
-    ZionWorx = 18
+    EasyWorshipDB = 6
+    EasyWorshipService = 7
+    FoilPresenter = 8
+    MediaShout = 9
+    OpenSong = 10
+    PowerSong = 11
+    SongBeamer = 12
+    SongPro = 13
+    SongShowPlus = 14
+    SongsOfFellowship = 15
+    SundayPlus = 16
+    WordsOfWorship = 17
+    WorshipCenterPro = 18
+    ZionWorx = 19
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -224,12 +225,19 @@ class SongFormat(object):
             'selectMode': SongFormatSelect.SingleFile,
             'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'EasySlides XML File')
         },
-        EasyWorship: {
+        EasyWorshipDB: {
             'class': EasyWorshipSongImport,
-            'name': 'EasyWorship',
+            'name': 'EasyWorship Song Database',
             'prefix': 'ew',
             'selectMode': SongFormatSelect.SingleFile,
             'filter': '%s (*.db)' % translate('SongsPlugin.ImportWizardForm', 'EasyWorship Song Database')
+        },
+        EasyWorshipService: {
+            'class': EasyWorshipSongImport,
+            'name': 'EasyWorship Service File',
+            'prefix': 'ew',
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.ews)' % translate('SongsPlugin.ImportWizardForm', 'EasyWorship Service File')
         },
         FoilPresenter: {
             'class': FoilPresenterImport,
@@ -341,7 +349,8 @@ class SongFormat(object):
             SongFormat.CCLI,
             SongFormat.DreamBeam,
             SongFormat.EasySlides,
-            SongFormat.EasyWorship,
+            SongFormat.EasyWorshipDB,
+            SongFormat.EasyWorshipService,
             SongFormat.FoilPresenter,
             SongFormat.MediaShout,
             SongFormat.OpenSong,

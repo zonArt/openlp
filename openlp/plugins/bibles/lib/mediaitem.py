@@ -60,7 +60,6 @@ class BibleMediaItem(MediaManagerItem):
     log.info('Bible Media Item loaded')
 
     def __init__(self, parent, plugin):
-        self.icon_path = 'songs/song'
         self.lock_icon = build_icon(':/bibles/bibles_search_lock.png')
         self.unlock_icon = build_icon(':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin)
@@ -172,6 +171,7 @@ class BibleMediaItem(MediaManagerItem):
         self.page_layout.addWidget(tab)
         tab.setVisible(False)
         lock_button.toggled.connect(self.on_lock_button_toggled)
+        second_combo_box.currentIndexChanged.connect(self.on_second_bible_combobox_index_changed)
         setattr(self, prefix + 'VersionLabel', version_label)
         setattr(self, prefix + 'VersionComboBox', version_combo_box)
         setattr(self, prefix + 'SecondLabel', second_label)
@@ -263,11 +263,15 @@ class BibleMediaItem(MediaManagerItem):
     def config_update(self):
         log.debug('config_update')
         if Settings().value(self.settings_section + '/second bibles'):
+            self.quickSecondLabel.setVisible(True)
+            self.quickSecondComboBox.setVisible(True)
             self.advancedSecondLabel.setVisible(True)
             self.advancedSecondComboBox.setVisible(True)
             self.quickSecondLabel.setVisible(True)
             self.quickSecondComboBox.setVisible(True)
         else:
+            self.quickSecondLabel.setVisible(False)
+            self.quickSecondComboBox.setVisible(False)
             self.advancedSecondLabel.setVisible(False)
             self.advancedSecondComboBox.setVisible(False)
             self.quickSecondLabel.setVisible(False)
@@ -360,8 +364,7 @@ class BibleMediaItem(MediaManagerItem):
         combo boxes on the 'Advanced Search' Tab. This is not of any importance of the 'Quick Search' Tab.
 
         :param bible: The bible to initialise (unicode).
-        :param last_book_id: The "book reference id" of the book which is chosen at the moment.
-            (int)
+        :param last_book_id: The "book reference id" of the book which is chosen at the moment. (int)
         """
         log.debug('initialise_advanced_bible %s, %s', bible, last_book_id)
         book_data = self.plugin.manager.get_books(bible)
@@ -421,9 +424,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def update_auto_completer(self):
         """
-        This updates the bible book completion list for the search field. The
-        completion depends on the bible. It is only updated when we are doing a
-        reference search, otherwise the auto completion list is removed.
+        This updates the bible book completion list for the search field. The completion depends on the bible. It is
+        only updated when we are doing a reference search, otherwise the auto completion list is removed.
         """
         log.debug('update_auto_completer')
         # Save the current search type to the configuration.
@@ -460,6 +462,17 @@ class BibleMediaItem(MediaManagerItem):
                         books.append(data['name'] + ' ')
                 books.sort(key=get_locale_key)
         set_case_insensitive_completer(books, self.quick_search_edit)
+
+    def on_second_bible_combobox_index_changed(self, selection):
+        """
+        Activate the style combobox only when no second bible is selected
+        """
+        if selection == 0:
+            self.quickStyleComboBox.setEnabled(True)
+            self.advancedStyleComboBox.setEnabled(True)
+        else:
+            self.quickStyleComboBox.setEnabled(False)
+            self.advancedStyleComboBox.setEnabled(False)
 
     def on_import_click(self):
         if not hasattr(self, 'import_wizard'):
@@ -593,8 +606,7 @@ class BibleMediaItem(MediaManagerItem):
         :param range_from: The first number of the range (int).
         :param range_to: The last number of the range (int).
         :param combo: The combo box itself (QComboBox).
-        :param restore: If True, then the combo's currentText will be restored after
-            adjusting (if possible).
+        :param restore: If True, then the combo's currentText will be restored after adjusting (if possible).
         """
         log.debug('adjust_combo_box %s, %s, %s', combo, range_from, range_to)
         if restore:
@@ -640,8 +652,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def on_quick_search_button(self):
         """
-        Does a quick search and saves the search results. Quick search can
-        either be "Reference Search" or "Text Search".
+        Does a quick search and saves the search results. Quick search can either be "Reference Search" or
+        "Text Search".
         """
         log.debug('Quick Search Button clicked')
         self.quickSearchButton.setEnabled(False)
@@ -696,8 +708,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def display_results(self, bible, second_bible=''):
         """
-        Displays the search results in the media manager. All data needed for
-        further action is saved for/in each row.
+        Displays the search results in the media manager. All data needed for further action is saved for/in each row.
         """
         items = self.build_display_results(bible, second_bible, self.search_results)
         for bible_verse in items:
@@ -708,8 +719,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def build_display_results(self, bible, second_bible, search_results):
         """
-        Displays the search results in the media manager. All data needed for
-        further action is saved for/in each row.
+        Displays the search results in the media manager. All data needed for further action is saved for/in each row.
         """
         verse_separator = get_reference_separator('sep_v_display')
         version = self.plugin.manager.get_meta_data(bible, 'name').value
@@ -837,7 +847,6 @@ class BibleMediaItem(MediaManagerItem):
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
             raw_slides.append(bible_text.lstrip())
-            bible_text = ''
         # Service Item: Capabilities
         if self.settings.layout_style == LayoutStyle.Continuous and not second_bible:
             # Split the line but do not replace line breaks in renderer.
@@ -859,9 +868,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def format_title(self, start_bitem, old_bitem):
         """
-        This method is called, when we have to change the title, because
-        we are at the end of a verse range. E. g. if we want to add
-        Genesis 1:1-6 as well as Daniel 2:14.
+        This method is called, when we have to change the title, because we are at the end of a verse range. E. g. if we
+        want to add Genesis 1:1-6 as well as Daniel 2:14.
 
         :param start_bitem: The first item of a range.
         :param old_bitem: The last item of a range.
@@ -891,10 +899,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def check_title(self, bitem, old_bitem):
         """
-        This method checks if we are at the end of an verse range. If that is
-        the case, we return True, otherwise False. E. g. if we added
-
-        Genesis 1:1-6, but the next verse is Daniel 2:14, we return True.
+        This method checks if we are at the end of an verse range. If that is the case, we return True, otherwise False.
+        E. g. if we added Genesis 1:1-6, but the next verse is Daniel 2:14, we return True.
 
         :param bitem: The item we are dealing with at the moment.
         :param old_bitem: The item we were previously dealing with.
@@ -918,20 +924,17 @@ class BibleMediaItem(MediaManagerItem):
             return True
         elif old_chapter + 1 == chapter and (verse != 1 or old_verse !=
                                              self.plugin.manager.get_verse_count(old_bible, old_book, old_chapter)):
-            # We are in the following chapter, but the last verse was not the
-            # last verse of the chapter or the current verse is not the
-            # first one of the chapter.
+            # We are in the following chapter, but the last verse was not the last verse of the chapter or the current
+            # verse is not the first one of the chapter.
             return True
         return False
 
     def format_verse(self, old_chapter, chapter, verse):
         """
-        Formats and returns the text, each verse starts with, for the given
-        chapter and verse. The text is either surrounded by round, square,
+        Formats and returns the text, each verse starts with, for the given chapter and verse. The text is either
+        surrounded by round, square, curly brackets or no brackets at all. For example::
 
-        curly brackets or no brackets at all. For example::
-
-            u'{su}1:1{/su}'
+            '{su}1:1{/su}'
 
         :param old_chapter: The previous verse's chapter number (int).
         :param chapter: The chapter number (int).

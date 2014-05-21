@@ -27,34 +27,52 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Test the openlp.core.ui.splashscreen class.
+Package to test the openlp.core.ui.shortcutform package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui, QtTest
 
-from openlp.core.ui import SplashScreen
+from openlp.core.common import Registry
+from openlp.core.ui.shortcutlistform import ShortcutListForm
+from tests.interfaces import patch
 from tests.helpers.testmixin import TestMixin
 
 
-class TestSplashScreen(TestCase, TestMixin):
+class TestShortcutform(TestCase, TestMixin):
+
     def setUp(self):
+        """
+        Create the UI
+        """
+        Registry.create()
         self.get_application()
         self.main_window = QtGui.QMainWindow()
+        Registry().register('main_window', self.main_window)
+        self.form = ShortcutListForm()
 
     def tearDown(self):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        del self.app
+        del self.form
         del self.main_window
 
-    def setupUi_test(self):
+    def adjust_button_test(self):
         """
-        Test if the setupUi method....
+        Test the _adjust_button() method
         """
-        # GIVEN: A splash screen instance.
-        splash = SplashScreen()
+        # GIVEN: A button.
+        button = QtGui.QPushButton()
+        checked = True
+        enabled = True
+        text = "new!"
 
-        # THEN: Check if the splash has a setupUi method.
-        assert hasattr(splash, 'setupUi'), 'The Splash Screen should have a setupUi() method.'
+        # WHEN: Call the method.
+        with patch('PyQt4.QtGui.QPushButton.setChecked') as mocked_check_method:
+            self.form._adjust_button(button, checked, enabled, text)
+
+            # THEN: The button should be changed.
+            self.assertEqual(button.text(), text, "The text should match.")
+            mocked_check_method.assert_called_once_with(True)
+            self.assertEqual(button.isEnabled(), enabled, "The button should be disabled.")

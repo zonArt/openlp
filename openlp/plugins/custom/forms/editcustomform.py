@@ -197,7 +197,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.slide_list_view.clear()
             self.slide_list_view.addItems(slides)
         else:
-            old_slides = []
             old_row = self.slide_list_view.currentRow()
             # Create a list with all (old/unedited) slides.
             old_slides = [self.slide_list_view.item(row).text() for row in range(self.slide_list_view.count())]

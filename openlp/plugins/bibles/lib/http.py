@@ -534,7 +534,7 @@ class HTTPBible(BibleDB, RegistryProperties):
             them into a list. This function then runs through the list, and returns an amalgamated list of ``Verse``
             objects. For example::
 
-                [(u'35', 1, 1, 1), (u'35', 2, 2, 3)]
+                [('35', 1, 1, 1), ('35', 2, 2, 3)]
         """
         log.debug('HTTPBible.get_verses("%s")', reference_list)
         for reference in reference_list:

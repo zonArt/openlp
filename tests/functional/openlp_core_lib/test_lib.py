@@ -305,7 +305,7 @@ class TestLib(TestCase):
             # WHEN: We convert an image to a byte array
             result = image_to_byte(mocked_image)
 
-            # THEN: We should receive a value of u'base64mock'
+            # THEN: We should receive a value of 'base64mock'
             MockedQtCore.QByteArray.assert_called_with()
             MockedQtCore.QBuffer.assert_called_with(mocked_byte_array)
             mocked_buffer.open.assert_called_with('writeonly')

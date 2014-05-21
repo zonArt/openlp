@@ -44,6 +44,7 @@ class Ui_SongMaintenanceDialog(object):
         Set up the user interface for the song maintenance dialog
         """
         song_maintenance_dialog.setObjectName('song_maintenance_dialog')
+        song_maintenance_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         song_maintenance_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
         song_maintenance_dialog.resize(10, 350)
         self.dialog_layout = QtGui.QGridLayout(song_maintenance_dialog)
