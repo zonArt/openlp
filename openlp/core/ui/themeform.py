@@ -18,11 +18,11 @@
 # Software Foundation; version 2 of the License.                              #
 #                                                                             #
 # This program is distributed in the hope that it will be useful, but WITHOUT #
-# AN_y WARRANT_y; without even the implied warranty of MERCHANTABILIT_y or       #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
 # more details.                                                               #
 #                                                                             #
-# _you should have received a copy of the GNU General Public License along     #
+# You should have received a copy of the GNU General Public License along     #
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
@@ -179,7 +179,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         if self.page(self.currentId()) == self.background_page and \
                 self.theme.background_type == background_image and is_not_image_file(self.theme.background_filename):
             QtGui.QMessageBox.critical(self, translate('OpenLP.ThemeWizard', 'Background Image Empty'),
-                                       translate('OpenLP.ThemeWizard', '_you have not selected a '
+                                       translate('OpenLP.ThemeWizard', 'You have not selected a '
                                                  'background image. Please select one before continuing.'))
             return False
         else:

@@ -664,7 +664,7 @@ class OpenLyrics(object):
         # OpenLyrics 0.8 uses <br/> for new lines. Append text from "lines" element to verse text.
         if version > '0.7':
             text = self._process_lines_mixed_content(element)
-        # OpenLyrics version <= 0.7 contais <line> elements to represent lines. First child element is tested.
+        # OpenLyrics version <= 0.7 contains <line> elements to represent lines. First child element is tested.
         else:
             # Loop over the "line" elements removing comments and chords.
             for line in element:
