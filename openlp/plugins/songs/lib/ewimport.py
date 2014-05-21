@@ -344,7 +344,7 @@ class EasyWorshipSongImport(SongImport):
             try:
                 decoded_words = words.decode()
             except UnicodeDecodeError:
-                # The unicode chars in the rtf was not escaped in the expected manor
+                # The unicode chars in the rtf was not escaped in the expected manner
                 self.entry_error_log = translate('SongsPlugin.EasyWorshipSongImport',
                                                  'Unexpected data formatting.')
                 return
