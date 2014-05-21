@@ -27,46 +27,46 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the Zefania Bible importer.
+This module contains tests for the OpenSong Bible importer.
 """
 
 import os
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
-from openlp.plugins.bibles.lib.zefania import ZefaniaBible
+from openlp.plugins.bibles.lib.opensong import OpenSongBible
 from openlp.plugins.bibles.lib.db import BibleDB
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'bibles'))
-ZEFANIA_TEST_DATA = {
-    'zefania-dk1933.xml': {
+OPENSONG_TEST_DATA = {
+    'opensong-dk1933.xml': {
         'book': 'Genesis',
         'chapter': 1,
         'verses': [
-            ('1', 'I Begyndelsen skabte Gud Himmelen og Jorden.'),
-            ('2', 'Og Jorden var øde og tom, og der var Mørke over Verdensdybet. '
+            (1, 'I Begyndelsen skabte Gud Himmelen og Jorden.'),
+            (2, 'Og Jorden var øde og tom, og der var Mørke over Verdensdybet. '
              'Men Guds Ånd svævede over Vandene.'),
-            ('3', 'Og Gud sagde: "Der blive Lys!" Og der blev Lys.'),
-            ('4', 'Og Gud så, at Lyset var godt, og Gud satte Skel mellem Lyset og Mørket,'),
-            ('5', 'og Gud kaldte Lyset Dag, og Mørket kaldte han Nat. Og det blev Aften, '
+            (3, 'Og Gud sagde: "Der blive Lys!" Og der blev Lys.'),
+            (4, 'Og Gud så, at Lyset var godt, og Gud satte Skel mellem Lyset og Mørket,'),
+            (5, 'og Gud kaldte Lyset Dag, og Mørket kaldte han Nat. Og det blev Aften, '
              'og det blev Morgen, første Dag.'),
-            ('6', 'Derpå sagde Gud: "Der blive en Hvælving midt i Vandene til at skille Vandene ad!"'),
-            ('7', 'Og således skete det: Gud gjorde Hvælvingen og skilte Vandet under Hvælvingen '
+            (6, 'Derpå sagde Gud: "Der blive en Hvælving midt i Vandene til at skille Vandene ad!"'),
+            (7, 'Og således skete det: Gud gjorde Hvælvingen og skilte Vandet under Hvælvingen '
              'fra Vandet over Hvælvingen;'),
-            ('8', 'og Gud kaldte Hvælvingen Himmel. Og det blev Aften, og det blev Morgen, anden Dag.'),
-            ('9', 'Derpå sagde Gud: "Vandet under Himmelen samle sig på eet Sted, så det faste Land kommer til Syne!" '
+            (8, 'og Gud kaldte Hvælvingen Himmel. Og det blev Aften, og det blev Morgen, anden Dag.'),
+            (9, 'Derpå sagde Gud: "Vandet under Himmelen samle sig på eet Sted, så det faste Land kommer til Syne!" '
              'Og således skete det;'),
-            ('10', 'og Gud kaldte det faste Land Jord, og Stedet, hvor Vandet samlede sig, kaldte han Hav. Og Gud så, '
+            (10, 'og Gud kaldte det faste Land Jord, og Stedet, hvor Vandet samlede sig, kaldte han Hav. Og Gud så, '
              'at det var godt.')
         ]
     }
 }
 
 
-class TestZefaniaImport(TestCase):
+class TestOpenSongImport(TestCase):
     """
-    Test the functions in the :mod:`zefaniaimport` module.
+    Test the functions in the :mod:`opensongimport` module.
     """
 
     def setUp(self):
@@ -81,13 +81,13 @@ class TestZefaniaImport(TestCase):
 
     def create_importer_test(self):
         """
-        Test creating an instance of the Zefania file importer
+        Test creating an instance of the OpenSong file importer
         """
         # GIVEN: A mocked out "manager"
         mocked_manager = MagicMock()
 
         # WHEN: An importer object is created
-        importer = ZefaniaBible(mocked_manager, path='.', name='.', filename='')
+        importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
 
         # THEN: The importer should be an instance of BibleDB
         self.assertIsInstance(importer, BibleDB)
@@ -97,12 +97,12 @@ class TestZefaniaImport(TestCase):
         Test the actual import of real song files
         """
         # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
-        #        get_book_ref_id_by_name, create_verse, create_book, session and get_language.
-        with patch('openlp.plugins.bibles.lib.zefania.ZefaniaBible.application'):
-            for bible_file in ZEFANIA_TEST_DATA:
+        #       get_book_ref_id_by_name, create_verse, create_book, session and get_language.
+        with patch('openlp.plugins.bibles.lib.opensong.OpenSongBible.application'):
+            for bible_file in OPENSONG_TEST_DATA:
                 mocked_manager = MagicMock()
                 mocked_import_wizard = MagicMock()
-                importer = ZefaniaBible(mocked_manager, path='.', name='.', filename='')
+                importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
                 importer.wizard = mocked_import_wizard
                 importer.get_book_ref_id_by_name = MagicMock()
                 importer.create_verse = MagicMock()
@@ -117,5 +117,24 @@ class TestZefaniaImport(TestCase):
 
                 # THEN: The create_verse() method should have been called with each verse in the file.
                 self.assertTrue(importer.create_verse.called)
-                for verse_tag, verse_text in ZEFANIA_TEST_DATA[bible_file]['verses']:
-                    importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
+                for verse_tag, verse_text in OPENSONG_TEST_DATA[bible_file]['verses']:
+                    importer.create_verse.assert_any_call(importer.create_book().id, 1, verse_tag, verse_text)
+
+    def zefania_import_error_test(self):
+        """
+        Test that we give an error message if trying to import a zefania bible
+        """
+        # GIVEN: A mocked out "manager" and mocked out critical_error_message_box and an import
+        with patch('openlp.plugins.bibles.lib.opensong.critical_error_message_box') as \
+                mocked_critical_error_message_box:
+            mocked_manager = MagicMock()
+            importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
+
+            # WHEN: An trying to import a zefania bible
+            importer.filename = os.path.join(TEST_PATH, 'zefania-dk1933.xml')
+            importer.do_import()
+
+            # THEN: The importer should have "shown" an error message
+            mocked_critical_error_message_box.assert_called_with(message='Incorrect Bible file type supplied. '
+                                                                 'This looks like a Zefania XML bible, '
+                                                                 'please use the Zefania import option.')
