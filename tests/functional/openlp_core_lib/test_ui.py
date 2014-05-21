@@ -197,7 +197,7 @@ class TestUi(TestCase):
 
         # THEN: The index should have changed
         self.assertEqual(2, combo.currentIndex())
-        
+
     def test_set_case_insensitive_completer(self):
         """
         Test setting a case insensitive completer on a widget
@@ -213,4 +213,3 @@ class TestUi(TestCase):
         completer = line_edit.completer()
         self.assertIsInstance(completer, QtGui.QCompleter)
         self.assertEqual(completer.caseSensitivity(), QtCore.Qt.CaseInsensitive)
-
