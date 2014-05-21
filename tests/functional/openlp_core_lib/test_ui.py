@@ -154,22 +154,6 @@ class TestUi(TestCase):
         self.assertEqual('my tooltip', action.toolTip())
         self.assertEqual('my statustip', action.statusTip())
 
-    def test_set_case_insensitive_completer(self):
-        """
-        Test setting a case insensitive completer on a widget
-        """
-        # GIVEN: A QComboBox and a list of completion items
-        line_edit = QtGui.QLineEdit()
-        suggestions = ['one', 'Two', 'THRee', 'FOUR']
-
-        # WHEN: We call the function
-        set_case_insensitive_completer(suggestions, line_edit)
-
-        # THEN: The Combobox should have a completer which is case insensitive
-        completer = line_edit.completer()
-        self.assertIsInstance(completer, QtGui.QCompleter)
-        self.assertEqual(completer.caseSensitivity(), QtCore.Qt.CaseInsensitive)
-
     def test_create_valign_selection_widgets(self):
         """
         Test creating a combo box for valign selection
