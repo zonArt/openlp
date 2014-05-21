@@ -129,35 +129,6 @@ class TestUi(TestCase):
         self.assertEqual('my_btn', btn.objectName())
         self.assertTrue(btn.isEnabled())
 
-    def test_create_horizontal_adjusting_combo_box(self):
-        """
-        Test creating a horizontal adjusting combo box
-        """
-        # GIVEN: A dialog
-        dialog = QtGui.QDialog()
-
-        # WHEN: We create the combobox
-        combo = create_horizontal_adjusting_combo_box(dialog, 'combo1')
-
-        # THEN: We should get a ComboBox
-        self.assertIsInstance(combo, QtGui.QComboBox)
-        self.assertEqual('combo1', combo.objectName())
-        self.assertEqual(QtGui.QComboBox.AdjustToMinimumContentsLength, combo.sizeAdjustPolicy())
-
-    def test_create_widget_action(self):
-        """
-        Test creating an action for a widget
-        """
-        # GIVEN: A button
-        button = QtGui.QPushButton()
-
-        # WHEN: We call the function
-        action = create_widget_action(button, 'some action')
-
-        # THEN: The action should be returned
-        self.assertIsInstance(action, QtGui.QAction)
-        self.assertEqual(action.objectName(), 'some action')
-
     def test_create_action(self):
         """
         Test creating an action
