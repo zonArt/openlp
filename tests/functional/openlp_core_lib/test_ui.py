@@ -154,6 +154,21 @@ class TestUi(TestCase):
         self.assertEqual('my tooltip', action.toolTip())
         self.assertEqual('my statustip', action.statusTip())
 
+    def test_create_action_2(self):
+        """
+        Test creating an action
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create an action with some properties
+        action = create_action(dialog, 'my_action', checked=True, enabled=False, visible=False)
+
+        # THEN: These properties should be set
+        self.assertEqual(True, action.isChecked())
+        self.assertEqual(False, action.isEnabled())
+        self.assertEqual(False, action.isVisible())
+
     def test_create_valign_selection_widgets(self):
         """
         Test creating a combo box for valign selection
