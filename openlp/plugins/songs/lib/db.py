@@ -76,7 +76,8 @@ class AuthorType(object):
     Types = {
         Words: translate('SongsPlugin.AuthorType', 'Words', 'Author who wrote the lyrics of a song'),
         Music: translate('SongsPlugin.AuthorType', 'Music', 'Author who wrote the music of a song'),
-        WordsAndMusic: translate('SongsPlugin.AuthorType', 'Author who wrote both lyrics and music of a song'),
+        WordsAndMusic: translate('SongsPlugin.AuthorType', 'Words and Music',
+                                 'Author who wrote both lyrics and music of a song'),
         Translation: translate('SongsPlugin.AuthorType', 'Translation', 'Author who translated the song')
     }
 
