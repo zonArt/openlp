@@ -72,15 +72,15 @@ class AppLocation(object):
         :param dir_type: The directory type you want, for instance the data directory. Default *AppLocation.AppDir*
         """
         if dir_type == AppLocation.AppDir:
-            return get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
+            return get_frozen_path(os.path.abspath(os.path.dirname(sys.argv[0])), os.path.dirname(openlp.__file__))
         elif dir_type == AppLocation.PluginsDir:
-            app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+            app_path = os.path.abspath(os.path.dirname(sys.argv[0]))
             return get_frozen_path(os.path.join(app_path, 'plugins'),
-                                   os.path.join(os.path.split(openlp.__file__)[0], 'plugins'))
+                                   os.path.join(os.path.dirname(openlp.__file__), 'plugins'))
         elif dir_type == AppLocation.VersionDir:
-            return get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
+            return get_frozen_path(os.path.abspath(os.path.dirname(sys.argv[0])), os.path.dirname(openlp.__file__))
         elif dir_type == AppLocation.LanguageDir:
-            app_path = get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), _get_os_dir_path(dir_type))
+            app_path = get_frozen_path(os.path.abspath(os.path.dirname(sys.argv[0])), _get_os_dir_path(dir_type))
             return os.path.join(app_path, 'i18n')
         elif dir_type == AppLocation.DataDir and AppLocation.BaseDir:
             return os.path.join(AppLocation.BaseDir, 'data')
@@ -140,25 +140,28 @@ def _get_os_dir_path(dir_type):
     """
     Return a path based on which OS and environment we are running in.
     """
+    # If running from source, return the language directory from the source directory
+    if dir_type == AppLocation.LanguageDir:
+        directory = os.path.abspath(os.path.join(os.path.dirname(openlp.__file__), '..', 'resources'))
+        if os.path.exists(directory):
+            return directory
     if sys.platform == 'win32':
         if dir_type == AppLocation.DataDir:
             return os.path.join(str(os.getenv('APPDATA')), 'openlp', 'data')
         elif dir_type == AppLocation.LanguageDir:
-            return os.path.split(openlp.__file__)[0]
+            return os.path.dirname(openlp.__file__)
         return os.path.join(str(os.getenv('APPDATA')), 'openlp')
     elif sys.platform == 'darwin':
         if dir_type == AppLocation.DataDir:
-            return os.path.join(str(os.getenv('HOME')),
-                                'Library', 'Application Support', 'openlp', 'Data')
+            return os.path.join(str(os.getenv('HOME')), 'Library', 'Application Support', 'openlp', 'Data')
         elif dir_type == AppLocation.LanguageDir:
-            return os.path.split(openlp.__file__)[0]
+            return os.path.dirname(openlp.__file__)
         return os.path.join(str(os.getenv('HOME')), 'Library', 'Application Support', 'openlp')
     else:
         if dir_type == AppLocation.LanguageDir:
-            for prefix in ['/usr/local', '/usr']:
-                directory = os.path.join(prefix, 'share', 'openlp')
-                if os.path.exists(directory):
-                    return directory
+            directory = os.path.join('/usr', 'local', 'share', 'openlp')
+            if os.path.exists(directory):
+                return directory
             return os.path.join('/usr', 'share', 'openlp')
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.DataDir:
