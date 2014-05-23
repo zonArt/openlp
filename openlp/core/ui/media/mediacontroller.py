@@ -464,7 +464,10 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         # Setup media info
         controller.media_info = MediaInfo()
         controller.media_info.file_info = QtCore.QFileInfo(filename)
-        controller.media_info.media_type = MediaType.DVD
+        if audio_track == -1 and subtitle_track == -1:
+            controller.media_info.media_type = MediaType.CD
+        else:
+            controller.media_info.media_type = MediaType.DVD
         controller.media_info.start_time = start/1000
         controller.media_info.end_time = end/1000
         controller.media_info.length = (end - start)/1000
@@ -489,7 +492,10 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         vlc_player.load(display)
         self.resize(display, vlc_player)
         self.current_media_players[controller.controller_type] = vlc_player
-        controller.media_info.media_type = MediaType.DVD
+        if audio_track == -1 and subtitle_track == -1:
+            controller.media_info.media_type = MediaType.CD
+        else:
+            controller.media_info.media_type = MediaType.DVD
         return True
 
     def _check_file_type(self, controller, display, service_item):

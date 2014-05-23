@@ -166,7 +166,19 @@ class VlcPlayer(MediaPlayer):
         file_path = str(controller.media_info.file_info.absoluteFilePath())
         path = os.path.normcase(file_path)
         # create the media
-        display.vlc_media = display.vlc_instance.media_new_path(path)
+        if controller.media_info.media_type == MediaType.CD:
+            display.vlc_media = display.vlc_instance.media_new_location('cdda://' + path)
+            display.vlc_media_player.set_media(display.vlc_media)
+            display.vlc_media_player.play()
+            # Wait for media to start playing. In this case VLC actually returns an error.
+            self.media_state_wait(display, vlc.State.Playing)
+            # If subitems exists, this is a CD
+            audio_cd_tracks = display.vlc_media.subitems()
+            if not audio_cd_tracks or audio_cd_tracks.count() < 1:
+                return False
+            display.vlc_media = audio_cd_tracks.item_at_index(controller.media_info.title_track)
+        else:
+            display.vlc_media = display.vlc_instance.media_new_path(path)
         # put the media in the media player
         display.vlc_media_player.set_media(display.vlc_media)
         # parse the metadata of the file

@@ -150,6 +150,40 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.timer.timeout.connect(self.update_position)
         self.timer.start(100)
         self.find_optical_devices()
+        self.audio_cd = False
+        self.audio_cd_tracks = None
+
+    def detect_audio_cd(self, path):
+        """
+        Detects is the given path is an audio CD
+        
+        :param path: Path to the device to be tested.
+        :return: True if it was an audio CD else False.
+        """
+        # Detect by trying to play it as a CD
+        self.vlc_media = self.vlc_instance.media_new_location('cdda://' + path)
+        self.vlc_media_player.set_media(self.vlc_media)
+        self.vlc_media_player.play()
+        # Wait for media to start playing. In this case VLC actually returns an error.
+        self.media_state_wait(vlc.State.Playing)
+        self.vlc_media_player.pause()
+        # If subitems exists, this is a CD
+        self.audio_cd_tracks = self.vlc_media.subitems()
+        if not self.audio_cd_tracks or self.audio_cd_tracks.count() < 1:
+            return False
+        # Insert into title_combo_box
+        self.title_combo_box.clear()
+        for i in range(self.audio_cd_tracks.count()):
+            item = self.audio_cd_tracks.item_at_index(i)
+            item_title = item.get_meta(vlc.Meta.Title)
+            self.title_combo_box.addItem(item_title, i)
+        self.vlc_media_player.set_media(self.audio_cd_tracks.item_at_index(0))
+        self.audio_cd = True
+        self.title_combo_box.setDisabled(False)
+        self.title_combo_box.setCurrentIndex(0)
+        self.on_title_combo_box_currentIndexChanged(0)
+
+        return True
 
     @QtCore.pyqtSlot(bool)
     def on_load_disc_pushbutton_clicked(self, clicked):
@@ -172,7 +206,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                                                          'Given path does not exists'))
             self.toggle_disable_load_media(False)
             return
-        self.vlc_media = self.vlc_instance.media_new_path(path)
+        self.vlc_media = self.vlc_instance.media_new_location(path)
         if not self.vlc_media:
             log.debug('vlc media player is none')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
@@ -191,25 +225,28 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             return
         self.vlc_media_player.audio_set_mute(True)
         if not self.media_state_wait(vlc.State.Playing):
-            critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
-                                                         'VLC player failed playing the media'))
-            self.toggle_disable_load_media(False)
-            return
+            # Tests if this is an audio CD
+            if not self.detect_audio_cd(path):
+                critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
+                                                             'VLC player failed playing the media'))
+                self.toggle_disable_load_media(False)
+                return
         self.vlc_media_player.pause()
         self.vlc_media_player.set_time(0)
-        # Get titles, insert in combobox
-        titles = self.vlc_media_player.video_get_title_description()
-        self.title_combo_box.clear()
-        for title in titles:
-            self.title_combo_box.addItem(title[1].decode(), title[0])
-        # Main title is usually title #1
-        if len(titles) > 1:
-            self.title_combo_box.setCurrentIndex(1)
-        else:
-            self.title_combo_box.setCurrentIndex(0)
-        # Enable audio track combobox if anything is in it
-        if len(titles) > 0:
-            self.title_combo_box.setDisabled(False)
+        if not self.audio_cd:
+            # Get titles, insert in combobox
+            titles = self.vlc_media_player.video_get_title_description()
+            self.title_combo_box.clear()
+            for title in titles:
+                self.title_combo_box.addItem(title[1].decode(), title[0])
+            # Main title is usually title #1
+            if len(titles) > 1:
+                self.title_combo_box.setCurrentIndex(1)
+            else:
+                self.title_combo_box.setCurrentIndex(0)
+            # Enable audio track combobox if anything is in it
+            if len(titles) > 0:
+                self.title_combo_box.setDisabled(False)
         self.toggle_disable_load_media(False)
 
     @QtCore.pyqtSlot(bool)
@@ -321,35 +358,53 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         log.debug('in on_title_combo_box_changed, index: %d', index)
         if not self.vlc_media_player:
             return
-        self.vlc_media_player.set_title(index)
-        self.vlc_media_player.set_time(0)
-        self.vlc_media_player.play()
-        self.vlc_media_player.audio_set_mute(True)
-        if not self.media_state_wait(vlc.State.Playing):
-            return
-        # pause
-        self.vlc_media_player.pause()
-        self.vlc_media_player.set_time(0)
-        # Get audio tracks, insert in combobox
-        audio_tracks = self.vlc_media_player.audio_get_track_description()
-        self.audio_tracks_combobox.clear()
-        for audio_track in audio_tracks:
-            self.audio_tracks_combobox.addItem(audio_track[1].decode(), audio_track[0])
-        # Enable audio track combobox if anything is in it
-        if len(audio_tracks) > 0:
-            self.audio_tracks_combobox.setDisabled(False)
-            # First track is "deactivated", so set to next if it exists
-            if len(audio_tracks) > 1:
-                self.audio_tracks_combobox.setCurrentIndex(1)
-        # Get subtitle tracks, insert in combobox
-        subtitles_tracks = self.vlc_media_player.video_get_spu_description()
-        self.subtitle_tracks_combobox.clear()
-        for subtitle_track in subtitles_tracks:
-            self.subtitle_tracks_combobox.addItem(subtitle_track[1].decode(), subtitle_track[0])
-        # Enable subtitle track combobox is anything in it
-        if len(subtitles_tracks) > 0:
-            self.subtitle_tracks_combobox.setDisabled(False)
-        self.vlc_media_player.audio_set_mute(False)
+        if self.audio_cd:
+            self.vlc_media = self.audio_cd_tracks.item_at_index(index)
+            self.vlc_media_player.set_media(self.vlc_media)
+            self.vlc_media_player.set_time(0)
+            self.vlc_media_player.play()
+            self.vlc_media_player.audio_set_mute(True)
+            if not self.media_state_wait(vlc.State.Playing):
+                return
+            # pause
+            self.vlc_media_player.pause()
+            self.vlc_media_player.set_time(0)
+            self.vlc_media_player.audio_set_mute(False)
+            self.toggle_disable_player(False)
+        else:
+            self.vlc_media_player.set_title(index)
+            self.vlc_media_player.set_time(0)
+            self.vlc_media_player.play()
+            self.vlc_media_player.audio_set_mute(True)
+            if not self.media_state_wait(vlc.State.Playing):
+                return
+            # pause
+            self.vlc_media_player.pause()
+            self.vlc_media_player.set_time(0)
+            # Get audio tracks, insert in combobox
+            audio_tracks = self.vlc_media_player.audio_get_track_description()
+            self.audio_tracks_combobox.clear()
+            for audio_track in audio_tracks:
+                self.audio_tracks_combobox.addItem(audio_track[1].decode(), audio_track[0])
+            # Enable audio track combobox if anything is in it
+            if len(audio_tracks) > 0:
+                self.audio_tracks_combobox.setDisabled(False)
+                # First track is "deactivated", so set to next if it exists
+                if len(audio_tracks) > 1:
+                    self.audio_tracks_combobox.setCurrentIndex(1)
+            # Get subtitle tracks, insert in combobox
+            subtitles_tracks = self.vlc_media_player.video_get_spu_description()
+            self.subtitle_tracks_combobox.clear()
+            for subtitle_track in subtitles_tracks:
+                self.subtitle_tracks_combobox.addItem(subtitle_track[1].decode(), subtitle_track[0])
+            # Enable subtitle track combobox is anything in it
+            if len(subtitles_tracks) > 0:
+                self.subtitle_tracks_combobox.setDisabled(False)
+            self.vlc_media_player.audio_set_mute(False)
+            # If a title or audio track is available the player is enabled
+            if self.title_combo_box.count() > 0 or len(audio_tracks) > 0:
+                self.toggle_disable_player(False)
+        # Set media length info
         self.playback_length = self.vlc_media_player.get_length()
         self.position_horizontalslider.setMaximum(self.playback_length)
         # setup start and end time
@@ -359,9 +414,6 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.start_timeedit.setMaximumTime(playback_length_time)
         self.end_timeedit.setMaximumTime(playback_length_time)
         self.end_timeedit.setTime(playback_length_time)
-        # If a title or audio track is available the player is enabled
-        if self.title_combo_box.count() > 0 or len(audio_tracks) > 0:
-            self.toggle_disable_player(False)
 
     @QtCore.pyqtSlot(int)
     def on_audio_tracks_combobox_currentIndexChanged(self, index):
@@ -465,11 +517,15 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             end_time.second() * 1000 + \
             end_time.msec()
         title = self.title_combo_box.itemData(self.title_combo_box.currentIndex())
-        audio_track = self.audio_tracks_combobox.itemData(self.audio_tracks_combobox.currentIndex())
-        subtitle_track = self.subtitle_tracks_combobox.itemData(self.subtitle_tracks_combobox.currentIndex())
         path = self.media_path_combobox.currentText()
-        optical = 'optical:' + str(title) + ':' + str(audio_track) + ':' + str(subtitle_track) + ':' + str(
-            start_time_ms) + ':' + str(end_time_ms) + ':' + path
+        optical = ''
+        if self.audio_cd:
+            optical = 'optical:' + str(title) + ':-1:-1:' + str(start_time_ms) + ':' + str(end_time_ms) + ':' + path
+        else:
+            audio_track = self.audio_tracks_combobox.itemData(self.audio_tracks_combobox.currentIndex())
+            subtitle_track = self.subtitle_tracks_combobox.itemData(self.subtitle_tracks_combobox.currentIndex())
+            optical = 'optical:' + str(title) + ':' + str(audio_track) + ':' + str(subtitle_track) + ':' + str(
+                start_time_ms) + ':' + str(end_time_ms) + ':' + path
         self.media_item.add_optical_clip(optical)
 
     def media_state_wait(self, media_state):
@@ -513,16 +569,34 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         elif sys.platform.startswith('linux'):
             # Get disc devices from dbus and find the ones that are optical
             bus = dbus.SystemBus()
-            udev_manager_obj = bus.get_object('org.freedesktop.UDisks', '/org/freedesktop/UDisks')
-            udev_manager = dbus.Interface(udev_manager_obj, 'org.freedesktop.UDisks')
-            for dev in udev_manager.EnumerateDevices():
-                device_obj = bus.get_object("org.freedesktop.UDisks", dev)
-                device_props = dbus.Interface(device_obj, dbus.PROPERTIES_IFACE)
-                if device_props.Get('org.freedesktop.UDisks.Device', 'DeviceIsDrive'):
-                    drive_props = device_props.Get('org.freedesktop.UDisks.Device', 'DriveMediaCompatibility')
-                    if any('optical' in prop for prop in drive_props):
-                        self.media_path_combobox.addItem(device_props.Get('org.freedesktop.UDisks.Device',
-                                                                          'DeviceFile'))
+            try:
+                udev_manager_obj = bus.get_object('org.freedesktop.UDisks', '/org/freedesktop/UDisks')
+                udev_manager = dbus.Interface(udev_manager_obj, 'org.freedesktop.UDisks')
+                for dev in udev_manager.EnumerateDevices():
+                    device_obj = bus.get_object("org.freedesktop.UDisks", dev)
+                    device_props = dbus.Interface(device_obj, dbus.PROPERTIES_IFACE)
+                    if device_props.Get('org.freedesktop.UDisks.Device', 'DeviceIsDrive'):
+                        drive_props = device_props.Get('org.freedesktop.UDisks.Device', 'DriveMediaCompatibility')
+                        if any('optical' in prop for prop in drive_props):
+                            self.media_path_combobox.addItem(device_props.Get('org.freedesktop.UDisks.Device',
+                                                                              'DeviceFile'))
+                return
+            except dbus.exceptions.DBusException:
+                log.debug('could not use udisks, will try udisks2')
+            udev_manager_obj = bus.get_object('org.freedesktop.UDisks2', '/org/freedesktop/UDisks2')
+            udev_manager = dbus.Interface(udev_manager_obj, 'org.freedesktop.DBus.ObjectManager')
+            for k,v in udev_manager.GetManagedObjects().items():
+                drive_info = v.get('org.freedesktop.UDisks2.Drive', {})
+                drive_props = drive_info.get('MediaCompatibility')
+                if drive_props and any('optical' in prop for prop in drive_props):
+                    for device in udev_manager.GetManagedObjects().values():
+                        if dbus.String('org.freedesktop.UDisks2.Block') in device:
+                            if device[dbus.String('org.freedesktop.UDisks2.Block')][dbus.String('Drive')] == k:
+                                block_file = ''
+                                for c in device[dbus.String('org.freedesktop.UDisks2.Block')][dbus.String('PreferredDevice')]:
+                                    if chr(c) != '\x00':
+                                        block_file += chr(c)
+                                self.media_path_combobox.addItem(block_file)
         elif sys.platform.startswith('darwin'):
             # Look for DVD folders in devices to find optical devices
             volumes = os.listdir('/Volumes')

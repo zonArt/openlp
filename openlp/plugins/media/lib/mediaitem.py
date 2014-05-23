@@ -428,6 +428,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         :return: Time string in format: hh.mm.ss,ttt
         """
         seconds, millis = divmod(milliseconds, 1000)
-        minutes, seconds = divmod(millis, 60)
+        minutes, seconds = divmod(seconds, 60)
         hours, minutes = divmod(minutes, 60)
         return "%02d:%02d:%02d,%03d" % (hours, minutes, seconds, millis)
