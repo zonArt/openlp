@@ -159,9 +159,10 @@ def _get_os_dir_path(dir_type):
         return os.path.join(str(os.getenv('HOME')), 'Library', 'Application Support', 'openlp')
     else:
         if dir_type == AppLocation.LanguageDir:
-            directory = os.path.join('/usr', 'local', 'share', 'openlp')
-            if os.path.exists(directory):
-                return directory
+            for prefix in ['/usr/local', '/usr']:
+                directory = os.path.join(prefix, 'share', 'openlp')
+                if os.path.exists(directory):
+                    return directory
             return os.path.join('/usr', 'share', 'openlp')
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.DataDir:
