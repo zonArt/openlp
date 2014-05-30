@@ -156,7 +156,7 @@ class TestUi(TestCase):
 
     def test_create_action_2(self):
         """
-        Test creating an action
+        Test creating an action with the 'checked', 'enabled' and 'visible' properties.
         """
         # GIVEN: A dialog
         dialog = QtGui.QDialog()
