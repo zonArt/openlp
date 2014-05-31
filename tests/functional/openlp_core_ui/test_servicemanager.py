@@ -71,7 +71,18 @@ class TestServiceManager(TestCase):
         service_manager._save_lite = False
         service_manager.service_theme = 'test_theme'
         service = service_manager.create_basic_service()[0]
-        # THEN: The the controller should be registered in the registry.
+        # THEN: The controller should be registered in the registry.
         self.assertNotEqual(service, None, 'The base service should be created')
         self.assertEqual(service['openlp_core']['service-theme'], 'test_theme', 'The test theme should be saved')
         self.assertEqual(service['openlp_core']['lite-service'], False, 'The lite service should be saved')
+
+    def supported_suffixes_test(self):
+        """
+        Test the create basic service array
+        """
+        # GIVEN: A new service manager instance.
+        service_manager = ServiceManager(None)
+        # WHEN: a suffix is added.
+        service_manager.supported_suffixes(['txt'])
+        # THEN: The the controller should be registered in the registry.
+        self.assertEqual('txt' in service_manager.suffixes, True, 'The suffix should be in the list')

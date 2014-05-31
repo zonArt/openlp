@@ -74,6 +74,7 @@ class EasyWorshipSongImport(SongImport):
     """
     def __init__(self, manager, **kwargs):
         super(EasyWorshipSongImport, self).__init__(manager, **kwargs)
+        self.entry_error_log = ''
 
     def do_import(self):
         """
@@ -183,7 +184,12 @@ class EasyWorshipSongImport(SongImport):
             self.set_song_import_object(authors, inflated_content)
             if self.stop_import_flag:
                 break
-            if not self.finish():
+            if self.entry_error_log:
+                self.log_error(self.import_source,
+                               translate('SongsPlugin.EasyWorshipSongImport', '"%s" could not be imported. %s')
+                               % (self.title, self.entry_error_log))
+                self.entry_error_log = ''
+            elif not self.finish():
                 self.log_error(self.import_source)
             # Set file_pos for next entry
             file_pos += entry_length
@@ -281,7 +287,7 @@ class EasyWorshipSongImport(SongImport):
                 raw_record = db_file.read(record_size)
                 self.fields = self.record_structure.unpack(raw_record)
                 self.set_defaults()
-                self.title = self.get_field(fi_title).decode()
+                self.title = self.get_field(fi_title).decode('unicode-escape')
                 # Get remaining fields.
                 copy = self.get_field(fi_copy)
                 admin = self.get_field(fi_admin)
@@ -289,23 +295,28 @@ class EasyWorshipSongImport(SongImport):
                 authors = self.get_field(fi_author)
                 words = self.get_field(fi_words)
                 if copy:
-                    self.copyright = copy.decode()
+                    self.copyright = copy.decode('unicode-escape')
                 if admin:
                     if copy:
                         self.copyright += ', '
                     self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
-                                                'Administered by %s') % admin.decode()
+                                                'Administered by %s') % admin.decode('unicode-escape')
                 if ccli:
-                    self.ccli_number = ccli.decode()
+                    self.ccli_number = ccli.decode('unicode-escape')
                 if authors:
-                    authors = authors.decode()
+                    authors = authors.decode('unicode-escape')
                 else:
                     authors = ''
                 # Set the SongImport object members.
                 self.set_song_import_object(authors, words)
                 if self.stop_import_flag:
                     break
-                if not self.finish():
+                if self.entry_error_log:
+                    self.log_error(self.import_source,
+                                   translate('SongsPlugin.EasyWorshipSongImport', '"%s" could not be imported. %s')
+                                   % (self.title, self.entry_error_log))
+                    self.entry_error_log = ''
+                elif not self.finish():
                     self.log_error(self.import_source)
         db_file.close()
         self.memo_file.close()
@@ -328,8 +339,19 @@ class EasyWorshipSongImport(SongImport):
                 self.add_author(author_name.strip())
         if words:
             # Format the lyrics
-            result = strip_rtf(words.decode(), self.encoding)
+            result = None
+            decoded_words = None
+            try:
+                decoded_words = words.decode()
+            except UnicodeDecodeError:
+                # The unicode chars in the rtf was not escaped in the expected manner
+                self.entry_error_log = translate('SongsPlugin.EasyWorshipSongImport',
+                                                 'Unexpected data formatting.')
+                return
+            result = strip_rtf(decoded_words, self.encoding)
             if result is None:
+                self.entry_error_log = translate('SongsPlugin.EasyWorshipSongImport',
+                                                 'No song text found.')
                 return
             words, self.encoding = result
             verse_type = VerseType.tags[VerseType.Verse]

@@ -495,8 +495,8 @@ s
             if service_item:
                 service_item.from_plugin = True
                 self.preview_controller.add_service_item(service_item)
-                if keep_focus:
-                    self.list_view.setFocus()
+                if not keep_focus:
+                    self.preview_controller.preview_widget.setFocus()
 
     def on_live_click(self):
         """
@@ -535,6 +535,7 @@ s
             if remote:
                 service_item.will_auto_start = True
             self.live_controller.add_service_item(service_item)
+            self.live_controller.preview_widget.setFocus()
 
     def create_item_from_id(self, item_id):
         """
