@@ -196,13 +196,13 @@ class SongSelectImport(object):
         db_song.lyrics = song_xml.extract_xml()
         clean_song(self.db_manager, db_song)
         self.db_manager.save_object(db_song)
-        db_song.authors = []
+        db_song.authors_songs = []
         for author_name in song['authors']:
             author = self.db_manager.get_object_filtered(Author, Author.display_name == author_name)
             if not author:
                 author = Author.populate(first_name=author_name.rsplit(' ', 1)[0],
                                          last_name=author_name.rsplit(' ', 1)[1],
                                          display_name=author_name)
-            db_song.authors.append(author)
+            db_song.add_author(author)
         self.db_manager.save_object(db_song)
         return db_song

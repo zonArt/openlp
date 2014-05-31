@@ -400,7 +400,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog, RegistryPrope
         """
         Merges two authors into one author.
 
-        :param old_author:  The object, which was edited, that will be deleted
+        :param old_author: The object, which was edited, that will be deleted
         """
         # Find the duplicate.
         existing_author = self.manager.get_object_filtered(
@@ -415,11 +415,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog, RegistryPrope
         # Find the songs, which have the old_author as author.
         songs = self.manager.get_all_objects(Song, Song.authors.contains(old_author))
         for song in songs:
-            # We check if the song has already existing_author as author. If
-            # that is not the case we add it.
-            if existing_author not in song.authors:
-                song.authors.append(existing_author)
-            song.authors.remove(old_author)
+            for author_song in song.authors_songs:
+                song.add_author(existing_author, author_song.author_type)
+                song.remove_author(old_author, author_song.author_type)
             self.manager.save_object(song)
         self.manager.delete_object(Author, old_author.id)
 

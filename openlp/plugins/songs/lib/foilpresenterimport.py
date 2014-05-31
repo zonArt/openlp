@@ -343,7 +343,7 @@ class FoilPresenter(object):
                 author = Author.populate(display_name=display_name, last_name=display_name.split(' ')[-1],
                                          first_name=' '.join(display_name.split(' ')[:-1]))
                 self.manager.save_object(author)
-            song.authors.append(author)
+            song.add_author(author)
 
     def _process_cclinumber(self, foilpresenterfolie, song):
         """
