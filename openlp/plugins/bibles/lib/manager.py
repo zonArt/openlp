@@ -38,6 +38,7 @@ from .csvbible import CSVBible
 from .http import HTTPBible
 from .opensong import OpenSongBible
 from .osis import OSISBible
+from .zefania import ZefaniaBible
 
 
 log = logging.getLogger(__name__)
@@ -52,6 +53,7 @@ class BibleFormat(object):
     CSV = 1
     OpenSong = 2
     WebDownload = 3
+    Zefania = 4
 
     @staticmethod
     def get_class(bible_format):
@@ -68,6 +70,8 @@ class BibleFormat(object):
             return OpenSongBible
         elif bible_format == BibleFormat.WebDownload:
             return HTTPBible
+        elif bible_format == BibleFormat.Zefania:
+            return ZefaniaBible
         else:
             return None
 
@@ -81,6 +85,7 @@ class BibleFormat(object):
             BibleFormat.CSV,
             BibleFormat.OpenSong,
             BibleFormat.WebDownload,
+            BibleFormar.Zefania,
         ]
 
 
