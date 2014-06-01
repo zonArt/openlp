@@ -1081,6 +1081,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         :param field:
         :param message: The data passed in from a remove message
         """
+        self.log_debug(message)
         self.set_item(int(message))
 
     def set_item(self, index):
@@ -1089,7 +1090,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
 
         :param index: The index of the service item list to be actioned.
         """
-        if 0 >= index < self.service_manager_list.topLevelItemCount():
+        if 0 <= index < self.service_manager_list.topLevelItemCount():
             item = self.service_manager_list.topLevelItem(index)
             self.service_manager_list.setCurrentItem(item)
             self.make_live()
