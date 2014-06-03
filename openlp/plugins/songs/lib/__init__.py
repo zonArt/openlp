@@ -390,12 +390,12 @@ def clean_song(manager, song):
     verses = SongXML().get_verses(song.lyrics)
     song.search_lyrics = ' '.join([clean_string(verse[1]) for verse in verses])
     # The song does not have any author, add one.
-    if not song.authors and not song.authors_songs:  # Need to check both relations
+    if not song.authors_songs:
         name = SongStrings.AuthorUnknown
         author = manager.get_object_filtered(Author, Author.display_name == name)
         if author is None:
             author = Author.populate(display_name=name, last_name='', first_name='')
-        song.authors.append(author)
+        song.add_author(author)
     if song.copyright:
         song.copyright = CONTROL_CHARS.sub('', song.copyright).strip()
 

@@ -115,6 +115,33 @@ class Song(BaseModel):
         """
         self.sort_key = get_natural_key(self.title)
 
+    def add_author(self, author, author_type=None):
+        """
+        Add an author to the song if it not yet exists
+
+        :param author: Author object
+        :param author_type: AuthorType constant or None
+        """
+        for author_song in self.authors_songs:
+            if author_song.author == author and author_song.author_type == author_type:
+                return
+        new_author_song = AuthorSong()
+        new_author_song.author = author
+        new_author_song.author_type = author_type
+        self.authors_songs.append(new_author_song)
+
+    def remove_author(self, author, author_type=None):
+        """
+        Remove an existing author from the song
+
+        :param author: Author object
+        :param author_type: AuthorType constant or None
+        """
+        for author_song in self.authors_songs:
+            if author_song.author == author and author_song.author_type == author_type:
+                self.authors_songs.remove(author_song)
+                return
+
 
 class Topic(BaseModel):
     """
@@ -284,9 +311,10 @@ def init_schema(url):
     mapper(Book, song_books_table)
     mapper(MediaFile, media_files_table)
     mapper(Song, songs_table, properties={
-        # Use the authors_songs relation when you need access to the 'author_type' attribute.
+        # Use the authors_songs relation when you need access to the 'author_type' attribute
+        # or when creating new relations
         'authors_songs': relation(AuthorSong, cascade="all, delete-orphan"),
-        'authors': relation(Author, secondary=authors_songs_table),
+        'authors': relation(Author, secondary=authors_songs_table, viewonly=True),
         'book': relation(Book, backref='songs'),
         'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
         'topics': relation(Topic, backref='songs', secondary=songs_topics_table)
