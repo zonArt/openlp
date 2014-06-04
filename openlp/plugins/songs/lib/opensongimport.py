@@ -45,11 +45,11 @@ class OpenSongImport(SongImport):
     """
     Import songs exported from OpenSong
 
-    The format is described loosly on the `OpenSong File Format Specification
+    The format is described loosely on the `OpenSong File Format Specification
     <http://www.opensong.org/d/manual/song_file_format_specification>`_ page on the OpenSong web site. However, it
     doesn't describe the <lyrics> section, so here's an attempt:
 
-    If the first charachter of a line is a space, then the rest of that line is lyrics. If it is not a space the
+    If the first character of a line is a space, then the rest of that line is lyrics. If it is not a space the
     following applies.
 
     Verses can be expressed in one of 2 ways, either in complete verses, or by line grouping, i.e. grouping all line 1's
@@ -93,11 +93,18 @@ class OpenSongImport(SongImport):
 
     All verses are imported and tagged appropriately.
 
-    Guitar chords can be provided "above" the lyrics (the line is preceeded by a period "."), and one or more "_" can
+    Guitar chords can be provided "above" the lyrics (the line is preceded by a period "."), and one or more "_" can
     be used to signify long-drawn-out words. Chords and "_" are removed by this importer. For example::
 
         . A7        Bm
         1 Some____ Words
+
+    Lines that contain only whitespace are ignored.
+    | indicates a blank line, and || a new slide.
+
+        Slide 1 Line 1|Slide 1 Line 2||Slide 2 Line 1|Slide 2 Line 2
+
+    Lines beginning with ; are comments
 
     The <presentation> tag is used to populate the OpenLP verse display order field. The Author and Copyright tags are
     also imported to the appropriate places.
@@ -107,9 +114,14 @@ class OpenSongImport(SongImport):
         """
         Initialise the class.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(OpenSongImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
+        """
+        Receive a single file or a list of files to import.
+        """
+        if not isinstance(self.import_source, list):
+            return
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             if self.stop_import_flag:
@@ -141,19 +153,41 @@ class OpenSongImport(SongImport):
             'author': self.parse_author,
             'title': 'title',
             'aka': 'alternate_title',
-            'hymn_number': 'song_number'
+            'hymn_number': self.parse_song_book_name_and_number,
+            'user1': self.add_comment,
+            'user2': self.add_comment,
+            'user3': self.add_comment
         }
         for attr, fn_or_string in list(decode.items()):
             if attr in fields:
                 ustring = str(root.__getattr__(attr))
                 if isinstance(fn_or_string, str):
-                    setattr(self, fn_or_string, ustring)
+                    if attr in ['ccli']:
+                        if ustring:
+                            setattr(self, fn_or_string, int(ustring))
+                        else:
+                            setattr(self, fn_or_string, None)
+                    else:
+                        setattr(self, fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
-        if 'theme' in fields and str(root.theme) not in self.topics:
-            self.topics.append(str(root.theme))
-        if 'alttheme' in fields and str(root.alttheme) not in self.topics:
-            self.topics.append(str(root.alttheme))
+        # Themes look like "God: Awe/Wonder", but we just want
+        # "Awe" and "Wonder".  We use a set to ensure each topic
+        # is only added once, in case it is already there, which
+        # is actually quite likely if the alttheme is set
+        topics = set(self.topics)
+        if 'theme' in fields:
+            theme = str(root.theme)
+            subthemes = theme[theme.find(':')+1:].split('/')
+            for topic in subthemes:
+                topics.add(topic.strip())
+        if 'alttheme' in fields:
+            theme = str(root.alttheme)
+            subthemes = theme[theme.find(':')+1:].split('/')
+            for topic in subthemes:
+                topics.add(topic.strip())
+        self.topics = list(topics)
+        self.topics.sort()
         # data storage while importing
         verses = {}
         # keep track of verses appearance order
@@ -168,7 +202,7 @@ class OpenSongImport(SongImport):
         else:
             lyrics = ''
         for this_line in lyrics.split('\n'):
-            if not this_line:
+            if not this_line.strip():
                 continue
             # skip this line if it is a comment
             if this_line.startswith(';'):
@@ -209,8 +243,14 @@ class OpenSongImport(SongImport):
             # Tidy text and remove the ____s from extended words
             this_line = self.tidy_text(this_line)
             this_line = this_line.replace('_', '')
-            this_line = this_line.replace('|', '\n')
+            this_line = this_line.replace('||', '\n[---]\n')
             this_line = this_line.strip()
+            # If the line consists solely of a '|', then just use the implicit newline
+            # Otherwise, add a newline for each '|'
+            if this_line == '|':
+                this_line = ''
+            else:
+                this_line = this_line.replace('|', '\n')
             verses[verse_tag][verse_num][inst].append(this_line)
         # done parsing
         # add verses in original order
@@ -223,7 +263,14 @@ class OpenSongImport(SongImport):
             verse_def = '%s%s' % (verse_tag, verse_num[:length])
             verse_joints[verse_def] = '%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
                 if verse_def in verse_joints else lines
-        for verse_def, lines in verse_joints.items():
+        # Parsing the dictionary produces the elements in a non-intuitive order.  While it "works", it's not a
+        # natural layout should the user come back to edit the song.  Instead we sort by the verse type, so that we
+        # get all the verses in order (v1, v2, ...), then the chorus(es), bridge(s), pre-chorus(es) etc.  We use a
+        # tuple for the key, since tuples naturally sort in this manner.
+        verse_defs = sorted(verse_joints.keys(),
+                            key=lambda verse_def: (VerseType.from_tag(verse_def[0]), int(verse_def[1:])))
+        for verse_def in verse_defs:
+            lines = verse_joints[verse_def]
             self.add_verse(lines, verse_def)
         if not self.verses:
             self.add_verse('')
@@ -244,6 +291,8 @@ class OpenSongImport(SongImport):
                     # Assume it's no.1 if there are no digits
                     verse_tag = verse_def
                     verse_num = '1'
+                verse_index = VerseType.from_loose_input(verse_tag)
+                verse_tag = VerseType.tags[verse_index]
                 verse_def = '%s%s' % (verse_tag, verse_num)
                 if verse_num in verses.get(verse_tag, {}):
                     self.verse_order_list.append(verse_def)
