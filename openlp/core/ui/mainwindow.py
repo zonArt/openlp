@@ -598,7 +598,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if self.arguments:
             self.open_cmd_line_files()
         elif Settings().value(self.general_settings_section + '/auto open'):
-            self.service_manager_contents.load_Last_file()
+            self.service_manager_contents.load_last_file()
         self.timer_version_id = self.startTimer(1000)
         view_mode = Settings().value('%s/view mode' % self.general_settings_section)
         if view_mode == 'default':
