@@ -401,9 +401,12 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
 
         :param suffix_list: New Suffix's to be supported
         """
-        for suffix in suffix_list:
-            if suffix not in self.suffixes:
-                self.suffixes.append(suffix)
+        if isinstance(suffix_list, str):
+            self.suffixes.append(suffix_list)
+        else:
+            for suffix in suffix_list:
+                if suffix not in self.suffixes:
+                    self.suffixes.append(suffix)
 
     def on_new_service_clicked(self, field=None):
         """

@@ -92,7 +92,7 @@ class PresentationMediaItem(MediaManagerItem):
                 for file_type in file_types:
                     if file_type not in file_type_string:
                         file_type_string += '*.%s ' % file_type
-                        self.service_manager.supported_suffixes([file_type])
+                        self.service_manager.supported_suffixes(file_type)
         self.on_new_file_masks = translate('PresentationPlugin.MediaItem', 'Presentations (%s)') % file_type_string
 
     def required_icons(self):
