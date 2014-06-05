@@ -82,10 +82,10 @@ class TestServiceManager(TestCase):
         """
         # GIVEN: A new service manager instance.
         service_manager = ServiceManager(None)
-        # WHEN: a suffix is added.
+        # WHEN: a suffix is added as an individual or a list.
         service_manager.supported_suffixes('txt')
         service_manager.supported_suffixes(['pptx', 'ppt'])
-        # THEN: The the controller should be registered in the registry.
+        # THEN: The suffixes should be available to test.
         self.assertEqual('txt' in service_manager.suffixes, True, 'The suffix txt should be in the list')
         self.assertEqual('ppt' in service_manager.suffixes, True, 'The suffix ppt should be in the list')
         self.assertEqual('pptx' in service_manager.suffixes, True, 'The suffix pptx should be in the list')
