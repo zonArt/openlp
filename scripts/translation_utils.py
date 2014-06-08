@@ -175,7 +175,7 @@ def run(command):
     process = QtCore.QProcess()
     process.start(command)
     while process.waitForReadyRead():
-        print_verbose('ReadyRead: %s' % QtCore.QString(process.readAll()))
+        print_verbose('ReadyRead: %s' % process.readAll())
     print_verbose('Error(s):\n%s' % process.readAllStandardError())
     print_verbose('Output:\n%s' % process.readAllStandardOutput())
 
@@ -194,7 +194,7 @@ def download_translations():
         password = getpass('   Transifex password: ')
     # First get the list of languages
     url = SERVER_URL + 'resource/ents/'
-    base64string = base64.encodbytes('%s:%s' % (username, password))[:-1]
+    base64string = base64.encodebytes('%s:%s' % (username, password))[:-1]
     auth_header = 'Basic %s' % base64string
     request = urllib.request.Request(url + '?details')
     request.add_header('Authorization', auth_header)
@@ -261,7 +261,7 @@ def prepare_project():
                 lines.append('TRANSLATIONS += %s' % line)
     lines.sort()
     file = open(os.path.join(start_dir, 'openlp.pro'), 'w')
-    file.write('\n'.join(lines).encode('utf8'))
+    file.write('\n'.join(lines))
     file.close()
     print_quiet('   Done.')
 
