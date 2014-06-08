@@ -153,3 +153,52 @@ class TestMediaItem(TestCase, TestMixin):
 
         # THEN: The songbook should be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12'])
+
+    def authors_match_test(self):
+        """
+        Test the author matching when importing a song from a service
+        """
+        # GIVEN: A song and a string with authors
+        song = MagicMock()
+        song.authors = []
+        author = MagicMock()
+        author.display_name = "Hans Wurst"
+        song.authors.append(author)
+        author2 = MagicMock()
+        author2.display_name = "Max Mustermann"
+        song.authors.append(author2)
+        # There are occasions where an author appears twice in a song (with different types).
+        # We need to make sure that this case works (lp#1313538)
+        author3 = MagicMock()
+        author3.display_name = "Max Mustermann"
+        song.authors.append(author3)
+        authors_str = "Hans Wurst, Max Mustermann, Max Mustermann"
+
+        # WHEN: Checking for matching
+        result = self.media_item._authors_match(song, authors_str)
+
+        # THEN: They should match
+        self.assertTrue(result, "Authors should match")
+
+    def authors_dont_match_test(self):
+        # GIVEN: A song and a string with authors
+        song = MagicMock()
+        song.authors = []
+        author = MagicMock()
+        author.display_name = "Hans Wurst"
+        song.authors.append(author)
+        author2 = MagicMock()
+        author2.display_name = "Max Mustermann"
+        song.authors.append(author2)
+        # There are occasions where an author appears twice in a song (with different types).
+        # We need to make sure that this case works (lp#1313538)
+        author3 = MagicMock()
+        author3.display_name = "Max Mustermann"
+        song.authors.append(author3)
+
+        # WHEN: An author is missing in the string
+        authors_str = "Hans Wurst, Max Mustermann"
+        result = self.media_item._authors_match(song, authors_str)
+
+        # THEN: They should not match
+        self.assertFalse(result, "Authors should not match")

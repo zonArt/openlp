@@ -344,7 +344,7 @@ class TestSongSelect(TestCase):
             mocked_db_manager.get_object_filtered.assert_called_with(MockedAuthor, False)
             MockedAuthor.populate.assert_called_with(first_name='Public', last_name='Domain',
                                                      display_name='Public Domain')
-            self.assertEqual(1, len(result.authors), 'There should only be one author')
+            self.assertEqual(1, len(result.authors_songs), 'There should only be one author')
 
     def save_song_existing_author_test(self):
         """
@@ -379,4 +379,4 @@ class TestSongSelect(TestCase):
                              'The save_object() method should have been called twice')
             mocked_db_manager.get_object_filtered.assert_called_with(MockedAuthor, False)
             self.assertEqual(0, MockedAuthor.populate.call_count, 'A new author should not have been instantiated')
-            self.assertEqual(1, len(result.authors), 'There should only be one author')
+            self.assertEqual(1, len(result.authors_songs), 'There should only be one author')

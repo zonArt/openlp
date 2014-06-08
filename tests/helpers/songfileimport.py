@@ -33,7 +33,7 @@ song files from third party applications.
 import json
 from unittest import TestCase
 
-from tests.functional import patch, MagicMock
+from tests.functional import patch, MagicMock, call
 
 
 class SongImportTestHelper(TestCase):
@@ -56,13 +56,13 @@ class SongImportTestHelper(TestCase):
             'openlp.plugins.songs.lib.%s.%s.add_verse' % (self.importer_module_name, self.importer_class_name))
         self.finish_patcher = patch(
             'openlp.plugins.songs.lib.%s.%s.finish' % (self.importer_module_name, self.importer_class_name))
-        self.parse_author_patcher = patch(
-            'openlp.plugins.songs.lib.%s.%s.parse_author' % (self.importer_module_name, self.importer_class_name))
+        self.add_author_patcher = patch(
+            'openlp.plugins.songs.lib.%s.%s.add_author' % (self.importer_module_name, self.importer_class_name))
         self.song_import_patcher = patch('openlp.plugins.songs.lib.%s.SongImport' % self.importer_module_name)
         self.mocked_add_copyright = self.add_copyright_patcher.start()
         self.mocked_add_verse = self.add_verse_patcher.start()
         self.mocked_finish = self.finish_patcher.start()
-        self.mocked_parse_author = self.parse_author_patcher.start()
+        self.mocked_add_author = self.add_author_patcher.start()
         self.mocked_song_importer = self.song_import_patcher.start()
         self.mocked_manager = MagicMock()
         self.mocked_import_wizard = MagicMock()
@@ -75,7 +75,7 @@ class SongImportTestHelper(TestCase):
         self.add_copyright_patcher.stop()
         self.add_verse_patcher.stop()
         self.finish_patcher.stop()
-        self.parse_author_patcher.stop()
+        self.add_author_patcher.stop()
         self.song_import_patcher.stop()
 
     def load_external_result_data(self, file_name):
@@ -112,14 +112,17 @@ class SongImportTestHelper(TestCase):
         self.assertIsNone(importer.do_import(), 'do_import should return None when it has completed')
         self.assertEqual(importer.title, title, 'title for %s should be "%s"' % (source_file_name, title))
         for author in author_calls:
-            self.mocked_parse_author.assert_any_call(author)
+            self.mocked_add_author.assert_any_call(author)
         if song_copyright:
             self.mocked_add_copyright.assert_called_with(song_copyright)
         if ccli_number:
             self.assertEqual(importer.ccli_number, ccli_number,
                              'ccli_number for %s should be %s' % (source_file_name, ccli_number))
+        expected_calls = []
         for verse_text, verse_tag in add_verse_calls:
             self.mocked_add_verse.assert_any_call(verse_text, verse_tag)
+            expected_calls.append(call(verse_text, verse_tag))
+        self.mocked_add_verse.assert_has_calls(expected_calls, any_order=False)
         if topics:
             self.assertEqual(importer.topics, topics, 'topics for %s should be %s' % (source_file_name, topics))
         if comments:
@@ -132,7 +135,7 @@ class SongImportTestHelper(TestCase):
             self.assertEqual(importer.song_number, song_number,
                              'song_number for %s should be %s' % (source_file_name, song_number))
         if verse_order_list:
-            self.assertEqual(importer.verse_order_list, [],
+            self.assertEqual(importer.verse_order_list, verse_order_list,
                              'verse_order_list for %s should be %s' % (source_file_name, verse_order_list))
         self.mocked_finish.assert_called_with()
 

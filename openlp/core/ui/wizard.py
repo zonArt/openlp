@@ -51,6 +51,7 @@ class WizardStrings(object):
     CSV = 'CSV'
     OS = 'OpenSong'
     OSIS = 'OSIS'
+    ZEF = 'Zefania'
     # These strings should need a good reason to be retranslated elsewhere.
     FinishedImport = translate('OpenLP.Ui', 'Finished import.')
     FormatLabel = translate('OpenLP.Ui', 'Format:')
