@@ -154,7 +154,7 @@ class TestUi(TestCase):
         self.assertEqual('my tooltip', action.toolTip())
         self.assertEqual('my statustip', action.statusTip())
 
-    def test_create_action_2(self):
+    def test_create_checked_enabled_visible_action(self):
         """
         Test creating an action with the 'checked', 'enabled' and 'visible' properties.
         """
