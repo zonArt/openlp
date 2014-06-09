@@ -483,21 +483,6 @@ def strip_rtf(text, default_encoding=None):
             elif brace == '}' and len(stack) > 0:
                 # Pop state
                 ucskip, ignorable, font = stack.pop()
-        # \x (not a letter)
-        elif char:
-            curskip = 0
-            if char == '~' and not ignorable:
-                out.append('\xA0')
-            elif char in '{}\\' and not ignorable:
-                out.append(char)
-            elif char in '\r\n' and not ignorable:
-                out.append(SPECIAL_CHARS['par'])
-            elif char == '-' and not ignorable:
-                out.append('\u00AD')
-            elif char == '_' and not ignorable:
-                out.append('\u2011')
-            elif char == '*':
-                ignorable = True
         # \command
         elif word:
             curskip = 0
