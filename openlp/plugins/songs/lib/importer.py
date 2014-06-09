@@ -276,8 +276,7 @@ class SongFormat(object):
             'class': ProPresenterImport,
             'name': 'ProPresenter',
             'prefix': 'proPresenter',
-            'filter': '%s (*.pro4)' % translate('SongsPlugin.ImportWizardForm',
-                'ProPresenter Song Files')
+            'filter': '%s (*.pro4)' % translate('SongsPlugin.ImportWizardForm', 'ProPresenter Song Files')
         },
         SongBeamer: {
             'class': SongBeamerImport,

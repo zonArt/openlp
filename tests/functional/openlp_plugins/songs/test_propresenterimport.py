@@ -32,44 +32,23 @@ ProPresenter song files into the current installation database.
 """
 
 import os
-import base64
-from lxml import objectify
 
-from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import strip_rtf
-from .songimport import SongImport
+from tests.helpers.songfileimport import SongImportTestHelper
+
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'propresentersongs'))
 
 
-class ProPresenterImport(SongImport):
-    """
-    The :class:`ProPresenterImport` class provides OpenLP with the
-    ability to import ProPresenter song files.
-    """
-    def do_import(self):
-        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
-        for file_path in self.import_source:
-            if self.stop_import_flag:
-                return
-            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
-            root = objectify.parse(open(file_path, 'rb')).getroot()
-            self.process_song(root)
+class TestProPresenterFileImport(SongImportTestHelper):
 
-    def process_song(self, root):
-        self.set_defaults()
-        self.title = root.get('CCLISongTitle')
-        self.copyright = root.get('CCLICopyrightInfo')
-        self.comments = root.get('notes')
-        self.ccli_number = root.get('CCLILicenseNumber')
-        for author_key in ['author', 'artist', 'CCLIArtistCredits']:
-            author = root.get(author_key)
-            if len(author) > 0:
-                self.parse_author(author)
-        count = 0
-        for slide in root.slides.RVDisplaySlide:
-            count += 1
-            RTFData = slide.displayElements.RVTextElement.get('RTFData')
-            rtf = base64.standard_b64decode(RTFData)
-            words, encoding = strip_rtf(rtf.decode())
-            self.add_verse(words, "v%d" % count)
-        if not self.finish():
-            self.log_error(self.import_source)
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'ProPresenterImport'
+        self.importer_module_name = 'propresenterimport'
+        super(TestProPresenterFileImport, self).__init__(*args, **kwargs)
+
+    def test_song_import(self):
+        """
+        Test that loading an ProPresenter file works correctly
+        """
+        self.file_import(os.path.join(TEST_PATH, 'Amazing Grace.pro4'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
