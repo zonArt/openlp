@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -36,7 +36,7 @@ import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, translate
+from openlp.core.common import Registry, Settings, translate
 
 log = logging.getLogger(__name__)
 
@@ -63,8 +63,7 @@ class ScreenList(object):
         """
         Initialise the screen list.
 
-        ``desktop``
-            A ``QDesktopWidget`` object.
+        :param desktop:  A QDesktopWidget object.
         """
         screen_list = cls()
         screen_list.desktop = desktop
@@ -89,17 +88,17 @@ class ScreenList(object):
         log.info('screen_resolution_changed %d' % number)
         for screen in self.screen_list:
             if number == screen['number']:
-                newScreen = {
+                new_screen = {
                     'number': number,
                     'size': self.desktop.screenGeometry(number),
                     'primary': self.desktop.primaryScreen() == number
                 }
                 self.remove_screen(number)
-                self.add_screen(newScreen)
+                self.add_screen(new_screen)
                 # The screen's default size is used, that is why we have to
                 # update the override screen.
                 if screen == self.override:
-                    self.override = copy.deepcopy(newScreen)
+                    self.override = copy.deepcopy(new_screen)
                     self.set_override_display()
                 Registry().execute('config_screen_changed')
                 break
@@ -136,7 +135,7 @@ class ScreenList(object):
         Returns a list with the screens. This should only be used to display
         available screens to the user::
 
-            [u'Screen 1 (primary)', u'Screen 2']
+            ['Screen 1 (primary)', 'Screen 2']
         """
         screen_list = []
         for screen in self.screen_list:
@@ -150,16 +149,15 @@ class ScreenList(object):
         """
         Add a screen to the list of known screens.
 
-        ``screen``
-            A dict with the screen properties::
+        :param screen: A dict with the screen properties::
 
                 {
-                    u'primary': True,
-                    u'number': 0,
-                    u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
+                    'primary': True,
+                    'number': 0,
+                    'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
                 }
         """
-        log.info('Screen %d found with resolution %s', screen['number'], screen['size'])
+        log.info('Screen %d found with resolution %s' % (screen['number'], screen['size']))
         if screen['primary']:
             self.current = screen
             self.override = copy.deepcopy(self.current)
@@ -170,8 +168,7 @@ class ScreenList(object):
         """
         Remove a screen from the list of known screens.
 
-        ``number``
-            The screen number (int).
+        :param number: The screen number (int).
         """
         log.info('remove_screen %d' % number)
         for screen in self.screen_list:
@@ -184,8 +181,7 @@ class ScreenList(object):
         """
         Confirms a screen is known.
 
-        ``number``
-            The screen number (int).
+        :param number: The screen number (int).
         """
         for screen in self.screen_list:
             if screen['number'] == number:
@@ -196,10 +192,9 @@ class ScreenList(object):
         """
         Set up the current screen dimensions.
 
-        ``number``
-            The screen number (int).
+        :param number: The screen number (int).
         """
-        log.debug('set_current_display %s', number)
+        log.debug('set_current_display %s' % number)
         if number + 1 > self.display_count:
             self.current = self.screen_list[0]
         else:
@@ -211,8 +206,7 @@ class ScreenList(object):
 
     def set_override_display(self):
         """
-        Replace the current size with the override values, as the user wants to
-        have their own screen attributes.
+        Replace the current size with the override values, as the user wants to have their own screen attributes.
         """
         log.debug('set_override_display')
         self.current = copy.deepcopy(self.override)
@@ -220,8 +214,7 @@ class ScreenList(object):
 
     def reset_current_display(self):
         """
-        Replace the current values with the correct values, as the user wants to
-        use the correct screen attributes.
+        Replace the current values with the correct values, as the user wants to use the correct screen attributes.
         """
         log.debug('reset_current_display')
         self.set_current_display(self.current['number'])
@@ -230,8 +223,7 @@ class ScreenList(object):
         """
         Return the screen number that the centre of the passed window is in.
 
-        ``window``
-            A QWidget we are finding the location of.
+        :param window: A QWidget we are finding the location of.
         """
         x = window.x() + (window.width() // 2)
         y = window.y() + (window.height() // 2)
@@ -244,7 +236,6 @@ class ScreenList(object):
         """
         Loads the screen size and the monitor number from the settings.
         """
-        from openlp.core.lib import Settings
         # Add the screen settings to the settings dict. This has to be done here due to cyclic dependency.
         # Do not do this anywhere else.
         screen_settings = {

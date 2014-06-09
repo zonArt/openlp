@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -50,7 +50,8 @@ from lxml import etree, objectify
 
 log = logging.getLogger(__name__)
 
-#TODO: These classes need to be refactored into a single class.
+
+# TODO: These classes need to be refactored into a single class.
 class CustomXMLBuilder(object):
     """
     This class builds the XML used to describe songs.
@@ -89,15 +90,11 @@ class CustomXMLBuilder(object):
         """
         Add a verse to the ``<lyrics>`` tag.
 
-        ``verse_type``
-            A string denoting the type of verse. Possible values are "Chorus",
-            "Verse", "Bridge", and "Custom".
+        :param verse_type: A string denoting the type of verse. Possible values are "Chorus", "Verse", "Bridge",
+        and "Custom".
+        :param number:  An integer denoting the number of the item, for example: verse 1.
+        :param content: The actual text of the verse to be stored.
 
-        ``number``
-            An integer denoting the number of the item, for example: verse 1.
-
-        ``content``
-            The actual text of the verse to be stored.
         """
         verse = self.custom_xml.createElement('verse')
         verse.setAttribute('type', verse_type)
@@ -130,8 +127,7 @@ class CustomXMLParser(object):
         """
         Set up our custom XML parser.
 
-        ``xml``
-            The XML of the custom to be parsed.
+        :param xml: The XML of the custom to be parsed.
         """
         self.custom_xml = None
         if xml[:5] == '<?xml':
@@ -143,8 +139,7 @@ class CustomXMLParser(object):
 
     def get_verses(self):
         """
-        Iterates through the verses in the XML and returns a list of verses
-        and their attributes.
+        Iterates through the verses in the XML and returns a list of verses and their attributes.
         """
         xml_iter = self.custom_xml.getiterator()
         verse_list = []

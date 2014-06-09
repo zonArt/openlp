@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,7 +31,7 @@ The UI widgets for the rename dialog
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
 
 
@@ -44,6 +44,7 @@ class Ui_FileRenameDialog(object):
         Set up the UI
         """
         file_rename_dialog.setObjectName('file_rename_dialog')
+        file_rename_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         file_rename_dialog.resize(300, 10)
         self.dialog_layout = QtGui.QGridLayout(file_rename_dialog)
         self.dialog_layout.setObjectName('dialog_layout')

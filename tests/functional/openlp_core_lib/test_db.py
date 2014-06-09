@@ -1,14 +1,43 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 Package to test the openlp.core.lib package.
 """
+import os
 from unittest import TestCase
 
-from mock import MagicMock, patch
 from sqlalchemy.pool import NullPool
 from sqlalchemy.orm.scoping import ScopedSession
 from sqlalchemy import MetaData
 
-from openlp.core.lib.db import init_db, get_upgrade_op
+from openlp.core.lib.db import init_db, get_upgrade_op, delete_database
+from tests.functional import patch, MagicMock
 
 
 class TestDB(TestCase):
@@ -21,9 +50,9 @@ class TestDB(TestCase):
         """
         # GIVEN: Mocked out SQLAlchemy calls and return objects, and an in-memory SQLite database URL
         with patch('openlp.core.lib.db.create_engine') as mocked_create_engine, \
-            patch('openlp.core.lib.db.MetaData') as MockedMetaData, \
-            patch('openlp.core.lib.db.sessionmaker') as mocked_sessionmaker, \
-            patch('openlp.core.lib.db.scoped_session') as mocked_scoped_session:
+                patch('openlp.core.lib.db.MetaData') as MockedMetaData, \
+                patch('openlp.core.lib.db.sessionmaker') as mocked_sessionmaker, \
+                patch('openlp.core.lib.db.scoped_session') as mocked_scoped_session:
             mocked_engine = MagicMock()
             mocked_metadata = MagicMock()
             mocked_sessionmaker_object = MagicMock()
@@ -82,3 +111,44 @@ class TestDB(TestCase):
             mocked_session.bind.connect.assert_called_with()
             MockedMigrationContext.configure.assert_called_with(mocked_connection)
             MockedOperations.assert_called_with(mocked_context)
+
+    def delete_database_without_db_file_name_test(self):
+        """
+        Test that the ``delete_database`` function removes a database file, without the file name parameter
+        """
+        # GIVEN: Mocked out AppLocation class and delete_file method, a test plugin name and a db location
+        with patch('openlp.core.lib.db.AppLocation') as MockedAppLocation, \
+                patch('openlp.core.lib.db.delete_file') as mocked_delete_file:
+            MockedAppLocation.get_section_data_path.return_value = 'test-dir'
+            mocked_delete_file.return_value = True
+            test_plugin = 'test'
+            test_location = os.path.join('test-dir', test_plugin)
+
+            # WHEN: delete_database is run without a database file
+            result = delete_database(test_plugin)
+
+            # THEN: The AppLocation.get_section_data_path and delete_file methods should have been called
+            MockedAppLocation.get_section_data_path.assert_called_with(test_plugin)
+            mocked_delete_file.assert_called_with(test_location)
+            self.assertTrue(result, 'The result of delete_file should be True (was rigged that way)')
+
+    def delete_database_with_db_file_name_test(self):
+        """
+        Test that the ``delete_database`` function removes a database file, with the file name supplied
+        """
+        # GIVEN: Mocked out AppLocation class and delete_file method, a test plugin name and a db location
+        with patch('openlp.core.lib.db.AppLocation') as MockedAppLocation, \
+                patch('openlp.core.lib.db.delete_file') as mocked_delete_file:
+            MockedAppLocation.get_section_data_path.return_value = 'test-dir'
+            mocked_delete_file.return_value = False
+            test_plugin = 'test'
+            test_db_file = 'mydb.sqlite'
+            test_location = os.path.join('test-dir', test_db_file)
+
+            # WHEN: delete_database is run without a database file
+            result = delete_database(test_plugin, test_db_file)
+
+            # THEN: The AppLocation.get_section_data_path and delete_file methods should have been called
+            MockedAppLocation.get_section_data_path.assert_called_with(test_plugin)
+            mocked_delete_file.assert_called_with(test_location)
+            self.assertFalse(result, 'The result of delete_file should be False (was rigged that way)')

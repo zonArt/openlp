@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,15 +29,20 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import UiStrings, build_icon, translate
+from openlp.core.common import UiStrings, translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box, create_button
 
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, custom_edit_dialog):
+        """
+        Build the Edit Dialog UI
+        :param custom_edit_dialog: The Dialog
+        """
         custom_edit_dialog.setObjectName('custom_edit_dialog')
+        custom_edit_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         custom_edit_dialog.resize(450, 350)
-        custom_edit_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
         self.dialog_layout = QtGui.QVBoxLayout(custom_edit_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
         self.title_layout = QtGui.QHBoxLayout()
@@ -69,14 +74,14 @@ class Ui_CustomEditDialog(object):
         self.edit_all_button.setObjectName('edit_all_button')
         self.button_layout.addWidget(self.edit_all_button)
         self.delete_button = create_button(custom_edit_dialog, 'delete_button', role='delete',
-            click=custom_edit_dialog.on_delete_button_clicked)
+                                           click=custom_edit_dialog.on_delete_button_clicked)
         self.delete_button.setEnabled(False)
         self.button_layout.addWidget(self.delete_button)
         self.button_layout.addStretch()
         self.up_button = create_button(custom_edit_dialog, 'up_button', role='up', enabled=False,
-            click=custom_edit_dialog.on_up_button_clicked)
+                                       click=custom_edit_dialog.on_up_button_clicked)
         self.down_button = create_button(custom_edit_dialog, 'down_button', role='down', enabled=False,
-            click=custom_edit_dialog.on_down_button_clicked)
+                                         click=custom_edit_dialog.on_down_button_clicked)
         self.button_layout.addWidget(self.up_button)
         self.button_layout.addWidget(self.down_button)
         self.central_layout.addLayout(self.button_layout)
@@ -99,7 +104,7 @@ class Ui_CustomEditDialog(object):
         self.dialog_layout.addLayout(self.bottom_form_layout)
         self.preview_button = QtGui.QPushButton()
         self.button_box = create_button_box(custom_edit_dialog, 'button_box', ['cancel', 'save'],
-            [self.preview_button])
+                                            [self.preview_button])
         self.dialog_layout.addWidget(self.button_box)
         self.retranslateUi(custom_edit_dialog)
 

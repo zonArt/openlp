@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,11 +31,12 @@ The :mod:`~openlp.core.ui.servicenoteform` module contains the `ServiceNoteForm`
 """
 from PyQt4 import QtGui
 
-from openlp.core.lib import SpellTextEdit, Registry, translate
+from openlp.core.common import Registry, RegistryProperties, translate
+from openlp.core.lib import SpellTextEdit
 from openlp.core.lib.ui import create_button_box
 
 
-class ServiceNoteForm(QtGui.QDialog):
+class ServiceNoteForm(QtGui.QDialog, RegistryProperties):
     """
     This is the form that is used to edit the verses of the song.
     """
@@ -62,7 +63,7 @@ class ServiceNoteForm(QtGui.QDialog):
         self.dialog_layout = QtGui.QVBoxLayout(self)
         self.dialog_layout.setContentsMargins(8, 8, 8, 8)
         self.dialog_layout.setSpacing(8)
-        self.dialog_layout.setObjectName('verticalLayout')
+        self.dialog_layout.setObjectName('vertical_layout')
         self.text_edit = SpellTextEdit(self, False)
         self.text_edit.setObjectName('textEdit')
         self.dialog_layout.addWidget(self.text_edit)
@@ -74,13 +75,3 @@ class ServiceNoteForm(QtGui.QDialog):
         Translate the UI on the fly
         """
         self.setWindowTitle(translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)

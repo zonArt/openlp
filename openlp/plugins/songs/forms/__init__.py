@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -34,7 +34,7 @@ code, like slots and loading and saving.
 The first class, commonly known as the **Dialog** class, is typically named
 ``Ui_<name>Dialog``. It is a slightly modified version of the class that the
 ``pyuic4`` command produces from Qt4's .ui file. Typical modifications will be
-converting most strings from "" to u'' and using OpenLP's ``translate()``
+converting most strings from "" to '' and using OpenLP's ``translate()``
 function for translating strings.
 
 The second class, commonly known as the **Form** class, is typically named

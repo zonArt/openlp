@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,7 +33,8 @@ from PyQt4 import QtGui
 
 import logging
 
-from openlp.core.lib import Settings, translate
+from openlp.core.common import Settings
+from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 
@@ -173,34 +174,11 @@ FLASH_HTML = """
 <div id="flash" class="size" style="visibility:hidden"></div>
 """
 
-VIDEO_EXT = [
-    '*.3gp',
-    '*.3gpp',
-    '*.3g2',
-    '*.3gpp2',
-    '*.aac',
-    '*.flv',
-    '*.f4a',
-    '*.f4b',
-    '*.f4p',
-    '*.f4v',
-    '*.mov',
-    '*.m4a',
-    '*.m4b',
-    '*.m4p',
-    '*.m4v',
-    '*.mkv',
-    '*.mp4',
-    '*.ogv',
-    '*.webm',
-    '*.mpg', '*.wmv', '*.mpeg', '*.avi',
-    '*.swf'
-]
+VIDEO_EXT = ['*.3gp', '*.3gpp', '*.3g2', '*.3gpp2', '*.aac', '*.flv', '*.f4a', '*.f4b', '*.f4p', '*.f4v', '*.mov',
+             '*.m4a', '*.m4b', '*.m4p', '*.m4v', '*.mkv', '*.mp4', '*.ogv', '*.webm', '*.mpg', '*.wmv', '*.mpeg',
+             '*.avi', '*.swf']
 
-AUDIO_EXT = [
-    '*.mp3',
-    '*.ogg'
-]
+AUDIO_EXT = ['*.mp3', '*.ogg']
 
 
 class WebkitPlayer(MediaPlayer):
@@ -375,9 +353,9 @@ class WebkitPlayer(MediaPlayer):
         else:
             is_visible = "hidden"
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript('show_flash("setVisible", null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript('show_flash("setVisible", null, null, "%s");' % is_visible)
         else:
-            display.frame.evaluateJavaScript('show_video("setVisible", null, null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript('show_video("setVisible", null, null, null, "%s");' % is_visible)
 
     def update_ui(self, display):
         """
@@ -410,10 +388,9 @@ class WebkitPlayer(MediaPlayer):
         """
         Return some information about this player
         """
-        return(translate('Media.player', 'Webkit is a media player which runs '
-            'inside a web browser. This player allows text over video to be '
-            'rendered.') +
-            '<br/> <strong>' + translate('Media.player', 'Audio') +
-            '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' +
-            translate('Media.player', 'Video') + '</strong><br/>' +
-            str(VIDEO_EXT) + '<br/>')
+        part1 = translate('Media.player', 'Webkit is a media player which runs inside a web browser. This player '
+                                          'allows text over video to be rendered.')
+        part2 = translate('Media.player', 'Audio')
+        part3 = translate('Media.player', 'Video')
+        return part1 + '<br/> <strong>' + part2 + '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' + part3 + \
+            '</strong><br/>' + str(VIDEO_EXT) + '<br/>'

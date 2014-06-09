@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,7 +31,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, Registry, StringContent, Settings, build_icon, translate
+from openlp.core.common import translate
+from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 
@@ -65,19 +66,19 @@ class MediaPlugin(Plugin):
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
-            '<br />The media plugin provides playback of audio and video.')
+                               '<br />The media plugin provides playback of audio and video.')
         return about_text
 
     def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('MediaPlugin', 'Media', 'name singular'),
             'plural': translate('MediaPlugin', 'Media', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {
             'title': translate('MediaPlugin', 'Media', 'container title')
         }
@@ -119,13 +120,3 @@ class MediaPlugin(Plugin):
         Add html code to htmlbuilder.
         """
         return self.media_controller.get_media_display_html()
-
-    def _get_media_controller(self):
-        """
-        Adds the media controller to the class dynamically
-        """
-        if not hasattr(self, '_media_controller'):
-            self._media_controller = Registry().get('media_controller')
-        return self._media_controller
-
-    media_controller = property(_get_media_controller)

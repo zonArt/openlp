@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -53,10 +53,10 @@ class OpenLyricsImport(SongImport):
         Initialise the Open Lyrics importer.
         """
         log.debug('initialise OpenLyricsImport')
-        SongImport.__init__(self, manager, **kwargs)
-        self.openLyrics = OpenLyrics(self.manager)
+        super(OpenLyricsImport, self).__init__(manager, **kwargs)
+        self.open_lyrics = OpenLyrics(self.manager)
 
-    def doImport(self):
+    def do_import(self):
         """
         Imports the songs.
         """
@@ -69,13 +69,13 @@ class OpenLyricsImport(SongImport):
             try:
                 # Pass a file object, because lxml does not cope with some
                 # special characters in the path (see lp:757673 and lp:744337).
-                parsed_file = etree.parse(open(file_path, 'r'), parser)
+                parsed_file = etree.parse(open(file_path, 'rb'), parser)
                 xml = etree.tostring(parsed_file).decode()
-                self.openLyrics.xml_to_song(xml)
+                self.open_lyrics.xml_to_song(xml)
             except etree.XMLSyntaxError:
                 log.exception('XML syntax error in file %s' % file_path)
-                self.logError(file_path, SongStrings.XMLSyntaxError)
+                self.log_error(file_path, SongStrings.XMLSyntaxError)
             except OpenLyricsError as exception:
-                log.exception('OpenLyricsException %d in file %s: %s'
-                    % (exception.type, file_path, exception.log_message))
-                self.logError(file_path, exception.display_message)
+                log.exception('OpenLyricsException %d in file %s: %s' %
+                              (exception.type, file_path, exception.log_message))
+                self.log_error(file_path, exception.display_message)

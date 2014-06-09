@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,9 +31,8 @@ import os.path
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.lib import Settings, SettingsTab, translate
-from openlp.core.utils import AppLocation
-
+from openlp.core.common import AppLocation, Settings, translate
+from openlp.core.lib import SettingsTab, build_icon
 
 ZERO_URL = '0.0.0.0'
 
@@ -57,7 +56,7 @@ class RemoteTab(SettingsTab):
         self.address_edit = QtGui.QLineEdit(self.server_settings_group_box)
         self.address_edit.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         self.address_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'),
-            self))
+                                       self))
         self.address_edit.setObjectName('address_edit')
         self.server_settings_layout.addRow(self.address_label, self.address_edit)
         self.twelve_hour_check_box = QtGui.QCheckBox(self.server_settings_group_box)
@@ -178,14 +177,13 @@ class RemoteTab(SettingsTab):
         self.live_url_label.setText(translate('RemotePlugin.RemoteTab', 'Live view URL:'))
         self.twelve_hour_check_box.setText(translate('RemotePlugin.RemoteTab', 'Display stage time in 12h format'))
         self.android_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
-        self.qr_description_label.setText(translate('RemotePlugin.RemoteTab',
-            'Scan the QR code or click <a href="https://play.google.com/store/'
-            'apps/details?id=org.openlp.android">download</a> to install the '
-            'Android app from Google Play.'))
+        self.qr_description_label.setText(
+            translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="https://play.google.com/store/'
+                      'apps/details?id=org.openlp.android">download</a> to install the Android app from Google Play.'))
         self.https_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'HTTPS Server'))
-        self.https_error_label.setText(translate('RemotePlugin.RemoteTab',
-            'Could not find an SSL certificate. The HTTPS server will not be available unless an SSL certificate '
-            'is found. Please see the manual for more information.'))
+        self.https_error_label.setText(
+            translate('RemotePlugin.RemoteTab', 'Could not find an SSL certificate. The HTTPS server will not be '
+                      'available unless an SSL certificate is found. Please see the manual for more information.'))
         self.https_port_label.setText(self.port_label.text())
         self.remote_https_url_label.setText(self.remote_url_label.text())
         self.stage_https_url_label.setText(self.stage_url_label.text())
@@ -198,21 +196,7 @@ class RemoteTab(SettingsTab):
         """
         Update the display based on the data input on the screen
         """
-        ip_address = 'localhost'
-        if self.address_edit.text() == ZERO_URL:
-            interfaces = QtNetwork.QNetworkInterface.allInterfaces()
-            for interface in interfaces:
-                if not interface.isValid():
-                    continue
-                if not (interface.flags() & (QtNetwork.QNetworkInterface.IsUp | QtNetwork.QNetworkInterface.IsRunning)):
-                    continue
-                for address in interface.addressEntries():
-                    ip = address.ip()
-                    if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
-                        ip_address = ip
-                        break
-        else:
-            ip_address = self.address_edit.text()
+        ip_address = self.get_ip_address(self.address_edit.text())
         http_url = 'http://%s:%s/' % (ip_address, self.port_spin_box.value())
         https_url = 'https://%s:%s/' % (ip_address, self.https_port_spin_box.value())
         self.remote_url.setText('<a href="%s">%s</a>' % (http_url, http_url))
@@ -221,15 +205,36 @@ class RemoteTab(SettingsTab):
         https_url_temp = https_url + 'stage'
         self.stage_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
         self.stage_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
-        http_url_temp = http_url + 'live'
-        https_url_temp = https_url + 'live'
+        http_url_temp = http_url + 'main'
+        https_url_temp = https_url + 'main'
         self.live_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
         self.live_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
+
+    def get_ip_address(self, ip_address):
+        """
+        returns the IP address in dependency of the passed address
+        ip_address == 0.0.0.0: return the IP address of the first valid interface
+        else: return ip_address
+        """
+        if ip_address == ZERO_URL:
+            interfaces = QtNetwork.QNetworkInterface.allInterfaces()
+            for interface in interfaces:
+                if not interface.isValid():
+                    continue
+                if not (interface.flags() & (QtNetwork.QNetworkInterface.IsUp | QtNetwork.QNetworkInterface.IsRunning)):
+                    continue
+                for address in interface.addressEntries():
+                    ip = address.ip()
+                    if ip.protocol() == QtNetwork.QAbstractSocket.IPv4Protocol and \
+                       ip != QtNetwork.QHostAddress.LocalHost:
+                        return ip.toString()
+        return ip_address
 
     def load(self):
         """
         Load the configuration and update the server configuration if necessary
         """
+        self.is_secure = Settings().value(self.settings_section + '/https enabled')
         self.port_spin_box.setValue(Settings().value(self.settings_section + '/port'))
         self.https_port_spin_box.setValue(Settings().value(self.settings_section + '/https port'))
         self.address_edit.setText(Settings().value(self.settings_section + '/ip address'))
@@ -259,9 +264,7 @@ class RemoteTab(SettingsTab):
                 Settings().value(self.settings_section + '/port') != self.port_spin_box.value() or \
                 Settings().value(self.settings_section + '/https port') != self.https_port_spin_box.value() or \
                 Settings().value(self.settings_section + '/https enabled') != \
-                        self.https_settings_group_box.isChecked() or \
-                Settings().value(self.settings_section + '/authentication enabled') != \
-                        self.user_login_group_box.isChecked():
+                self.https_settings_group_box.isChecked():
             self.settings_form.register_post_process('remotes_config_updated')
         Settings().setValue(self.settings_section + '/port', self.port_spin_box.value())
         Settings().setValue(self.settings_section + '/https port', self.https_port_spin_box.value())
@@ -271,6 +274,7 @@ class RemoteTab(SettingsTab):
         Settings().setValue(self.settings_section + '/authentication enabled', self.user_login_group_box.isChecked())
         Settings().setValue(self.settings_section + '/user id', self.user_id.text())
         Settings().setValue(self.settings_section + '/password', self.password.text())
+        self.generate_icon()
 
     def on_twelve_hour_check_box_changed(self, check_state):
         """
@@ -287,3 +291,24 @@ class RemoteTab(SettingsTab):
         """
         self.http_settings_group_box.setEnabled(not self.https_settings_group_box.isChecked())
 
+    def generate_icon(self):
+        """
+        Generate icon for main window
+        """
+        self.remote_server_icon.hide()
+        icon = QtGui.QImage(':/remote/network_server.png')
+        icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        if self.is_secure:
+            overlay = QtGui.QImage(':/remote/network_ssl.png')
+            overlay = overlay.scaled(60, 60, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            painter = QtGui.QPainter(icon)
+            painter.drawImage(0, 0, overlay)
+            painter.end()
+        if Settings().value(self.settings_section + '/authentication enabled'):
+            overlay = QtGui.QImage(':/remote/network_auth.png')
+            overlay = overlay.scaled(60, 60, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            painter = QtGui.QPainter(icon)
+            painter.drawImage(20, 0, overlay)
+            painter.end()
+        self.remote_server_icon.setPixmap(QtGui.QPixmap.fromImage(icon))
+        self.remote_server_icon.show()

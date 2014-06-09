@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -36,8 +36,9 @@ import re
 
 from PyQt4 import QtGui
 
+from openlp.core.common import AppLocation
 from openlp.core.lib import translate
-from openlp.core.utils import AppLocation, CONTROL_CHARS
+from openlp.core.utils import CONTROL_CHARS
 from openlp.plugins.songs.lib.db import MediaFile, Song
 from .db import Author
 from .ui import SongStrings
@@ -46,66 +47,54 @@ log = logging.getLogger(__name__)
 
 WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
 APOSTROPHE = re.compile('[\'`’ʻ′]', re.UNICODE)
-PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
+# PATTERN will look for the next occurence of one of these symbols:
+#   \controlword - optionally preceded by \*, optionally followed by a number
+#   \'## - where ## is a pair of hex digits, representing a single character
+#   \# - where # is a single non-alpha character, representing a special symbol
+#   { or } - marking the beginning/end of a group
+#   a run of characters without any \ { } or end-of-line
+PATTERN = re.compile(
+    r"(\\\*)?\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z*])|([{}])|[\r\n]+|([^\\{}\r\n]+)", re.I)
 # RTF control words which specify a "destination" to be ignored.
 DESTINATIONS = frozenset((
-    'aftncn', 'aftnsep', 'aftnsepc', 'annotation', 'atnauthor',
-    'atndate', 'atnicn', 'atnid', 'atnparent', 'atnref', 'atntime',
-    'atrfend', 'atrfstart', 'author', 'background', 'bkmkend',
-    'bkmkstart', 'blipuid', 'buptim', 'category',
-    'colorschememapping', 'colortbl', 'comment', 'company', 'creatim',
-    'datafield', 'datastore', 'defchp', 'defpap', 'do', 'doccomm',
-    'docvar', 'dptxbxtext', 'ebcend', 'ebcstart', 'factoidname',
-    'falt', 'fchars', 'ffdeftext', 'ffentrymcr', 'ffexitmcr',
-    'ffformat', 'ffhelptext', 'ffl', 'ffname', 'ffstattext', 'field',
-    'file', 'filetbl', 'fldinst', 'fldrslt', 'fldtype', 'fname',
-    'fontemb', 'fontfile', 'footer', 'footerf', 'footerl', 'footerr',
-    'footnote', 'formfield', 'ftncn', 'ftnsep', 'ftnsepc', 'g',
-    'generator', 'gridtbl', 'header', 'headerf', 'headerl',
-    'headerr', 'hl', 'hlfr', 'hlinkbase', 'hlloc', 'hlsrc', 'hsv',
-    'htmltag', 'info', 'keycode', 'keywords', 'latentstyles',
-    'lchars', 'levelnumbers', 'leveltext', 'lfolevel', 'linkval',
-    'list', 'listlevel', 'listname', 'listoverride',
-    'listoverridetable', 'listpicture', 'liststylename', 'listtable',
-    'listtext', 'lsdlockedexcept', 'macc', 'maccPr', 'mailmerge',
-    'maln', 'malnScr', 'manager', 'margPr', 'mbar', 'mbarPr',
-    'mbaseJc', 'mbegChr', 'mborderBox', 'mborderBoxPr', 'mbox',
-    'mboxPr', 'mchr', 'mcount', 'mctrlPr', 'md', 'mdeg', 'mdegHide',
-    'mden', 'mdiff', 'mdPr', 'me', 'mendChr', 'meqArr', 'meqArrPr',
-    'mf', 'mfName', 'mfPr', 'mfunc', 'mfuncPr', 'mgroupChr',
-    'mgroupChrPr', 'mgrow', 'mhideBot', 'mhideLeft', 'mhideRight',
-    'mhideTop', 'mhtmltag', 'mlim', 'mlimloc', 'mlimlow',
-    'mlimlowPr', 'mlimupp', 'mlimuppPr', 'mm', 'mmaddfieldname',
-    'mmath', 'mmathPict', 'mmathPr', 'mmaxdist', 'mmc', 'mmcJc',
-    'mmconnectstr', 'mmconnectstrdata', 'mmcPr', 'mmcs',
-    'mmdatasource', 'mmheadersource', 'mmmailsubject', 'mmodso',
-    'mmodsofilter', 'mmodsofldmpdata', 'mmodsomappedname',
-    'mmodsoname', 'mmodsorecipdata', 'mmodsosort', 'mmodsosrc',
-    'mmodsotable', 'mmodsoudl', 'mmodsoudldata', 'mmodsouniquetag',
-    'mmPr', 'mmquery', 'mmr', 'mnary', 'mnaryPr', 'mnoBreak',
-    'mnum', 'mobjDist', 'moMath', 'moMathPara', 'moMathParaPr',
-    'mopEmu', 'mphant', 'mphantPr', 'mplcHide', 'mpos', 'mr',
-    'mrad', 'mradPr', 'mrPr', 'msepChr', 'mshow', 'mshp', 'msPre',
-    'msPrePr', 'msSub', 'msSubPr', 'msSubSup', 'msSubSupPr', 'msSup',
-    'msSupPr', 'mstrikeBLTR', 'mstrikeH', 'mstrikeTLBR', 'mstrikeV',
-    'msub', 'msubHide', 'msup', 'msupHide', 'mtransp', 'mtype',
-    'mvertJc', 'mvfmf', 'mvfml', 'mvtof', 'mvtol', 'mzeroAsc',
-    'mzFrodesc', 'mzeroWid', 'nesttableprops', 'nextfile',
-    'nonesttables', 'objalias', 'objclass', 'objdata', 'object',
-    'objname', 'objsect', 'objtime', 'oldcprops', 'oldpprops',
-    'oldsprops', 'oldtprops', 'oleclsid', 'operator', 'panose',
-    'password', 'passwordhash', 'pgp', 'pgptbl', 'picprop', 'pict',
-    'pn', 'pnseclvl', 'pntext', 'pntxta', 'pntxtb', 'printim',
-    'private', 'propname', 'protend', 'protstart', 'protusertbl',
-    'pxe', 'result', 'revtbl', 'revtim', 'rsidtbl', 'rxe', 'shp',
-    'shpgrp', 'shpinst', 'shppict', 'shprslt', 'shptxt', 'sn', 'sp',
-    'staticval', 'stylesheet', 'subject', 'sv', 'svb', 'tc',
-    'template', 'themedata', 'title', 'txe', 'ud', 'upr',
-    'userprops', 'wgrffmtfilter', 'windowcaption', 'writereservation',
-    'writereservhash', 'xe', 'xform', 'xmlattrname', 'xmlattrvalue',
-    'xmlclose', 'xmlname', 'xmlnstbl', 'xmlopen'))
+    'aftncn', 'aftnsep', 'aftnsepc', 'annotation', 'atnauthor', 'atndate', 'atnicn', 'atnid', 'atnparent', 'atnref',
+    'atntime', 'atrfend', 'atrfstart', 'author', 'background', 'bkmkend', 'bkmkstart', 'blipuid', 'buptim', 'category',
+    'colorschememapping', 'colortbl', 'comment', 'company', 'creatim', 'datafield', 'datastore', 'defchp', 'defpap',
+    'do', 'doccomm', 'docvar', 'dptxbxtext', 'ebcend', 'ebcstart', 'factoidname', 'falt', 'fchars', 'ffdeftext',
+    'ffentrymcr', 'ffexitmcr', 'ffformat', 'ffhelptext', 'ffl', 'ffname', 'ffstattext', 'file', 'filetbl', 'fldinst',
+    'fldtype', 'fname', 'fontemb', 'fontfile', 'footer', 'footerf', 'footerl', 'footerr', 'footnote', 'formfield',
+    'ftncn', 'ftnsep', 'ftnsepc', 'g', 'generator', 'gridtbl', 'header', 'headerf', 'headerl', 'headerr', 'hl', 'hlfr',
+    'hlinkbase', 'hlloc', 'hlsrc', 'hsv', 'htmltag', 'info', 'keycode', 'keywords', 'latentstyles', 'lchars',
+    'levelnumbers', 'leveltext', 'lfolevel', 'linkval', 'list', 'listlevel', 'listname', 'listoverride',
+    'listoverridetable', 'listpicture', 'liststylename', 'listtable', 'listtext', 'lsdlockedexcept', 'macc', 'maccPr',
+    'mailmerge', 'maln', 'malnScr', 'manager', 'margPr', 'mbar', 'mbarPr', 'mbaseJc', 'mbegChr', 'mborderBox',
+    'mborderBoxPr', 'mbox', 'mboxPr', 'mchr', 'mcount', 'mctrlPr', 'md', 'mdeg', 'mdegHide', 'mden', 'mdiff', 'mdPr',
+    'me', 'mendChr', 'meqArr', 'meqArrPr', 'mf', 'mfName', 'mfPr', 'mfunc', 'mfuncPr', 'mgroupChr', 'mgroupChrPr',
+    'mgrow', 'mhideBot', 'mhideLeft', 'mhideRight', 'mhideTop', 'mhtmltag', 'mlim', 'mlimloc', 'mlimlow', 'mlimlowPr',
+    'mlimupp', 'mlimuppPr', 'mm', 'mmaddfieldname', 'mmath', 'mmathPict', 'mmathPr', 'mmaxdist', 'mmc', 'mmcJc',
+    'mmconnectstr', 'mmconnectstrdata', 'mmcPr', 'mmcs', 'mmdatasource', 'mmheadersource', 'mmmailsubject', 'mmodso',
+    'mmodsofilter', 'mmodsofldmpdata', 'mmodsomappedname', 'mmodsoname', 'mmodsorecipdata', 'mmodsosort', 'mmodsosrc',
+    'mmodsotable', 'mmodsoudl', 'mmodsoudldata', 'mmodsouniquetag', 'mmPr', 'mmquery', 'mmr', 'mnary', 'mnaryPr',
+    'mnoBreak', 'mnum', 'mobjDist', 'moMath', 'moMathPara', 'moMathParaPr', 'mopEmu', 'mphant', 'mphantPr', 'mplcHide',
+    'mpos', 'mr', 'mrad', 'mradPr', 'mrPr', 'msepChr', 'mshow', 'mshp', 'msPre', 'msPrePr', 'msSub', 'msSubPr',
+    'msSubSup', 'msSubSupPr', 'msSup', 'msSupPr', 'mstrikeBLTR', 'mstrikeH', 'mstrikeTLBR', 'mstrikeV', 'msub',
+    'msubHide', 'msup', 'msupHide', 'mtransp', 'mtype', 'mvertJc', 'mvfmf', 'mvfml', 'mvtof', 'mvtol', 'mzeroAsc',
+    'mzFrodesc', 'mzeroWid', 'nesttableprops', 'nextfile', 'nonesttables', 'objalias', 'objclass', 'objdata', 'object',
+    'objname', 'objsect', 'objtime', 'oldcprops', 'oldpprops', 'oldsprops', 'oldtprops', 'oleclsid', 'operator',
+    'panose', 'password', 'passwordhash', 'pgp', 'pgptbl', 'picprop', 'pict', 'pn', 'pnseclvl', 'pntext', 'pntxta',
+    'pntxtb', 'printim', 'private', 'propname', 'protend', 'protstart', 'protusertbl', 'pxe', 'result', 'revtbl',
+    'revtim', 'rsidtbl', 'rxe', 'shp', 'shpgrp', 'shpinst', 'shppict', 'shprslt', 'shptxt', 'sn', 'sp', 'staticval',
+    'stylesheet', 'subject', 'sv', 'svb', 'tc', 'template', 'themedata', 'title', 'txe', 'ud', 'upr', 'userprops',
+    'wgrffmtfilter', 'windowcaption', 'writereservation', 'writereservhash', 'xe', 'xform', 'xmlattrname',
+    'xmlattrvalue', 'xmlclose', 'xmlname', 'xmlnstbl', 'xmlopen'
+))
 # Translation of some special characters.
 SPECIAL_CHARS = {
+    '\n': '\n',
+    '\r': '\n',
+    '~': '\u00A0',
+    '-': '\u00AD',
+    '_': '\u2011',
     'par': '\n',
     'sect': '\n\n',
     # Required page and column break.
@@ -130,18 +119,23 @@ SPECIAL_CHARS = {
     'ltrmark': '\u200E',
     'rtlmark': '\u200F',
     'zwj': '\u200D',
-    'zwnj': '\u200C'}
+    'zwnj': '\u200C'
+}
 CHARSET_MAPPING = {
-    'fcharset0': 'cp1252',
-    'fcharset161': 'cp1253',
-    'fcharset162': 'cp1254',
-    'fcharset163': 'cp1258',
-    'fcharset177': 'cp1255',
-    'fcharset178': 'cp1256',
-    'fcharset186': 'cp1257',
-    'fcharset204': 'cp1251',
-    'fcharset222': 'cp874',
-    'fcharset238': 'cp1250'}
+    '0': 'cp1252',
+    '128': 'cp932',
+    '129': 'cp949',
+    '134': 'cp936',
+    '161': 'cp1253',
+    '162': 'cp1254',
+    '163': 'cp1258',
+    '177': 'cp1255',
+    '178': 'cp1256',
+    '186': 'cp1257',
+    '204': 'cp1251',
+    '222': 'cp874',
+    '238': 'cp1250'
+}
 
 
 class VerseType(object):
@@ -156,14 +150,7 @@ class VerseType(object):
     Ending = 5
     Other = 6
 
-    names = [
-        'Verse',
-        'Chorus',
-        'Bridge',
-        'Pre-Chorus',
-        'Intro',
-        'Ending',
-        'Other']
+    names = ['Verse', 'Chorus', 'Bridge', 'Pre-Chorus', 'Intro', 'Ending', 'Other']
     tags = [name[0].lower() for name in names]
 
     translated_names = [
@@ -182,11 +169,9 @@ class VerseType(object):
         """
         Return the translated UPPERCASE tag for a given tag, used to show translated verse tags in UI
 
-        ``verse_tag``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_tag: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
+        :return: A translated UPPERCASE tag
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
@@ -202,11 +187,9 @@ class VerseType(object):
         """
         Return the translated name for a given tag
 
-        ``verse_tag``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_tag: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
+        :return: Translated name for the given tag
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
@@ -222,17 +205,15 @@ class VerseType(object):
         """
         Return the VerseType for a given tag
 
-        ``verse_tag``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_tag: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found (a valid VerseType or None)
+        :return: A VerseType of the tag
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.names) > default:
+        if default in range(0, len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
@@ -242,17 +223,15 @@ class VerseType(object):
         """
         Return the VerseType for a given tag
 
-        ``verse_tag``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_tag: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
+        :return: The VerseType of a translated tag
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.translated_tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.names) > default:
+        if default in range(0, len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
@@ -262,11 +241,9 @@ class VerseType(object):
         """
         Return the VerseType for a given string
 
-        ``verse_name``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_name: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
+        :return: The VerseType determined from the string
         """
         verse_name = verse_name.lower()
         for num, name in enumerate(VerseType.names):
@@ -279,8 +256,8 @@ class VerseType(object):
         """
         Return the VerseType for a given string
 
-        ``verse_name``
-            The string to return a VerseType for
+        :param verse_name: The string to return a VerseType for
+        :return: A VerseType
         """
         verse_name = verse_name.lower()
         for num, translation in enumerate(VerseType.translated_names):
@@ -292,18 +269,16 @@ class VerseType(object):
         """
         Return the VerseType for a given string
 
-        ``verse_name``
-            The string to return a VerseType for
-
-        ``default``
-            Default return value if no matching tag is found
+        :param verse_name: The string to return a VerseType for
+        :param default: Default return value if no matching tag is found
+        :return: A VerseType
         """
         if len(verse_name) > 1:
             verse_index = VerseType.from_translated_string(verse_name)
             if verse_index is None:
                 verse_index = VerseType.from_string(verse_name, default)
         elif len(verse_name) == 1:
-            verse_index = VerseType.from_translated_tag(verse_name, None)
+            verse_index = VerseType.from_translated_tag(verse_name, default)
             if verse_index is None:
                 verse_index = VerseType.from_tag(verse_name, default)
         else:
@@ -316,22 +291,21 @@ def retrieve_windows_encoding(recommendation=None):
     Determines which encoding to use on an information source. The process uses both automated detection, which is
     passed to this method as a recommendation, and user confirmation to return an encoding.
 
-    ``recommendation``
-        A recommended encoding discovered programmatically for the user to confirm.
+    :param recommendation: A recommended encoding discovered programmatically for the user to confirm.
+    :return: A list of recommended encodings, or None
     """
     # map chardet result to compatible windows standard code page
-    codepage_mapping = {'IBM866': 'cp866', 'TIS-620': 'cp874',
-        'SHIFT_JIS': 'cp932', 'GB2312': 'cp936', 'HZ-GB-2312': 'cp936',
-        'EUC-KR': 'cp949', 'Big5': 'cp950', 'ISO-8859-2': 'cp1250',
-        'windows-1250': 'cp1250', 'windows-1251': 'cp1251',
-        'windows-1252': 'cp1252', 'ISO-8859-7': 'cp1253',
-        'windows-1253': 'cp1253', 'ISO-8859-8': 'cp1255',
-        'windows-1255': 'cp1255'}
+    codepage_mapping = {'IBM866': 'cp866', 'TIS-620': 'cp874', 'SHIFT_JIS': 'cp932', 'GB2312': 'cp936',
+                        'HZ-GB-2312': 'cp936', 'EUC-KR': 'cp949', 'Big5': 'cp950', 'ISO-8859-2': 'cp1250',
+                        'windows-1250': 'cp1250', 'windows-1251': 'cp1251', 'windows-1252': 'cp1252',
+                        'ISO-8859-7': 'cp1253', 'windows-1253': 'cp1253', 'ISO-8859-8': 'cp1255',
+                        'windows-1255': 'cp1255'}
     if recommendation in codepage_mapping:
         recommendation = codepage_mapping[recommendation]
 
     # Show dialog for encoding selection
-    encodings = [('cp1256', translate('SongsPlugin', 'Arabic (CP-1256)')),
+    encodings = [
+        ('cp1256', translate('SongsPlugin', 'Arabic (CP-1256)')),
         ('cp1257', translate('SongsPlugin', 'Baltic (CP-1257)')),
         ('cp1250', translate('SongsPlugin', 'Central European (CP-1250)')),
         ('cp1251', translate('SongsPlugin', 'Cyrillic (CP-1251)')),
@@ -344,33 +318,40 @@ def retrieve_windows_encoding(recommendation=None):
         ('cp950', translate('SongsPlugin', 'Traditional Chinese (CP-950)')),
         ('cp1254', translate('SongsPlugin', 'Turkish (CP-1254)')),
         ('cp1258', translate('SongsPlugin', 'Vietnam (CP-1258)')),
-        ('cp1252', translate('SongsPlugin', 'Western European (CP-1252)'))]
+        ('cp1252', translate('SongsPlugin', 'Western European (CP-1252)'))
+    ]
     recommended_index = -1
     if recommendation:
         for index in range(len(encodings)):
             if recommendation == encodings[index][0]:
                 recommended_index = index
                 break
-    if recommended_index > 0:
-        choice = QtGui.QInputDialog.getItem(None,
+    if recommended_index > -1:
+        choice = QtGui.QInputDialog.getItem(
+            None,
             translate('SongsPlugin', 'Character Encoding'),
             translate('SongsPlugin', 'The codepage setting is responsible\n'
-                'for the correct character representation.\nUsually you are fine with the preselected choice.'),
+                                     'for the correct character representation.\n'
+                                     'Usually you are fine with the preselected choice.'),
             [pair[1] for pair in encodings], recommended_index, False)
     else:
-        choice = QtGui.QInputDialog.getItem(None,
+        choice = QtGui.QInputDialog.getItem(
+            None,
             translate('SongsPlugin', 'Character Encoding'),
             translate('SongsPlugin', 'Please choose the character encoding.\n'
-                'The encoding is responsible for the correct character representation.'),
-                [pair[1] for pair in encodings], 0, False)
+                                     'The encoding is responsible for the correct character representation.'),
+            [pair[1] for pair in encodings], 0, False)
     if not choice[1]:
         return None
-    return filter(lambda item: item[1] == choice[0], encodings)[0][0]
+    return next(filter(lambda item: item[1] == choice[0], encodings))[0]
 
 
 def clean_string(string):
     """
     Strips punctuation from the passed string to assist searching.
+
+    :param string: The string to clean
+    :return: A clean string
     """
     return WHITESPACE.sub(' ', APOSTROPHE.sub('', string)).lower()
 
@@ -378,6 +359,9 @@ def clean_string(string):
 def clean_title(title):
     """
     Cleans the song title by removing Unicode control chars groups C0 & C1, as well as any trailing spaces.
+
+    :param title: The song title to clean
+    :return: A clean title
     """
     return CONTROL_CHARS.sub('', title).rstrip()
 
@@ -387,11 +371,8 @@ def clean_song(manager, song):
     Cleans the search title, rebuilds the search lyrics, adds a default author if the song does not have one and other
     clean ups. This should always called when a new song is added or changed.
 
-    ``manager``
-        The song's manager.
-
-    ``song``
-        The song object.
+    :param manager: The song database manager object.
+    :param song: The song object.
     """
     from .xml import SongXML
 
@@ -404,63 +385,17 @@ def clean_song(manager, song):
     else:
         song.alternate_title = ''
     song.search_title = clean_string(song.title) + '@' + clean_string(song.alternate_title)
-    # Only do this, if we the song is a 1.9.4 song (or older).
-    if song.lyrics.find('<lyrics language="en">') != -1:
-        # Remove the old "language" attribute from lyrics tag (prior to 1.9.5). This is not very important, but this
-        # keeps the database clean. This can be removed when everybody has cleaned his songs.
-        song.lyrics = song.lyrics.replace('<lyrics language="en">', '<lyrics>')
-        verses = SongXML().get_verses(song.lyrics)
-        song.search_lyrics = ' '.join([clean_string(verse[1])
-            for verse in verses])
-        # We need a new and clean SongXML instance.
-        sxml = SongXML()
-        # Rebuild the song's verses, to remove any wrong verse names (for  example translated ones), which might have
-        # been added prior to 1.9.5.
-        # List for later comparison.
-        compare_order = []
-        for verse in verses:
-            verse_type = VerseType.tags[VerseType.from_loose_input(verse[0]['type'])]
-            sxml.add_verse_to_lyrics(
-                verse_type,
-                verse[0]['label'],
-                verse[1],
-                verse[0].get('lang')
-            )
-            compare_order.append(('%s%s' % (verse_type, verse[0]['label'])).upper())
-            if verse[0]['label'] == '1':
-                compare_order.append(verse_type.upper())
-        song.lyrics = str(sxml.extract_xml(), 'utf-8')
-        # Rebuild the verse order, to convert translated verse tags, which might have been added prior to 1.9.5.
-        if song.verse_order:
-            order = CONTROL_CHARS.sub('', song.verse_order).strip().split()
-        else:
-            order = []
-        new_order = []
-        for verse_def in order:
-            verse_type = VerseType.tags[
-                VerseType.from_loose_input(verse_def[0])]
-            if len(verse_def) > 1:
-                new_order.append(('%s%s' % (verse_type, verse_def[1:])).upper())
-            else:
-                new_order.append(verse_type.upper())
-        song.verse_order = ' '.join(new_order)
-        # Check if the verse order contains tags for verses which do not exist.
-        for order in new_order:
-            if order not in compare_order:
-                song.verse_order = ''
-                break
-    else:
-        verses = SongXML().get_verses(song.lyrics)
-        song.search_lyrics = ' '.join([clean_string(verse[1])
-            for verse in verses])
-
+    if isinstance(song.lyrics, bytes):
+        song.lyrics = str(song.lyrics, encoding='utf8')
+    verses = SongXML().get_verses(song.lyrics)
+    song.search_lyrics = ' '.join([clean_string(verse[1]) for verse in verses])
     # The song does not have any author, add one.
-    if not song.authors:
+    if not song.authors_songs:
         name = SongStrings.AuthorUnknown
         author = manager.get_object_filtered(Author, Author.display_name == name)
         if author is None:
             author = Author.populate(display_name=name, last_name='', first_name='')
-        song.authors.append(author)
+        song.add_author(author)
     if song.copyright:
         song.copyright = CONTROL_CHARS.sub('', song.copyright).strip()
 
@@ -469,17 +404,10 @@ def get_encoding(font, font_table, default_encoding, failed=False):
     """
     Finds an encoding to use. Asks user, if necessary.
 
-    ``font``
-        The number of currently active font.
-
-    ``font_table``
-        Dictionary of fonts and respective encodings.
-
-    ``default_encoding``
-        The default encoding to use when font_table is empty or no font is used.
-
-    ``failed``
-        A boolean indicating whether the previous encoding didn't work.
+    :param font: The number of currently active font.
+    :param font_table: Dictionary of fonts and respective encodings.
+    :param default_encoding: The default encoding to use when font_table is empty or no font is used.
+    :param failed: A boolean indicating whether the previous encoding didn't work.
     """
     encoding = None
     if font in font_table:
@@ -497,19 +425,16 @@ def strip_rtf(text, default_encoding=None):
     """
     This function strips RTF control structures and returns an unicode string.
 
-    Thanks to Markus Jarderot (MizardX) for this code, used by permission.
-    http://stackoverflow.com/questions/188545
+    Thanks to Markus Jarderot (MizardX) for this code, used by permission. http://stackoverflow.com/questions/188545
 
-    ``text``
-        RTF-encoded text, a string.
-
-    ``default_encoding``
-        Default encoding to use when no encoding is specified.
+    :param text: RTF-encoded text, a string.
+    :param default_encoding: Default encoding to use when no encoding is specified.
+    :return: A tuple ``(text, encoding)`` where ``text`` is the clean text and ``encoding`` is the detected encoding
     """
     # Current font is the font tag we last met.
     font = ''
     # Character encoding is defined inside fonttable.
-    # font_table could contain eg u'0': u'cp1252'
+    # font_table could contain eg '0': u'cp1252'
     font_table = {'': ''}
     # Stack of things to keep track of when entering/leaving groups.
     stack = []
@@ -521,14 +446,41 @@ def strip_rtf(text, default_encoding=None):
     curskip = 0
     # Output buffer.
     out = []
+    # Encoded buffer.
+    ebytes = bytearray()
     for match in PATTERN.finditer(text):
-        word, arg, hex, char, brace, tchar = match.groups()
+        iinu, word, arg, hex, char, brace, tchar = match.groups()
+        # \x (non-alpha character)
+        if char:
+            if char in '\\{}':
+                tchar = char
+            else:
+                word = char
+        # Flush encoded buffer to output buffer
+        if ebytes and not hex and not tchar:
+            failed = False
+            while True:
+                try:
+                    encoding, default_encoding = get_encoding(font, font_table, default_encoding, failed=failed)
+                    if not encoding:
+                        return None
+                    dbytes = ebytes.decode(encoding)
+                    # Code 5C is a peculiar case with Windows Codepage 932
+                    if encoding == 'cp932' and '\\' in dbytes:
+                        dbytes = dbytes.replace('\\', '\u00A5')
+                    out.append(dbytes)
+                    ebytes.clear()
+                except UnicodeDecodeError:
+                    failed = True
+                else:
+                    break
+        # {}
         if brace:
             curskip = 0
             if brace == '{':
                 # Push state
                 stack.append((ucskip, ignorable, font))
-            elif brace == '}':
+            elif brace == '}' and len(stack) > 0:
                 # Pop state
                 ucskip, ignorable, font = stack.pop()
         # \x (not a letter)
@@ -552,14 +504,16 @@ def strip_rtf(text, default_encoding=None):
             if word in DESTINATIONS:
                 ignorable = True
             elif word in SPECIAL_CHARS:
-                out.append(SPECIAL_CHARS[word])
+                if not ignorable:
+                    out.append(SPECIAL_CHARS[word])
             elif word == 'uc':
                 ucskip = int(arg)
-            elif word == ' ':
+            elif word == 'u':
                 c = int(arg)
                 if c < 0:
                     c += 0x10000
-                out.append(chr(c))
+                if not ignorable:
+                    out.append(chr(c))
                 curskip = ucskip
             elif word == 'fonttbl':
                 ignorable = True
@@ -567,51 +521,41 @@ def strip_rtf(text, default_encoding=None):
                 font = arg
             elif word == 'ansicpg':
                 font_table[font] = 'cp' + arg
-            elif word == 'fcharset' and font not in font_table and word + arg in CHARSET_MAPPING:
-                # \ansicpg overrides \fcharset, if present.
-                font_table[font] = CHARSET_MAPPING[word + arg]
+            elif word == 'fcharset' and font not in font_table and arg in CHARSET_MAPPING:
+                font_table[font] = CHARSET_MAPPING[arg]
+            elif word == 'fldrslt':
+                pass
+            # \* 'Ignore if not understood' marker
+            elif iinu:
+                ignorable = True
         # \'xx
         elif hex:
             if curskip > 0:
                 curskip -= 1
             elif not ignorable:
-                charcode = int(hex, 16)
-                failed = False
-                while True:
-                    try:
-                        encoding, default_encoding = get_encoding(font, font_table, default_encoding, failed=failed)
-                        if not encoding:
-                            return None
-                        out.append(chr(charcode).decode(encoding))
-                    except UnicodeDecodeError:
-                        failed = True
-                    else:
-                        break
+                ebytes.append(int(hex, 16))
         elif tchar:
             if curskip > 0:
                 curskip -= 1
             elif not ignorable:
-                out.append(tchar)
+                ebytes += tchar.encode()
     text = ''.join(out)
     return text, default_encoding
 
 
 def delete_song(song_id, song_plugin):
     """
-    Deletes a song from the database. Media files associated to the song
-    are removed prior to the deletion of the song.
+    Deletes a song from the database. Media files associated to the song are removed prior to the deletion of the song.
 
-    ``song_id``
-        The ID of the song to delete.
-
-    ``song_plugin``
-        The song plugin instance.
+    :param song_id: The ID of the song to delete.
+    :param song_plugin: The song plugin instance.
     """
+    save_path = ''
     media_files = song_plugin.manager.get_all_objects(MediaFile, MediaFile.song_id == song_id)
     for media_file in media_files:
         try:
             os.remove(media_file.file_name)
-        except:
+        except OSError:
             log.exception('Could not remove file: %s', media_file.file_name)
     try:
         save_path = os.path.join(AppLocation.get_section_data_path(song_plugin.name), 'audio', str(song_id))
@@ -620,4 +564,3 @@ def delete_song(song_id, song_plugin):
     except OSError:
         log.exception('Could not remove directory: %s', save_path)
     song_plugin.manager.delete_object(Song, song_id)
-

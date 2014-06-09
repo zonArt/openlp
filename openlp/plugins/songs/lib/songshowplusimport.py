@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,16 +27,17 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songshowplusimport` module provides the functionality for importing
-SongShow Plus songs into the OpenLP database.
+The :mod:`songshowplusimport` module provides the functionality for importing SongShow Plus songs into the OpenLP
+database.
 """
+import chardet
 import os
 import logging
 import re
 import struct
 
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import VerseType, retrieve_windows_encoding
 from openlp.plugins.songs.lib.songimport import SongImport
 
 TITLE = 1
@@ -54,6 +55,7 @@ SONG_NUMBER = 36
 CUSTOM_VERSE = 37
 
 log = logging.getLogger(__name__)
+
 
 class SongShowPlusImport(SongImport):
     """
@@ -90,9 +92,9 @@ class SongShowPlusImport(SongImport):
         """
         Initialise the SongShow Plus importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(SongShowPlusImport, self).__init__(manager, **kwargs)
 
-    def doImport(self):
+    def do_import(self):
         """
         Receive a single file or a list of files to import.
         """
@@ -119,7 +121,7 @@ class SongShowPlusImport(SongImport):
                     null, verse_no, = struct.unpack("BB", song_data.read(2))
                 elif block_key == CUSTOM_VERSE:
                     null, verse_name_length, = struct.unpack("BB", song_data.read(2))
-                    verse_name = song_data.read(verse_name_length)
+                    verse_name = self.decode(song_data.read(verse_name_length))
                 length_descriptor_size, = struct.unpack("B", song_data.read(1))
                 log.debug(length_descriptor_size)
                 # Detect if/how long the length descriptor is
@@ -132,50 +134,64 @@ class SongShowPlusImport(SongImport):
                 else:
                     length_descriptor, = struct.unpack("B", song_data.read(1))
                 log.debug(length_descriptor_size)
-                data = song_data.read(length_descriptor).decode()
+                data = song_data.read(length_descriptor)
                 if block_key == TITLE:
-                    self.title = data
+                    self.title = self.decode(data)
                 elif block_key == AUTHOR:
-                    authors = data.split(" / ")
+                    authors = self.decode(data).split(" / ")
                     for author in authors:
-                        if author.find(",") !=-1:
-                            authorParts = author.split(", ")
-                            author = authorParts[1] + " " + authorParts[0]
+                        if author.find(",") != -1:
+                            author_parts = author.split(", ")
+                            author = author_parts[1] + " " + author_parts[0]
                         self.parse_author(author)
                 elif block_key == COPYRIGHT:
-                    self.addCopyright(data)
+                    self.add_copyright(self.decode(data))
                 elif block_key == CCLI_NO:
-                    self.ccliNumber = int(data)
+                    # Try to get the CCLI number even if the field contains additional text
+                    match = re.search(r'\d+', self.decode(data))
+                    if match:
+                        self.ccli_number = int(match.group())
+                    else:
+                        log.warn("Can't parse CCLI Number from string: %s" % self.decode(data))
                 elif block_key == VERSE:
-                    self.addVerse(data, "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
+                    self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
                 elif block_key == CHORUS:
-                    self.addVerse(data, "%s%s" % (VerseType.tags[VerseType.Chorus], verse_no))
+                    self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Chorus], verse_no))
                 elif block_key == BRIDGE:
-                    self.addVerse(data, "%s%s" % (VerseType.tags[VerseType.Bridge], verse_no))
+                    self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Bridge], verse_no))
                 elif block_key == TOPIC:
-                    self.topics.append(data)
+                    self.topics.append(self.decode(data))
                 elif block_key == COMMENTS:
-                    self.comments = data
+                    self.comments = self.decode(data)
                 elif block_key == VERSE_ORDER:
-                    verse_tag = self.to_openlp_verse_tag(data, True)
+                    verse_tag = self.to_openlp_verse_tag(self.decode(data), True)
                     if verse_tag:
+                        if not isinstance(verse_tag, str):
+                            verse_tag = self.decode(verse_tag)
                         self.ssp_verse_order_list.append(verse_tag)
                 elif block_key == SONG_BOOK:
-                    self.songBookName = data
+                    self.song_book_name = self.decode(data)
                 elif block_key == SONG_NUMBER:
-                    self.songNumber = ord(data)
+                    self.song_number = ord(data)
                 elif block_key == CUSTOM_VERSE:
                     verse_tag = self.to_openlp_verse_tag(verse_name)
-                    self.addVerse(data, verse_tag)
+                    self.add_verse(self.decode(data), verse_tag)
                 else:
                     log.debug("Unrecognised blockKey: %s, data: %s" % (block_key, data))
                     song_data.seek(next_block_starts)
-            self.verseOrderList = self.ssp_verse_order_list
+            self.verse_order_list = self.ssp_verse_order_list
             song_data.close()
             if not self.finish():
-                self.logError(file)
+                self.log_error(file)
 
     def to_openlp_verse_tag(self, verse_name, ignore_unique=False):
+        """
+        Handle OpenLP verse tags
+
+        :param verse_name: The verse name
+        :param ignore_unique: Ignore if unique
+        :return: The verse tags and verse number concatenated
+        """
         # Have we got any digits? If so, verse number is everything from the digits to the end (OpenLP does not have
         # concept of part verses, so just ignore any non integers on the end (including floats))
         match = re.match(r'(\D*)(\d+)', verse_name)
@@ -204,3 +220,9 @@ class SongShowPlusImport(SongImport):
             verse_tag = VerseType.tags[VerseType.Other]
             verse_number = self.other_list[verse_name]
         return verse_tag + verse_number
+
+    def decode(self, data):
+        try:
+            return str(data, chardet.detect(data)['encoding'])
+        except:
+            return str(data, retrieve_windows_encoding())

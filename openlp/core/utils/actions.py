@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -34,7 +34,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Settings
+from openlp.core.common import Settings
 
 
 log = logging.getLogger(__name__)
@@ -65,20 +65,14 @@ class CategoryActionList(object):
         self.index = 0
         self.actions = []
 
-    def __getitem__(self, key):
-        """
-        Implement the __getitem__() method to make this class a dictionary type
-        """
-        for weight, action in self.actions:
-            if action.text() == key:
-                return action
-        raise KeyError('Action "%s" does not exist.' % key)
-
-    def __contains__(self, item):
+    def __contains__(self, key):
         """
         Implement the __contains__() method to make this class a dictionary type
         """
-        return item in self
+        for weight, action in self.actions:
+            if action == key:
+                return True
+        return False
 
     def __len__(self):
         """
@@ -103,23 +97,14 @@ class CategoryActionList(object):
             self.index += 1
             return self.actions[self.index - 1][1]
 
-    def has_key(self, key):
-        """
-        Implement the has_key() method to make this class a dictionary type
-        """
-        for weight, action in self.actions:
-            if action.text() == key:
-                return True
-        return False
-
-    def append(self, name):
+    def append(self, action):
         """
         Append an action
         """
         weight = 0
         if self.actions:
             weight = self.actions[-1][0] + 1
-        self.add(name, weight)
+        self.add(action, weight)
 
     def add(self, action, weight=0):
         """
@@ -128,14 +113,15 @@ class CategoryActionList(object):
         self.actions.append((weight, action))
         self.actions.sort(key=lambda act: act[0])
 
-    def remove(self, remove_action):
+    def remove(self, action):
         """
         Remove an action
         """
-        for action in self.actions:
-            if action[1] == remove_action:
-                self.actions.remove(action)
+        for item in self.actions:
+            if item[1] == action:
+                self.actions.remove(item)
                 return
+        raise ValueError('Action "%s" does not exist.' % action)
 
 
 class CategoryList(object):
@@ -184,9 +170,9 @@ class CategoryList(object):
             self.index += 1
             return self.categories[self.index - 1]
 
-    def has_key(self, key):
+    def __contains__(self, key):
         """
-        Implement the has_key() method to make this class like a dictionary
+        Implement the __contains__() method to make this class like a dictionary
         """
         for category in self.categories:
             if category.name == key:
@@ -200,10 +186,7 @@ class CategoryList(object):
         weight = 0
         if self.categories:
             weight = self.categories[-1].weight + 1
-        if actions:
-            self.add(name, weight, actions)
-        else:
-            self.add(name, weight)
+        self.add(name, weight, actions)
 
     def add(self, name, weight=0, actions=None):
         """
@@ -226,6 +209,8 @@ class CategoryList(object):
         for category in self.categories:
             if category.name == name:
                 self.categories.remove(category)
+                return
+        raise ValueError('Category "%s" does not exist.' % name)
 
 
 class ActionList(object):
@@ -258,24 +243,19 @@ class ActionList(object):
 
         **Note**: The action's objectName must be set when you want to add it!
 
-        ``action``
-            The action to add (QAction). **Note**, the action must not have an empty ``objectName``.
-
-        ``category``
-            The category this action belongs to. The category has to be a python string. . **Note**, if the category
-            is ``None``, the category and its actions are being hidden in the shortcut dialog. However, if they are
-            added, it is possible to avoid assigning shortcuts twice, which is important.
-
-        ``weight``
-            The weight specifies how important a category is. However, this only has an impact on the order the
-            categories are displayed.
+        :param action: The action to add (QAction). **Note**, the action must not have an empty ``objectName``.
+        :param category: The category this action belongs to. The category has to be a python string. . **Note**,
+        if the category is ``None``, the category and its actions are being hidden in the shortcut dialog. However,
+        if they are added, it is possible to avoid assigning shortcuts twice, which is important.
+        :param weight: The weight specifies how important a category is. However, this only has an impact on the order
+        the categories are displayed.
         """
         if category not in self.categories:
             self.categories.append(category)
         settings = Settings()
         settings.beginGroup('shortcuts')
         # Get the default shortcut from the config.
-        action.defaultShortcuts = settings.get_default_value(action.objectName())
+        action.default_shortcuts = settings.get_default_value(action.objectName())
         if weight is None:
             self.categories[category].actions.append(action)
         else:
@@ -300,7 +280,7 @@ class ActionList(object):
                 ActionList.shortcut_map[shortcuts[1]] = actions
             else:
                 log.warn('Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
-                    (shortcuts[1], action.objectName()))
+                         (shortcuts[1], action.objectName()))
                 shortcuts.remove(shortcuts[1])
         # Check the primary shortcut.
         existing_actions = ActionList.shortcut_map.get(shortcuts[0], [])
@@ -311,7 +291,7 @@ class ActionList(object):
             ActionList.shortcut_map[shortcuts[0]] = actions
         else:
             log.warn('Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
-                (shortcuts[0], action.objectName()))
+                     (shortcuts[0], action.objectName()))
             shortcuts.remove(shortcuts[0])
         action.setShortcuts([QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
 
@@ -319,11 +299,8 @@ class ActionList(object):
         """
         This removes an action from its category. Empty categories are automatically removed.
 
-        ``action``
-            The ``QAction`` object to be removed.
-
-        ``category``
-            The name (unicode string) of the category, which contains the action. Defaults to None.
+        :param action:  The ``QAction`` object to be removed.
+        :param category: The name (unicode string) of the category, which contains the action. Defaults to None.
         """
         if category not in self.categories:
             return
@@ -343,11 +320,8 @@ class ActionList(object):
         """
         Add an empty category to the list of categories. This is only convenient for categories with a given weight.
 
-        ``name``
-            The category's name.
-
-        ``weight``
-            The category's weight (int).
+        :param name: The category's name.
+        :param weight: The category's weight (int).
         """
         if name in self.categories:
             # Only change the weight and resort the categories again.
@@ -361,15 +335,11 @@ class ActionList(object):
     def update_shortcut_map(self, action, old_shortcuts):
         """
         Remove the action for the given ``old_shortcuts`` from the ``shortcut_map`` to ensure its up-to-dateness.
-
         **Note**: The new action's shortcuts **must** be assigned to the given ``action`` **before** calling this
         method.
 
-        ``action``
-            The action whose shortcuts are supposed to be updated in the ``shortcut_map``.
-
-        ``old_shortcuts``
-            A list of unicode keysequences.
+        :param action: The action whose shortcuts are supposed to be updated in the ``shortcut_map``.
+        :param old_shortcuts: A list of unicode key sequences.
         """
         for old_shortcut in old_shortcuts:
             # Remove action from the list of actions which are using this shortcut.
@@ -388,11 +358,8 @@ class ActionList(object):
         """
         Checks if the given ``action`` may use its assigned shortcut(s) or not. Returns ``True`` or ``False.
 
-        ``existing_actions``
-            A list of actions which already use a particular shortcut.
-
-        ``action``
-            The action which wants to use a particular shortcut.
+        :param existing_actions: A list of actions which already use a particular shortcut.
+        :param action: The action which wants to use a particular shortcut.
         """
         global_context = action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
         affected_actions = []

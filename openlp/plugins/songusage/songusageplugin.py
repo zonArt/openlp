@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,7 +32,8 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Registry, Settings, StringContent, build_icon, translate
+from openlp.core.common import Registry, Settings, translate
+from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList
@@ -57,6 +58,9 @@ __default_settings__ = {
 
 
 class SongUsagePlugin(Plugin):
+    """
+    Song Usage Plugin class
+    """
     log.info('SongUsage Plugin loaded')
 
     def __init__(self):
@@ -78,31 +82,33 @@ class SongUsagePlugin(Plugin):
         """
         Give the SongUsage plugin the opportunity to add items to the **Tools** menu.
 
-        ``tools_menu``
-            The actual **Tools** menu item, so that your actions can use it as their parent.
+        :param tools_menu: The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.info('add tools menu')
-        self.toolsMenu = tools_menu
+        self.tools_menu = tools_menu
         self.song_usage_menu = QtGui.QMenu(tools_menu)
         self.song_usage_menu.setObjectName('song_usage_menu')
         self.song_usage_menu.setTitle(translate('SongUsagePlugin', '&Song Usage Tracking'))
         # SongUsage Delete
-        self.song_usage_delete = create_action(tools_menu, 'songUsageDelete',
+        self.song_usage_delete = create_action(
+            tools_menu, 'songUsageDelete',
             text=translate('SongUsagePlugin', '&Delete Tracking Data'),
             statustip=translate('SongUsagePlugin', 'Delete song usage data up to a specified date.'),
             triggers=self.on_song_usage_delete)
         # SongUsage Report
-        self.song_usage_report = create_action(tools_menu, 'songUsageReport',
+        self.song_usage_report = create_action(
+            tools_menu, 'songUsageReport',
             text=translate('SongUsagePlugin', '&Extract Tracking Data'),
             statustip=translate('SongUsagePlugin', 'Generate a report on song usage.'),
             triggers=self.on_song_usage_report)
         # SongUsage activation
-        self.song_usage_status = create_action(tools_menu, 'songUsageStatus',
+        self.song_usage_status = create_action(
+            tools_menu, 'songUsageStatus',
             text=translate('SongUsagePlugin', 'Toggle Tracking'),
             statustip=translate('SongUsagePlugin', 'Toggle the tracking of song usage.'), checked=False,
             can_shortcuts=True, triggers=self.toggle_song_usage_state)
         # Add Menus together
-        self.toolsMenu.addAction(self.song_usage_menu.menuAction())
+        self.tools_menu.addAction(self.song_usage_menu.menuAction())
         self.song_usage_menu.addAction(self.song_usage_status)
         self.song_usage_menu.addSeparator()
         self.song_usage_menu.addAction(self.song_usage_report)
@@ -116,7 +122,7 @@ class SongUsagePlugin(Plugin):
         self.song_usage_active_button.hide()
         # Signals and slots
         QtCore.QObject.connect(self.song_usage_status, QtCore.SIGNAL('visibilityChanged(bool)'),
-            self.song_usage_status.setChecked)
+                               self.song_usage_status.setChecked)
         self.song_usage_active_button.toggled.connect(self.toggle_song_usage_state)
         self.song_usage_menu.menuAction().setVisible(False)
 
@@ -164,8 +170,7 @@ class SongUsagePlugin(Plugin):
 
     def set_button_state(self):
         """
-        Keep buttons inline.  Turn of signals to stop dead loop but we need the
-        button and check box set correctly.
+        Keep buttons inline.  Turn of signals to stop dead loop but we need the button and check box set correctly.
         """
         self.song_usage_active_button.blockSignals(True)
         self.song_usage_status.blockSignals(True)
@@ -185,12 +190,16 @@ class SongUsagePlugin(Plugin):
     def display_song_usage(self, item):
         """
         Song Usage for which has been displayed
+
+        :param item: Item displayed
         """
         self._add_song_usage(translate('SongUsagePlugin', 'display'), item)
 
     def print_song_usage(self, item):
         """
         Song Usage for which has been printed
+
+        :param item: Item printed
         """
         self._add_song_usage(translate('SongUsagePlugin', 'printed'), item)
 
@@ -209,27 +218,40 @@ class SongUsagePlugin(Plugin):
             self.manager.save_object(song_usage_item)
 
     def on_song_usage_delete(self):
+        """
+        Request the delete form to be displayed
+        """
         self.song_usage_delete_form.exec_()
 
     def on_song_usage_report(self):
+        """
+        Display the song usage report generator screen
+
+        """
         self.song_usage_detail_form.initialise()
         self.song_usage_detail_form.exec_()
 
     def about(self):
+        """
+        The plugin about text
+
+        :return: the text to be displayed
+        """
         about_text = translate('SongUsagePlugin',
-            '<strong>SongUsage Plugin</strong><br />This plugin tracks the usage of songs in services.')
+                               '<strong>SongUsage Plugin</strong><br />'
+                               'This plugin tracks the usage of songs in services.')
         return about_text
 
     def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
-        ## Name PluginList ##
+        # Name PluginList
         self.text_strings[StringContent.Name] = {
             'singular': translate('SongUsagePlugin', 'SongUsage', 'name singular'),
             'plural': translate('SongUsagePlugin', 'SongUsage', 'name plural')
         }
-        ## Name for MediaDockManager, SettingsManager ##
+        # Name for MediaDockManager, SettingsManager
         self.text_strings[StringContent.VisibleName] = {
             'title': translate('SongUsagePlugin', 'SongUsage', 'container title')
         }

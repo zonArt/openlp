@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,8 +29,10 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import UiStrings, build_icon, translate
+from openlp.core.common import UiStrings, translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box, create_button
+from openlp.core.ui import SingleColumnTableWidget
 from openlp.plugins.songs.lib.ui import SongStrings
 
 
@@ -41,8 +43,8 @@ class Ui_EditSongDialog(object):
     """
     def setupUi(self, edit_song_dialog):
         edit_song_dialog.setObjectName('edit_song_dialog')
+        edit_song_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         edit_song_dialog.resize(650, 400)
-        edit_song_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
         edit_song_dialog.setModal(True)
         self.dialog_layout = QtGui.QVBoxLayout(edit_song_dialog)
         self.dialog_layout.setSpacing(8)
@@ -116,13 +118,18 @@ class Ui_EditSongDialog(object):
         self.authors_group_box.setObjectName('authors_group_box')
         self.authors_layout = QtGui.QVBoxLayout(self.authors_group_box)
         self.authors_layout.setObjectName('authors_layout')
-        self.author_add_layout = QtGui.QHBoxLayout()
+        self.author_add_layout = QtGui.QVBoxLayout()
         self.author_add_layout.setObjectName('author_add_layout')
+        self.author_type_layout = QtGui.QHBoxLayout()
+        self.author_type_layout.setObjectName('author_type_layout')
         self.authors_combo_box = create_combo_box(self.authors_group_box, 'authors_combo_box')
         self.author_add_layout.addWidget(self.authors_combo_box)
+        self.author_types_combo_box = create_combo_box(self.authors_group_box, 'author_types_combo_box', editable=False)
+        self.author_type_layout.addWidget(self.author_types_combo_box)
         self.author_add_button = QtGui.QPushButton(self.authors_group_box)
         self.author_add_button.setObjectName('author_add_button')
-        self.author_add_layout.addWidget(self.author_add_button)
+        self.author_type_layout.addWidget(self.author_add_button)
+        self.author_add_layout.addLayout(self.author_type_layout)
         self.authors_layout.addLayout(self.author_add_layout)
         self.authors_list_view = QtGui.QListWidget(self.authors_group_box)
         self.authors_list_view.setAlternatingRowColors(True)
@@ -152,8 +159,8 @@ class Ui_EditSongDialog(object):
         self.topics_layout.setObjectName('topics_layout')
         self.topic_add_layout = QtGui.QHBoxLayout()
         self.topic_add_layout.setObjectName('topic_add_layout')
-        self.topicsComboBox = create_combo_box(self.topics_group_box, 'topicsComboBox')
-        self.topic_add_layout.addWidget(self.topicsComboBox)
+        self.topics_combo_box = create_combo_box(self.topics_group_box, 'topics_combo_box')
+        self.topic_add_layout.addWidget(self.topics_combo_box)
         self.topic_add_button = QtGui.QPushButton(self.topics_group_box)
         self.topic_add_button.setObjectName('topic_add_button')
         self.topic_add_layout.addWidget(self.topic_add_button)
@@ -295,7 +302,7 @@ class Ui_EditSongDialog(object):
         self.verse_edit_all_button.setText(translate('SongsPlugin.EditSongForm', 'Ed&it All'))
         self.verse_delete_button.setText(UiStrings().Delete)
         self.song_tab_widget.setTabText(self.song_tab_widget.indexOf(self.lyrics_tab),
-            translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
+                                        translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
         self.authors_group_box.setTitle(SongStrings.Authors)
         self.author_add_button.setText(translate('SongsPlugin.EditSongForm', '&Add to Song'))
         self.author_remove_button.setText(translate('SongsPlugin.EditSongForm', '&Remove'))
@@ -307,7 +314,7 @@ class Ui_EditSongDialog(object):
         self.song_book_name_label.setText(translate('SongsPlugin.EditSongForm', 'Book:'))
         self.song_book_number_label.setText(translate('SongsPlugin.EditSongForm', 'Number:'))
         self.song_tab_widget.setTabText(self.song_tab_widget.indexOf(self.authors_tab),
-            translate('SongsPlugin.EditSongForm', 'Authors, Topics && Song Book'))
+                                        translate('SongsPlugin.EditSongForm', 'Authors, Topics && Song Book'))
         self.theme_group_box.setTitle(UiStrings().Theme)
         self.theme_add_button.setText(translate('SongsPlugin.EditSongForm', 'New &Theme'))
         self.rights_group_box.setTitle(translate('SongsPlugin.EditSongForm', 'Copyright Information'))
@@ -315,9 +322,9 @@ class Ui_EditSongDialog(object):
         self.ccli_label.setText(UiStrings().CCLINumberLabel)
         self.comments_group_box.setTitle(translate('SongsPlugin.EditSongForm', 'Comments'))
         self.song_tab_widget.setTabText(self.song_tab_widget.indexOf(self.theme_tab),
-            translate('SongsPlugin.EditSongForm', 'Theme, Copyright Info && Comments'))
+                                        translate('SongsPlugin.EditSongForm', 'Theme, Copyright Info && Comments'))
         self.song_tab_widget.setTabText(self.song_tab_widget.indexOf(self.audio_tab),
-            translate('SongsPlugin.EditSongForm', 'Linked Audio'))
+                                        translate('SongsPlugin.EditSongForm', 'Linked Audio'))
         self.from_file_button.setText(translate('SongsPlugin.EditSongForm', 'Add &File(s)'))
         self.from_media_button.setText(translate('SongsPlugin.EditSongForm', 'Add &Media'))
         self.audio_remove_button.setText(translate('SongsPlugin.EditSongForm', '&Remove'))
@@ -328,42 +335,17 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', '<strong>Warning:</strong> You have not entered a verse order.')
 
 
-def create_combo_box(parent, name):
+def create_combo_box(parent, name, editable=True):
     """
     Utility method to generate a standard combo box for this dialog.
 
-    ``parent``
-        The parent widget for this combo box.
-
-    ``name``
-        The object name.
+    :param parent: The parent widget for this combo box.
+    :param name: The object name
     """
     combo_box = QtGui.QComboBox(parent)
     combo_box.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
     combo_box.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-    combo_box.setEditable(True)
+    combo_box.setEditable(editable)
     combo_box.setInsertPolicy(QtGui.QComboBox.NoInsert)
     combo_box.setObjectName(name)
     return combo_box
-
-
-class SingleColumnTableWidget(QtGui.QTableWidget):
-    """
-    Class to for a single column table widget to use for the verse table widget.
-    """
-    def __init__(self, parent):
-        """
-        Constructor
-        """
-        super(SingleColumnTableWidget, self).__init__(parent)
-        self.horizontalHeader().setVisible(False)
-        self.setColumnCount(1)
-
-    def resizeEvent(self, event):
-        """
-        Resize the first column together with the widget.
-        """
-        QtGui.QTableWidget.resizeEvent(self, event)
-        if self.columnCount():
-            self.setColumnWidth(0, event.size().width())
-            self.resizeRowsToContents()

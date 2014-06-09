@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,7 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Settings, SettingsTab, translate
+from openlp.core.common import Settings, translate
+from openlp.core.lib import SettingsTab
 
 
 class SongsTab(SettingsTab):
@@ -58,6 +59,9 @@ class SongsTab(SettingsTab):
         self.add_from_service_check_box = QtGui.QCheckBox(self.mode_group_box)
         self.add_from_service_check_box.setObjectName('add_from_service_check_box')
         self.mode_layout.addWidget(self.add_from_service_check_box)
+        self.display_songbook_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.display_songbook_check_box.setObjectName('songbook_check_box')
+        self.mode_layout.addWidget(self.display_songbook_check_box)
         self.left_layout.addWidget(self.mode_group_box)
         self.left_layout.addStretch()
         self.right_layout.addStretch()
@@ -65,15 +69,17 @@ class SongsTab(SettingsTab):
         self.tool_bar_active_check_box.stateChanged.connect(self.on_tool_bar_active_check_box_changed)
         self.update_on_edit_check_box.stateChanged.connect(self.on_update_on_edit_check_box_changed)
         self.add_from_service_check_box.stateChanged.connect(self.on_add_from_service_check_box_changed)
+        self.display_songbook_check_box.stateChanged.connect(self.on_songbook_check_box_changed)
 
     def retranslateUi(self):
         self.mode_group_box.setTitle(translate('SongsPlugin.SongsTab', 'Songs Mode'))
         self.search_as_type_check_box.setText(translate('SongsPlugin.SongsTab', 'Enable search as you type'))
         self.tool_bar_active_check_box.setText(translate('SongsPlugin.SongsTab',
-            'Display verses on live tool bar'))
+                                                         'Display verses on live tool bar'))
         self.update_on_edit_check_box.setText(translate('SongsPlugin.SongsTab', 'Update service from song edit'))
         self.add_from_service_check_box.setText(translate('SongsPlugin.SongsTab',
-            'Import missing songs from service files'))
+                                                          'Import missing songs from service files'))
+        self.display_songbook_check_box.setText(translate('SongsPlugin.SongsTab', 'Display songbook in footer'))
 
     def on_search_as_type_check_box_changed(self, check_state):
         self.song_search = (check_state == QtCore.Qt.Checked)
@@ -87,6 +93,9 @@ class SongsTab(SettingsTab):
     def on_add_from_service_check_box_changed(self, check_state):
         self.update_load = (check_state == QtCore.Qt.Checked)
 
+    def on_songbook_check_box_changed(self, check_state):
+        self.display_songbook = (check_state == QtCore.Qt.Checked)
+
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
@@ -94,10 +103,12 @@ class SongsTab(SettingsTab):
         self.tool_bar = settings.value('display songbar')
         self.update_edit = settings.value('update service on edit')
         self.update_load = settings.value('add song from service')
+        self.display_songbook = settings.value('display songbook')
         self.search_as_type_check_box.setChecked(self.song_search)
         self.tool_bar_active_check_box.setChecked(self.tool_bar)
         self.update_on_edit_check_box.setChecked(self.update_edit)
         self.add_from_service_check_box.setChecked(self.update_load)
+        self.display_songbook_check_box.setChecked(self.display_songbook)
         settings.endGroup()
 
     def save(self):
@@ -107,6 +118,7 @@ class SongsTab(SettingsTab):
         settings.setValue('display songbar', self.tool_bar)
         settings.setValue('update service on edit', self.update_edit)
         settings.setValue('add song from service', self.update_load)
+        settings.setValue('display songbook', self.display_songbook)
         settings.endGroup()
         if self.tab_visited:
             self.settings_form.register_post_process('songs_config_updated')

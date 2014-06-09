@@ -1,12 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
@@ -52,7 +52,9 @@ This is done easily via the ``-d``, ``-p`` and ``-u`` options::
 
 """
 import os
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 from getpass import getpass
 import base64
 import json
@@ -70,6 +72,7 @@ quiet_mode = False
 username = ''
 password = ''
 
+
 class Command(object):
     """
     Provide an enumeration of commands.
@@ -79,6 +82,7 @@ class Command(object):
     Prepare = 3
     Update = 4
     Generate = 5
+
 
 class CommandStack(object):
     """
@@ -92,7 +96,7 @@ class CommandStack(object):
         return len(self.data)
 
     def __getitem__(self, index):
-        if not index in self.data:
+        if index not in self.data:
             return None
         elif self.data[index].get('arguments'):
             return self.data[index]['command'], self.data[index]['arguments']
@@ -102,7 +106,7 @@ class CommandStack(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         if self.current_index == len(self.data):
             raise StopIteration
         else:
@@ -134,47 +138,47 @@ class CommandStack(object):
                 results.append(str((item['command'], )))
         return '[%s]' % ', '.join(results)
 
+
 def print_quiet(text, linefeed=True):
     """
-    This method checks to see if we are in quiet mode, and if not prints
-    ``text`` out.
+    This method checks to see if we are in quiet mode, and if not prints ``text`` out.
 
-    ``text``
-        The text to print.
+    :param text: The text to print.
+    :param linefeed: Linefeed required
     """
     global quiet_mode
     if not quiet_mode:
         if linefeed:
-            print text
+            print(text)
         else:
-            print text,
+            print(text, end=' ')
+
 
 def print_verbose(text):
     """
-    This method checks to see if we are in verbose mode, and if so prints
-    ``text`` out.
+    This method checks to see if we are in verbose mode, and if so prints  ``text`` out.
 
-    ``text``
-        The text to print.
+    :param text: The text to print.
     """
     global verbose_mode, quiet_mode
     if not quiet_mode and verbose_mode:
         print('    %s' % text)
 
+
 def run(command):
     """
     This method runs an external application.
 
-    ``command``
-        The command to run.
+    :param command: The command to run.
     """
     print_verbose(command)
     process = QtCore.QProcess()
     process.start(command)
-    while (process.waitForReadyRead()):
-        print_verbose('ReadyRead: %s' % QtCore.QString(process.readAll()))
+    while process.waitForReadyRead():
+        print_verbose('ReadyRead: %s' % process.readAll())
     print_verbose('Error(s):\n%s' % process.readAllStandardError())
     print_verbose('Output:\n%s' % process.readAllStandardOutput())
+
 
 def download_translations():
     """
@@ -190,9 +194,8 @@ def download_translations():
         password = getpass('   Transifex password: ')
     # First get the list of languages
     url = SERVER_URL + 'resource/ents/'
-    base64string = base64.encodestring(
-        '%s:%s' % (username, password))[:-1]
-    auth_header =  'Basic %s' % base64string
+    base64string = base64.encodebytes('%s:%s' % (username, password))[:-1]
+    auth_header = 'Basic %s' % base64string
     request = urllib.request.Request(url + '?details')
     request.add_header('Authorization', auth_header)
     print_verbose('Downloading list of languages from: %s' % url)
@@ -207,8 +210,7 @@ def download_translations():
         lang_url = url + 'translation/%s/?file' % language
         request = urllib.request.Request(lang_url)
         request.add_header('Authorization', auth_header)
-        filename = os.path.join(os.path.abspath('..'), 'resources', 'i18n',
-            language + '.ts')
+        filename = os.path.join(os.path.abspath('..'), 'resources', 'i18n', language + '.ts')
         print_verbose('Get Translation File: %s' % filename)
         response = urllib.request.urlopen(request)
         fd = open(filename, 'w')
@@ -217,10 +219,10 @@ def download_translations():
     print_quiet('   Done.')
     return True
 
+
 def prepare_project():
     """
-    This method creates the project file needed to update the translation files
-    and compile them into .qm files.
+    This method creates the project file needed to update the translation files and compile them into .qm files.
     """
     print_quiet('Generating the openlp.pro file')
     lines = []
@@ -229,9 +231,9 @@ def prepare_project():
     print_verbose('Starting directory: %s' % start_dir)
     for root, dirs, files in os.walk(start_dir):
         for file in files:
-            path = root.replace(start_dir, '').replace('\\', '/') #.replace(u'..', u'.')
+            path = root.replace(start_dir, '').replace('\\', '/')
             if file.startswith('hook-') or file.startswith('test_'):
-               continue
+                continue
             ignore = False
             for ignored_path in IGNORED_PATHS:
                 if path.startswith(ignored_path):
@@ -259,9 +261,10 @@ def prepare_project():
                 lines.append('TRANSLATIONS += %s' % line)
     lines.sort()
     file = open(os.path.join(start_dir, 'openlp.pro'), 'w')
-    file.write('\n'.join(lines).encode('utf8'))
+    file.write('\n'.join(lines))
     file.close()
     print_quiet('   Done.')
+
 
 def update_translations():
     print_quiet('Update the translation files')
@@ -273,11 +276,12 @@ def update_translations():
         run('pylupdate4 -verbose -noobsolete openlp.pro')
         os.chdir(os.path.abspath('scripts'))
 
+
 def generate_binaries():
     print_quiet('Generate the related *.qm files')
     if not os.path.exists(os.path.join(os.path.abspath('..'), 'openlp.pro')):
         print('You have not generated a project file yet, please run this script with the -p option. It is also ' +
-            'recommended that you this script with the -u option to update the translation files as well.')
+              'recommended that you this script with the -u option to update the translation files as well.')
         return
     else:
         os.chdir(os.path.abspath('..'))
@@ -290,11 +294,10 @@ def create_translation():
     This method opens a browser to the OpenLP project page at Transifex so
     that the user can request a new language.
     """
-    print_quiet('Please request a new language at the OpenLP project on '
-        'Transifex.')
-    webbrowser.open('https://www.transifex.net/projects/p/openlp/'
-        'resource/ents/')
+    print_quiet('Please request a new language at the OpenLP project on Transifex.')
+    webbrowser.open('https://www.transifex.net/projects/p/openlp/resource/ents/')
     print_quiet('Opening browser to OpenLP project...')
+
 
 def process_stack(command_stack):
     """
@@ -323,6 +326,7 @@ def process_stack(command_stack):
     else:
         print_quiet('No commands to process.')
 
+
 def main():
     global verbose_mode, quiet_mode, username, password
     # Set up command line options.
@@ -331,23 +335,23 @@ def main():
         'This script is used to manage OpenLP\'s translation files.'
     parser = OptionParser(usage=usage)
     parser.add_option('-U', '--username', dest='username', metavar='USERNAME',
-        help='Transifex username, used for authentication')
+                      help='Transifex username, used for authentication')
     parser.add_option('-P', '--password', dest='password', metavar='PASSWORD',
-        help='Transifex password, used for authentication')
+                      help='Transifex password, used for authentication')
     parser.add_option('-d', '--download-ts', dest='download',
-        action='store_true', help='download language files from Transifex')
+                      action='store_true', help='download language files from Transifex')
     parser.add_option('-c', '--create', dest='create', action='store_true',
-        help='go to Transifex to request a new translation file')
+                      help='go to Transifex to request a new translation file')
     parser.add_option('-p', '--prepare', dest='prepare', action='store_true',
-        help='generate a project file, used to update the translations')
+                      help='generate a project file, used to update the translations')
     parser.add_option('-u', '--update', action='store_true', dest='update',
-        help='update translation files (needs a project file)')
+                      help='update translation files (needs a project file)')
     parser.add_option('-g', '--generate', dest='generate', action='store_true',
-        help='compile .ts files into .qm files')
+                      help='compile .ts files into .qm files')
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
-        help='show extra information while processing translations')
+                      help='show extra information while processing translations')
     parser.add_option('-q', '--quiet', dest='quiet', action='store_true',
-        help='suppress all output other than errors')
+                      help='suppress all output other than errors')
     (options, args) = parser.parse_args()
     # Create and populate the command stack
     command_stack = CommandStack()

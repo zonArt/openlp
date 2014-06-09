@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -34,10 +34,12 @@ from distutils.version import LooseVersion
 import logging
 import os
 import sys
+import threading
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Settings, translate
+from openlp.core.common import Settings
+from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 
@@ -117,35 +119,35 @@ class VlcPlayer(MediaPlayer):
         """
         Set up the media player
         """
-        display.vlcWidget = QtGui.QFrame(display)
-        display.vlcWidget.setFrameStyle(QtGui.QFrame.NoFrame)
+        display.vlc_widget = QtGui.QFrame(display)
+        display.vlc_widget.setFrameStyle(QtGui.QFrame.NoFrame)
         # creating a basic vlc instance
         command_line_options = '--no-video-title-show'
         if not display.has_audio:
             command_line_options += ' --no-audio --no-video-title-show'
         if Settings().value('advanced/hide mouse') and display.controller.is_live:
             command_line_options += ' --mouse-hide-timeout=0'
-        display.vlcInstance = vlc.Instance(command_line_options)
+        display.vlc_instance = vlc.Instance(command_line_options)
         # creating an empty vlc media player
-        display.vlcMediaPlayer = display.vlcInstance.media_player_new()
-        display.vlcWidget.resize(display.size())
-        display.vlcWidget.raise_()
-        display.vlcWidget.hide()
+        display.vlc_media_player = display.vlc_instance.media_player_new()
+        display.vlc_widget.resize(display.size())
+        display.vlc_widget.raise_()
+        display.vlc_widget.hide()
         # The media player has to be 'connected' to the QFrame.
         # (otherwise a video would be displayed in it's own window)
         # This is platform specific!
         # You have to give the id of the QFrame (or similar object)
         # to vlc, different platforms have different functions for this.
-        win_id = int(display.vlcWidget.winId())
+        win_id = int(display.vlc_widget.winId())
         if sys.platform == "win32":
-            display.vlcMediaPlayer.set_hwnd(win_id)
+            display.vlc_media_player.set_hwnd(win_id)
         elif sys.platform == "darwin":
             # We have to use 'set_nsobject' since Qt4 on OSX uses Cocoa
             # framework and not the old Carbon.
-            display.vlcMediaPlayer.set_nsobject(win_id)
+            display.vlc_media_player.set_nsobject(win_id)
         else:
             # for Linux using the X Server
-            display.vlcMediaPlayer.set_xwindow(win_id)
+            display.vlc_media_player.set_xwindow(win_id)
         self.has_own_widget = True
 
     def check_available(self):
@@ -164,18 +166,18 @@ class VlcPlayer(MediaPlayer):
         file_path = str(controller.media_info.file_info.absoluteFilePath())
         path = os.path.normcase(file_path)
         # create the media
-        display.vlcMedia = display.vlcInstance.media_new_path(path)
+        display.vlc_media = display.vlc_instance.media_new_path(path)
         # put the media in the media player
-        display.vlcMediaPlayer.set_media(display.vlcMedia)
+        display.vlc_media_player.set_media(display.vlc_media)
         # parse the metadata of the file
-        display.vlcMedia.parse()
+        display.vlc_media.parse()
         self.volume(display, volume)
         # We need to set media_info.length during load because we want
         # to avoid start and stop the video twice. Once for real playback
         # and once to just get media length.
         #
         # Media plugin depends on knowing media length before playback.
-        controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
+        controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
         return True
 
     def media_state_wait(self, display, media_state):
@@ -184,8 +186,8 @@ class VlcPlayer(MediaPlayer):
         Wait no longer than 60 seconds. (loading an iso file needs a long time)
         """
         start = datetime.now()
-        while not media_state == display.vlcMedia.get_state():
-            if display.vlcMedia.get_state() == vlc.State.Error:
+        while not media_state == display.vlc_media.get_state():
+            if display.vlc_media.get_state() == vlc.State.Error:
                 return False
             self.application.process_events()
             if (datetime.now() - start).seconds > 60:
@@ -196,7 +198,7 @@ class VlcPlayer(MediaPlayer):
         """
         Resize the player
         """
-        display.vlcWidget.resize(display.size())
+        display.vlc_widget.resize(display.size())
 
     def play(self, display):
         """
@@ -206,25 +208,25 @@ class VlcPlayer(MediaPlayer):
         start_time = 0
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
-        display.vlcMediaPlayer.play()
+        threading.Thread(target=display.vlc_media_player.play).start()
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
         self.volume(display, controller.media_info.volume)
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
-        controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
+        controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
         controller.seek_slider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing
-        display.vlcWidget.raise_()
+        display.vlc_widget.raise_()
         return True
 
     def pause(self, display):
         """
         Pause the current item
         """
-        if display.vlcMedia.get_state() != vlc.State.Playing:
+        if display.vlc_media.get_state() != vlc.State.Playing:
             return
-        display.vlcMediaPlayer.pause()
+        display.vlc_media_player.pause()
         if self.media_state_wait(display, vlc.State.Paused):
             self.state = MediaState.Paused
 
@@ -232,7 +234,7 @@ class VlcPlayer(MediaPlayer):
         """
         Stop the current item
         """
-        display.vlcMediaPlayer.stop()
+        threading.Thread(target=display.vlc_media_player.stop).start()
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
@@ -240,21 +242,21 @@ class VlcPlayer(MediaPlayer):
         Set the volume
         """
         if display.has_audio:
-            display.vlcMediaPlayer.audio_set_volume(vol)
+            display.vlc_media_player.audio_set_volume(vol)
 
     def seek(self, display, seek_value):
         """
         Go to a particular position
         """
-        if display.vlcMediaPlayer.is_seekable():
-            display.vlcMediaPlayer.set_time(seek_value)
+        if display.vlc_media_player.is_seekable():
+            display.vlc_media_player.set_time(seek_value)
 
     def reset(self, display):
         """
         Reset the player
         """
-        display.vlcMediaPlayer.stop()
-        display.vlcWidget.setVisible(False)
+        display.vlc_media_player.stop()
+        display.vlc_widget.setVisible(False)
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
@@ -262,23 +264,23 @@ class VlcPlayer(MediaPlayer):
         Set the visibility
         """
         if self.has_own_widget:
-            display.vlcWidget.setVisible(status)
+            display.vlc_widget.setVisible(status)
 
     def update_ui(self, display):
         """
         Update the UI
         """
         # Stop video if playback is finished.
-        if display.vlcMedia.get_state() == vlc.State.Ended:
+        if display.vlc_media.get_state() == vlc.State.Ended:
             self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
-            if display.vlcMediaPlayer.get_time() > controller.media_info.end_time * 1000:
+            if display.vlc_media_player.get_time() > controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seek_slider.isSliderDown():
             controller.seek_slider.blockSignals(True)
-            controller.seek_slider.setSliderPosition(display.vlcMediaPlayer.get_time())
+            controller.seek_slider.setSliderPosition(display.vlc_media_player.get_time())
             controller.seek_slider.blockSignals(False)
 
     def get_info(self):
@@ -286,8 +288,8 @@ class VlcPlayer(MediaPlayer):
         Return some information about this player
         """
         return(translate('Media.player', 'VLC is an external player which '
-            'supports a number of different formats.') +
-            '<br/> <strong>' + translate('Media.player', 'Audio') +
-            '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' +
-            translate('Media.player', 'Video') + '</strong><br/>' +
-            str(VIDEO_EXT) + '<br/>')
+               'supports a number of different formats.') +
+               '<br/> <strong>' + translate('Media.player', 'Audio') +
+               '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' +
+               translate('Media.player', 'Video') + '</strong><br/>' +
+               str(VIDEO_EXT) + '<br/>')

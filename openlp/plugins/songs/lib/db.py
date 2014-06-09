@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -35,17 +35,51 @@ import re
 
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation, reconstructor
-from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func, text
 
 from openlp.core.lib.db import BaseModel, init_db
 from openlp.core.utils import get_natural_key
+from openlp.core.lib import translate
 
 
 class Author(BaseModel):
     """
     Author model
     """
+    def get_display_name(self, author_type=None):
+        if author_type:
+            return "%s (%s)" % (self.display_name, AuthorType.Types[author_type])
+        return self.display_name
+
+
+class AuthorSong(BaseModel):
+    """
+    Relationship between Authors and Songs (many to many).
+    Need to define this relationship table explicit to get access to the
+    Association Object (author_type).
+    http://docs.sqlalchemy.org/en/latest/orm/relationships.html#association-object
+    """
     pass
+
+
+class AuthorType(object):
+    """
+    Enumeration for Author types.
+    They are defined by OpenLyrics: http://openlyrics.info/dataformat.html#authors
+
+    The 'words+music' type is not an official type, but is provided for convenience.
+    """
+    Words = 'words'
+    Music = 'music'
+    WordsAndMusic = 'words+music'
+    Translation = 'translation'
+    Types = {
+        Words: translate('SongsPlugin.AuthorType', 'Words', 'Author who wrote the lyrics of a song'),
+        Music: translate('SongsPlugin.AuthorType', 'Music', 'Author who wrote the music of a song'),
+        WordsAndMusic: translate('SongsPlugin.AuthorType', 'Words and Music',
+                                 'Author who wrote both lyrics and music of a song'),
+        Translation: translate('SongsPlugin.AuthorType', 'Translation', 'Author who translated the song')
+    }
 
 
 class Book(BaseModel):
@@ -67,6 +101,7 @@ class Song(BaseModel):
     """
     Song model
     """
+
     def __init__(self):
         self.sort_key = []
 
@@ -80,6 +115,33 @@ class Song(BaseModel):
         """
         self.sort_key = get_natural_key(self.title)
 
+    def add_author(self, author, author_type=None):
+        """
+        Add an author to the song if it not yet exists
+
+        :param author: Author object
+        :param author_type: AuthorType constant or None
+        """
+        for author_song in self.authors_songs:
+            if author_song.author == author and author_song.author_type == author_type:
+                return
+        new_author_song = AuthorSong()
+        new_author_song.author = author
+        new_author_song.author_type = author_type
+        self.authors_songs.append(new_author_song)
+
+    def remove_author(self, author, author_type=None):
+        """
+        Remove an existing author from the song
+
+        :param author: Author object
+        :param author_type: AuthorType constant or None
+        """
+        for author_song in self.authors_songs:
+            if author_song.author == author and author_song.author_type == author_type:
+                self.authors_songs.remove(author_song)
+                return
+
 
 class Topic(BaseModel):
     """
@@ -87,13 +149,12 @@ class Topic(BaseModel):
     """
     pass
 
+
 def init_schema(url):
     """
     Setup the songs database connection and initialise the database schema.
 
-    ``url``
-        The database to setup
-
+    :param url: The database to setup
     The song database contains the following tables:
 
         * authors
@@ -121,6 +182,7 @@ def init_schema(url):
 
         * author_id
         * song_id
+        * author_type
 
     **media_files Table**
         * id
@@ -173,7 +235,8 @@ def init_schema(url):
     session, metadata = init_db(url)
 
     # Definition of the "authors" table
-    authors_table = Table('authors', metadata,
+    authors_table = Table(
+        'authors', metadata,
         Column('id', types.Integer(), primary_key=True),
         Column('first_name', types.Unicode(128)),
         Column('last_name', types.Unicode(128)),
@@ -181,27 +244,28 @@ def init_schema(url):
     )
 
     # Definition of the "media_files" table
-    media_files_table = Table('media_files', metadata,
+    media_files_table = Table(
+        'media_files', metadata,
         Column('id', types.Integer(), primary_key=True),
-        Column('song_id', types.Integer(), ForeignKey('songs.id'),
-            default=None),
+        Column('song_id', types.Integer(), ForeignKey('songs.id'), default=None),
         Column('file_name', types.Unicode(255), nullable=False),
         Column('type', types.Unicode(64), nullable=False, default='audio'),
         Column('weight', types.Integer(), default=0)
     )
 
     # Definition of the "song_books" table
-    song_books_table = Table('song_books', metadata,
+    song_books_table = Table(
+        'song_books', metadata,
         Column('id', types.Integer(), primary_key=True),
         Column('name', types.Unicode(128), nullable=False),
         Column('publisher', types.Unicode(128))
     )
 
     # Definition of the "songs" table
-    songs_table = Table('songs', metadata,
+    songs_table = Table(
+        'songs', metadata,
         Column('id', types.Integer(), primary_key=True),
-        Column('song_book_id', types.Integer(),
-            ForeignKey('song_books.id'), default=None),
+        Column('song_book_id', types.Integer(), ForeignKey('song_books.id'), default=None),
         Column('title', types.Unicode(255), nullable=False),
         Column('alternate_title', types.Unicode(255)),
         Column('lyrics', types.UnicodeText, nullable=False),
@@ -214,46 +278,47 @@ def init_schema(url):
         Column('search_title', types.Unicode(255), index=True, nullable=False),
         Column('search_lyrics', types.UnicodeText, nullable=False),
         Column('create_date', types.DateTime(), default=func.now()),
-        Column('last_modified', types.DateTime(), default=func.now(),
-            onupdate=func.now()),
+        Column('last_modified', types.DateTime(), default=func.now(), onupdate=func.now()),
         Column('temporary', types.Boolean(), default=False)
     )
 
     # Definition of the "topics" table
-    topics_table = Table('topics', metadata,
+    topics_table = Table(
+        'topics', metadata,
         Column('id', types.Integer(), primary_key=True),
         Column('name', types.Unicode(128), index=True, nullable=False)
     )
 
     # Definition of the "authors_songs" table
-    authors_songs_table = Table('authors_songs', metadata,
-        Column('author_id', types.Integer(),
-            ForeignKey('authors.id'), primary_key=True),
-        Column('song_id', types.Integer(),
-            ForeignKey('songs.id'), primary_key=True)
+    authors_songs_table = Table(
+        'authors_songs', metadata,
+        Column('author_id', types.Integer(), ForeignKey('authors.id'), primary_key=True),
+        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
+        Column('author_type', types.String(), primary_key=True, nullable=False, server_default=text('""'))
     )
 
     # Definition of the "songs_topics" table
-    songs_topics_table = Table('songs_topics', metadata,
-        Column('song_id', types.Integer(),
-            ForeignKey('songs.id'), primary_key=True),
-        Column('topic_id', types.Integer(),
-            ForeignKey('topics.id'), primary_key=True)
+    songs_topics_table = Table(
+        'songs_topics', metadata,
+        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
+        Column('topic_id', types.Integer(), ForeignKey('topics.id'), primary_key=True)
     )
 
     mapper(Author, authors_table)
+    mapper(AuthorSong, authors_songs_table, properties={
+        'author': relation(Author)
+    })
     mapper(Book, song_books_table)
     mapper(MediaFile, media_files_table)
-    mapper(Song, songs_table,
-        properties={
-            'authors': relation(Author, backref='songs',
-                secondary=authors_songs_table, lazy=False),
-            'book': relation(Book, backref='songs'),
-            'media_files': relation(MediaFile, backref='songs',
-                order_by=media_files_table.c.weight),
-            'topics': relation(Topic, backref='songs',
-                secondary=songs_topics_table)
-        })
+    mapper(Song, songs_table, properties={
+        # Use the authors_songs relation when you need access to the 'author_type' attribute
+        # or when creating new relations
+        'authors_songs': relation(AuthorSong, cascade="all, delete-orphan"),
+        'authors': relation(Author, secondary=authors_songs_table, viewonly=True),
+        'book': relation(Book, backref='songs'),
+        'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
+        'topics': relation(Topic, backref='songs', secondary=songs_topics_table)
+    })
     mapper(Topic, topics_table)
 
     metadata.create_all(checkfirst=True)

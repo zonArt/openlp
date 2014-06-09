@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -42,10 +42,10 @@ class Ui_MediaFilesDialog(object):
         Set up the user interface.
         """
         media_files_dialog.setObjectName('media_files_dialog')
+        media_files_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         media_files_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
         media_files_dialog.resize(400, 300)
         media_files_dialog.setModal(True)
-        media_files_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
         self.files_vertical_layout = QtGui.QVBoxLayout(media_files_dialog)
         self.files_vertical_layout.setSpacing(8)
         self.files_vertical_layout.setMargin(8)
@@ -66,8 +66,10 @@ class Ui_MediaFilesDialog(object):
     def retranslateUi(self, media_files_dialog):
         """
         Translate the UI on the fly.
+
+        :param media_files_dialog:
         """
         media_files_dialog.setWindowTitle(translate('SongsPlugin.MediaFilesForm', 'Select Media File(s)'))
-        self.select_label.setText(translate('SongsPlugin.MediaFilesForm',
-            'Select one or more audio files from the list below, and click OK to import them into this song.'))
-
+        self.select_label.setText(translate('SongsPlugin.MediaFilesForm', 'Select one or more audio files from the '
+                                                                          'list below, and click OK to import them '
+                                                                          'into this song.'))

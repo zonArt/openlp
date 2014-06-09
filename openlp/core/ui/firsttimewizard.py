@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,7 +33,8 @@ from PyQt4 import QtCore, QtGui
 
 import sys
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import add_welcome_page
 
 
@@ -60,11 +61,12 @@ class Ui_FirstTimeWizard(object):
         Set up the UI.
         """
         first_time_wizard.setObjectName('first_time_wizard')
+        first_time_wizard.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         first_time_wizard.resize(550, 386)
         first_time_wizard.setModal(True)
         first_time_wizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         first_time_wizard.setOptions(QtGui.QWizard.IndependentPages | QtGui.QWizard.NoBackButtonOnStartPage |
-            QtGui.QWizard.NoBackButtonOnLastPage | QtGui.QWizard.HaveCustomButton1)
+                                     QtGui.QWizard.NoBackButtonOnLastPage | QtGui.QWizard.HaveCustomButton1)
         self.finish_button = self.button(QtGui.QWizard.FinishButton)
         self.no_internet_finish_button = self.button(QtGui.QWizard.CustomButton1)
         self.cancel_button = self.button(QtGui.QWizard.CancelButton)
@@ -93,13 +95,10 @@ class Ui_FirstTimeWizard(object):
         self.image_check_box.setChecked(True)
         self.image_check_box.setObjectName('image_check_box')
         self.plugin_layout.addWidget(self.image_check_box)
-        # TODO Presentation plugin is not yet working on Mac OS X.
-        # For now just ignore it.
-        if sys.platform != 'darwin':
-            self.presentation_check_box = QtGui.QCheckBox(self.plugin_page)
-            self.presentation_check_box.setChecked(True)
-            self.presentation_check_box.setObjectName('presentation_check_box')
-            self.plugin_layout.addWidget(self.presentation_check_box)
+        self.presentation_check_box = QtGui.QCheckBox(self.plugin_page)
+        self.presentation_check_box.setChecked(True)
+        self.presentation_check_box.setObjectName('presentation_check_box')
+        self.plugin_layout.addWidget(self.presentation_check_box)
         self.media_check_box = QtGui.QCheckBox(self.plugin_page)
         self.media_check_box.setChecked(True)
         self.media_check_box.setObjectName('media_check_box')
@@ -210,19 +209,17 @@ class Ui_FirstTimeWizard(object):
         """
         first_time_wizard.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'First Time Wizard'))
         self.title_label.setText('<span style="font-size:14pt; font-weight:600;">%s</span>' %
-            translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
-        self.information_label.setText(translate('OpenLP.FirstTimeWizard',
-            'This wizard will help you to configure OpenLP for initial use. Click the next button below to start.'))
+                                 translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
+        self.information_label.setText(
+            translate('OpenLP.FirstTimeWizard', 'This wizard will help you to configure OpenLP for initial use. '
+                                                'Click the next button below to start.'))
         self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
         self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
         self.songs_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
         self.custom_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Custom Slides'))
         self.bible_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Bible'))
         self.image_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Images'))
-        # TODO Presentation plugin is not yet working on Mac OS X.
-        # For now just ignore it.
-        if sys.platform != 'darwin':
-            self.presentation_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Presentations'))
+        self.presentation_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Presentations'))
         self.media_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Media (Audio and Video)'))
         self.remote_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Allow remote access'))
         self.song_usage_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Monitor Song Usage'))
@@ -231,13 +228,15 @@ class Ui_FirstTimeWizard(object):
         self.no_internet_page.setSubTitle(
             translate('OpenLP.FirstTimeWizard', 'Unable to detect an Internet connection.'))
         self.no_internet_text = translate('OpenLP.FirstTimeWizard',
-            'No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able '
-            'to download sample songs, Bibles and themes.  Click the Finish button now to start OpenLP with initial '
-            'settings and no sample data.\n\nTo re-run the First Time Wizard and import this sample data at a later '
-            'time, check your Internet connection and re-run this wizard by selecting "Tools/Re-run First Time Wizard" '
-            'from OpenLP.')
+                                          'No Internet connection was found. The First Time Wizard needs an Internet '
+                                          'connection in order to be able to download sample songs, Bibles and themes.'
+                                          '  Click the Finish button now to start OpenLP with initial settings and '
+                                          'no sample data.\n\nTo re-run the First Time Wizard and import this sample '
+                                          'data at a later time, check your Internet connection and re-run this '
+                                          'wizard by selecting "Tools/Re-run First Time Wizard" from OpenLP.')
         self.cancelWizardText = translate('OpenLP.FirstTimeWizard',
-            '\n\nTo cancel the First Time Wizard completely (and not start OpenLP), click the Cancel button now.')
+                                          '\n\nTo cancel the First Time Wizard completely (and not start OpenLP), '
+                                          'click the Cancel button now.')
         self.songs_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Songs'))
         self.songs_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select and download public domain songs.'))
         self.bibles_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Bibles'))
@@ -246,7 +245,7 @@ class Ui_FirstTimeWizard(object):
         self.themes_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select and download sample themes.'))
         self.defaults_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Default Settings'))
         self.defaults_page.setSubTitle(translate('OpenLP.FirstTimeWizard',
-            'Set up default settings to be used by OpenLP.'))
+                                                 'Set up default settings to be used by OpenLP.'))
         self.display_label.setText(translate('OpenLP.FirstTimeWizard', 'Default output display:'))
         self.theme_label.setText(translate('OpenLP.FirstTimeWizard', 'Select default theme:'))
         self.progress_label.setText(translate('OpenLP.FirstTimeWizard', 'Starting configuration process...'))

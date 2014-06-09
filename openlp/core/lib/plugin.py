@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -30,11 +30,11 @@
 Provide the generic plugin functionality for OpenLP plugins.
 """
 import logging
-import os
+
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Settings, Registry, UiStrings
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
@@ -65,7 +65,7 @@ class StringContent(object):
     VisibleName = 'visible_name'
 
 
-class Plugin(QtCore.QObject):
+class Plugin(QtCore.QObject, RegistryProperties):
     """
     Base class for openlp plugins to inherit from.
 
@@ -101,7 +101,7 @@ class Plugin(QtCore.QObject):
     ``add_import_menu_item(import_menu)``
         Add an item to the Import menu.
 
-    ``add_export_menu_Item(export_menu)``
+    ``add_export_menu_item(export_menu)``
         Add an item to the Export menu.
 
     ``create_settings_tab()``
@@ -122,28 +122,21 @@ class Plugin(QtCore.QObject):
 
     def __init__(self, name, default_settings, media_item_class=None, settings_tab_class=None, version=None):
         """
-        This is the constructor for the plugin object. This provides an easy
-        way for descendent plugins to populate common data. This method *must*
+        This is the constructor for the plugin object. This provides an easy way for descendant plugins to populate
+         common data. This method *must*
+
         be overridden, like so::
 
             class MyPlugin(Plugin):
                 def __init__(self):
-                    super(MyPlugin, self).__init__('MyPlugin', version=u'0.1')
+                    super(MyPlugin, self).__init__('MyPlugin', version='0.1')
 
-        ``name``
-            Defaults to *None*. The name of the plugin.
-
-        ``default_settings``
-            A dict containing the plugin's settings. The value to each key is the default value to be used.
-
-        ``media_item_class``
-            The class name of the plugin's media item.
-
-        ``settings_tab_class``
-            The class name of the plugin's settings tab.
-
-        ``version``
-            Defaults to *None*, which means that the same version number is used as OpenLP's version number.
+        :param name: Defaults to *None*. The name of the plugin.
+        :param default_settings: A dict containing the plugin's settings. The value to each key is the default value
+        to be used.
+        :param media_item_class: The class name of the plugin's media item.
+        :param settings_tab_class: The class name of the plugin's settings tab.
+        :param version: Defaults to *None*, which means that the same version number is used as OpenLP's version number.
         """
         log.debug('Plugin %s initialised' % name)
         super(Plugin, self).__init__()
@@ -221,35 +214,31 @@ class Plugin(QtCore.QObject):
         """
         Upgrade the settings of this plugin.
 
-        ``settings``
-            The Settings object containing the old settings.
+        :param settings: The Settings object containing the old settings.
         """
         pass
 
-    def add_import_menu_item(self, importMenu):
+    def add_import_menu_item(self, import_menu):
         """
         Create a menu item and add it to the "Import" menu.
 
-        ``importMenu``
-            The Import menu.
+        :param import_menu: The Import menu.
         """
         pass
 
-    def add_export_menu_Item(self, exportMenu):
+    def add_export_menu_item(self, export_menu):
         """
         Create a menu item and add it to the "Export" menu.
 
-        ``exportMenu``
-            The Export menu
+        :param export_menu: The Export menu
         """
         pass
 
-    def add_tools_menu_item(self, toolsMenu):
+    def add_tools_menu_item(self, tools_menu):
         """
         Create a menu item and add it to the "Tools" menu.
 
-        ``toolsMenu``
-            The Tools menu
+        :param tools_menu: The Tools menu
         """
         pass
 
@@ -260,14 +249,14 @@ class Plugin(QtCore.QObject):
         """
         if self.settings_tab_class:
             self.settings_tab = self.settings_tab_class(parent, self.name,
-                self.get_string(StringContent.VisibleName)['title'], self.icon_path)
+                                                        self.get_string(StringContent.VisibleName)['title'],
+                                                        self.icon_path)
 
     def add_to_menu(self, menubar):
         """
         Add menu items to the menu, given the menubar.
 
-        ``menubar``
-            The application's menu bar.
+        :param menubar: The application's menu bar.
         """
         pass
 
@@ -283,8 +272,7 @@ class Plugin(QtCore.QObject):
 
     def about(self):
         """
-        Show a dialog when the user clicks on the 'About' button in the plugin
-        manager.
+        Show a dialog when the user clicks on the 'About' button in the plugin manager.
         """
         raise NotImplementedError('Plugin.about needs to be defined by the plugin')
 
@@ -323,15 +311,12 @@ class Plugin(QtCore.QObject):
         """
         return False
 
-    def rename_theme(self, oldTheme, newTheme):
+    def rename_theme(self, old_theme, new_theme):
         """
         Renames a theme a plugin is using making the plugin use the new name.
 
-        ``oldTheme``
-            The name of the theme the plugin should stop using.
-
-        ``newTheme``
-            The new name the plugin should now use.
+        :param old_theme:  The name of the theme the plugin should stop using.
+        :param new_theme: The new name the plugin should now use
         """
         pass
 
@@ -344,29 +329,30 @@ class Plugin(QtCore.QObject):
     def set_plugin_ui_text_strings(self, tooltips):
         """
         Called to define all translatable texts of the plugin
+
+        :param tooltips:
         """
-        ## Load Action ##
+        # Load Action
         self.__set_name_text_string(StringContent.Load, UiStrings().Load, tooltips['load'])
-        ## Import Action ##
+        # Import Action
         self.__set_name_text_string(StringContent.Import, UiStrings().Import, tooltips['import'])
-        ## New Action ##
+        # New Action
         self.__set_name_text_string(StringContent.New, UiStrings().Add, tooltips['new'])
-        ## Edit Action ##
+        # Edit Action
         self.__set_name_text_string(StringContent.Edit, UiStrings().Edit, tooltips['edit'])
-        ## Delete Action ##
+        # Delete Action
         self.__set_name_text_string(StringContent.Delete, UiStrings().Delete, tooltips['delete'])
-        ## Preview Action ##
+        # Preview Action
         self.__set_name_text_string(StringContent.Preview, UiStrings().Preview, tooltips['preview'])
-        ## Send Live Action ##
+        # Send Live Action
         self.__set_name_text_string(StringContent.Live, UiStrings().Live, tooltips['live'])
-        ## Add to Service Action ##
+        # Add to Service Action
         self.__set_name_text_string(StringContent.Service, UiStrings().Service, tooltips['service'])
 
     def __set_name_text_string(self, name, title, tooltip):
         """
-        Utility method for creating a plugin's text_strings. This method makes
-        use of the singular name of the plugin object so must only be called
-        after this has been set.
+        Utility method for creating a plugin's text_strings. This method makes use of the singular name of the
+        plugin object so must only be called after this has been set.
         """
         self.text_strings[name] = {'title': title, 'tooltip': tooltip}
 
@@ -410,26 +396,3 @@ class Plugin(QtCore.QObject):
         The plugin's needs to handle a new song creation
         """
         pass
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
-    def _get_application(self):
-        """
-        Adds the openlp to the class dynamically
-        """
-        if os.name == 'nt':
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
-
-    application = property(_get_application)

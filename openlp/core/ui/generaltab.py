@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,7 +33,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, Settings, SettingsTab, ScreenList, UiStrings, translate
+from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab, ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -220,9 +221,10 @@ class GeneralTab(SettingsTab):
         self.check_for_updates_check_box.setText(translate('OpenLP.GeneralTab', 'Check for updates to OpenLP'))
         self.settings_group_box.setTitle(translate('OpenLP.GeneralTab', 'Application Settings'))
         self.save_check_service_check_box.setText(translate('OpenLP.GeneralTab',
-            'Prompt to save before starting a new service'))
+                                                  'Prompt to save before starting a new service'))
         self.auto_unblank_check_box.setText(translate('OpenLP.GeneralTab', 'Unblank display when adding new live item'))
-        self.auto_preview_check_box.setText(translate('OpenLP.GeneralTab', 'Automatically preview next item in service'))
+        self.auto_preview_check_box.setText(translate('OpenLP.GeneralTab',
+                                                      'Automatically preview next item in service'))
         self.timeout_label.setText(translate('OpenLP.GeneralTab', 'Timed slide interval:'))
         self.timeout_spin_box.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
         self.ccli_group_box.setTitle(translate('OpenLP.GeneralTab', 'CCLI Details'))
@@ -247,8 +249,8 @@ class GeneralTab(SettingsTab):
         settings.beginGroup(self.settings_section)
         self.monitor_combo_box.clear()
         self.monitor_combo_box.addItems(self.screens.get_screen_list())
-        monitorNumber = settings.value('monitor')
-        self.monitor_combo_box.setCurrentIndex(monitorNumber)
+        monitor_number = settings.value('monitor')
+        self.monitor_combo_box.setCurrentIndex(monitor_number)
         self.number_edit.setText(settings.value('ccli number'))
         self.username_edit.setText(settings.value('songselect username'))
         self.password_edit.setText(settings.value('songselect password'))
@@ -334,8 +336,7 @@ class GeneralTab(SettingsTab):
         """
         Toggle screen state depending on check box state.
 
-        ``checked``
-            The state of the check box (boolean).
+        :param checked: The state of the check box (boolean).
         """
         self.monitor_combo_box.setDisabled(checked)
         self.custom_X_value_edit.setEnabled(checked)

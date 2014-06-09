@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,6 +32,7 @@ for the songs plugin.
 """
 from openlp.core.lib import translate
 
+
 class SongStrings(object):
     """
     Provide standard strings for use throughout the songs plugin.
@@ -39,11 +40,11 @@ class SongStrings(object):
     # These strings should need a good reason to be retranslated elsewhere.
     Author = translate('OpenLP.Ui', 'Author', 'Singular')
     Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
-    AuthorUnknown = 'Author Unknown' # Used to populate the database.
+    AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown')  # Used to populate the database.
     CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
     SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
     SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
-    SongIncomplete = translate('OpenLP.Ui','Title and/or verses not found')
+    SongIncomplete = translate('OpenLP.Ui', 'Title and/or verses not found')
     SongMaintenance = translate('OpenLP.Ui', 'Song Maintenance')
     Topic = translate('OpenLP.Ui', 'Topic', 'Singular')
     Topics = translate('OpenLP.Ui', 'Topics', 'Plural')

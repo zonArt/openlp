@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -35,8 +35,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.utils import AppLocation
-from openlp.core.lib import Settings, translate
+from openlp.core.common import AppLocation, Settings, translate
 
 log = logging.getLogger(__name__)
 
@@ -53,8 +52,7 @@ class LanguageManager(object):
         """
         Set up a translator to use in this instance of OpenLP
 
-        ``language``
-            The language to load into the translator
+        :param language: The language to load into the translator
         """
         if LanguageManager.auto_language:
             language = QtCore.QLocale.system().name()
@@ -76,7 +74,7 @@ class LanguageManager(object):
         log.debug('Translation files: %s', AppLocation.get_directory(
             AppLocation.LanguageDir))
         trans_dir = QtCore.QDir(AppLocation.get_directory(AppLocation.LanguageDir))
-        file_names = trans_dir.entryList('*.qm', QtCore.QDir.Files, QtCore.QDir.Name)
+        file_names = trans_dir.entryList(['*.qm'], QtCore.QDir.Files, QtCore.QDir.Name)
         # Remove qm files from the list which start with "qt_".
         file_names = [file_ for file_ in file_names if not file_.startswith('qt_')]
         return list(map(trans_dir.filePath, file_names))
@@ -86,8 +84,7 @@ class LanguageManager(object):
         """
         Load the language name from a language file
 
-        ``qm_file``
-            The file to obtain the name from
+        :param qm_file: The file to obtain the name from
         """
         translator = QtCore.QTranslator()
         translator.load(qm_file)
@@ -111,11 +108,8 @@ class LanguageManager(object):
         """
         Set the language to translate OpenLP into
 
-        ``action``
-            The language menu option
-
-        ``message``
-            Display the message option
+        :param action:  The language menu option
+        :param message:  Display the message option
         """
         language = 'en'
         if action:
@@ -132,8 +126,9 @@ class LanguageManager(object):
         log.info('Language file: \'%s\' written to conf file' % language)
         if message:
             QtGui.QMessageBox.information(None,
-                translate('OpenLP.LanguageManager', 'Language'),
-                translate('OpenLP.LanguageManager', 'Please restart OpenLP to use your new language setting.'))
+                                          translate('OpenLP.LanguageManager', 'Language'),
+                                          translate('OpenLP.LanguageManager', 'Please restart OpenLP to use your new '
+                                                                              'language setting.'))
 
     @staticmethod
     def init_qm_list():

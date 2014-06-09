@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,10 +33,9 @@ import logging
 import mimetypes
 from datetime import datetime
 
-from PyQt4 import QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Settings, translate
+from openlp.core.lib import translate
 
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -45,44 +44,28 @@ from openlp.core.ui.media.mediaplayer import MediaPlayer
 log = logging.getLogger(__name__)
 
 ADDITIONAL_EXT = {
-        'audio/ac3': ['.ac3'],
-        'audio/flac': ['.flac'],
-        'audio/x-m4a': ['.m4a'],
-        'audio/midi': ['.mid', '.midi'],
-        'audio/x-mp3': ['.mp3'],
-        'audio/mpeg': ['.mp3', '.mp2', '.mpga', '.mpega', '.m4a'],
-        'audio/qcelp': ['.qcp'],
-        'audio/x-wma': ['.wma'],
-        'audio/x-ms-wma': ['.wma'],
-        'video/x-flv': ['.flv'],
-        'video/x-matroska': ['.mpv', '.mkv'],
-        'video/x-wmv': ['.wmv'],
-        'video/x-mpg': ['.mpg'],
-        'video/mpeg': ['.mp4', '.mts', '.mov'],
-        'video/x-ms-wmv': ['.wmv']}
-
-VIDEO_CSS = """
-#videobackboard {
-    z-index:3;
-    background-color: %(bgcolor)s;
+    'audio/ac3': ['.ac3'],
+    'audio/flac': ['.flac'],
+    'audio/x-m4a': ['.m4a'],
+    'audio/midi': ['.mid', '.midi'],
+    'audio/x-mp3': ['.mp3'],
+    'audio/mpeg': ['.mp3', '.mp2', '.mpga', '.mpega', '.m4a'],
+    'audio/qcelp': ['.qcp'],
+    'audio/x-wma': ['.wma'],
+    'audio/x-ms-wma': ['.wma'],
+    'video/x-flv': ['.flv'],
+    'video/x-matroska': ['.mpv', '.mkv'],
+    'video/x-wmv': ['.wmv'],
+    'video/x-mpg': ['.mpg'],
+    'video/mpeg': ['.mp4', '.mts', '.mov'],
+    'video/x-ms-wmv': ['.wmv']
 }
-#video1 {
-    background-color: %(bgcolor)s;
-    z-index:4;
-}
-#video2 {
-    background-color: %(bgcolor)s;
-    z-index:4;
-}
-"""
 
 
 class PhononPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a Phonon
-    display.
+    A specialised version of the MediaPlayer class, which provides a Phonon display.
     """
-
     def __init__(self, parent):
         """
         Constructor
@@ -93,14 +76,14 @@ class PhononPlayer(MediaPlayer):
         self.parent = parent
         self.additional_extensions = ADDITIONAL_EXT
         mimetypes.init()
-        for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
-            mimetype = str(mimetype)
-            if mimetype.startswith('audio/'):
-                self._addToList(self.audio_extensions_list, mimetype)
-            elif mimetype.startswith('video/'):
-                self._addToList(self.video_extensions_list, mimetype)
+        for mime_type in Phonon.BackendCapabilities.availableMimeTypes():
+            mime_type = str(mime_type)
+            if mime_type.startswith('audio/'):
+                self._add_to_list(self.audio_extensions_list, mime_type)
+            elif mime_type.startswith('video/'):
+                self._add_to_list(self.video_extensions_list, mime_type)
 
-    def _addToList(self, mimetype_list, mimetype):
+    def _add_to_list(self, mime_type_list, mimetype):
         """
         Add mimetypes to the provided list
         """
@@ -108,8 +91,8 @@ class PhononPlayer(MediaPlayer):
         extensions = mimetypes.guess_all_extensions(str(mimetype))
         for extension in extensions:
             ext = '*%s' % extension
-            if ext not in mimetype_list:
-                mimetype_list.append(ext)
+            if ext not in mime_type_list:
+                mime_type_list.append(ext)
         log.info('MediaPlugin: %s extensions: %s' % (mimetype, ' '.join(extensions)))
         # Add extensions for this mimetype from self.additional_extensions.
         # This hack clears mimetypes' and operating system's shortcomings
@@ -117,10 +100,10 @@ class PhononPlayer(MediaPlayer):
         if mimetype in list(self.additional_extensions.keys()):
             for extension in self.additional_extensions[mimetype]:
                 ext = '*%s' % extension
-                if ext not in mimetype_list:
-                    mimetype_list.append(ext)
+                if ext not in mime_type_list:
+                    mime_type_list.append(ext)
             log.info('MediaPlugin: %s additional extensions: %s' %
-                (mimetype, ' '.join(self.additional_extensions[mimetype])))
+                     (mimetype, ' '.join(self.additional_extensions[mimetype])))
 
     def setup(self, display):
         """
@@ -157,14 +140,14 @@ class PhononPlayer(MediaPlayer):
         self.volume(display, volume)
         return True
 
-    def media_state_wait(self, display, mediaState):
+    def media_state_wait(self, display, media_state):
         """
         Wait for the video to change its state
         Wait no longer than 5 seconds.
         """
         start = datetime.now()
         current_state = display.media_object.state()
-        while current_state != mediaState:
+        while current_state != media_state:
             current_state = display.media_object.state()
             if current_state == Phonon.ErrorState:
                 return False
@@ -185,8 +168,7 @@ class PhononPlayer(MediaPlayer):
         """
         controller = display.controller
         start_time = 0
-        if display.media_object.state() != Phonon.PausedState and \
-            controller.media_info.start_time > 0:
+        if display.media_object.state() != Phonon.PausedState and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.media_object.play()
         if not self.media_state_wait(display, Phonon.PlayingState):
@@ -268,16 +250,15 @@ class PhononPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        background = QtGui.QColor(Settings().value('players/background color')).name()
-        return VIDEO_CSS % {'bgcolor': background}
+        return ''
 
     def get_info(self):
         """
         Return some info about this player
         """
         return(translate('Media.player', 'Phonon is a media player which '
-            'interacts with the operating system to provide media capabilities.') +
-            '<br/> <strong>' + translate('Media.player', 'Audio') +
-            '</strong><br/>' + str(self.audio_extensions_list) +
-            '<br/><strong>' + translate('Media.player', 'Video') +
-            '</strong><br/>' + str(self.video_extensions_list) + '<br/>')
+               'interacts with the operating system to provide media capabilities.') +
+               '<br/> <strong>' + translate('Media.player', 'Audio') +
+               '</strong><br/>' + str(self.audio_extensions_list) +
+               '<br/><strong>' + translate('Media.player', 'Video') +
+               '</strong><br/>' + str(self.video_extensions_list) + '<br/>')
