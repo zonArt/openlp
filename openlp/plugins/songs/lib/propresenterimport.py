@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`ppimport` module provides the functionality for importing
+The :mod:`propresenterimport` module provides the functionality for importing
 ProPresenter song files into the current installation database.
 """
 

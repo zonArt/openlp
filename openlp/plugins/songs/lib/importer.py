@@ -49,7 +49,7 @@ from .songproimport import SongProImport
 from .sundayplusimport import SundayPlusImport
 from .foilpresenterimport import FoilPresenterImport
 from .zionworximport import ZionWorxImport
-from .ppimport import ProPresenterImport
+from .propresenterimport import ProPresenterImport
 # Imports that might fail
 
 
