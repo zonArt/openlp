@@ -32,14 +32,54 @@ Functional tests to test the AppLocation class and related methods.
 
 from unittest import TestCase
 
-from openlp.core.common import de_hump, trace_error_handler
+from openlp.core.common import check_directory_exists, de_hump, trace_error_handler, translate
 from tests.functional import MagicMock, patch
+
 
 
 class TestCommonFunctions(TestCase):
     """
     A test suite to test out various functions in the openlp.core.common module.
     """
+    def check_directory_exists_test(self):
+        """
+        Test the check_directory_exists() function
+        """
+        with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
+                patch('openlp.core.lib.os.makedirs') as mocked_makedirs:
+            # GIVEN: A directory to check and a mocked out os.makedirs and os.path.exists
+            directory_to_check = 'existing/directory'
+
+            # WHEN: os.path.exists returns True and we check to see if the directory exists
+            mocked_exists.return_value = True
+            check_directory_exists(directory_to_check)
+
+            # THEN: Only os.path.exists should have been called
+            mocked_exists.assert_called_with(directory_to_check)
+            self.assertIsNot(mocked_makedirs.called, 'os.makedirs should not have been called')
+
+            # WHEN: os.path.exists returns False and we check the directory exists
+            mocked_exists.return_value = False
+            check_directory_exists(directory_to_check)
+
+            # THEN: Both the mocked functions should have been called
+            mocked_exists.assert_called_with(directory_to_check)
+            mocked_makedirs.assert_called_with(directory_to_check)
+
+            # WHEN: os.path.exists raises an IOError
+            mocked_exists.side_effect = IOError()
+            check_directory_exists(directory_to_check)
+
+            # THEN: We shouldn't get an exception though the mocked exists has been called
+            mocked_exists.assert_called_with(directory_to_check)
+
+            # WHEN: Some other exception is raised
+            mocked_exists.side_effect = ValueError()
+
+            # THEN: check_directory_exists raises an exception
+            mocked_exists.assert_called_with(directory_to_check)
+            self.assertRaises(ValueError, check_directory_exists, directory_to_check)
+
     def de_hump_conversion_test(self):
         """
         Test the de_hump function with a class name
@@ -81,3 +121,22 @@ class TestCommonFunctions(TestCase):
             # THEN: The mocked_logger.error() method should have been called with the correct parameters
             mocked_logger.error.assert_called_with(
                 'OpenLP Error trace\n   File openlp.fake at line 56 \n\t called trace_error_handler_test')
+
+    def translate_test(self):
+        """
+        Test the translate() function
+        """
+        # GIVEN: A string to translate and a mocked Qt translate function
+        context = 'OpenLP.Tests'
+        text = 'Untranslated string'
+        comment = 'A comment'
+        encoding = 1
+        n = 1
+        mocked_translate = MagicMock(return_value='Translated string')
+
+        # WHEN: we call the translate function
+        result = translate(context, text, comment, encoding, n, mocked_translate)
+
+        # THEN: the translated string should be returned, and the mocked function should have been called
+        mocked_translate.assert_called_with(context, text, comment, encoding, n)
+        self.assertEqual('Translated string', result, 'The translated string should have been returned')
