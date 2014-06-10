@@ -37,7 +37,8 @@ from datetime import datetime, timedelta
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import str_to_bool, create_thumb, get_text_file_string, \
-    build_icon, image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags
+    build_icon, image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags, \
+    resize_image
 from tests.functional import MagicMock, patch
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
@@ -448,6 +449,27 @@ class TestLib(TestCase):
             mocked_os.stat.assert_any_call(file_path)
             mocked_os.stat.assert_any_call(thumb_path)
             assert result is False, 'The result should be False'
+
+    def resize_thumb_test(self):
+        """
+        Test the resize_thumb() function
+        """
+        # GIVEN: A path to an image.
+        image_path = os.path.join(TEST_PATH, 'church.jpg')
+        wanted_width = 777
+        wanted_height = 72
+        # We want the background to be white.
+        wanted_background_hex = '#FFFFFF'
+        wanted_background_rgb = QtGui.QColor(wanted_background_hex).rgb()
+
+        # WHEN: Resize the image and add a background.
+        image = resize_image(image_path, wanted_width, wanted_height, wanted_background_hex)
+
+        # THEN: Check if the size is correct and the background was set.
+        result_size = image.size()
+        self.assertEqual(wanted_height, result_size.height(), 'The image should have the requested height.')
+        self.assertEqual(wanted_width, result_size.width(), 'The image should have the requested width.')
+        self.assertEqual(image.pixel(0, 0), wanted_background_rgb, 'The background should be white.')
 
     def create_separated_list_qlocate_test(self):
         """
