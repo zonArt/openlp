@@ -36,9 +36,8 @@ from datetime import datetime, timedelta
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import str_to_bool, create_thumb, get_text_file_string, \
-    build_icon, image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags, \
-    resize_image
+from openlp.core.lib import build_icon, check_item_selected, clean_tags, create_thumb, create_separated_list, \
+    expand_tags, get_text_file_string, image_to_byte, resize_image, str_to_bool, validate_thumb
 from tests.functional import MagicMock, patch
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
