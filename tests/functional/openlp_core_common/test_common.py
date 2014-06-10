@@ -36,7 +36,6 @@ from openlp.core.common import check_directory_exists, de_hump, trace_error_hand
 from tests.functional import MagicMock, patch
 
 
-
 class TestCommonFunctions(TestCase):
     """
     A test suite to test out various functions in the openlp.core.common module.

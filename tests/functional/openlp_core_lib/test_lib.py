@@ -294,7 +294,7 @@ class TestLib(TestCase):
         Test that the check_item_selected() function returns True when there are selected indexes
         """
         # GIVEN: A mocked out QtGui module and a list widget with selected indexes
-        MockedQtGui = patch('openlp.core.lib.QtGui')
+        mocked_QtGui = patch('openlp.core.lib.QtGui')
         mocked_list_widget = MagicMock()
         mocked_list_widget.selectedIndexes.return_value = True
         message = 'message'
