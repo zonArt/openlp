@@ -193,8 +193,8 @@ def download_translations():
     if not password:
         password = getpass('   Transifex password: ')
     # First get the list of languages
-    base64string = base64.encodebytes('%s:%s' % (username, password))[:-1]
-    auth_header = 'Basic %s' % base64string
+    base64string = base64.encodebytes(('%s:%s' % (username, password)).encode())[:-1]
+    auth_header = 'Basic %s' % base64string.decode()
     request = urllib.request.Request(SERVER_URL + '?details')
     request.add_header('Authorization', auth_header)
     print_verbose('Downloading list of languages from: %s' % SERVER_URL)
@@ -203,7 +203,7 @@ def download_translations():
     except urllib.error.HTTPError:
         print_quiet('Username or password incorrect.')
         return False
-    json_dict = json.loads(json_response.read())
+    json_dict = json.loads(json_response.read().decode())
     languages = [lang['code'] for lang in json_dict['available_languages']]
     for language in languages:
         lang_url = SERVER_URL + 'translation/%s/?file' % language
@@ -212,7 +212,7 @@ def download_translations():
         filename = os.path.join(os.path.abspath('..'), 'resources', 'i18n', language + '.ts')
         print_verbose('Get Translation File: %s' % filename)
         response = urllib.request.urlopen(request)
-        fd = open(filename, 'w')
+        fd = open(filename, 'wb')
         fd.write(response.read())
         fd.close()
     print_quiet('   Done.')
