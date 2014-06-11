@@ -213,7 +213,7 @@ class EasyWorshipSongImport(SongImport):
         db_size = os.path.getsize(self.import_source)
         if db_size < 0x800:
             self.log_error(self.import_source, translate('SongsPlugin.EasyWorshipSongImport',
-                                                         'This file is no valid EasyWorship Database.'))
+                                                         'This file is not a valid EasyWorship database.'))
             return
         db_file = open(self.import_source, 'rb')
         self.memo_file = open(import_source_mb, 'rb')
@@ -223,7 +223,7 @@ class EasyWorshipSongImport(SongImport):
             db_file.close()
             self.memo_file.close()
             self.log_error(self.import_source, translate('SongsPlugin.EasyWorshipSongImport',
-                                                         'This file is no valid EasyWorship Database.'))
+                                                         'This file is not a valid EasyWorship database.'))
             return
         # Take a stab at how text is encoded
         self.encoding = 'cp1252'
