@@ -63,7 +63,7 @@ import webbrowser
 from optparse import OptionParser
 from PyQt4 import QtCore
 
-SERVER_URL = 'http://www.transifex.net/api/2/project/openlp/'
+SERVER_URL = 'http://www.transifex.net/api/2/project/openlp/resource/openlp-22x/'
 IGNORED_PATHS = ['scripts']
 IGNORED_FILES = ['setup.py']
 
@@ -193,27 +193,26 @@ def download_translations():
     if not password:
         password = getpass('   Transifex password: ')
     # First get the list of languages
-    url = SERVER_URL + 'resource/ents/'
-    base64string = base64.encodebytes('%s:%s' % (username, password))[:-1]
-    auth_header = 'Basic %s' % base64string
-    request = urllib.request.Request(url + '?details')
+    base64string = base64.encodebytes(('%s:%s' % (username, password)).encode())[:-1]
+    auth_header = 'Basic %s' % base64string.decode()
+    request = urllib.request.Request(SERVER_URL + '?details')
     request.add_header('Authorization', auth_header)
-    print_verbose('Downloading list of languages from: %s' % url)
+    print_verbose('Downloading list of languages from: %s' % SERVER_URL)
     try:
         json_response = urllib.request.urlopen(request)
     except urllib.error.HTTPError:
         print_quiet('Username or password incorrect.')
         return False
-    json_dict = json.loads(json_response.read())
+    json_dict = json.loads(json_response.read().decode())
     languages = [lang['code'] for lang in json_dict['available_languages']]
     for language in languages:
-        lang_url = url + 'translation/%s/?file' % language
+        lang_url = SERVER_URL + 'translation/%s/?file' % language
         request = urllib.request.Request(lang_url)
         request.add_header('Authorization', auth_header)
         filename = os.path.join(os.path.abspath('..'), 'resources', 'i18n', language + '.ts')
         print_verbose('Get Translation File: %s' % filename)
         response = urllib.request.urlopen(request)
-        fd = open(filename, 'w')
+        fd = open(filename, 'wb')
         fd.write(response.read())
         fd.close()
     print_quiet('   Done.')
