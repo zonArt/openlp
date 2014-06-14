@@ -39,7 +39,7 @@ from openlp.core.lib import ItemCapabilities, MediaManagerItem, MediaType, Servi
     build_icon, check_item_selected
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
-from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path
+from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path, format_milliseconds
 from openlp.core.utils import get_locale_key
 from openlp.core.ui.media.vlcplayer import VLC_AVAILABLE
 if VLC_AVAILABLE:
@@ -125,9 +125,20 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         Adds buttons to the start of the header bar.
         """
-        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=OPTICAL_ICON, text='Load CD/DVD',
-                                                            tooltip='Load CD/DVD', triggers=self.on_load_optical)
-        if not VLC_AVAILABLE:
+        print(get_media_players()[0])
+        if 'vlc' in get_media_players()[0]:
+            diable_optical_button_text = False
+            optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
+            optical_button_tooltip = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
+        else:
+            diable_optical_button_text = True
+            optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
+            optical_button_tooltip = translate('MediaPlugin.MediaItem',
+                                               'Load CD/DVD - only supported when VLC is installed and enabled')
+        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=OPTICAL_ICON, text=optical_button_text,
+                                                            tooltip=optical_button_tooltip,
+                                                            triggers=self.on_load_optical)
+        if diable_optical_button_text:
             self.load_optical.setDisabled(True)
 
     def add_end_header_bar(self):
@@ -224,7 +235,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         filename = item.data(QtCore.Qt.UserRole)
         # Special handling if the filename is a optical clip
         if filename.startswith('optical:'):
-            (name, title, audio_track, subtitle_track, start, end) = parse_optical_path(filename)
+            (name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(filename)
             if not os.path.exists(name):
                 if not remote:
                     # Optical disc is no longer present
@@ -234,7 +245,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 return False
             service_item.processor = self.display_type_combo_box.currentText()
             service_item.add_from_command(filename, name, CLAPPERBOARD)
-            service_item.title = name + '@' + self.format_milliseconds(start) + '-' + self.format_milliseconds(end)
+            service_item.title = clip_name
             # Only set start and end times if going to a service
             #if context == ServiceItemContext.Service:
             # Set the length
@@ -345,12 +356,11 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             track_info = QtCore.QFileInfo(track)
             if track.startswith('optical:'):
                 # Handle optical based item
-                (file_name, title, audio_track, subtitle_track, start, end) = parse_optical_path(track)
-                optical = file_name + '@' + self.format_milliseconds(start) + '-' + self.format_milliseconds(end)
-                item_name = QtGui.QListWidgetItem(optical)
+                (file_name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(track)
+                item_name = QtGui.QListWidgetItem(clip_name)
                 item_name.setIcon(OPTICAL_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
-                item_name.setToolTip(optical)
+                item_name.setToolTip(file_name + '@' + format_milliseconds(start) + '-' + format_milliseconds(end))
             elif not os.path.exists(track):
                 # File doesn't exist, mark as error.
                 file_name = os.path.split(str(track))[1]
@@ -417,17 +427,12 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         :param optical: The clip to add.
         """
         full_list = self.get_file_list()
+        # If the clip already is in the media list it isn't added and an error message is displayed.
+        if optical in full_list:
+            critical_error_message_box(translate('MediaPlugin.MediaItem', 'Mediaclip already saved'),
+                                       translate('MediaPlugin.MediaItem', 'This mediaclip has already been saved'))
+            return
+        # Append the optical string to the media list
         full_list.append(optical)
         self.load_list([optical])
         Settings().setValue(self.settings_section + '/media files', self.get_file_list())
-
-    def format_milliseconds(self, milliseconds):
-        """
-        Format milliseconds into a human readable time string.
-        :param milliseconds: Milliseconds to format
-        :return: Time string in format: hh.mm.ss,ttt
-        """
-        seconds, millis = divmod(milliseconds, 1000)
-        minutes, seconds = divmod(seconds, 60)
-        hours, minutes = divmod(minutes, 60)
-        return "%02d:%02d:%02d,%03d" % (hours, minutes, seconds, millis)

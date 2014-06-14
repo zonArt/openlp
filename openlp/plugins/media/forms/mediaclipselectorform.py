@@ -43,6 +43,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.common import translate
 from openlp.plugins.media.forms.mediaclipselectordialog import Ui_MediaClipSelector
 from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.ui.media import format_milliseconds
 try:
     from openlp.core.ui.media.vendor import vlc
 except (ImportError, NameError, NotImplementedError):
@@ -156,7 +157,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
     def detect_audio_cd(self, path):
         """
         Detects is the given path is an audio CD
-        
+
         :param path: Path to the device to be tested.
         :return: True if it was an audio CD else False.
         """
@@ -166,7 +167,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.vlc_media_player.play()
         # Wait for media to start playing. In this case VLC actually returns an error.
         self.media_state_wait(vlc.State.Playing)
-        self.vlc_media_player.pause()
+        self.vlc_media_player.set_pause(1)
         # If subitems exists, this is a CD
         self.audio_cd_tracks = self.vlc_media.subitems()
         if not self.audio_cd_tracks or self.audio_cd_tracks.count() < 1:
@@ -231,7 +232,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                                                              'VLC player failed playing the media'))
                 self.toggle_disable_load_media(False)
                 return
-        self.vlc_media_player.pause()
+        self.vlc_media_player.set_pause(1)
         self.vlc_media_player.set_time(0)
         if not self.audio_cd:
             # Get titles, insert in combobox
@@ -247,6 +248,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             # Enable audio track combobox if anything is in it
             if len(titles) > 0:
                 self.title_combo_box.setDisabled(False)
+        self.vlc_media_player.set_pause(1)
         self.toggle_disable_load_media(False)
 
     @QtCore.pyqtSlot(bool)
@@ -367,7 +369,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             if not self.media_state_wait(vlc.State.Playing):
                 return
             # pause
-            self.vlc_media_player.pause()
+            self.vlc_media_player.set_pause(1)
             self.vlc_media_player.set_time(0)
             self.vlc_media_player.audio_set_mute(False)
             self.toggle_disable_player(False)
@@ -379,7 +381,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             if not self.media_state_wait(vlc.State.Playing):
                 return
             # pause
-            self.vlc_media_player.pause()
+            self.vlc_media_player.set_pause(1)
             self.vlc_media_player.set_time(0)
             # Get audio tracks, insert in combobox
             audio_tracks = self.vlc_media_player.audio_get_track_description()
@@ -520,12 +522,38 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         path = self.media_path_combobox.currentText()
         optical = ''
         if self.audio_cd:
-            optical = 'optical:' + str(title) + ':-1:-1:' + str(start_time_ms) + ':' + str(end_time_ms) + ':' + path
+            optical = 'optical:' + str(title) + ':-1:-1:' + str(start_time_ms) + ':' + str(end_time_ms) + ':'
         else:
             audio_track = self.audio_tracks_combobox.itemData(self.audio_tracks_combobox.currentIndex())
             subtitle_track = self.subtitle_tracks_combobox.itemData(self.subtitle_tracks_combobox.currentIndex())
             optical = 'optical:' + str(title) + ':' + str(audio_track) + ':' + str(subtitle_track) + ':' + str(
-                start_time_ms) + ':' + str(end_time_ms) + ':' + path
+                start_time_ms) + ':' + str(end_time_ms) + ':'
+        # Ask for an alternative name for the mediaclip
+        while True:
+            new_optical_name, ok = QtGui.QInputDialog.getText(self, translate('MediaPlugin.MediaClipSelectorForm',
+                                                                              'Set name of mediaclip'),
+                                                              translate('MediaPlugin.MediaClipSelectorForm',
+                                                                        'Name of mediaclip:'),
+                                                              QtGui.QLineEdit.Normal)
+            # User pressed cancel, don't save the clip
+            if not ok:
+                return
+            # User pressed ok, but the input text is blank
+            if not new_optical_name:
+                critical_error_message_box(translate('MediaPlugin.MediaClipSelectorForm',
+                                                     'Enter a valid name or cancel'),
+                                           translate('MediaPlugin.MediaClipSelectorForm',
+                                                     'Enter a valid name or cancel'))
+            # The entered new name contains a colon, which we don't allow because colons is used to seperate clip info
+            elif new_optical_name.find(':') >= 0:
+                critical_error_message_box(translate('MediaPlugin.MediaClipSelectorForm', 'Invalid character'),
+                                           translate('MediaPlugin.MediaClipSelectorForm',
+                                                     'The name of the mediaclip must not contain the character ":"'))
+            # New name entered and we use it
+            else:
+                break
+        # Append the new name to the optical string and the path
+        optical += new_optical_name + ':' + path
         self.media_item.add_optical_clip(optical)
 
     def media_state_wait(self, media_state):
@@ -585,7 +613,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                 log.debug('could not use udisks, will try udisks2')
             udev_manager_obj = bus.get_object('org.freedesktop.UDisks2', '/org/freedesktop/UDisks2')
             udev_manager = dbus.Interface(udev_manager_obj, 'org.freedesktop.DBus.ObjectManager')
-            for k,v in udev_manager.GetManagedObjects().items():
+            for k, v in udev_manager.GetManagedObjects().items():
                 drive_info = v.get('org.freedesktop.UDisks2.Drive', {})
                 drive_props = drive_info.get('MediaCompatibility')
                 if drive_props and any('optical' in prop for prop in drive_props):
@@ -593,7 +621,8 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                         if dbus.String('org.freedesktop.UDisks2.Block') in device:
                             if device[dbus.String('org.freedesktop.UDisks2.Block')][dbus.String('Drive')] == k:
                                 block_file = ''
-                                for c in device[dbus.String('org.freedesktop.UDisks2.Block')][dbus.String('PreferredDevice')]:
+                                for c in device[dbus.String('org.freedesktop.UDisks2.Block')][
+                                        dbus.String('PreferredDevice')]:
                                     if chr(c) != '\x00':
                                         block_file += chr(c)
                                 self.media_path_combobox.addItem(block_file)
@@ -605,5 +634,12 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                 if volume.startswith('.'):
                     continue
                 dirs = os.listdir('/Volumes/' + volume)
+                # Detect DVD
                 if 'VIDEO_TS' in dirs:
                     self.media_path_combobox.addItem('/Volumes/' + volume)
+                # Detect audio cd
+                files = [f for f in dirs if os.path.isfile(f)]
+                for file in files:
+                    if file.endswith('aiff'):
+                        self.media_path_combobox.addItem('/Volumes/' + volume)
+                        break

@@ -373,7 +373,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             if service_item.is_capable(ItemCapabilities.IsOptical):
                 log.debug('video is optical and live')
                 path = service_item.get_frame_path()
-                (name, title, audio_track, subtitle_track, start, end) = parse_optical_path(path)
+                (name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(path)
                 is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display,
                                                     controller)
             else:
@@ -392,7 +392,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             if service_item.is_capable(ItemCapabilities.IsOptical):
                 log.debug('video is optical and preview')
                 path = service_item.get_frame_path()
-                (name, title, audio_track, subtitle_track, start, end) = parse_optical_path(path)
+                (name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(path)
                 is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display,
                                                     controller)
             else:
@@ -456,6 +456,19 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         return True
 
     def media_setup_optical(self, filename, title, audio_track, subtitle_track, start, end, display, controller):
+        """
+        Setup playback of optical media
+
+        :param filename: Path of the optical device/drive.
+        :param title: The main/title track to play.
+        :param audio_track: The audio track to play.
+        :param subtitle_track: The subtitle track to play.
+        :param start: Start position in miliseconds.
+        :param end: End position in miliseconds.
+        :param display: The display to play the media.
+        :param controller: The media contraoller.
+        :return: True if setup succeded else False.
+        """
         log.debug('media_setup_optical')
         if controller is None:
             controller = self.display_controllers[DisplayControllerType.Plugin]

@@ -110,6 +110,7 @@ def set_media_players(players_list, overridden_player='auto'):
         players = players.replace(overridden_player, '[%s]' % overridden_player)
     Settings().setValue('media/players', players)
 
+
 def parse_optical_path(input):
     """
     Split the optical path info.
@@ -123,10 +124,24 @@ def parse_optical_path(input):
     subtitle_track = int(clip_info[3])
     start = float(clip_info[4])
     end = float(clip_info[5])
-    filename = clip_info[6]
-    if len(clip_info) > 7:
-        filename += clip_info[7]
-    return filename, title, audio_track, subtitle_track, start, end
+    clip_name = clip_info[6]
+    filename = clip_info[7]
+    # Windows path usually contains a colon after the drive letter
+    if len(clip_info) > 8:
+        filename += clip_info[8]
+    return filename, title, audio_track, subtitle_track, start, end, clip_name
+
+
+def format_milliseconds(milliseconds):
+    """
+    Format milliseconds into a human readable time string.
+    :param milliseconds: Milliseconds to format
+    :return: Time string in format: hh.mm.ss,ttt
+    """
+    seconds, millis = divmod(milliseconds, 1000)
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    return "%02d:%02d:%02d,%03d" % (hours, minutes, seconds, millis)
 
 from .mediacontroller import MediaController
 from .playertab import PlayerTab
