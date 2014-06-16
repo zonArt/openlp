@@ -295,7 +295,7 @@ def set_case_insensitive_completer(cache, widget):
     Sets a case insensitive text completer for a widget.
 
     :param cache: The list of items to use as suggestions.
-    :param widget: A widget to set the completer (QComboBox or QTextEdit instance)
+    :param widget: A widget to set the completer (QComboBox or QLineEdit instance)
     """
     completer = QtGui.QCompleter(cache)
     completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)

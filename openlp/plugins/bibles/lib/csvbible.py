@@ -149,7 +149,7 @@ class CSVBible(BibleDB):
                     book_ptr = book.name
                     self.wizard.increment_progress_bar(
                         translate('BiblesPlugin.CSVBible',
-                                  'Importing verses from %s... Importing verses from <book name>...') % book.name)
+                                  'Importing verses from %s...' % book.name, 'Importing verses from <book name>...'))
                     self.session.commit()
                 try:
                     verse_text = str(line[3], details['encoding'])

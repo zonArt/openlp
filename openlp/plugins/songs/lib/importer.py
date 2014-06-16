@@ -49,6 +49,7 @@ from .songproimport import SongProImport
 from .sundayplusimport import SundayPlusImport
 from .foilpresenterimport import FoilPresenterImport
 from .zionworximport import ZionWorxImport
+from .propresenterimport import ProPresenterImport
 # Imports that might fail
 
 
@@ -159,14 +160,15 @@ class SongFormat(object):
     MediaShout = 9
     OpenSong = 10
     PowerSong = 11
-    SongBeamer = 12
-    SongPro = 13
-    SongShowPlus = 14
-    SongsOfFellowship = 15
-    SundayPlus = 16
-    WordsOfWorship = 17
-    WorshipCenterPro = 18
-    ZionWorx = 19
+    ProPresenter = 12
+    SongBeamer = 13
+    SongPro = 14
+    SongShowPlus = 15
+    SongsOfFellowship = 16
+    SundayPlus = 17
+    WordsOfWorship = 18
+    WorshipCenterPro = 19
+    ZionWorx = 20
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -270,6 +272,12 @@ class SongFormat(object):
             'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm', 'You need to specify a valid PowerSong 1.0 '
                                                                           'database folder.')
         },
+        ProPresenter: {
+            'class': ProPresenterImport,
+            'name': 'ProPresenter',
+            'prefix': 'proPresenter',
+            'filter': '%s (*.pro4)' % translate('SongsPlugin.ImportWizardForm', 'ProPresenter Song Files')
+        },
         SongBeamer: {
             'class': SongBeamerImport,
             'name': 'SongBeamer',
@@ -355,6 +363,7 @@ class SongFormat(object):
             SongFormat.MediaShout,
             SongFormat.OpenSong,
             SongFormat.PowerSong,
+            SongFormat.ProPresenter,
             SongFormat.SongBeamer,
             SongFormat.SongPro,
             SongFormat.SongShowPlus,

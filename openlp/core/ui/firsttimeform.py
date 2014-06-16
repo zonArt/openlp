@@ -412,10 +412,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         self._increment_progress_bar(translate('OpenLP.FirstTimeWizard', 'Enabling selected plugins...'))
         self._set_plugin_status(self.songs_check_box, 'songs/status')
         self._set_plugin_status(self.bible_check_box, 'bibles/status')
-        # TODO Presentation plugin is not yet working on Mac OS X.
-        # For now just ignore it.
-        if sys.platform != 'darwin':
-            self._set_plugin_status(self.presentation_check_box, 'presentations/status')
+        self._set_plugin_status(self.presentation_check_box, 'presentations/status')
         self._set_plugin_status(self.image_check_box, 'images/status')
         self._set_plugin_status(self.media_check_box, 'media/status')
         self._set_plugin_status(self.remote_check_box, 'remotes/status')

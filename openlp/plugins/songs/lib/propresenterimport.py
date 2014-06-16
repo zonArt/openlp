@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,30 +27,49 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the ZionWorx song importer.
+The :mod:`propresenterimport` module provides the functionality for importing
+ProPresenter song files into the current installation database.
 """
 
-from unittest import TestCase
+import os
+import base64
+from lxml import objectify
 
-from tests.functional import MagicMock, patch
-from openlp.plugins.songs.lib.zionworximport import ZionWorxImport
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import strip_rtf
+from .songimport import SongImport
 
 
-class TestZionWorxImport(TestCase):
+class ProPresenterImport(SongImport):
     """
-    Test the functions in the :mod:`zionworximport` module.
+    The :class:`ProPresenterImport` class provides OpenLP with the
+    ability to import ProPresenter song files.
     """
-    def create_importer_test(self):
-        """
-        Test creating an instance of the ZionWorx file importer
-        """
-        # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.zionworximport.SongImport'):
-            mocked_manager = MagicMock()
+    def do_import(self):
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for file_path in self.import_source:
+            if self.stop_import_flag:
+                return
+            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
+            root = objectify.parse(open(file_path, 'rb')).getroot()
+            self.process_song(root)
 
-            # WHEN: An importer object is created
-            importer = ZionWorxImport(mocked_manager, filenames=[])
-
-            # THEN: The importer should be an instance of SongImport
-            self.assertIsInstance(importer, SongImport)
+    def process_song(self, root):
+        self.set_defaults()
+        self.title = root.get('CCLISongTitle')
+        self.copyright = root.get('CCLICopyrightInfo')
+        self.comments = root.get('notes')
+        self.ccli_number = root.get('CCLILicenseNumber')
+        for author_key in ['author', 'artist', 'CCLIArtistCredits']:
+            author = root.get(author_key)
+            if len(author) > 0:
+                self.parse_author(author)
+        count = 0
+        for slide in root.slides.RVDisplaySlide:
+            count += 1
+            RTFData = slide.displayElements.RVTextElement.get('RTFData')
+            rtf = base64.standard_b64decode(RTFData)
+            words, encoding = strip_rtf(rtf.decode())
+            self.add_verse(words, "v%d" % count)
+        if not self.finish():
+            self.log_error(self.import_source)

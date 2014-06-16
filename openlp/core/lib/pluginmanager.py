@@ -82,11 +82,6 @@ class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
         present_plugin_dir = os.path.join(self.base_path, 'presentations')
         self.log_debug('finding plugins in %s at depth %d' % (self.base_path, start_depth))
         for root, dirs, files in os.walk(self.base_path):
-            if sys.platform == 'darwin' and root.startswith(present_plugin_dir):
-                # TODO Presentation plugin is not yet working on Mac OS X.
-                # For now just ignore it. The following code will ignore files from the presentation plugin directory
-                # and thereby never import the plugin.
-                continue
             for name in files:
                 if name.endswith('.py') and not name.startswith('__'):
                     path = os.path.abspath(os.path.join(root, name))
