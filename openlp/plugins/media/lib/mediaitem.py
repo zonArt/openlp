@@ -125,7 +125,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         Adds buttons to the start of the header bar.
         """
-        print(get_media_players()[0])
         if 'vlc' in get_media_players()[0]:
             diable_optical_button_text = False
             optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
@@ -246,8 +245,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             service_item.processor = self.display_type_combo_box.currentText()
             service_item.add_from_command(filename, name, CLAPPERBOARD)
             service_item.title = clip_name
-            # Only set start and end times if going to a service
-            #if context == ServiceItemContext.Service:
             # Set the length
             self.media_controller.media_setup_optical(name, title, audio_track, subtitle_track, start, end, None, None)
             service_item.set_media_length((end - start) / 1000)
@@ -360,7 +357,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 item_name = QtGui.QListWidgetItem(clip_name)
                 item_name.setIcon(OPTICAL_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
-                item_name.setToolTip(file_name + '@' + format_milliseconds(start) + '-' + format_milliseconds(end))
+                item_name.setToolTip('%s@%s-%s' % (file_name, format_milliseconds(start), format_milliseconds(end)))
             elif not os.path.exists(track):
                 # File doesn't exist, mark as error.
                 file_name = os.path.split(str(track))[1]

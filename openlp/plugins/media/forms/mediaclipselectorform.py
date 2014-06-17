@@ -196,7 +196,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.disable_all()
         path = self.media_path_combobox.currentText()
         # Check if given path is non-empty and exists before starting VLC
-        if path == '':
+        if not path:
             log.debug('no given path')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm', 'No path was given'))
             self.toggle_disable_load_media(False)
@@ -522,12 +522,11 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         path = self.media_path_combobox.currentText()
         optical = ''
         if self.audio_cd:
-            optical = 'optical:' + str(title) + ':-1:-1:' + str(start_time_ms) + ':' + str(end_time_ms) + ':'
+            optical = 'optical:%d:-1:-1:%d:%d:' % (title, start_time_ms, end_time_ms)
         else:
             audio_track = self.audio_tracks_combobox.itemData(self.audio_tracks_combobox.currentIndex())
             subtitle_track = self.subtitle_tracks_combobox.itemData(self.subtitle_tracks_combobox.currentIndex())
-            optical = 'optical:' + str(title) + ':' + str(audio_track) + ':' + str(subtitle_track) + ':' + str(
-                start_time_ms) + ':' + str(end_time_ms) + ':'
+            optical = 'optical:%d:%d:%d:%d:%d:' % (title, audio_track, subtitle_track, start_time_ms, end_time_ms)
         # Ask for an alternative name for the mediaclip
         while True:
             new_optical_name, ok = QtGui.QInputDialog.getText(self, translate('MediaPlugin.MediaClipSelectorForm',

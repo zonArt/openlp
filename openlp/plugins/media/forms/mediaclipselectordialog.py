@@ -31,6 +31,7 @@
 from PyQt4 import QtCore, QtGui
 from openlp.core.common import translate
 
+
 class Ui_MediaClipSelector(object):
     def setupUi(self, MediaClipSelector):
         MediaClipSelector.setObjectName("MediaClipSelector")
@@ -165,7 +166,6 @@ class Ui_MediaClipSelector(object):
         self.position_horizontalslider.setInvertedAppearance(False)
         self.position_horizontalslider.setObjectName("position_horizontalslider")
         self.gridLayout.addWidget(self.position_horizontalslider, 6, 1, 1, 3)
-        #MediaClipSelector.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MediaClipSelector)
         QtCore.QMetaObject.connectSlotsByName(MediaClipSelector)
@@ -189,11 +189,13 @@ class Ui_MediaClipSelector(object):
         MediaClipSelector.setWindowTitle(translate("MediaPlugin.MediaClipSelector", "Select media clip", None))
         self.start_timeedit.setDisplayFormat(translate("MediaPlugin.MediaClipSelector", "HH:mm:ss.z", None))
         self.end_timeedit.setDisplayFormat(translate("MediaPlugin.MediaClipSelector", "HH:mm:ss.z", None))
-        self.set_start_pushbutton.setText(translate("MediaPlugin.MediaClipSelector", "Set current position as start point", None))
+        self.set_start_pushbutton.setText(translate("MediaPlugin.MediaClipSelector",
+                                                    "Set current position as start point", None))
         self.load_disc_pushbutton.setText(translate("MediaPlugin.MediaClipSelector", "Load disc", None))
         self.end_point_label.setText(translate("MediaPlugin.MediaClipSelector", "End point", None))
         self.title_label.setText(translate("MediaPlugin.MediaClipSelector", "Title", None))
-        self.set_end_pushbutton.setText(translate("MediaPlugin.MediaClipSelector", "Set current position as end point", None))
+        self.set_end_pushbutton.setText(translate("MediaPlugin.MediaClipSelector",
+                                                  "Set current position as end point", None))
         self.save_pushbutton.setText(translate("MediaPlugin.MediaClipSelector", "Save current clip", None))
         self.close_pushbutton.setText(translate("MediaPlugin.MediaClipSelector", "Close", None))
         self.start_point_label.setText(translate("MediaPlugin.MediaClipSelector", "Start point", None))
@@ -203,4 +205,3 @@ class Ui_MediaClipSelector(object):
         self.subtitle_track_label.setText(translate("MediaPlugin.MediaClipSelector", "Subtitle track", None))
         self.jump_end_pushbutton.setText(translate("MediaPlugin.MediaClipSelector", "Jump to end point", None))
         self.media_path_label.setText(translate("MediaPlugin.MediaClipSelector", "Media path", None))
-

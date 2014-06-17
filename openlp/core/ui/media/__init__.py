@@ -118,6 +118,7 @@ def parse_optical_path(input):
     :param input: The string to parse
     :return: The elements extracted from the string:  filename, title, audio_track, subtitle_track, start, end
     """
+    log.debug('parse_optical_path, about to parse: "%s"' % input)
     clip_info = input.split(sep=':')
     title = int(clip_info[1])
     audio_track = int(clip_info[2])
