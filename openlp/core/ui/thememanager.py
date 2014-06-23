@@ -391,9 +391,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 source = os.path.join(self.path, theme)
                 for files in os.walk(source):
                     for name in files[2]:
-                        theme_zip.write(
-                            os.path.join(source, name).encode('utf-8'), os.path.join(theme, name).encode('utf-8')
-                        )
+                        theme_zip.write(os.path.join(source, name), os.path.join(theme, name))
                 QtGui.QMessageBox.information(self,
                                               translate('OpenLP.ThemeManager', 'Theme Exported'),
                                               translate('OpenLP.ThemeManager',
