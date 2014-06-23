@@ -383,8 +383,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                                                                        '/last directory export'))
         self.application.set_busy_cursor()
         if path:
+            Settings().setValue(self.settings_section + '/last directory export', path)
             try:
-                Settings().setValue(self.settings_section + '/last directory export', path)
                 self._export_theme(path, theme)
                 QtGui.QMessageBox.information(self,
                                               translate('OpenLP.ThemeManager', 'Theme Exported'),
