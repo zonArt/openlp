@@ -32,8 +32,10 @@ Worship Assistant songs into the OpenLP database.
 """
 import csv
 import logging
+import re
 
 from openlp.core.common import translate
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -87,9 +89,7 @@ class WorshipAssistantImport(SongImport):
         Receive a CSV file to import.
         """
         with open(self.import_source, 'r', encoding='latin-1') as songs_file:
-            field_names = ['SongNum', 'Title1', 'Title2', 'Lyrics', 'Writer', 'Copyright', 'Keywords',
-                           'DefaultStyle']
-            songs_reader = csv.DictReader(songs_file)#, field_names)
+            songs_reader = csv.DictReader(songs_file)
             try:
                 records = list(songs_reader)
             except csv.Error as e:
@@ -105,7 +105,7 @@ class WorshipAssistantImport(SongImport):
                     return
                 # The CSV file has a line in the middle of the file where the headers are repeated.
                 #  We need to skip this line.
-                if record['TITLE'] == "TITLE" and record['COPYRIGHT'] == 'COPYRIGHT' and record['AUTHOR'] == 'AUTHOR':
+                if record['TITLE'] == "TITLE" and record['AUTHOR'] == 'AUTHOR' and record['LYRICS2'] == 'LYRICS2':
                     continue
                 self.set_defaults()
                 try:
@@ -123,13 +123,29 @@ class WorshipAssistantImport(SongImport):
                     return
                 verse = ''
                 for line in lyrics.splitlines():
-                    if line and not line.isspace():
+                    if line.startswith('['): # verse marker
+                        # drop the square brackets
+                        right_bracket = line.find(']')
+                        content = line[1:right_bracket].lower()
+                        # have we got any digits? If so, verse number is everything from the digits to the end (openlp does not
+                        # have concept of part verses, so just ignore any non integers on the end (including floats))
+                        match = re.match('(\D*)(\d+)', content)
+                        if match is not None:
+                            verse_tag = match.group(1)
+                            verse_num = match.group(2)
+                        else:
+                            # otherwise we assume number 1 and take the whole prefix as the verse tag
+                            verse_tag = content
+                            verse_num = '1'
+                        verse_index = VerseType.from_loose_input(verse_tag) if verse_tag else 0
+                        verse_tag = VerseType.tags[verse_index]
+                    elif line and not line.isspace():
                         verse += line + '\n'
                     elif verse:
-                        self.add_verse(verse)
+                        self.add_verse(verse, verse_tag+verse_num)
                         verse = ''
                 if verse:
-                    self.add_verse(verse)
+                    self.add_verse(verse, verse_tag+verse_num)
                 if not self.finish():
                     self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
                                    + (': "' + self.title + '"' if self.title else ''))
