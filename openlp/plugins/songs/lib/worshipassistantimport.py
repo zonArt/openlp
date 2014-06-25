@@ -30,6 +30,7 @@
 The :mod:`worshipassistantimport` module provides the functionality for importing
 Worship Assistant songs into the OpenLP database.
 """
+import chardet
 import csv
 import logging
 import re
@@ -40,8 +41,7 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-# Used to strip control chars (except 10=LF, 13=CR)
-CONTROL_CHARS_MAP = dict.fromkeys(list(range(10)) + [11, 12] + list(range(14, 32)) + [127])
+EMPTY_STR = 'NULL'
 
 
 class WorshipAssistantImport(SongImport):
@@ -53,12 +53,12 @@ class WorshipAssistantImport(SongImport):
 
     * ``SONGNR`` Song ID (Discarded by importer)
     * ``TITLE`` Song title
-    * ``AUTHOR`` Song author. May containt multiple authors.
+    * ``AUTHOR`` Song author.
     * ``COPYRIGHT`` Copyright information
     * ``FIRSTLINE`` Unknown (Discarded by importer)
-    * ``PRIKEY`` Primary chord key
-    * ``ALTKEY`` Alternate chord key
-    * ``TEMPO`` Tempo
+    * ``PRIKEY`` Primary chord key (Discarded by importer)
+    * ``ALTKEY`` Alternate chord key (Discarded by importer)
+    * ``TEMPO`` Tempo (Discarded by importer)
     * ``FOCUS`` Unknown (Discarded by importer)
     * ``THEME`` Theme (Discarded by importer)
     * ``SCRIPTURE`` Associated scripture (Discarded by importer)
@@ -75,86 +75,90 @@ class WorshipAssistantImport(SongImport):
     * ``USER3`` User Field 3 (Discarded by importer)
     * ``USER4`` User Field 4 (Discarded by importer)
     * ``USER5`` User Field 5 (Discarded by importer)
-    * ``ROADMAP`` Verse order
+    * ``ROADMAP`` Verse order used for the presentation (Discarded by importer)
     * ``FILELINK1`` Associated file 1 (Discarded by importer)
-    * ``OVERMAP`` Unknown (Discarded by importer)
+    * ``OVERMAP`` Verse order used for printing (Discarded by importer)
     * ``FILELINK2`` Associated file 2 (Discarded by importer)
-    * ``LYRICS`` The song lyrics as plain text (Discarded by importer)
+    * ``LYRICS`` The song lyrics used for printing (Discarded by importer, LYRICS2 is used instead)
     * ``INFO`` Unknown (Discarded by importer)
-    * ``LYRICS2`` The song lyrics with verse numbers
+    * ``LYRICS2`` The song lyrics used for the presentation
     * ``BACKGROUND`` Unknown (Discarded by importer)
     """
     def do_import(self):
         """
         Receive a CSV file to import.
         """
-        with open(self.import_source, 'r', encoding='latin-1') as songs_file:
-            songs_reader = csv.DictReader(songs_file)
-            try:
-                records = list(songs_reader)
-            except csv.Error as e:
-                self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Error reading CSV file.'),
-                               translate('SongsPlugin.WorshipAssistantImport', 'Line %d: %s') %
-                               (songs_reader.line_num, e))
-                return
-            num_records = len(records)
-            log.info('%s records found in CSV file' % num_records)
-            self.import_wizard.progress_bar.setMaximum(num_records)
-            for index, record in enumerate(records, 1):
-                if self.stop_import_flag:
-                    return
-                # The CSV file has a line in the middle of the file where the headers are repeated.
-                #  We need to skip this line.
-                if record['TITLE'] == "TITLE" and record['AUTHOR'] == 'AUTHOR' and record['LYRICS2'] == 'LYRICS2':
-                    continue
-                self.set_defaults()
-                try:
-                    self.title = self._decode(record['TITLE'])
-                    self.parse_author(self._decode(record['AUTHOR']))
-                    self.add_copyright(self._decode(record['COPYRIGHT']))
-                    lyrics = self._decode(record['LYRICS2'])
-                except UnicodeDecodeError as e:
-                    self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d' % index),
-                                   translate('SongsPlugin.WorshipAssistantImport', 'Decoding error: %s') % e)
-                    continue
-                except TypeError as e:
-                    self.log_error(translate('SongsPlugin.WorshipAssistantImport',
-                                             'File not valid WorshipAssistant CSV format.'), 'TypeError: %s' % e)
-                    return
-                verse = ''
-                for line in lyrics.splitlines():
-                    if line.startswith('['): # verse marker
-                        # drop the square brackets
-                        right_bracket = line.find(']')
-                        content = line[1:right_bracket].lower()
-                        # have we got any digits? If so, verse number is everything from the digits to the end (openlp does not
-                        # have concept of part verses, so just ignore any non integers on the end (including floats))
-                        match = re.match('(\D*)(\d+)', content)
-                        if match is not None:
-                            verse_tag = match.group(1)
-                            verse_num = match.group(2)
-                        else:
-                            # otherwise we assume number 1 and take the whole prefix as the verse tag
-                            verse_tag = content
-                            verse_num = '1'
-                        verse_index = VerseType.from_loose_input(verse_tag) if verse_tag else 0
-                        verse_tag = VerseType.tags[verse_index]
-                    elif line and not line.isspace():
-                        verse += line + '\n'
-                    elif verse:
-                        self.add_verse(verse, verse_tag+verse_num)
-                        verse = ''
-                if verse:
-                    self.add_verse(verse, verse_tag+verse_num)
-                if not self.finish():
-                    self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
-                                   + (': "' + self.title + '"' if self.title else ''))
+        # Get encoding
+        detect_file = open(self.import_source, 'rb')
+        detect_content = detect_file.read()
+        details = chardet.detect(detect_content)
+        detect_file.close()
+        songs_file = open(self.import_source, 'r', encoding=details['encoding'])
 
-    def _decode(self, str):
-        """
-        Decodes CSV input to unicode, stripping all control characters (except new lines).
-        """
-        # This encoding choice seems OK. ZionWorx has no option for setting the
-        # encoding for its songs, so we assume encoding is always the same.
-        return str
-        #return str(str, 'cp1252').translate(CONTROL_CHARS_MAP)
+        songs_reader = csv.DictReader(songs_file)
+        try:
+            records = list(songs_reader)
+        except csv.Error as e:
+            self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Error reading CSV file.'),
+                           translate('SongsPlugin.WorshipAssistantImport', 'Line %d: %s') %
+                           (songs_reader.line_num, e))
+            return
+        num_records = len(records)
+        log.info('%s records found in CSV file' % num_records)
+        self.import_wizard.progress_bar.setMaximum(num_records)
+        for index, record in enumerate(records, 1):
+            if self.stop_import_flag:
+                return
+            # Ensure that all keys are uppercase
+            record = dict((k.upper(), v) for k, v in record.items())
+            # The CSV file has a line in the middle of the file where the headers are repeated.
+            #  We need to skip this line.
+            if record['TITLE'] == "TITLE" and record['AUTHOR'] == 'AUTHOR' and record['LYRICS2'] == 'LYRICS2':
+                continue
+            self.set_defaults()
+            try:
+                self.title = record['TITLE']
+                if record['AUTHOR'] != EMPTY_STR:
+                    self.parse_author(record['AUTHOR'])
+                if record['COPYRIGHT']!= EMPTY_STR:
+                    self.add_copyright(record['COPYRIGHT'])
+                if record['CCLINR'] != EMPTY_STR:
+                    self.ccli_number = record['CCLINR']
+                lyrics = record['LYRICS2']
+            except UnicodeDecodeError as e:
+                self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d' % index),
+                               translate('SongsPlugin.WorshipAssistantImport', 'Decoding error: %s') % e)
+                continue
+            except TypeError as e:
+                self.log_error(translate('SongsPlugin.WorshipAssistantImport',
+                                         'File not valid WorshipAssistant CSV format.'), 'TypeError: %s' % e)
+                return
+            verse = ''
+            for line in lyrics.splitlines():
+                if line.startswith('['): # verse marker
+                    # drop the square brackets
+                    right_bracket = line.find(']')
+                    content = line[1:right_bracket].lower()
+                    # have we got any digits? If so, verse number is everything from the digits to the end (openlp does not
+                    # have concept of part verses, so just ignore any non integers on the end (including floats))
+                    match = re.match('(\D*)(\d+)', content)
+                    if match is not None:
+                        verse_tag = match.group(1)
+                        verse_num = match.group(2)
+                    else:
+                        # otherwise we assume number 1 and take the whole prefix as the verse tag
+                        verse_tag = content
+                        verse_num = '1'
+                    verse_index = VerseType.from_loose_input(verse_tag) if verse_tag else 0
+                    verse_tag = VerseType.tags[verse_index]
+                elif line and not line.isspace():
+                    verse += line + '\n'
+                elif verse:
+                    self.add_verse(verse, verse_tag+verse_num)
+                    verse = ''
+            if verse:
+                self.add_verse(verse, verse_tag+verse_num)
+            if not self.finish():
+                self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
+                               + (': "' + self.title + '"' if self.title else ''))
+            songs_file.close()

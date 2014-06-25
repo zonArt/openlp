@@ -95,7 +95,7 @@ class SongImportTestHelper(TestCase):
         importer.topics = []
 
         # WHEN: Importing the source file
-        importer.import_source = [source_file_name]
+        importer.import_source = source_file_name
         add_verse_calls = self._get_data(result_data, 'verses')
         author_calls = self._get_data(result_data, 'authors')
         ccli_number = self._get_data(result_data, 'ccli_number')

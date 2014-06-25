@@ -50,5 +50,5 @@ class TestProPresenterFileImport(SongImportTestHelper):
         """
         Test that loading an ProPresenter file works correctly
         """
-        self.file_import(os.path.join(TEST_PATH, 'Amazing Grace.pro4'),
+        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.pro4')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
