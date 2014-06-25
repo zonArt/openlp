@@ -120,7 +120,7 @@ class WorshipAssistantImport(SongImport):
                 self.title = record['TITLE']
                 if record['AUTHOR'] != EMPTY_STR:
                     self.parse_author(record['AUTHOR'])
-                if record['COPYRIGHT']!= EMPTY_STR:
+                if record['COPYRIGHT'] != EMPTY_STR:
                     self.add_copyright(record['COPYRIGHT'])
                 if record['CCLINR'] != EMPTY_STR:
                     self.ccli_number = record['CCLINR']
@@ -135,12 +135,10 @@ class WorshipAssistantImport(SongImport):
                 return
             verse = ''
             for line in lyrics.splitlines():
-                if line.startswith('['): # verse marker
+                if line.startswith('['):  # verse marker
                     # drop the square brackets
                     right_bracket = line.find(']')
                     content = line[1:right_bracket].lower()
-                    # have we got any digits? If so, verse number is everything from the digits to the end (openlp does not
-                    # have concept of part verses, so just ignore any non integers on the end (including floats))
                     match = re.match('(\D*)(\d+)', content)
                     if match is not None:
                         verse_tag = match.group(1)
