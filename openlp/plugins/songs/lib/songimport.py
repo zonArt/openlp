@@ -266,6 +266,7 @@ class SongImport(QtCore.QObject):
         """
         Add an author to the list
         """
+        print(author)
         if author in self.authors:
             return
         self.authors.append(author)

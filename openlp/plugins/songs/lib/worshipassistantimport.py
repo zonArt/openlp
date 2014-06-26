@@ -68,21 +68,20 @@ class WorshipAssistantImport(SongImport):
     * ``INTRODUCED`` Date the song was created (Discarded by importer)
     * ``LASTUSED`` Date the song was last used (Discarded by importer)
     * ``TIMESUSED`` How many times the song was used (Discarded by importer)
-    * ``TIMESUSED`` How many times the song was used (Discarded by importer)
     * ``CCLINR`` CCLI Number
     * ``USER1`` User Field 1 (Discarded by importer)
     * ``USER2`` User Field 2 (Discarded by importer)
     * ``USER3`` User Field 3 (Discarded by importer)
     * ``USER4`` User Field 4 (Discarded by importer)
     * ``USER5`` User Field 5 (Discarded by importer)
-    * ``ROADMAP`` Verse order used for the presentation (Discarded by importer)
+    * ``ROADMAP`` Verse order used for the presentation
     * ``FILELINK1`` Associated file 1 (Discarded by importer)
     * ``OVERMAP`` Verse order used for printing (Discarded by importer)
     * ``FILELINK2`` Associated file 2 (Discarded by importer)
     * ``LYRICS`` The song lyrics used for printing (Discarded by importer, LYRICS2 is used instead)
     * ``INFO`` Unknown (Discarded by importer)
     * ``LYRICS2`` The song lyrics used for the presentation
-    * ``BACKGROUND`` Unknown (Discarded by importer)
+    * ``BACKGROUND`` Custom background (Discarded by importer)
     """
     def do_import(self):
         """
@@ -116,14 +115,18 @@ class WorshipAssistantImport(SongImport):
             if record['TITLE'] == "TITLE" and record['AUTHOR'] == 'AUTHOR' and record['LYRICS2'] == 'LYRICS2':
                 continue
             self.set_defaults()
+            verse_order_list = []
             try:
                 self.title = record['TITLE']
                 if record['AUTHOR'] != EMPTY_STR:
                     self.parse_author(record['AUTHOR'])
+                    print(record['AUTHOR'])
                 if record['COPYRIGHT'] != EMPTY_STR:
                     self.add_copyright(record['COPYRIGHT'])
                 if record['CCLINR'] != EMPTY_STR:
                     self.ccli_number = record['CCLINR']
+                if record['ROADMAP'] != EMPTY_STR:
+                    verse_order_list = record['ROADMAP'].split(',')
                 lyrics = record['LYRICS2']
             except UnicodeDecodeError as e:
                 self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d' % index),
@@ -149,6 +152,11 @@ class WorshipAssistantImport(SongImport):
                         verse_num = '1'
                     verse_index = VerseType.from_loose_input(verse_tag) if verse_tag else 0
                     verse_tag = VerseType.tags[verse_index]
+                    # Update verse order when the verse name has changed
+                    if content != verse_tag + verse_num:
+                        for i in range(len(verse_order_list)):
+                            if verse_order_list[i].lower() == content.lower():
+                                verse_order_list[i] = verse_tag + verse_num
                 elif line and not line.isspace():
                     verse += line + '\n'
                 elif verse:
@@ -156,7 +164,9 @@ class WorshipAssistantImport(SongImport):
                     verse = ''
             if verse:
                 self.add_verse(verse, verse_tag+verse_num)
+            if verse_order_list:
+                self.verse_order_list = verse_order_list
             if not self.finish():
-                self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
+                self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d') % index
                                + (': "' + self.title + '"' if self.title else ''))
             songs_file.close()
