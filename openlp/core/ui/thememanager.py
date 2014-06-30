@@ -415,6 +415,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 theme_zip.close()
                 shutil.rmtree(theme_path, True)
             raise
+        else:
+            theme_zip.close()
 
     def on_import_theme(self, field=None):
         """
