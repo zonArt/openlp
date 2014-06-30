@@ -404,12 +404,17 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         :param theme: The name of the theme to be exported
         """
         theme_path = os.path.join(path, theme + '.otz')
-        theme_zip = zipfile.ZipFile(theme_path, 'w')
-        source = os.path.join(self.path, theme)
-        for files in os.walk(source):
-            for name in files[2]:
-                theme_zip.write(os.path.join(source, name), os.path.join(theme, name))
-        theme_zip.close()
+        try:
+            theme_zip = zipfile.ZipFile(theme_path, 'w')
+            source = os.path.join(self.path, theme)
+            for files in os.walk(source):
+                for name in files[2]:
+                    theme_zip.write(os.path.join(source, name), os.path.join(theme, name))
+        except (IOError, OSError):
+            if theme_zip:
+                theme_zip.close()
+                shutil.rmtree(theme_path, True)
+            raise
 
     def on_import_theme(self, field=None):
         """
