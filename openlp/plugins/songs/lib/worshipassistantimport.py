@@ -93,7 +93,6 @@ class WorshipAssistantImport(SongImport):
         details = chardet.detect(detect_content)
         detect_file.close()
         songs_file = open(self.import_source, 'r', encoding=details['encoding'])
-
         songs_reader = csv.DictReader(songs_file)
         try:
             records = list(songs_reader)
@@ -109,7 +108,7 @@ class WorshipAssistantImport(SongImport):
             if self.stop_import_flag:
                 return
             # Ensure that all keys are uppercase
-            record = dict((k.upper(), v) for k, v in record.items())
+            record = dict((field.upper(), value) for field, value in record.items())
             # The CSV file has a line in the middle of the file where the headers are repeated.
             #  We need to skip this line.
             if record['TITLE'] == "TITLE" and record['AUTHOR'] == 'AUTHOR' and record['LYRICS2'] == 'LYRICS2':
