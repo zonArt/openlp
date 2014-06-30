@@ -65,11 +65,11 @@ class TestFileDialog(TestCase):
 
         # THEN: os.path.exists should have been called with known args. QmessageBox.information should have been
         #       called. The returned result should correlate with the input.
-        self.mocked_os.path.exists.assert_callde_with('/Valid File')
-        self.mocked_os.path.exists.assert_callde_with('/url%20encoded%20file%20%231')
-        self.mocked_os.path.exists.assert_callde_with('/url encoded file #1')
-        self.mocked_os.path.exists.assert_callde_with('/non-existing')
-        self.mocked_os.path.exists.assert_callde_with('/non-existing')
+        self.mocked_os.path.exists.assert_any_call('/Valid File')
+        self.mocked_os.path.exists.assert_any_call('/url%20encoded%20file%20%231')
+        self.mocked_os.path.exists.assert_any_call('/url encoded file #1')
+        self.mocked_os.path.exists.assert_any_call('/non-existing')
+        self.mocked_os.path.exists.assert_any_call('/non-existing')
         self.mocked_qt_gui.QmessageBox.information.called_with(self.mocked_parent, UiStrings().FileNotFound,
                                                                UiStrings().FileNotFoundMessage % '/non-existing')
         self.assertEqual(result, ['/Valid File', '/url encoded file #1'], 'The returned file list is incorrect')
