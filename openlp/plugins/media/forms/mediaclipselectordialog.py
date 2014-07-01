@@ -166,7 +166,6 @@ class Ui_MediaClipSelector(object):
         self.position_horizontalslider.setInvertedAppearance(False)
         self.position_horizontalslider.setObjectName("position_horizontalslider")
         self.gridLayout.addWidget(self.position_horizontalslider, 6, 1, 1, 3)
-
         self.retranslateUi(MediaClipSelector)
         QtCore.QMetaObject.connectSlotsByName(MediaClipSelector)
         MediaClipSelector.setTabOrder(self.media_path_combobox, self.load_disc_pushbutton)
