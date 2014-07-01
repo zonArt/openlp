@@ -207,7 +207,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                                                          'Given path does not exists'))
             self.toggle_disable_load_media(False)
             return
-        self.vlc_media = self.vlc_instance.media_new_location(path)
+        self.vlc_media = self.vlc_instance.media_new_location('file://' + path)
         if not self.vlc_media:
             log.debug('vlc media player is none')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
