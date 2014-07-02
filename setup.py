@@ -105,6 +105,8 @@ try:
         tag_version, tag_revision = tags[-1].split()
     # If they are equal, then this tree is tarball with the source for the release. We do not want the revision number
     # in the version string.
+    tree_revision = tree_revision.strip()
+    tag_revision = tag_revision.strip()
     if tree_revision == tag_revision:
         version_string = tag_version.decode('utf-8')
     else:
