@@ -73,4 +73,4 @@ class Test1(object):
 
 class Test2(RegistryMixin):
     def __init__(self):
-         super(Test2, self).__init__(None)
+        super(Test2, self).__init__(None)
