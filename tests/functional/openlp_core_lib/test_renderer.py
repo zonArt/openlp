@@ -65,16 +65,6 @@ class TestRenderer(TestCase):
         """
         del self.screens
 
-    def initial_renderer_test(self):
-        """
-        Test the initial renderer state
-        """
-        # GIVEN: A new renderer instance.
-        renderer = Renderer()
-        # WHEN: the default renderer is built.
-        # THEN: The renderer should be a live controller.
-        self.assertEqual(renderer.is_live, True, 'The base renderer should be a live controller')
-
     def default_screen_layout_test(self):
         """
         Test the default layout calculations
