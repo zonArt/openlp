@@ -27,8 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`propresenterimport` module provides the functionality for importing
-ProPresenter song files into the current installation database.
+The :mod:`worshipassistantimport` module provides the functionality for importing
+WorshipAssistant song files into the current installation database.
 """
 
 import os
@@ -36,19 +36,21 @@ import os
 from tests.helpers.songfileimport import SongImportTestHelper
 
 TEST_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'propresentersongs'))
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'worshipassistantsongs'))
 
 
-class TestProPresenterFileImport(SongImportTestHelper):
+class TestWorshipAssistantFileImport(SongImportTestHelper):
 
     def __init__(self, *args, **kwargs):
-        self.importer_class_name = 'ProPresenterImport'
-        self.importer_module_name = 'propresenterimport'
-        super(TestProPresenterFileImport, self).__init__(*args, **kwargs)
+        self.importer_class_name = 'WorshipAssistantImport'
+        self.importer_module_name = 'worshipassistantimport'
+        super(TestWorshipAssistantFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
         """
-        Test that loading an ProPresenter file works correctly
+        Test that loading an Worship Assistant file works correctly
         """
-        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.pro4')],
-                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
+        self.file_import(os.path.join(TEST_PATH, 'du_herr.csv'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'du_herr.json')))
+        self.file_import(os.path.join(TEST_PATH, 'would_you_be_free.csv'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'would_you_be_free.json')))
