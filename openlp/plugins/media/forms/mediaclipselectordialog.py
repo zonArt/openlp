@@ -204,3 +204,5 @@ class Ui_MediaClipSelector(object):
         self.subtitle_track_label.setText(translate("MediaPlugin.MediaClipSelector", "Subtitle track", None))
         self.jump_end_pushbutton.setText(translate("MediaPlugin.MediaClipSelector", "Jump to end point", None))
         self.media_path_label.setText(translate("MediaPlugin.MediaClipSelector", "Media path", None))
+        self.media_path_combobox.lineEdit().setPlaceholderText(translate("MediaPlugin.MediaClipSelector",
+                                                                         "Select drive from list", None))

@@ -35,6 +35,7 @@ import sys
 if sys.platform.startswith('linux'):
     import dbus
 import logging
+import re
 from datetime import datetime
 
 
@@ -207,7 +208,13 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                                                          'Given path does not exists'))
             self.toggle_disable_load_media(False)
             return
-        self.vlc_media = self.vlc_instance.media_new_location('file://' + path)
+        # If on windows fix path for VLC use
+        if os.name == 'nt':
+            # If the given path is in the format "D:\" or "D:", prefix it with "/" to make VLC happy
+            pattern = re.compile('^\w:\\\\*$')
+            if pattern.match(path):
+                path = '/' + path
+        self.vlc_media = self.vlc_instance.media_new_location('dvd://' + path)
         if not self.vlc_media:
             log.debug('vlc media player is none')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
@@ -583,7 +590,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         if os.name == 'nt':
             # use win api to find optical drives
             fso = Dispatch('scripting.filesystemobject')
-            for drive in fso.Drives :
+            for drive in fso.Drives:
                 log.debug('Drive %s has type %d' % (drive.DriveLetter, drive.DriveType))
                 # if type is 4, it is a cd-rom drive
                 if drive.DriveType == 4:
