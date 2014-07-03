@@ -51,14 +51,18 @@ class SongImportTestHelper(TestCase):
         Patch and set up the mocks required.
         """
         self.add_copyright_patcher = patch(
-            'openlp.plugins.songs.lib.songimport.%s.%s.add_copyright' % (self.importer_module_name, self.importer_class_name))
+            'openlp.plugins.songs.lib.songimport.%s.%s.add_copyright' % (self.importer_module_name,
+                                                                         self.importer_class_name))
         self.add_verse_patcher = patch(
-            'openlp.plugins.songs.lib.songimport.%s.%s.add_verse' % (self.importer_module_name, self.importer_class_name))
+            'openlp.plugins.songs.lib.songimport.%s.%s.add_verse' % (self.importer_module_name,
+                                                                     self.importer_class_name))
         self.finish_patcher = patch(
             'openlp.plugins.songs.lib.songimport.%s.%s.finish' % (self.importer_module_name, self.importer_class_name))
         self.add_author_patcher = patch(
-            'openlp.plugins.songs.lib.songimport.%s.%s.add_author' % (self.importer_module_name, self.importer_class_name))
-        self.song_import_patcher = patch('openlp.plugins.songs.lib.songimport.%s.SongImport' % self.importer_module_name)
+            'openlp.plugins.songs.lib.songimport.%s.%s.add_author' % (self.importer_module_name,
+                                                                      self.importer_class_name))
+        self.song_import_patcher = patch('openlp.plugins.songs.lib.songimport.%s.SongImport' %
+                                         self.importer_module_name)
         self.mocked_add_copyright = self.add_copyright_patcher.start()
         self.mocked_add_verse = self.add_verse_patcher.start()
         self.mocked_finish = self.finish_patcher.start()
