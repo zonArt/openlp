@@ -134,7 +134,6 @@ class SongImportTestHelper(TestCase):
             self.assertEqual(importer.ccli_number, ccli_number,
                              'ccli_number for %s should be %s' % (source_file_name, ccli_number))
         expected_calls = []
-        print(self.mocked_add_verse.mock_calls)
         for verse_text, verse_tag in add_verse_calls:
             self.mocked_add_verse.assert_any_call(verse_text, verse_tag)
             expected_calls.append(call(verse_text, verse_tag))

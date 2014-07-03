@@ -57,14 +57,25 @@ class PowerpraiseImport(SongImport):
     def process_song(self, root):
         self.set_defaults()
         self.title = root.general.title
-        count = 0;
+        verse_order_list = []
+        for item in root.order.item:
+            verse_order_list.append(str(item))
+
+        count = 0
         for part in root.songtext.part:
-            verse_text = ""
             count += 1
+            verse_def = "v%d" % count
+            original_verse_def = part.get('caption')
+            verse_text = ""
             for slide in part.slide:
                 for line in slide.line:
                     verse_text += line
-            print(verse_text)
-            self.add_verse(verse_text, "v%d" % count)
+            self.add_verse(verse_text, verse_def)
+            # Update verse name in verse order list
+            for i in range(len(verse_order_list)):
+                if verse_order_list[i].lower() == original_verse_def.lower():
+                    verse_order_list[i] = verse_def
+
+        self.verse_order_list = verse_order_list
         if not self.finish():
             self.log_error(self.import_source)
