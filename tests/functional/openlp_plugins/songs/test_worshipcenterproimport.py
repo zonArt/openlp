@@ -37,7 +37,7 @@ if os.name != 'nt':
 
 import pyodbc
 
-from openlp.plugins.songs.lib.worshipcenterproimport import WorshipCenterProImport
+from openlp.plugins.songs.lib.songimport.worshipcenterproimport import WorshipCenterProImport
 from tests.functional import patch, MagicMock
 
 
@@ -141,7 +141,7 @@ class TestWorshipCenterProSongImport(TestCase):
         Test creating an instance of the WorshipCenter Pro file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.worshipcenterproimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songimport.worshipcenterproimport.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created

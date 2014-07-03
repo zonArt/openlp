@@ -34,23 +34,23 @@ import logging
 
 from openlp.core.common import translate, UiStrings
 from openlp.core.ui.wizard import WizardStrings
-from .opensongimport import OpenSongImport
-from .easyslidesimport import EasySlidesImport
-from .olpimport import OpenLPSongImport
-from .openlyricsimport import OpenLyricsImport
-from .wowimport import WowImport
-from .cclifileimport import CCLIFileImport
-from .dreambeamimport import DreamBeamImport
-from .powersongimport import PowerSongImport
-from .ewimport import EasyWorshipSongImport
-from .songbeamerimport import SongBeamerImport
-from .songshowplusimport import SongShowPlusImport
-from .songproimport import SongProImport
-from .sundayplusimport import SundayPlusImport
-from .foilpresenterimport import FoilPresenterImport
-from .zionworximport import ZionWorxImport
-from .propresenterimport import ProPresenterImport
-from .worshipassistantimport import WorshipAssistantImport
+from .songimport.opensongimport import OpenSongImport
+from .songimport.easyslidesimport import EasySlidesImport
+from .songimport.olpimport import OpenLPSongImport
+from .songimport.openlyricsimport import OpenLyricsImport
+from .songimport.wowimport import WowImport
+from .songimport.cclifileimport import CCLIFileImport
+from .songimport.dreambeamimport import DreamBeamImport
+from .songimport.powersongimport import PowerSongImport
+from .songimport.ewimport import EasyWorshipSongImport
+from .songimport.songbeamerimport import SongBeamerImport
+from .songimport.songshowplusimport import SongShowPlusImport
+from .songimport.songproimport import SongProImport
+from .songimport.sundayplusimport import SundayPlusImport
+from .songimport.foilpresenterimport import FoilPresenterImport
+from .songimport.zionworximport import ZionWorxImport
+from .songimport.propresenterimport import ProPresenterImport
+from .songimport.worshipassistantimport import WorshipAssistantImport
 # Imports that might fail
 
 

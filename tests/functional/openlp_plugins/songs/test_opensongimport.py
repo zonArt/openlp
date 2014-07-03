@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -34,7 +34,7 @@ import os
 from unittest import TestCase
 
 from tests.helpers.songfileimport import SongImportTestHelper
-from openlp.plugins.songs.lib.opensongimport import OpenSongImport
+from openlp.plugins.songs.lib.songimport.opensongimport import OpenSongImport
 from tests.functional import patch, MagicMock
 
 TEST_PATH = os.path.abspath(
@@ -69,7 +69,7 @@ class TestOpenSongImport(TestCase):
         Test creating an instance of the OpenSong file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.opensongimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songimport.opensongimport.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
@@ -83,7 +83,7 @@ class TestOpenSongImport(TestCase):
         Test OpenSongImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.opensongimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songimport.opensongimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OpenSongImport(mocked_manager, filenames=[])
@@ -104,7 +104,7 @@ class TestOpenSongImport(TestCase):
         Test OpenSongImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.opensongimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songimport.opensongimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OpenSongImport(mocked_manager, filenames=[])

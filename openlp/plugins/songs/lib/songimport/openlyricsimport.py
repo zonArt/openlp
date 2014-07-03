@@ -37,9 +37,9 @@ import os
 from lxml import etree
 
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.songimport.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib.xml import OpenLyrics, OpenLyricsError
+from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics, OpenLyricsError
 
 log = logging.getLogger(__name__)
 

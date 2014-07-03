@@ -33,8 +33,8 @@ This module contains tests for the ZionWorx song importer.
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
-from openlp.plugins.songs.lib.zionworximport import ZionWorxImport
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.songimport.zionworximport import ZionWorxImport
+from openlp.plugins.songs.lib.songimport.songimport import SongImport
 
 
 class TestZionWorxImport(TestCase):
@@ -46,7 +46,7 @@ class TestZionWorxImport(TestCase):
         Test creating an instance of the ZionWorx file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.zionworximport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songimport.zionworximport.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created

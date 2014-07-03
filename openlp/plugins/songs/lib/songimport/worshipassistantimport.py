@@ -37,7 +37,7 @@ import re
 
 from openlp.core.common import translate
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.songimport.songimport import SongImport
 
 log = logging.getLogger(__name__)
 

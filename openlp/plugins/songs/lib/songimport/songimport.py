@@ -39,7 +39,7 @@ from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib.xml import SongXML
+from openlp.plugins.songs.lib.openlyricsxml import SongXML
 
 log = logging.getLogger(__name__)
 

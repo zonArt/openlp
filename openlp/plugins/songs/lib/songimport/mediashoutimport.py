@@ -33,7 +33,7 @@ a MediaShout database into the OpenLP database.
 import pyodbc
 
 from openlp.core.lib import translate
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.songimport.songimport import SongImport
 
 VERSE_TAGS = ['V', 'C', 'B', 'O', 'P', 'I', 'E']
 

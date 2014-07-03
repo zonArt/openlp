@@ -38,7 +38,7 @@ import struct
 
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType, retrieve_windows_encoding
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.songimport.songimport import SongImport
 
 TITLE = 1
 AUTHOR = 2

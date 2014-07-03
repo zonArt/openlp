@@ -34,7 +34,7 @@ import os
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
-from openlp.plugins.songs.lib.songbeamerimport import SongBeamerImport
+from openlp.plugins.songs.lib.songimport.songbeamerimport import SongBeamerImport
 from openlp.plugins.songs.lib import VerseType
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -64,7 +64,7 @@ class TestSongBeamerImport(TestCase):
         Test creating an instance of the SongBeamer file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songimport.songbeamerimport.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
@@ -78,7 +78,7 @@ class TestSongBeamerImport(TestCase):
         Test SongBeamerImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songimport.songbeamerimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = SongBeamerImport(mocked_manager, filenames=[])
@@ -99,7 +99,7 @@ class TestSongBeamerImport(TestCase):
         Test SongBeamerImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songimport.songbeamerimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = SongBeamerImport(mocked_manager, filenames=[])
@@ -122,7 +122,7 @@ class TestSongBeamerImport(TestCase):
 
         # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
         #       and mocked out "author", "add_copyright", "add_verse", "finish" methods.
-        with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songimport.songbeamerimport.SongImport'):
             for song_file in SONG_TEST_DATA:
                 mocked_manager = MagicMock()
                 mocked_import_wizard = MagicMock()

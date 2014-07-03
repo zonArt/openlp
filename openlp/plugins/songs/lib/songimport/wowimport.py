@@ -34,7 +34,7 @@ import os
 import logging
 
 from openlp.core.common import translate
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.songimport.songimport import SongImport
 
 BLOCK_TYPES = ('V', 'C', 'B')
 
