@@ -31,9 +31,12 @@ The :mod:`songfileimporthelper` modules provides a helper class and methods to e
 song files from third party applications.
 """
 import json
+import logging
 from unittest import TestCase
 
 from tests.functional import patch, MagicMock, call
+
+log = logging.getLogger(__name__)
 
 
 class SongImportTestHelper(TestCase):
@@ -107,9 +110,21 @@ class SongImportTestHelper(TestCase):
         topics = self._get_data(result_data, 'topics')
         verse_order_list = self._get_data(result_data, 'verse_order_list')
 
-        # THEN: do_import should return none, the song data should be as expected, and finish should have been
-        #       called.
+        # THEN: do_import should return none, the song data should be as expected, and finish should have been called.
         self.assertIsNone(importer.do_import(), 'do_import should return None when it has completed')
+
+        # Debug information - will be displayed when the test fails
+        log.debug("Title imported: %s" % importer.title)
+        log.debug("Verses imported: %s" % self.mocked_add_verse.mock_calls)
+        log.debug("Verse order imported: %s" % importer.verse_order_list)
+        log.debug("Authors imported: %s" % self.mocked_add_author.mock_calls)
+        log.debug("CCLI No. imported: %s" % importer.ccli_number)
+        log.debug("Comments imported: %s" % importer.comments)
+        log.debug("Songbook imported: %s" % importer.song_book_name)
+        log.debug("Song number imported: %s" % importer.song_number)
+        log.debug("Song copyright imported: %s" % importer.song_number)
+        log.debug("Topics imported: %s" % importer.topics)
+
         self.assertEqual(importer.title, title, 'title for %s should be "%s"' % (source_file_name, title))
         for author in author_calls:
             self.mocked_add_author.assert_any_call(author)
@@ -119,6 +134,7 @@ class SongImportTestHelper(TestCase):
             self.assertEqual(importer.ccli_number, ccli_number,
                              'ccli_number for %s should be %s' % (source_file_name, ccli_number))
         expected_calls = []
+        print(self.mocked_add_verse.mock_calls)
         for verse_text, verse_tag in add_verse_calls:
             self.mocked_add_verse.assert_any_call(verse_text, verse_tag)
             expected_calls.append(call(verse_text, verse_tag))

@@ -27,28 +27,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`propresenterimport` module provides the functionality for importing
-ProPresenter song files into the current installation database.
+The :mod:`powerpraiseimport` module provides the functionality for importing
+Powerpraise song files into the current database.
 """
 
 import os
+import base64
+from lxml import objectify
 
-from tests.helpers.songfileimport import SongImportTestHelper
+from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import strip_rtf
+from .songimport import SongImport
 
-TEST_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'propresentersongs'))
 
+class PowerpraiseImport(SongImport):
+    """
+    The :class:`PowerpraiseImport` class provides OpenLP with the
+    ability to import Powerpraise song files.
+    """
+    def do_import(self):
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for file_path in self.import_source:
+            if self.stop_import_flag:
+                return
+            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
+            root = objectify.parse(open(file_path, 'rb')).getroot()
+            self.process_song(root)
 
-class TestProPresenterFileImport(SongImportTestHelper):
-
-    def __init__(self, *args, **kwargs):
-        self.importer_class_name = 'ProPresenterImport'
-        self.importer_module_name = 'propresenterimport'
-        super(TestProPresenterFileImport, self).__init__(*args, **kwargs)
-
-    def test_song_import(self):
-        """
-        Test that loading a ProPresenter file works correctly
-        """
-        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.pro4')],
-                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
+    def process_song(self, root):
+        self.set_defaults()
+        self.title = root.general.title
+        count = 0;
+        for part in root.songtext.part:
+            verse_text = ""
+            count += 1
+            for slide in part.slide:
+                for line in slide.line:
+                    verse_text += line
+            print(verse_text)
+            self.add_verse(verse_text, "v%d" % count)
+        if not self.finish():
+            self.log_error(self.import_source)

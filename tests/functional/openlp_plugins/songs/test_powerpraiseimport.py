@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`propresenterimport` module provides the functionality for importing
+The :mod:`powerpraiseimport` module provides the functionality for importing
 ProPresenter song files into the current installation database.
 """
 
@@ -36,19 +36,19 @@ import os
 from tests.helpers.songfileimport import SongImportTestHelper
 
 TEST_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'propresentersongs'))
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'powerpraisesongs'))
 
 
-class TestProPresenterFileImport(SongImportTestHelper):
+class TestPowerpraiseFileImport(SongImportTestHelper):
 
     def __init__(self, *args, **kwargs):
-        self.importer_class_name = 'ProPresenterImport'
-        self.importer_module_name = 'propresenterimport'
-        super(TestProPresenterFileImport, self).__init__(*args, **kwargs)
+        self.importer_class_name = 'PowerpraiseImport'
+        self.importer_module_name = 'powerpraiseimport'
+        super(TestPowerpraiseFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
         """
-        Test that loading a ProPresenter file works correctly
+        Test that loading a PowerPraise file works correctly
         """
-        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.pro4')],
-                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
+        self.file_import([os.path.join(TEST_PATH, 'Näher, mein Gott zu Dir.ppl')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Näher, mein Gott zu Dir.json')))
