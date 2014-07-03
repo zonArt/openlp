@@ -260,9 +260,8 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             # Enable audio track combobox if anything is in it
             if len(titles) > 0:
                 self.title_combo_box.setDisabled(False)
-        self.vlc_media_player.set_pause(1)
         self.toggle_disable_load_media(False)
-        log.debug('leaving on_load_disc_pushbutton_clicked, vlc_media_player state: %s' % self.vlc_media_player.get_state())
+        log.debug('load_disc_pushbutton end - vlc_media_player state: %s' % self.vlc_media_player.get_state())
 
     @QtCore.pyqtSlot(bool)
     def on_play_pushbutton_clicked(self, clicked):
@@ -438,9 +437,11 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.end_timeedit.setMaximumTime(playback_length_time)
         self.end_timeedit.setTime(playback_length_time)
         # Pause once again, just to make sure
-        self.vlc_media_player.set_time(0)
-        self.vlc_media_player.set_pause(1)
-        log.debug('leaving on_title_combo_box_currentIndexChanged, vlc_media_player state: %s' % self.vlc_media_player.get_state())
+        loop_count = 0
+        while self.vlc_media_player.get_state() == vlc.State.Playing and loop_count < 20:
+            sleep(0.1)
+            self.vlc_media_player.set_pause(1)
+        log.debug('title_combo_box end - vlc_media_player state: %s' % self.vlc_media_player.get_state())
 
     @QtCore.pyqtSlot(int)
     def on_audio_tracks_combobox_currentIndexChanged(self, index):
