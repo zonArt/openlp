@@ -29,7 +29,7 @@
 
 import os
 if os.name == 'nt':
-    from ctypes import windll
+    from win32com.client import Dispatch
     import string
 import sys
 if sys.platform.startswith('linux'):
@@ -581,18 +581,13 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         # insert empty string as first item
         self.media_path_combobox.addItem('')
         if os.name == 'nt':
-            # use win api to fine optical drives
-            bitmask = windll.kernel32.GetLogicalDrives()
-            for letter in string.uppercase:
-                if bitmask & 1:
-                    try:
-                        type = windll.kernel32.GetDriveTypeW('%s:\\' % letter)
-                        # if type is 5, it is a cd-rom drive
-                        if type == 5:
-                            self.media_path_combobox.addItem('%s:\\' % letter)
-                    except Exception as e:
-                        log.debug('Exception while looking for optical drives: ', e)
-                bitmask >>= 1
+            # use win api to find optical drives
+            fso = Dispatch('scripting.filesystemobject')
+            for drive in fso.Drives :
+                log.debug('Drive %s has type %d' % (drive.DriveLetter, drive.DriveType))
+                # if type is 4, it is a cd-rom drive
+                if drive.DriveType == 4:
+                    self.media_path_combobox.addItem('%s:\\' % drive.DriveLetter)
         elif sys.platform.startswith('linux'):
             # Get disc devices from dbus and find the ones that are optical
             bus = dbus.SystemBus()
