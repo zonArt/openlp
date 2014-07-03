@@ -39,12 +39,12 @@ TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'powerpraisesongs'))
 
 
-class TestPowerpraiseFileImport(SongImportTestHelper):
+class TestPowerPraiseFileImport(SongImportTestHelper):
 
     def __init__(self, *args, **kwargs):
-        self.importer_class_name = 'PowerpraiseImport'
+        self.importer_class_name = 'PowerPraiseImport'
         self.importer_module_name = 'powerpraiseimport'
-        super(TestPowerpraiseFileImport, self).__init__(*args, **kwargs)
+        super(TestPowerPraiseFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
         """

@@ -40,7 +40,7 @@ from openlp.plugins.songs.lib import strip_rtf
 from .songimport import SongImport
 
 
-class PowerpraiseImport(SongImport):
+class PowerPraiseImport(SongImport):
     """
     The :class:`PowerpraiseImport` class provides OpenLP with the
     ability to import Powerpraise song files.
@@ -56,7 +56,7 @@ class PowerpraiseImport(SongImport):
 
     def process_song(self, root):
         self.set_defaults()
-        self.title = root.general.title
+        self.title = str(root.general.title)
         verse_order_list = []
         for item in root.order.item:
             verse_order_list.append(str(item))
@@ -66,11 +66,13 @@ class PowerpraiseImport(SongImport):
             count += 1
             verse_def = "v%d" % count
             original_verse_def = part.get('caption')
-            verse_text = ""
+            verse_text = []
             for slide in part.slide:
+                if not hasattr(slide, 'line'):
+                    continue  # No content
                 for line in slide.line:
-                    verse_text += line
-            self.add_verse(verse_text, verse_def)
+                    verse_text.append(str(line))
+            self.add_verse('\n'.join(verse_text), verse_def)
             # Update verse name in verse order list
             for i in range(len(verse_order_list)):
                 if verse_order_list[i].lower() == original_verse_def.lower():
