@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`dreambeamimport` module provides the functionality for importing
-DreamBeam songs into the OpenLP database.
+The :mod:`dreambeam` module provides the functionality for importing DreamBeam songs into the OpenLP database.
 """
 import logging
 

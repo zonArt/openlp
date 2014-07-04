@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlyricsimport` module provides the functionality for importing
+The :mod:`openlyrics` module provides the functionality for importing
 songs which are saved as OpenLyrics files.
 """
 

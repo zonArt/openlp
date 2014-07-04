@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`olpimport` module provides the functionality for importing OpenLP
+The :mod:`openlp` module provides the functionality for importing OpenLP
 song databases into the current installation database.
 """
 import logging
