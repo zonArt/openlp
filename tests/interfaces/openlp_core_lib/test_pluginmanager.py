@@ -88,7 +88,7 @@ class TestPluginManager(TestCase, TestMixin):
         plugin_names = [plugin.name for plugin in plugin_manager.plugins]
         assert 'songs' in plugin_names, 'There should be a "songs" plugin.'
         assert 'bibles' in plugin_names, 'There should be a "bibles" plugin.'
-        assert 'presentations' not in plugin_names, 'There should NOT be a "presentations" plugin.'
+        assert 'presentations' in plugin_names, 'There should be a "presentations" plugin.'
         assert 'images' in plugin_names, 'There should be a "images" plugin.'
         assert 'media' in plugin_names, 'There should be a "media" plugin.'
         assert 'custom' in plugin_names, 'There should be a "custom" plugin.'

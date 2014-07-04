@@ -4,14 +4,14 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,41 +26,31 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`worshipassistantimport` module provides the functionality for importing
+WorshipAssistant song files into the current installation database.
+"""
 
-"""
-Provide a work around for a bug in QFileDialog <https://bugs.launchpad.net/openlp/+bug/1209515>
-"""
-import logging
 import os
-from urllib import parse
 
-from PyQt4 import QtGui
+from tests.helpers.songfileimport import SongImportTestHelper
 
-from openlp.core.common import UiStrings
-
-log = logging.getLogger(__name__)
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'worshipassistantsongs'))
 
 
-class FileDialog(QtGui.QFileDialog):
-    """
-    Subclass QFileDialog to work round a bug
-    """
-    @staticmethod
-    def getOpenFileNames(parent, *args, **kwargs):
+class TestWorshipAssistantFileImport(SongImportTestHelper):
+
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'WorshipAssistantImport'
+        self.importer_module_name = 'worshipassistantimport'
+        super(TestWorshipAssistantFileImport, self).__init__(*args, **kwargs)
+
+    def test_song_import(self):
         """
-        Reimplement getOpenFileNames to fix the way it returns some file names that url encoded when selecting multiple
-        files
+        Test that loading an Worship Assistant file works correctly
         """
-        files = QtGui.QFileDialog.getOpenFileNames(parent, *args, **kwargs)
-        file_list = []
-        for file in files:
-            if not os.path.exists(file):
-                log.info('File not found. Attempting to unquote.')
-                file = parse.unquote(file)
-                if not os.path.exists(file):
-                    log.error('File %s not found.' % file)
-                    QtGui.QMessageBox.information(parent, UiStrings().FileNotFound,
-                                                  UiStrings().FileNotFoundMessage % file)
-                    continue
-            file_list.append(file)
-        return file_list
+        self.file_import(os.path.join(TEST_PATH, 'du_herr.csv'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'du_herr.json')))
+        self.file_import(os.path.join(TEST_PATH, 'would_you_be_free.csv'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'would_you_be_free.json')))

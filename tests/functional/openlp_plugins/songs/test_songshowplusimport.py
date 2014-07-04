@@ -53,11 +53,11 @@ class TestSongShowPlusFileImport(SongImportTestHelper):
         """
         Test that loading a SongShow Plus file works correctly on various files
         """
-        self.file_import(os.path.join(TEST_PATH, 'Amazing Grace.sbsong'),
+        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.sbsong')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
-        self.file_import(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.sbsong'),
+        self.file_import([os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.sbsong')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.json')))
-        self.file_import(os.path.join(TEST_PATH, 'a mighty fortress is our god.sbsong'),
+        self.file_import([os.path.join(TEST_PATH, 'a mighty fortress is our god.sbsong')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'a mighty fortress is our god.json')))
 
 

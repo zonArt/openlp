@@ -46,7 +46,7 @@ class TestZionWorxImport(TestCase):
         Test creating an instance of the ZionWorx file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.zionworximport.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created

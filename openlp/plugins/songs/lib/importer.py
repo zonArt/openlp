@@ -49,6 +49,8 @@ from .songproimport import SongProImport
 from .sundayplusimport import SundayPlusImport
 from .foilpresenterimport import FoilPresenterImport
 from .zionworximport import ZionWorxImport
+from .propresenterimport import ProPresenterImport
+from .worshipassistantimport import WorshipAssistantImport
 # Imports that might fail
 
 
@@ -159,14 +161,16 @@ class SongFormat(object):
     MediaShout = 9
     OpenSong = 10
     PowerSong = 11
-    SongBeamer = 12
-    SongPro = 13
-    SongShowPlus = 14
-    SongsOfFellowship = 15
-    SundayPlus = 16
-    WordsOfWorship = 17
-    WorshipCenterPro = 18
-    ZionWorx = 19
+    ProPresenter = 12
+    SongBeamer = 13
+    SongPro = 14
+    SongShowPlus = 15
+    SongsOfFellowship = 16
+    SundayPlus = 17
+    WordsOfWorship = 18
+    WorshipAssistant = 19
+    WorshipCenterPro = 20
+    ZionWorx = 21
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -270,6 +274,12 @@ class SongFormat(object):
             'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm', 'You need to specify a valid PowerSong 1.0 '
                                                                           'database folder.')
         },
+        ProPresenter: {
+            'class': ProPresenterImport,
+            'name': 'ProPresenter',
+            'prefix': 'proPresenter',
+            'filter': '%s (*.pro4)' % translate('SongsPlugin.ImportWizardForm', 'ProPresenter Song Files')
+        },
         SongBeamer: {
             'class': SongBeamerImport,
             'name': 'SongBeamer',
@@ -313,6 +323,16 @@ class SongFormat(object):
             'prefix': 'wordsOfWorship',
             'filter': '%s (*.wsg *.wow-song)' % translate('SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
         },
+        WorshipAssistant: {
+            'class': WorshipAssistantImport,
+            'name': 'Worship Assistant 0',
+            'prefix': 'worshipAssistant',
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.csv)' % translate('SongsPlugin.ImportWizardForm', 'Worship Assistant Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'Worship Assistant (CSV)'),
+            'descriptionText': translate('SongsPlugin.ImportWizardForm',
+                                         'In Worship Assistant, export your Database to a CSV file.')
+        },
         WorshipCenterPro: {
             'name': 'WorshipCenter Pro',
             'prefix': 'worshipCenterPro',
@@ -355,22 +375,24 @@ class SongFormat(object):
             SongFormat.MediaShout,
             SongFormat.OpenSong,
             SongFormat.PowerSong,
+            SongFormat.ProPresenter,
             SongFormat.SongBeamer,
             SongFormat.SongPro,
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,
             SongFormat.SundayPlus,
             SongFormat.WordsOfWorship,
+            SongFormat.WorshipAssistant,
             SongFormat.WorshipCenterPro,
             SongFormat.ZionWorx
         ]
 
     @staticmethod
-    def get(format, *attributes):
+    def get(song_format, *attributes):
         """
         Return requested song format attribute(s).
 
-        :param format:  A song format from SongFormat.
+        :param song_format: A song format from SongFormat.
         :param attributes: Zero or more song format attributes from SongFormat.
 
         Return type depends on number of supplied attributes:
@@ -380,23 +402,23 @@ class SongFormat(object):
         :>1: Return tuple of requested attribute values.
         """
         if not attributes:
-            return SongFormat.__attributes__.get(format)
+            return SongFormat.__attributes__.get(song_format)
         elif len(attributes) == 1:
             default = SongFormat.__defaults__.get(attributes[0])
-            return SongFormat.__attributes__[format].get(attributes[0], default)
+            return SongFormat.__attributes__[song_format].get(attributes[0], default)
         else:
             values = []
             for attr in attributes:
                 default = SongFormat.__defaults__.get(attr)
-                values.append(SongFormat.__attributes__[format].get(attr, default))
+                values.append(SongFormat.__attributes__[song_format].get(attr, default))
             return tuple(values)
 
     @staticmethod
-    def set(format, attribute, value):
+    def set(song_format, attribute, value):
         """
         Set specified song format attribute to the supplied value.
         """
-        SongFormat.__attributes__[format][attribute] = value
+        SongFormat.__attributes__[song_format][attribute] = value
 
 
 SongFormat.set(SongFormat.SongsOfFellowship, 'availability', HAS_SOF)

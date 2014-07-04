@@ -314,6 +314,26 @@ class TestEasyWorshipSongImport(TestCase):
             mocked_os_path.isfile.assert_any_call('Songs.DB')
             mocked_os_path.isfile.assert_any_call('Songs.MB')
 
+    def do_import_source_invalid_test(self):
+        """
+        Test the :mod:`do_import` module produces an error when Songs.MB not found.
+        """
+        # GIVEN: A mocked out SongImport class, a mocked out "manager"
+        with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
+                patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
+            mocked_manager = MagicMock()
+            importer = EasyWorshipSongImport(mocked_manager, filenames=[])
+            importer.log_error = MagicMock()
+            mocked_os_path.isfile.side_effect = [True, False]
+
+            # WHEN: do_import is supplied with an import source (Songs.MB missing)
+            importer.import_source = 'Songs.DB'
+            importer.do_import()
+
+            # THEN: do_import should have logged an error that the Songs.MB file could not be found.
+            importer.log_error.assert_any_call(importer.import_source, 'Could not find the "Songs.MB" file. It must be '
+                                                                       'in the same folder as the "Songs.DB" file.')
+
     def do_import_database_validity_test(self):
         """
         Test the :mod:`do_import` module handles invalid database files correctly

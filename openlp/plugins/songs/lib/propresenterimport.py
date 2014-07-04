@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,46 +27,49 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test for proper bzr tags.
+The :mod:`propresenterimport` module provides the functionality for importing
+ProPresenter song files into the current installation database.
 """
+
 import os
+import base64
+from lxml import objectify
 
-from unittest import TestCase
-
-from subprocess import Popen, PIPE
-
-TAGS = [
-    ['1.9.0', '1'],
-    ['1.9.1', '775'],
-    ['1.9.2', '890'],
-    ['1.9.3', '1063'],
-    ['1.9.4', '1196'],
-    ['1.9.5', '1421'],
-    ['1.9.6', '1657'],
-    ['1.9.7', '1761'],
-    ['1.9.8', '1856'],
-    ['1.9.9', '1917'],
-    ['1.9.10', '2003'],
-    ['1.9.11', '2039'],
-    ['1.9.12', '2063'],
-    ['2.0', '2118'],
-    ['2.1.0', '2119']
-]
+from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import strip_rtf
+from .songimport import SongImport
 
 
-class TestBzrTags(TestCase):
+class ProPresenterImport(SongImport):
+    """
+    The :class:`ProPresenterImport` class provides OpenLP with the
+    ability to import ProPresenter song files.
+    """
+    def do_import(self):
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for file_path in self.import_source:
+            if self.stop_import_flag:
+                return
+            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
+            root = objectify.parse(open(file_path, 'rb')).getroot()
+            self.process_song(root)
 
-    def bzr_tags_test(self):
-        """
-        Test for proper bzr tags
-        """
-        # GIVEN: A bzr branch
-        path = os.path.dirname(__file__)
-
-        # WHEN getting the branches tags
-        bzr = Popen(('bzr', 'tags', '--directory=' + path), stdout=PIPE)
-        stdout = bzr.communicate()[0]
-        tags = [line.decode('utf-8').split() for line in stdout.splitlines()]
-
-        # THEN the tags should match the accepted tags
-        self.assertEqual(TAGS, tags, 'List of tags should match')
+    def process_song(self, root):
+        self.set_defaults()
+        self.title = root.get('CCLISongTitle')
+        self.copyright = root.get('CCLICopyrightInfo')
+        self.comments = root.get('notes')
+        self.ccli_number = root.get('CCLILicenseNumber')
+        for author_key in ['author', 'artist', 'CCLIArtistCredits']:
+            author = root.get(author_key)
+            if len(author) > 0:
+                self.parse_author(author)
+        count = 0
+        for slide in root.slides.RVDisplaySlide:
+            count += 1
+            RTFData = slide.displayElements.RVTextElement.get('RTFData')
+            rtf = base64.standard_b64decode(RTFData)
+            words, encoding = strip_rtf(rtf.decode())
+            self.add_verse(words, "v%d" % count)
+        if not self.finish():
+            self.log_error(self.import_source)

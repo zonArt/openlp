@@ -200,11 +200,20 @@ class EasyWorshipSongImport(SongImport):
         Import the songs from the database
         """
         # Open the DB and MB files if they exist
-        import_source_mb = self.import_source.replace('.DB', '.MB')
-        if not os.path.isfile(self.import_source) or not os.path.isfile(import_source_mb):
+        import_source_mb = self.import_source.replace('.DB', '.MB').replace('.db', '.mb')
+        if not os.path.isfile(self.import_source):
+            self.log_error(self.import_source, translate('SongsPlugin.EasyWorshipSongImport',
+                                                         'This file does not exist.'))
+            return
+        if not os.path.isfile(import_source_mb):
+            self.log_error(self.import_source, translate('SongsPlugin.EasyWorshipSongImport',
+                                                         'Could not find the "Songs.MB" file. It must be in the same '
+                                                         'folder as the "Songs.DB" file.'))
             return
         db_size = os.path.getsize(self.import_source)
         if db_size < 0x800:
+            self.log_error(self.import_source, translate('SongsPlugin.EasyWorshipSongImport',
+                                                         'This file is not a valid EasyWorship database.'))
             return
         db_file = open(self.import_source, 'rb')
         self.memo_file = open(import_source_mb, 'rb')
@@ -213,6 +222,8 @@ class EasyWorshipSongImport(SongImport):
         if header_size != 0x800 or block_size < 1 or block_size > 4:
             db_file.close()
             self.memo_file.close()
+            self.log_error(self.import_source, translate('SongsPlugin.EasyWorshipSongImport',
+                                                         'This file is not a valid EasyWorship database.'))
             return
         # Take a stab at how text is encoded
         self.encoding = 'cp1252'
@@ -240,6 +251,8 @@ class EasyWorshipSongImport(SongImport):
             self.encoding = 'cp874'
         self.encoding = retrieve_windows_encoding(self.encoding)
         if not self.encoding:
+            self.log_error(self.import_source, translate('SongsPlugin.EasyWorshipSongImport',
+                                                         'Could not retrieve encoding.'))
             return
         # Read the field description information
         db_file.seek(120)

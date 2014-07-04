@@ -225,7 +225,7 @@ class BGExtract(RegistryProperties):
         url_book_name = urllib.parse.quote(book_name.encode("utf-8"))
         url_params = 'search=%s+%s&version=%s' % (url_book_name, chapter, version)
         soup = get_soup_for_bible_ref(
-            'http://www.biblegateway.com/passage/?%s' % url_params,
+            'http://legacy.biblegateway.com/passage/?%s' % url_params,
             pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='')
         if not soup:
             return None
@@ -252,7 +252,7 @@ class BGExtract(RegistryProperties):
         """
         log.debug('BGExtract.get_books_from_http("%s")', version)
         url_params = urllib.parse.urlencode({'action': 'getVersionInfo', 'vid': '%s' % version})
-        reference_url = 'http://www.biblegateway.com/versions/?%s#books' % url_params
+        reference_url = 'http://legacy.biblegateway.com/versions/?%s#books' % url_params
         page = get_web_page(reference_url)
         if not page:
             send_error_message('download')
