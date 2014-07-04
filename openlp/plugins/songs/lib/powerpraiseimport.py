@@ -60,7 +60,6 @@ class PowerPraiseImport(SongImport):
         verse_order_list = []
         for item in root.order.item:
             verse_order_list.append(str(item))
-
         count = 0
         for part in root.songtext.part:
             count += 1
