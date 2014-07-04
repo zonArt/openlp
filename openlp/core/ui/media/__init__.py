@@ -129,7 +129,7 @@ def parse_optical_path(input):
     filename = clip_info[7]
     # Windows path usually contains a colon after the drive letter
     if len(clip_info) > 8:
-        filename += clip_info[8]
+        filename += ':' + clip_info[8]
     return filename, title, audio_track, subtitle_track, start, end, clip_name
 
 

@@ -210,13 +210,16 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                                                          'Given path does not exists'))
             self.toggle_disable_load_media(False)
             return
-        # If on windows fix path for VLC use
+        # VLC behaves a bit differently on windows and linux when loading, which creates problems when trying to
+        # detect if we're dealing with a DVD or CD, so we use different loading approaches depending on the OS.
         if os.name == 'nt':
             # If the given path is in the format "D:\" or "D:", prefix it with "/" to make VLC happy
             pattern = re.compile('^\w:\\\\*$')
             if pattern.match(path):
                 path = '/' + path
-        self.vlc_media = self.vlc_instance.media_new_location('dvd://' + path)
+            self.vlc_media = self.vlc_instance.media_new_location('dvd://' + path)
+        else:
+            self.vlc_media = self.vlc_instance.media_new_path(path)
         if not self.vlc_media:
             log.debug('vlc media player is none')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
