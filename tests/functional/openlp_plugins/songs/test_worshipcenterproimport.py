@@ -37,7 +37,7 @@ if os.name != 'nt':
 
 import pyodbc
 
-from openlp.plugins.songs.lib.songimport.worshipcenterproimport import WorshipCenterProImport
+from openlp.plugins.songs.lib.importers.worshipcenterpro import WorshipCenterProImport
 from tests.functional import patch, MagicMock
 
 
@@ -141,7 +141,7 @@ class TestWorshipCenterProSongImport(TestCase):
         Test creating an instance of the WorshipCenter Pro file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.songimport.worshipcenterproimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.importers.worshipcenterpro.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
@@ -156,10 +156,10 @@ class TestWorshipCenterProSongImport(TestCase):
         """
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module, a mocked out translate method,
         #       a mocked "manager" and a mocked out log_error method.
-        with patch('openlp.plugins.songs.lib.songimport.worshipcenterproimport.SongImport'), \
-            patch('openlp.plugins.songs.lib.songimport.worshipcenterproimport.pyodbc.connect') \
+        with patch('openlp.plugins.songs.lib.importers.worshipcenterpro.SongImport'), \
+            patch('openlp.plugins.songs.lib.importers.worshipcenterpro.pyodbc.connect') \
                 as mocked_pyodbc_connect, \
-                patch('openlp.plugins.songs.lib.songimport.worshipcenterproimport.translate') as mocked_translate:
+                patch('openlp.plugins.songs.lib.importers.worshipcenterpro.translate') as mocked_translate:
             mocked_manager = MagicMock()
             mocked_log_error = MagicMock()
             mocked_translate.return_value = 'Translated Text'
@@ -186,9 +186,9 @@ class TestWorshipCenterProSongImport(TestCase):
         """
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module with a simulated recordset, a mocked out
         #       translate method,  a mocked "manager", add_verse method & mocked_finish method.
-        with patch('openlp.plugins.songs.lib.songimport.worshipcenterproimport.SongImport'), \
-            patch('openlp.plugins.songs.lib.songimport.worshipcenterproimport.pyodbc') as mocked_pyodbc, \
-                patch('openlp.plugins.songs.lib.songimport.worshipcenterproimport.translate') as mocked_translate:
+        with patch('openlp.plugins.songs.lib.importers.worshipcenterpro.SongImport'), \
+            patch('openlp.plugins.songs.lib.importers.worshipcenterpro.pyodbc') as mocked_pyodbc, \
+                patch('openlp.plugins.songs.lib.importers.worshipcenterpro.translate') as mocked_translate:
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             mocked_add_verse = MagicMock()

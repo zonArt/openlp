@@ -35,7 +35,7 @@ import logging
 from lxml import etree, objectify
 
 from openlp.core.lib import translate
-from openlp.plugins.songs.lib.songimport.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)

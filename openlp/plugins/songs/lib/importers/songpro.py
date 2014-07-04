@@ -33,7 +33,7 @@ songs into the OpenLP database.
 import re
 
 from openlp.plugins.songs.lib import strip_rtf
-from openlp.plugins.songs.lib.songimport.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 
 class SongProImport(SongImport):

@@ -34,14 +34,14 @@ import os
 import logging
 
 from openlp.core.common import translate
-from openlp.plugins.songs.lib.songimport.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 BLOCK_TYPES = ('V', 'C', 'B')
 
 log = logging.getLogger(__name__)
 
 
-class WowImport(SongImport):
+class WordsOfWorshipImport(SongImport):
     """
     The :class:`WowImport` class provides the ability to import song files from
     Words of Worship.

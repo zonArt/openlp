@@ -35,7 +35,7 @@ import fnmatch
 import os
 
 from openlp.core.common import translate
-from openlp.plugins.songs.lib.songimport.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
@@ -90,7 +90,7 @@ class PowerSongImport(SongImport):
         """
         Receive either a list of files or a folder (unicode) to import.
         """
-        from .importer import SongFormat
+        from openlp.plugins.songs.lib.importer import SongFormat
         ps_string = SongFormat.get(SongFormat.PowerSong, 'name')
         if isinstance(self.import_source, str):
             if os.path.isdir(self.import_source):
