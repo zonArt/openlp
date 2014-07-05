@@ -356,12 +356,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
 
         # Types
         self.author_types_combo_box.clear()
-        self.author_types_combo_box.addItem('')
         # Don't iterate over the dictionary to give them this specific order
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Words], AuthorType.Words)
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Music], AuthorType.Music)
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.WordsAndMusic], AuthorType.WordsAndMusic)
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Translation], AuthorType.Translation)
+        for author_type in AuthorType.SortedTypes:
+            self.author_types_combo_box.addItem(AuthorType.Types[author_type], author_type)
 
     def load_topics(self):
         """
@@ -612,8 +609,17 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.author_edit_button.setEnabled(False)
         item = self.authors_list_view.currentItem()
         author_id, author_type = item.data(QtCore.Qt.UserRole)
-
-        #dialog = QtGui.QDialog(self)
+        choice, ok = QtGui.QInputDialog.getItem(self, translate('SongsPlugin.EditSongForm', 'Edit Author Type'),
+                                                translate('SongsPlugin.EditSongForm', 'Choose type for this author'),
+                                                AuthorType.TranslatedTypes,
+                                                current=AuthorType.SortedTypes.index(author_type),
+                                                editable=False)
+        if not ok:
+            return
+        author = self.manager.get_object(Author, author_id)
+        author_type = AuthorType.from_translated_text(choice)
+        item.setData(QtCore.Qt.UserRole, (author_id, author_type))
+        item.setText(author.get_display_name(author_type))
 
     def on_author_remove_button_clicked(self):
         """
