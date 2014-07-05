@@ -104,7 +104,7 @@ class AuthorType(object):
         for key, value in AuthorType.Types.items():
             if value == translated_type:
                 return key
-        return None
+        return AuthorType.NoType
 
 
 class Book(BaseModel):
