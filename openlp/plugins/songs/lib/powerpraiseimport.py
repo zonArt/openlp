@@ -58,13 +58,24 @@ class PowerPraiseImport(SongImport):
         self.set_defaults()
         self.title = str(root.general.title)
         verse_order_list = []
+        verse_count = {}
         for item in root.order.item:
             verse_order_list.append(str(item))
-        count = 0
         for part in root.songtext.part:
-            count += 1
-            verse_def = "v%d" % count
             original_verse_def = part.get('caption')
+            # There are some predefined verse defitions in PowerPraise, try to parse these
+            if original_verse_def.startswith("Strophe") or original_verse_def.startswith("Teil"):
+                verse_def = 'v'
+            elif original_verse_def.startswith("Refrain"):
+                verse_def = 'c'
+            elif original_verse_def.startswith("Bridge"):
+                verse_def = 'b'
+            elif original_verse_def.startswith("Schluss"):
+                verse_def = 'e'
+            else:
+                verse_def = 'o'
+            verse_count[verse_def] = verse_count.get(verse_def, 0) + 1
+            verse_def = '%s%d' % (verse_def, verse_count[verse_def])
             verse_text = []
             for slide in part.slide:
                 if not hasattr(slide, 'line'):
