@@ -246,9 +246,9 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                 return
         # Sleep 1 second to make sure VLC has the needed metadata
         self.vlc_media_player.audio_set_mute(True)
-        sleep(1)
-        self.vlc_media_player.set_pause(1)
-        self.vlc_media_player.set_time(0)
+        #sleep(1)
+        #self.vlc_media_player.set_pause(1)
+        #self.vlc_media_player.set_time(0)
         if not self.audio_cd:
             # Get titles, insert in combobox
             titles = self.vlc_media_player.video_get_title_description()
@@ -401,10 +401,10 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                 return
             self.vlc_media_player.audio_set_mute(True)
             # Sleep 1 second to make sure VLC has the needed metadata
-            sleep(1)
+            #sleep(1)
             # pause
             self.vlc_media_player.set_time(0)
-            self.vlc_media_player.set_pause(1)
+            #self.vlc_media_player.set_pause(1)
             # Get audio tracks, insert in combobox
             audio_tracks = self.vlc_media_player.audio_get_track_description()
             self.audio_tracks_combobox.clear()
@@ -444,6 +444,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         while self.vlc_media_player.get_state() == vlc.State.Playing and loop_count < 20:
             sleep(0.1)
             self.vlc_media_player.set_pause(1)
+            loop_count += 1
         log.debug('title_combo_box end - vlc_media_player state: %s' % self.vlc_media_player.get_state())
 
     @QtCore.pyqtSlot(int)
