@@ -1,11 +1,9 @@
 [Desktop Entry]
 Categories=AudioVideo;
 Exec=openlp %F
-GenericName[de]=Church lyrics projection
 GenericName=Church lyrics projection
 Icon=openlp
 MimeType=application/x-openlp-service;
-Name[de]=OpenLP
 Name=OpenLP
 StartupNotify=true
 Terminal=false
