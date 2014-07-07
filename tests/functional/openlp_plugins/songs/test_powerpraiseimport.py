@@ -43,7 +43,7 @@ class TestPowerPraiseFileImport(SongImportTestHelper):
 
     def __init__(self, *args, **kwargs):
         self.importer_class_name = 'PowerPraiseImport'
-        self.importer_module_name = 'powerpraiseimport'
+        self.importer_module_name = 'powerpraise'
         super(TestPowerPraiseFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):

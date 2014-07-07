@@ -34,24 +34,24 @@ import logging
 
 from openlp.core.common import translate, UiStrings
 from openlp.core.ui.wizard import WizardStrings
-from .opensongimport import OpenSongImport
-from .easyslidesimport import EasySlidesImport
-from .olpimport import OpenLPSongImport
-from .openlyricsimport import OpenLyricsImport
-from .wowimport import WowImport
-from .cclifileimport import CCLIFileImport
-from .dreambeamimport import DreamBeamImport
-from .powersongimport import PowerSongImport
-from .ewimport import EasyWorshipSongImport
-from .songbeamerimport import SongBeamerImport
-from .songshowplusimport import SongShowPlusImport
-from .songproimport import SongProImport
-from .sundayplusimport import SundayPlusImport
-from .foilpresenterimport import FoilPresenterImport
-from .zionworximport import ZionWorxImport
-from .propresenterimport import ProPresenterImport
-from .worshipassistantimport import WorshipAssistantImport
-from .powerpraiseimport import PowerPraiseImport
+from .importers.opensong import OpenSongImport
+from .importers.easyslides import EasySlidesImport
+from .importers.openlp import OpenLPSongImport
+from .importers.openlyrics import OpenLyricsImport
+from .importers.wordsofworship import WordsOfWorshipImport
+from .importers.cclifile import CCLIFileImport
+from .importers.dreambeam import DreamBeamImport
+from .importers.powersong import PowerSongImport
+from .importers.easyworship import EasyWorshipSongImport
+from .importers.songbeamer import SongBeamerImport
+from .importers.songshowplus import SongShowPlusImport
+from .importers.songpro import SongProImport
+from .importers.sundayplus import SundayPlusImport
+from .importers.foilpresenter import FoilPresenterImport
+from .importers.zionworx import ZionWorxImport
+from .importers.propresenter import ProPresenterImport
+from .importers.worshipassistant import WorshipAssistantImport
+from .importers.powerpraise import PowerPraiseImport
 # Imports that might fail
 
 
@@ -59,13 +59,13 @@ log = logging.getLogger(__name__)
 
 
 try:
-    from .sofimport import SofImport
+    from .importers.songsoffellowship import SongsOfFellowshipImport
     HAS_SOF = True
 except ImportError:
-    log.exception('Error importing %s', 'SofImport')
+    log.exception('Error importing %s', 'SongsOfFellowshipImport')
     HAS_SOF = False
 try:
-    from .oooimport import OooImport
+    from .importers.openoffice import OpenOfficeImport
     HAS_OOO = True
 except ImportError:
     log.exception('Error importing %s', 'OooImport')
@@ -73,14 +73,14 @@ except ImportError:
 HAS_MEDIASHOUT = False
 if os.name == 'nt':
     try:
-        from .mediashoutimport import MediaShoutImport
+        from .importers.mediashout import MediaShoutImport
         HAS_MEDIASHOUT = True
     except ImportError:
         log.exception('Error importing %s', 'MediaShoutImport')
 HAS_WORSHIPCENTERPRO = False
 if os.name == 'nt':
     try:
-        from .worshipcenterproimport import WorshipCenterProImport
+        from .importers.worshipcenterpro import WorshipCenterProImport
         HAS_WORSHIPCENTERPRO = True
     except ImportError:
         log.exception('Error importing %s', 'WorshipCenterProImport')
@@ -110,7 +110,7 @@ class SongFormat(object):
         Name of the format, e.g. ``'OpenLyrics'``
 
     ``'prefix'``
-        Prefix for Qt objects. Use mixedCase, e.g. ``'open_lyrics'``
+        Prefix for Qt objects. Use mixedCase, e.g. ``'openLyrics'``
         See ``SongImportForm.add_file_select_item()``
 
     Optional attributes for each song format:
@@ -192,7 +192,7 @@ class SongFormat(object):
         OpenLyrics: {
             'class': OpenLyricsImport,
             'name': 'OpenLyrics',
-            'prefix': 'open_lyrics',
+            'prefix': 'openLyrics',
             'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2.0 Exported Song')
         },
@@ -326,7 +326,7 @@ class SongFormat(object):
             'filter': '%s (*.ptf)' % translate('SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
         },
         WordsOfWorship: {
-            'class': WowImport,
+            'class': WordsOfWorshipImport,
             'name': 'Words of Worship',
             'prefix': 'wordsOfWorship',
             'filter': '%s (*.wsg *.wow-song)' % translate('SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
@@ -432,10 +432,10 @@ class SongFormat(object):
 
 SongFormat.set(SongFormat.SongsOfFellowship, 'availability', HAS_SOF)
 if HAS_SOF:
-    SongFormat.set(SongFormat.SongsOfFellowship, 'class', SofImport)
+    SongFormat.set(SongFormat.SongsOfFellowship, 'class', SongsOfFellowshipImport)
 SongFormat.set(SongFormat.Generic, 'availability', HAS_OOO)
 if HAS_OOO:
-    SongFormat.set(SongFormat.Generic, 'class', OooImport)
+    SongFormat.set(SongFormat.Generic, 'class', OpenOfficeImport)
 SongFormat.set(SongFormat.MediaShout, 'availability', HAS_MEDIASHOUT)
 if HAS_MEDIASHOUT:
     SongFormat.set(SongFormat.MediaShout, 'class', MediaShoutImport)
