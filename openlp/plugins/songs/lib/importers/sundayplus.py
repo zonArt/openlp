@@ -32,7 +32,7 @@ import re
 
 from openlp.plugins.songs.lib import VerseType, retrieve_windows_encoding
 from openlp.plugins.songs.lib import strip_rtf
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 HOTKEY_TO_VERSE_TYPE = {
     '1': 'v1',
