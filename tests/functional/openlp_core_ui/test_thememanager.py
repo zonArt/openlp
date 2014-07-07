@@ -44,30 +44,24 @@ class TestThemeManager(TestCase):
 
     def setUp(self):
         """
-        Create the UI
+        Set up the tests
         """
         Registry.create()
 
-    def tearDown(self):
-        """
-        Delete all the C++ objects at the end so that we don't have a segfault
-        """
-        pass
-
     def initial_theme_manager_test(self):
         """
-        Test the initial of theme manager.
+        Test the instantiation of theme manager.
         """
         # GIVEN: A new service manager instance.
         ThemeManager(None)
 
         # WHEN: the default theme manager is built.
         # THEN: The the controller should be registered in the registry.
-        self.assertNotEqual(Registry().get('theme_manager'), None, 'The base theme manager should be registered')
+        self.assertIsNotNone(Registry().get('theme_manager'), 'The base theme manager should be registered')
 
-    def write_theme_test(self):
+    def write_theme_same_image_test(self):
         """
-        Test that we don't try to overwrite a theme bacground image with itself
+        Test that we don't try to overwrite a theme background image with itself
         """
         # GIVEN: A new theme manager instance, with mocked builtins.open, shutil.copyfile,
         #        theme, check_directory_exists and thememanager-attributes.
@@ -92,3 +86,30 @@ class TestThemeManager(TestCase):
 
             # THEN: The mocked_copyfile should not have been called
             self.assertFalse(mocked_copyfile.called, 'shutil.copyfile should not be called')
+
+    def write_theme_diff_images_test(self):
+        """
+        Test that we do overwrite a theme background image when a new is submitted
+        """
+        # GIVEN: A new theme manager instance, with mocked builtins.open, shutil.copyfile,
+        #        theme, check_directory_exists and thememanager-attributes.
+        with patch('builtins.open') as mocked_open, \
+                patch('openlp.core.ui.thememanager.shutil.copyfile') as mocked_copyfile, \
+                patch('openlp.core.ui.thememanager.check_directory_exists') as mocked_check_directory_exists:
+            mocked_open.return_value = MagicMock()
+            theme_manager = ThemeManager(None)
+            theme_manager.old_background_image = None
+            theme_manager.generate_and_save_image = MagicMock()
+            theme_manager.path = ''
+            mocked_theme = MagicMock()
+            mocked_theme.theme_name = 'themename'
+            mocked_theme.extract_formatted_xml = MagicMock()
+            mocked_theme.extract_formatted_xml.return_value = 'fake_theme_xml'.encode()
+
+            # WHEN: Calling _write_theme with path to different images
+            file_name1 = os.path.join(TEST_RESOURCES_PATH, 'church.jpg')
+            file_name2 = os.path.join(TEST_RESOURCES_PATH, 'church2.jpg')
+            theme_manager._write_theme(mocked_theme, file_name1, file_name2)
+
+            # THEN: The mocked_copyfile should not have been called
+            self.assertTrue(mocked_copyfile.called, 'shutil.copyfile should be called')
