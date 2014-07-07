@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`presentationmanagerimport` module provides the functionality for importing
+The :mod:`presentationmanager` module provides the functionality for importing
 Presentationmanager song files into the current database.
 """
 

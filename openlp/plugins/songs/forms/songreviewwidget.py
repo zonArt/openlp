@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.xml import SongXML
+from openlp.plugins.songs.lib.openlyricsxml import SongXML
 
 
 class SongReviewWidget(QtGui.QWidget):

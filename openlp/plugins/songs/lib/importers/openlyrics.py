@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,49 +27,55 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`propresenterimport` module provides the functionality for importing
-ProPresenter song files into the current installation database.
+The :mod:`openlyrics` module provides the functionality for importing
+songs which are saved as OpenLyrics files.
 """
 
+import logging
 import os
-import base64
-from lxml import objectify
+
+from lxml import etree
 
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import strip_rtf
-from .songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
+from openlp.plugins.songs.lib.ui import SongStrings
+from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics, OpenLyricsError
+
+log = logging.getLogger(__name__)
 
 
-class ProPresenterImport(SongImport):
+class OpenLyricsImport(SongImport):
     """
-    The :class:`ProPresenterImport` class provides OpenLP with the
-    ability to import ProPresenter song files.
+    This provides the Openlyrics import.
     """
+    def __init__(self, manager, **kwargs):
+        """
+        Initialise the Open Lyrics importer.
+        """
+        log.debug('initialise OpenLyricsImport')
+        super(OpenLyricsImport, self).__init__(manager, **kwargs)
+        self.open_lyrics = OpenLyrics(self.manager)
+
     def do_import(self):
+        """
+        Imports the songs.
+        """
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        parser = etree.XMLParser(remove_blank_text=True)
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
-            root = objectify.parse(open(file_path, 'rb')).getroot()
-            self.process_song(root)
-
-    def process_song(self, root):
-        self.set_defaults()
-        self.title = root.get('CCLISongTitle')
-        self.copyright = root.get('CCLICopyrightInfo')
-        self.comments = root.get('notes')
-        self.ccli_number = root.get('CCLILicenseNumber')
-        for author_key in ['author', 'artist', 'CCLIArtistCredits']:
-            author = root.get(author_key)
-            if len(author) > 0:
-                self.parse_author(author)
-        count = 0
-        for slide in root.slides.RVDisplaySlide:
-            count += 1
-            RTFData = slide.displayElements.RVTextElement.get('RTFData')
-            rtf = base64.standard_b64decode(RTFData)
-            words, encoding = strip_rtf(rtf.decode())
-            self.add_verse(words, "v%d" % count)
-        if not self.finish():
-            self.log_error(self.import_source)
+            try:
+                # Pass a file object, because lxml does not cope with some
+                # special characters in the path (see lp:757673 and lp:744337).
+                parsed_file = etree.parse(open(file_path, 'rb'), parser)
+                xml = etree.tostring(parsed_file).decode()
+                self.open_lyrics.xml_to_song(xml)
+            except etree.XMLSyntaxError:
+                log.exception('XML syntax error in file %s' % file_path)
+                self.log_error(file_path, SongStrings.XMLSyntaxError)
+            except OpenLyricsError as exception:
+                log.exception('OpenLyricsException %d in file %s: %s' %
+                              (exception.type, file_path, exception.log_message))
+                self.log_error(file_path, exception.display_message)

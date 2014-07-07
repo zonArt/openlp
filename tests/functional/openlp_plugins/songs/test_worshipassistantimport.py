@@ -43,7 +43,7 @@ class TestWorshipAssistantFileImport(SongImportTestHelper):
 
     def __init__(self, *args, **kwargs):
         self.importer_class_name = 'WorshipAssistantImport'
-        self.importer_module_name = 'worshipassistantimport'
+        self.importer_module_name = 'worshipassistant'
         super(TestWorshipAssistantFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
