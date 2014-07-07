@@ -27,24 +27,23 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`wowimport` module provides the functionality for importing Words of
+The :mod:`wordsofworship` module provides the functionality for importing Words of
 Worship songs into the OpenLP database.
 """
 import os
 import logging
 
 from openlp.core.common import translate
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 BLOCK_TYPES = ('V', 'C', 'B')
 
 log = logging.getLogger(__name__)
 
 
-class WowImport(SongImport):
+class WordsOfWorshipImport(SongImport):
     """
-    The :class:`WowImport` class provides the ability to import song files from
-    Words of Worship.
+    The :class:`WordsOfWorshipImport` class provides the ability to import song files from Words of Worship.
 
     **Words Of Worship Song File Format:**
 

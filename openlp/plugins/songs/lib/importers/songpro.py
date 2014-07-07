@@ -27,13 +27,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songproimport` module provides the functionality for importing SongPro
+The :mod:`songpro` module provides the functionality for importing SongPro
 songs into the OpenLP database.
 """
 import re
 
 from openlp.plugins.songs.lib import strip_rtf
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 
 class SongProImport(SongImport):

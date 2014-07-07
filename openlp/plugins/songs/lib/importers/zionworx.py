@@ -27,14 +27,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`zionworximport` module provides the functionality for importing
-ZionWorx songs into the OpenLP database.
+The :mod:`zionworx` module provides the functionality for importing ZionWorx songs into the OpenLP database.
 """
 import csv
 import logging
 
 from openlp.core.common import translate
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 log = logging.getLogger(__name__)
 

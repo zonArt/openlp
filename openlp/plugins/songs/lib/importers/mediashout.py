@@ -27,13 +27,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`mediashoutimport` module provides the functionality for importing
+The :mod:`mediashout` module provides the functionality for importing
 a MediaShout database into the OpenLP database.
 """
 import pyodbc
 
 from openlp.core.lib import translate
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 VERSE_TAGS = ['V', 'C', 'B', 'O', 'P', 'I', 'E']
 

@@ -64,7 +64,7 @@ class CCLIFileImport(SongImport):
             filename = str(filename)
             log.debug('Importing CCLI File: %s', filename)
             if os.path.isfile(filename):
-                detect_file = open(filename, 'r')
+                detect_file = open(filename, 'rb')
                 detect_content = detect_file.read(2048)
                 try:
                     str(detect_content, 'utf-8')

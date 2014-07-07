@@ -42,23 +42,24 @@ class SongImportTestHelper(TestCase):
     """
     def __init__(self, *args, **kwargs):
         super(SongImportTestHelper, self).__init__(*args, **kwargs)
-        self.importer_module = __import__(
-            'openlp.plugins.songs.lib.%s' % self.importer_module_name, fromlist=[self.importer_class_name])
+        self.importer_module = __import__('openlp.plugins.songs.lib.importers.%s' %
+                                          self.importer_module_name, fromlist=[self.importer_class_name])
         self.importer_class = getattr(self.importer_module, self.importer_class_name)
 
     def setUp(self):
         """
         Patch and set up the mocks required.
         """
-        self.add_copyright_patcher = patch(
-            'openlp.plugins.songs.lib.%s.%s.add_copyright' % (self.importer_module_name, self.importer_class_name))
-        self.add_verse_patcher = patch(
-            'openlp.plugins.songs.lib.%s.%s.add_verse' % (self.importer_module_name, self.importer_class_name))
-        self.finish_patcher = patch(
-            'openlp.plugins.songs.lib.%s.%s.finish' % (self.importer_module_name, self.importer_class_name))
-        self.add_author_patcher = patch(
-            'openlp.plugins.songs.lib.%s.%s.add_author' % (self.importer_module_name, self.importer_class_name))
-        self.song_import_patcher = patch('openlp.plugins.songs.lib.%s.SongImport' % self.importer_module_name)
+        self.add_copyright_patcher = patch('openlp.plugins.songs.lib.importers.%s.%s.add_copyright' %
+                                           (self.importer_module_name, self.importer_class_name))
+        self.add_verse_patcher = patch('openlp.plugins.songs.lib.importers.%s.%s.add_verse' %
+                                       (self.importer_module_name, self.importer_class_name))
+        self.finish_patcher = patch('openlp.plugins.songs.lib.importers.%s.%s.finish' %
+                                    (self.importer_module_name, self.importer_class_name))
+        self.add_author_patcher = patch('openlp.plugins.songs.lib.importers.%s.%s.add_author' %
+                                        (self.importer_module_name, self.importer_class_name))
+        self.song_import_patcher = patch('openlp.plugins.songs.lib.importers.%s.SongImport' %
+                                         self.importer_module_name)
         self.mocked_add_copyright = self.add_copyright_patcher.start()
         self.mocked_add_verse = self.add_verse_patcher.start()
         self.mocked_finish = self.finish_patcher.start()
@@ -95,7 +96,7 @@ class SongImportTestHelper(TestCase):
         importer.topics = []
 
         # WHEN: Importing the source file
-        importer.import_source = [source_file_name]
+        importer.import_source = source_file_name
         add_verse_calls = self._get_data(result_data, 'verses')
         author_calls = self._get_data(result_data, 'authors')
         ccli_number = self._get_data(result_data, 'ccli_number')

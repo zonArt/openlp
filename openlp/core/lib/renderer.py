@@ -59,7 +59,6 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         """
         super(Renderer, self).__init__(None)
         # Need live behaviour if this is also working as a pseudo MainDisplay.
-        self.is_live = True
         self.screens = ScreenList()
         self.theme_level = ThemeLevel.Global
         self.global_theme_name = ''
