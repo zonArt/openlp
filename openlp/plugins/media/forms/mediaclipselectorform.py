@@ -244,11 +244,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                                                              'VLC player failed playing the media'))
                 self.toggle_disable_load_media(False)
                 return
-        # Sleep 1 second to make sure VLC has the needed metadata
         self.vlc_media_player.audio_set_mute(True)
-        #sleep(1)
-        #self.vlc_media_player.set_pause(1)
-        #self.vlc_media_player.set_time(0)
         if not self.audio_cd:
             # Get titles, insert in combobox
             titles = self.vlc_media_player.video_get_title_description()
@@ -401,10 +397,8 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                 return
             self.vlc_media_player.audio_set_mute(True)
             # Sleep 1 second to make sure VLC has the needed metadata
-            #sleep(1)
-            # pause
+            sleep(1)
             self.vlc_media_player.set_time(0)
-            #self.vlc_media_player.set_pause(1)
             # Get audio tracks, insert in combobox
             audio_tracks = self.vlc_media_player.audio_get_track_description()
             self.audio_tracks_combobox.clear()
@@ -425,6 +419,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             if len(subtitles_tracks) > 0:
                 self.subtitle_tracks_combobox.setDisabled(False)
             self.vlc_media_player.audio_set_mute(False)
+            self.vlc_media_player.set_pause(1)
             # If a title or audio track is available the player is enabled
             if self.title_combo_box.count() > 0 or len(audio_tracks) > 0:
                 self.toggle_disable_player(False)
