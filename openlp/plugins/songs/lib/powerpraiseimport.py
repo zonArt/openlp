@@ -32,11 +32,9 @@ Powerpraise song files into the current database.
 """
 
 import os
-import base64
 from lxml import objectify
 
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import strip_rtf
 from .songimport import SongImport
 
 
