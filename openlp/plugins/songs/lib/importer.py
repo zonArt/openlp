@@ -34,7 +34,6 @@ import logging
 
 from openlp.core.common import translate, UiStrings
 from openlp.core.ui.wizard import WizardStrings
-
 from .importers.opensong import OpenSongImport
 from .importers.easyslides import EasySlidesImport
 from .importers.openlp import OpenLPSongImport
@@ -55,7 +54,6 @@ from .importers.worshipassistant import WorshipAssistantImport
 from .importers.presentationmanager import PresentationManagerImport
 
 log = logging.getLogger(__name__)
-
 
 # Imports that might fail
 try:
