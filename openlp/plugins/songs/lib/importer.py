@@ -51,12 +51,11 @@ from .foilpresenterimport import FoilPresenterImport
 from .zionworximport import ZionWorxImport
 from .propresenterimport import ProPresenterImport
 from .worshipassistantimport import WorshipAssistantImport
-# Imports that might fail
-
+from .presentationmanagerimport import PresentationManagerImport
 
 log = logging.getLogger(__name__)
 
-
+# Imports that might fail
 try:
     from .sofimport import SofImport
     HAS_SOF = True
@@ -161,16 +160,17 @@ class SongFormat(object):
     MediaShout = 9
     OpenSong = 10
     PowerSong = 11
-    ProPresenter = 12
-    SongBeamer = 13
-    SongPro = 14
-    SongShowPlus = 15
-    SongsOfFellowship = 16
-    SundayPlus = 17
-    WordsOfWorship = 18
-    WorshipAssistant = 19
-    WorshipCenterPro = 20
-    ZionWorx = 21
+    PresentationManager = 12
+    ProPresenter = 13
+    SongBeamer = 14
+    SongPro = 15
+    SongShowPlus = 16
+    SongsOfFellowship = 17
+    SundayPlus = 18
+    WordsOfWorship = 19
+    WorshipAssistant = 20
+    WorshipCenterPro = 21
+    ZionWorx = 22
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -274,6 +274,12 @@ class SongFormat(object):
             'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm', 'You need to specify a valid PowerSong 1.0 '
                                                                           'database folder.')
         },
+        PresentationManager: {
+            'class': PresentationManagerImport,
+            'name': 'PresentationManager',
+            'prefix': 'presentationManager',
+            'filter': '%s (*.sng)' % translate('SongsPlugin.ImportWizardForm', 'PresentationManager Song Files')
+        },
         ProPresenter: {
             'class': ProPresenterImport,
             'name': 'ProPresenter',
@@ -375,6 +381,7 @@ class SongFormat(object):
             SongFormat.MediaShout,
             SongFormat.OpenSong,
             SongFormat.PowerSong,
+            SongFormat.PresentationManager,
             SongFormat.ProPresenter,
             SongFormat.SongBeamer,
             SongFormat.SongPro,
