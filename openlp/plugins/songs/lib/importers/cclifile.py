@@ -63,9 +63,8 @@ class CCLIFileImport(SongImport):
         for filename in self.import_source:
             filename = str(filename)
             log.debug('Importing CCLI File: %s', filename)
-            lines = []
             if os.path.isfile(filename):
-                detect_file = open(filename, 'r')
+                detect_file = open(filename, 'rb')
                 detect_content = detect_file.read(2048)
                 try:
                     str(detect_content, 'utf-8')
@@ -250,7 +249,7 @@ class CCLIFileImport(SongImport):
                 # e.g. For use solely with the SongSelect Terms of Use.
             All rights Reserved.  www.ccli.com
             CCLI Licence number of user
-                # e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
+                # e.g. CCLI-Liedlizenznummer: 14 / CCLI License No. 14
 
         """
         log.debug('TXT file text: %s', text_list)

@@ -95,13 +95,10 @@ class Ui_FirstTimeWizard(object):
         self.image_check_box.setChecked(True)
         self.image_check_box.setObjectName('image_check_box')
         self.plugin_layout.addWidget(self.image_check_box)
-        # TODO Presentation plugin is not yet working on Mac OS X.
-        # For now just ignore it.
-        if sys.platform != 'darwin':
-            self.presentation_check_box = QtGui.QCheckBox(self.plugin_page)
-            self.presentation_check_box.setChecked(True)
-            self.presentation_check_box.setObjectName('presentation_check_box')
-            self.plugin_layout.addWidget(self.presentation_check_box)
+        self.presentation_check_box = QtGui.QCheckBox(self.plugin_page)
+        self.presentation_check_box.setChecked(True)
+        self.presentation_check_box.setObjectName('presentation_check_box')
+        self.plugin_layout.addWidget(self.presentation_check_box)
         self.media_check_box = QtGui.QCheckBox(self.plugin_page)
         self.media_check_box.setChecked(True)
         self.media_check_box.setObjectName('media_check_box')
@@ -222,10 +219,7 @@ class Ui_FirstTimeWizard(object):
         self.custom_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Custom Slides'))
         self.bible_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Bible'))
         self.image_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Images'))
-        # TODO Presentation plugin is not yet working on Mac OS X.
-        # For now just ignore it.
-        if sys.platform != 'darwin':
-            self.presentation_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Presentations'))
+        self.presentation_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Presentations'))
         self.media_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Media (Audio and Video)'))
         self.remote_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Allow remote access'))
         self.song_usage_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Monitor Song Usage'))
