@@ -509,10 +509,8 @@ class SongMediaItem(MediaManagerItem):
                                                create_separated_list(authors_translation)))
         if song.copyright:
             if self.display_copyright_symbol:
-                print("copyright")
                 item.raw_footer.append("%s %s" % (SongStrings.CopyrightSymbol, song.copyright))
             else:
-                print("no copyright")
                 item.raw_footer.append(song.copyright)
         if self.display_songbook and song.book:
             item.raw_footer.append("%s #%s" % (song.book.name, song.song_number))
