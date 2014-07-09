@@ -52,7 +52,7 @@ except ImportError:
     PAGE_BOTH = 6
 
 
-class OooImport(SongImport):
+class OpenOfficeImport(SongImport):
     """
     Import songs from Impress/Powerpoint docs using Impress
     """

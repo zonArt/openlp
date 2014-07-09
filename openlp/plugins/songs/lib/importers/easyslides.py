@@ -33,7 +33,7 @@ import re
 from lxml import etree, objectify
 
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 log = logging.getLogger(__name__)
 

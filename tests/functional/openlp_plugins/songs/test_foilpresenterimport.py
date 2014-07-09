@@ -34,7 +34,7 @@ import os
 from unittest import TestCase
 from tests.functional import patch, MagicMock
 
-from openlp.plugins.songs.lib.foilpresenterimport import FoilPresenter
+from openlp.plugins.songs.lib.importers.foilpresenter import FoilPresenter
 
 TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', '/resources/foilpresentersongs'))
@@ -57,27 +57,27 @@ class TestFoilPresenter(TestCase):
     #   _process_topics
 
     def setUp(self):
-        self.child_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._child')
-        self.clean_song_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.clean_song')
-        self.objectify_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.objectify')
+        self.child_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._child')
+        self.clean_song_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.clean_song')
+        self.objectify_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.objectify')
         self.process_authors_patcher = \
-            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_authors')
+            patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._process_authors')
         self.process_cclinumber_patcher = \
-            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_cclinumber')
+            patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._process_cclinumber')
         self.process_comments_patcher = \
-            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_comments')
+            patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._process_comments')
         self.process_lyrics_patcher = \
-            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_lyrics')
+            patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._process_lyrics')
         self.process_songbooks_patcher = \
-            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_songbooks')
+            patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._process_songbooks')
         self.process_titles_patcher = \
-            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_titles')
+            patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._process_titles')
         self.process_topics_patcher = \
-            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_topics')
-        self.re_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.re')
-        self.song_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.Song')
-        self.song_xml_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.SongXML')
-        self.translate_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.translate')
+            patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._process_topics')
+        self.re_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.re')
+        self.song_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.Song')
+        self.song_xml_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.SongXML')
+        self.translate_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.translate')
 
         self.mocked_child = self.child_patcher.start()
         self.mocked_clean_song = self.clean_song_patcher.start()

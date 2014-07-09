@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songbeamerimport` module provides the functionality for importing SongBeamer songs into the OpenLP database.
+The :mod:`songbeamer` module provides the functionality for importing SongBeamer songs into the OpenLP database.
 """
 import chardet
 import codecs
@@ -36,7 +36,7 @@ import os
 import re
 
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 log = logging.getLogger(__name__)
 

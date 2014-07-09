@@ -37,13 +37,13 @@ import logging
 import os
 import re
 
-from .oooimport import OooImport
+from .openoffice import OpenOfficeImport
 
 
 log = logging.getLogger(__name__)
 
 if os.name == 'nt':
-    from .oooimport import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
+    from .openoffice import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
     RuntimeException = Exception
 else:
     try:
@@ -62,7 +62,7 @@ except ImportError:
     ITALIC = 2
 
 
-class SofImport(OooImport):
+class SongsOfFellowshipImport(OpenOfficeImport):
     """
     Import songs provided on disks with the Songs of Fellowship music books
     VOLS1_2.RTF, sof3words.rtf and sof4words.rtf
@@ -83,7 +83,7 @@ class SofImport(OooImport):
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        OooImport.__init__(self, manager, **kwargs)
+        OpenOfficeImport.__init__(self, manager, **kwargs)
         self.song = False
 
     def process_ooo_document(self):
