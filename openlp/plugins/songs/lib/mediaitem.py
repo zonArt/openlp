@@ -36,7 +36,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
-from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItem, ServiceItemContext, \
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, \
     check_item_selected, create_separated_list
 from openlp.core.lib.ui import create_widget_action
 from openlp.plugins.songs.forms.editsongform import EditSongForm
@@ -126,6 +126,7 @@ class SongMediaItem(MediaManagerItem):
         self.update_service_on_edit = Settings().value(self.settings_section + '/update service on edit')
         self.add_song_from_service = Settings().value(self.settings_section + '/add song from service')
         self.display_songbook = Settings().value(self.settings_section + '/display songbook')
+        self.display_copyright_symbol = Settings().value(self.settings_section + '/display copyright symbol')
 
     def retranslateUi(self):
         self.search_text_label.setText('%s:' % UiStrings().Search)
@@ -506,7 +507,13 @@ class SongMediaItem(MediaManagerItem):
         if authors_translation:
             item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Translation],
                                                create_separated_list(authors_translation)))
-        item.raw_footer.append(song.copyright)
+        if song.copyright:
+            if self.display_copyright_symbol:
+                print("copyright")
+                item.raw_footer.append("%s %s" % (SongStrings.CopyrightSymbol, song.copyright))
+            else:
+                print("no copyright")
+                item.raw_footer.append(song.copyright)
         if self.display_songbook and song.book:
             item.raw_footer.append("%s #%s" % (song.book.name, song.song_number))
         if Settings().value('core/ccli number'):
