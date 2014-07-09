@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`worshipassistantimport` module provides the functionality for importing
+The :mod:`worshipassistant` module provides the functionality for importing
 Worship Assistant songs into the OpenLP database.
 """
 import chardet
@@ -37,7 +37,7 @@ import re
 
 from openlp.core.common import translate
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 log = logging.getLogger(__name__)
 

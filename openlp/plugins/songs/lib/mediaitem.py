@@ -46,7 +46,7 @@ from openlp.plugins.songs.forms.songexportform import SongExportForm
 from openlp.plugins.songs.lib import VerseType, clean_string, delete_song
 from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
+from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics, SongXML
 
 log = logging.getLogger(__name__)
 

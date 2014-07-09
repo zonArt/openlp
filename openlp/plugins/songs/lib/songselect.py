@@ -38,7 +38,7 @@ from html.parser import HTMLParser
 from bs4 import BeautifulSoup, NavigableString
 
 from openlp.plugins.songs.lib import Song, VerseType, clean_song, Author
-from openlp.plugins.songs.lib.xml import SongXML
+from openlp.plugins.songs.lib.openlyricsxml import SongXML
 
 USER_AGENT = 'Mozilla/5.0 (Linux; U; Android 4.0.3; en-us; GT-I9000 ' \
              'Build/IML74K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 ' \
