@@ -75,6 +75,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.topic_add_button.clicked.connect(self.on_topic_add_button_clicked)
         self.topic_remove_button.clicked.connect(self.on_topic_remove_button_clicked)
         self.topics_list_view.itemClicked.connect(self.on_topic_list_view_clicked)
+        self.copyright_insert_button.clicked.connect(self.on_copyright_insert_button_triggered)
         self.verse_add_button.clicked.connect(self.on_verse_add_button_clicked)
         self.verse_list_widget.doubleClicked.connect(self.on_verse_edit_button_clicked)
         self.verse_edit_button.clicked.connect(self.on_verse_edit_button_clicked)
@@ -794,6 +795,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         elif verses_not_used:
             label_text = self.not_all_verses_used_warning
         self.warning_label.setText(label_text)
+
+    def on_copyright_insert_button_triggered(self):
+        """
+        Copyright insert button pressed
+        """
+        text = self.copyright_edit.text()
+        pos = self.copyright_edit.cursorPosition()
+        sign = SongStrings.CopyrightSymbol
+        text = text[:pos] + sign + text[pos:]
+        self.copyright_edit.setText(text)
+        self.copyright_edit.setFocus()
+        self.copyright_edit.setCursorPosition(pos + len(sign))
 
     def on_maintenance_button_clicked(self):
         """

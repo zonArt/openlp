@@ -506,8 +506,7 @@ class SongMediaItem(MediaManagerItem):
         if authors_translation:
             item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Translation],
                                                create_separated_list(authors_translation)))
-        if song.copyright:
-            item.raw_footer.append('%s %s' % (SongStrings.CopyrightSymbol, song.copyright))
+        item.raw_footer.append(song.copyright)
         if self.display_songbook and song.book:
             item.raw_footer.append("%s #%s" % (song.book.name, song.song_number))
         if Settings().value('core/ccli number'):

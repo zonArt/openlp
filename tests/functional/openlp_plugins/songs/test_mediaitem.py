@@ -58,7 +58,7 @@ class TestMediaItem(TestCase, TestMixin):
         author_list = self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: I get the following Array returned
-        self.assertEqual(service_item.raw_footer, ['My Song', 'Written by: my author', '© My copyright'],
+        self.assertEqual(service_item.raw_footer, ['My Song', 'Written by: my author', 'My copyright'],
                          'The array should be returned correctly with a song, one author and copyright')
         self.assertEqual(author_list, ['my author'],
                          'The author list should be returned correctly with one author')
@@ -97,7 +97,7 @@ class TestMediaItem(TestCase, TestMixin):
 
         # THEN: I get the following Array returned
         self.assertEqual(service_item.raw_footer, ['My Song', 'Words: another author', 'Music: my author',
-                                                   'Translation: translator',  '© My copyright'],
+                                                   'Translation: translator',  'My copyright'],
                          'The array should be returned correctly with a song, two authors and copyright')
         self.assertEqual(author_list, ['another author', 'my author', 'translator'],
                          'The author list should be returned correctly with two authors')
@@ -117,7 +117,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: I get the following Array returned
-        self.assertEqual(service_item.raw_footer, ['My Song', '© My copyright', 'CCLI License: 1234'],
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 1234'],
                          'The array should be returned correctly with a song, an author, copyright and ccli')
 
         # WHEN: I amend the CCLI value
@@ -125,7 +125,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: I would get an amended footer string
-        self.assertEqual(service_item.raw_footer, ['My Song', '© My copyright', 'CCLI License: 4321'],
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 4321'],
                          'The array should be returned correctly with a song, an author, copyright and amended ccli')
 
     def build_song_footer_base_songbook_test(self):
@@ -145,14 +145,14 @@ class TestMediaItem(TestCase, TestMixin):
         self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: The songbook should not be in the footer
-        self.assertEqual(service_item.raw_footer, ['My Song', '© My copyright'])
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright'])
 
         # WHEN: I activate the "display songbook" option
         self.media_item.display_songbook = True
         self.media_item.generate_footer(service_item, mock_song)
 
         # THEN: The songbook should be in the footer
-        self.assertEqual(service_item.raw_footer, ['My Song', '© My copyright', 'My songbook #12'])
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12'])
 
     def authors_match_test(self):
         """

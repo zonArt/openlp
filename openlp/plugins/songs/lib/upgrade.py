@@ -27,7 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`upgrade` module provides a way for the database and schema that is the backend for the Songs plugin
+The :mod:`upgrade` module provides a way for the database and schema that is the
+backend for the Songs plugin
 """
 import logging
 
@@ -38,7 +39,7 @@ from sqlalchemy.sql.expression import func, false, null, text
 from openlp.core.lib.db import get_upgrade_op
 
 log = logging.getLogger(__name__)
-__version__ = 5
+__version__ = 4
 
 
 def upgrade_1(session, metadata):
@@ -118,17 +119,3 @@ def upgrade_4(session, metadata):
         op.rename_table('authors_songs_tmp', 'authors_songs')
     except OperationalError:
         log.info('Upgrade 4 has already been run')
-
-
-def upgrade_5(session, metadata):
-    """
-    Version 5 upgrade
-
-    This upgrade removes all hard-coded copyright symbols from the copyright field in the songs.
-    The copyright symbol is now being added directly in the footer.
-    """
-    try:
-        op = get_upgrade_op(session)
-        op.execute('UPDATE songs SET copyright=TRIM(REPLACE(copyright, "©", ""))')
-    except OperationalError:
-        log.info('Upgrade 5 has already been run')
