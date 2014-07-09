@@ -28,6 +28,7 @@ class TestMediaItem(TestCase, TestMixin):
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
             self.media_item = SongMediaItem(None, MagicMock())
             self.media_item.display_songbook = False
+            self.media_item.display_copyright_symbol = False
         self.get_application()
         self.build_settings()
         QtCore.QLocale.setDefault(QtCore.QLocale('en_GB'))
@@ -153,6 +154,23 @@ class TestMediaItem(TestCase, TestMixin):
 
         # THEN: The songbook should be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12'])
+
+    def build_song_footer_copyright_test(self):
+        """
+        Test building song footer with displaying the copyright symbol
+        """
+        # GIVEN: A Song and a Service Item; displaying the copyright symbol is enabled
+        self.media_item.display_copyright_symbol = True
+        mock_song = MagicMock()
+        mock_song.title = 'My Song'
+        mock_song.copyright = 'My copyright'
+        service_item = ServiceItem(None)
+
+        # WHEN: I generate the Footer with default settings
+        self.media_item.generate_footer(service_item, mock_song)
+
+        # THEN: The copyright symbol should be in the footer
+        self.assertEqual(service_item.raw_footer, ['My Song', '© My copyright'])
 
     def authors_match_test(self):
         """
