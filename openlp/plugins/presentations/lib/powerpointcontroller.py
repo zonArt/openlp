@@ -400,8 +400,8 @@ class PowerpointDocument(PresentationDocument):
 
     def create_titles_and_notes(self):
         """
-        Writes the list of titles (one per slide) 
-        to 'titles.txt' 
+        Writes the list of titles (one per slide)
+        to 'titles.txt'
         and the notes to 'slideNotes[x].txt'
         in the thumbnails directory
         """
@@ -431,6 +431,7 @@ class PowerpointDocument(PresentationDocument):
                                                                 'and the presentation will be stopped. '
                                                                 'Restart the presentation if you wish to present it.'))
 
+
 def _get_text_from_shapes(shapes):
     """
     Returns any text extracted from the shapes on a presentation slide.
@@ -447,6 +448,7 @@ def _get_text_from_shapes(shapes):
 if os.name == "nt":
     try:
         ppE = win32com.client.getevents("PowerPoint.Application")
+
         class PowerpointEvents(ppE):
             def OnSlideShowBegin(self, hwnd):
                 #print("SS Begin")
@@ -470,4 +472,3 @@ if os.name == "nt":
                 return
     except pywintypes.com_error:
         log.debug('COM error trying to get powerpoint events - powerpoint is probably not installed.')
-        

@@ -40,6 +40,7 @@ from openlp.plugins.presentations.lib.pptviewcontroller import PptviewController
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
 
+
 class TestLibModule(TestCase):
 
     def setUp(self):
@@ -65,7 +66,7 @@ class TestLibModule(TestCase):
     def verify_loading_document(self):
         """
         Test loading a document in PowerpointViewer
-        """             
+        """
         # GIVEN: the filename
         print(self.file_name)
         # WHEN: loading the filename
@@ -95,7 +96,7 @@ class TestLibModule(TestCase):
         """
         Test PowerpointController.create_titles_and_notes
         """
-        # GIVEN: mocked PresentationController.save_titles_and_notes 
+        # GIVEN: mocked PresentationController.save_titles_and_notes
         self.doc.save_titles_and_notes = MagicMock()
 
         # WHEN reading the titles and notes
@@ -127,15 +128,15 @@ class TestLibModule(TestCase):
             self.doc.save_titles_and_notes.assert_called_once_with(None, None)
             mocked_exists.assert_any_call('Idontexist.pptx')
             self.assertEqual(mocked_open.call_count, 0, 'There should be no calls to open a file')
-        
+
     def create_titles_and_notes_invalid_file_test(self):
         """
         Test PowerpointController.create_titles_and_notes with invalid file
         """
         # GIVEN: mocked PresentationController.save_titles_and_notes and an invalid file
         with patch('builtins.open', mock_open(read_data='this is a test')) as mocked_open, \
-             patch('openlp.plugins.presentations.lib.pptviewcontroller.os.path.exists') as mocked_exists, \
-             patch('openlp.plugins.presentations.lib.pptviewcontroller.zipfile.is_zipfile') as mocked_is_zf:
+                patch('openlp.plugins.presentations.lib.pptviewcontroller.os.path.exists') as mocked_exists, \
+                patch('openlp.plugins.presentations.lib.pptviewcontroller.zipfile.is_zipfile') as mocked_is_zf:
             mocked_is_zf.return_value = False
             mocked_exists.return_value = True
             mocked_open.filesize = 10
@@ -148,4 +149,3 @@ class TestLibModule(TestCase):
             # THEN:
             self.doc.save_titles_and_notes.assert_called_once_with(None, None)
             self.assertEqual(mocked_is_zf.call_count, 1, 'is_zipfile should have been called once')
-            

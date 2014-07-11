@@ -37,17 +37,16 @@ from tests.functional import MagicMock, patch, mock_open
 
 FOLDER_TO_PATCH = 'openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder'
 
+
 class TestPresentationController(TestCase):
     """
     Test the PresentationController.
     """
-
     def setUp(self):
         mocked_plugin = MagicMock()
         mocked_plugin.settings_section = 'presentations'
         self.presentation = PresentationController(mocked_plugin)
         self.document = PresentationDocument(self.presentation, '')
-
 
     def constructor_test(self):
         """
@@ -100,7 +99,6 @@ class TestPresentationController(TestCase):
             # THEN: No file should have been created
             self.assertEqual(mocked_open.call_count, 0, 'No file should be created')
 
-
     def get_titles_and_notes_test(self):
         """
         Test PresentationDocument.get_titles_and_notes method
@@ -108,8 +106,8 @@ class TestPresentationController(TestCase):
         # GIVEN: A mocked open, get_thumbnail_folder and exists
 
         with patch('builtins.open', mock_open(read_data='uno\ndos\n')) as mocked_open, \
-            patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder, \
-            patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
+                patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder, \
+                patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
             mocked_get_thumbnail_folder.return_value = 'test'
             mocked_exists.return_value = True
 
@@ -133,8 +131,8 @@ class TestPresentationController(TestCase):
         """
         # GIVEN: A mocked open, get_thumbnail_folder and exists
         with patch('builtins.open') as mocked_open, \
-             patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder, \
-             patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
+                patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder, \
+                patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
             mocked_get_thumbnail_folder.return_value = 'test'
             mocked_exists.return_value = False
 
@@ -155,8 +153,8 @@ class TestPresentationController(TestCase):
         """
         # GIVEN: A mocked open, get_thumbnail_folder and exists
         with patch('builtins.open') as mocked_open, \
-             patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder, \
-             patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
+                patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder, \
+                patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
             mocked_get_thumbnail_folder.return_value = 'test'
             mocked_exists.return_value = True
             mocked_open.side_effect = IOError()
@@ -166,4 +164,3 @@ class TestPresentationController(TestCase):
 
             # THEN: it should return two empty lists
             self.assertIs(type(result_titles), list, 'result_titles should be a list')
-

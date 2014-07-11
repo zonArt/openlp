@@ -295,9 +295,8 @@ class PresentationDocument(object):
 
     def get_titles_and_notes(self):
         """
-        Reads the titles from the titles file and 
-        the notes files and returns the contents
-        in a two lists
+        Reads the titles from the titles file and
+        the notes files and returns the content in two lists
         """
         titles = []
         notes = []
@@ -336,6 +335,7 @@ class PresentationDocument(object):
                 notes_file = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % slide_no)
                 with open(notes_file, mode='w') as fn:
                     fn.write(note)
+
 
 class PresentationController(object):
     """
@@ -471,6 +471,7 @@ class PresentationController(object):
     def close_presentation(self):
         pass
 
+
 class TextType(object):
     """
     Type Enumeration for Types of Text to request
@@ -478,4 +479,3 @@ class TextType(object):
     Title = 0
     SlideText = 1
     Notes = 2
-

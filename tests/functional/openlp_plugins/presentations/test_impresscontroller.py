@@ -37,6 +37,7 @@ from openlp.plugins.presentations.lib.impresscontroller import \
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
 
+
 class TestLibModule(TestCase):
 
     def setUp(self):

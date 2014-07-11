@@ -41,7 +41,7 @@ from tests.helpers.testmixin import TestMixin
 from tests.utils.constants import TEST_RESOURCES_PATH
 
 from openlp.plugins.presentations.lib.powerpointcontroller import PowerpointController, PowerpointDocument,\
-                                                                  _get_text_from_shapes
+    _get_text_from_shapes
 
 
 class TestPowerpointController(TestCase, TestMixin):
@@ -205,7 +205,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
 
     def get_text_from_shapes_test(self):
         """
-        Test getting text from powerpoint shapes 
+        Test getting text from powerpoint shapes
         """
         # GIVEN: mocked shapes
         shape = MagicMock()

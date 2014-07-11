@@ -503,7 +503,7 @@ class HttpRouter(RegistryProperties):
                     if current_item.is_capable(ItemCapabilities.HasNotes):
                         item['notes'] = str(frame['notes'])
                     if current_item.is_capable(ItemCapabilities.HasThumbnails):
-                        # If the file is under our app directory tree send the 
+                        # If the file is under our app directory tree send the
                         # portion after the match
                         data_path = AppLocation.get_data_path()
                         if frame['image'][0:len(data_path)] == data_path:
@@ -627,4 +627,3 @@ class HttpRouter(RegistryProperties):
             item_id = plugin.media_item.create_item_from_id(request_id)
             plugin.media_item.emit(QtCore.SIGNAL('%s_add_to_service' % plugin_name), [item_id, True])
         self.do_http_success()
-

@@ -477,8 +477,8 @@ class ImpressDocument(PresentationDocument):
 
     def create_titles_and_notes(self):
         """
-        Writes the list of titles (one per slide) 
-        to 'titles.txt' 
+        Writes the list of titles (one per slide)
+        to 'titles.txt'
         and the notes to 'slideNotes[x].txt'
         in the thumbnails directory
         """

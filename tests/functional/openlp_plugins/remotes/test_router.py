@@ -178,7 +178,7 @@ class TestRouter(TestCase, TestMixin):
         self.router.html_dir = os.path.normpath('test/dir')
         self.router.template_vars = MagicMock()
         with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
-            patch('builtins.open', mock_open(read_data='123')):
+                patch('builtins.open', mock_open(read_data='123')):
             mocked_exists.return_value = True
 
             # WHEN: call serve_file with an existing html file
@@ -248,13 +248,13 @@ class TestRouter(TestCase, TestMixin):
         Registry.create()
         Registry().register('image_manager', mocked_image_manager)
         file_name = 'another%20test/slide1.png'
-        full_path = os.path.normpath(os.path.join('thumbnails',file_name))
+        full_path = os.path.normpath(os.path.join('thumbnails', file_name))
         width = 120
         height = 90
         with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
-            patch('builtins.open', mock_open(read_data='123')), \
-            patch('openlp.plugins.remotes.lib.httprouter.AppLocation') as mocked_location, \
-            patch('openlp.plugins.remotes.lib.httprouter.image_to_byte') as mocked_image_to_byte:
+                patch('builtins.open', mock_open(read_data='123')), \
+                patch('openlp.plugins.remotes.lib.httprouter.AppLocation') as mocked_location, \
+                patch('openlp.plugins.remotes.lib.httprouter.image_to_byte') as mocked_image_to_byte:
             mocked_exists.return_value = True
             mocked_image_to_byte.return_value = '123'
             mocked_location.get_section_data_path.return_value = ''

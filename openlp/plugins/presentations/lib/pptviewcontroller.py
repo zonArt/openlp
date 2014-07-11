@@ -160,8 +160,8 @@ class PptviewDocument(PresentationDocument):
     def create_titles_and_notes(self):
         """
         Extracts the titles and notes from the zipped file
-        and writes the list of titles (one per slide) 
-        to 'titles.txt' 
+        and writes the list of titles (one per slide)
+        to 'titles.txt'
         and the notes to 'slideNotes[x].txt'
         in the thumbnails directory
         """
@@ -210,9 +210,9 @@ class PptviewDocument(PresentationDocument):
                         if nodes and len(nodes) > 0:
                             for node in nodes:
                                 if len(text) > 0:
-                                    text += '\n' 
+                                    text += '\n'
                                 text += node.text
-                        # Let's remove the \n from the titles and 
+                        # Let's remove the \n from the titles and
                         # just add one at the end
                         if node_type == 'ctrTitle':
                             text = text.replace('\n', ' ').replace('\x0b', ' ') + '\n'
