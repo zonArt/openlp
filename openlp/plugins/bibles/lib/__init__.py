@@ -262,7 +262,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
 
     For example::
 
-        [(u'John', 3, 16, 18), (u'John', 4, 1, 1)]
+        [('John', 3, 16, 18), ('John', 4, 1, 1)]
 
     **Reference string details:**
 
@@ -311,7 +311,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
     ``(?P<to_verse>[0-9]+)``
         The ``to_verse`` reference is equivalent to group 2.
 
-    The full reference is matched against get_reference_match(u'full'). This regular expression looks like this:
+    The full reference is matched against get_reference_match('full'). This regular expression looks like this:
 
     ``^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*``
         The ``book`` group starts with the first non-whitespace character. There are optional leading digits followed by

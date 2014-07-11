@@ -29,89 +29,179 @@
 """
 Functional tests to test the PowerPointController class and related methods.
 """
-from unittest import TestCase
 import os
+if os.name == 'nt':
+    import pywintypes
+import shutil
+from unittest import TestCase
+from tempfile import mkdtemp
+
 from tests.functional import patch, MagicMock
-from openlp.plugins.presentations.lib.powerpointcontroller import \
-    PowerpointController, PowerpointDocument, _get_text_from_shapes
+from tests.helpers.testmixin import TestMixin
+from tests.utils.constants import TEST_RESOURCES_PATH
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
+from openlp.plugins.presentations.lib.powerpointcontroller import PowerpointController, PowerpointDocument,\
+                                                                  _get_text_from_shapes
 
 
-class TestLibModule(TestCase):
+class TestPowerpointController(TestCase, TestMixin):
+    """
+    Test the PowerpointController Class
+    """
 
     def setUp(self):
-        mocked_plugin = MagicMock()
-        mocked_plugin.settings_section = 'presentations'
-        self.ppc = PowerpointController(mocked_plugin)
-        self.file_name = os.path.join(TEST_PATH, "test.pptx")
-        self.doc = PowerpointDocument(self.ppc, self.file_name)
-
-    # add _test    to the name to enable
-    def verify_installation(self):
         """
-        Test the installation of Powerpoint
+        Set up the patches and mocks need for all tests.
         """
-        # GIVEN: A boolean value set to true
-        # WHEN: We "convert" it to a bool
-        is_installed = self.ppc.check_available()
+        self.get_application()
+        self.build_settings()
+        self.mock_plugin = MagicMock()
+        self.temp_folder = mkdtemp()
+        self.mock_plugin.settings_section = self.temp_folder
 
-        # THEN: We should get back a True bool
-        self.assertEqual(is_installed, True, 'The result should be True')
+    def tearDown(self):
+        """
+        Stop the patches
+        """
+        self.destroy_settings()
+        shutil.rmtree(self.temp_folder)
+
+    def constructor_test(self):
+        """
+        Test the Constructor from the PowerpointController
+        """
+        # GIVEN: No presentation controller
+        controller = None
+
+        # WHEN: The presentation controller object is created
+        controller = PowerpointController(plugin=self.mock_plugin)
+
+        # THEN: The name of the presentation controller should be correct
+        self.assertEqual('Powerpoint', controller.name,
+                         'The name of the presentation controller should be correct')
+
+
+class TestPowerpointDocument(TestCase, TestMixin):
+    """
+    Test the PowerpointDocument Class
+    """
+
+    def setUp(self):
+        """
+        Set up the patches and mocks need for all tests.
+        """
+        self.get_application()
+        self.build_settings()
+        self.mock_plugin = MagicMock()
+        self.temp_folder = mkdtemp()
+        self.mock_plugin.settings_section = self.temp_folder
+        self.powerpoint_document_stop_presentation_patcher = patch(
+            'openlp.plugins.presentations.lib.powerpointcontroller.PowerpointDocument.stop_presentation')
+        self.presentation_document_get_temp_folder_patcher = patch(
+            'openlp.plugins.presentations.lib.powerpointcontroller.PresentationDocument.get_temp_folder')
+        self.presentation_document_setup_patcher = patch(
+            'openlp.plugins.presentations.lib.powerpointcontroller.PresentationDocument._setup')
+        self.mock_powerpoint_document_stop_presentation = self.powerpoint_document_stop_presentation_patcher.start()
+        self.mock_presentation_document_get_temp_folder = self.presentation_document_get_temp_folder_patcher.start()
+        self.mock_presentation_document_setup = self.presentation_document_setup_patcher.start()
+        self.mock_controller = MagicMock()
+        self.mock_presentation = MagicMock()
+        self.mock_presentation_document_get_temp_folder.return_value = 'temp folder'
+        self.file_name = os.path.join(TEST_RESOURCES_PATH, "test.pptx")
+        self.real_controller = PowerpointController(self.mock_plugin)
+
+    def tearDown(self):
+        """
+        Stop the patches
+        """
+        self.powerpoint_document_stop_presentation_patcher.stop()
+        self.presentation_document_get_temp_folder_patcher.stop()
+        self.presentation_document_setup_patcher.stop()
+        self.destroy_settings()
+        shutil.rmtree(self.temp_folder)
+
+    def show_error_msg_test(self):
+        """
+        Test the PowerpointDocument.show_error_msg() method gets called on com exception
+        """
+        if os.name == 'nt':
+            # GIVEN: A PowerpointDocument with mocked controller and presentation
+            with patch('openlp.plugins.presentations.lib.powerpointcontroller.critical_error_message_box') as \
+                    mocked_critical_error_message_box:
+                instance = PowerpointDocument(self.mock_controller, self.mock_presentation)
+                instance.presentation = MagicMock()
+                instance.presentation.SlideShowWindow.View.GotoSlide = MagicMock(side_effect=pywintypes.com_error('1'))
+
+                # WHEN: Calling goto_slide which will throw an exception
+                instance.goto_slide(42)
+
+                # THEN: mocked_critical_error_message_box should have been called
+                mocked_critical_error_message_box.assert_called_with('Error', 'An error occurred in the Powerpoint '
+                                                                     'integration and the presentation will be stopped.'
+                                                                     ' Restart the presentation if you wish to '
+                                                                     'present it.')
 
     # add _test to the following if necessary
     def verify_loading_document(self):
         """
         Test loading a document in PowerPoint
-        """             
-        # GIVEN: the filename
-        print(self.file_name)
+        """
+        if os.name == 'nt' and self.real_controller.check_available():
+            # GIVEN: A PowerpointDocument and a presentation
+            doc = PowerpointDocument(self.real_controller, self.file_name)
 
-        # WHEN: loading the filename
-        self.doc = PowerpointDocument(self.ppc, self.file_name)
-        self.doc.load_presentation()
-        result = self.doc.is_loaded()
+            # WHEN: loading the filename
+            doc.load_presentation()
+            result = doc.is_loaded()
 
-        # THEN: result should be true
-        self.assertEqual(result, True, 'The result should be True')
+            # THEN: result should be true
+            self.assertEqual(result, True, 'The result should be True')
+        else:
+            self.skipTest('Powerpoint not available, skipping test.')
 
     def create_titles_and_notes_test(self):
         """
         Test creating the titles from PowerPoint
         """
-        # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
-        self.doc = PowerpointDocument(self.ppc, self.file_name)
-        self.doc.save_titles_and_notes = MagicMock()
-        self.doc._PowerpointDocument__get_text_from_shapes = MagicMock()
-        slide = MagicMock()
-        slide.Shapes.Title.TextFrame.TextRange.Text = 'SlideText'
-        pres = MagicMock()
-        pres.Slides = [slide, slide]
-        self.doc.presentation = pres
+        if os.name == 'nt' and self.real_controller.check_available():
+            # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
+            self.doc = PowerpointDocument(self.real_controller, self.file_name)
+            self.doc.save_titles_and_notes = MagicMock()
+            self.doc._PowerpointDocument__get_text_from_shapes = MagicMock()
+            slide = MagicMock()
+            slide.Shapes.Title.TextFrame.TextRange.Text = 'SlideText'
+            pres = MagicMock()
+            pres.Slides = [slide, slide]
+            self.doc.presentation = pres
 
-        # WHEN reading the titles and notes
-        self.doc.create_titles_and_notes()
+            # WHEN reading the titles and notes
+            self.doc.create_titles_and_notes()
 
-        # THEN the save should have been called exactly once with 2 titles and 2 notes
-        self.doc.save_titles_and_notes.assert_called_once_with(['SlideText\n', 'SlideText\n'], [' ', ' '])
+            # THEN the save should have been called exactly once with 2 titles and 2 notes
+            self.doc.save_titles_and_notes.assert_called_once_with(['SlideText\n', 'SlideText\n'], [' ', ' '])
+        else:
+            self.skipTest('Powerpoint not available, skipping test.')
 
     def create_titles_and_notes_with_no_slides_test(self):
         """
         Test creating the titles from PowerPoint when it returns no slides
         """
-        # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
-        self.doc = PowerpointDocument(self.ppc, self.file_name)
-        self.doc.save_titles_and_notes = MagicMock()
-        self.doc._PowerpointDocument__get_text_from_shapes = MagicMock()
-        pres = MagicMock()
-        pres.Slides = []
-        self.doc.presentation = pres
+        if os.name == 'nt' and self.real_controller.check_available():
+            # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
+            doc = PowerpointDocument(self.real_controller, self.file_name)
+            doc.save_titles_and_notes = MagicMock()
+            doc._PowerpointDocument__get_text_from_shapes = MagicMock()
+            pres = MagicMock()
+            pres.Slides = []
+            doc.presentation = pres
 
-        # WHEN reading the titles and notes
-        self.doc.create_titles_and_notes()
+            # WHEN reading the titles and notes
+            doc.create_titles_and_notes()
 
-        # THEN the save should have been called exactly once with empty titles and notes
-        self.doc.save_titles_and_notes.assert_called_once_with([], [])
+            # THEN the save should have been called exactly once with empty titles and notes
+            doc.save_titles_and_notes.assert_called_once_with([], [])
+        else:
+            self.skipTest('Powerpoint not available, skipping test.')
 
     def get_text_from_shapes_test(self):
         """

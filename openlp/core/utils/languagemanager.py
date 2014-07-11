@@ -71,8 +71,7 @@ class LanguageManager(object):
         """
         Find all available language files in this OpenLP install
         """
-        log.debug('Translation files: %s', AppLocation.get_directory(
-            AppLocation.LanguageDir))
+        log.debug('Translation files: %s', AppLocation.get_directory(AppLocation.LanguageDir))
         trans_dir = QtCore.QDir(AppLocation.get_directory(AppLocation.LanguageDir))
         file_names = trans_dir.entryList(['*.qm'], QtCore.QDir.Files, QtCore.QDir.Name)
         # Remove qm files from the list which start with "qt_".

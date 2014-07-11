@@ -94,15 +94,14 @@ class TestRouter(TestCase, TestMixin):
         Test the router control functionality
         """
         # GIVEN: A testing set of Routes
-        router = HttpRouter()
         mocked_function = MagicMock()
         test_route = [
             (r'^/stage/api/poll$', {'function': mocked_function, 'secure': False}),
         ]
-        router.routes = test_route
+        self.router.routes = test_route
 
         # WHEN: called with a poll route
-        function, args = router.process_http_request('/stage/api/poll', None)
+        function, args = self.router.process_http_request('/stage/api/poll', None)
 
         # THEN: the function should have been called only once
         self.assertEqual(mocked_function, function['function'], 'The mocked function should match defined value.')
@@ -127,6 +126,25 @@ class TestRouter(TestCase, TestMixin):
 
             # THEN: all types should match
             self.assertEqual(content_type, header[1], 'Mismatch of content type')
+
+    def main_poll_test(self):
+        """
+        Test the main poll logic
+        """
+        # GIVEN: a defined router with two slides
+        Registry().register('live_controller', MagicMock)
+        router = HttpRouter()
+        router.send_response = MagicMock()
+        router.send_header = MagicMock()
+        router.end_headers = MagicMock()
+        router.live_controller.slide_count = 2
+
+        # WHEN: main poll called
+        results = router.main_poll()
+
+        # THEN: the correct response should be returned
+        self.assertEqual(results.decode('utf-8'), '{"results": {"slide_count": 2}}',
+                         'The resulting json strings should match')
 
     def serve_file_without_params_test(self):
         """

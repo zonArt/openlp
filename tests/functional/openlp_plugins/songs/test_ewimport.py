@@ -35,7 +35,7 @@ from unittest import TestCase
 
 from tests.functional import MagicMock, patch
 
-from openlp.plugins.songs.lib.ewimport import EasyWorshipSongImport, FieldDescEntry, FieldType
+from openlp.plugins.songs.lib.importers.easyworship import EasyWorshipSongImport, FieldDescEntry, FieldType
 
 TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'easyworshipsongs'))
@@ -67,7 +67,35 @@ SONG_TEST_DATA = [
        'Just to learn from His lips, words of comfort,\nIn the beautiful garden of prayer.', 'v2'),
       ('There\'s a garden where Jesus is waiting,\nAnd He bids you to come meet Him there,\n'
        'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', 'v3')],
-     'verse_order_list': []}]
+     'verse_order_list': []},
+    {'title': 'Vi pløjed og vi så\'de',
+     'authors': ['Matthias Claudius'],
+     'copyright': 'Public Domain',
+     'ccli_number': 0,
+     'verses':
+        [('Vi pløjed og vi så\'de\nvor sæd i sorten jord,\nså bad vi ham os hjælpe,\nsom højt i Himlen bor,\n'
+          'og han lod snefald hegne\nmod frosten barsk og hård,\nhan lod det tø og regne\nog varme mildt i vår.',
+          'v1'),
+         ('Alle gode gaver\nde kommer ovenned,\nså tak da Gud, ja, pris dog Gud\nfor al hans kærlighed!', 'c1'),
+         ('Han er jo den, hvis vilje\nopholder alle ting,\nhan klæder markens lilje\nog runder himlens ring,\n'
+          'ham lyder vind og vove,\nham rører ravnes nød,\nhvi skulle ej hans småbørn\nda og få dagligt brød?', 'v2'),
+         ('Ja, tak, du kære Fader,\nså mild, så rig, så rund,\nfor korn i hæs og lader,\nfor godt i allen stund!\n'
+          'Vi kan jo intet give,\nsom nogen ting er værd,\nmen tag vort stakkels hjerte,\nså ringe som det er!', 'v3')],
+        'verse_order_list': []}]
+
+EWS_SONG_TEST_DATA =\
+    {'title': 'Vi pløjed og vi så\'de',
+     'authors': ['Matthias Claudius'],
+     'verses':
+        [('Vi pløjed og vi så\'de\nvor sæd i sorten jord,\nså bad vi ham os hjælpe,\nsom højt i Himlen bor,\n'
+          'og han lod snefald hegne\nmod frosten barsk og hård,\nhan lod det tø og regne\nog varme mildt i vår.',
+          'v1'),
+         ('Alle gode gaver\nde kommer ovenned,\nså tak da Gud, ja, pris dog Gud\nfor al hans kærlighed!', 'c1'),
+         ('Han er jo den, hvis vilje\nopholder alle ting,\nhan klæder markens lilje\nog runder himlens ring,\n'
+          'ham lyder vind og vove,\nham rører ravnes nød,\nhvi skulle ej hans småbørn\nda og få dagligt brød?', 'v2'),
+         ('Ja, tak, du kære Fader,\nså mild, så rig, så rund,\nfor korn i hæs og lader,\nfor godt i allen stund!\n'
+          'Vi kan jo intet give,\nsom nogen ting er værd,\nmen tag vort stakkels hjerte,\nså ringe som det er!',
+          'v3')]}
 
 
 class EasyWorshipSongImportLogger(EasyWorshipSongImport):
@@ -125,6 +153,7 @@ class TestEasyWorshipSongImport(TestCase):
     """
     Test the functions in the :mod:`ewimport` module.
     """
+
     def create_field_desc_entry_test(self):
         """
         Test creating an instance of the :class`FieldDescEntry` class.
@@ -149,7 +178,7 @@ class TestEasyWorshipSongImport(TestCase):
         Test creating an instance of the EasyWorship file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
@@ -163,7 +192,7 @@ class TestEasyWorshipSongImport(TestCase):
         Test finding an existing field in a given list using the :mod:`find_field`
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager" and a list of field descriptions.
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'):
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             importer.field_descriptions = TEST_FIELD_DESCS
@@ -181,7 +210,7 @@ class TestEasyWorshipSongImport(TestCase):
         Test finding an non-existing field in a given list using the :mod:`find_field`
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager" and a list of field descriptions
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'):
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             importer.field_descriptions = TEST_FIELD_DESCS
@@ -199,8 +228,8 @@ class TestEasyWorshipSongImport(TestCase):
         """
         # GIVEN: A mocked out SongImport class, a mocked out struct class, and a mocked out "manager" and a list of
         #       field descriptions
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-                patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct:
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'), \
+                patch('openlp.plugins.songs.lib.importers.easyworship.struct') as mocked_struct:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
 
@@ -217,7 +246,7 @@ class TestEasyWorshipSongImport(TestCase):
         Test the :mod:`get_field` module
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager", an encoding and some test data and known results
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'):
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             importer.encoding = TEST_DATA_ENCODING
@@ -240,7 +269,7 @@ class TestEasyWorshipSongImport(TestCase):
         """
         for test_results in GET_MEMO_FIELD_TEST_RESULTS:
             # GIVEN: A mocked out SongImport class, a mocked out "manager", a mocked out memo_file and an encoding
-            with patch('openlp.plugins.songs.lib.ewimport.SongImport'):
+            with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'):
                 mocked_manager = MagicMock()
                 mocked_memo_file = MagicMock()
                 importer = EasyWorshipSongImport(mocked_manager, filenames=[])
@@ -271,8 +300,8 @@ class TestEasyWorshipSongImport(TestCase):
         Test the :mod:`do_import` module opens the correct files
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-                patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'), \
+                patch('openlp.plugins.songs.lib.importers.easyworship.os.path') as mocked_os_path:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             mocked_os_path.isfile.side_effect = [True, False]
@@ -285,13 +314,33 @@ class TestEasyWorshipSongImport(TestCase):
             mocked_os_path.isfile.assert_any_call('Songs.DB')
             mocked_os_path.isfile.assert_any_call('Songs.MB')
 
+    def do_import_source_invalid_test(self):
+        """
+        Test the :mod:`do_import` module produces an error when Songs.MB not found.
+        """
+        # GIVEN: A mocked out SongImport class, a mocked out "manager"
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'), \
+                patch('openlp.plugins.songs.lib.importers.easyworship.os.path') as mocked_os_path:
+            mocked_manager = MagicMock()
+            importer = EasyWorshipSongImport(mocked_manager, filenames=[])
+            importer.log_error = MagicMock()
+            mocked_os_path.isfile.side_effect = [True, False]
+
+            # WHEN: do_import is supplied with an import source (Songs.MB missing)
+            importer.import_source = 'Songs.DB'
+            importer.do_import()
+
+            # THEN: do_import should have logged an error that the Songs.MB file could not be found.
+            importer.log_error.assert_any_call(importer.import_source, 'Could not find the "Songs.MB" file. It must be '
+                                                                       'in the same folder as the "Songs.DB" file.')
+
     def do_import_database_validity_test(self):
         """
         Test the :mod:`do_import` module handles invalid database files correctly
         """
         # GIVEN: A mocked out SongImport class, os.path and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-                patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'), \
+                patch('openlp.plugins.songs.lib.importers.easyworship.os.path') as mocked_os_path:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             mocked_os_path.isfile.return_value = True
@@ -309,10 +358,10 @@ class TestEasyWorshipSongImport(TestCase):
         Test the :mod:`do_import` module handles invalid memo files correctly
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-            patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path, \
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'), \
+            patch('openlp.plugins.songs.lib.importers.easyworship.os.path') as mocked_os_path, \
             patch('builtins.open') as mocked_open, \
-                patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct:
+                patch('openlp.plugins.songs.lib.importers.easyworship.struct') as mocked_struct:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
             mocked_os_path.isfile.return_value = True
@@ -336,10 +385,10 @@ class TestEasyWorshipSongImport(TestCase):
         Test the :mod:`do_import` converts the code page to the encoding correctly
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-            patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path, \
-            patch('builtins.open'), patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct, \
-                patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as \
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'), \
+            patch('openlp.plugins.songs.lib.importers.easyworship.os.path') as mocked_os_path, \
+            patch('builtins.open'), patch('openlp.plugins.songs.lib.importers.easyworship.struct') as mocked_struct, \
+                patch('openlp.plugins.songs.lib.importers.easyworship.retrieve_windows_encoding') as \
                 mocked_retrieve_windows_encoding:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager, filenames=[])
@@ -357,15 +406,15 @@ class TestEasyWorshipSongImport(TestCase):
                 self.assertIsNone(importer.do_import(), 'do_import should return None when db_size is less than 0x800')
                 mocked_retrieve_windows_encoding.assert_call(encoding)
 
-    def file_import_test(self):
+    def db_file_import_test(self):
         """
-        Test the actual import of real song files and check that the imported data is correct.
+        Test the actual import of real song database files and check that the imported data is correct.
         """
 
         # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
         #       and mocked out "author", "add_copyright", "add_verse", "finish" methods.
-        with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
-                patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as \
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'), \
+                patch('openlp.plugins.songs.lib.importers.easyworship.retrieve_windows_encoding') as \
                 mocked_retrieve_windows_encoding:
             mocked_retrieve_windows_encoding.return_value = 'cp1252'
             mocked_manager = MagicMock()
@@ -386,10 +435,11 @@ class TestEasyWorshipSongImport(TestCase):
 
             # WHEN: Importing each file
             importer.import_source = os.path.join(TEST_PATH, 'Songs.DB')
+            import_result = importer.do_import()
 
             # THEN: do_import should return none, the song data should be as expected, and finish should have been
             #       called.
-            self.assertIsNone(importer.do_import(), 'do_import should return None when it has completed')
+            self.assertIsNone(import_result, 'do_import should return None when it has completed')
             for song_data in SONG_TEST_DATA:
                 title = song_data['title']
                 author_calls = song_data['authors']
@@ -411,3 +461,63 @@ class TestEasyWorshipSongImport(TestCase):
                     self.assertEqual(importer.verse_order_list, verse_order_list,
                                      'verse_order_list for %s should be %s' % (title, verse_order_list))
                 mocked_finish.assert_called_with()
+
+    def ews_file_import_test(self):
+        """
+        Test the actual import of song from ews file and check that the imported data is correct.
+        """
+
+        # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
+        #       and mocked out "author", "add_copyright", "add_verse", "finish" methods.
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'), \
+                patch('openlp.plugins.songs.lib.importers.easyworship.retrieve_windows_encoding') \
+                as mocked_retrieve_windows_encoding:
+            mocked_retrieve_windows_encoding.return_value = 'cp1252'
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            mocked_add_author = MagicMock()
+            mocked_add_verse = MagicMock()
+            mocked_finish = MagicMock()
+            mocked_title = MagicMock()
+            mocked_finish.return_value = True
+            importer = EasyWorshipSongImportLogger(mocked_manager)
+            importer.import_wizard = mocked_import_wizard
+            importer.stop_import_flag = False
+            importer.add_author = mocked_add_author
+            importer.add_verse = mocked_add_verse
+            importer.title = mocked_title
+            importer.finish = mocked_finish
+            importer.topics = []
+
+            # WHEN: Importing ews file
+            importer.import_source = os.path.join(TEST_PATH, 'test1.ews')
+            import_result = importer.do_import()
+
+            # THEN: do_import should return none, the song data should be as expected, and finish should have been
+            #       called.
+            title = EWS_SONG_TEST_DATA['title']
+            self.assertIsNone(import_result, 'do_import should return None when it has completed')
+            self.assertIn(title, importer._title_assignment_list, 'title for should be "%s"' % title)
+            mocked_add_author.assert_any_call(EWS_SONG_TEST_DATA['authors'][0])
+            for verse_text, verse_tag in EWS_SONG_TEST_DATA['verses']:
+                mocked_add_verse.assert_any_call(verse_text, verse_tag)
+            mocked_finish.assert_called_with()
+
+    def import_rtf_unescaped_unicode_test(self):
+        """
+        Test import of rtf without the expected escaping of unicode
+        """
+
+        # GIVEN: A mocked out SongImport class, a mocked out "manager" and mocked out "author" method.
+        with patch('openlp.plugins.songs.lib.importers.easyworship.SongImport'):
+            mocked_manager = MagicMock()
+            mocked_add_author = MagicMock()
+            importer = EasyWorshipSongImportLogger(mocked_manager)
+            importer.add_author = mocked_add_author
+            importer.encoding = 'cp1252'
+
+            # WHEN: running set_song_import_object on a verse string without the needed escaping
+            importer.set_song_import_object('Test Author', b'Det som var fr\x86n begynnelsen')
+
+            # THEN: The import should fail
+            self.assertEquals(importer.entry_error_log, 'Unexpected data formatting.', 'Import should fail')

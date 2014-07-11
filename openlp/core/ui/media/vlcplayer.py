@@ -34,6 +34,7 @@ from distutils.version import LooseVersion
 import logging
 import os
 import sys
+import threading
 
 from PyQt4 import QtGui
 
@@ -207,7 +208,7 @@ class VlcPlayer(MediaPlayer):
         start_time = 0
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
-        display.vlc_media_player.play()
+        threading.Thread(target=display.vlc_media_player.play).start()
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
         self.volume(display, controller.media_info.volume)
@@ -233,7 +234,7 @@ class VlcPlayer(MediaPlayer):
         """
         Stop the current item
         """
-        display.vlc_media_player.stop()
+        threading.Thread(target=display.vlc_media_player.stop).start()
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):

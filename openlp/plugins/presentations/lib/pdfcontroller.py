@@ -126,8 +126,8 @@ class PdfController(PresentationController):
             if os.name == 'nt':
                 # for windows we only accept mudraw.exe in the base folder
                 application_path = AppLocation.get_directory(AppLocation.AppDir)
-                if os.path.isfile(application_path + '/../mudraw.exe'):
-                    self.mudrawbin = application_path + '/../mudraw.exe'
+                if os.path.isfile(os.path.join(application_path, 'mudraw.exe')):
+                    self.mudrawbin = os.path.join(application_path, 'mudraw.exe')
             else:
                 DEVNULL = open(os.devnull, 'wb')
                 # First try to find mupdf
@@ -145,8 +145,8 @@ class PdfController(PresentationController):
                 # Last option: check if mudraw is placed in OpenLP base folder
                 if not self.mudrawbin and not self.gsbin:
                     application_path = AppLocation.get_directory(AppLocation.AppDir)
-                    if os.path.isfile(application_path + '/../mudraw'):
-                        self.mudrawbin = application_path + '/../mudraw'
+                    if os.path.isfile(os.path.join(application_path, 'mudraw')):
+                        self.mudrawbin = os.path.join(application_path, 'mudraw')
         if self.mudrawbin:
             self.also_supports = ['xps']
             return True

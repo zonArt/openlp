@@ -38,7 +38,7 @@ from html.parser import HTMLParser
 from bs4 import BeautifulSoup, NavigableString
 
 from openlp.plugins.songs.lib import Song, VerseType, clean_song, Author
-from openlp.plugins.songs.lib.xml import SongXML
+from openlp.plugins.songs.lib.openlyricsxml import SongXML
 
 USER_AGENT = 'Mozilla/5.0 (Linux; U; Android 4.0.3; en-us; GT-I9000 ' \
              'Build/IML74K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 ' \
@@ -146,14 +146,14 @@ class SongSelectImport(object):
         try:
             song_page = BeautifulSoup(self.opener.open(song['link']).read(), 'lxml')
         except (TypeError, HTTPError) as e:
-            log.exception(u'Could not get song from SongSelect, %s', e)
+            log.exception('Could not get song from SongSelect, %s', e)
             return None
         if callback:
             callback()
         try:
             lyrics_page = BeautifulSoup(self.opener.open(song['link'] + '/lyrics').read(), 'lxml')
         except (TypeError, HTTPError):
-            log.exception(u'Could not get lyrics from SongSelect')
+            log.exception('Could not get lyrics from SongSelect')
             return None
         if callback:
             callback()
@@ -196,13 +196,13 @@ class SongSelectImport(object):
         db_song.lyrics = song_xml.extract_xml()
         clean_song(self.db_manager, db_song)
         self.db_manager.save_object(db_song)
-        db_song.authors = []
+        db_song.authors_songs = []
         for author_name in song['authors']:
             author = self.db_manager.get_object_filtered(Author, Author.display_name == author_name)
             if not author:
                 author = Author.populate(first_name=author_name.rsplit(' ', 1)[0],
                                          last_name=author_name.rsplit(' ', 1)[1],
                                          display_name=author_name)
-            db_song.authors.append(author)
+            db_song.add_author(author)
         self.db_manager.save_object(db_song)
         return db_song

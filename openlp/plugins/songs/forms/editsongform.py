@@ -42,9 +42,9 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, UiStri
 from openlp.core.lib import FileDialog, PluginStatus, MediaType, create_separated_list
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.lib import VerseType, clean_song
-from openlp.plugins.songs.lib.db import Book, Song, Author, Topic, MediaFile
+from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorType, Topic, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib.xml import SongXML
+from openlp.plugins.songs.lib.openlyricsxml import SongXML
 from openlp.plugins.songs.forms.editsongdialog import Ui_EditSongDialog
 from openlp.plugins.songs.forms.editverseform import EditVerseForm
 from openlp.plugins.songs.forms.mediafilesform import MediaFilesForm
@@ -107,6 +107,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.audio_list_widget.setAlternatingRowColors(True)
         self.find_verse_split = re.compile('---\[\]---\n', re.UNICODE)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
+        self.find_tags = re.compile(u'\{/?\w+\}', re.UNICODE)
 
     def _load_objects(self, cls, combo, cache):
         """
@@ -122,12 +123,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
             combo.setItemData(row, obj.id)
         set_case_insensitive_completer(cache, combo)
 
-    def _add_author_to_list(self, author):
+    def _add_author_to_list(self, author, author_type):
         """
         Add an author to the author list.
         """
-        author_item = QtGui.QListWidgetItem(str(author.display_name))
-        author_item.setData(QtCore.Qt.UserRole, author.id)
+        author_item = QtGui.QListWidgetItem(author.get_display_name(author_type))
+        author_item.setData(QtCore.Qt.UserRole, (author.id, author_type))
         self.authors_list_view.addItem(author_item)
 
     def _extract_verse_order(self, verse_order):
@@ -217,8 +218,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         if self.authors_list_view.count() == 0:
             self.song_tab_widget.setCurrentIndex(1)
             self.authors_list_view.setFocus()
-            critical_error_message_box(
-                message=translate('SongsPlugin.EditSongForm', 'You need to have an author for this song.'))
+            critical_error_message_box(message=translate('SongsPlugin.EditSongForm',
+                                                         'You need to have an author for this song.'))
             return False
         if self.verse_order_edit.text():
             result = self._validate_verse_list(self.verse_order_edit.text(), self.verse_list_widget.rowCount())
@@ -234,7 +235,56 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                 self.manager.save_object(book)
             else:
                 return False
+        # Validate tags (lp#1199639)
+        misplaced_tags = []
+        verse_tags = []
+        for i in range(self.verse_list_widget.rowCount()):
+            item = self.verse_list_widget.item(i, 0)
+            tags = self.find_tags.findall(item.text())
+            field = item.data(QtCore.Qt.UserRole)
+            verse_tags.append(field)
+            if not self._validate_tags(tags):
+                misplaced_tags.append('%s %s' % (VerseType.translated_name(field[0]), field[1:]))
+        if misplaced_tags:
+            critical_error_message_box(
+                message=translate('SongsPlugin.EditSongForm',
+                                  'There are misplaced formatting tags in the following verses:\n\n%s\n\n'
+                                  'Please correct these tags before continuing.' % ', '.join(misplaced_tags)))
+            return False
+        for tag in verse_tags:
+            if verse_tags.count(tag) > 26:
+                # lp#1310523: OpenLyrics allows only a-z variants of one verse:
+                # http://openlyrics.info/dataformat.html#verse-name
+                critical_error_message_box(message=translate(
+                    'SongsPlugin.EditSongForm', 'You have %(count)s verses named %(name)s %(number)s. '
+                                                'You can have at most 26 verses with the same name' %
+                                                {'count': verse_tags.count(tag),
+                                                 'name': VerseType.translated_name(tag[0]),
+                                                 'number': tag[1:]}))
+                return False
         return True
+
+    def _validate_tags(self, tags):
+        """
+        Validates a list of tags
+        Deletes the first affiliated tag pair which is located side by side in the list
+        and call itself recursively with the shortened tag list.
+        If there is any misplaced tag in the list, either the length of the tag list is not even,
+        or the function won't find any tag pairs side by side.
+        If there is no misplaced tag, the length of the list will be zero on any recursive run.
+
+        :param tags: A list of tags
+        :return: True if the function can't find any mismatched tags. Else False.
+        """
+        if len(tags) == 0:
+            return True
+        if len(tags) % 2 != 0:
+            return False
+        for i in range(len(tags)-1):
+            if tags[i+1] == "{/" + tags[i][1:]:
+                del tags[i:i+2]
+                return self._validate_tags(tags)
+        return False
 
     def _process_lyrics(self):
         """
@@ -301,6 +351,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
             self.authors_combo_box.setItemData(row, author.id)
             self.authors.append(author.display_name)
         set_case_insensitive_completer(self.authors, self.authors_combo_box)
+
+        # Types
+        self.author_types_combo_box.clear()
+        self.author_types_combo_box.addItem('')
+        # Don't iterate over the dictionary to give them this specific order
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Words], AuthorType.Words)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Music], AuthorType.Music)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.WordsAndMusic], AuthorType.WordsAndMusic)
+        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Translation], AuthorType.Translation)
 
     def load_topics(self):
         """
@@ -454,10 +513,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.tag_rows()
         # clear the results
         self.authors_list_view.clear()
-        for author in self.song.authors:
-            author_name = QtGui.QListWidgetItem(str(author.display_name))
-            author_name.setData(QtCore.Qt.UserRole, author.id)
-            self.authors_list_view.addItem(author_name)
+        for author_song in self.song.authors_songs:
+            self._add_author_to_list(author_song.author, author_song.author_type)
         # clear the results
         self.topics_list_view.clear()
         for topic in self.song.topics:
@@ -496,6 +553,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         item = int(self.authors_combo_box.currentIndex())
         text = self.authors_combo_box.currentText().strip(' \r\n\t')
+        author_type = self.author_types_combo_box.itemData(self.author_types_combo_box.currentIndex())
         # This if statement is for OS X, which doesn't seem to work well with
         # the QCompleter auto-completion class. See bug #812628.
         if text in self.authors:
@@ -513,7 +571,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                     author = Author.populate(first_name=text.rsplit(' ', 1)[0], last_name=text.rsplit(' ', 1)[1],
                                              display_name=text)
                 self.manager.save_object(author)
-                self._add_author_to_list(author)
+                self._add_author_to_list(author, author_type)
                 self.load_authors()
                 self.authors_combo_box.setCurrentIndex(0)
             else:
@@ -521,11 +579,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         elif item > 0:
             item_id = (self.authors_combo_box.itemData(item))
             author = self.manager.get_object(Author, item_id)
-            if self.authors_list_view.findItems(str(author.display_name), QtCore.Qt.MatchExactly):
+            if self.authors_list_view.findItems(author.get_display_name(author_type), QtCore.Qt.MatchExactly):
                 critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm', 'This author is already in the list.'))
             else:
-                self._add_author_to_list(author)
+                self._add_author_to_list(author, author_type)
             self.authors_combo_box.setCurrentIndex(0)
         else:
             QtGui.QMessageBox.warning(
@@ -905,13 +963,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         else:
             self.song.theme_name = None
         self._process_lyrics()
-        self.song.authors = []
+        self.song.authors_songs = []
         for row in range(self.authors_list_view.count()):
             item = self.authors_list_view.item(row)
-            author_id = (item.data(QtCore.Qt.UserRole))
-            author = self.manager.get_object(Author, author_id)
-            if author is not None:
-                self.song.authors.append(author)
+            self.song.add_author(self.manager.get_object(Author, item.data(QtCore.Qt.UserRole)[0]),
+                                 item.data(QtCore.Qt.UserRole)[1])
         self.song.topics = []
         for row in range(self.topics_list_view.count()):
             item = self.topics_list_view.item(row)

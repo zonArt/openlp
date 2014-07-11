@@ -53,8 +53,8 @@ class TestFileDialog(TestCase):
         self.mocked_os.rest()
         self.mocked_qt_gui.reset()
 
-        # GIVEN: A List of known values as a return value from QFileDialog.getOpenFileNames and a list of valid
-        # file names.
+        # GIVEN: A List of known values as a return value from QFileDialog.getOpenFileNames and a list of valid file
+        # names.
         self.mocked_qt_gui.QFileDialog.getOpenFileNames.return_value = [
             '/Valid File', '/url%20encoded%20file%20%231', '/non-existing']
         self.mocked_os.path.exists.side_effect = lambda file_name: file_name in [

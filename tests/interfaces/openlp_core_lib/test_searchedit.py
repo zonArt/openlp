@@ -30,7 +30,6 @@
 Module to test the EditCustomForm.
 """
 from unittest import TestCase
-from unittest.mock import MagicMock
 
 from PyQt4 import QtCore, QtGui, QtTest
 
@@ -127,9 +126,3 @@ class TestSearchEdit(TestCase, TestMixin):
         # THEN: The search edit text should be cleared and the button be hidden.
         assert not self.search_edit.text(), "The search edit should not have any text."
         assert self.search_edit.clear_button.isHidden(), "The clear button should be hidden."
-
-    def resize_event_test(self):
-        """
-        Just check if the resizeEvent() method is re-implemented.
-        """
-        assert hasattr(self.search_edit, "resizeEvent"), "The search edit should re-implement the resizeEvent method."

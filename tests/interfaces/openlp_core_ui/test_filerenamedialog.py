@@ -89,7 +89,7 @@ class TestStartFileRenameForm(TestCase, TestMixin):
         Test that the file_name_edit setFocus has called with True when executed
         """
         # GIVEN: A mocked QDialog.exec_() method and mocked file_name_edit.setFocus() method.
-        with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+        with patch('PyQt4.QtGui.QDialog.exec_'):
             mocked_set_focus = MagicMock()
             self.form.file_name_edit.setFocus = mocked_set_focus
 

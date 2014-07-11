@@ -82,6 +82,21 @@ class TestUi(TestCase):
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
 
+    def test_create_horizontal_adjusting_combo_box(self):
+        """
+        Test creating a horizontal adjusting combo box
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create the combobox
+        combo = create_horizontal_adjusting_combo_box(dialog, 'combo1')
+
+        # THEN: We should get a ComboBox
+        self.assertIsInstance(combo, QtGui.QComboBox)
+        self.assertEqual('combo1', combo.objectName())
+        self.assertEqual(QtGui.QComboBox.AdjustToMinimumContentsLength, combo.sizeAdjustPolicy())
+
     def test_create_button(self):
         """
         Test creating a button
@@ -114,38 +129,6 @@ class TestUi(TestCase):
         self.assertEqual('my_btn', btn.objectName())
         self.assertTrue(btn.isEnabled())
 
-    def test_create_valign_selection_widgets(self):
-        """
-        Test creating a combo box for valign selection
-        """
-        # GIVEN: A dialog
-        dialog = QtGui.QDialog()
-
-        # WHEN: We create the widgets
-        label, combo = create_valign_selection_widgets(dialog)
-
-        # THEN: We should get a label and a combobox.
-        self.assertEqual(translate('OpenLP.Ui', '&Vertical Align:'), label.text())
-        self.assertIsInstance(combo, QtGui.QComboBox)
-        self.assertEqual(combo, label.buddy())
-        for text in [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]:
-            self.assertTrue(combo.findText(text) >= 0)
-
-    def test_create_horizontal_adjusting_combo_box(self):
-        """
-        Test creating a horizontal adjusting combo box
-        """
-        # GIVEN: A dialog
-        dialog = QtGui.QDialog()
-
-        # WHEN: We create the combobox
-        combo = create_horizontal_adjusting_combo_box(dialog, 'combo1')
-
-        # THEN: We should get a ComboBox
-        self.assertIsInstance(combo, QtGui.QComboBox)
-        self.assertEqual('combo1', combo.objectName())
-        self.assertEqual(QtGui.QComboBox.AdjustToMinimumContentsLength, combo.sizeAdjustPolicy())
-
     def test_create_action(self):
         """
         Test creating an action
@@ -170,3 +153,92 @@ class TestUi(TestCase):
         self.assertIsInstance(action.icon(), QtGui.QIcon)
         self.assertEqual('my tooltip', action.toolTip())
         self.assertEqual('my statustip', action.statusTip())
+
+    def test_create_checked_enabled_visible_action(self):
+        """
+        Test creating an action with the 'checked', 'enabled' and 'visible' properties.
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create an action with some properties
+        action = create_action(dialog, 'my_action', checked=True, enabled=False, visible=False)
+
+        # THEN: These properties should be set
+        self.assertEqual(True, action.isChecked())
+        self.assertEqual(False, action.isEnabled())
+        self.assertEqual(False, action.isVisible())
+
+    def test_create_valign_selection_widgets(self):
+        """
+        Test creating a combo box for valign selection
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create the widgets
+        label, combo = create_valign_selection_widgets(dialog)
+
+        # THEN: We should get a label and a combobox.
+        self.assertEqual(translate('OpenLP.Ui', '&Vertical Align:'), label.text())
+        self.assertIsInstance(combo, QtGui.QComboBox)
+        self.assertEqual(combo, label.buddy())
+        for text in [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]:
+            self.assertTrue(combo.findText(text) >= 0)
+
+    def test_find_and_set_in_combo_box(self):
+        """
+        Test finding a string in a combo box and setting it as the selected item if present
+        """
+        # GIVEN: A ComboBox
+        combo = QtGui.QComboBox()
+        combo.addItems(['One', 'Two', 'Three'])
+        combo.setCurrentIndex(1)
+
+        # WHEN: We call the method with a non-existing value and set_missing=False
+        find_and_set_in_combo_box(combo, 'Four', set_missing=False)
+
+        # THEN: The index should not have changed
+        self.assertEqual(1, combo.currentIndex())
+
+        # WHEN: We call the method with a non-existing value
+        find_and_set_in_combo_box(combo, 'Four')
+
+        # THEN: The index should have been reset
+        self.assertEqual(0, combo.currentIndex())
+
+        # WHEN: We call the method with the default behavior
+        find_and_set_in_combo_box(combo, 'Three')
+
+        # THEN: The index should have changed
+        self.assertEqual(2, combo.currentIndex())
+
+    def test_create_widget_action(self):
+        """
+        Test creating an action for a widget
+        """
+        # GIVEN: A button
+        button = QtGui.QPushButton()
+
+        # WHEN: We call the function
+        action = create_widget_action(button, 'some action')
+
+        # THEN: The action should be returned
+        self.assertIsInstance(action, QtGui.QAction)
+        self.assertEqual(action.objectName(), 'some action')
+
+    def test_set_case_insensitive_completer(self):
+        """
+        Test setting a case insensitive completer on a widget
+        """
+        # GIVEN: A QComboBox and a list of completion items
+        line_edit = QtGui.QLineEdit()
+        suggestions = ['one', 'Two', 'THRee', 'FOUR']
+
+        # WHEN: We call the function
+        set_case_insensitive_completer(suggestions, line_edit)
+
+        # THEN: The Combobox should have a completer which is case insensitive
+        completer = line_edit.completer()
+        self.assertIsInstance(completer, QtGui.QCompleter)
+        self.assertEqual(completer.caseSensitivity(), QtCore.Qt.CaseInsensitive)

@@ -136,7 +136,6 @@ class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
         if self.service_item.is_text():
             self.resizeRowsToContents()
         self.setColumnWidth(0, self.viewport().width())
-        self.setFocus()
         self.change_slide(slide_number)
 
     def change_slide(self, slide):

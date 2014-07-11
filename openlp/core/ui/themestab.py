@@ -190,7 +190,7 @@ class ThemesTab(SettingsTab):
 
         :param theme_list: The list of available themes::
 
-                [u'Bible Theme', u'Song Theme']
+                ['Bible Theme', 'Song Theme']
         """
         # Reload as may have been triggered by the ThemeManager.
         self.global_theme = Settings().value(self.settings_section + '/global theme')

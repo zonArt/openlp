@@ -59,7 +59,6 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         """
         super(Renderer, self).__init__(None)
         # Need live behaviour if this is also working as a pseudo MainDisplay.
-        self.is_live = True
         self.screens = ScreenList()
         self.theme_level = ThemeLevel.Global
         self.global_theme_name = ''
@@ -248,6 +247,9 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         elif item.is_capable(ItemCapabilities.CanSoftBreak):
             pages = []
             if '[---]' in text:
+                # Remove two or more option slide breaks next to each other (causing infinite loop).
+                while '\n[---]\n[---]\n' in text:
+                    text = text.replace('\n[---]\n[---]\n', '\n[---]\n')
                 while True:
                     slides = text.split('\n[---]\n', 2)
                     # If there are (at least) two occurrences of [---] we use the first two slides (and neglect the last
@@ -392,7 +394,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         off when displayed.
 
         :param lines: The text to be fitted on the slide split into lines.
-        :param line_end: The text added after each line. Either ``u' '`` or ``u'<br>``.
+        :param line_end: The text added after each line. Either ``' '`` or ``'<br>``.
         """
         formatted = []
         previous_html = ''
@@ -416,7 +418,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         processed word by word. This is sometimes need for **bible** verses.
 
         :param lines: The text to be fitted on the slide split into lines.
-        :param line_end: The text added after each line. Either ``u' '`` or ``u'<br>``. This is needed for **bibles**.
+        :param line_end: The text added after each line. Either ``' '`` or ``'<br>``. This is needed for **bibles**.
         """
         formatted = []
         previous_html = ''
@@ -453,7 +455,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         """
         Tests the given text for not closed formatting tags and returns a tuple consisting of three unicode strings::
 
-            (u'{st}{r}Text text text{/r}{/st}', u'{st}{r}', u'<strong><span style="-webkit-text-fill-color:red">')
+            ('{st}{r}Text text text{/r}{/st}', '{st}{r}', '<strong><span style="-webkit-text-fill-color:red">')
 
         The first unicode string is the text, with correct closing tags. The second unicode string are OpenLP's opening
         formatting tags and the third unicode string the html opening formatting tags.
@@ -500,8 +502,8 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         The text contains html.
         :param raw_list: The elements which do not fit on a slide and needs to be processed using the binary chop.
         The elements can contain formatting tags.
-        :param separator: The separator for the elements. For lines this is ``u'<br>'`` and for words this is ``u' '``.
-        :param line_end: The text added after each "element line". Either ``u' '`` or ``u'<br>``. This is needed for
+        :param separator: The separator for the elements. For lines this is ``'<br>'`` and for words this is ``' '``.
+        :param line_end: The text added after each "element line". Either ``' '`` or ``'<br>``. This is needed for
          bibles.
         """
         smallest_index = 0

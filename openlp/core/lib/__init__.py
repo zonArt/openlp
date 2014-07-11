@@ -300,8 +300,7 @@ def create_separated_list(string_list):
 
      :param string_list: List of unicode strings
     """
-    if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion('4.9') and \
-            LooseVersion(Qt.qVersion()) >= LooseVersion('4.8'):
+    if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion('4.9') and LooseVersion(Qt.qVersion()) >= LooseVersion('4.8'):
         return QtCore.QLocale().createSeparatedList(string_list)
     if not string_list:
         return ''

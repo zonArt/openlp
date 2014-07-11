@@ -229,7 +229,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.service_path = os.path.join(AppLocation.get_section_data_path(self.settings_section), 'thumbnails')
         check_directory_exists(self.service_path)
         self.load_list(Settings().value(self.settings_section + '/media files'))
-        self.populate_display_types()
+        self.rebuild_players()
 
     def rebuild_players(self):
         """
@@ -314,7 +314,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
     def get_list(self, type=MediaType.Audio):
         media = Settings().value(self.settings_section + '/media files')
         media.sort(key=lambda filename: get_locale_key(os.path.split(str(filename))[1]))
-        extension = []
         if type == MediaType.Audio:
             extension = self.media_controller.audio_extensions_list
         else:

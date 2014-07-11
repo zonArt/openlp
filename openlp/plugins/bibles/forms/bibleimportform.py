@@ -110,6 +110,7 @@ class BibleImportForm(OpenLPWizard):
         self.csv_books_button.clicked.connect(self.on_csv_books_browse_button_clicked)
         self.csv_verses_button.clicked.connect(self.on_csv_verses_browse_button_clicked)
         self.open_song_browse_button.clicked.connect(self.on_open_song_browse_button_clicked)
+        self.zefania_browse_button.clicked.connect(self.on_zefania_browse_button_clicked)
 
     def add_custom_pages(self):
         """
@@ -125,7 +126,7 @@ class BibleImportForm(OpenLPWizard):
         self.format_label = QtGui.QLabel(self.select_page)
         self.format_label.setObjectName('FormatLabel')
         self.format_combo_box = QtGui.QComboBox(self.select_page)
-        self.format_combo_box.addItems(['', '', '', ''])
+        self.format_combo_box.addItems(['', '', '', '', ''])
         self.format_combo_box.setObjectName('FormatComboBox')
         self.format_layout.addRow(self.format_label, self.format_combo_box)
         self.spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
@@ -247,6 +248,25 @@ class BibleImportForm(OpenLPWizard):
         self.web_proxy_layout.setWidget(2, QtGui.QFormLayout.FieldRole, self.web_password_edit)
         self.web_tab_widget.addTab(self.web_proxy_tab, '')
         self.select_stack.addWidget(self.web_tab_widget)
+        self.zefania_widget = QtGui.QWidget(self.select_page)
+        self.zefania_widget.setObjectName('ZefaniaWidget')
+        self.zefania_layout = QtGui.QFormLayout(self.zefania_widget)
+        self.zefania_layout.setMargin(0)
+        self.zefania_layout.setObjectName('ZefaniaLayout')
+        self.zefania_file_label = QtGui.QLabel(self.zefania_widget)
+        self.zefania_file_label.setObjectName('ZefaniaFileLabel')
+        self.zefania_file_layout = QtGui.QHBoxLayout()
+        self.zefania_file_layout.setObjectName('ZefaniaFileLayout')
+        self.zefania_file_edit = QtGui.QLineEdit(self.zefania_widget)
+        self.zefania_file_edit.setObjectName('ZefaniaFileEdit')
+        self.zefania_file_layout.addWidget(self.zefania_file_edit)
+        self.zefania_browse_button = QtGui.QToolButton(self.zefania_widget)
+        self.zefania_browse_button.setIcon(self.open_icon)
+        self.zefania_browse_button.setObjectName('ZefaniaBrowseButton')
+        self.zefania_file_layout.addWidget(self.zefania_browse_button)
+        self.zefania_layout.addRow(self.zefania_file_label, self.zefania_file_layout)
+        self.zefania_layout.setItem(5, QtGui.QFormLayout.LabelRole, self.spacer)
+        self.select_stack.addWidget(self.zefania_widget)
         self.select_page_layout.addLayout(self.select_stack)
         self.addPage(self.select_page)
         # License Page
@@ -294,11 +314,13 @@ class BibleImportForm(OpenLPWizard):
         self.format_combo_box.setItemText(BibleFormat.OpenSong, WizardStrings.OS)
         self.format_combo_box.setItemText(BibleFormat.WebDownload, translate('BiblesPlugin.ImportWizardForm',
                                                                              'Web Download'))
+        self.format_combo_box.setItemText(BibleFormat.Zefania, WizardStrings.ZEF)
         self.osis_file_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.csv_books_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Books file:'))
         self.csv_verses_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Verses file:'))
         self.open_song_file_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.web_source_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Location:'))
+        self.zefania_file_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.web_source_combo_box.setItemText(WebDownload.Crosswalk, translate('BiblesPlugin.ImportWizardForm',
                                                                                'Crosswalk'))
         self.web_source_combo_box.setItemText(WebDownload.BibleGateway, translate('BiblesPlugin.ImportWizardForm',
@@ -331,7 +353,8 @@ class BibleImportForm(OpenLPWizard):
                           self.osis_file_label.minimumSizeHint().width(),
                           self.csv_books_label.minimumSizeHint().width(),
                           self.csv_verses_label.minimumSizeHint().width(),
-                          self.open_song_file_label.minimumSizeHint().width())
+                          self.open_song_file_label.minimumSizeHint().width(),
+                          self.zefania_file_label.minimumSizeHint().width())
         self.spacer.changeSize(label_width, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
 
     def validateCurrentPage(self):
@@ -365,6 +388,11 @@ class BibleImportForm(OpenLPWizard):
                 if not self.field('opensong_file'):
                     critical_error_message_box(UiStrings().NFSs, WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.open_song_file_edit.setFocus()
+                    return False
+            elif self.field('source_format') == BibleFormat.Zefania:
+                if not self.field('zefania_file'):
+                    critical_error_message_box(UiStrings().NFSs, WizardStrings.YouSpecifyFile % WizardStrings.ZEF)
+                    self.zefania_file_edit.setFocus()
                     return False
             elif self.field('source_format') == BibleFormat.WebDownload:
                 self.version_name_edit.setText(self.web_translation_combo_box.currentText())
@@ -447,6 +475,13 @@ class BibleImportForm(OpenLPWizard):
         self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.OS, self.open_song_file_edit,
                            'last directory import')
 
+    def on_zefania_browse_button_clicked(self):
+        """
+        Show the file open dialog for the Zefania file.
+        """
+        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.ZEF, self.zefania_file_edit,
+                           'last directory import')
+
     def register_fields(self):
         """
         Register the bible import wizard fields.
@@ -456,6 +491,7 @@ class BibleImportForm(OpenLPWizard):
         self.select_page.registerField('csv_booksfile', self.csv_books_edit)
         self.select_page.registerField('csv_versefile', self.csv_verses_edit)
         self.select_page.registerField('opensong_file', self.open_song_file_edit)
+        self.select_page.registerField('zefania_file', self.zefania_file_edit)
         self.select_page.registerField('web_location', self.web_source_combo_box)
         self.select_page.registerField('web_biblename', self.web_translation_combo_box)
         self.select_page.registerField('proxy_server', self.web_server_edit)
@@ -465,7 +501,7 @@ class BibleImportForm(OpenLPWizard):
         self.license_details_page.registerField('license_copyright', self.copyright_edit)
         self.license_details_page.registerField('license_permissions', self.permissions_edit)
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set default values for the wizard pages.
         """
@@ -479,6 +515,7 @@ class BibleImportForm(OpenLPWizard):
         self.setField('csv_booksfile', '')
         self.setField('csv_versefile', '')
         self.setField('opensong_file', '')
+        self.setField('zefania_file', '')
         self.setField('web_location', WebDownload.Crosswalk)
         self.setField('web_biblename', self.web_translation_combo_box.currentIndex())
         self.setField('proxy_server', settings.value('proxy address'))
@@ -562,6 +599,10 @@ class BibleImportForm(OpenLPWizard):
                 proxy_username=self.field('proxy_username'),
                 proxy_password=self.field('proxy_password')
             )
+        elif bible_type == BibleFormat.Zefania:
+            # Import an Zefania bible.
+            importer = self.manager.import_bible(BibleFormat.Zefania, name=license_version,
+                                                 filename=self.field('zefania_file'))
         if importer.do_import(license_version):
             self.manager.save_meta_data(license_version, license_version, license_copyright, license_permissions)
             self.manager.reload_bibles()

@@ -81,6 +81,13 @@ class OpenSongBible(BibleDB):
             import_file = open(self.filename, 'rb')
             opensong = objectify.parse(import_file)
             bible = opensong.getroot()
+            # Check that we're not trying to import a Zefania XML bible, it is sometimes refered to as 'OpenSong'
+            if bible.tag.upper() == 'XMLBIBLE':
+                critical_error_message_box(
+                    message=translate('BiblesPlugin.OpenSongImport',
+                                      'Incorrect Bible file type supplied. This looks like a Zefania XML bible, '
+                                      'please use the Zefania import option.'))
+                return False
             language_id = self.get_language(bible_name)
             if not language_id:
                 log.error('Importing books from "%s" failed' % self.filename)

@@ -33,7 +33,7 @@ from unittest import TestCase
 
 from openlp.core.ui import SlideController
 
-from tests.interfaces import MagicMock, patch
+from tests.interfaces import MagicMock
 
 
 class TestSlideController(TestCase):

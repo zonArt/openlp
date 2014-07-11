@@ -36,17 +36,17 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
-from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, check_item_selected, \
-    create_separated_list
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItem, ServiceItemContext, \
+    check_item_selected, create_separated_list
 from openlp.core.lib.ui import create_widget_action
 from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
 from openlp.plugins.songs.forms.songexportform import SongExportForm
 from openlp.plugins.songs.lib import VerseType, clean_string, delete_song
-from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
+from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
+from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics, SongXML
 
 log = logging.getLogger(__name__)
 
@@ -124,7 +124,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug('config_updated')
         self.search_as_you_type = Settings().value(self.settings_section + '/search as type')
         self.update_service_on_edit = Settings().value(self.settings_section + '/update service on edit')
-        self.add_song_from_service = Settings().value(self.settings_section + '/add song from service',)
+        self.add_song_from_service = Settings().value(self.settings_section + '/add song from service')
+        self.display_songbook = Settings().value(self.settings_section + '/display songbook')
 
     def retranslateUi(self):
         self.search_text_label.setText('%s:' % UiStrings().Search)
@@ -234,8 +235,7 @@ class SongMediaItem(MediaManagerItem):
             if song.temporary:
                 continue
             author_list = [author.display_name for author in song.authors]
-            song_title = str(song.title)
-            song_detail = '%s (%s)' % (song_title, create_separated_list(author_list))
+            song_detail = '%s (%s)' % (song.title, create_separated_list(author_list)) if author_list else song.title
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
@@ -464,23 +464,55 @@ class SongMediaItem(MediaManagerItem):
     def generate_footer(self, item, song):
         """
         Generates the song footer based on a song and adds details to a service item.
-        author_list is only required for initial song generation.
 
         :param item: The service item to be amended
         :param song: The song to be used to generate the footer
+        :return: List of all authors (only required for initial song generation)
         """
-        author_list = [str(author.display_name) for author in song.authors]
+        authors_words = []
+        authors_music = []
+        authors_words_music = []
+        authors_translation = []
+        authors_none = []
+        for author_song in song.authors_songs:
+            if author_song.author_type == AuthorType.Words:
+                authors_words.append(author_song.author.display_name)
+            elif author_song.author_type == AuthorType.Music:
+                authors_music.append(author_song.author.display_name)
+            elif author_song.author_type == AuthorType.WordsAndMusic:
+                authors_words_music.append(author_song.author.display_name)
+            elif author_song.author_type == AuthorType.Translation:
+                authors_translation.append(author_song.author.display_name)
+            else:
+                authors_none.append(author_song.author.display_name)
+        authors_all = authors_words_music + authors_words + authors_music + authors_translation + authors_none
         item.audit = [
-            song.title, author_list, song.copyright, str(song.ccli_number)
+            song.title, authors_all, song.copyright, str(song.ccli_number)
         ]
         item.raw_footer = []
         item.raw_footer.append(song.title)
-        item.raw_footer.append(create_separated_list(author_list))
+        if authors_none:
+            item.raw_footer.append("%s: %s" % (translate('OpenLP.Ui', 'Written by'),
+                                               create_separated_list(authors_none)))
+        if authors_words_music:
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.WordsAndMusic],
+                                               create_separated_list(authors_words_music)))
+        if authors_words:
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Words],
+                                               create_separated_list(authors_words)))
+        if authors_music:
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Music],
+                                               create_separated_list(authors_music)))
+        if authors_translation:
+            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Translation],
+                                               create_separated_list(authors_translation)))
         item.raw_footer.append(song.copyright)
+        if self.display_songbook and song.book:
+            item.raw_footer.append("%s #%s" % (song.book.name, song.song_number))
         if Settings().value('core/ccli number'):
             item.raw_footer.append(translate('SongsPlugin.MediaItem',
                                              'CCLI License: ') + Settings().value('core/ccli number'))
-        return author_list
+        return authors_all
 
     def service_load(self, item):
         """
@@ -489,29 +521,13 @@ class SongMediaItem(MediaManagerItem):
         log.debug('service_load')
         if self.plugin.status != PluginStatus.Active or not item.data_string:
             return
-        if item.data_string['title'].find('@') == -1:
-            # FIXME: This file seems to be an old one (prior to 1.9.5), which means, that the search title
-            # (data_string[u'title']) is probably wrong. We add "@" to search title and hope that we do not add any
-            # duplicate. This should work for songs without alternate title.
-            temp = (re.compile(r'\W+', re.UNICODE).sub(' ', item.data_string['title'].strip()) + '@').strip().lower()
-            search_results = \
-                self.plugin.manager.get_all_objects(Song, Song.search_title == temp, Song.search_title.asc())
-        else:
-            search_results = self.plugin.manager.get_all_objects(
-                Song, Song.search_title == item.data_string['title'], Song.search_title.asc())
+        search_results = self.plugin.manager.get_all_objects(
+            Song, Song.search_title == item.data_string['title'], Song.search_title.asc())
         edit_id = 0
         add_song = True
         if search_results:
             for song in search_results:
-                author_list = item.data_string['authors']
-                same_authors = True
-                for author in song.authors:
-                    if author.display_name in author_list:
-                        author_list = author_list.replace(author.display_name, '', 1)
-                    else:
-                        same_authors = False
-                        break
-                if same_authors and author_list.strip(', ') == '':
+                if self._authors_match(song, item.data_string['authors']):
                     add_song = False
                     edit_id = song.id
                     break
@@ -536,6 +552,23 @@ class SongMediaItem(MediaManagerItem):
         item.edit_id = edit_id
         self.generate_footer(item, song)
         return item
+
+    def _authors_match(self, song, authors):
+        """
+        Checks whether authors from a song in the database match the authors of the song to be imported.
+
+        :param song: A list of authors from the song in the database
+        :param authors: A string with authors from the song to be imported
+        :return: True when Authors do match, else False.
+        """
+        author_list = authors.split(', ')
+        for author in song.authors:
+            if author.display_name in author_list:
+                author_list.remove(author.display_name)
+            else:
+                return False
+        # List must be empty at the end
+        return not author_list
 
     def search(self, string, show_error):
         """

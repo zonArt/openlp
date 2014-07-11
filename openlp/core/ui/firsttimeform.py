@@ -114,10 +114,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         """
         Run the wizard.
         """
-        self.setDefaults()
+        self.set_defaults()
         return QtGui.QWizard.exec_(self)
 
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Set up display at start of theme edit.
         """
@@ -199,8 +199,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
                 self.no_internet_label.setText(self.no_internet_text + self.cancelWizardText)
         elif page_id == FirstTimePage.Defaults:
             self.theme_combo_box.clear()
-            for iter in range(self.themes_list_widget.count()):
-                item = self.themes_list_widget.item(iter)
+            for index in range(self.themes_list_widget.count()):
+                item = self.themes_list_widget.item(index)
                 if item.checkState() == QtCore.Qt.Checked:
                     self.theme_combo_box.addItem(item.text())
             if self.has_run_wizard:
@@ -292,13 +292,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         """
         themes = self.config.get('themes', 'files')
         themes = themes.split(',')
-        for theme in themes:
-            filename = self.config.get('theme_%s' % theme, 'filename')
+        for index, theme in enumerate(themes):
             screenshot = self.config.get('theme_%s' % theme, 'screenshot')
-            for index in range(self.themes_list_widget.count()):
-                item = self.themes_list_widget.item(index)
-                if item.data(QtCore.Qt.UserRole) == filename:
-                    break
+            item = self.themes_list_widget.item(index)
             item.setIcon(build_icon(os.path.join(gettempdir(), 'openlp', screenshot)))
 
     def _get_file_size(self, url):
@@ -416,10 +412,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         self._increment_progress_bar(translate('OpenLP.FirstTimeWizard', 'Enabling selected plugins...'))
         self._set_plugin_status(self.songs_check_box, 'songs/status')
         self._set_plugin_status(self.bible_check_box, 'bibles/status')
-        # TODO Presentation plugin is not yet working on Mac OS X.
-        # For now just ignore it.
-        if sys.platform != 'darwin':
-            self._set_plugin_status(self.presentation_check_box, 'presentations/status')
+        self._set_plugin_status(self.presentation_check_box, 'presentations/status')
         self._set_plugin_status(self.image_check_box, 'images/status')
         self._set_plugin_status(self.media_check_box, 'media/status')
         self._set_plugin_status(self.remote_check_box, 'remotes/status')
