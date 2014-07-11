@@ -90,7 +90,6 @@ class TestImageManager(TestCase, TestMixin):
             self.image_manager.get_image(TEST_PATH, 'church1.jpg')
         self.assertNotEquals(context.exception, '', 'KeyError exception should have been thrown for missing image')
 
-<<<<<<< TREE
     def different_dimension_image_test(self):
         """
         Test the Image Manager with dimensions
@@ -124,7 +123,6 @@ class TestImageManager(TestCase, TestMixin):
             self.image_manager.get_image(full_path, 'church.jpg', '120x120')
         self.assertNotEquals(context.exception, '', 'KeyError exception should have been thrown for missing dimension')
 
-=======
     def process_cache_test(self):
         """
         Test the process_cache method
@@ -187,7 +185,7 @@ class TestImageManager(TestCase, TestMixin):
 
         :param image: The name of the image. E. g. ``image1``
         """
-        return self.image_manager._cache[(TEST_PATH, image)].priority
+        return self.image_manager._cache[(TEST_PATH, image, '')].priority
 
     def mocked_resize_image(self, *args):
         """
