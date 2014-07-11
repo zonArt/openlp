@@ -32,7 +32,6 @@ import logging
 from PyQt4 import QtGui
 
 from openlp.core.lib import Plugin, StringContent, translate, build_icon
-from openlp.core.common import Registry
 from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
 
 log = logging.getLogger(__name__)

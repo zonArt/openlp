@@ -1278,7 +1278,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             tree_widget_item.setToolTip(0, '<br>'.join(tips))
             tree_widget_item.setData(0, QtCore.Qt.UserRole, item['order'])
             tree_widget_item.setSelected(item['selected'])
-            # Add the children to their parent tree_widget)item.
+            # Add the children to their parent tree_widget_item.
             for count, frame in enumerate(service_item_from_item.get_frames()):
                 child = QtGui.QTreeWidgetItem(tree_widget_item)
                 # prefer to use a display_title

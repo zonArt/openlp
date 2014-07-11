@@ -1035,8 +1035,6 @@ class SlideController(DisplayController, RegistryProperties):
             self.update_preview()
             self.preview_widget.change_slide(row)
         self.display.setFocus()
-        if self.type_prefix == 'live':
-            Registry().execute('websock_send', '')
 
     def on_slide_change(self, row):
         """
