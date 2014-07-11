@@ -33,7 +33,7 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import Plugin, StringContent, translate, build_icon
 from openlp.core.common import Registry
-from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer, WebSocketManager
+from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
 
 log = logging.getLogger(__name__)
 
@@ -61,7 +61,6 @@ class RemotesPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
         self.weight = -1
         self.server = None
-        self.websocketserver = None
 
     def initialise(self):
         """
@@ -70,9 +69,6 @@ class RemotesPlugin(Plugin):
         log.debug('initialise')
         super(RemotesPlugin, self).initialise()
         self.server = OpenLPServer()
-        self.websocketserver = WebSocketManager()
-        self.websocketserver.start()
-        Registry().register_function('websock_send', self.websocketserver.send)
         if not hasattr(self, 'remote_server_icon'):
             self.remote_server_icon = QtGui.QLabel(self.main_window.status_bar)
             size_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
@@ -98,9 +94,6 @@ class RemotesPlugin(Plugin):
         if self.server:
             self.server.stop_server()
             self.server = None
-        if self.websocketserver:
-            self.websocketserver.stop()
-            self.websocketserver = None
 
     def about(self):
         """
