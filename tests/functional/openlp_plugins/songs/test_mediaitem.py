@@ -155,7 +155,7 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: The songbook should be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12'])
 
-    def build_song_footer_copyright_test(self):
+    def build_song_footer_copyright_enabled_test(self):
         """
         Test building song footer with displaying the copyright symbol
         """
@@ -171,6 +171,22 @@ class TestMediaItem(TestCase, TestMixin):
 
         # THEN: The copyright symbol should be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', '© My copyright'])
+
+    def build_song_footer_copyright_disabled_test(self):
+        """
+        Test building song footer without displaying the copyright symbol
+        """
+        # GIVEN: A Song and a Service Item; displaying the copyright symbol should be disabled by default
+        mock_song = MagicMock()
+        mock_song.title = 'My Song'
+        mock_song.copyright = 'My copyright'
+        service_item = ServiceItem(None)
+
+        # WHEN: I generate the Footer with default settings
+        self.media_item.generate_footer(service_item, mock_song)
+
+        # THEN: The copyright symbol should not be in the footer
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright'])
 
     def authors_match_test(self):
         """
