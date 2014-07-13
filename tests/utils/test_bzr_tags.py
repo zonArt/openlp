@@ -30,7 +30,7 @@
 Package to test for proper bzr tags.
 """
 import os
-
+import re
 from unittest import TestCase
 
 from subprocess import Popen, PIPE
@@ -52,6 +52,7 @@ TAGS = [
     ['2.0', '2118'],
     ['2.1.0', '2119']
 ]
+TAG_SEARCH = re.compile('2\.0\.\d')
 
 
 class TestBzrTags(TestCase):
@@ -65,8 +66,9 @@ class TestBzrTags(TestCase):
 
         # WHEN getting the branches tags
         bzr = Popen(('bzr', 'tags', '--directory=' + path), stdout=PIPE)
-        stdout = bzr.communicate()[0]
-        tags = [line.decode('utf-8').split() for line in stdout.splitlines()]
+        std_out = bzr.communicate()[0]
+        tags = [line.decode('utf-8').split() for line in std_out.splitlines()]
+        tags = [t_r for t_r in tags if t_r[1] != '?' or not (t_r[1] == '?' and TAG_SEARCH.search(t_r[0]))]
 
         # THEN the tags should match the accepted tags
         self.assertEqual(TAGS, tags, 'List of tags should match')
