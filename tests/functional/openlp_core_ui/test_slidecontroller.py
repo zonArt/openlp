@@ -405,7 +405,7 @@ class TestSlideController(TestCase):
         """
         # GIVEN: A slide controller and a new item to add
         mocked_item = MagicMock()
-        mocked_process_item =MagicMock()
+        mocked_process_item = MagicMock()
         slide_controller = SlideController(None)
         slide_controller._process_item = mocked_process_item
         slide_controller.song_edit = True
@@ -425,7 +425,7 @@ class TestSlideController(TestCase):
         """
         # GIVEN: A slide controller and a new item to add
         mocked_item = MagicMock()
-        mocked_process_item =MagicMock()
+        mocked_process_item = MagicMock()
         slide_controller = SlideController(None)
         slide_controller._process_item = mocked_process_item
         slide_controller.song_edit = False
