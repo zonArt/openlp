@@ -43,7 +43,7 @@ class TestLibModule(TestCase):
     def setUp(self):
         mocked_plugin = MagicMock()
         mocked_plugin.settings_section = 'presentations'
-        self.file_name = os.path.join(TEST_PATH, 'test.pptx')
+        self.file_name = os.path.join(TEST_PATH, 'presentations', 'test.pptx')
         self.ppc = ImpressController(mocked_plugin)
         self.doc = ImpressDocument(self.ppc, self.file_name)
 

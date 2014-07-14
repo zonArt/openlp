@@ -107,7 +107,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
         self.mock_controller = MagicMock()
         self.mock_presentation = MagicMock()
         self.mock_presentation_document_get_temp_folder.return_value = 'temp folder'
-        self.file_name = os.path.join(TEST_RESOURCES_PATH, "test.pptx")
+        self.file_name = os.path.join(TEST_RESOURCES_PATH, 'presentations', 'test.pptx')
         self.real_controller = PowerpointController(self.mock_plugin)
 
     def tearDown(self):
