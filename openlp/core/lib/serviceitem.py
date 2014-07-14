@@ -317,6 +317,8 @@ class ServiceItem(RegistryProperties):
         :param path: The title of the slide in the service item.
         :param file_name: The title of the slide in the service item.
         :param image: The command of/for the slide.
+        :param display_title: Title to show in gui/webinterface, optional.
+        :param notes: Notes to show in the webinteface, optional.
         """
         self.service_item_type = ServiceItemType.Command
         self._raw_frames.append({'title': file_name, 'image': image, 'path': path,

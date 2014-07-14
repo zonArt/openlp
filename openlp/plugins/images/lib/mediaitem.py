@@ -551,6 +551,7 @@ class ImageMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanAppend)
         service_item.add_capability(ItemCapabilities.CanEditTitle)
+        service_item.add_capability(ItemCapabilities.HasThumbnails)
         # force a nonexistent theme
         service_item.theme = -1
         missing_items_file_names = []

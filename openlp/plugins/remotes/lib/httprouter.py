@@ -159,7 +159,7 @@ class HttpRouter(RegistryProperties):
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
-            (r'^/(.*)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
+            (r'^/(\w+)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
             (r'^/api/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/poll$', {'function': self.main_poll, 'secure': False}),
             (r'^/main/image$', {'function': self.main_image, 'secure': False}),
@@ -387,7 +387,7 @@ class HttpRouter(RegistryProperties):
         Serve an image file. If not found return 404.
         """
         log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name, dimensions, file_name))
-        supported_controllers = ['presentations']
+        supported_controllers = ['presentations', 'images']
         if not dimensions:
             dimensions = ''
         content = ''
@@ -496,6 +496,12 @@ class HttpRouter(RegistryProperties):
                         item['tag'] = str(index + 1)
                     item['text'] = str(frame['text'])
                     item['html'] = str(frame['html'])
+                elif current_item.is_image():
+                    item['tag'] = str(index + 1)
+                    thumbnail_path = os.path.sep + os.path.join('images', 'thumbnails', frame['title'])
+                    item['img'] = urllib.request.pathname2url(thumbnail_path)
+                    item['text'] = str(frame['title'])
+                    item['html'] = str(frame['title'])
                 else:
                     item['tag'] = str(index + 1)
                     if current_item.is_capable(ItemCapabilities.HasDisplayTitle):
@@ -503,8 +509,7 @@ class HttpRouter(RegistryProperties):
                     if current_item.is_capable(ItemCapabilities.HasNotes):
                         item['notes'] = str(frame['notes'])
                     if current_item.is_capable(ItemCapabilities.HasThumbnails):
-                        # If the file is under our app directory tree send the
-                        # portion after the match
+                        # If the file is under our app directory tree send the portion after the match
                         data_path = AppLocation.get_data_path()
                         if frame['image'][0:len(data_path)] == data_path:
                             item['img'] = urllib.request.pathname2url(frame['image'][len(data_path):])

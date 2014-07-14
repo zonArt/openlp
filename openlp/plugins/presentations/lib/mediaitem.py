@@ -295,6 +295,7 @@ class PresentationMediaItem(MediaManagerItem):
                         i += 1
                         image_file = 'mainslide%03d.png' % i
                         image = os.path.join(doc.get_temp_folder(), image_file)
+                    service_item.add_capability(ItemCapabilities.HasThumbnails)
                     doc.close_presentation()
                     return True
                 else:

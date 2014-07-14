@@ -111,7 +111,7 @@ window.OpenLP = {
     }
     // use thumbnail if available
     if (slide["img"]) {
-        text += "<br /><img src='" + slide["img"] + "'><br />";
+        text += "<br /><img src='" + slide["img"].replace("/thumbnails/", "/thumbnails320x240/") + "'><br />";
     }
     // use notes if available
     if (slide["notes"]) {
