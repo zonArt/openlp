@@ -160,23 +160,19 @@ class SongFormat(object):
     FoilPresenter = 8
     MediaShout = 9
     OpenSong = 10
-<<<<<<< TREE
-    PowerSong = 11
-    PresentationManager = 12
-=======
     PowerPraise = 11
     PowerSong = 12
->>>>>>> MERGE-SOURCE
-    ProPresenter = 13
-    SongBeamer = 14
-    SongPro = 15
-    SongShowPlus = 16
-    SongsOfFellowship = 17
-    SundayPlus = 18
-    WordsOfWorship = 19
-    WorshipAssistant = 20
-    WorshipCenterPro = 21
-    ZionWorx = 22
+    PresentationManager = 13
+    ProPresenter = 14
+    SongBeamer = 15
+    SongPro = 16
+    SongShowPlus = 17
+    SongsOfFellowship = 18
+    SundayPlus = 19
+    WordsOfWorship = 20
+    WorshipAssistant = 21
+    WorshipCenterPro = 22
+    ZionWorx = 23
 
     # Set optional attribute defaults
     __defaults__ = {
