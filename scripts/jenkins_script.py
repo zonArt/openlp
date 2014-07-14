@@ -62,11 +62,12 @@ class OpenLPJobs(object):
     Branch_Pull = 'Branch-01-Pull'
     Branch_Functional = 'Branch-02-Functional-Tests'
     Branch_Interface = 'Branch-03-Interface-Tests'
-    Branch_Windows = 'Branch-04-Windows_Tests'
+    Branch_Windows_Functional = 'Branch-04a-Windows_Functional_Tests'
+    Branch_Windows_Interface = 'Branch-04b-Windows_Interface_Tests'
     Branch_PEP = 'Branch-05a-Code_Analysis'
     Branch_Coverage = 'Branch-05b-Test_Coverage'
 
-    Jobs = [Branch_Pull, Branch_Functional, Branch_Interface, Branch_Windows, Branch_PEP, Branch_Coverage]
+    Jobs = [Branch_Pull, Branch_Functional, Branch_Interface, Branch_Windows_Functional, Branch_Windows_Interface, Branch_PEP, Branch_Coverage]
 
 
 class Colour(object):
