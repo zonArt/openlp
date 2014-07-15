@@ -395,7 +395,7 @@ class HttpRouter(RegistryProperties):
         if controller_name and file_name:
             if controller_name in supported_controllers:
                 full_path = urllib.parse.unquote(file_name)
-                if not '..' in full_path:  # no hacking please
+                if '..' not in full_path:  # no hacking please
                     full_path = os.path.normpath(os.path.join(AppLocation.get_section_data_path(controller_name),
                                                               'thumbnails/' + full_path))
                     if os.path.exists(full_path):

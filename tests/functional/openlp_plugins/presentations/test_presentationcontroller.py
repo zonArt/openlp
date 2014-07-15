@@ -136,7 +136,7 @@ class TestPresentationController(TestCase):
             mocked_get_thumbnail_folder.return_value = 'test'
             mocked_exists.return_value = False
 
-            #WHEN: calling get_titles_and_notes
+            # WHEN: calling get_titles_and_notes
             result_titles, result_notes = self.document.get_titles_and_notes()
 
             # THEN: it should return two empty lists

@@ -255,7 +255,6 @@ class TestPptviewDocument(TestCase):
         with patch('builtins.open') as mocked_open, \
                 patch('openlp.plugins.presentations.lib.pptviewcontroller.zipfile.is_zipfile') as mocked_is_zf:
             mocked_is_zf.return_value = False
-            #mocked_exists.return_value = True
             mocked_open.filesize = 10
             doc = PptviewDocument(self.mock_controller, self.mock_presentation)
             doc.file_path = os.path.join(TEST_RESOURCES_PATH, 'presentations', 'test.ppt')

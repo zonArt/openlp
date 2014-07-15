@@ -178,7 +178,6 @@ class PptviewDocument(PresentationDocument):
                 with zip_file.open('ppt/presentation.xml') as pres:
                     tree = ElementTree.parse(pres)
                 nodes = tree.getroot().findall(".//p:sldIdLst/p:sldId", namespaces=namespaces)
-                #print("slide count: " + str(len(nodes)))
                 # initialize the lists
                 titles = ['' for i in range(len(nodes))]
                 notes = ['' for i in range(len(nodes))]

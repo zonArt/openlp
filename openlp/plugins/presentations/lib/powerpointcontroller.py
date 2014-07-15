@@ -32,7 +32,6 @@ This module is for controlling powerpoint. PPT API documentation:
 """
 import os
 import logging
-#from .ppinterface import constants
 
 if os.name == 'nt':
     from win32com.client import Dispatch
