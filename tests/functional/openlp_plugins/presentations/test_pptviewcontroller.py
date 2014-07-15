@@ -203,8 +203,8 @@ class TestPptviewDocument(TestCase):
             if os.name == 'nt':
                 result = instance.load_presentation()
 
-                # THEN: The temporary directory should be created and PptviewDocument.load_presentation should return False
-                self.mock_makedirs.assert_called_once_with(self.temp_folder)
+                # THEN: The temp folder should be created and PptviewDocument.load_presentation should return False
+                mock_makedirs.assert_called_once_with(self.temp_folder)
                 self.assertFalse(result)
 
     def create_titles_and_notes_test(self):
