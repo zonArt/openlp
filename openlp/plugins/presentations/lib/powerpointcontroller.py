@@ -32,7 +32,7 @@ This module is for controlling powerpoint. PPT API documentation:
 """
 import os
 import logging
-from .ppinterface import constants
+#from .ppinterface import constants
 
 if os.name == 'nt':
     from win32com.client import Dispatch
@@ -87,8 +87,6 @@ class PowerpointController(PresentationController):
             log.debug('start_process')
             if not self.process:
                 self.process = Dispatch('PowerPoint.Application')
-                self.events = PowerpointEvents(self.process)
-                self.events.controller = self
             self.process.Visible = True
             self.process.WindowState = 2
 
@@ -138,6 +136,7 @@ class PowerpointDocument(PresentationDocument):
             self.controller.process.Presentations.Open(self.file_path, False, False, True)
             self.presentation = self.controller.process.Presentations(self.controller.process.Presentations.Count)
             self.create_thumbnails()
+            self.create_titles_and_notes()
             # Powerpoint 2013 pops up when loading a file, so we minimize it again
             if self.presentation.Application.Version == u'15.0':
                 try:
@@ -150,10 +149,6 @@ class PowerpointDocument(PresentationDocument):
             log.error('PPT open failed')
             trace_error_handler(log)
             return False
-        self.presentation = self.controller.process.Presentations(self.controller.process.Presentations.Count)
-        self.create_thumbnails()
-        self.create_titles_and_notes()
-        return True
 
     def create_thumbnails(self):
         """
@@ -440,35 +435,7 @@ def _get_text_from_shapes(shapes):
     """
     text = ''
     for shape in shapes:
-        if shape.PlaceholderFormat.Type == constants.ppPlaceholderBody:
+        if shape.PlaceholderFormat.Type == 2:  # 2 from is enum PpPlaceholderType.ppPlaceholderBody
             if shape.HasTextFrame and shape.TextFrame.HasText:
                 text += shape.TextFrame.TextRange.Text + '\n'
     return text
-
-if os.name == "nt":
-    try:
-        ppE = win32com.client.getevents("PowerPoint.Application")
-
-        class PowerpointEvents(ppE):
-            def OnSlideShowBegin(self, hwnd):
-                #print("SS Begin")
-                return
-
-            def OnSlideShowEnd(self, pres):
-                #print("SS End")
-                return
-
-            def OnSlideShowNextSlide(self, hwnd):
-                Registry().execute('slidecontroller_live_change', hwnd.View.CurrentShowPosition - 1)
-                #print('Slide change:',hwnd.View.CurrentShowPosition)
-                return
-
-            def OnSlideShowOnNext(self, hwnd):
-                #print("SS Advance")
-                return
-
-            def OnSlideShowOnPrevious(self, hwnd):
-                #print("SS GoBack")
-                return
-    except pywintypes.com_error:
-        log.debug('COM error trying to get powerpoint events - powerpoint is probably not installed.')

@@ -327,7 +327,14 @@ class PresentationMediaItem(MediaManagerItem):
                         # Get titles and notes
                         titles, notes = doc.get_titles_and_notes()
                         while img:
-                            service_item.add_from_command(path, name, img, titles[i - 1], notes[i - 1])
+                            # Use title and note if available
+                            title = None
+                            if titles and len(titles) >= i:
+                                title = titles[i - 1]
+                            note = None
+                            if notes and len(notes) >= i:
+                                note = notes[i - 1]
+                            service_item.add_from_command(path, name, img, title, note)
                             i += 1
                             img = doc.get_thumbnail_path(i, True)
                         doc.close_presentation()

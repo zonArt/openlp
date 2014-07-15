@@ -220,8 +220,8 @@ class TestPptviewDocument(TestCase):
 
         # THEN save_titles_and_notes should have been called once with empty arrays
         doc.save_titles_and_notes.assert_called_once_with(['Test 1\n', '\n', 'Test 2\n', 'Test 4\n', 'Test 3\n'],
-                                                               ['Notes for slide 1', 'Inserted', 'Notes for slide 2',
-                                                                'Notes \nfor slide 4', 'Notes for slide 3'])
+                                                          ['Notes for slide 1', 'Inserted', 'Notes for slide 2',
+                                                           'Notes \nfor slide 4', 'Notes for slide 3'])
 
     def create_titles_and_notes_nonexistent_file_test(self):
         """
@@ -229,8 +229,8 @@ class TestPptviewDocument(TestCase):
         """
         # GIVEN: mocked PresentationController.save_titles_and_notes and an nonexistent file
         with patch('builtins.open') as mocked_open, \
-            patch('openlp.plugins.presentations.lib.pptviewcontroller.os.path.exists') as mocked_exists, \
-            patch('openlp.plugins.presentations.lib.presentationcontroller.check_directory_exists') as \
+                patch('openlp.plugins.presentations.lib.pptviewcontroller.os.path.exists') as mocked_exists, \
+                patch('openlp.plugins.presentations.lib.presentationcontroller.check_directory_exists') as \
                 mocked_dir_exists:
             mocked_exists.return_value = False
             mocked_dir_exists.return_value = False

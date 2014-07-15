@@ -31,19 +31,62 @@ Functional tests to test the Impress class and related methods.
 """
 from unittest import TestCase
 import os
+import shutil
+from tempfile import mkdtemp
+
 from tests.functional import patch, MagicMock
+from tests.utils.constants import TEST_RESOURCES_PATH
+from tests.helpers.testmixin import TestMixin
+
 from openlp.plugins.presentations.lib.impresscontroller import \
     ImpressController, ImpressDocument, TextType
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
+
+class TestImpressController(TestCase, TestMixin):
+    """
+    Test the ImpressController Class
+    """
+
+    def setUp(self):
+        """
+        Set up the patches and mocks need for all tests.
+        """
+        self.get_application()
+        self.build_settings()
+        self.mock_plugin = MagicMock()
+        self.temp_folder = mkdtemp()
+        self.mock_plugin.settings_section = self.temp_folder
+
+    def tearDown(self):
+        """
+        Stop the patches
+        """
+        self.destroy_settings()
+        shutil.rmtree(self.temp_folder)
+
+    def constructor_test(self):
+        """
+        Test the Constructor from the ImpressController
+        """
+        # GIVEN: No presentation controller
+        controller = None
+
+        # WHEN: The presentation controller object is created
+        controller = ImpressController(plugin=self.mock_plugin)
+
+        # THEN: The name of the presentation controller should be correct
+        self.assertEqual('Impress', controller.name,
+                         'The name of the presentation controller should be correct')
 
 
-class TestLibModule(TestCase):
-
+class TestImpressDocumnt(TestCase):
+    """
+    Test the ImpressDocument Class
+    """
     def setUp(self):
         mocked_plugin = MagicMock()
         mocked_plugin.settings_section = 'presentations'
-        self.file_name = os.path.join(TEST_PATH, 'presentations', 'test.pptx')
+        self.file_name = os.path.join(TEST_RESOURCES_PATH, 'presentations', 'test.pptx')
         self.ppc = ImpressController(mocked_plugin)
         self.doc = ImpressDocument(self.ppc, self.file_name)
 
@@ -147,6 +190,13 @@ class TestLibModule(TestCase):
         self.assertEqual(result, 'Title\nString\nString\n', 'Result should be exactly \'Title\\nString\\nString\\n\'')
 
     def _mock_a_LibreOffice_document(self, page_count, note_count, text_count):
+        """
+        Helper function, creates a mock libreoffice document.
+
+        :param page_count: Number of pages in the document
+        :param note_count: Number of note pages in the document
+        :param text_count: Number of text pages in the document
+        """
         pages = MagicMock()
         page = MagicMock()
         pages.getByIndex.return_value = page
@@ -166,6 +216,9 @@ class TestLibModule(TestCase):
         return document
 
     def _get_page_shape_side_effect(*args):
+        """
+        Helper function.
+        """
         page_shape = MagicMock()
         page_shape.supportsService.return_value = True
         if args[1] == 0:
