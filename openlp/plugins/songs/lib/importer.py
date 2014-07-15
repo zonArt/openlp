@@ -51,6 +51,7 @@ from .importers.foilpresenter import FoilPresenterImport
 from .importers.zionworx import ZionWorxImport
 from .importers.propresenter import ProPresenterImport
 from .importers.worshipassistant import WorshipAssistantImport
+from .importers.powerpraise import PowerPraiseImport
 # Imports that might fail
 
 
@@ -160,17 +161,18 @@ class SongFormat(object):
     FoilPresenter = 8
     MediaShout = 9
     OpenSong = 10
-    PowerSong = 11
-    ProPresenter = 12
-    SongBeamer = 13
-    SongPro = 14
-    SongShowPlus = 15
-    SongsOfFellowship = 16
-    SundayPlus = 17
-    WordsOfWorship = 18
-    WorshipAssistant = 19
-    WorshipCenterPro = 20
-    ZionWorx = 21
+    PowerPraise = 11
+    PowerSong = 12
+    ProPresenter = 13
+    SongBeamer = 14
+    SongPro = 15
+    SongShowPlus = 16
+    SongsOfFellowship = 17
+    SundayPlus = 18
+    WordsOfWorship = 19
+    WorshipAssistant = 20
+    WorshipCenterPro = 21
+    ZionWorx = 22
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -265,6 +267,12 @@ class SongFormat(object):
             'class': OpenSongImport,
             'name': WizardStrings.OS,
             'prefix': 'openSong'
+        },
+        PowerPraise: {
+            'class': PowerPraiseImport,
+            'name': 'PowerPraise',
+            'prefix': 'powerPraise',
+            'filter': '%s (*.ppl)' % translate('SongsPlugin.ImportWizardForm', 'PowerPraise Song Files')
         },
         PowerSong: {
             'class': PowerSongImport,
@@ -374,6 +382,7 @@ class SongFormat(object):
             SongFormat.FoilPresenter,
             SongFormat.MediaShout,
             SongFormat.OpenSong,
+            SongFormat.PowerPraise,
             SongFormat.PowerSong,
             SongFormat.ProPresenter,
             SongFormat.SongBeamer,

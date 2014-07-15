@@ -112,3 +112,16 @@ class TestDB(TestCase):
         # THEN: It should have been removed and the other author should still be there
         self.assertEqual(1, len(song.authors_songs))
         self.assertEqual(None, song.authors_songs[0].author_type)
+
+    def test_get_author_type_from_translated_text(self):
+        """
+        Test getting an author type from translated text
+        """
+        # GIVEN: A string with an author type
+        author_type_name = AuthorType.Types[AuthorType.Words]
+
+        # WHEN: We call the method
+        author_type = AuthorType.from_translated_text(author_type_name)
+
+        # THEN: The type should be correct
+        self.assertEqual(author_type, AuthorType.Words)
