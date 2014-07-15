@@ -131,7 +131,7 @@ class TestPptviewDocument(TestCase):
         """
         Set up the patches and mocks need for all tests.
         """
-        self.os_patcher = patch('openlp.plugins.presentations.lib.pptviewcontroller.os.path.isdir')
+        self.os_isdir_patcher = patch('openlp.plugins.presentations.lib.pptviewcontroller.os.path.isdir')
         self.pptview_document_create_thumbnails_patcher = patch(
             'openlp.plugins.presentations.lib.pptviewcontroller.PptviewDocument.create_thumbnails')
         self.pptview_document_stop_presentation_patcher = patch(
@@ -142,7 +142,7 @@ class TestPptviewDocument(TestCase):
             'openlp.plugins.presentations.lib.pptviewcontroller.PresentationDocument._setup')
         self.screen_list_patcher = patch('openlp.plugins.presentations.lib.pptviewcontroller.ScreenList')
         self.rect_patcher = MagicMock()
-        self.mock_os = self.os_patcher.start()
+        self.mock_os_isdir = self.os_isdir_patcher.start()
         self.mock_pptview_document_create_thumbnails = self.pptview_document_create_thumbnails_patcher.start()
         self.mock_pptview_document_stop_presentation = self.pptview_document_stop_presentation_patcher.start()
         self.mock_presentation_document_get_temp_folder = self.presentation_document_get_temp_folder_patcher.start()
@@ -158,7 +158,7 @@ class TestPptviewDocument(TestCase):
         """
         Stop the patches
         """
-        self.os_patcher.stop()
+        self.os_isdir_patcher.stop()
         self.pptview_document_create_thumbnails_patcher.stop()
         self.pptview_document_stop_presentation_patcher.stop()
         self.presentation_document_get_temp_folder_patcher.stop()
@@ -172,10 +172,10 @@ class TestPptviewDocument(TestCase):
         Test the PptviewDocument.load_presentation() method when the PPT is successfully opened
         """
         # GIVEN: A reset mocked_os
-        self.mock_os.reset()
+        self.mock_os_isdir.reset()
 
         # WHEN: The temporary directory exists and OpenPPT returns successfully (not -1)
-        self.mock_os.return_value = True
+        self.mock_os_isdir.return_value = True
         self.mock_controller.process.OpenPPT.return_value = 0
         instance = PptviewDocument(self.mock_controller, self.mock_presentation)
         instance.file_path = 'test\path.ppt'
@@ -191,20 +191,21 @@ class TestPptviewDocument(TestCase):
         Test the PptviewDocument.load_presentation() method when the temporary directory does not exist and the PPT is
         not successfully opened
         """
-        # GIVEN: A reset mocked_os
-        self.mock_os.reset()
+        # GIVEN: A reset mock_os_isdir
+        self.mock_os_isdir.reset()
 
         # WHEN: The temporary directory does not exist and OpenPPT returns unsuccessfully (-1)
-        self.mock_os.return_value = False
-        self.mock_controller.process.OpenPPT.return_value = -1
-        instance = PptviewDocument(self.mock_controller, self.mock_presentation)
-        instance.file_path = 'test\path.ppt'
-        if os.name == 'nt':
-            result = instance.load_presentation()
+        with patch('openlp.plugins.presentations.lib.pptviewcontroller.os.makedirs') as mock_makedirs:
+            self.mock_os_isdir.return_value = False
+            self.mock_controller.process.OpenPPT.return_value = -1
+            instance = PptviewDocument(self.mock_controller, self.mock_presentation)
+            instance.file_path = 'test\path.ppt'
+            if os.name == 'nt':
+                result = instance.load_presentation()
 
-            # THEN: The temporary directory should be created and PptviewDocument.load_presentation should return False
-            self.mock_os.makedirs.assert_called_once_with('temp folder')
-            self.assertFalse(result)
+                # THEN: The temporary directory should be created and PptviewDocument.load_presentation should return False
+                self.mock_makedirs.assert_called_once_with(self.temp_folder)
+                self.assertFalse(result)
 
     def create_titles_and_notes_test(self):
         """
