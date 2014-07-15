@@ -388,8 +388,15 @@ class HttpRouter(RegistryProperties):
         """
         log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name, dimensions, file_name))
         supported_controllers = ['presentations', 'images']
-        if not dimensions:
-            dimensions = ''
+        # -1 means use the default dimension in ImageManager
+        width = -1
+        height = -1
+        if dimensions:
+            match = re.search('(\d+)x(\d+)', dimensions)
+            if match:
+                # let's make sure that the dimensions are within reason
+                width = sorted([10, int(match.group(1)), 1000])[1]
+                height = sorted([10, int(match.group(2)), 1000])[1]
         content = ''
         content_type = None
         if controller_name and file_name:
@@ -400,9 +407,9 @@ class HttpRouter(RegistryProperties):
                                                               'thumbnails/' + full_path))
                     if os.path.exists(full_path):
                         path, just_file_name = os.path.split(full_path)
-                        self.image_manager.add_image(full_path, just_file_name, None, dimensions)
+                        self.image_manager.add_image(full_path, just_file_name, None, width, height)
                         ext, content_type = self.get_content_type(full_path)
-                        image = self.image_manager.get_image(full_path, just_file_name, dimensions)
+                        image = self.image_manager.get_image(full_path, just_file_name, width, height)
                         content = image_to_byte(image, False)
         if len(content) == 0:
             return self.do_not_found()

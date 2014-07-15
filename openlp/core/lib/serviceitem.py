@@ -321,6 +321,9 @@ class ServiceItem(RegistryProperties):
         :param notes: Notes to show in the webinteface, optional.
         """
         self.service_item_type = ServiceItemType.Command
+        # If the item should have a display title but this frame doesn't have one, we make one up
+        if self.is_capable(ItemCapabilities.HasDisplayTitle) and not display_title:
+            display_title = translate('OpenLP.ServiceItem', '[slide %d]') % (len(self._raw_frames) + 1)
         self._raw_frames.append({'title': file_name, 'image': image, 'path': path,
                                  'display_title': display_title, 'notes': notes})
         self._new_item()

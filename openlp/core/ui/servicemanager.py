@@ -1284,9 +1284,6 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 # prefer to use a display_title
                 if service_item_from_item.is_capable(ItemCapabilities.HasDisplayTitle):
                     text = frame['display_title'].replace('\n', ' ')
-                    # oops, it is missing, let's make one up
-                    if len(text.strip()) == 0:
-                        text = '[slide ' + str(count+1) + ']'
                 else:
                     text = frame['title'].replace('\n', ' ')
                 child.setText(0, text[:40])

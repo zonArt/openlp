@@ -867,11 +867,7 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param message: remote message to be processed.
         """
-        index = 0
-        if len(message) == 0 or message[0] == 'undefined':
-            return
-        else:
-            index = int(message[0])
+        index = int(message[0])
         if not self.service_item:
             return
         if self.service_item.is_command():

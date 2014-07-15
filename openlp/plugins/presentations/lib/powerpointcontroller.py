@@ -413,7 +413,6 @@ class PowerpointDocument(PresentationDocument):
                 note = ' '
             notes.append(note)
         self.save_titles_and_notes(titles, notes)
-        return
 
     def show_error_msg(self):
         """

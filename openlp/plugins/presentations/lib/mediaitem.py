@@ -326,23 +326,22 @@ class PresentationMediaItem(MediaManagerItem):
                     if img:
                         # Get titles and notes
                         titles, notes = doc.get_titles_and_notes()
+                        service_item.add_capability(ItemCapabilities.HasDisplayTitle)
+                        if notes.count('') != len(notes):
+                            service_item.add_capability(ItemCapabilities.HasNotes)
+                        service_item.add_capability(ItemCapabilities.HasThumbnails)
                         while img:
                             # Use title and note if available
-                            title = None
+                            title = ''
                             if titles and len(titles) >= i:
                                 title = titles[i - 1]
-                            note = None
+                            note = ''
                             if notes and len(notes) >= i:
                                 note = notes[i - 1]
                             service_item.add_from_command(path, name, img, title, note)
                             i += 1
                             img = doc.get_thumbnail_path(i, True)
                         doc.close_presentation()
-                        if titles.count('') != len(titles):
-                            service_item.add_capability(ItemCapabilities.HasDisplayTitle)
-                        if notes.count('') != len(notes):
-                            service_item.add_capability(ItemCapabilities.HasNotes)
-                        service_item.add_capability(ItemCapabilities.HasThumbnails)
                         return True
                     else:
                         # File is no longer present

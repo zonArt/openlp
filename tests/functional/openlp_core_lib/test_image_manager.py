@@ -96,30 +96,30 @@ class TestImageManager(TestCase, TestMixin):
         """
         # GIVEN: add an image with specific dimensions
         full_path = os.path.normpath(os.path.join(TEST_PATH, 'church.jpg'))
-        self.image_manager.add_image(full_path, 'church.jpg', None, '80x80')
+        self.image_manager.add_image(full_path, 'church.jpg', None, 80, 80)
 
         # WHEN: the image is retrieved
-        image = self.image_manager.get_image(full_path, 'church.jpg', '80x80')
+        image = self.image_manager.get_image(full_path, 'church.jpg', 80, 80)
 
         # THEN: The return should be of type image
         self.assertEqual(isinstance(image, QtGui.QImage), True, 'The returned object should be a QImage')
 
         # WHEN: adding the same image with different dimensions
-        self.image_manager.add_image(full_path, 'church.jpg', None, '100x100')
+        self.image_manager.add_image(full_path, 'church.jpg', None, 100, 100)
 
         # THEN: the cache should contain two pictures
         self.assertEqual(len(self.image_manager._cache), 2,
                          'Image manager should consider two dimensions of the same picture as different')
 
         # WHEN: adding the same image with first dimensions
-        self.image_manager.add_image(full_path, 'church.jpg', None, '80x80')
+        self.image_manager.add_image(full_path, 'church.jpg', None, 80, 80)
 
         # THEN: the cache should still contain only two pictures
         self.assertEqual(len(self.image_manager._cache), 2, 'Same dimensions should not be added again')
 
         # WHEN: calling with correct image, but wrong dimensions
         with self.assertRaises(KeyError) as context:
-            self.image_manager.get_image(full_path, 'church.jpg', '120x120')
+            self.image_manager.get_image(full_path, 'church.jpg', 120, 120)
         self.assertNotEquals(context.exception, '', 'KeyError exception should have been thrown for missing dimension')
 
     def process_cache_test(self):
@@ -184,7 +184,7 @@ class TestImageManager(TestCase, TestMixin):
 
         :param image: The name of the image. E. g. ``image1``
         """
-        return self.image_manager._cache[(TEST_PATH, image, '')].priority
+        return self.image_manager._cache[(TEST_PATH, image, -1, -1)].priority
 
     def mocked_resize_image(self, *args):
         """

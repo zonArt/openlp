@@ -218,7 +218,6 @@ class PptviewDocument(PresentationDocument):
                         list_to_add[index] = text
         # now let's write the files
         self.save_titles_and_notes(titles, notes)
-        return
 
     def close_presentation(self):
         """
