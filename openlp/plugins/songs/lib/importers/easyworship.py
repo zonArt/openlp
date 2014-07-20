@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`ewimport` module provides the functionality for importing
-EasyWorship song databases into the current installation database.
+The :mod:`easyworship` module provides the functionality for importing EasyWorship song databases into OpenLP.
 """
 
 import os

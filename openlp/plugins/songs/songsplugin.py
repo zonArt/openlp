@@ -49,7 +49,7 @@ from openlp.plugins.songs.lib import clean_song, upgrade
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.mediaitem import SongSearch
 from openlp.plugins.songs.lib.importer import SongFormat
-from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
+from openlp.plugins.songs.lib.importers.openlp import OpenLPSongImport
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
 from openlp.plugins.songs.lib.songstab import SongsTab
 
@@ -64,6 +64,7 @@ __default_settings__ = {
     'songs/add song from service': True,
     'songs/display songbar': True,
     'songs/display songbook': False,
+    'songs/display copyright symbol': False,
     'songs/last directory import': '',
     'songs/last directory export': '',
     'songs/songselect username': '',

@@ -105,10 +105,12 @@ try:
         tag_version, tag_revision = tags[-1].split()
     # If they are equal, then this tree is tarball with the source for the release. We do not want the revision number
     # in the version string.
+    tree_revision = tree_revision.strip()
+    tag_revision = tag_revision.strip()
     if tree_revision == tag_revision:
-        version_string = tag_version
+        version_string = tag_version.decode('utf-8')
     else:
-        version_string = '%s-bzr%s' % (tag_version, tree_revision)
+        version_string = '%s-bzr%s' % (tag_version.decode('utf-8'), tree_revision.decode('utf-8'))
     ver_file = open(VERSION_FILE, 'w')
     ver_file.write(version_string)
 except:
@@ -152,7 +154,7 @@ using a computer and a data projector.""",
         'Operating System :: POSIX :: BSD :: FreeBSD',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'Topic :: Desktop Environment :: Gnome',
         'Topic :: Desktop Environment :: K Desktop Environment (KDE)',
         'Topic :: Multimedia',

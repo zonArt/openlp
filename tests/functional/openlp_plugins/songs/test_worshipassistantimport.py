@@ -27,49 +27,30 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`propresenterimport` module provides the functionality for importing
-ProPresenter song files into the current installation database.
+The :mod:`worshipassistantimport` module provides the functionality for importing
+WorshipAssistant song files into the current installation database.
 """
 
 import os
-import base64
-from lxml import objectify
 
-from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import strip_rtf
-from .songimport import SongImport
+from tests.helpers.songfileimport import SongImportTestHelper
+
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'worshipassistantsongs'))
 
 
-class ProPresenterImport(SongImport):
-    """
-    The :class:`ProPresenterImport` class provides OpenLP with the
-    ability to import ProPresenter song files.
-    """
-    def do_import(self):
-        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
-        for file_path in self.import_source:
-            if self.stop_import_flag:
-                return
-            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
-            root = objectify.parse(open(file_path, 'rb')).getroot()
-            self.process_song(root)
+class TestWorshipAssistantFileImport(SongImportTestHelper):
 
-    def process_song(self, root):
-        self.set_defaults()
-        self.title = root.get('CCLISongTitle')
-        self.copyright = root.get('CCLICopyrightInfo')
-        self.comments = root.get('notes')
-        self.ccli_number = root.get('CCLILicenseNumber')
-        for author_key in ['author', 'artist', 'CCLIArtistCredits']:
-            author = root.get(author_key)
-            if len(author) > 0:
-                self.parse_author(author)
-        count = 0
-        for slide in root.slides.RVDisplaySlide:
-            count += 1
-            RTFData = slide.displayElements.RVTextElement.get('RTFData')
-            rtf = base64.standard_b64decode(RTFData)
-            words, encoding = strip_rtf(rtf.decode())
-            self.add_verse(words, "v%d" % count)
-        if not self.finish():
-            self.log_error(self.import_source)
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'WorshipAssistantImport'
+        self.importer_module_name = 'worshipassistant'
+        super(TestWorshipAssistantFileImport, self).__init__(*args, **kwargs)
+
+    def test_song_import(self):
+        """
+        Test that loading an Worship Assistant file works correctly
+        """
+        self.file_import(os.path.join(TEST_PATH, 'du_herr.csv'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'du_herr.json')))
+        self.file_import(os.path.join(TEST_PATH, 'would_you_be_free.csv'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'would_you_be_free.json')))

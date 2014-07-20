@@ -27,57 +27,55 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlyricsexport` module provides the functionality for exporting songs from the database to the OpenLyrics
-format.
+The :mod:`openlyrics` module provides the functionality for importing
+songs which are saved as OpenLyrics files.
 """
+
 import logging
 import os
 
 from lxml import etree
 
-from openlp.core.common import RegistryProperties, check_directory_exists, translate
-from openlp.core.utils import clean_filename
-from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics
+from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib.importers.songimport import SongImport
+from openlp.plugins.songs.lib.ui import SongStrings
+from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics, OpenLyricsError
 
 log = logging.getLogger(__name__)
 
 
-class OpenLyricsExport(RegistryProperties):
+class OpenLyricsImport(SongImport):
     """
-    This provides the Openlyrics export.
+    This provides the Openlyrics import.
     """
-    def __init__(self, parent, songs, save_path):
+    def __init__(self, manager, **kwargs):
         """
-        Initialise the export.
+        Initialise the Open Lyrics importer.
         """
-        log.debug('initialise OpenLyricsExport')
-        self.parent = parent
-        self.manager = parent.plugin.manager
-        self.songs = songs
-        self.save_path = save_path
-        check_directory_exists(self.save_path)
+        log.debug('initialise OpenLyricsImport')
+        super(OpenLyricsImport, self).__init__(manager, **kwargs)
+        self.open_lyrics = OpenLyrics(self.manager)
 
-    def do_export(self):
+    def do_import(self):
         """
-        Export the songs.
+        Imports the songs.
         """
-        log.debug('started OpenLyricsExport')
-        open_lyrics = OpenLyrics(self.manager)
-        self.parent.progress_bar.setMaximum(len(self.songs))
-        for song in self.songs:
-            self.application.process_events()
-            if self.parent.stop_export_flag:
-                return False
-            self.parent.increment_progress_bar(
-                translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') % song.title)
-            xml = open_lyrics.song_to_xml(song)
-            tree = etree.ElementTree(etree.fromstring(xml.encode()))
-            filename = '%s (%s)' % (song.title, ', '.join([author.display_name for author in song.authors]))
-            filename = clean_filename(filename)
-            # Ensure the filename isn't too long for some filesystems
-            filename = '%s.xml' % filename[0:250 - len(self.save_path)]
-            # Pass a file object, because lxml does not cope with some special
-            # characters in the path (see lp:757673 and lp:744337).
-            tree.write(open(os.path.join(self.save_path, filename), 'wb'), encoding='utf-8', xml_declaration=True,
-                       pretty_print=True)
-        return True
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        parser = etree.XMLParser(remove_blank_text=True)
+        for file_path in self.import_source:
+            if self.stop_import_flag:
+                return
+            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
+            try:
+                # Pass a file object, because lxml does not cope with some
+                # special characters in the path (see lp:757673 and lp:744337).
+                parsed_file = etree.parse(open(file_path, 'rb'), parser)
+                xml = etree.tostring(parsed_file).decode()
+                self.open_lyrics.xml_to_song(xml)
+            except etree.XMLSyntaxError:
+                log.exception('XML syntax error in file %s' % file_path)
+                self.log_error(file_path, SongStrings.XMLSyntaxError)
+            except OpenLyricsError as exception:
+                log.exception('OpenLyricsException %d in file %s: %s' %
+                              (exception.type, file_path, exception.log_message))
+                self.log_error(file_path, exception.display_message)
