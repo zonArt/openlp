@@ -69,6 +69,14 @@ class ThemesTab(SettingsTab):
         self.default_list_view.setObjectName('default_list_view')
         self.global_group_box_layout.addWidget(self.default_list_view)
         self.left_layout.addWidget(self.global_group_box)
+        self.universal_group_box = QtGui.QGroupBox(self.left_column)
+        self.universal_group_box.setObjectName('universal_group_box')
+        self.universal_group_box_layout = QtGui.QVBoxLayout(self.universal_group_box)
+        self.universal_group_box_layout.setObjectName('universal_group_box_layout')
+        self.wrap_footer_check_box = QtGui.QCheckBox(self.universal_group_box)
+        self.wrap_footer_check_box.setObjectName('wrap_footer_check_box')
+        self.universal_group_box_layout.addWidget(self.wrap_footer_check_box)
+        self.left_layout.addWidget(self.universal_group_box)
         self.left_layout.addStretch()
         self.level_group_box = QtGui.QGroupBox(self.right_column)
         self.level_group_box.setObjectName('level_group_box')
@@ -112,6 +120,8 @@ class ThemesTab(SettingsTab):
         """
         self.tab_title_visible = UiStrings().Themes
         self.global_group_box.setTitle(translate('OpenLP.ThemesTab', 'Global Theme'))
+        self.universal_group_box.setTitle(translate('OpenLP.ThemesTab', 'Universal Settings'))
+        self.wrap_footer_check_box.setText(translate('OpenLP.ThemesTab', '&Wrap footer text'))
         self.level_group_box.setTitle(translate('OpenLP.ThemesTab', 'Theme Level'))
         self.song_level_radio_button.setText(translate('OpenLP.ThemesTab', 'S&ong Level'))
         self.song_level_label.setText(
@@ -136,6 +146,7 @@ class ThemesTab(SettingsTab):
         settings.beginGroup(self.settings_section)
         self.theme_level = settings.value('theme level')
         self.global_theme = settings.value('global theme')
+        wrap_footer = settings.value('wrap footer')
         settings.endGroup()
         if self.theme_level == ThemeLevel.Global:
             self.global_level_radio_button.setChecked(True)
@@ -143,15 +154,18 @@ class ThemesTab(SettingsTab):
             self.service_level_radio_button.setChecked(True)
         else:
             self.song_level_radio_button.setChecked(True)
+        self.wrap_footer_check_box.setChecked(wrap_footer)
 
     def save(self):
         """
         Save the settings
         """
+        wrap_footer = self.wrap_footer_check_box.isChecked()
         settings = Settings()
         settings.beginGroup(self.settings_section)
         settings.setValue('theme level', self.theme_level)
         settings.setValue('global theme', self.global_theme)
+        settings.setValue('wrap footer', wrap_footer)
         settings.endGroup()
         self.renderer.set_theme_level(self.theme_level)
         if self.tab_visited:
