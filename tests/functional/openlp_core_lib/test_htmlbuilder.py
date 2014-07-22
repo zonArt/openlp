@@ -13,7 +13,6 @@ from openlp.core.lib.theme import HorizontalType, VerticalType
 from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 
-
 HTML = """
 <!DOCTYPE html>
 <html>
@@ -216,7 +215,6 @@ class Htmbuilder(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-
     def build_html_test(self):
         """
         Test the build_html() function
@@ -341,6 +339,18 @@ class Htmbuilder(TestCase, TestMixin):
 
         # THEN: THE css should be the same.
         assert FOOTER_CSS == css, 'The footer strings should be equal.'
+
+    def build_footer_css_wrap_test(self):
+        """
+        Test the build_footer_css() function
+        """
+        # GIVEN: Create a theme.
+        item = MagicMock()
+        item.footer = QtCore.QRect(10, 921, 1260, 103)
+        item.theme_data.font_footer_name = 'Arial'
+        item.theme_data.font_footer_size = 12
+        item.theme_data.font_footer_color = '#FFFFFF'
+        height = 1024
 
         # WHEN: Settings say that footer should wrap
         Settings().setValue('themes/wrap footer', True)

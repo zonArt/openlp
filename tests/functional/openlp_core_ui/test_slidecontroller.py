@@ -504,7 +504,6 @@ class TestSlideController(TestCase):
         mocked_item = MagicMock()
         mocked_item.is_command.return_value = True
         mocked_item.name = 'Mocked Item'
-        mocked_execute = MagicMock()
         mocked_update_preview = MagicMock()
         mocked_preview_widget = MagicMock()
         mocked_slide_selected = MagicMock()
@@ -516,10 +515,10 @@ class TestSlideController(TestCase):
             slide_controller.preview_widget = mocked_preview_widget
             slide_controller.slide_selected = mocked_slide_selected
             slide_controller.is_live = True
-    
+
             # WHEN: The method is called
             slide_controller.on_slide_selected_index([9])
-    
+
         # THEN: It should have sent a notification
         mocked_item.is_command.assert_called_once_with()
         mocked_execute.assert_called_once_with('mocked item_slide', [mocked_item, True, 9])
@@ -535,7 +534,6 @@ class TestSlideController(TestCase):
         mocked_item = MagicMock()
         mocked_item.is_command.return_value = False
         mocked_item.name = 'Mocked Item'
-        mocked_execute = MagicMock()
         mocked_update_preview = MagicMock()
         mocked_preview_widget = MagicMock()
         mocked_slide_selected = MagicMock()
@@ -546,7 +544,7 @@ class TestSlideController(TestCase):
             slide_controller.update_preview = mocked_update_preview
             slide_controller.preview_widget = mocked_preview_widget
             slide_controller.slide_selected = mocked_slide_selected
-    
+
             # WHEN: The method is called
             slide_controller.on_slide_selected_index([7])
 
@@ -556,5 +554,3 @@ class TestSlideController(TestCase):
         self.assertEqual(0, mocked_update_preview.call_count, 'Update preview should not have been called')
         mocked_preview_widget.change_slide.assert_called_once_with(7)
         mocked_slide_selected.assert_called_once_with()
-        
-        
