@@ -146,7 +146,7 @@ class ThemesTab(SettingsTab):
         settings.beginGroup(self.settings_section)
         self.theme_level = settings.value('theme level')
         self.global_theme = settings.value('global theme')
-        wrap_footer = settings.value('wrap footer')
+        self.wrap_footer_check_box.setChecked(settings.value('wrap footer'))
         settings.endGroup()
         if self.theme_level == ThemeLevel.Global:
             self.global_level_radio_button.setChecked(True)
@@ -154,18 +154,16 @@ class ThemesTab(SettingsTab):
             self.service_level_radio_button.setChecked(True)
         else:
             self.song_level_radio_button.setChecked(True)
-        self.wrap_footer_check_box.setChecked(wrap_footer)
 
     def save(self):
         """
         Save the settings
         """
-        wrap_footer = self.wrap_footer_check_box.isChecked()
         settings = Settings()
         settings.beginGroup(self.settings_section)
         settings.setValue('theme level', self.theme_level)
         settings.setValue('global theme', self.global_theme)
-        settings.setValue('wrap footer', wrap_footer)
+        settings.setValue('wrap footer', self.wrap_footer_check_box.isChecked())
         settings.endGroup()
         self.renderer.set_theme_level(self.theme_level)
         if self.tab_visited:

@@ -320,7 +320,7 @@ class Htmbuilder(TestCase, TestMixin):
         css = build_lyrics_format_css(theme_data, width, height)
 
         # THEN: They should be equal.
-        assert LYRICS_FORMAT_CSS == css, 'The lyrics format css should be equal.'
+        self.assertEqual(LYRICS_FORMAT_CSS, css, 'The lyrics format css should be equal.')
 
     def build_footer_css_test(self):
         """
@@ -357,4 +357,4 @@ class Htmbuilder(TestCase, TestMixin):
         css = build_footer_css(item, height)
 
         # THEN: Footer should wrap
-        assert FOOTER_CSS_WRAP == css, 'The footer strings should be equal.'
+        self.assertEqual(FOOTER_CSS_WRAP, css, 'The footer strings should be equal.')
