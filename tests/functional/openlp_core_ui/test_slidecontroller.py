@@ -504,21 +504,20 @@ class TestSlideController(TestCase):
         mocked_item = MagicMock()
         mocked_item.is_command.return_value = True
         mocked_item.name = 'Mocked Item'
-        mocked_execute = MagicMock()
         mocked_update_preview = MagicMock()
         mocked_preview_widget = MagicMock()
         mocked_slide_selected = MagicMock()
-        Registry.execute = mocked_execute
-        Registry.create()
-        slide_controller = SlideController(None)
-        slide_controller.service_item = mocked_item
-        slide_controller.update_preview = mocked_update_preview
-        slide_controller.preview_widget = mocked_preview_widget
-        slide_controller.slide_selected = mocked_slide_selected
-        slide_controller.is_live = True
+        with patch.object(Registry, 'execute') as mocked_execute:
+            Registry.create()
+            slide_controller = SlideController(None)
+            slide_controller.service_item = mocked_item
+            slide_controller.update_preview = mocked_update_preview
+            slide_controller.preview_widget = mocked_preview_widget
+            slide_controller.slide_selected = mocked_slide_selected
+            slide_controller.is_live = True
 
-        # WHEN: The method is called
-        slide_controller.on_slide_selected_index([9])
+            # WHEN: The method is called
+            slide_controller.on_slide_selected_index([9])
 
         # THEN: It should have sent a notification
         mocked_item.is_command.assert_called_once_with()
@@ -535,20 +534,19 @@ class TestSlideController(TestCase):
         mocked_item = MagicMock()
         mocked_item.is_command.return_value = False
         mocked_item.name = 'Mocked Item'
-        mocked_execute = MagicMock()
         mocked_update_preview = MagicMock()
         mocked_preview_widget = MagicMock()
         mocked_slide_selected = MagicMock()
-        Registry.execute = mocked_execute
-        Registry.create()
-        slide_controller = SlideController(None)
-        slide_controller.service_item = mocked_item
-        slide_controller.update_preview = mocked_update_preview
-        slide_controller.preview_widget = mocked_preview_widget
-        slide_controller.slide_selected = mocked_slide_selected
+        with patch.object(Registry, 'execute') as mocked_execute:
+            Registry.create()
+            slide_controller = SlideController(None)
+            slide_controller.service_item = mocked_item
+            slide_controller.update_preview = mocked_update_preview
+            slide_controller.preview_widget = mocked_preview_widget
+            slide_controller.slide_selected = mocked_slide_selected
 
-        # WHEN: The method is called
-        slide_controller.on_slide_selected_index([7])
+            # WHEN: The method is called
+            slide_controller.on_slide_selected_index([7])
 
         # THEN: It should have sent a notification
         mocked_item.is_command.assert_called_once_with()
