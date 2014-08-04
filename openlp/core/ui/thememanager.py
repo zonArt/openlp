@@ -384,16 +384,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         self.application.set_busy_cursor()
         if path:
             Settings().setValue(self.settings_section + '/last directory export', path)
-            theme_path = os.path.join(path, theme + '.otz')
-            theme_zip = None
             try:
-                theme_zip = zipfile.ZipFile(theme_path, 'w')
-                source = os.path.join(self.path, theme)
-                for files in os.walk(source):
-                    for name in files[2]:
-                        theme_zip.write(
-                            os.path.join(source, name).encode('utf-8'), os.path.join(theme, name).encode('utf-8')
-                        )
+                self._export_theme(path, theme)
                 QtGui.QMessageBox.information(self,
                                               translate('OpenLP.ThemeManager', 'Theme Exported'),
                                               translate('OpenLP.ThemeManager',
@@ -403,10 +395,28 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 critical_error_message_box(translate('OpenLP.ThemeManager', 'Theme Export Failed'),
                                            translate('OpenLP.ThemeManager',
                                                      'Your theme could not be exported due to an error.'))
-            finally:
-                if theme_zip:
-                    theme_zip.close()
         self.application.set_normal_cursor()
+
+    def _export_theme(self, path, theme):
+        """
+        Create the zipfile with the theme contents.
+        :param path: Location where the zip file will be placed
+        :param theme: The name of the theme to be exported
+        """
+        theme_path = os.path.join(path, theme + '.otz')
+        try:
+            theme_zip = zipfile.ZipFile(theme_path, 'w')
+            source = os.path.join(self.path, theme)
+            for files in os.walk(source):
+                for name in files[2]:
+                    theme_zip.write(os.path.join(source, name), os.path.join(theme, name))
+        except (IOError, OSError):
+            if theme_zip:
+                theme_zip.close()
+                shutil.rmtree(theme_path, True)
+            raise
+        else:
+            theme_zip.close()
 
     def on_import_theme(self, field=None):
         """

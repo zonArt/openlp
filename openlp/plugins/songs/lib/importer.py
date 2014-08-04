@@ -51,12 +51,12 @@ from .importers.foilpresenter import FoilPresenterImport
 from .importers.zionworx import ZionWorxImport
 from .importers.propresenter import ProPresenterImport
 from .importers.worshipassistant import WorshipAssistantImport
-# Imports that might fail
-
+from .importers.powerpraise import PowerPraiseImport
+from .importers.presentationmanager import PresentationManagerImport
 
 log = logging.getLogger(__name__)
 
-
+# Imports that might fail
 try:
     from .importers.songsoffellowship import SongsOfFellowshipImport
     HAS_SOF = True
@@ -160,17 +160,19 @@ class SongFormat(object):
     FoilPresenter = 8
     MediaShout = 9
     OpenSong = 10
-    PowerSong = 11
-    ProPresenter = 12
-    SongBeamer = 13
-    SongPro = 14
-    SongShowPlus = 15
-    SongsOfFellowship = 16
-    SundayPlus = 17
-    WordsOfWorship = 18
-    WorshipAssistant = 19
-    WorshipCenterPro = 20
-    ZionWorx = 21
+    PowerPraise = 11
+    PowerSong = 12
+    PresentationManager = 13
+    ProPresenter = 14
+    SongBeamer = 15
+    SongPro = 16
+    SongShowPlus = 17
+    SongsOfFellowship = 18
+    SundayPlus = 19
+    WordsOfWorship = 20
+    WorshipAssistant = 21
+    WorshipCenterPro = 22
+    ZionWorx = 23
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -266,6 +268,12 @@ class SongFormat(object):
             'name': WizardStrings.OS,
             'prefix': 'openSong'
         },
+        PowerPraise: {
+            'class': PowerPraiseImport,
+            'name': 'PowerPraise',
+            'prefix': 'powerPraise',
+            'filter': '%s (*.ppl)' % translate('SongsPlugin.ImportWizardForm', 'PowerPraise Song Files')
+        },
         PowerSong: {
             'class': PowerSongImport,
             'name': 'PowerSong 1.0',
@@ -273,6 +281,12 @@ class SongFormat(object):
             'selectMode': SongFormatSelect.SingleFolder,
             'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm', 'You need to specify a valid PowerSong 1.0 '
                                                                           'database folder.')
+        },
+        PresentationManager: {
+            'class': PresentationManagerImport,
+            'name': 'PresentationManager',
+            'prefix': 'presentationManager',
+            'filter': '%s (*.sng)' % translate('SongsPlugin.ImportWizardForm', 'PresentationManager Song Files')
         },
         ProPresenter: {
             'class': ProPresenterImport,
@@ -374,7 +388,9 @@ class SongFormat(object):
             SongFormat.FoilPresenter,
             SongFormat.MediaShout,
             SongFormat.OpenSong,
+            SongFormat.PowerPraise,
             SongFormat.PowerSong,
+            SongFormat.PresentationManager,
             SongFormat.ProPresenter,
             SongFormat.SongBeamer,
             SongFormat.SongPro,

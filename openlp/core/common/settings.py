@@ -286,6 +286,7 @@ class Settings(QtCore.QSettings):
         'themes/last directory export': '',
         'themes/last directory import': '',
         'themes/theme level': ThemeLevel.Song,
+        'themes/wrap footer': False,
         'user interface/live panel': True,
         'user interface/live splitter geometry': QtCore.QByteArray(),
         'user interface/lock panel': False,

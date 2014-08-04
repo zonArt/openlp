@@ -116,7 +116,9 @@ class JenkinsTrigger(object):
         print('%s (revision %s)' % (get_repo_name(), revno))
 
         for job in OpenLPJobs.Jobs:
-            self.__print_build_info(job)
+            if not self.__print_build_info(job):
+                print('Stopping after failure')
+                break
 
     def open_browser(self):
         """
@@ -133,6 +135,7 @@ class JenkinsTrigger(object):
         :param job_name: The name of the job we want the information from. For example *Branch-01-Pull*. Use the class
          variables from the :class:`OpenLPJobs` class.
         """
+        is_success = False
         job = self.jenkins_instance.job(job_name)
         while job.info['inQueue']:
             time.sleep(1)
@@ -141,11 +144,13 @@ class JenkinsTrigger(object):
         if build.info['result'] == 'SUCCESS':
             # Make 'SUCCESS' green.
             result_string = '%s%s%s' % (Colour.GREEN_START, build.info['result'], Colour.GREEN_END)
+            is_success = True
         else:
             # Make 'FAILURE' red.
             result_string = '%s%s%s' % (Colour.RED_START, build.info['result'], Colour.RED_END)
         url = build.info['url']
         print('[%s] %s' % (result_string, url))
+        return is_success
 
 
 def get_repo_name():

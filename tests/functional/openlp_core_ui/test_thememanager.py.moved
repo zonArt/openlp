@@ -27,16 +27,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.ui.thememanager package.
+Package to test the openlp.core.ui.slidecontroller package.
 """
-import zipfile
 import os
 
 from unittest import TestCase
-from tests.interfaces import MagicMock
 
-from openlp.core.ui import ThemeManager
 from openlp.core.common import Registry
+from openlp.core.ui import ThemeManager
 
 from tests.utils.constants import TEST_RESOURCES_PATH
 from tests.interfaces import MagicMock, patch
@@ -49,25 +47,6 @@ class TestThemeManager(TestCase):
         Set up the tests
         """
         Registry.create()
-
-    def export_theme_test(self):
-        """
-        Test exporting a theme .
-        """
-        # GIVEN: A new ThemeManager instance.
-        theme_manager = ThemeManager()
-        theme_manager.path = os.path.join(TEST_RESOURCES_PATH, 'themes')
-        zipfile.ZipFile.__init__ = MagicMock()
-        zipfile.ZipFile.__init__.return_value = None
-        zipfile.ZipFile.write = MagicMock()
-
-        # WHEN: The theme is exported
-        theme_manager._export_theme('/some/path', 'Default')
-
-        # THEN: The zipfile should be created at the given path
-        zipfile.ZipFile.__init__.assert_called_with('/some/path/Default.otz', 'w')
-        zipfile.ZipFile.write.assert_called_with(os.path.join(TEST_RESOURCES_PATH, 'themes', 'Default', 'Default.xml'),
-                                                 'Default/Default.xml')
 
     def initial_theme_manager_test(self):
         """
