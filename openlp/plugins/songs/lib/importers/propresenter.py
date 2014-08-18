@@ -55,11 +55,11 @@ class ProPresenterImport(SongImport):
                 return
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
             root = objectify.parse(open(file_path, 'rb')).getroot()
-            self.process_song(root)
+            self.process_song(root, file_path)
 
-    def process_song(self, root):
+    def process_song(self, root, filename):
         self.set_defaults()
-        self.title = root.get('CCLISongTitle')
+        self.title = os.path.basename(filename).rstrip('.pro4')
         self.copyright = root.get('CCLICopyrightInfo')
         self.comments = root.get('notes')
         self.ccli_number = root.get('CCLILicenseNumber')
@@ -77,8 +77,5 @@ class ProPresenterImport(SongImport):
             rtf = base64.standard_b64decode(RTFData)
             words, encoding = strip_rtf(rtf.decode())
             self.add_verse(words, "v%d" % count)
-        # Some songs don't have a title - use the first line as title
-        if not self.title:
-            self.title = self.guess_title()
         if not self.finish():
             self.log_error(self.import_source)
