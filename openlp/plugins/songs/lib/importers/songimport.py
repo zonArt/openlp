@@ -316,6 +316,15 @@ class SongImport(QtCore.QObject):
             self.verse_order_list_generated.append(self.verse_order_list_generated[-1])
             self.verse_order_list_generated_useful = True
 
+    def guess_title(self):
+        """
+        Guess the title from the first verse (to be used when the song has no title information)
+        :return: The guessed title
+        """
+        if not self.verses:
+            return ''
+        return self.verses[0][1].split('\n')[0].strip()
+
     def check_complete(self):
         """
         Check the mandatory fields are entered (i.e. title and a verse)

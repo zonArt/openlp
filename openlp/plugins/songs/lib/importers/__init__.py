@@ -27,5 +27,5 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`~openlp.plugins.songs.lib.import` module contains importers for the Songs plugin.
+The :mod:`~openlp.plugins.songs.lib.importers` module contains importers for the Songs plugin.
 """
