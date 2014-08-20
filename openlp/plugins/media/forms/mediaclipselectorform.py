@@ -94,8 +94,6 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         Exit Dialog and do not save
         """
         log.debug('MediaClipSelectorForm.reject')
-        print(self.geometry().height())
-        print(self.geometry().width())
         # Tear down vlc
         if self.vlc_media_player:
             self.vlc_media_player.stop()
