@@ -138,7 +138,7 @@ class Ui_MediaClipSelector(object):
         self.media_view_frame = QtGui.QFrame(self.centralwidget)
         self.media_view_frame.setMinimumSize(QtCore.QSize(665, 375))
         self.media_view_frame.setStyleSheet("background-color:black;")
-        self.media_view_frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.media_view_frame.setFrameShape(QtGui.QFrame.NoFrame)
         self.media_view_frame.setFrameShadow(QtGui.QFrame.Raised)
         self.media_view_frame.setObjectName("media_view_frame")
         self.gridLayout.addWidget(self.media_view_frame, 5, 0, 1, 5)
