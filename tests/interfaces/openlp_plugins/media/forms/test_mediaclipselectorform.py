@@ -100,7 +100,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
             self.form.exec_()
 
             # WHEN: The load button is clicked with no path set
-            QtTest.QTest.mouseClick(self.form.load_disc_pushbutton, QtCore.Qt.LeftButton)
+            QtTest.QTest.mouseClick(self.form.load_disc_button, QtCore.Qt.LeftButton)
 
             # THEN: we should get an error
             mocked_critical_error_message_box.assert_called_with(message='No path was given')
@@ -109,7 +109,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
             mocked_os_path_exists.return_value = False
             self.form.media_path_combobox.insertItem(0, '/non-existing/test-path.test')
             self.form.media_path_combobox.setCurrentIndex(0)
-            QtTest.QTest.mouseClick(self.form.load_disc_pushbutton, QtCore.Qt.LeftButton)
+            QtTest.QTest.mouseClick(self.form.load_disc_button, QtCore.Qt.LeftButton)
 
             # THEN: we should get an error
             assert self.form.media_path_combobox.currentText() == '/non-existing/test-path.test',\
@@ -122,7 +122,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
             self.form.vlc_media_player.play.return_value = -1
             self.form.media_path_combobox.insertItem(0, '/existing/test-path.test')
             self.form.media_path_combobox.setCurrentIndex(0)
-            QtTest.QTest.mouseClick(self.form.load_disc_pushbutton, QtCore.Qt.LeftButton)
+            QtTest.QTest.mouseClick(self.form.load_disc_button, QtCore.Qt.LeftButton)
 
             # THEN: we should get an error
             assert self.form.media_path_combobox.currentText() == '/existing/test-path.test',\
@@ -141,15 +141,15 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
             self.form.subtitle_tracks_combobox.itemData = MagicMock()
             self.form.audio_tracks_combobox.itemData.return_value = None
             self.form.subtitle_tracks_combobox.itemData.return_value = None
-            self.form.title_combo_box.insertItem(0, 'Test Title 0')
-            self.form.title_combo_box.insertItem(1, 'Test Title 1')
+            self.form.titles_combo_box.insertItem(0, 'Test Title 0')
+            self.form.titles_combo_box.insertItem(1, 'Test Title 1')
 
             # WHEN: There exists audio and subtitle tracks and the index is updated.
             self.form.vlc_media_player.audio_get_track_description.return_value = [(-1, b'Disabled'),
                                                                                    (0, b'Audio Track 1')]
             self.form.vlc_media_player.video_get_spu_description.return_value = [(-1, b'Disabled'),
                                                                                  (0, b'Subtitle Track 1')]
-            self.form.title_combo_box.setCurrentIndex(1)
+            self.form.titles_combo_box.setCurrentIndex(1)
 
             # THEN: The subtitle and audio track comboboxes should be updated and get signals and call itemData.
             self.form.audio_tracks_combobox.itemData.assert_any_call(0)
