@@ -72,6 +72,13 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         Constructor
         """
         super(MediaClipSelectorForm, self).__init__(parent)
+        self.vlc_instance = None
+        self.vlc_media_player = None
+        self.vlc_media = None
+        self.timer = None
+        self.audio_cd_tracks = None
+        self.audio_cd = False
+        self.playback_length = 0
         self.media_item = media_item
         self.setupUi(self)
         # most actions auto-connect due to the functions name, so only a few left to do
