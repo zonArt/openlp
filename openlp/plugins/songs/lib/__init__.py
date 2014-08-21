@@ -374,7 +374,7 @@ def clean_song(manager, song):
     :param manager: The song database manager object.
     :param song: The song object.
     """
-    from .xml import SongXML
+    from .openlyricsxml import SongXML
 
     if song.title:
         song.title = clean_title(song.title)

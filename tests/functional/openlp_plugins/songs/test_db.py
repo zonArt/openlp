@@ -112,3 +112,44 @@ class TestDB(TestCase):
         # THEN: It should have been removed and the other author should still be there
         self.assertEqual(1, len(song.authors_songs))
         self.assertEqual(None, song.authors_songs[0].author_type)
+
+    def test_get_author_type_from_translated_text(self):
+        """
+        Test getting an author type from translated text
+        """
+        # GIVEN: A string with an author type
+        author_type_name = AuthorType.Types[AuthorType.Words]
+
+        # WHEN: We call the method
+        author_type = AuthorType.from_translated_text(author_type_name)
+
+        # THEN: The type should be correct
+        self.assertEqual(author_type, AuthorType.Words)
+
+    def test_author_get_display_name(self):
+        """
+        Test that the display name of an author is correct
+        """
+        # GIVEN: An author
+        author = Author()
+        author.display_name = "John Doe"
+
+        # WHEN: We call the get_display_name() function
+        display_name = author.get_display_name()
+
+        # THEN: It should return only the name
+        self.assertEqual("John Doe", display_name)
+
+    def test_author_get_display_name_with_type(self):
+        """
+        Test that the display name of an author with a type is correct
+        """
+        # GIVEN: An author
+        author = Author()
+        author.display_name = "John Doe"
+
+        # WHEN: We call the get_display_name() function
+        display_name = author.get_display_name(AuthorType.Words)
+
+        # THEN: It should return the name with the type in brackets
+        self.assertEqual("John Doe (Words)", display_name)

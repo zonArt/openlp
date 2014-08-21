@@ -70,6 +70,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.setupUi(self)
         # Connecting signals and slots
         self.author_add_button.clicked.connect(self.on_author_add_button_clicked)
+        self.author_edit_button.clicked.connect(self.on_author_edit_button_clicked)
         self.author_remove_button.clicked.connect(self.on_author_remove_button_clicked)
         self.authors_list_view.itemClicked.connect(self.on_authors_list_view_clicked)
         self.topic_add_button.clicked.connect(self.on_topic_add_button_clicked)
@@ -334,6 +335,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         self.verse_edit_button.setEnabled(False)
         self.verse_delete_button.setEnabled(False)
+        self.author_edit_button.setEnabled(False)
         self.author_remove_button.setEnabled(False)
         self.topic_remove_button.setEnabled(False)
 
@@ -354,12 +356,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
 
         # Types
         self.author_types_combo_box.clear()
-        self.author_types_combo_box.addItem('')
         # Don't iterate over the dictionary to give them this specific order
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Words], AuthorType.Words)
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Music], AuthorType.Music)
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.WordsAndMusic], AuthorType.WordsAndMusic)
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Translation], AuthorType.Translation)
+        for author_type in AuthorType.SortedTypes:
+            self.author_types_combo_box.addItem(AuthorType.Types[author_type], author_type)
 
     def load_topics(self):
         """
@@ -596,8 +595,31 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Run a set of actions when an author in the list is selected (mainly enable the delete button).
         """
-        if self.authors_list_view.count() > 1:
+        count = self.authors_list_view.count()
+        if count > 0:
+            self.author_edit_button.setEnabled(True)
+        if count > 1:
+            # There must be at least one author
             self.author_remove_button.setEnabled(True)
+
+    def on_author_edit_button_clicked(self):
+        """
+        Show a dialog to change the type of an author when the edit button is clicked
+        """
+        self.author_edit_button.setEnabled(False)
+        item = self.authors_list_view.currentItem()
+        author_id, author_type = item.data(QtCore.Qt.UserRole)
+        choice, ok = QtGui.QInputDialog.getItem(self, translate('SongsPlugin.EditSongForm', 'Edit Author Type'),
+                                                translate('SongsPlugin.EditSongForm', 'Choose type for this author'),
+                                                AuthorType.TranslatedTypes,
+                                                current=AuthorType.SortedTypes.index(author_type),
+                                                editable=False)
+        if not ok:
+            return
+        author = self.manager.get_object(Author, author_id)
+        author_type = AuthorType.from_translated_text(choice)
+        item.setData(QtCore.Qt.UserRole, (author_id, author_type))
+        item.setText(author.get_display_name(author_type))
 
     def on_author_remove_button_clicked(self):
         """

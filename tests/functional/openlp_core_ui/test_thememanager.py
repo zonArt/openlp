@@ -27,51 +27,36 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test for proper bzr tags.
+Package to test the openlp.core.ui.thememanager package.
 """
+import zipfile
 import os
-import re
+
 from unittest import TestCase
+from tests.interfaces import MagicMock
 
-from subprocess import Popen, PIPE
+from openlp.core.ui import ThemeManager
 
-TAGS = [
-    ['1.9.0', '1'],
-    ['1.9.1', '775'],
-    ['1.9.2', '890'],
-    ['1.9.3', '1063'],
-    ['1.9.4', '1196'],
-    ['1.9.5', '1421'],
-    ['1.9.6', '1657'],
-    ['1.9.7', '1761'],
-    ['1.9.8', '1856'],
-    ['1.9.9', '1917'],
-    ['1.9.10', '2003'],
-    ['1.9.11', '2039'],
-    ['1.9.12', '2063'],
-    ['2.0', '2118'],
-    ['2.1.0', '2119']
-]
-# Depending on the repository, we sometimes have the 2.0.x tags in the repo too. They come up with a revision number of
-# "?", which I suspect is due to the fact that we're using shared repositories. This regular expression matches all
-# 2.0.x tags.
-TAG_SEARCH = re.compile('2\.0\.\d')
+RESOURCES_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources', 'themes'))
 
 
-class TestBzrTags(TestCase):
+class TestThemeManager(TestCase):
 
-    def bzr_tags_test(self):
+    def export_theme_test(self):
         """
-        Test for proper bzr tags
+        Test exporting a theme .
         """
-        # GIVEN: A bzr branch
-        path = os.path.dirname(__file__)
+        # GIVEN: A new ThemeManager instance.
+        theme_manager = ThemeManager()
+        theme_manager.path = RESOURCES_PATH
+        zipfile.ZipFile.__init__ = MagicMock()
+        zipfile.ZipFile.__init__.return_value = None
+        zipfile.ZipFile.write = MagicMock()
 
-        # WHEN getting the branches tags
-        bzr = Popen(('bzr', 'tags', '--directory=' + path), stdout=PIPE)
-        std_out = bzr.communicate()[0]
-        tags = [line.decode('utf-8').split() for line in std_out.splitlines()]
-        tags = [t_r for t_r in tags if t_r[1] != '?' or not (t_r[1] == '?' and TAG_SEARCH.search(t_r[0]))]
+        # WHEN: The theme is exported
+        theme_manager._export_theme('/some/path', 'Default')
 
-        # THEN the tags should match the accepted tags
-        self.assertEqual(TAGS, tags, 'List of tags should match')
+        # THEN: The zipfile should be created at the given path
+        zipfile.ZipFile.__init__.assert_called_with('/some/path/Default.otz', 'w')
+        zipfile.ZipFile.write.assert_called_with(os.path.join(RESOURCES_PATH, 'Default', 'Default.xml'),
+                                                 'Default/Default.xml')

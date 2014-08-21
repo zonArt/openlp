@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,51 +27,30 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test for proper bzr tags.
+The :mod:`powerpraiseimport` module provides the functionality for importing
+ProPresenter song files into the current installation database.
 """
+
 import os
-import re
-from unittest import TestCase
 
-from subprocess import Popen, PIPE
+from tests.helpers.songfileimport import SongImportTestHelper
 
-TAGS = [
-    ['1.9.0', '1'],
-    ['1.9.1', '775'],
-    ['1.9.2', '890'],
-    ['1.9.3', '1063'],
-    ['1.9.4', '1196'],
-    ['1.9.5', '1421'],
-    ['1.9.6', '1657'],
-    ['1.9.7', '1761'],
-    ['1.9.8', '1856'],
-    ['1.9.9', '1917'],
-    ['1.9.10', '2003'],
-    ['1.9.11', '2039'],
-    ['1.9.12', '2063'],
-    ['2.0', '2118'],
-    ['2.1.0', '2119']
-]
-# Depending on the repository, we sometimes have the 2.0.x tags in the repo too. They come up with a revision number of
-# "?", which I suspect is due to the fact that we're using shared repositories. This regular expression matches all
-# 2.0.x tags.
-TAG_SEARCH = re.compile('2\.0\.\d')
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'powerpraisesongs'))
 
 
-class TestBzrTags(TestCase):
+class TestPowerPraiseFileImport(SongImportTestHelper):
 
-    def bzr_tags_test(self):
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'PowerPraiseImport'
+        self.importer_module_name = 'powerpraise'
+        super(TestPowerPraiseFileImport, self).__init__(*args, **kwargs)
+
+    def test_song_import(self):
         """
-        Test for proper bzr tags
+        Test that loading a PowerPraise file works correctly
         """
-        # GIVEN: A bzr branch
-        path = os.path.dirname(__file__)
-
-        # WHEN getting the branches tags
-        bzr = Popen(('bzr', 'tags', '--directory=' + path), stdout=PIPE)
-        std_out = bzr.communicate()[0]
-        tags = [line.decode('utf-8').split() for line in std_out.splitlines()]
-        tags = [t_r for t_r in tags if t_r[1] != '?' or not (t_r[1] == '?' and TAG_SEARCH.search(t_r[0]))]
-
-        # THEN the tags should match the accepted tags
-        self.assertEqual(TAGS, tags, 'List of tags should match')
+        self.file_import([os.path.join(TEST_PATH, 'Näher, mein Gott zu Dir.ppl')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Näher, mein Gott zu Dir.json')))
+        self.file_import([os.path.join(TEST_PATH, 'You are so faithful.ppl')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'You are so faithful.json')))

@@ -62,11 +62,12 @@ class OpenLPJobs(object):
     Branch_Pull = 'Branch-01-Pull'
     Branch_Functional = 'Branch-02-Functional-Tests'
     Branch_Interface = 'Branch-03-Interface-Tests'
-    Branch_Windows = 'Branch-04-Windows_Tests'
+    Branch_Windows_Functional = 'Branch-04a-Windows_Functional_Tests'
+    Branch_Windows_Interface = 'Branch-04b-Windows_Interface_Tests'
     Branch_PEP = 'Branch-05a-Code_Analysis'
     Branch_Coverage = 'Branch-05b-Test_Coverage'
 
-    Jobs = [Branch_Pull, Branch_Functional, Branch_Interface, Branch_Windows, Branch_PEP, Branch_Coverage]
+    Jobs = [Branch_Pull, Branch_Functional, Branch_Interface, Branch_Windows_Functional, Branch_Windows_Interface, Branch_PEP, Branch_Coverage]
 
 
 class Colour(object):
@@ -115,7 +116,9 @@ class JenkinsTrigger(object):
         print(' Local repository: %s (revision %s)' % (self.repo_name, revno))
 
         for job in OpenLPJobs.Jobs:
-            self.__print_build_info(job)
+            if not self.__print_build_info(job):
+                print('Stopping after failure')
+                break
 
     def open_browser(self):
         """
@@ -132,6 +135,7 @@ class JenkinsTrigger(object):
         :param job_name: The name of the job we want the information from. For example *Branch-01-Pull*. Use the class
          variables from the :class:`OpenLPJobs` class.
         """
+        is_success = False
         job = self.jenkins_instance.job(job_name)
         while job.info['inQueue']:
             time.sleep(1)
@@ -140,11 +144,13 @@ class JenkinsTrigger(object):
         if build.info['result'] == 'SUCCESS':
             # Make 'SUCCESS' green.
             result_string = '%s%s%s' % (Colour.GREEN_START, build.info['result'], Colour.GREEN_END)
+            is_success = True
         else:
             # Make 'FAILURE' red.
             result_string = '%s%s%s' % (Colour.RED_START, build.info['result'], Colour.RED_END)
         url = build.info['url']
         print('[%s] %s' % (result_string, url))
+        return is_success
 
 
 def get_repo_name(branch_type='l'):

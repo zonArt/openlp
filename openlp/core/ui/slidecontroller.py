@@ -96,6 +96,8 @@ class DisplayController(QtGui.QWidget):
         """
         This is the generic function to send signal for control widgets, created from within other plugins
         This function is needed to catch the current controller
+
+        :param args: Arguments to send to the plugins
         """
         sender = self.sender().objectName() if self.sender().objectName() else self.sender().text()
         controller = self
@@ -143,11 +145,19 @@ class SlideController(DisplayController, RegistryProperties):
         self.panel_layout = QtGui.QVBoxLayout(self.panel)
         self.panel_layout.setSpacing(0)
         self.panel_layout.setMargin(0)
-        # Type label for the top of the slide controller
+        # Type label at the top of the slide controller
         self.type_label = QtGui.QLabel(self.panel)
         self.type_label.setStyleSheet('font-weight: bold; font-size: 12pt;')
         self.type_label.setAlignment(QtCore.Qt.AlignCenter)
+        if self.is_live:
+            self.type_label.setText(UiStrings().Live)
+        else:
+            self.type_label.setText(UiStrings().Preview)
         self.panel_layout.addWidget(self.type_label)
+        # Info label for the title of the current item, at the top of the slide controller
+        self.info_label = QtGui.QLabel(self.panel)
+        self.info_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.panel_layout.addWidget(self.info_label)
         # Splitter
         self.splitter = QtGui.QSplitter(self.panel)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
@@ -402,12 +412,17 @@ class SlideController(DisplayController, RegistryProperties):
         """
         try:
             from openlp.plugins.songs.lib import VerseType
-            SONGS_PLUGIN_AVAILABLE = True
+            is_songs_plugin_available = True
         except ImportError:
-            SONGS_PLUGIN_AVAILABLE = False
+            class VerseType(object):
+                """
+                This empty class is mostly just to satisfy Python, PEP8 and PyCharm
+                """
+                pass
+            is_songs_plugin_available = False
         sender_name = self.sender().objectName()
         verse_type = sender_name[15:] if sender_name[:15] == 'shortcutAction_' else ''
-        if SONGS_PLUGIN_AVAILABLE:
+        if is_songs_plugin_available:
             if verse_type == 'V':
                 self.current_shortcut = VerseType.translated_tags[VerseType.Verse]
             elif verse_type == 'C':
@@ -777,6 +792,7 @@ class SlideController(DisplayController, RegistryProperties):
         if service_item.is_command():
             Registry().execute(
                 '%s_start' % service_item.name.lower(), [self.service_item, self.is_live, self.hide_mode(), slide_no])
+        self.info_label.setText(self.service_item.title)
         self.slide_list = {}
         if self.is_live:
             self.song_menu.menu().clear()

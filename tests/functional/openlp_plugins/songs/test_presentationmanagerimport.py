@@ -27,51 +27,27 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test for proper bzr tags.
+This module contains tests for the PresentationManager song importer.
 """
+
 import os
-import re
-from unittest import TestCase
 
-from subprocess import Popen, PIPE
+from tests.helpers.songfileimport import SongImportTestHelper
 
-TAGS = [
-    ['1.9.0', '1'],
-    ['1.9.1', '775'],
-    ['1.9.2', '890'],
-    ['1.9.3', '1063'],
-    ['1.9.4', '1196'],
-    ['1.9.5', '1421'],
-    ['1.9.6', '1657'],
-    ['1.9.7', '1761'],
-    ['1.9.8', '1856'],
-    ['1.9.9', '1917'],
-    ['1.9.10', '2003'],
-    ['1.9.11', '2039'],
-    ['1.9.12', '2063'],
-    ['2.0', '2118'],
-    ['2.1.0', '2119']
-]
-# Depending on the repository, we sometimes have the 2.0.x tags in the repo too. They come up with a revision number of
-# "?", which I suspect is due to the fact that we're using shared repositories. This regular expression matches all
-# 2.0.x tags.
-TAG_SEARCH = re.compile('2\.0\.\d')
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'presentationmanagersongs'))
 
 
-class TestBzrTags(TestCase):
+class TestSongShowPlusFileImport(SongImportTestHelper):
 
-    def bzr_tags_test(self):
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'PresentationManagerImport'
+        self.importer_module_name = 'presentationmanager'
+        super(TestSongShowPlusFileImport, self).__init__(*args, **kwargs)
+
+    def test_song_import(self):
         """
-        Test for proper bzr tags
+        Test that loading a PresentationManager file works correctly
         """
-        # GIVEN: A bzr branch
-        path = os.path.dirname(__file__)
-
-        # WHEN getting the branches tags
-        bzr = Popen(('bzr', 'tags', '--directory=' + path), stdout=PIPE)
-        std_out = bzr.communicate()[0]
-        tags = [line.decode('utf-8').split() for line in std_out.splitlines()]
-        tags = [t_r for t_r in tags if t_r[1] != '?' or not (t_r[1] == '?' and TAG_SEARCH.search(t_r[0]))]
-
-        # THEN the tags should match the accepted tags
-        self.assertEqual(TAGS, tags, 'List of tags should match')
+        self.file_import([os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.sng')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.json')))

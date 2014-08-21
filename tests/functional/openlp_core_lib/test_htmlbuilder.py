@@ -6,11 +6,12 @@ from unittest import TestCase
 
 from PyQt4 import QtCore
 
+from openlp.core.common import Settings
 from openlp.core.lib.htmlbuilder import build_html, build_background_css, build_lyrics_css, build_lyrics_outline_css, \
     build_lyrics_format_css, build_footer_css
 from openlp.core.lib.theme import HorizontalType, VerticalType
 from tests.functional import MagicMock, patch
-
+from tests.helpers.testmixin import TestMixin
 
 HTML = """
 <!DOCTYPE html>
@@ -184,7 +185,7 @@ LYRICS_OUTLINE_CSS = ' -webkit-text-stroke: 0.125em #000000; -webkit-text-fill-c
 LYRICS_FORMAT_CSS = ' word-wrap: break-word; text-align: justify; vertical-align: bottom; ' + \
     'font-family: Arial; font-size: 40pt; color: #FFFFFF; line-height: 108%; margin: 0;padding: 0; ' + \
     'padding-bottom: 0.5em; padding-left: 2px; width: 1580px; height: 810px; font-style:italic; font-weight:bold; '
-FOOTER_CSS = """
+FOOTER_CSS_BASE = """
     left: 10px;
     bottom: 0px;
     width: 1260px;
@@ -192,11 +193,28 @@ FOOTER_CSS = """
     font-size: 12pt;
     color: #FFFFFF;
     text-align: left;
-    white-space: nowrap;
+    white-space: %s;
     """
+FOOTER_CSS = FOOTER_CSS_BASE % ('nowrap')
+FOOTER_CSS_WRAP = FOOTER_CSS_BASE % ('normal')
 
 
-class Htmbuilder(TestCase):
+class Htmbuilder(TestCase, TestMixin):
+    """
+    Test the functions in the Htmlbuilder module
+    """
+    def setUp(self):
+        """
+        Create the UI
+        """
+        self.build_settings()
+
+    def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        self.destroy_settings()
+
     def build_html_test(self):
         """
         Test the build_html() function
@@ -225,7 +243,7 @@ class Htmbuilder(TestCase):
             html = build_html(item, screen, is_live, background, plugins=plugins)
 
             # THEN: The returned html should match.
-            assert html == HTML
+            self.assertEqual(html, HTML, 'The returned html should match')
 
     def build_background_css_radial_test(self):
         """
@@ -241,7 +259,7 @@ class Htmbuilder(TestCase):
         css = build_background_css(item, width)
 
         # THEN: The returned css should match.
-        assert BACKGROUND_CSS_RADIAL == css, 'The background css should be equal.'
+        self.assertEqual(BACKGROUND_CSS_RADIAL, css, 'The background css should be equal.')
 
     def build_lyrics_css_test(self):
         """
@@ -262,7 +280,7 @@ class Htmbuilder(TestCase):
             css = build_lyrics_css(item)
 
             # THEN: The css should be equal.
-            assert LYRICS_CSS == css, 'The lyrics css should be equal.'
+            self.assertEqual(LYRICS_CSS, css, 'The lyrics css should be equal.')
 
     def build_lyrics_outline_css_test(self):
         """
@@ -279,7 +297,7 @@ class Htmbuilder(TestCase):
         css = build_lyrics_outline_css(theme_data)
 
         # THEN: The css should be equal.
-        assert LYRICS_OUTLINE_CSS == css, 'The outline css should be equal.'
+        self.assertEqual(LYRICS_OUTLINE_CSS, css, 'The outline css should be equal.')
 
     def build_lyrics_format_css_test(self):
         """
@@ -302,7 +320,7 @@ class Htmbuilder(TestCase):
         css = build_lyrics_format_css(theme_data, width, height)
 
         # THEN: They should be equal.
-        assert LYRICS_FORMAT_CSS == css, 'The lyrics format css should be equal.'
+        self.assertEqual(LYRICS_FORMAT_CSS, css, 'The lyrics format css should be equal.')
 
     def build_footer_css_test(self):
         """
@@ -316,8 +334,27 @@ class Htmbuilder(TestCase):
         item.theme_data.font_footer_color = '#FFFFFF'
         height = 1024
 
-        # WHEN: create the css.
+        # WHEN: create the css with default settings.
         css = build_footer_css(item, height)
 
         # THEN: THE css should be the same.
-        assert FOOTER_CSS == css, 'The footer strings should be equal.'
+        self.assertEqual(FOOTER_CSS, css, 'The footer strings should be equal.')
+
+    def build_footer_css_wrap_test(self):
+        """
+        Test the build_footer_css() function
+        """
+        # GIVEN: Create a theme.
+        item = MagicMock()
+        item.footer = QtCore.QRect(10, 921, 1260, 103)
+        item.theme_data.font_footer_name = 'Arial'
+        item.theme_data.font_footer_size = 12
+        item.theme_data.font_footer_color = '#FFFFFF'
+        height = 1024
+
+        # WHEN: Settings say that footer should wrap
+        Settings().setValue('themes/wrap footer', True)
+        css = build_footer_css(item, height)
+
+        # THEN: Footer should wrap
+        self.assertEqual(FOOTER_CSS_WRAP, css, 'The footer strings should be equal.')
