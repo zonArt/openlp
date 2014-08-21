@@ -62,12 +62,12 @@ class TestThemeManager(TestCase):
         zipfile.ZipFile.write = MagicMock()
 
         # WHEN: The theme is exported
-        theme_manager._export_theme('/some/path', 'Default')
+        theme_manager._export_theme(os.path.join('some', 'path'), 'Default')
 
         # THEN: The zipfile should be created at the given path
-        zipfile.ZipFile.__init__.assert_called_with('/some/path/Default.otz', 'w')
+        zipfile.ZipFile.__init__.assert_called_with(os.path.join('some', 'path', 'Default.otz'), 'w')
         zipfile.ZipFile.write.assert_called_with(os.path.join(TEST_RESOURCES_PATH, 'themes', 'Default', 'Default.xml'),
-                                                 'Default/Default.xml')
+                                                 os.path.join('Default', 'Default.xml'))
 
     def initial_theme_manager_test(self):
         """
