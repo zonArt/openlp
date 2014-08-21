@@ -34,36 +34,37 @@ import logging
 
 from openlp.core.common import translate, UiStrings
 from openlp.core.ui.wizard import WizardStrings
-from .opensongimport import OpenSongImport
-from .easyslidesimport import EasySlidesImport
-from .olpimport import OpenLPSongImport
-from .openlyricsimport import OpenLyricsImport
-from .wowimport import WowImport
-from .cclifileimport import CCLIFileImport
-from .dreambeamimport import DreamBeamImport
-from .powersongimport import PowerSongImport
-from .ewimport import EasyWorshipSongImport
-from .songbeamerimport import SongBeamerImport
-from .songshowplusimport import SongShowPlusImport
-from .songproimport import SongProImport
-from .sundayplusimport import SundayPlusImport
-from .foilpresenterimport import FoilPresenterImport
-from .zionworximport import ZionWorxImport
-from .propresenterimport import ProPresenterImport
-# Imports that might fail
-
+from .importers.opensong import OpenSongImport
+from .importers.easyslides import EasySlidesImport
+from .importers.openlp import OpenLPSongImport
+from .importers.openlyrics import OpenLyricsImport
+from .importers.wordsofworship import WordsOfWorshipImport
+from .importers.cclifile import CCLIFileImport
+from .importers.dreambeam import DreamBeamImport
+from .importers.powersong import PowerSongImport
+from .importers.easyworship import EasyWorshipSongImport
+from .importers.songbeamer import SongBeamerImport
+from .importers.songshowplus import SongShowPlusImport
+from .importers.songpro import SongProImport
+from .importers.sundayplus import SundayPlusImport
+from .importers.foilpresenter import FoilPresenterImport
+from .importers.zionworx import ZionWorxImport
+from .importers.propresenter import ProPresenterImport
+from .importers.worshipassistant import WorshipAssistantImport
+from .importers.powerpraise import PowerPraiseImport
+from .importers.presentationmanager import PresentationManagerImport
 
 log = logging.getLogger(__name__)
 
-
+# Imports that might fail
 try:
-    from .sofimport import SofImport
+    from .importers.songsoffellowship import SongsOfFellowshipImport
     HAS_SOF = True
 except ImportError:
-    log.exception('Error importing %s', 'SofImport')
+    log.exception('Error importing %s', 'SongsOfFellowshipImport')
     HAS_SOF = False
 try:
-    from .oooimport import OooImport
+    from .importers.openoffice import OpenOfficeImport
     HAS_OOO = True
 except ImportError:
     log.exception('Error importing %s', 'OooImport')
@@ -71,14 +72,14 @@ except ImportError:
 HAS_MEDIASHOUT = False
 if os.name == 'nt':
     try:
-        from .mediashoutimport import MediaShoutImport
+        from .importers.mediashout import MediaShoutImport
         HAS_MEDIASHOUT = True
     except ImportError:
         log.exception('Error importing %s', 'MediaShoutImport')
 HAS_WORSHIPCENTERPRO = False
 if os.name == 'nt':
     try:
-        from .worshipcenterproimport import WorshipCenterProImport
+        from .importers.worshipcenterpro import WorshipCenterProImport
         HAS_WORSHIPCENTERPRO = True
     except ImportError:
         log.exception('Error importing %s', 'WorshipCenterProImport')
@@ -108,7 +109,7 @@ class SongFormat(object):
         Name of the format, e.g. ``'OpenLyrics'``
 
     ``'prefix'``
-        Prefix for Qt objects. Use mixedCase, e.g. ``'open_lyrics'``
+        Prefix for Qt objects. Use mixedCase, e.g. ``'openLyrics'``
         See ``SongImportForm.add_file_select_item()``
 
     Optional attributes for each song format:
@@ -159,16 +160,19 @@ class SongFormat(object):
     FoilPresenter = 8
     MediaShout = 9
     OpenSong = 10
-    PowerSong = 11
-    ProPresenter = 12
-    SongBeamer = 13
-    SongPro = 14
-    SongShowPlus = 15
-    SongsOfFellowship = 16
-    SundayPlus = 17
-    WordsOfWorship = 18
-    WorshipCenterPro = 19
-    ZionWorx = 20
+    PowerPraise = 11
+    PowerSong = 12
+    PresentationManager = 13
+    ProPresenter = 14
+    SongBeamer = 15
+    SongPro = 16
+    SongShowPlus = 17
+    SongsOfFellowship = 18
+    SundayPlus = 19
+    WordsOfWorship = 20
+    WorshipAssistant = 21
+    WorshipCenterPro = 22
+    ZionWorx = 23
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -188,7 +192,7 @@ class SongFormat(object):
         OpenLyrics: {
             'class': OpenLyricsImport,
             'name': 'OpenLyrics',
-            'prefix': 'open_lyrics',
+            'prefix': 'openLyrics',
             'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2.0 Exported Song')
         },
@@ -264,6 +268,12 @@ class SongFormat(object):
             'name': WizardStrings.OS,
             'prefix': 'openSong'
         },
+        PowerPraise: {
+            'class': PowerPraiseImport,
+            'name': 'PowerPraise',
+            'prefix': 'powerPraise',
+            'filter': '%s (*.ppl)' % translate('SongsPlugin.ImportWizardForm', 'PowerPraise Song Files')
+        },
         PowerSong: {
             'class': PowerSongImport,
             'name': 'PowerSong 1.0',
@@ -271,6 +281,12 @@ class SongFormat(object):
             'selectMode': SongFormatSelect.SingleFolder,
             'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm', 'You need to specify a valid PowerSong 1.0 '
                                                                           'database folder.')
+        },
+        PresentationManager: {
+            'class': PresentationManagerImport,
+            'name': 'PresentationManager',
+            'prefix': 'presentationManager',
+            'filter': '%s (*.sng)' % translate('SongsPlugin.ImportWizardForm', 'PresentationManager Song Files')
         },
         ProPresenter: {
             'class': ProPresenterImport,
@@ -316,10 +332,20 @@ class SongFormat(object):
             'filter': '%s (*.ptf)' % translate('SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
         },
         WordsOfWorship: {
-            'class': WowImport,
+            'class': WordsOfWorshipImport,
             'name': 'Words of Worship',
             'prefix': 'wordsOfWorship',
             'filter': '%s (*.wsg *.wow-song)' % translate('SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
+        },
+        WorshipAssistant: {
+            'class': WorshipAssistantImport,
+            'name': 'Worship Assistant 0',
+            'prefix': 'worshipAssistant',
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.csv)' % translate('SongsPlugin.ImportWizardForm', 'Worship Assistant Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'Worship Assistant (CSV)'),
+            'descriptionText': translate('SongsPlugin.ImportWizardForm',
+                                         'In Worship Assistant, export your Database to a CSV file.')
         },
         WorshipCenterPro: {
             'name': 'WorshipCenter Pro',
@@ -362,7 +388,9 @@ class SongFormat(object):
             SongFormat.FoilPresenter,
             SongFormat.MediaShout,
             SongFormat.OpenSong,
+            SongFormat.PowerPraise,
             SongFormat.PowerSong,
+            SongFormat.PresentationManager,
             SongFormat.ProPresenter,
             SongFormat.SongBeamer,
             SongFormat.SongPro,
@@ -370,16 +398,17 @@ class SongFormat(object):
             SongFormat.SongsOfFellowship,
             SongFormat.SundayPlus,
             SongFormat.WordsOfWorship,
+            SongFormat.WorshipAssistant,
             SongFormat.WorshipCenterPro,
             SongFormat.ZionWorx
         ]
 
     @staticmethod
-    def get(format, *attributes):
+    def get(song_format, *attributes):
         """
         Return requested song format attribute(s).
 
-        :param format:  A song format from SongFormat.
+        :param song_format: A song format from SongFormat.
         :param attributes: Zero or more song format attributes from SongFormat.
 
         Return type depends on number of supplied attributes:
@@ -389,31 +418,31 @@ class SongFormat(object):
         :>1: Return tuple of requested attribute values.
         """
         if not attributes:
-            return SongFormat.__attributes__.get(format)
+            return SongFormat.__attributes__.get(song_format)
         elif len(attributes) == 1:
             default = SongFormat.__defaults__.get(attributes[0])
-            return SongFormat.__attributes__[format].get(attributes[0], default)
+            return SongFormat.__attributes__[song_format].get(attributes[0], default)
         else:
             values = []
             for attr in attributes:
                 default = SongFormat.__defaults__.get(attr)
-                values.append(SongFormat.__attributes__[format].get(attr, default))
+                values.append(SongFormat.__attributes__[song_format].get(attr, default))
             return tuple(values)
 
     @staticmethod
-    def set(format, attribute, value):
+    def set(song_format, attribute, value):
         """
         Set specified song format attribute to the supplied value.
         """
-        SongFormat.__attributes__[format][attribute] = value
+        SongFormat.__attributes__[song_format][attribute] = value
 
 
 SongFormat.set(SongFormat.SongsOfFellowship, 'availability', HAS_SOF)
 if HAS_SOF:
-    SongFormat.set(SongFormat.SongsOfFellowship, 'class', SofImport)
+    SongFormat.set(SongFormat.SongsOfFellowship, 'class', SongsOfFellowshipImport)
 SongFormat.set(SongFormat.Generic, 'availability', HAS_OOO)
 if HAS_OOO:
-    SongFormat.set(SongFormat.Generic, 'class', OooImport)
+    SongFormat.set(SongFormat.Generic, 'class', OpenOfficeImport)
 SongFormat.set(SongFormat.MediaShout, 'availability', HAS_MEDIASHOUT)
 if HAS_MEDIASHOUT:
     SongFormat.set(SongFormat.MediaShout, 'class', MediaShoutImport)

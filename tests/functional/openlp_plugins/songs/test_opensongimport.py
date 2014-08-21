@@ -34,7 +34,7 @@ import os
 from unittest import TestCase
 
 from tests.helpers.songfileimport import SongImportTestHelper
-from openlp.plugins.songs.lib.opensongimport import OpenSongImport
+from openlp.plugins.songs.lib.importers.opensong import OpenSongImport
 from tests.functional import patch, MagicMock
 
 TEST_PATH = os.path.abspath(
@@ -45,18 +45,18 @@ class TestOpenSongFileImport(SongImportTestHelper):
 
     def __init__(self, *args, **kwargs):
         self.importer_class_name = 'OpenSongImport'
-        self.importer_module_name = 'opensongimport'
+        self.importer_module_name = 'opensong'
         super(TestOpenSongFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
         """
         Test that loading an OpenSong file works correctly on various files
         """
-        self.file_import(os.path.join(TEST_PATH, 'Amazing Grace'),
+        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
-        self.file_import(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer'),
+        self.file_import([os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.json')))
-        self.file_import(os.path.join(TEST_PATH, 'One, Two, Three, Four, Five'),
+        self.file_import([os.path.join(TEST_PATH, 'One, Two, Three, Four, Five')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'One, Two, Three, Four, Five.json')))
 
 
@@ -69,7 +69,7 @@ class TestOpenSongImport(TestCase):
         Test creating an instance of the OpenSong file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.opensongimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.importers.opensong.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
@@ -83,7 +83,7 @@ class TestOpenSongImport(TestCase):
         Test OpenSongImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.opensongimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.importers.opensong.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OpenSongImport(mocked_manager, filenames=[])
@@ -104,7 +104,7 @@ class TestOpenSongImport(TestCase):
         Test OpenSongImport.do_import handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.opensongimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.importers.opensong.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OpenSongImport(mocked_manager, filenames=[])

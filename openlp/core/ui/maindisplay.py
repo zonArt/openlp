@@ -66,11 +66,8 @@ class Display(QtGui.QGraphicsView):
         if hasattr(parent, 'is_live') and parent.is_live:
             self.is_live = True
         if self.is_live:
-            super(Display, self).__init__()
-            # Overwrite the parent() method.
             self.parent = lambda: parent
-        else:
-            super(Display, self).__init__(parent)
+        super(Display, self).__init__()
         self.controller = parent
         self.screen = {}
         # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with

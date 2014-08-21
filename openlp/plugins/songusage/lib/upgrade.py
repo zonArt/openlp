@@ -32,7 +32,6 @@ backend for the SongsUsage plugin
 """
 import logging
 
-from sqlalchemy.exc import OperationalError
 from sqlalchemy import Column, types
 
 from openlp.core.lib.db import get_upgrade_op
@@ -50,9 +49,6 @@ def upgrade_1(session, metadata):
     :param session: SQLAlchemy Session object
     :param metadata: SQLAlchemy MetaData object
     """
-    try:
-        op = get_upgrade_op(session)
-        op.add_column('songusage_data', Column('plugin_name', types.Unicode(20), server_default=''))
-        op.add_column('songusage_data', Column('source', types.Unicode(10), server_default=''))
-    except OperationalError:
-        log.info('Upgrade 1 has already taken place')
+    op = get_upgrade_op(session)
+    op.add_column('songusage_data', Column('plugin_name', types.Unicode(20), server_default=''))
+    op.add_column('songusage_data', Column('source', types.Unicode(10), server_default=''))

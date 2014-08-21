@@ -69,17 +69,42 @@ class AuthorType(object):
 
     The 'words+music' type is not an official type, but is provided for convenience.
     """
+    NoType = ''
     Words = 'words'
     Music = 'music'
     WordsAndMusic = 'words+music'
     Translation = 'translation'
     Types = {
+        NoType: '',
         Words: translate('SongsPlugin.AuthorType', 'Words', 'Author who wrote the lyrics of a song'),
         Music: translate('SongsPlugin.AuthorType', 'Music', 'Author who wrote the music of a song'),
         WordsAndMusic: translate('SongsPlugin.AuthorType', 'Words and Music',
                                  'Author who wrote both lyrics and music of a song'),
         Translation: translate('SongsPlugin.AuthorType', 'Translation', 'Author who translated the song')
     }
+    SortedTypes = [
+        NoType,
+        Words,
+        Music,
+        WordsAndMusic
+    ]
+    TranslatedTypes = [
+        Types[NoType],
+        Types[Words],
+        Types[Music],
+        Types[WordsAndMusic]
+    ]
+
+    @staticmethod
+    def from_translated_text(translated_type):
+        """
+        Get the AuthorType from a translated string.
+        :param translated_type: Translated Author type.
+        """
+        for key, value in AuthorType.Types.items():
+            if value == translated_type:
+                return key
+        return AuthorType.NoType
 
 
 class Book(BaseModel):
