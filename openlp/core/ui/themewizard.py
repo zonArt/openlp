@@ -29,6 +29,8 @@
 """
 The Create/Edit theme wizard
 """
+import sys
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import UiStrings, translate
@@ -48,9 +50,11 @@ class Ui_ThemeWizard(object):
         themeWizard.setObjectName('OpenLP.ThemeWizard')
         themeWizard.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         themeWizard.setModal(True)
-        themeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         themeWizard.setOptions(QtGui.QWizard.IndependentPages |
                                QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.HaveCustomButton1)
+        if sys.platform == 'darwin':
+            themeWizard.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
+            #themeWizard.resize(634, 386)
         self.spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         # Welcome Page
         add_welcome_page(themeWizard, ':/wizards/wizard_createtheme.bmp')

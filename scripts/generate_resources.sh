@@ -44,7 +44,7 @@
 mv openlp/core/resources.py openlp/core/resources.py.old
 
 # Create the new data from the updated qrc
-pyrcc4 -py3 -o openlp/core/resources.py.new resources/images/openlp-2.qrc
+pyrcc4-3.3 -py3 -o openlp/core/resources.py.new resources/images/openlp-2.qrc
 
 # Remove patch breaking lines
 cat openlp/core/resources.py.new | sed '/# Created: /d;/#      by: /d' > openlp/core/resources.py

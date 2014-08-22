@@ -99,6 +99,7 @@
     <file>export_load.png</file>
   </qresource>
   <qresource prefix="wizards">
+    <file>openlp-osx-wizard.png</file>
     <file>wizard_exportsong.bmp</file>
     <file>wizard_importsong.bmp</file>
     <file>wizard_importbible.bmp</file>
@@ -150,10 +151,10 @@
     <file>messagebox_warning.png</file>
   </qresource>
   <qresource prefix="remote">
-    <file>network_server.png</file>    
+    <file>network_server.png</file>
     <file>network_ssl.png</file>
-    <file>network_auth.png</file>    
-  </qresource>  
+    <file>network_auth.png</file>
+  </qresource>
   <qresource prefix="songusage">
     <file>song_usage_active.png</file>
     <file>song_usage_inactive.png</file>
