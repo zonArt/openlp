@@ -27,28 +27,36 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`upgrade` module provides a way for the database and schema that is the
-backend for the SongsUsage plugin
+Package to test the openlp.core.ui.thememanager package.
 """
-import logging
+import zipfile
+import os
 
-from sqlalchemy import Column, types
+from unittest import TestCase
+from tests.interfaces import MagicMock
 
-from openlp.core.lib.db import get_upgrade_op
+from openlp.core.ui import ThemeManager
 
-log = logging.getLogger(__name__)
-__version__ = 1
+RESOURCES_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources', 'themes'))
 
 
-def upgrade_1(session, metadata):
-    """
-    Version 1 upgrade.
+class TestThemeManager(TestCase):
 
-    This upgrade adds two new fields to the songusage database
+    def export_theme_test(self):
+        """
+        Test exporting a theme .
+        """
+        # GIVEN: A new ThemeManager instance.
+        theme_manager = ThemeManager()
+        theme_manager.path = RESOURCES_PATH
+        zipfile.ZipFile.__init__ = MagicMock()
+        zipfile.ZipFile.__init__.return_value = None
+        zipfile.ZipFile.write = MagicMock()
 
-    :param session: SQLAlchemy Session object
-    :param metadata: SQLAlchemy MetaData object
-    """
-    op = get_upgrade_op(session)
-    op.add_column('songusage_data', Column('plugin_name', types.Unicode(20), server_default=''))
-    op.add_column('songusage_data', Column('source', types.Unicode(10), server_default=''))
+        # WHEN: The theme is exported
+        theme_manager._export_theme('/some/path', 'Default')
+
+        # THEN: The zipfile should be created at the given path
+        zipfile.ZipFile.__init__.assert_called_with('/some/path/Default.otz', 'w')
+        zipfile.ZipFile.write.assert_called_with(os.path.join(RESOURCES_PATH, 'Default', 'Default.xml'),
+                                                 'Default/Default.xml')
