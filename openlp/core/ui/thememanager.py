@@ -660,7 +660,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         finally:
             if out_file:
                 out_file.close()
-        if image_from and image_from != image_to:
+        if image_from and os.path.abspath(image_from) != os.path.abspath(image_to):
             try:
                 encoding = get_filesystem_encoding()
                 shutil.copyfile(str(image_from).encode(encoding), str(image_to).encode(encoding))
