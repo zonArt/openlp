@@ -31,7 +31,8 @@ Package to test the openlp.core.ui.slidecontroller package.
 """
 from unittest import TestCase
 
-from openlp.core.common import Registry
+from openlp.core.common import Registry, ThemeLevel
+from openlp.core.lib import ServiceItem, ServiceItemType, ItemCapabilities
 from openlp.core.ui import ServiceManager
 
 from tests.interfaces import MagicMock, patch
@@ -89,3 +90,243 @@ class TestServiceManager(TestCase):
         self.assertEqual('txt' in service_manager.suffixes, True, 'The suffix txt should be in the list')
         self.assertEqual('ppt' in service_manager.suffixes, True, 'The suffix ppt should be in the list')
         self.assertEqual('pptx' in service_manager.suffixes, True, 'The suffix pptx should be in the list')
+
+    def build_context_menu_test(self):
+        """
+        Test the creation of a context menu from a null service item.
+        """
+        # GIVEN: A new service manager instance and a default service item.
+        service_manager = ServiceManager(None)
+        item = MagicMock()
+        item.parent.return_value = False
+        item.data.return_value = 0
+        service_manager.service_manager_list = MagicMock()
+        service_manager.service_manager_list.itemAt.return_value = item
+        service_item = ServiceItem(None)
+        service_manager.service_items.insert(1, {'service_item': service_item})
+        service_manager.edit_action = MagicMock()
+        service_manager.rename_action = MagicMock()
+        service_manager.create_custom_action = MagicMock()
+        service_manager.maintain_action = MagicMock()
+        service_manager.notes_action = MagicMock()
+        service_manager.time_action = MagicMock()
+        service_manager.auto_start_action = MagicMock()
+        service_manager.auto_play_slides_menu = MagicMock()
+        service_manager.auto_play_slides_once = MagicMock()
+        service_manager.auto_play_slides_loop = MagicMock()
+        service_manager.timed_slide_interval = MagicMock()
+        service_manager.theme_menu = MagicMock()
+        service_manager.menu = MagicMock()
+        # WHEN I define a context menu
+        service_manager.context_menu(1)
+        # THEN the following calls should have occurred.
+        self.assertEquals(service_manager.edit_action.setVisible.call_count, 1, 'Should have been called once')
+        self.assertEquals(service_manager.rename_action.setVisible.call_count, 1, 'Should have been called once')
+        self.assertEquals(service_manager.create_custom_action.setVisible.call_count, 1, 'Should have been called once')
+        self.assertEquals(service_manager.maintain_action.setVisible.call_count, 1, 'Should have been called once')
+        self.assertEquals(service_manager.notes_action.setVisible.call_count, 1, 'Should have been called once')
+        self.assertEquals(service_manager.time_action.setVisible.call_count, 1, 'Should have been called once')
+        self.assertEquals(service_manager.auto_start_action.setVisible.call_count, 1, 'Should have been called once')
+        self.assertEquals(service_manager.auto_play_slides_menu.menuAction().setVisible.call_count, 1,
+                          'Should have been called once')
+        self.assertEquals(service_manager.auto_play_slides_once.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.theme_menu.menuAction().setVisible.call_count, 1,
+                          'Should have been called once')
+
+    def build_song_context_menu_test(self):
+        """
+        Test the creation of a context menu from service item of type text from Songs.
+        """
+        # GIVEN: A new service manager instance and a default service item.
+        mocked_renderer = MagicMock()
+        mocked_renderer.theme_level = ThemeLevel.Song
+        Registry().register('plugin_manager', MagicMock())
+        Registry().register('renderer', mocked_renderer)
+        service_manager = ServiceManager(None)
+        item = MagicMock()
+        item.parent.return_value = False
+        item.data.return_value = 0
+        service_manager.service_manager_list = MagicMock()
+        service_manager.service_manager_list.itemAt.return_value = item
+        service_item = ServiceItem(None)
+        service_item.add_capability(ItemCapabilities.CanEdit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.OnLoadUpdate)
+        service_item.add_capability(ItemCapabilities.AddIfNewItem)
+        service_item.add_capability(ItemCapabilities.CanSoftBreak)
+        service_item.service_item_type = ServiceItemType.Text
+        service_item.edit_id = 1
+        service_item._display_frames.append(MagicMock())
+        service_manager.service_items.insert(1, {'service_item': service_item})
+        service_manager.edit_action = MagicMock()
+        service_manager.rename_action = MagicMock()
+        service_manager.create_custom_action = MagicMock()
+        service_manager.maintain_action = MagicMock()
+        service_manager.notes_action = MagicMock()
+        service_manager.time_action = MagicMock()
+        service_manager.auto_start_action = MagicMock()
+        service_manager.auto_play_slides_menu = MagicMock()
+        service_manager.auto_play_slides_once = MagicMock()
+        service_manager.auto_play_slides_loop = MagicMock()
+        service_manager.timed_slide_interval = MagicMock()
+        service_manager.theme_menu = MagicMock()
+        service_manager.menu = MagicMock()
+        # WHEN I define a context menu
+        service_manager.context_menu(1)
+        # THEN the following calls should have occurred.
+        self.assertEquals(service_manager.edit_action.setVisible.call_count, 2, 'Should have be called twice')
+        self.assertEquals(service_manager.rename_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.create_custom_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.maintain_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.notes_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.time_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.auto_start_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.auto_play_slides_menu.menuAction().setVisible.call_count, 1,
+                          'Should have be called once')
+        self.assertEquals(service_manager.auto_play_slides_once.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.theme_menu.menuAction().setVisible.call_count, 2,
+                          'Should have be called twice')
+        # THEN we add a 2nd display frame
+        service_item._display_frames.append(MagicMock())
+        service_manager.context_menu(1)
+        # THEN the following additional calls should have occurred.
+        self.assertEquals(service_manager.auto_play_slides_menu.menuAction().setVisible.call_count, 2,
+                          'Should have be called twice')
+        self.assertEquals(service_manager.auto_play_slides_once.setChecked.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 1, 'Should have be called once')
+
+    def build_bible_context_menu_test(self):
+        """
+        Test the creation of a context menu from service item of type text from Bibles.
+        """
+        # GIVEN: A new service manager instance and a default service item.
+        mocked_renderer = MagicMock()
+        mocked_renderer.theme_level = ThemeLevel.Song
+        Registry().register('plugin_manager', MagicMock())
+        Registry().register('renderer', mocked_renderer)
+        service_manager = ServiceManager(None)
+        item = MagicMock()
+        item.parent.return_value = False
+        item.data.return_value = 0
+        service_manager.service_manager_list = MagicMock()
+        service_manager.service_manager_list.itemAt.return_value = item
+        service_item = ServiceItem(None)
+        service_item.add_capability(ItemCapabilities.NoLineBreaks)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.CanWordSplit)
+        service_item.add_capability(ItemCapabilities.CanEditTitle)
+        service_item.service_item_type = ServiceItemType.Text
+        service_item.edit_id = 1
+        service_item._display_frames.append(MagicMock())
+        service_manager.service_items.insert(1, {'service_item': service_item})
+        service_manager.edit_action = MagicMock()
+        service_manager.rename_action = MagicMock()
+        service_manager.create_custom_action = MagicMock()
+        service_manager.maintain_action = MagicMock()
+        service_manager.notes_action = MagicMock()
+        service_manager.time_action = MagicMock()
+        service_manager.auto_start_action = MagicMock()
+        service_manager.auto_play_slides_menu = MagicMock()
+        service_manager.auto_play_slides_once = MagicMock()
+        service_manager.auto_play_slides_loop = MagicMock()
+        service_manager.timed_slide_interval = MagicMock()
+        service_manager.theme_menu = MagicMock()
+        service_manager.menu = MagicMock()
+        # WHEN I define a context menu
+        service_manager.context_menu(1)
+        # THEN the following calls should have occurred.
+        self.assertEquals(service_manager.edit_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.rename_action.setVisible.call_count, 2, 'Should have be called twice')
+        self.assertEquals(service_manager.create_custom_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.maintain_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.notes_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.time_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.auto_start_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.auto_play_slides_menu.menuAction().setVisible.call_count, 1,
+                          'Should have be called once')
+        self.assertEquals(service_manager.auto_play_slides_once.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.theme_menu.menuAction().setVisible.call_count, 2,
+                          'Should have be called twice')
+        # THEN we add a 2nd display frame
+        service_item._display_frames.append(MagicMock())
+        service_manager.context_menu(1)
+        # THEN the following additional calls should have occurred.
+        self.assertEquals(service_manager.auto_play_slides_menu.menuAction().setVisible.call_count, 2,
+                          'Should have be called twice')
+        self.assertEquals(service_manager.auto_play_slides_once.setChecked.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 1, 'Should have be called once')
+
+    def build_custom_context_menu_test(self):
+        """
+        Test the creation of a context menu from service item of type text from Custom.
+        """
+        # GIVEN: A new service manager instance and a default service item.
+        mocked_renderer = MagicMock()
+        mocked_renderer.theme_level = ThemeLevel.Song
+        Registry().register('plugin_manager', MagicMock())
+        Registry().register('renderer', mocked_renderer)
+        service_manager = ServiceManager(None)
+        item = MagicMock()
+        item.parent.return_value = False
+        item.data.return_value = 0
+        service_manager.service_manager_list = MagicMock()
+        service_manager.service_manager_list.itemAt.return_value = item
+        service_item = ServiceItem(None)
+        service_item.add_capability(ItemCapabilities.CanEdit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.CanSoftBreak)
+        service_item.add_capability(ItemCapabilities.OnLoadUpdate)
+        service_item.service_item_type = ServiceItemType.Text
+        service_item.edit_id = 1
+        service_item._display_frames.append(MagicMock())
+        service_manager.service_items.insert(1, {'service_item': service_item})
+        service_manager.edit_action = MagicMock()
+        service_manager.rename_action = MagicMock()
+        service_manager.create_custom_action = MagicMock()
+        service_manager.maintain_action = MagicMock()
+        service_manager.notes_action = MagicMock()
+        service_manager.time_action = MagicMock()
+        service_manager.auto_start_action = MagicMock()
+        service_manager.auto_play_slides_menu = MagicMock()
+        service_manager.auto_play_slides_once = MagicMock()
+        service_manager.auto_play_slides_loop = MagicMock()
+        service_manager.timed_slide_interval = MagicMock()
+        service_manager.theme_menu = MagicMock()
+        service_manager.menu = MagicMock()
+        # WHEN I define a context menu
+        service_manager.context_menu(1)
+        # THEN the following calls should have occurred.
+        self.assertEquals(service_manager.edit_action.setVisible.call_count, 2, 'Should have be called twice')
+        self.assertEquals(service_manager.rename_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.create_custom_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.maintain_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.notes_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.time_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.auto_start_action.setVisible.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.auto_play_slides_menu.menuAction().setVisible.call_count, 1,
+                          'Should have be called once')
+        self.assertEquals(service_manager.auto_play_slides_once.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 0, 'Should not be called')
+        self.assertEquals(service_manager.theme_menu.menuAction().setVisible.call_count, 2,
+                          'Should have be called twice')
+        # THEN we add a 2nd display frame
+        service_item._display_frames.append(MagicMock())
+        service_manager.context_menu(1)
+        # THEN the following additional calls should have occurred.
+        self.assertEquals(service_manager.auto_play_slides_menu.menuAction().setVisible.call_count, 2,
+                          'Should have be called twice')
+        self.assertEquals(service_manager.auto_play_slides_once.setChecked.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 1, 'Should have be called once')
+        self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 1, 'Should have be called once')
