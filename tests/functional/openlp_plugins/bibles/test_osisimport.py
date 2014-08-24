@@ -102,7 +102,7 @@ class TestOsisImport(TestCase):
 
     def file_import_mixed_tags_test(self):
         """
-        Test the actual import of OSIS Bible file, with nested chapter and milestone verse tags.
+        Test the actual import of OSIS Bible file, with chapter tags containing milestone verse tags.
         """
         # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
         #        get_book_ref_id_by_name, create_verse, create_book, session and get_language.
