@@ -72,10 +72,20 @@ class OSISBible(BibleDB):
             osis_bible_tree = etree.parse(import_file)
             namespace = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
             num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=namespace))
-            log.debug('number of books: %d' % num_books)
             self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
                                                          'Removing unused tags (this may take a few minutes)...'))
             # We strip unused tags from the XML, this should leave us with only chapter, verse and div tags.
+            # Strip tags we don't use - remove content
+            etree.strip_elements(osis_bible_tree, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}note',
+                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}milestone',
+                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}title',
+                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}abbr',
+                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}catchWord',
+                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}index',
+                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdg',
+                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdgGroup',
+                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}figure'),
+                                 with_tail=False)
             # Strip tags we don't use - keep content
             etree.strip_tags(osis_bible_tree, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}p',
                                                '{http://www.bibletechnologies.net/2003/OSIS/namespace}l',
@@ -104,17 +114,6 @@ class OSISBible(BibleDB):
                                                '{http://www.bibletechnologies.net/2003/OSIS/namespace}row',
                                                '{http://www.bibletechnologies.net/2003/OSIS/namespace}cell',
                                                '{http://www.bibletechnologies.net/2003/OSIS/namespace}caption'))
-            # Strip tags we don't use - remove content
-            etree.strip_elements(osis_bible_tree, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}note',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}milestone',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}title',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}abbr',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}catchWord',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}index',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdg',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}rdgGroup',
-                                                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}figure'),
-                                 with_tail=False)
             # Precompile a few xpath-querys
             verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=namespace)
             text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=namespace)
@@ -158,7 +157,6 @@ class OSISBible(BibleDB):
                             translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...' %
                                       {'bookname': db_book.name, 'chapter': chapter_number}))
                 else:
-                    log.debug('chapters are milestones')
                     # The chapter tags is used as milestones. For now we assume verses is also milestones
                     chapter_number = 0
                     for element in book:
