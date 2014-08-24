@@ -89,7 +89,7 @@ class JenkinsTrigger(object):
         :param token: The token we need to trigger the build. If you do not have this token, ask in IRC.
         """
         self.token = token
-        self.base_name, self.repo_name = get_repo_name('b')
+        self.repo_name = get_repo_name()
         self.jenkins_instance = Jenkins(JENKINS_URL)
 
     def trigger_build(self):
@@ -113,8 +113,7 @@ class JenkinsTrigger(object):
         bzr = Popen(('bzr', 'revno'), stdout=PIPE, stderr=PIPE)
         raw_output, error = bzr.communicate()
         revno = raw_output.decode().strip()
-        print('Remote repository: %s ' % self.repo_name)
-        print(' Local repository: %s (revision %s)' % (self.repo_name, revno))
+        print('%s (revision %s)' % (get_repo_name(), revno))
 
         for job in OpenLPJobs.Jobs:
             if not self.__print_build_info(job):
@@ -154,7 +153,7 @@ class JenkinsTrigger(object):
         return is_success
 
 
-def get_repo_name(branch_type='l'):
+def get_repo_name():
     """
     This returns the name of branch of the working directory. For example it returns *lp:~googol/openlp/render*.
     """
@@ -170,7 +169,6 @@ def get_repo_name(branch_type='l'):
     output_list = list(map(str.strip, raw_output.split('\n')))
     # Determine the branch's name
     repo_name = ''
-    base_name = ''
     for line in output_list:
         # Check if it is remote branch.
         if 'push branch' in line:
@@ -183,15 +181,7 @@ def get_repo_name(branch_type='l'):
             if match:
                 repo_name = 'lp:%s' % match.group(2)
                 break
-        elif 'repository branch' in line:
-            base_name = line.split(':')[1]
-            break
-    if branch_type == 'b':
-        return base_name.strip('/'), repo_name.strip('/')
-    elif branch_type == 'r':
-        return base_name.strip('/')
-    else:
-        return repo_name.strip('/')
+    return repo_name.strip('/')
 
 
 def main():
@@ -205,11 +195,8 @@ def main():
     options, args = parser.parse_args(sys.argv)
 
     if len(args) == 2:
-        if not get_repo_name('l'):
+        if not get_repo_name():
             print('Not a branch. Have you pushed it to launchpad? Did you cd to the branch?')
-            return
-        if not get_repo_name('r'):
-            print('No remote branch. Have you pushed it to launchpad? Did you cd to the branch?')
             return
         token = args[-1]
         if token in OLD_TOKENS:
