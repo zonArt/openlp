@@ -1,8 +1,6 @@
 """
 This module contains tests for the lib submodule of the Songs plugin.
 """
-import os
-from tempfile import mkstemp
 from unittest import TestCase
 
 from PyQt4 import QtCore, QtGui
@@ -29,6 +27,8 @@ class TestMediaItem(TestCase, TestMixin):
         with patch('openlp.core.lib.mediamanageritem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
             self.media_item = SongMediaItem(None, MagicMock())
+            self.media_item.display_songbook = False
+            self.media_item.display_copyright_symbol = False
         self.get_application()
         self.build_settings()
         QtCore.QLocale.setDefault(QtCore.QLocale('en_GB'))
@@ -128,3 +128,111 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: I would get an amended footer string
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 4321'],
                          'The array should be returned correctly with a song, an author, copyright and amended ccli')
+
+    def build_song_footer_base_songbook_test(self):
+        """
+        Test build songs footer with basic song and a songbook
+        """
+        # GIVEN: A Song and a Service Item
+        mock_song = MagicMock()
+        mock_song.title = 'My Song'
+        mock_song.copyright = 'My copyright'
+        mock_song.book = MagicMock()
+        mock_song.book.name = "My songbook"
+        mock_song.song_number = 12
+        service_item = ServiceItem(None)
+
+        # WHEN: I generate the Footer with default settings
+        self.media_item.generate_footer(service_item, mock_song)
+
+        # THEN: The songbook should not be in the footer
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright'])
+
+        # WHEN: I activate the "display songbook" option
+        self.media_item.display_songbook = True
+        self.media_item.generate_footer(service_item, mock_song)
+
+        # THEN: The songbook should be in the footer
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12'])
+
+    def build_song_footer_copyright_enabled_test(self):
+        """
+        Test building song footer with displaying the copyright symbol
+        """
+        # GIVEN: A Song and a Service Item; displaying the copyright symbol is enabled
+        self.media_item.display_copyright_symbol = True
+        mock_song = MagicMock()
+        mock_song.title = 'My Song'
+        mock_song.copyright = 'My copyright'
+        service_item = ServiceItem(None)
+
+        # WHEN: I generate the Footer with default settings
+        self.media_item.generate_footer(service_item, mock_song)
+
+        # THEN: The copyright symbol should be in the footer
+        self.assertEqual(service_item.raw_footer, ['My Song', '© My copyright'])
+
+    def build_song_footer_copyright_disabled_test(self):
+        """
+        Test building song footer without displaying the copyright symbol
+        """
+        # GIVEN: A Song and a Service Item; displaying the copyright symbol should be disabled by default
+        mock_song = MagicMock()
+        mock_song.title = 'My Song'
+        mock_song.copyright = 'My copyright'
+        service_item = ServiceItem(None)
+
+        # WHEN: I generate the Footer with default settings
+        self.media_item.generate_footer(service_item, mock_song)
+
+        # THEN: The copyright symbol should not be in the footer
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright'])
+
+    def authors_match_test(self):
+        """
+        Test the author matching when importing a song from a service
+        """
+        # GIVEN: A song and a string with authors
+        song = MagicMock()
+        song.authors = []
+        author = MagicMock()
+        author.display_name = "Hans Wurst"
+        song.authors.append(author)
+        author2 = MagicMock()
+        author2.display_name = "Max Mustermann"
+        song.authors.append(author2)
+        # There are occasions where an author appears twice in a song (with different types).
+        # We need to make sure that this case works (lp#1313538)
+        author3 = MagicMock()
+        author3.display_name = "Max Mustermann"
+        song.authors.append(author3)
+        authors_str = "Hans Wurst, Max Mustermann, Max Mustermann"
+
+        # WHEN: Checking for matching
+        result = self.media_item._authors_match(song, authors_str)
+
+        # THEN: They should match
+        self.assertTrue(result, "Authors should match")
+
+    def authors_dont_match_test(self):
+        # GIVEN: A song and a string with authors
+        song = MagicMock()
+        song.authors = []
+        author = MagicMock()
+        author.display_name = "Hans Wurst"
+        song.authors.append(author)
+        author2 = MagicMock()
+        author2.display_name = "Max Mustermann"
+        song.authors.append(author2)
+        # There are occasions where an author appears twice in a song (with different types).
+        # We need to make sure that this case works (lp#1313538)
+        author3 = MagicMock()
+        author3.display_name = "Max Mustermann"
+        song.authors.append(author3)
+
+        # WHEN: An author is missing in the string
+        authors_str = "Hans Wurst, Max Mustermann"
+        result = self.media_item._authors_match(song, authors_str)
+
+        # THEN: They should not match
+        self.assertFalse(result, "Authors should not match")

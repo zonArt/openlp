@@ -42,9 +42,9 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, UiStri
 from openlp.core.lib import FileDialog, PluginStatus, MediaType, create_separated_list
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.lib import VerseType, clean_song
-from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorSong, AuthorType, Topic, MediaFile
+from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorType, Topic, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib.xml import SongXML
+from openlp.plugins.songs.lib.openlyricsxml import SongXML
 from openlp.plugins.songs.forms.editsongdialog import Ui_EditSongDialog
 from openlp.plugins.songs.forms.editverseform import EditVerseForm
 from openlp.plugins.songs.forms.mediafilesform import MediaFilesForm
@@ -70,6 +70,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.setupUi(self)
         # Connecting signals and slots
         self.author_add_button.clicked.connect(self.on_author_add_button_clicked)
+        self.author_edit_button.clicked.connect(self.on_author_edit_button_clicked)
         self.author_remove_button.clicked.connect(self.on_author_remove_button_clicked)
         self.authors_list_view.itemClicked.connect(self.on_authors_list_view_clicked)
         self.topic_add_button.clicked.connect(self.on_topic_add_button_clicked)
@@ -107,6 +108,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.audio_list_widget.setAlternatingRowColors(True)
         self.find_verse_split = re.compile('---\[\]---\n', re.UNICODE)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
+        self.find_tags = re.compile(u'\{/?\w+\}', re.UNICODE)
 
     def _load_objects(self, cls, combo, cache):
         """
@@ -234,7 +236,56 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                 self.manager.save_object(book)
             else:
                 return False
+        # Validate tags (lp#1199639)
+        misplaced_tags = []
+        verse_tags = []
+        for i in range(self.verse_list_widget.rowCount()):
+            item = self.verse_list_widget.item(i, 0)
+            tags = self.find_tags.findall(item.text())
+            field = item.data(QtCore.Qt.UserRole)
+            verse_tags.append(field)
+            if not self._validate_tags(tags):
+                misplaced_tags.append('%s %s' % (VerseType.translated_name(field[0]), field[1:]))
+        if misplaced_tags:
+            critical_error_message_box(
+                message=translate('SongsPlugin.EditSongForm',
+                                  'There are misplaced formatting tags in the following verses:\n\n%s\n\n'
+                                  'Please correct these tags before continuing.' % ', '.join(misplaced_tags)))
+            return False
+        for tag in verse_tags:
+            if verse_tags.count(tag) > 26:
+                # lp#1310523: OpenLyrics allows only a-z variants of one verse:
+                # http://openlyrics.info/dataformat.html#verse-name
+                critical_error_message_box(message=translate(
+                    'SongsPlugin.EditSongForm', 'You have %(count)s verses named %(name)s %(number)s. '
+                                                'You can have at most 26 verses with the same name' %
+                                                {'count': verse_tags.count(tag),
+                                                 'name': VerseType.translated_name(tag[0]),
+                                                 'number': tag[1:]}))
+                return False
         return True
+
+    def _validate_tags(self, tags):
+        """
+        Validates a list of tags
+        Deletes the first affiliated tag pair which is located side by side in the list
+        and call itself recursively with the shortened tag list.
+        If there is any misplaced tag in the list, either the length of the tag list is not even,
+        or the function won't find any tag pairs side by side.
+        If there is no misplaced tag, the length of the list will be zero on any recursive run.
+
+        :param tags: A list of tags
+        :return: True if the function can't find any mismatched tags. Else False.
+        """
+        if len(tags) == 0:
+            return True
+        if len(tags) % 2 != 0:
+            return False
+        for i in range(len(tags)-1):
+            if tags[i+1] == "{/" + tags[i][1:]:
+                del tags[i:i+2]
+                return self._validate_tags(tags)
+        return False
 
     def _process_lyrics(self):
         """
@@ -284,6 +335,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         self.verse_edit_button.setEnabled(False)
         self.verse_delete_button.setEnabled(False)
+        self.author_edit_button.setEnabled(False)
         self.author_remove_button.setEnabled(False)
         self.topic_remove_button.setEnabled(False)
 
@@ -304,12 +356,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
 
         # Types
         self.author_types_combo_box.clear()
-        self.author_types_combo_box.addItem('')
         # Don't iterate over the dictionary to give them this specific order
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Words], AuthorType.Words)
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Music], AuthorType.Music)
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.WordsAndMusic], AuthorType.WordsAndMusic)
-        self.author_types_combo_box.addItem(AuthorType.Types[AuthorType.Translation], AuthorType.Translation)
+        for author_type in AuthorType.SortedTypes:
+            self.author_types_combo_box.addItem(AuthorType.Types[author_type], author_type)
 
     def load_topics(self):
         """
@@ -546,8 +595,31 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Run a set of actions when an author in the list is selected (mainly enable the delete button).
         """
-        if self.authors_list_view.count() > 1:
+        count = self.authors_list_view.count()
+        if count > 0:
+            self.author_edit_button.setEnabled(True)
+        if count > 1:
+            # There must be at least one author
             self.author_remove_button.setEnabled(True)
+
+    def on_author_edit_button_clicked(self):
+        """
+        Show a dialog to change the type of an author when the edit button is clicked
+        """
+        self.author_edit_button.setEnabled(False)
+        item = self.authors_list_view.currentItem()
+        author_id, author_type = item.data(QtCore.Qt.UserRole)
+        choice, ok = QtGui.QInputDialog.getItem(self, translate('SongsPlugin.EditSongForm', 'Edit Author Type'),
+                                                translate('SongsPlugin.EditSongForm', 'Choose type for this author'),
+                                                AuthorType.TranslatedTypes,
+                                                current=AuthorType.SortedTypes.index(author_type),
+                                                editable=False)
+        if not ok:
+            return
+        author = self.manager.get_object(Author, author_id)
+        author_type = AuthorType.from_translated_text(choice)
+        item.setData(QtCore.Qt.UserRole, (author_id, author_type))
+        item.setText(author.get_display_name(author_type))
 
     def on_author_remove_button_clicked(self):
         """
@@ -916,10 +988,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.song.authors_songs = []
         for row in range(self.authors_list_view.count()):
             item = self.authors_list_view.item(row)
-            author_song = AuthorSong()
-            author_song.author_id = item.data(QtCore.Qt.UserRole)[0]
-            author_song.author_type = item.data(QtCore.Qt.UserRole)[1]
-            self.song.authors_songs.append(author_song)
+            self.song.add_author(self.manager.get_object(Author, item.data(QtCore.Qt.UserRole)[0]),
+                                 item.data(QtCore.Qt.UserRole)[1])
         self.song.topics = []
         for row in range(self.topics_list_view.count()):
             item = self.topics_list_view.item(row)

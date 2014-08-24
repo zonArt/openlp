@@ -34,8 +34,8 @@ import os
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
-from openlp.plugins.songs.lib.openlyricsimport import OpenLyricsImport
-from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.importers.openlyrics import OpenLyricsImport
+from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'openlyricssongs'))
@@ -69,7 +69,7 @@ class TestOpenLyricsImport(TestCase):
         Test creating an instance of the OpenLyrics file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.songbeamerimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.importers.openlyrics.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created

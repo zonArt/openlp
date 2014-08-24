@@ -96,9 +96,10 @@ def upgrade_db(url, upgrade):
     mapper(Metadata, metadata_table)
     version_meta = session.query(Metadata).get('version')
     if version_meta is None:
-        version_meta = Metadata.populate(key='version', value='0')
+        # Tables have just been created - fill the version field with the most recent version
+        version = upgrade.__version__
+        version_meta = Metadata.populate(key='version', value=version)
         session.add(version_meta)
-        version = 0
     else:
         version = int(version_meta.value)
     if version > upgrade.__version__:

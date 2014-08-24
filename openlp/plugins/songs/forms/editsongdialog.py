@@ -43,8 +43,8 @@ class Ui_EditSongDialog(object):
     """
     def setupUi(self, edit_song_dialog):
         edit_song_dialog.setObjectName('edit_song_dialog')
+        edit_song_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         edit_song_dialog.resize(650, 400)
-        edit_song_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
         edit_song_dialog.setModal(True)
         self.dialog_layout = QtGui.QVBoxLayout(edit_song_dialog)
         self.dialog_layout.setSpacing(8)
@@ -138,6 +138,9 @@ class Ui_EditSongDialog(object):
         self.author_remove_layout = QtGui.QHBoxLayout()
         self.author_remove_layout.setObjectName('author_remove_layout')
         self.author_remove_layout.addStretch()
+        self.author_edit_button = QtGui.QPushButton(self.authors_group_box)
+        self.author_edit_button.setObjectName('author_edit_button')
+        self.author_remove_layout.addWidget(self.author_edit_button)
         self.author_remove_button = QtGui.QPushButton(self.authors_group_box)
         self.author_remove_button.setObjectName('author_remove_button')
         self.author_remove_layout.addWidget(self.author_remove_button)
@@ -305,6 +308,7 @@ class Ui_EditSongDialog(object):
                                         translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
         self.authors_group_box.setTitle(SongStrings.Authors)
         self.author_add_button.setText(translate('SongsPlugin.EditSongForm', '&Add to Song'))
+        self.author_edit_button.setText(translate('SongsPlugin.EditSongForm', '&Edit Author Type'))
         self.author_remove_button.setText(translate('SongsPlugin.EditSongForm', '&Remove'))
         self.maintenance_button.setText(translate('SongsPlugin.EditSongForm', '&Manage Authors, Topics, Song Books'))
         self.topics_group_box.setTitle(SongStrings.Topic)

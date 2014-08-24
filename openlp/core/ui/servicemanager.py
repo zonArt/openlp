@@ -401,9 +401,12 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
 
         :param suffix_list: New Suffix's to be supported
         """
-        for suffix in suffix_list:
-            if suffix not in self.suffixes:
-                self.suffixes.append(suffix)
+        if isinstance(suffix_list, str):
+            self.suffixes.append(suffix_list)
+        else:
+            for suffix in suffix_list:
+                if suffix not in self.suffixes:
+                    self.suffixes.append(suffix)
 
     def on_new_service_clicked(self, field=None):
         """
@@ -1081,6 +1084,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         :param field:
         :param message: The data passed in from a remove message
         """
+        self.log_debug(message)
         self.set_item(int(message))
 
     def set_item(self, index):
@@ -1089,7 +1093,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
 
         :param index: The index of the service item list to be actioned.
         """
-        if 0 >= index < self.service_manager_list.topLevelItemCount():
+        if 0 <= index < self.service_manager_list.topLevelItemCount():
             item = self.service_manager_list.topLevelItem(index)
             self.service_manager_list.setCurrentItem(item)
             self.make_live()
@@ -1099,7 +1103,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         Moves the cursor selection up the window. Called by the up arrow.
         """
         item = self.service_manager_list.currentItem()
-        item_before = self.service_manager_list.item_above(item)
+        item_before = self.service_manager_list.itemAbove(item)
         if item_before is None:
             return
         self.service_manager_list.setCurrentItem(item_before)

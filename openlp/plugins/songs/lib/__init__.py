@@ -206,14 +206,14 @@ class VerseType(object):
         Return the VerseType for a given tag
 
         :param verse_tag: The string to return a VerseType for
-        :param default: Default return value if no matching tag is found
+        :param default: Default return value if no matching tag is found (a valid VerseType or None)
         :return: A VerseType of the tag
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.names) > default:
+        if default in range(0, len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
@@ -231,7 +231,7 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.translated_tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.names) > default:
+        if default in range(0, len(VerseType.names)) or default is None:
             return default
         else:
             return VerseType.Other
@@ -278,7 +278,7 @@ class VerseType(object):
             if verse_index is None:
                 verse_index = VerseType.from_string(verse_name, default)
         elif len(verse_name) == 1:
-            verse_index = VerseType.from_translated_tag(verse_name, None)
+            verse_index = VerseType.from_translated_tag(verse_name, default)
             if verse_index is None:
                 verse_index = VerseType.from_tag(verse_name, default)
         else:
@@ -374,7 +374,7 @@ def clean_song(manager, song):
     :param manager: The song database manager object.
     :param song: The song object.
     """
-    from .xml import SongXML
+    from .openlyricsxml import SongXML
 
     if song.title:
         song.title = clean_title(song.title)
@@ -390,12 +390,12 @@ def clean_song(manager, song):
     verses = SongXML().get_verses(song.lyrics)
     song.search_lyrics = ' '.join([clean_string(verse[1]) for verse in verses])
     # The song does not have any author, add one.
-    if not song.authors and not song.authors_songs:  # Need to check both relations
+    if not song.authors_songs:
         name = SongStrings.AuthorUnknown
         author = manager.get_object_filtered(Author, Author.display_name == name)
         if author is None:
             author = Author.populate(display_name=name, last_name='', first_name='')
-        song.authors.append(author)
+        song.add_author(author)
     if song.copyright:
         song.copyright = CONTROL_CHARS.sub('', song.copyright).strip()
 
