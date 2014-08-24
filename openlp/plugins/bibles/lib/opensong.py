@@ -30,7 +30,7 @@
 import logging
 from lxml import etree, objectify
 
-from openlp.core.common import translate
+from openlp.core.common import translate, trace_error_handler
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
@@ -134,6 +134,7 @@ class OpenSongBible(BibleDB):
                 self.session.commit()
             self.application.process_events()
         except etree.XMLSyntaxError as inst:
+            trace_error_handler(log)
             critical_error_message_box(
                 message=translate('BiblesPlugin.OpenSongImport',
                                   'Incorrect Bible file type supplied. OpenSong Bibles may be '
