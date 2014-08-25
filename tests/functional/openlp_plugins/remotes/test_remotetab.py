@@ -49,7 +49,7 @@ __default_settings__ = {
     'remotes/password': 'password',
     'remotes/authentication enabled': False,
     'remotes/ip address': '0.0.0.0',
-    'remotes/ip address': True
+    'remotes/thumbnails': True
 }
 ZERO_URL = '0.0.0.0'
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
