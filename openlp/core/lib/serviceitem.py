@@ -281,18 +281,23 @@ class ServiceItem(RegistryProperties):
             self.raw_footer = []
         self.foot_text = '<br>'.join([_f for _f in self.raw_footer if _f])
 
-    def add_from_image(self, path, title, background=None):
+    def add_from_image(self, path, title, background=None, thumbnail=None):
         """
         Add an image slide to the service item.
 
         :param path: The directory in which the image file is located.
         :param title: A title for the slide in the service item.
         :param background:
+        :param thumbnail: Optional alternative thumbnail
         """
         if background:
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
-        self._raw_frames.append({'title': title, 'path': path})
+        if thumbnail:
+            self._raw_frames.append({'title': title, 'path': path, 'image': thumbnail})
+            self.image_manager.add_image(thumbnail, ImageSource.ImagePlugin, self.image_border)
+        else:
+            self._raw_frames.append({'title': title, 'path': path})
         self.image_manager.add_image(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 

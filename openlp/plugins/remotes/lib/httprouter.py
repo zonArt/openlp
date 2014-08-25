@@ -503,7 +503,8 @@ class HttpRouter(RegistryProperties):
                         item['tag'] = str(index + 1)
                     item['text'] = str(frame['text'])
                     item['html'] = str(frame['html'])
-                elif current_item.is_image():
+                elif current_item.is_image() and not frame['image'] and Settings().value('remotes/thumbnails'):
+                    #    and not frame['title'].endswith('pdf') and not frame['title'].endswith('xps'):
                     item['tag'] = str(index + 1)
                     thumbnail_path = os.path.sep + os.path.join('images', 'thumbnails', frame['title'])
                     item['img'] = urllib.request.pathname2url(thumbnail_path)
@@ -515,9 +516,11 @@ class HttpRouter(RegistryProperties):
                         item['title'] = str(frame['display_title'])
                     if current_item.is_capable(ItemCapabilities.HasNotes):
                         item['notes'] = str(frame['notes'])
-                    if current_item.is_capable(ItemCapabilities.HasThumbnails):
+                    if current_item.is_capable(ItemCapabilities.HasThumbnails) and \
+                            Settings().value('remotes/thumbnails'):
                         # If the file is under our app directory tree send the portion after the match
                         data_path = AppLocation.get_data_path()
+                        print(frame)
                         if frame['image'][0:len(data_path)] == data_path:
                             item['img'] = urllib.request.pathname2url(frame['image'][len(data_path):])
                     item['text'] = str(frame['title'])

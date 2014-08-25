@@ -288,13 +288,13 @@ class PresentationMediaItem(MediaManagerItem):
                             os.path.join(doc.get_temp_folder(), 'mainslide001.png')):
                         doc.load_presentation()
                     i = 1
-                    image_file = 'mainslide%03d.png' % i
-                    image = os.path.join(doc.get_temp_folder(), image_file)
+                    image = os.path.join(doc.get_temp_folder(), 'mainslide%03d.png' % i)
+                    thumbnail = os.path.join(doc.get_thumbnail_folder(), 'slide%d.png' % i)
                     while os.path.isfile(image):
-                        service_item.add_from_image(image, name)
+                        service_item.add_from_image(image, name, thumbnail=thumbnail)
                         i += 1
-                        image_file = 'mainslide%03d.png' % i
-                        image = os.path.join(doc.get_temp_folder(), image_file)
+                        image = os.path.join(doc.get_temp_folder(), 'mainslide%03d.png' % i)
+                        thumbnail = os.path.join(doc.get_thumbnail_folder(), 'slide%d.png' % i)
                     service_item.add_capability(ItemCapabilities.HasThumbnails)
                     doc.close_presentation()
                     return True

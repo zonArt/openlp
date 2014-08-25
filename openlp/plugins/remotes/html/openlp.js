@@ -98,7 +98,7 @@ window.OpenLP = {
           if (slide["notes"])
             text += ("<div style='font-size:smaller;font-weight:normal'>" + slide["notes"] + "</div>");
           text = text.replace(/\n/g, '<br />');
-          if (slide["img"] && OpenLP.showThumbnails)
+          if (slide["img"])
             text += "<img src='" + slide["img"].replace("/thumbnails/", "/thumbnails80x80/") + "'>";
           var li = $("<li data-icon=\"false\">").append(
             $("<a href=\"#\">").html(text));
@@ -251,17 +251,6 @@ window.OpenLP = {
       }
     );
   },
-  displayThumbnails: function (event) {
-    event.preventDefault();
-    var target = $(event.target);
-    OpenLP.showThumbnails = target.text() == "No" ? false : true;
-    var dt = new Date();
-    dt.setTime(dt.getTime() + 365 * 24 * 60 * 60 * 1000);
-    document.cookie = "displayThumbs=" + OpenLP.showThumbnails + "; expires=" +
-      dt.toGMTString() + "; path=/";
-    OpenLP.loadController();
-    $("#settings").dialog("close");
-  },
   search: function (event) {
     event.preventDefault();
     var query = OpenLP.escapeString($("#search-text").val())
@@ -341,24 +330,12 @@ window.OpenLP = {
   },
   escapeString: function (string) {
     return string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")
-  },
-  showThumbnails: false
+  }
 }
 // Initial jQueryMobile options
 $(document).bind("mobileinit", function(){
   $.mobile.defaultDialogTransition = "none";
   $.mobile.defaultPageTransition = "none";
-  var cookies = document.cookie;
-  if( cookies )
-  {
-    var allcookies = cookies.split(";")
-    for(ii = 0; ii < allcookies.length; ii++)
-    {
-      var parts = allcookies[ii].split("=");
-      if(parts.length == 2 && parts[0] == "displayThumbs")
-        OpenLP.showThumbnails = (parts[1]=='true');
-    }
-  }
 });
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
@@ -378,8 +355,6 @@ $("#controller-blank").live("click", OpenLP.blankDisplay);
 $("#controller-theme").live("click", OpenLP.themeDisplay);
 $("#controller-desktop").live("click", OpenLP.desktopDisplay);
 $("#controller-show").live("click", OpenLP.showDisplay);
-$("#display-thumbnails").live("click", OpenLP.displayThumbnails);
-$("#dont-display-thumbnails").live("click", OpenLP.displayThumbnails);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Search
