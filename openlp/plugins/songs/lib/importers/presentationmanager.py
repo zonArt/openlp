@@ -27,26 +27,21 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`propresenter` module provides the functionality for importing
-ProPresenter song files into the current installation database.
+The :mod:`presentationmanager` module provides the functionality for importing
+Presentationmanager song files into the current database.
 """
 
 import os
-import base64
-import logging
 from lxml import objectify
 
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import strip_rtf
 from .songimport import SongImport
 
-log = logging.getLogger(__name__)
 
-
-class ProPresenterImport(SongImport):
+class PresentationManagerImport(SongImport):
     """
-    The :class:`ProPresenterImport` class provides OpenLP with the
-    ability to import ProPresenter 4 song files.
+    The :class:`PresentationManagerImport` class provides OpenLP with the
+    ability to import Presentationmanager song files.
     """
     def do_import(self):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
@@ -55,27 +50,44 @@ class ProPresenterImport(SongImport):
                 return
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
             root = objectify.parse(open(file_path, 'rb')).getroot()
-            self.process_song(root, file_path)
+            self.process_song(root)
 
-    def process_song(self, root, filename):
+    def process_song(self, root):
         self.set_defaults()
-        self.title = os.path.basename(filename).rstrip('.pro4')
-        self.copyright = root.get('CCLICopyrightInfo')
-        self.comments = root.get('notes')
-        self.ccli_number = root.get('CCLILicenseNumber')
-        for author_key in ['author', 'artist', 'CCLIArtistCredits']:
-            author = root.get(author_key)
-            if len(author) > 0:
-                self.parse_author(author)
-        count = 0
-        for slide in root.slides.RVDisplaySlide:
-            count += 1
-            if not hasattr(slide.displayElements, 'RVTextElement'):
-                log.debug('No text found, may be an image slide')
-                continue
-            RTFData = slide.displayElements.RVTextElement.get('RTFData')
-            rtf = base64.standard_b64decode(RTFData)
-            words, encoding = strip_rtf(rtf.decode())
-            self.add_verse(words, "v%d" % count)
+        self.title = str(root.attributes.title)
+        self.add_author(str(root.attributes.author))
+        self.copyright = str(root.attributes.copyright)
+        self.ccli_number = str(root.attributes.ccli_number)
+        self.comments = str(root.attributes.comments)
+        verse_order_list = []
+        verse_count = {}
+        duplicates = []
+        for verse in root.verses.verse:
+            original_verse_def = verse.get('id')
+            # Presentation Manager stores duplicate verses instead of a verse order.
+            # We need to create the verse order from that.
+            is_duplicate = False
+            if original_verse_def in duplicates:
+                is_duplicate = True
+            else:
+                duplicates.append(original_verse_def)
+            if original_verse_def.startswith("Verse"):
+                verse_def = 'v'
+            elif original_verse_def.startswith("Chorus") or original_verse_def.startswith("Refrain"):
+                verse_def = 'c'
+            elif original_verse_def.startswith("Bridge"):
+                verse_def = 'b'
+            elif original_verse_def.startswith("End"):
+                verse_def = 'e'
+            else:
+                verse_def = 'o'
+            if not is_duplicate:  # Only increment verse number if no duplicate
+                verse_count[verse_def] = verse_count.get(verse_def, 0) + 1
+            verse_def = '%s%d' % (verse_def, verse_count[verse_def])
+            if not is_duplicate:  # Only add verse if no duplicate
+                self.add_verse(str(verse).strip(), verse_def)
+            verse_order_list.append(verse_def)
+
+        self.verse_order_list = verse_order_list
         if not self.finish():
             self.log_error(self.import_source)

@@ -993,7 +993,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             service_item.auto_play_slides_once = False
         self.set_modified()
 
-    def on_auto_start(self):
+    def on_auto_start(self, field=None):
         """
         Toggles to Auto Start Setting.
         """

@@ -27,28 +27,27 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`upgrade` module provides a way for the database and schema that is the
-backend for the SongsUsage plugin
+This module contains tests for the PresentationManager song importer.
 """
-import logging
 
-from sqlalchemy import Column, types
+import os
 
-from openlp.core.lib.db import get_upgrade_op
+from tests.helpers.songfileimport import SongImportTestHelper
 
-log = logging.getLogger(__name__)
-__version__ = 1
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'presentationmanagersongs'))
 
 
-def upgrade_1(session, metadata):
-    """
-    Version 1 upgrade.
+class TestSongShowPlusFileImport(SongImportTestHelper):
 
-    This upgrade adds two new fields to the songusage database
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'PresentationManagerImport'
+        self.importer_module_name = 'presentationmanager'
+        super(TestSongShowPlusFileImport, self).__init__(*args, **kwargs)
 
-    :param session: SQLAlchemy Session object
-    :param metadata: SQLAlchemy MetaData object
-    """
-    op = get_upgrade_op(session)
-    op.add_column('songusage_data', Column('plugin_name', types.Unicode(20), server_default=''))
-    op.add_column('songusage_data', Column('source', types.Unicode(10), server_default=''))
+    def test_song_import(self):
+        """
+        Test that loading a PresentationManager file works correctly
+        """
+        self.file_import([os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.sng')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.json')))

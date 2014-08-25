@@ -398,6 +398,7 @@ import logging
 
 from PyQt4 import QtWebKit
 
+from openlp.core.common import Settings
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, VerticalType, HorizontalType
 
 log = logging.getLogger(__name__)
@@ -750,12 +751,13 @@ def build_footer_css(item, height):
     font-size: %spt;
     color: %s;
     text-align: left;
-    white-space: nowrap;
+    white-space: %s;
     """
     theme = item.theme_data
     if not theme or not item.footer:
         return ''
     bottom = height - int(item.footer.y()) - int(item.footer.height())
+    whitespace = 'normal' if Settings().value('themes/wrap footer') else 'nowrap'
     lyrics_html = style % (item.footer.x(), bottom, item.footer.width(),
-                           theme.font_footer_name, theme.font_footer_size, theme.font_footer_color)
+                           theme.font_footer_name, theme.font_footer_size, theme.font_footer_color, whitespace)
     return lyrics_html
