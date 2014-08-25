@@ -288,7 +288,7 @@ class ServiceItem(RegistryProperties):
         :param path: The directory in which the image file is located.
         :param title: A title for the slide in the service item.
         :param background:
-        :param thumbnail: Optional alternative thumbnail
+        :param thumbnail: Optional alternative thumbnail, used for remote thumbnails.
         """
         if background:
             self.image_border = background

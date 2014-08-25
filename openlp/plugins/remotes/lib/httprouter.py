@@ -496,6 +496,7 @@ class HttpRouter(RegistryProperties):
         if current_item:
             for index, frame in enumerate(current_item.get_frames()):
                 item = {}
+                # Handle text (songs, custom)
                 if current_item.is_text():
                     if frame['verseTag']:
                         item['tag'] = str(frame['verseTag'])
@@ -503,14 +504,15 @@ class HttpRouter(RegistryProperties):
                         item['tag'] = str(index + 1)
                     item['text'] = str(frame['text'])
                     item['html'] = str(frame['html'])
+                # Handle images, unless a custom thumbnail is given or if thumbnails is disabled
                 elif current_item.is_image() and not frame['image'] and Settings().value('remotes/thumbnails'):
-                    #    and not frame['title'].endswith('pdf') and not frame['title'].endswith('xps'):
                     item['tag'] = str(index + 1)
                     thumbnail_path = os.path.sep + os.path.join('images', 'thumbnails', frame['title'])
                     item['img'] = urllib.request.pathname2url(thumbnail_path)
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 else:
+                    # Handle presentation etc.
                     item['tag'] = str(index + 1)
                     if current_item.is_capable(ItemCapabilities.HasDisplayTitle):
                         item['title'] = str(frame['display_title'])
