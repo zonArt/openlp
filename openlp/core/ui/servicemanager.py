@@ -993,7 +993,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             service_item.auto_play_slides_once = False
         self.set_modified()
 
-    def on_auto_start(self):
+    def on_auto_start(self, field=None):
         """
         Toggles to Auto Start Setting.
         """
@@ -1103,7 +1103,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         Moves the cursor selection up the window. Called by the up arrow.
         """
         item = self.service_manager_list.currentItem()
-        item_before = self.service_manager_list.item_above(item)
+        item_before = self.service_manager_list.itemAbove(item)
         if item_before is None:
             return
         self.service_manager_list.setCurrentItem(item_before)
