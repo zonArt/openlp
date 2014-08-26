@@ -33,17 +33,20 @@ ProPresenter song files into the current installation database.
 
 import os
 import base64
+import logging
 from lxml import objectify
 
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import strip_rtf
 from .songimport import SongImport
 
+log = logging.getLogger(__name__)
+
 
 class ProPresenterImport(SongImport):
     """
     The :class:`ProPresenterImport` class provides OpenLP with the
-    ability to import ProPresenter song files.
+    ability to import ProPresenter 4 song files.
     """
     def do_import(self):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
@@ -52,11 +55,11 @@ class ProPresenterImport(SongImport):
                 return
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
             root = objectify.parse(open(file_path, 'rb')).getroot()
-            self.process_song(root)
+            self.process_song(root, file_path)
 
-    def process_song(self, root):
+    def process_song(self, root, filename):
         self.set_defaults()
-        self.title = root.get('CCLISongTitle')
+        self.title = os.path.basename(filename).rstrip('.pro4')
         self.copyright = root.get('CCLICopyrightInfo')
         self.comments = root.get('notes')
         self.ccli_number = root.get('CCLILicenseNumber')
@@ -67,6 +70,9 @@ class ProPresenterImport(SongImport):
         count = 0
         for slide in root.slides.RVDisplaySlide:
             count += 1
+            if not hasattr(slide.displayElements, 'RVTextElement'):
+                log.debug('No text found, may be an image slide')
+                continue
             RTFData = slide.displayElements.RVTextElement.get('RTFData')
             rtf = base64.standard_b64decode(RTFData)
             words, encoding = strip_rtf(rtf.decode())

@@ -36,11 +36,19 @@ from unittest import TestCase
 from tests.interfaces import MagicMock
 
 from openlp.core.ui import ThemeManager
+from openlp.core.common import Registry
 
-RESOURCES_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources', 'themes'))
+from tests.utils.constants import TEST_RESOURCES_PATH
+from tests.interfaces import MagicMock, patch
 
 
 class TestThemeManager(TestCase):
+
+    def setUp(self):
+        """
+        Set up the tests
+        """
+        Registry.create()
 
     def export_theme_test(self):
         """
@@ -48,15 +56,81 @@ class TestThemeManager(TestCase):
         """
         # GIVEN: A new ThemeManager instance.
         theme_manager = ThemeManager()
-        theme_manager.path = RESOURCES_PATH
+        theme_manager.path = os.path.join(TEST_RESOURCES_PATH, 'themes')
         zipfile.ZipFile.__init__ = MagicMock()
         zipfile.ZipFile.__init__.return_value = None
         zipfile.ZipFile.write = MagicMock()
 
         # WHEN: The theme is exported
-        theme_manager._export_theme('/some/path', 'Default')
+        theme_manager._export_theme(os.path.join('some', 'path'), 'Default')
 
         # THEN: The zipfile should be created at the given path
-        zipfile.ZipFile.__init__.assert_called_with('/some/path/Default.otz', 'w')
-        zipfile.ZipFile.write.assert_called_with(os.path.join(RESOURCES_PATH, 'Default', 'Default.xml'),
-                                                 'Default/Default.xml')
+        zipfile.ZipFile.__init__.assert_called_with(os.path.join('some', 'path', 'Default.otz'), 'w')
+        zipfile.ZipFile.write.assert_called_with(os.path.join(TEST_RESOURCES_PATH, 'themes', 'Default', 'Default.xml'),
+                                                 os.path.join('Default', 'Default.xml'))
+
+    def initial_theme_manager_test(self):
+        """
+        Test the instantiation of theme manager.
+        """
+        # GIVEN: A new service manager instance.
+        ThemeManager(None)
+
+        # WHEN: the default theme manager is built.
+        # THEN: The the controller should be registered in the registry.
+        self.assertIsNotNone(Registry().get('theme_manager'), 'The base theme manager should be registered')
+
+    def write_theme_same_image_test(self):
+        """
+        Test that we don't try to overwrite a theme background image with itself
+        """
+        # GIVEN: A new theme manager instance, with mocked builtins.open, shutil.copyfile,
+        #        theme, check_directory_exists and thememanager-attributes.
+        with patch('builtins.open') as mocked_open, \
+                patch('openlp.core.ui.thememanager.shutil.copyfile') as mocked_copyfile, \
+                patch('openlp.core.ui.thememanager.check_directory_exists') as mocked_check_directory_exists:
+            mocked_open.return_value = MagicMock()
+            theme_manager = ThemeManager(None)
+            theme_manager.old_background_image = None
+            theme_manager.generate_and_save_image = MagicMock()
+            theme_manager.path = ''
+            mocked_theme = MagicMock()
+            mocked_theme.theme_name = 'themename'
+            mocked_theme.extract_formatted_xml = MagicMock()
+            mocked_theme.extract_formatted_xml.return_value = 'fake_theme_xml'.encode()
+
+            # WHEN: Calling _write_theme with path to the same image, but the path written slightly different
+            file_name1 = os.path.join(TEST_RESOURCES_PATH, 'church.jpg')
+            # Do replacement from end of string to avoid problems with path start
+            file_name2 = file_name1[::-1].replace(os.sep, os.sep + os.sep, 2)[::-1]
+            theme_manager._write_theme(mocked_theme, file_name1, file_name2)
+
+            # THEN: The mocked_copyfile should not have been called
+            self.assertFalse(mocked_copyfile.called, 'shutil.copyfile should not be called')
+
+    def write_theme_diff_images_test(self):
+        """
+        Test that we do overwrite a theme background image when a new is submitted
+        """
+        # GIVEN: A new theme manager instance, with mocked builtins.open, shutil.copyfile,
+        #        theme, check_directory_exists and thememanager-attributes.
+        with patch('builtins.open') as mocked_open, \
+                patch('openlp.core.ui.thememanager.shutil.copyfile') as mocked_copyfile, \
+                patch('openlp.core.ui.thememanager.check_directory_exists') as mocked_check_directory_exists:
+            mocked_open.return_value = MagicMock()
+            theme_manager = ThemeManager(None)
+            theme_manager.old_background_image = None
+            theme_manager.generate_and_save_image = MagicMock()
+            theme_manager.path = ''
+            mocked_theme = MagicMock()
+            mocked_theme.theme_name = 'themename'
+            mocked_theme.extract_formatted_xml = MagicMock()
+            mocked_theme.extract_formatted_xml.return_value = 'fake_theme_xml'.encode()
+
+            # WHEN: Calling _write_theme with path to different images
+            file_name1 = os.path.join(TEST_RESOURCES_PATH, 'church.jpg')
+            file_name2 = os.path.join(TEST_RESOURCES_PATH, 'church2.jpg')
+            theme_manager._write_theme(mocked_theme, file_name1, file_name2)
+
+            # THEN: The mocked_copyfile should not have been called
+            self.assertTrue(mocked_copyfile.called, 'shutil.copyfile should be called')
