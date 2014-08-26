@@ -287,8 +287,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         check_directory_exists(self.service_path)
         self.load_list(Settings().value(self.settings_section + '/media files'))
         self.rebuild_players()
-        if VLC_AVAILABLE:
-            self.media_clip_selector_form = MediaClipSelectorForm(self, self.main_window, None)
 
     def rebuild_players(self):
         """
@@ -415,7 +413,13 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         When the load optical button is clicked, open the clip selector window.
         """
-        self.media_clip_selector_form.exec_()
+        # self.media_clip_selector_form.exec_()
+        if VLC_AVAILABLE:
+            media_clip_selector_form = MediaClipSelectorForm(self, self.main_window, None)
+            media_clip_selector_form.exec_()
+            del media_clip_selector_form
+        else:
+            QtGui.QMessageBox.critical(self, 'VLC is not available', 'VLC is not available')
 
     def add_optical_clip(self, optical):
         """
