@@ -280,7 +280,7 @@ class ActionList(object):
                 ActionList.shortcut_map[shortcuts[1]] = actions
             else:
                 log.warning('Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
-                         (shortcuts[1], action.objectName()))
+                            (shortcuts[1], action.objectName()))
                 shortcuts.remove(shortcuts[1])
         # Check the primary shortcut.
         existing_actions = ActionList.shortcut_map.get(shortcuts[0], [])
@@ -291,7 +291,7 @@ class ActionList(object):
             ActionList.shortcut_map[shortcuts[0]] = actions
         else:
             log.warning('Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
-                     (shortcuts[0], action.objectName()))
+                        (shortcuts[0], action.objectName()))
             shortcuts.remove(shortcuts[0])
         action.setShortcuts([QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
 
