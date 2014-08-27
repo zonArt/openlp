@@ -65,12 +65,19 @@ class OSISBible(BibleDB):
             # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
             # detection, and the two mechanisms together interfere with each other.
             import_file = open(self.filename, 'rb')
-            language_id = self.get_language(bible_name)
+            osis_bible_tree = etree.parse(import_file)
+            namespace = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
+            # Find bible language
+            language_id = None
+            language = osis_bible_tree.xpath("//ns:osisText/@xml:lang", namespaces=namespace)
+            if language:
+                language_id = BiblesResourcesDB.get_language(language[0])
+            # The language couldn't be detected, ask the user
+            if not language_id:
+                language_id = self.get_language(bible_name)
             if not language_id:
                 log.error('Importing books from "%s" failed' % self.filename)
                 return False
-            osis_bible_tree = etree.parse(import_file)
-            namespace = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
             num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=namespace))
             self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
                                                          'Removing unused tags (this may take a few minutes)...'))

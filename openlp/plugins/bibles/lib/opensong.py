@@ -88,6 +88,7 @@ class OpenSongBible(BibleDB):
                                       'Incorrect Bible file type supplied. This looks like a Zefania XML bible, '
                                       'please use the Zefania import option.'))
                 return False
+            # No language info in the opensong format, so ask the user
             language_id = self.get_language(bible_name)
             if not language_id:
                 log.error('Importing books from "%s" failed' % self.filename)
