@@ -50,7 +50,7 @@ class TestPowerPraiseFileImport(SongImportTestHelper):
         """
         Test that loading a PowerPraise file works correctly
         """
-        self.file_import([os.path.join(TEST_PATH, 'Näher, mein Gott zu Dir.ppl')],
-                         self.load_external_result_data(os.path.join(TEST_PATH, 'Näher, mein Gott zu Dir.json')))
+        self.file_import([os.path.join(TEST_PATH, 'Naher, mein Gott zu Dir.ppl')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Naher, mein Gott zu Dir.json')))
         self.file_import([os.path.join(TEST_PATH, 'You are so faithful.ppl')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'You are so faithful.json')))
