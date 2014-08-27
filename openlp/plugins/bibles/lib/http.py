@@ -32,7 +32,6 @@ The :mod:`http` module enables OpenLP to retrieve scripture from bible websites.
 import logging
 import re
 import socket
-import urllib.request
 import urllib.parse
 import urllib.error
 from html.parser import HTMLParseError
