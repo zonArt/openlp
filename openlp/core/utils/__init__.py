@@ -44,10 +44,10 @@ from random import randint
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.common import Registry, AppLocation, Settings
+from openlp.core.common import Registry, AppLocation, Settings, is_win, is_macosx
 
 
-if sys.platform != 'win32' and sys.platform != 'darwin':
+if not is_win() and not is_macosx():
     try:
         from xdg import BaseDirectory
         XDG_BASE_AVAILABLE = True

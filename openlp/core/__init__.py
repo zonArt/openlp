@@ -36,14 +36,14 @@ logging and a plugin framework are contained within the openlp.core module.
 
 import os
 import sys
-import platform
 import logging
 from optparse import OptionParser
 from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, OpenLPMixin, AppLocation, Settings, UiStrings, check_directory_exists
+from openlp.core.common import Registry, OpenLPMixin, AppLocation, Settings, UiStrings, check_directory_exists, \
+    is_macosx, is_win
 from openlp.core.lib import ScreenList
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -126,7 +126,7 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
             alternate_rows_repair_stylesheet = \
                 'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
             application_stylesheet += alternate_rows_repair_stylesheet
-        if os.name == 'nt':
+        if is_win():
             application_stylesheet += NT_REPAIR_STYLESHEET
         if application_stylesheet:
             self.setStyleSheet(application_stylesheet)
@@ -275,7 +275,7 @@ def main(args=None):
     # Throw the rest of the arguments at Qt, just in case.
     qt_args.extend(args)
     # Bug #1018855: Set the WM_CLASS property in X11
-    if platform.system() not in ['Windows', 'Darwin']:
+    if not is_win() and not is_macosx():
         qt_args.append('OpenLP')
     # Initialise the resources
     qInitResources()

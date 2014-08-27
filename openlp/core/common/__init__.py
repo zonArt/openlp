@@ -127,6 +127,33 @@ def de_hump(name):
     sub_name = FIRST_CAMEL_REGEX.sub(r'\1_\2', name)
     return SECOND_CAMEL_REGEX.sub(r'\1_\2', sub_name).lower()
 
+
+def is_win():
+    """
+    Returns true if running on a system with a nt kernel e.g. Windows, Wine
+
+    :return: True if system is running a nt kernel false otherwise
+    """
+    return os.name.startswith('nt')
+
+
+def is_macosx():
+    """
+    Returns true if running on a system with a darwin kernel e.g. Mac OS X
+
+    :return: True if system is running a darwin kernel false otherwise
+    """
+    return sys.platform.startswith('darwin')
+
+
+def is_linux():
+    """
+    Returns true if running on a system with a linux kernel e.g. Ubuntu, Debian, etc
+
+    :return: True if system is running a linux kernel false otherwise
+    """
+    return sys.platform.startswith('linux')
+
 from .openlpmixin import OpenLPMixin
 from .registry import Registry
 from .registrymixin import RegistryMixin

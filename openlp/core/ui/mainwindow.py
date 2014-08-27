@@ -41,7 +41,8 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate, \
+    is_win, is_macosx
 from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageManager, PluginStatus, ScreenList, \
     build_icon
 from openlp.core.lib.ui import UiStrings, create_action
@@ -289,7 +290,7 @@ class Ui_MainWindow(object):
                                         triggers=self.on_about_item_clicked)
         # Give QT Extra Hint that this is an About Menu Item
         self.about_item.setMenuRole(QtGui.QAction.AboutRole)
-        if os.name == 'nt':
+        if is_win():
             self.local_help_file = os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
             self.offline_help_item = create_action(main_window, 'offlineHelpItem',
                                                    icon=':/system/system_help_contents.png',
@@ -323,7 +324,7 @@ class Ui_MainWindow(object):
         # Qt on OS X looks for keywords in the menu items title to determine which menu items get added to the main
         # menu. If we are running on Mac OS X the menu items whose title contains those keywords but don't belong in the
         # main menu need to be marked as such with QAction.NoRole.
-        if sys.platform == 'darwin':
+        if is_macosx():
             self.settings_shortcuts_item.setMenuRole(QtGui.QAction.NoRole)
             self.formatting_tag_item.setMenuRole(QtGui.QAction.NoRole)
         add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
@@ -332,7 +333,7 @@ class Ui_MainWindow(object):
         add_actions(self.tools_menu, (self.tools_open_data_folder, None))
         add_actions(self.tools_menu, (self.tools_first_time_wizard, None))
         add_actions(self.tools_menu, [self.update_theme_images])
-        if os.name == 'nt':
+        if is_win():
             add_actions(self.help_menu, (self.offline_help_item, self.on_line_help_item, None, self.web_site_item,
                         self.about_item))
         else:
@@ -426,7 +427,7 @@ class Ui_MainWindow(object):
         self.settings_plugin_list_item.setStatusTip(translate('OpenLP.MainWindow', 'List the Plugins'))
         self.about_item.setText(translate('OpenLP.MainWindow', '&About'))
         self.about_item.setStatusTip(translate('OpenLP.MainWindow', 'More information about OpenLP'))
-        if os.name == 'nt':
+        if is_win():
             self.offline_help_item.setText(translate('OpenLP.MainWindow', '&User Guide'))
         self.on_line_help_item.setText(translate('OpenLP.MainWindow', '&Online Help'))
         self.search_shortcut_action.setText(UiStrings().Search)
@@ -1073,7 +1074,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if self.live_controller.display:
             self.live_controller.display.close()
             self.live_controller.display = None
-        if os.name == 'nt':
+        if is_win():
             # Needed for Windows to stop crashes on exit
             Registry().remove('application')
 
