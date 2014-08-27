@@ -175,7 +175,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                     # On some platforms importing vlc.py might cause
                     # also OSError exceptions. (e.g. Mac OS X)
                     except (ImportError, OSError):
-                        log.warn('Failed to import %s on path %s', module_name, path)
+                        log.warning('Failed to import %s on path %s', module_name, path)
         player_classes = MediaPlayer.__subclasses__()
         for player_class in player_classes:
             player = player_class(self)

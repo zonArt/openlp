@@ -129,7 +129,7 @@ class ImpressController(PresentationController):
             try:
                 uno_instance = get_uno_instance(resolver)
             except:
-                log.warn('Unable to find running instance ')
+                log.warning('Unable to find running instance ')
                 self.start_process()
                 loop += 1
         try:
@@ -138,7 +138,7 @@ class ImpressController(PresentationController):
             desktop = self.manager.createInstanceWithContext("com.sun.star.frame.Desktop", uno_instance)
             return desktop
         except:
-            log.warn('Failed to get UNO desktop')
+            log.warning('Failed to get UNO desktop')
             return None
 
     def get_com_desktop(self):
@@ -152,7 +152,7 @@ class ImpressController(PresentationController):
         try:
             desktop = self.manager.createInstance('com.sun.star.frame.Desktop')
         except (AttributeError, pywintypes.com_error):
-            log.warn('Failure to find desktop - Impress may have closed')
+            log.warning('Failure to find desktop - Impress may have closed')
         return desktop if desktop else None
 
     def get_com_servicemanager(self):
@@ -163,7 +163,7 @@ class ImpressController(PresentationController):
         try:
             return Dispatch('com.sun.star.ServiceManager')
         except pywintypes.com_error:
-            log.warn('Failed to get COM service manager. Impress Controller has been disabled')
+            log.warning('Failed to get COM service manager. Impress Controller has been disabled')
             return None
 
     def kill(self):
@@ -180,7 +180,7 @@ class ImpressController(PresentationController):
             else:
                 desktop = self.get_com_desktop()
         except:
-            log.warn('Failed to find an OpenOffice desktop to terminate')
+            log.warning('Failed to find an OpenOffice desktop to terminate')
         if not desktop:
             return
         docs = desktop.getComponents()
@@ -198,7 +198,7 @@ class ImpressController(PresentationController):
                 desktop.terminate()
                 log.debug('OpenOffice killed')
             except:
-                log.warn('Failed to terminate OpenOffice')
+                log.warning('Failed to terminate OpenOffice')
 
 
 class ImpressDocument(PresentationDocument):
@@ -244,7 +244,7 @@ class ImpressDocument(PresentationDocument):
         try:
             self.document = desktop.loadComponentFromURL(url, '_blank', 0, properties)
         except:
-            log.warn('Failed to load presentation %s' % url)
+            log.warning('Failed to load presentation %s' % url)
             return False
         if os.name == 'nt':
             # As we can't start minimized the Impress window gets in the way.
@@ -318,7 +318,7 @@ class ImpressDocument(PresentationDocument):
                     self.presentation = None
                     self.document.dispose()
                 except:
-                    log.warn("Closing presentation failed")
+                    log.warning("Closing presentation failed")
             self.document = None
         self.controller.remove_doc(self)
 
@@ -335,7 +335,7 @@ class ImpressDocument(PresentationDocument):
                 log.debug("getPresentation failed to find a presentation")
                 return False
         except:
-            log.warn("getPresentation failed to find a presentation")
+            log.warning("getPresentation failed to find a presentation")
             return False
         return True
 

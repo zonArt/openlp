@@ -423,7 +423,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 else:
                     language_id = self.new_bibles[number].get_language(name)
                 if not language_id:
-                    log.warn('Upgrading from "%s" failed' % filename[0])
+                    log.warning('Upgrading from "%s" failed' % filename[0])
                     self.new_bibles[number].session.close()
                     del self.new_bibles[number]
                     self.increment_progress_bar(
@@ -444,7 +444,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     book_ref_id = self.new_bibles[number].\
                         get_book_ref_id_by_name(book, len(books), language_id)
                     if not book_ref_id:
-                        log.warn('Upgrading books from %s - download name: "%s" aborted by user' % (
+                        log.warning('Upgrading books from %s - download name: "%s" aborted by user' % (
                             meta_data['download_source'], meta_data['download_name']))
                         self.new_bibles[number].session.close()
                         del self.new_bibles[number]
@@ -457,7 +457,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     if oldbook:
                         verses = old_bible.get_verses(oldbook['id'])
                         if not verses:
-                            log.warn('No verses found to import for book "%s"', book)
+                            log.warning('No verses found to import for book "%s"', book)
                             continue
                         for verse in verses:
                             if self.stop_import_flag:
@@ -472,7 +472,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not language_id:
                     language_id = self.new_bibles[number].get_language(name)
                 if not language_id:
-                    log.warn('Upgrading books from "%s" failed' % name)
+                    log.warning('Upgrading books from "%s" failed' % name)
                     self.new_bibles[number].session.close()
                     del self.new_bibles[number]
                     self.increment_progress_bar(
@@ -493,7 +493,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         (number + 1, max_bibles, name, book['name']))
                     book_ref_id = self.new_bibles[number].get_book_ref_id_by_name(book['name'], len(books), language_id)
                     if not book_ref_id:
-                        log.warn('Upgrading books from %s " failed - aborted by user' % name)
+                        log.warning('Upgrading books from %s " failed - aborted by user' % name)
                         self.new_bibles[number].session.close()
                         del self.new_bibles[number]
                         self.success[number] = False
@@ -503,7 +503,7 @@ class BibleUpgradeForm(OpenLPWizard):
                                                                   book_details['testament_id'])
                     verses = old_bible.get_verses(book['id'])
                     if not verses:
-                        log.warn('No verses found to import for book "%s"', book['name'])
+                        log.warning('No verses found to import for book "%s"', book['name'])
                         self.new_bibles[number].delete_book(db_book)
                         continue
                     for verse in verses:

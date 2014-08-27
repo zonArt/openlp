@@ -165,7 +165,7 @@ class BGExtract(RegistryProperties):
                     if len(verse_parts) > 1:
                         verse = int(verse_parts[0])
                 except TypeError:
-                    log.warn('Illegal verse number: %s', str(verse))
+                    log.warning('Illegal verse number: %s', str(verse))
                 verses.append((verse, text))
         verse_list = {}
         for verse, text in verses[::-1]:
@@ -198,7 +198,7 @@ class BGExtract(RegistryProperties):
                 if len(verse_parts) > 1:
                     clean_verse_num = int(verse_parts[0])
             except TypeError:
-                log.warn('Illegal verse number: %s', str(raw_verse_num))
+                log.warning('Illegal verse number: %s', str(raw_verse_num))
             if clean_verse_num:
                 verse_text = raw_verse_num.next_element
                 part = raw_verse_num.next_element.next_element
