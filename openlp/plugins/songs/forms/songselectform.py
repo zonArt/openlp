@@ -37,7 +37,7 @@ from time import sleep
 from PyQt4 import QtCore, QtGui
 
 from openlp.core import Settings
-from openlp.core.common import Registry
+from openlp.core.common import Registry, is_win
 from openlp.core.lib import translate
 from openlp.plugins.songs.forms.songselectdialog import Ui_SongSelectDialog
 from openlp.plugins.songs.lib.songselect import SongSelectImport
@@ -377,7 +377,7 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         Adds the openlp to the class dynamically.
         Windows needs to access the application in a dynamic manner.
         """
-        if os.name == 'nt':
+        if is_win():
             return Registry().get('application')
         else:
             if not hasattr(self, '_application'):

@@ -42,7 +42,9 @@ import logging
 import os
 import time
 
-if os.name == 'nt':
+from openlp.core.common import is_win
+
+if is_win():
     from win32com.client import Dispatch
     import pywintypes
     # Declare an empty exception to match the exception imported from UNO
@@ -93,7 +95,7 @@ class ImpressController(PresentationController):
         Impress is able to run on this machine.
         """
         log.debug('check_available')
-        if os.name == 'nt':
+        if is_win():
             return self.get_com_servicemanager() is not None
         else:
             return uno_available
@@ -104,7 +106,7 @@ class ImpressController(PresentationController):
         UNO interface when required.
         """
         log.debug('start process Openoffice')
-        if os.name == 'nt':
+        if is_win():
             self.manager = self.get_com_servicemanager()
             self.manager._FlagAsMethod('Bridge_GetStruct')
             self.manager._FlagAsMethod('Bridge_GetValueObject')
@@ -175,7 +177,7 @@ class ImpressController(PresentationController):
             self.docs[0].close_presentation()
         desktop = None
         try:
-            if os.name != 'nt':
+            if not is_win():
                 desktop = self.get_uno_desktop()
             else:
                 desktop = self.get_com_desktop()
@@ -223,7 +225,7 @@ class ImpressDocument(PresentationDocument):
         is available the presentation is loaded and started.
         """
         log.debug('Load Presentation OpenOffice')
-        if os.name == 'nt':
+        if is_win():
             desktop = self.controller.get_com_desktop()
             if desktop is None:
                 self.controller.start_process()
@@ -236,7 +238,7 @@ class ImpressDocument(PresentationDocument):
             return False
         self.desktop = desktop
         properties = []
-        if os.name != 'nt':
+        if not is_win():
             # Recent versions of Impress on Windows won't start the presentation if it starts as minimized. It seems OK
             # on Linux though.
             properties.append(self.create_property('Minimized', True))
@@ -246,7 +248,7 @@ class ImpressDocument(PresentationDocument):
         except:
             log.warning('Failed to load presentation %s' % url)
             return False
-        if os.name == 'nt':
+        if is_win():
             # As we can't start minimized the Impress window gets in the way.
             # Either window.setPosSize(0, 0, 200, 400, 12) or .setVisible(False)
             window = self.document.getCurrentController().getFrame().getContainerWindow()
@@ -264,7 +266,7 @@ class ImpressDocument(PresentationDocument):
         log.debug('create thumbnails OpenOffice')
         if self.check_thumbnails():
             return
-        if os.name == 'nt':
+        if is_win():
             thumb_dir_url = 'file:///' + self.get_temp_folder().replace('\\', '/') \
                 .replace(':', '|').replace(' ', '%20')
         else:
@@ -297,7 +299,7 @@ class ImpressDocument(PresentationDocument):
         Create an OOo style property object which are passed into some Uno methods.
         """
         log.debug('create property OpenOffice')
-        if os.name == 'nt':
+        if is_win():
             property_object = self.controller.manager.Bridge_GetStruct('com.sun.star.beans.PropertyValue')
         else:
             property_object = PropertyValue()
