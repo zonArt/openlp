@@ -109,6 +109,22 @@ class VersionThread(QtCore.QThread):
             Registry().execute('openlp_version_check', '%s' % version)
 
 
+class HTTPRedirectHandlerFixed(urllib.request.HTTPRedirectHandler):
+    """
+    Special HTTPRedirectHandler used to work around http://bugs.python.org/issue22248
+    (Redirecting to urls with special chars)
+    """
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        # Test if the newurl can be decoded to ascii
+        try:
+            test_url = newurl.encode('latin1').decode('ascii')
+            fixed_url = newurl
+        except Exception:
+            # The url could not be decoded to ascii, so we do some url encoding
+            fixed_url = urllib.parse.quote(newurl.encode('latin1').decode('utf-8', 'replace'), safe='/:')
+        return super(HTTPRedirectHandlerFixed, self).redirect_request(req, fp, code, msg, headers, fixed_url)
+
+
 def get_application_version():
     """
     Returns the application version of the running instance of OpenLP::
@@ -341,6 +357,9 @@ def get_web_page(url, header=None, update_openlp=False):
     # http://docs.python.org/library/urllib2.html
     if not url:
         return None
+    # This is needed to work around http://bugs.python.org/issue22248 and https://bugs.launchpad.net/openlp/+bug/1251437
+    opener = urllib.request.build_opener(HTTPRedirectHandlerFixed())
+    urllib.request.install_opener(opener)
     req = urllib.request.Request(url)
     if not header or header[0].lower() != 'user-agent':
         user_agent = _get_user_agent()
