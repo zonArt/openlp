@@ -101,7 +101,8 @@ class Ui_MediaClipSelector(object):
         # Preview frame
         self.preview_frame = QtGui.QFrame(media_clip_selector)
         self.preview_frame.setMinimumSize(QtCore.QSize(320, 240))
-        self.preview_frame.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding))
+        self.preview_frame.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
+                                                           QtGui.QSizePolicy.MinimumExpanding))
         self.preview_frame.setStyleSheet('background-color:black;')
         self.preview_frame.setFrameShape(QtGui.QFrame.NoFrame)
         self.preview_frame.setObjectName('preview_frame')
