@@ -160,8 +160,8 @@ class Ui_MediaClipSelector(object):
         # Save and close buttons
         self.button_box = QtGui.QDialogButtonBox(media_clip_selector)
         self.button_box.addButton(QtGui.QDialogButtonBox.Save)
-        self.button_box.addButton(QtGui.QDialogButtonBox.Cancel)
-        self.close_button = self.button_box.button(QtGui.QDialogButtonBox.Cancel)
+        self.button_box.addButton(QtGui.QDialogButtonBox.Close)
+        self.close_button = self.button_box.button(QtGui.QDialogButtonBox.Close)
         self.save_button = self.button_box.button(QtGui.QDialogButtonBox.Save)
         self.main_layout.addWidget(self.button_box)
 

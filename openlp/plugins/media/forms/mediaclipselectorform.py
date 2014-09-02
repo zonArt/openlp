@@ -195,12 +195,13 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         return True
 
     @QtCore.pyqtSlot(bool)
-    def on_load_disc_pushbutton_clicked(self, clicked):
+    def on_load_disc_button_clicked(self, clicked):
         """
         Load the media when the load-button has been clicked
 
         :param clicked: Given from signal, not used.
         """
+        log.debug('on_load_disc_button_clicked')
         self.disable_all()
         path = self.media_path_combobox.currentText()
         # Check if given path is non-empty and exists before starting VLC
@@ -268,7 +269,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         log.debug('load_disc_button end - vlc_media_player state: %s' % self.vlc_media_player.get_state())
 
     @QtCore.pyqtSlot(bool)
-    def on_play_pushbutton_clicked(self, clicked):
+    def on_play_button_clicked(self, clicked):
         """
         Toggle the playback
 
@@ -283,7 +284,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.play_button.setIcon(self.pause_icon)
 
     @QtCore.pyqtSlot(bool)
-    def on_set_start_pushbutton_clicked(self, clicked):
+    def on_set_start_button_clicked(self, clicked):
         """
         Copy the current player position to start_position_edit
 
@@ -299,7 +300,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.end_timeedit.setTime(new_pos_time)
 
     @QtCore.pyqtSlot(bool)
-    def on_set_end_pushbutton_clicked(self, clicked):
+    def on_set_end_button_clicked(self, clicked):
         """
         Copy the current player position to end_timeedit
 
@@ -339,7 +340,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.start_position_edit.setTime(new_time)
 
     @QtCore.pyqtSlot(bool)
-    def on_jump_end_pushbutton_clicked(self, clicked):
+    def on_jump_end_button_clicked(self, clicked):
         """
         Set the player position to the position stored in end_timeedit
 
@@ -353,7 +354,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.vlc_media_player.set_time(end_time_ms)
 
     @QtCore.pyqtSlot(bool)
-    def on_jump_start_pushbutton_clicked(self, clicked):
+    def on_jump_start_button_clicked(self, clicked):
         """
         Set the player position to the position stored in start_position_edit
 
@@ -367,13 +368,13 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.vlc_media_player.set_time(start_time_ms)
 
     @QtCore.pyqtSlot(int)
-    def on_title_combo_box_currentIndexChanged(self, index):
+    def on_titles_combo_box_currentIndexChanged(self, index):
         """
         When a new title is chosen, it is loaded by VLC and info about audio and subtitle tracks is reloaded
 
         :param index: The index of the newly chosen title track.
         """
-        log.debug('in on_title_combo_box_changed, index: %d', index)
+        log.debug('in on_titles_combo_box_changed, index: %d', index)
         if not self.vlc_media_player:
             log.error('vlc_media_player was None')
             return
@@ -474,7 +475,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         if subtitle_track:
             self.vlc_media_player.video_set_spu(int(subtitle_track))
 
-    def on_position_horizontalslider_sliderMoved(self, position):
+    def on_position_slider_sliderMoved(self, position):
         """
         Set player position according to new slider position.
 
@@ -530,14 +531,11 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.jump_end_button.setDisabled(action)
         self.save_button.setDisabled(action)
 
-    @QtCore.pyqtSlot(bool)
-    def on_save_pushbutton_clicked(self, clicked):
+    def accept(self):
         """
         Saves the current media and trackinfo as a clip to the mediamanager
-
-        :param clicked: Given from signal, not used.
         """
-        log.debug('in on_save_pushbutton_clicked')
+        log.debug('in on_save_button_clicked')
         start_time = self.start_position_edit.time()
         start_time_ms = start_time.hour() * 60 * 60 * 1000 + \
             start_time.minute() * 60 * 1000 + \
