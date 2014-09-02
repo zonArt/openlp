@@ -32,13 +32,14 @@ import time
 
 from PyQt4 import QtCore
 
+from openlp.core.common import is_win
 from openlp.core.utils import get_uno_command, get_uno_instance
 from openlp.core.lib import translate
 from .songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-if os.name == 'nt':
+if is_win():
     from win32com.client import Dispatch
     NoConnectException = Exception
 else:
@@ -106,7 +107,7 @@ class OpenOfficeImport(SongImport):
         Start OpenOffice.org process
         TODO: The presentation/Impress plugin may already have it running
         """
-        if os.name == 'nt':
+        if is_win():
             self.start_ooo_process()
             self.desktop = self.ooo_manager.createInstance('com.sun.star.frame.Desktop')
         else:
@@ -133,7 +134,7 @@ class OpenOfficeImport(SongImport):
         Start the OO Process
         """
         try:
-            if os.name == 'nt':
+            if is_win():
                 self.ooo_manager = Dispatch('com.sun.star.ServiceManager')
                 self.ooo_manager._FlagAsMethod('Bridge_GetStruct')
                 self.ooo_manager._FlagAsMethod('Bridge_GetValueObject')
@@ -150,7 +151,7 @@ class OpenOfficeImport(SongImport):
         Open the passed file in OpenOffice.org Impress
         """
         self.file_path = file_path
-        if os.name == 'nt':
+        if is_win():
             url = file_path.replace('\\', '/')
             url = url.replace(':', '|').replace(' ', '%20')
             url = 'file:///' + url

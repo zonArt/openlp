@@ -43,7 +43,7 @@ import sys
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
-from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate
+from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx
 from openlp.core.lib import ServiceItem, ImageSource, build_html, expand_tags, image_to_byte
 from openlp.core.lib.theme import BackgroundType
 
@@ -74,7 +74,7 @@ class Display(QtGui.QGraphicsView):
         # OpenGL. Only white blank screen is shown on the 2nd monitor all the
         # time. We need to investigate more how to use OpenGL properly on Mac OS
         # X.
-        if sys.platform != 'darwin':
+        if not is_macosx():
             self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
@@ -143,7 +143,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         # on Mac OS X. For next OpenLP version we should test it on other
         # platforms. For OpenLP 2.0 keep it only for OS X to not cause any
         # regressions on other platforms.
-        if sys.platform == 'darwin':
+        if is_macosx():
             window_flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window
             # For primary screen ensure it stays above the OS X dock
             # and menu bar

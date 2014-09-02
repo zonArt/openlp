@@ -33,10 +33,10 @@ import logging
 import os
 import sys
 
-from openlp.core.common import Settings
+from openlp.core.common import Settings, is_win, is_macosx
 
 
-if sys.platform != 'win32' and sys.platform != 'darwin':
+if not is_win() and not is_macosx():
     try:
         from xdg import BaseDirectory
         XDG_BASE_AVAILABLE = True
@@ -145,13 +145,13 @@ def _get_os_dir_path(dir_type):
         directory = os.path.abspath(os.path.join(os.path.dirname(openlp.__file__), '..', 'resources'))
         if os.path.exists(directory):
             return directory
-    if sys.platform == 'win32':
+    if is_win():
         if dir_type == AppLocation.DataDir:
             return os.path.join(str(os.getenv('APPDATA')), 'openlp', 'data')
         elif dir_type == AppLocation.LanguageDir:
             return os.path.dirname(openlp.__file__)
         return os.path.join(str(os.getenv('APPDATA')), 'openlp')
-    elif sys.platform == 'darwin':
+    elif is_macosx():
         if dir_type == AppLocation.DataDir:
             return os.path.join(str(os.getenv('HOME')), 'Library', 'Application Support', 'openlp', 'Data')
         elif dir_type == AppLocation.LanguageDir:

@@ -38,7 +38,7 @@ import threading
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Settings
+from openlp.core.common import Settings, is_win, is_macosx
 from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState, MediaType
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -52,7 +52,7 @@ try:
 except (ImportError, NameError, NotImplementedError):
     pass
 except OSError as e:
-    if sys.platform.startswith('win'):
+    if is_win():
         if not isinstance(e, WindowsError) and e.winerror != 126:
             raise
     else:
@@ -139,9 +139,9 @@ class VlcPlayer(MediaPlayer):
         # You have to give the id of the QFrame (or similar object)
         # to vlc, different platforms have different functions for this.
         win_id = int(display.vlc_widget.winId())
-        if sys.platform == "win32":
+        if is_win():
             display.vlc_media_player.set_hwnd(win_id)
-        elif sys.platform == "darwin":
+        elif is_macosx():
             # We have to use 'set_nsobject' since Qt4 on OSX uses Cocoa
             # framework and not the old Carbon.
             display.vlc_media_player.set_nsobject(win_id)

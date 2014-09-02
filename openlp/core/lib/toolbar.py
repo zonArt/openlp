@@ -81,4 +81,4 @@ class OpenLPToolbar(QtGui.QToolBar):
             if handle in self.actions:
                 self.actions[handle].setVisible(visible)
             else:
-                log.warn('No handle "%s" in actions list.', str(handle))
+                log.warning('No handle "%s" in actions list.', str(handle))

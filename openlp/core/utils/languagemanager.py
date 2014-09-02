@@ -35,7 +35,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation, Settings, translate
+from openlp.core.common import AppLocation, Settings, translate, is_win, is_macosx
 
 log = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ class LanguageManager(object):
         app_translator = QtCore.QTranslator()
         app_translator.load(language, lang_path)
         # A translator for buttons and other default strings provided by Qt.
-        if sys.platform != 'win32' and sys.platform != 'darwin':
+        if not is_win() and not is_macosx():
             lang_path = QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath)
         default_translator = QtCore.QTranslator()
         default_translator.load('qt_%s' % language, lang_path)
