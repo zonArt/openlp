@@ -123,7 +123,7 @@ class OpenSongBible(BibleDB):
                                 if len(verse_parts) > 1:
                                     number = int(verse_parts[0])
                             except TypeError:
-                                log.warn('Illegal verse number: %s', str(verse.attrib['n']))
+                                log.warning('Illegal verse number: %s', str(verse.attrib['n']))
                             verse_number = number
                         else:
                             verse_number += 1

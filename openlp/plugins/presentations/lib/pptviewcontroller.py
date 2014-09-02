@@ -30,7 +30,9 @@
 import logging
 import os
 
-if os.name == 'nt':
+from openlp.core.common import is_win
+
+if is_win():
     from ctypes import cdll
     from ctypes.wintypes import RECT
 
@@ -63,11 +65,11 @@ class PptviewController(PresentationController):
         PPT Viewer is able to run on this machine.
         """
         log.debug('check_available')
-        if os.name != 'nt':
+        if not is_win():
             return False
         return self.check_installed()
 
-    if os.name == 'nt':
+    if is_win():
         def check_installed(self):
             """
             Check the viewer is installed.

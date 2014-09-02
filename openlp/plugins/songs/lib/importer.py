@@ -32,7 +32,7 @@ The :mod:`importer` modules provides the general song import functionality.
 import os
 import logging
 
-from openlp.core.common import translate, UiStrings
+from openlp.core.common import translate, UiStrings, is_win
 from openlp.core.ui.wizard import WizardStrings
 from .importers.opensong import OpenSongImport
 from .importers.easyslides import EasySlidesImport
@@ -70,14 +70,14 @@ except ImportError:
     log.exception('Error importing %s', 'OooImport')
     HAS_OOO = False
 HAS_MEDIASHOUT = False
-if os.name == 'nt':
+if is_win():
     try:
         from .importers.mediashout import MediaShoutImport
         HAS_MEDIASHOUT = True
     except ImportError:
         log.exception('Error importing %s', 'MediaShoutImport')
 HAS_WORSHIPCENTERPRO = False
-if os.name == 'nt':
+if is_win():
     try:
         from .importers.worshipcenterpro import WorshipCenterProImport
         HAS_WORSHIPCENTERPRO = True
@@ -290,9 +290,9 @@ class SongFormat(object):
         },
         ProPresenter: {
             'class': ProPresenterImport,
-            'name': 'ProPresenter',
+            'name': 'ProPresenter 4',
             'prefix': 'proPresenter',
-            'filter': '%s (*.pro4)' % translate('SongsPlugin.ImportWizardForm', 'ProPresenter Song Files')
+            'filter': '%s (*.pro4)' % translate('SongsPlugin.ImportWizardForm', 'ProPresenter 4 Song Files')
         },
         SongBeamer: {
             'class': SongBeamerImport,

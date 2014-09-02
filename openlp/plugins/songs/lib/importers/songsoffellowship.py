@@ -37,12 +37,13 @@ import logging
 import os
 import re
 
+from openlp.core.common import is_win
 from .openoffice import OpenOfficeImport
 
 
 log = logging.getLogger(__name__)
 
-if os.name == 'nt':
+if is_win():
     from .openoffice import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
     RuntimeException = Exception
 else:

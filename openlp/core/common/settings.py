@@ -36,7 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import ThemeLevel, SlideLimits, UiStrings
+from openlp.core.common import ThemeLevel, SlideLimits, UiStrings, is_win, is_linux
 
 
 log = logging.getLogger(__name__)
@@ -44,7 +44,7 @@ log = logging.getLogger(__name__)
 
 # Fix for bug #1014422.
 X11_BYPASS_DEFAULT = True
-if sys.platform.startswith('linux'):
+if is_linux():
     # Default to False on Gnome.
     X11_BYPASS_DEFAULT = bool(not os.environ.get('GNOME_DESKTOP_SESSION_ID'))
     # Default to False on Xfce.
@@ -86,7 +86,7 @@ class Settings(QtCore.QSettings):
     """
     __default_settings__ = {
         'advanced/add page break': False,
-        'advanced/alternate rows': not sys.platform.startswith('win'),
+        'advanced/alternate rows': not is_win(),
         'advanced/current media plugin': -1,
         'advanced/data path': '',
         'advanced/default color': '#ffffff',

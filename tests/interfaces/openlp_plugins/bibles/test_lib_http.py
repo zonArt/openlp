@@ -59,6 +59,19 @@ class TestBibleHTTP(TestCase):
         # THEN: We should get back a valid service item
         assert len(books) == 66, 'The bible should not have had any books added or removed'
 
+    def bible_gateway_extract_books_support_redirect_test(self):
+        """
+        Test the Bible Gateway retrieval of book list for DN1933 bible with redirect (bug 1251437)
+        """
+        # GIVEN: A new Bible Gateway extraction class
+        handler = BGExtract()
+
+        # WHEN: The Books list is called
+        books = handler.get_books_from_http('DN1933')
+
+        # THEN: We should get back a valid service item
+        assert len(books) == 66, 'This bible should have 66 books'
+
     def bible_gateway_extract_verse_test(self):
         """
         Test the Bible Gateway retrieval of verse list for NIV bible John 3
