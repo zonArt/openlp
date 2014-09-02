@@ -31,11 +31,10 @@ The :mod:``wizard`` module provides generic wizard tools for OpenLP.
 """
 import logging
 import os
-import sys
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate, is_macosx
 from openlp.core.lib import build_icon
 from openlp.core.lib.ui import add_welcome_page
 
@@ -124,7 +123,7 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         self.setModal(True)
         self.setOptions(QtGui.QWizard.IndependentPages |
                         QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
-        if sys.platform == 'darwin':
+        if is_macosx():
             self.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
             #self.resize(634, 386)
         add_welcome_page(self, image)

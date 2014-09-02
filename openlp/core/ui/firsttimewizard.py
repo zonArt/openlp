@@ -31,9 +31,7 @@ The UI widgets for the first time wizard.
 """
 from PyQt4 import QtCore, QtGui
 
-import sys
-
-from openlp.core.common import translate
+from openlp.core.common import translate, is_macosx
 from openlp.core.lib import build_icon
 from openlp.core.lib.ui import add_welcome_page
 
@@ -66,7 +64,7 @@ class Ui_FirstTimeWizard(object):
         first_time_wizard.setModal(True)
         first_time_wizard.setOptions(QtGui.QWizard.IndependentPages | QtGui.QWizard.NoBackButtonOnStartPage |
                                      QtGui.QWizard.NoBackButtonOnLastPage | QtGui.QWizard.HaveCustomButton1)
-        if sys.platform == 'darwin':
+        if is_macosx():
             first_time_wizard.setPixmap(QtGui.QWizard.BackgroundPixmap,
                                         QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
             first_time_wizard.resize(634, 386)
