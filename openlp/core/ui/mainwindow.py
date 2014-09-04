@@ -118,10 +118,12 @@ class Ui_MainWindow(object):
         self.recent_files_menu = QtGui.QMenu(self.file_menu)
         self.recent_files_menu.setObjectName('recentFilesMenu')
         self.file_import_menu = QtGui.QMenu(self.file_menu)
-        self.file_import_menu.setIcon(build_icon(u':/general/general_import.png'))
+        if not is_macosx():
+            self.file_import_menu.setIcon(build_icon(u':/general/general_import.png'))
         self.file_import_menu.setObjectName('file_import_menu')
         self.file_export_menu = QtGui.QMenu(self.file_menu)
-        self.file_export_menu.setIcon(build_icon(u':/general/general_export.png'))
+        if not is_macosx():
+            self.file_export_menu.setIcon(build_icon(u':/general/general_export.png'))
         self.file_export_menu.setObjectName('file_export_menu')
         # View Menu
         self.view_menu = QtGui.QMenu(self.menu_bar)
