@@ -33,6 +33,7 @@ import logging
 import inspect
 
 from openlp.core.common import trace_error_handler
+
 DO_NOT_TRACE_EVENTS = ['timerEvent', 'paintEvent', 'drag_enter_event', 'drop_event', 'on_controller_size_changed',
                        'preview_size_changed', 'resizeEvent']
 
@@ -41,11 +42,8 @@ class OpenLPMixin(object):
     """
     Base Calling object for OpenLP classes.
     """
-    def __init__(self, parent):
-        try:
-            super(OpenLPMixin, self).__init__(parent)
-        except TypeError:
-            super(OpenLPMixin, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(OpenLPMixin, self).__init__(*args, **kwargs)
         self.logger = logging.getLogger("%s.%s" % (self.__module__, self.__class__.__name__))
         if self.logger.getEffectiveLevel() == logging.DEBUG:
             for name, m in inspect.getmembers(self, inspect.ismethod):
