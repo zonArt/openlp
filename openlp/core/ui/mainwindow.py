@@ -92,6 +92,8 @@ class Ui_MainWindow(object):
         main_window.setObjectName('MainWindow')
         main_window.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
         main_window.setDockNestingEnabled(True)
+        if is_macosx():
+            main_window.setDocumentMode(True)
         # Set up the main container, which contains all the other form widgets.
         self.main_content = QtGui.QWidget(main_window)
         self.main_content.setObjectName('main_content')
