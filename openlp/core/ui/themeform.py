@@ -170,7 +170,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
             else:
                 pixmap_width = int(pixmap_height * self.display_aspect_ratio + 0.5)
             self.preview_box_label.setFixedSize(pixmap_width + 2 * frame_width, pixmap_height + 2 * frame_width)
-        print(self.size())
 
     def validateCurrentPage(self):
         """

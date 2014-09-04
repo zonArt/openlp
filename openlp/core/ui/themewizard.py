@@ -52,7 +52,7 @@ class Ui_ThemeWizard(object):
                                QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.HaveCustomButton1)
         if is_macosx():
             theme_wizard.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
-            theme_wizard.resize(646, 386)
+            theme_wizard.resize(646, 400)
         self.spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         # Welcome Page
         add_welcome_page(theme_wizard, ':/wizards/wizard_createtheme.bmp')
