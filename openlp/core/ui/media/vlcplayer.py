@@ -40,7 +40,7 @@ from PyQt4 import QtGui
 
 from openlp.core.common import Settings, is_win, is_macosx
 from openlp.core.lib import translate
-from openlp.core.ui.media import MediaState
+from openlp.core.ui.media import MediaState, MediaType
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 
 log = logging.getLogger(__name__)
@@ -166,7 +166,19 @@ class VlcPlayer(MediaPlayer):
         file_path = str(controller.media_info.file_info.absoluteFilePath())
         path = os.path.normcase(file_path)
         # create the media
-        display.vlc_media = display.vlc_instance.media_new_path(path)
+        if controller.media_info.media_type == MediaType.CD:
+            display.vlc_media = display.vlc_instance.media_new_location('cdda://' + path)
+            display.vlc_media_player.set_media(display.vlc_media)
+            display.vlc_media_player.play()
+            # Wait for media to start playing. In this case VLC actually returns an error.
+            self.media_state_wait(display, vlc.State.Playing)
+            # If subitems exists, this is a CD
+            audio_cd_tracks = display.vlc_media.subitems()
+            if not audio_cd_tracks or audio_cd_tracks.count() < 1:
+                return False
+            display.vlc_media = audio_cd_tracks.item_at_index(controller.media_info.title_track)
+        else:
+            display.vlc_media = display.vlc_instance.media_new_path(path)
         # put the media in the media player
         display.vlc_media_player.set_media(display.vlc_media)
         # parse the metadata of the file
@@ -206,15 +218,40 @@ class VlcPlayer(MediaPlayer):
         """
         controller = display.controller
         start_time = 0
+        log.debug('vlc play')
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         threading.Thread(target=display.vlc_media_player.play).start()
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
+        if self.state != MediaState.Paused and controller.media_info.start_time > 0:
+            log.debug('vlc play, starttime set')
+            start_time = controller.media_info.start_time
+        log.debug('mediatype: ' + str(controller.media_info.media_type))
+        # Set tracks for the optical device
+        if controller.media_info.media_type == MediaType.DVD:
+            log.debug('vlc play, playing started')
+            if controller.media_info.title_track > 0:
+                log.debug('vlc play, title_track set: ' + str(controller.media_info.title_track))
+                display.vlc_media_player.set_title(controller.media_info.title_track)
+            display.vlc_media_player.play()
+            if not self.media_state_wait(display, vlc.State.Playing):
+                return False
+            if controller.media_info.audio_track > 0:
+                display.vlc_media_player.audio_set_track(controller.media_info.audio_track)
+                log.debug('vlc play, audio_track set: ' + str(controller.media_info.audio_track))
+            if controller.media_info.subtitle_track > 0:
+                display.vlc_media_player.video_set_spu(controller.media_info.subtitle_track)
+                log.debug('vlc play, subtitle_track set: ' + str(controller.media_info.subtitle_track))
+            if controller.media_info.start_time > 0:
+                log.debug('vlc play, starttime set: ' + str(controller.media_info.start_time))
+                start_time = controller.media_info.start_time
+            controller.media_info.length = controller.media_info.end_time - controller.media_info.start_time
+        else:
+            controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
         self.volume(display, controller.media_info.volume)
-        if start_time > 0:
-            self.seek(display, controller.media_info.start_time * 1000)
-        controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
+        if start_time > 0 and display.vlc_media_player.is_seekable():
+            display.vlc_media_player.set_time(int(start_time * 1000))
         controller.seek_slider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing
         display.vlc_widget.raise_()
@@ -248,6 +285,9 @@ class VlcPlayer(MediaPlayer):
         """
         Go to a particular position
         """
+        if display.controller.media_info.media_type == MediaType.CD \
+                or display.controller.media_info.media_type == MediaType.DVD:
+            seek_value += int(display.controller.media_info.start_time * 1000)
         if display.vlc_media_player.is_seekable():
             display.vlc_media_player.set_time(seek_value)
 
@@ -280,7 +320,12 @@ class VlcPlayer(MediaPlayer):
                 self.set_visible(display, False)
         if not controller.seek_slider.isSliderDown():
             controller.seek_slider.blockSignals(True)
-            controller.seek_slider.setSliderPosition(display.vlc_media_player.get_time())
+            if display.controller.media_info.media_type == MediaType.CD \
+                    or display.controller.media_info.media_type == MediaType.DVD:
+                controller.seek_slider.setSliderPosition(display.vlc_media_player.get_time() -
+                                                         int(display.controller.media_info.start_time * 1000))
+            else:
+                controller.seek_slider.setSliderPosition(display.vlc_media_player.get_time())
             controller.seek_slider.blockSignals(False)
 
     def get_info(self):

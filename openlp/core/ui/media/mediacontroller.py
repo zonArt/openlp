@@ -36,9 +36,10 @@ import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import OpenLPMixin, Registry, RegistryMixin, RegistryProperties, Settings, UiStrings, translate
-from openlp.core.lib import OpenLPToolbar
+from openlp.core.lib import OpenLPToolbar, ItemCapabilities
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
+from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players,\
+    parse_optical_path
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.common import AppLocation
 from openlp.core.ui import DisplayControllerType
@@ -368,7 +369,16 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
         display = self._define_display(controller)
         if controller.is_live:
-            is_valid = self._check_file_type(controller, display, service_item)
+            # if this is an optical device use special handling
+            if service_item.is_capable(ItemCapabilities.IsOptical):
+                log.debug('video is optical and live')
+                path = service_item.get_frame_path()
+                (name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(path)
+                is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display,
+                                                    controller)
+            else:
+                log.debug('video is not optical and live')
+                is_valid = self._check_file_type(controller, display, service_item)
             display.override['theme'] = ''
             display.override['video'] = True
             if controller.media_info.is_background:
@@ -379,12 +389,21 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 controller.media_info.start_time = service_item.start_time
                 controller.media_info.end_time = service_item.end_time
         elif controller.preview_display:
-            is_valid = self._check_file_type(controller, display, service_item)
+            if service_item.is_capable(ItemCapabilities.IsOptical):
+                log.debug('video is optical and preview')
+                path = service_item.get_frame_path()
+                (name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(path)
+                is_valid = self.media_setup_optical(name, title, audio_track, subtitle_track, start, end, display,
+                                                    controller)
+            else:
+                log.debug('video is not optical and preview')
+                is_valid = self._check_file_type(controller, display, service_item)
         if not is_valid:
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
                                        translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
+        log.debug('video mediatype: ' + str(controller.media_info.media_type))
         # dont care about actual theme, set a black background
         if controller.is_live and not controller.media_info.is_background:
             display.frame.evaluateJavaScript('show_video( "setBackBoard", null, null, null,"visible");')
@@ -434,6 +453,62 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         service_item.set_media_length(controller.media_info.length)
         self.media_stop(controller)
         log.debug('use %s controller' % self.current_media_players[controller.controller_type])
+        return True
+
+    def media_setup_optical(self, filename, title, audio_track, subtitle_track, start, end, display, controller):
+        """
+        Setup playback of optical media
+
+        :param filename: Path of the optical device/drive.
+        :param title: The main/title track to play.
+        :param audio_track: The audio track to play.
+        :param subtitle_track: The subtitle track to play.
+        :param start: Start position in miliseconds.
+        :param end: End position in miliseconds.
+        :param display: The display to play the media.
+        :param controller: The media contraoller.
+        :return: True if setup succeded else False.
+        """
+        log.debug('media_setup_optical')
+        if controller is None:
+            controller = self.display_controllers[DisplayControllerType.Plugin]
+        # stop running videos
+        self.media_reset(controller)
+        # Setup media info
+        controller.media_info = MediaInfo()
+        controller.media_info.file_info = QtCore.QFileInfo(filename)
+        if audio_track == -1 and subtitle_track == -1:
+            controller.media_info.media_type = MediaType.CD
+        else:
+            controller.media_info.media_type = MediaType.DVD
+        controller.media_info.start_time = start/1000
+        controller.media_info.end_time = end/1000
+        controller.media_info.length = (end - start)/1000
+        controller.media_info.title_track = title
+        controller.media_info.audio_track = audio_track
+        controller.media_info.subtitle_track = subtitle_track
+        # When called from mediaitem display is None
+        if display is None:
+            display = controller.preview_display
+        # Find vlc player
+        used_players = get_media_players()[0]
+        vlc_player = None
+        for title in used_players:
+            player = self.media_players[title]
+            if player.name == 'vlc':
+                vlc_player = player
+        if vlc_player is None:
+            critical_error_message_box(translate('MediaPlugin.MediaItem', 'VLC player required'),
+                                       translate('MediaPlugin.MediaItem',
+                                                 'VLC player required for playback of optical devices'))
+            return False
+        vlc_player.load(display)
+        self.resize(display, vlc_player)
+        self.current_media_players[controller.controller_type] = vlc_player
+        if audio_track == -1 and subtitle_track == -1:
+            controller.media_info.media_type = MediaType.CD
+        else:
+            controller.media_info.media_type = MediaType.DVD
         return True
 
     def _check_file_type(self, controller, display, service_item):

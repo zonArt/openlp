@@ -72,6 +72,9 @@ class MediaInfo(object):
     length = 0
     start_time = 0
     end_time = 0
+    title_track = 0
+    audio_track = 0
+    subtitle_track = 0
     media_type = MediaType()
 
 
@@ -106,6 +109,40 @@ def set_media_players(players_list, overridden_player='auto'):
     if Settings().value('media/override player') == QtCore.Qt.Checked and overridden_player != 'auto':
         players = players.replace(overridden_player, '[%s]' % overridden_player)
     Settings().setValue('media/players', players)
+
+
+def parse_optical_path(input):
+    """
+    Split the optical path info.
+
+    :param input: The string to parse
+    :return: The elements extracted from the string:  filename, title, audio_track, subtitle_track, start, end
+    """
+    log.debug('parse_optical_path, about to parse: "%s"' % input)
+    clip_info = input.split(sep=':')
+    title = int(clip_info[1])
+    audio_track = int(clip_info[2])
+    subtitle_track = int(clip_info[3])
+    start = float(clip_info[4])
+    end = float(clip_info[5])
+    clip_name = clip_info[6]
+    filename = clip_info[7]
+    # Windows path usually contains a colon after the drive letter
+    if len(clip_info) > 8:
+        filename += ':' + clip_info[8]
+    return filename, title, audio_track, subtitle_track, start, end, clip_name
+
+
+def format_milliseconds(milliseconds):
+    """
+    Format milliseconds into a human readable time string.
+    :param milliseconds: Milliseconds to format
+    :return: Time string in format: hh.mm.ss,ttt
+    """
+    seconds, millis = divmod(milliseconds, 1000)
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    return "%02d:%02d:%02d,%03d" % (hours, minutes, seconds, millis)
 
 from .mediacontroller import MediaController
 from .playertab import PlayerTab
