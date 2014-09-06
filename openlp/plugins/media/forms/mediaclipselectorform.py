@@ -35,7 +35,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import translate, Registry, is_win, is_linux, is_macosx
+from openlp.core.common import translate, is_win, is_linux, is_macosx, RegistryProperties
 from openlp.plugins.media.forms.mediaclipselectordialog import Ui_MediaClipSelector
 from openlp.core.lib.ui import critical_error_message_box
 
@@ -59,7 +59,7 @@ except OSError as e:
 log = logging.getLogger(__name__)
 
 
-class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
+class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryProperties):
     """
     Class to manage the clip selection
     """
@@ -681,16 +681,3 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                     if file.endswith('aiff'):
                         self.media_path_combobox.addItem('/Volumes/' + volume)
                         break
-
-    @property
-    def application(self):
-        """
-        Adds the openlp to the class dynamically.
-        Windows needs to access the application in a dynamic manner.
-        """
-        if is_win():
-            return Registry().get('application')
-        else:
-            if not hasattr(self, '_application'):
-                self._application = Registry().get('application')
-            return self._application
