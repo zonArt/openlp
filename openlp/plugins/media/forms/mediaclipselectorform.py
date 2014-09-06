@@ -28,31 +28,29 @@
 ###############################################################################
 
 import os
-if os.name == 'nt':
-    from win32com.client import Dispatch
-    import string
-import sys
-
-if sys.platform.startswith('linux'):
-    import dbus
 import logging
 import re
 from time import sleep
 from datetime import datetime
 
-
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import translate
+from openlp.core.common import translate, Registry, is_win, is_linux, is_macosx
 from openlp.plugins.media.forms.mediaclipselectordialog import Ui_MediaClipSelector
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.media import format_milliseconds
+
+if is_win():
+    from win32com.client import Dispatch
+
+if is_linux():
+    import dbus
+
 try:
     from openlp.core.ui.media.vendor import vlc
 except (ImportError, NameError, NotImplementedError):
     pass
 except OSError as e:
-    if sys.platform.startswith('win'):
+    if is_win():
         if not isinstance(e, WindowsError) and e.winerror != 126:
             raise
     else:
@@ -144,9 +142,9 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         # You have to give the id of the QFrame (or similar object)
         # to vlc, different platforms have different functions for this.
         win_id = int(self.preview_frame.winId())
-        if sys.platform == "win32":
+        if is_win():
             self.vlc_media_player.set_hwnd(win_id)
-        elif sys.platform == "darwin":
+        elif is_macosx():
             # We have to use 'set_nsobject' since Qt4 on OSX uses Cocoa
             # framework and not the old Carbon.
             self.vlc_media_player.set_nsobject(win_id)
@@ -190,7 +188,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.audio_cd = True
         self.titles_combo_box.setDisabled(False)
         self.titles_combo_box.setCurrentIndex(0)
-        self.on_title_combo_box_currentIndexChanged(0)
+        self.on_titles_combo_box_currentIndexChanged(0)
 
         return True
 
@@ -203,18 +201,21 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         """
         log.debug('on_load_disc_button_clicked')
         self.disable_all()
+        self.application.set_busy_cursor()
         path = self.media_path_combobox.currentText()
         # Check if given path is non-empty and exists before starting VLC
         if not path:
             log.debug('no given path')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm', 'No path was given'))
             self.toggle_disable_load_media(False)
+            self.application.set_normal_cursor()
             return
         if not os.path.exists(path):
             log.debug('Given path does not exists')
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
                                                          'Given path does not exists'))
             self.toggle_disable_load_media(False)
+            self.application.set_normal_cursor()
             return
         # VLC behaves a bit differently on windows and linux when loading, which creates problems when trying to
         # detect if we're dealing with a DVD or CD, so we use different loading approaches depending on the OS.
@@ -231,6 +232,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
                                                          'An error happened during initialization of VLC player'))
             self.toggle_disable_load_media(False)
+            self.application.set_normal_cursor()
             return
         # put the media in the media player
         self.vlc_media_player.set_media(self.vlc_media)
@@ -241,6 +243,8 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
                                                          'VLC player failed playing the media'))
             self.toggle_disable_load_media(False)
+            self.application.set_normal_cursor()
+            self.vlc_media_player.audio_set_mute(False)
             return
         self.vlc_media_player.audio_set_mute(True)
         if not self.media_state_wait(vlc.State.Playing):
@@ -249,8 +253,16 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                 critical_error_message_box(message=translate('MediaPlugin.MediaClipSelectorForm',
                                                              'VLC player failed playing the media'))
                 self.toggle_disable_load_media(False)
+                self.application.set_normal_cursor()
+                self.vlc_media_player.audio_set_mute(False)
                 return
-        self.vlc_media_player.audio_set_mute(True)
+        # pause
+        self.vlc_media_player.set_time(0)
+        self.vlc_media_player.set_pause(1)
+        self.media_state_wait(vlc.State.Paused)
+        self.toggle_disable_load_media(False)
+        self.application.set_normal_cursor()
+        self.vlc_media_player.audio_set_mute(False)
         if not self.audio_cd:
             # Get titles, insert in combobox
             titles = self.vlc_media_player.video_get_title_description()
@@ -260,12 +272,9 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             # Main title is usually title #1
             if len(titles) > 1:
                 self.titles_combo_box.setCurrentIndex(1)
-            else:
-                self.titles_combo_box.setCurrentIndex(0)
             # Enable audio track combobox if anything is in it
             if len(titles) > 0:
                 self.titles_combo_box.setDisabled(False)
-        self.toggle_disable_load_media(False)
         log.debug('load_disc_button end - vlc_media_player state: %s' % self.vlc_media_player.get_state())
 
     @QtCore.pyqtSlot(bool)
@@ -378,6 +387,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         if not self.vlc_media_player:
             log.error('vlc_media_player was None')
             return
+        self.application.set_busy_cursor()
         if self.audio_cd:
             self.vlc_media = self.audio_cd_tracks.item_at_index(index)
             self.vlc_media_player.set_media(self.vlc_media)
@@ -385,14 +395,14 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.vlc_media_player.play()
             if not self.media_state_wait(vlc.State.Playing):
                 log.error('Could not start playing audio cd, needed to get track info')
+                self.application.set_normal_cursor()
                 return
             self.vlc_media_player.audio_set_mute(True)
-            # Sleep 1 second to make sure VLC has the needed metadata
-            sleep(1)
             # pause
             self.vlc_media_player.set_time(0)
             self.vlc_media_player.set_pause(1)
             self.vlc_media_player.audio_set_mute(False)
+            self.application.set_normal_cursor()
             self.toggle_disable_player(False)
         else:
             self.vlc_media_player.set_title(index)
@@ -400,13 +410,20 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.vlc_media_player.play()
             if not self.media_state_wait(vlc.State.Playing):
                 log.error('Could not start playing dvd, needed to get track info')
+                self.application.set_normal_cursor()
                 return
             self.vlc_media_player.audio_set_mute(True)
-            # Sleep 1 second to make sure VLC has the needed metadata
-            sleep(1)
-            self.vlc_media_player.set_time(0)
-            # Get audio tracks, insert in combobox
+            # Get audio tracks
             audio_tracks = self.vlc_media_player.audio_get_track_description()
+            # Make sure we actually get the tracks, who has a DVD without audio?
+            loop_count = 0
+            while len(audio_tracks) == 0 and loop_count < 100:
+                log.debug('In the audiotrack retry loop')
+                sleep(0.1)
+                audio_tracks = self.vlc_media_player.audio_get_track_description()
+                loop_count += 1
+            log.debug('number of audio tracks: %d' % len(audio_tracks))
+            # Clear the audio track combobox, insert new tracks
             self.audio_tracks_combobox.clear()
             for audio_track in audio_tracks:
                 self.audio_tracks_combobox.addItem(audio_track[1].decode(), audio_track[0])
@@ -447,6 +464,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.vlc_media_player.set_pause(1)
             loop_count += 1
         log.debug('titles_combo_box end - vlc_media_player state: %s' % self.vlc_media_player.get_state())
+        self.application.set_normal_cursor()
 
     @QtCore.pyqtSlot(int)
     def on_audio_tracks_combobox_currentIndexChanged(self, index):
@@ -595,7 +613,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         while media_state != self.vlc_media_player.get_state():
             if self.vlc_media_player.get_state() == vlc.State.Error:
                 return False
-            if (datetime.now() - start).seconds > 30:
+            if (datetime.now() - start).seconds > 15:
                 return False
         return True
 
@@ -606,7 +624,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         """
         # Clear list first
         self.media_path_combobox.clear()
-        if os.name == 'nt':
+        if is_win():
             # use win api to find optical drives
             fso = Dispatch('scripting.filesystemobject')
             for drive in fso.Drives:
@@ -614,7 +632,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                 # if type is 4, it is a cd-rom drive
                 if drive.DriveType == 4:
                     self.media_path_combobox.addItem('%s:\\' % drive.DriveLetter)
-        elif sys.platform.startswith('linux'):
+        elif is_linux():
             # Get disc devices from dbus and find the ones that are optical
             bus = dbus.SystemBus()
             try:
@@ -646,7 +664,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                                     if chr(c) != '\x00':
                                         block_file += chr(c)
                                 self.media_path_combobox.addItem(block_file)
-        elif sys.platform.startswith('darwin'):
+        elif is_macosx():
             # Look for DVD folders in devices to find optical devices
             volumes = os.listdir('/Volumes')
             candidates = list()
@@ -663,3 +681,16 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                     if file.endswith('aiff'):
                         self.media_path_combobox.addItem('/Volumes/' + volume)
                         break
+
+    @property
+    def application(self):
+        """
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
+        """
+        if is_win():
+            return Registry().get('application')
+        else:
+            if not hasattr(self, '_application'):
+                self._application = Registry().get('application')
+            return self._application
