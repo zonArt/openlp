@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the OpenSong Bible importer.
+This module contains tests for the OSIS Bible importer.
 """
 
 import os
@@ -35,16 +35,16 @@ import json
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
-from openlp.plugins.bibles.lib.opensong import OpenSongBible
+from openlp.plugins.bibles.lib.osis import OSISBible
 from openlp.plugins.bibles.lib.db import BibleDB
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'bibles'))
 
 
-class TestOpenSongImport(TestCase):
+class TestOsisImport(TestCase):
     """
-    Test the functions in the :mod:`opensongimport` module.
+    Test the functions in the :mod:`osisimport` module.
     """
 
     def setUp(self):
@@ -59,30 +59,30 @@ class TestOpenSongImport(TestCase):
 
     def create_importer_test(self):
         """
-        Test creating an instance of the OpenSong file importer
+        Test creating an instance of the OSIS file importer
         """
         # GIVEN: A mocked out "manager"
         mocked_manager = MagicMock()
 
         # WHEN: An importer object is created
-        importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
+        importer = OSISBible(mocked_manager, path='.', name='.', filename='')
 
         # THEN: The importer should be an instance of BibleDB
         self.assertIsInstance(importer, BibleDB)
 
-    def file_import_test(self):
+    def file_import_nested_tags_test(self):
         """
-        Test the actual import of OpenSong Bible file
+        Test the actual import of OSIS Bible file, with nested chapter and verse tags
         """
         # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
-        #       get_book_ref_id_by_name, create_verse, create_book, session and get_language.
+        #        get_book_ref_id_by_name, create_verse, create_book, session and get_language.
         result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
         test_data = json.loads(result_file.read().decode())
-        bible_file = 'opensong-dk1933.xml'
-        with patch('openlp.plugins.bibles.lib.opensong.OpenSongBible.application'):
+        bible_file = 'osis-dk1933.xml'
+        with patch('openlp.plugins.bibles.lib.osis.OSISBible.application'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
-            importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
+            importer = OSISBible(mocked_manager, path='.', name='.', filename='')
             importer.wizard = mocked_import_wizard
             importer.get_book_ref_id_by_name = MagicMock()
             importer.create_verse = MagicMock()
@@ -98,23 +98,64 @@ class TestOpenSongImport(TestCase):
             # THEN: The create_verse() method should have been called with each verse in the file.
             self.assertTrue(importer.create_verse.called)
             for verse_tag, verse_text in test_data['verses']:
-                importer.create_verse.assert_any_call(importer.create_book().id, 1, int(verse_tag), verse_text)
+                importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
 
-    def zefania_import_error_test(self):
+    def file_import_mixed_tags_test(self):
         """
-        Test that we give an error message if trying to import a zefania bible
+        Test the actual import of OSIS Bible file, with chapter tags containing milestone verse tags.
         """
-        # GIVEN: A mocked out "manager" and mocked out critical_error_message_box and an import
-        with patch('openlp.plugins.bibles.lib.opensong.critical_error_message_box') as \
-                mocked_critical_error_message_box:
+        # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
+        #        get_book_ref_id_by_name, create_verse, create_book, session and get_language.
+        result_file = open(os.path.join(TEST_PATH, 'kjv.json'), 'rb')
+        test_data = json.loads(result_file.read().decode())
+        bible_file = 'osis-kjv.xml'
+        with patch('openlp.plugins.bibles.lib.osis.OSISBible.application'):
             mocked_manager = MagicMock()
-            importer = OpenSongBible(mocked_manager, path='.', name='.', filename='')
+            mocked_import_wizard = MagicMock()
+            importer = OSISBible(mocked_manager, path='.', name='.', filename='')
+            importer.wizard = mocked_import_wizard
+            importer.get_book_ref_id_by_name = MagicMock()
+            importer.create_verse = MagicMock()
+            importer.create_book = MagicMock()
+            importer.session = MagicMock()
+            importer.get_language = MagicMock()
+            importer.get_language.return_value = 'English'
 
-            # WHEN: An trying to import a zefania bible
-            importer.filename = os.path.join(TEST_PATH, 'zefania-dk1933.xml')
+            # WHEN: Importing bible file
+            importer.filename = os.path.join(TEST_PATH, bible_file)
             importer.do_import()
 
-            # THEN: The importer should have "shown" an error message
-            mocked_critical_error_message_box.assert_called_with(message='Incorrect Bible file type supplied. '
-                                                                 'This looks like a Zefania XML bible, '
-                                                                 'please use the Zefania import option.')
+            # THEN: The create_verse() method should have been called with each verse in the file.
+            self.assertTrue(importer.create_verse.called)
+            for verse_tag, verse_text in test_data['verses']:
+                importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
+
+    def file_import_milestone_tags_test(self):
+        """
+        Test the actual import of OSIS Bible file, with milestone chapter and verse tags.
+        """
+        # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
+        #        get_book_ref_id_by_name, create_verse, create_book, session and get_language.
+        result_file = open(os.path.join(TEST_PATH, 'web.json'), 'rb')
+        test_data = json.loads(result_file.read().decode())
+        bible_file = 'osis-web.xml'
+        with patch('openlp.plugins.bibles.lib.osis.OSISBible.application'):
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            importer = OSISBible(mocked_manager, path='.', name='.', filename='')
+            importer.wizard = mocked_import_wizard
+            importer.get_book_ref_id_by_name = MagicMock()
+            importer.create_verse = MagicMock()
+            importer.create_book = MagicMock()
+            importer.session = MagicMock()
+            importer.get_language = MagicMock()
+            importer.get_language.return_value = 'English'
+
+            # WHEN: Importing bible file
+            importer.filename = os.path.join(TEST_PATH, bible_file)
+            importer.do_import()
+
+            # THEN: The create_verse() method should have been called with each verse in the file.
+            self.assertTrue(importer.create_verse.called)
+            for verse_tag, verse_text in test_data['verses']:
+                importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)

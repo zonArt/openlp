@@ -64,11 +64,18 @@ class ZefaniaBible(BibleDB):
             # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
             # detection, and the two mechanisms together interfere with each other.
             import_file = open(self.filename, 'rb')
-            language_id = self.get_language(bible_name)
+            zefania_bible_tree = etree.parse(import_file)
+            # Find bible language
+            language_id = None
+            language = zefania_bible_tree.xpath("/XMLBIBLE/INFORMATION/language/text()")
+            if language:
+                language_id = BiblesResourcesDB.get_language(language[0])
+            # The language couldn't be detected, ask the user
+            if not language_id:
+                language_id = self.get_language(bible_name)
             if not language_id:
                 log.error('Importing books from "%s" failed' % self.filename)
                 return False
-            zefania_bible_tree = etree.parse(import_file)
             num_books = int(zefania_bible_tree.xpath("count(//BIBLEBOOK)"))
             # Strip tags we don't use - keep content
             etree.strip_tags(zefania_bible_tree, ('STYLE', 'GRAM', 'NOTE', 'SUP', 'XREF'))
@@ -97,7 +104,6 @@ class ZefaniaBible(BibleDB):
                 self.session.commit()
             self.application.process_events()
         except Exception as e:
-            print(str(e))
             critical_error_message_box(
                 message=translate('BiblesPlugin.ZefaniaImport',
                                   'Incorrect Bible file type supplied. Zefania Bibles may be '
