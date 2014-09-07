@@ -49,7 +49,7 @@ class Ui_ThemeWizard(object):
         theme_wizard.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         theme_wizard.setModal(True)
         theme_wizard.setOptions(QtGui.QWizard.IndependentPages |
-                               QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.HaveCustomButton1)
+                                QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.HaveCustomButton1)
         if is_macosx():
             theme_wizard.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
             theme_wizard.resize(646, 400)
