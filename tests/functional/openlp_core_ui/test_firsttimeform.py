@@ -47,7 +47,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
         Registry().register('application', self.app)
         self.first_time_form = FirstTimeForm(screens)
 
-    def test_access_to_config(self):
+    def access_to_config_test(self):
         """
         Test if we can access the First Time Form's config file
         """
@@ -59,7 +59,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
         self.assertTrue(self.first_time_form.web_access,
                         'First Time Wizard\'s web configuration file should be available')
 
-    def test_parsable_config(self):
+    def parsable_config_test(self):
         """
         Test if the First Time Form's config file is parsable
         """
