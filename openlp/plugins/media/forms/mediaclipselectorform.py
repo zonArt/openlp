@@ -550,7 +550,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         """
         Saves the current media and trackinfo as a clip to the mediamanager
         """
-        log.debug('in on_save_button_clicked')
+        log.debug('in MediaClipSelectorForm.accept')
         start_time = self.start_position_edit.time()
         start_time_ms = start_time.hour() * 60 * 60 * 1000 + \
             start_time.minute() * 60 * 1000 + \
@@ -565,10 +565,23 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         path = self.media_path_combobox.currentText()
         optical = ''
         if self.audio_cd:
+            # Check for load problems
+            if start_time_ms is None or end_time_ms is None or title is None:
+                critical_error_message_box(translate('MediaPlugin.MediaClipSelectorForm', 'CD not loaded correctly'),
+                                           translate('MediaPlugin.MediaClipSelectorForm',
+                                                     'The CD was not loaded correctly, please re-load and try again.'))
+                return
             optical = 'optical:%d:-1:-1:%d:%d:' % (title, start_time_ms, end_time_ms)
         else:
             audio_track = self.audio_tracks_combobox.itemData(self.audio_tracks_combobox.currentIndex())
             subtitle_track = self.subtitle_tracks_combobox.itemData(self.subtitle_tracks_combobox.currentIndex())
+            # Check for load problems
+            if start_time_ms is None or end_time_ms is None or title is None or audio_track is None\
+                    or subtitle_track is None:
+                critical_error_message_box(translate('MediaPlugin.MediaClipSelectorForm', 'DVD not loaded correctly'),
+                                           translate('MediaPlugin.MediaClipSelectorForm',
+                                                     'The DVD was not loaded correctly, please re-load and try again.'))
+                return
             optical = 'optical:%d:%d:%d:%d:%d:' % (title, audio_track, subtitle_track, start_time_ms, end_time_ms)
         # Ask for an alternative name for the mediaclip
         while True:

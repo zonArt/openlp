@@ -60,6 +60,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         # Mock VLC so we don't actually use it
         self.vlc_patcher = patch('openlp.plugins.media.forms.mediaclipselectorform.vlc')
         self.vlc_patcher.start()
+        Registry().register('application', self.app)
         # Mock the media item
         self.mock_media_item = MagicMock()
         # create form to test
@@ -67,6 +68,8 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         mock_media_state_wait = MagicMock()
         mock_media_state_wait.return_value = True
         self.form.media_state_wait = mock_media_state_wait
+        self.form.application.set_busy_cursor = MagicMock()
+        self.form.application.set_normal_cursor = MagicMock()
 
     def tearDown(self):
         """
@@ -155,3 +158,21 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
             self.form.audio_tracks_combobox.itemData.assert_any_call(0)
             self.form.audio_tracks_combobox.itemData.assert_any_call(1)
             self.form.subtitle_tracks_combobox.itemData.assert_any_call(0)
+
+    def click_save_button_test(self):
+        """
+        Test that the correct function is called when save is clicked, and that it behaves as expected.
+        """
+        # GIVEN: Mocked methods.
+        with patch('openlp.plugins.media.forms.mediaclipselectorform.critical_error_message_box') as \
+                mocked_critical_error_message_box,\
+                patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+            self.form.exec_()
+
+            # WHEN: The save button is clicked with a NoneType in start_time_ms or end_time_ms
+            self.form.accept()
+
+            # THEN: we should get an error message
+            mocked_critical_error_message_box.assert_called_with('DVD not loaded correctly',
+                                                                 'The DVD was not loaded correctly, '
+                                                                 'please re-load and try again.')
