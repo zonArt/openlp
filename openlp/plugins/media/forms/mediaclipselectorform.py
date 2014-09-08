@@ -264,11 +264,15 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         self.application.set_normal_cursor()
         self.vlc_media_player.audio_set_mute(False)
         if not self.audio_cd:
+            # Temporarily disable signals
+            self.blockSignals(True)
             # Get titles, insert in combobox
             titles = self.vlc_media_player.video_get_title_description()
             self.titles_combo_box.clear()
             for title in titles:
                 self.titles_combo_box.addItem(title[1].decode(), title[0])
+            # Re-enable signals
+            self.blockSignals(False)
             # Main title is usually title #1
             if len(titles) > 1:
                 self.titles_combo_box.setCurrentIndex(1)
@@ -415,13 +419,6 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
             self.vlc_media_player.audio_set_mute(True)
             # Get audio tracks
             audio_tracks = self.vlc_media_player.audio_get_track_description()
-            # Make sure we actually get the tracks, who has a DVD without audio?
-            loop_count = 0
-            while len(audio_tracks) == 0 and loop_count < 100:
-                log.debug('In the audiotrack retry loop')
-                sleep(0.1)
-                audio_tracks = self.vlc_media_player.audio_get_track_description()
-                loop_count += 1
             log.debug('number of audio tracks: %d' % len(audio_tracks))
             # Clear the audio track combobox, insert new tracks
             self.audio_tracks_combobox.clear()
