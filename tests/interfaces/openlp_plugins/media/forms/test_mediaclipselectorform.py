@@ -70,6 +70,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         self.form.media_state_wait = mock_media_state_wait
         self.form.application.set_busy_cursor = MagicMock()
         self.form.application.set_normal_cursor = MagicMock()
+        self.form.find_optical_devices = MagicMock()
 
     def tearDown(self):
         """
