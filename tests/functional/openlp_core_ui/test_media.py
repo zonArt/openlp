@@ -32,7 +32,7 @@ Package to test the openlp.core.ui package.
 from PyQt4 import QtCore
 from unittest import TestCase
 
-from openlp.core.ui.media import get_media_players
+from openlp.core.ui.media import get_media_players, parse_optical_path
 
 from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
@@ -126,3 +126,59 @@ class TestMedia(TestCase, TestMixin):
             # THEN: the used_players should be an empty list, and the overridden player should be an empty string
             self.assertEqual(['vlc', 'webkit', 'phonon'], used_players, 'Used players should be correct')
             self.assertEqual('vlc,webkit,phonon', overridden_player, 'Overridden player should be a string of players')
+
+    def test_parse_optical_path_linux(self):
+        """
+        Test that test_parse_optical_path() parses a optical path with linux device path correctly
+        """
+
+        # GIVEN: An optical formatted path
+        org_title_track = 1
+        org_audio_track = 2
+        org_subtitle_track = -1
+        org_start = 1234
+        org_end = 4321
+        org_name = 'test name'
+        org_device_path = '/dev/dvd'
+        path = 'optical:%d:%d:%d:%d:%d:%s:%s' % (org_title_track, org_audio_track, org_subtitle_track,
+                                                 org_start, org_end, org_name, org_device_path)
+
+        # WHEN: parsing the path
+        (device_path, title_track, audio_track, subtitle_track, start, end, name) = parse_optical_path(path)
+
+        # THEN: The return values should match the original values
+        self.assertEqual(org_title_track, title_track, 'Returned title_track should match the original')
+        self.assertEqual(org_audio_track, audio_track, 'Returned audio_track should match the original')
+        self.assertEqual(org_subtitle_track, subtitle_track, 'Returned subtitle_track should match the original')
+        self.assertEqual(org_start, start, 'Returned start should match the original')
+        self.assertEqual(org_end, end, 'Returned end should match the original')
+        self.assertEqual(org_name, name, 'Returned end should match the original')
+        self.assertEqual(org_device_path, device_path, 'Returned device_path should match the original')
+
+    def test_parse_optical_path_win(self):
+        """
+        Test that test_parse_optical_path() parses a optical path with windows device path correctly
+        """
+
+        # GIVEN: An optical formatted path
+        org_title_track = 1
+        org_audio_track = 2
+        org_subtitle_track = -1
+        org_start = 1234
+        org_end = 4321
+        org_name = 'test name'
+        org_device_path = 'D:'
+        path = 'optical:%d:%d:%d:%d:%d:%s:%s' % (org_title_track, org_audio_track, org_subtitle_track,
+                                                 org_start, org_end, org_name, org_device_path)
+
+        # WHEN: parsing the path
+        (device_path, title_track, audio_track, subtitle_track, start, end, name) = parse_optical_path(path)
+
+        # THEN: The return values should match the original values
+        self.assertEqual(org_title_track, title_track, 'Returned title_track should match the original')
+        self.assertEqual(org_audio_track, audio_track, 'Returned audio_track should match the original')
+        self.assertEqual(org_subtitle_track, subtitle_track, 'Returned subtitle_track should match the original')
+        self.assertEqual(org_start, start, 'Returned start should match the original')
+        self.assertEqual(org_end, end, 'Returned end should match the original')
+        self.assertEqual(org_name, name, 'Returned end should match the original')
+        self.assertEqual(org_device_path, device_path, 'Returned device_path should match the original')

@@ -32,7 +32,8 @@ Functional tests to test the AppLocation class and related methods.
 
 from unittest import TestCase
 
-from openlp.core.common import check_directory_exists, de_hump, trace_error_handler, translate
+from openlp.core.common import check_directory_exists, de_hump, trace_error_handler, translate, is_win, is_macosx, \
+    is_linux
 from tests.functional import MagicMock, patch
 
 
@@ -139,3 +140,51 @@ class TestCommonFunctions(TestCase):
         # THEN: the translated string should be returned, and the mocked function should have been called
         mocked_translate.assert_called_with(context, text, comment, encoding, n)
         self.assertEqual('Translated string', result, 'The translated string should have been returned')
+
+    def is_win_test(self):
+        """
+        Test the is_win() function
+        """
+        # GIVEN: Mocked out objects
+        with patch('openlp.core.common.os') as mocked_os, patch('openlp.core.common.sys') as mocked_sys:
+
+            # WHEN: The mocked os.name and sys.platform are set to 'nt' and 'win32' repectivly
+            mocked_os.name = 'nt'
+            mocked_sys.platform = 'win32'
+
+            # THEN: The three platform functions should perform properly
+            self.assertTrue(is_win(), 'is_win() should return True')
+            self.assertFalse(is_macosx(), 'is_macosx() should return False')
+            self.assertFalse(is_linux(), 'is_linux() should return False')
+
+    def is_macosx_test(self):
+        """
+        Test the is_macosx() function
+        """
+        # GIVEN: Mocked out objects
+        with patch('openlp.core.common.os') as mocked_os, patch('openlp.core.common.sys') as mocked_sys:
+
+            # WHEN: The mocked os.name and sys.platform are set to 'posix' and 'darwin' repectivly
+            mocked_os.name = 'posix'
+            mocked_sys.platform = 'darwin'
+
+            # THEN: The three platform functions should perform properly
+            self.assertTrue(is_macosx(), 'is_macosx() should return True')
+            self.assertFalse(is_win(), 'is_win() should return False')
+            self.assertFalse(is_linux(), 'is_linux() should return False')
+
+    def is_linux_test(self):
+        """
+        Test the is_linux() function
+        """
+        # GIVEN: Mocked out objects
+        with patch('openlp.core.common.os') as mocked_os, patch('openlp.core.common.sys') as mocked_sys:
+
+            # WHEN: The mocked os.name and sys.platform are set to 'posix' and 'linux3' repectivly
+            mocked_os.name = 'posix'
+            mocked_sys.platform = 'linux3'
+
+            # THEN: The three platform functions should perform properly
+            self.assertTrue(is_linux(), 'is_linux() should return True')
+            self.assertFalse(is_win(), 'is_win() should return False')
+            self.assertFalse(is_macosx(), 'is_macosx() should return False')

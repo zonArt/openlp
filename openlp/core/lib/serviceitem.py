@@ -111,6 +111,9 @@ class ItemCapabilities(object):
     ``CanEditTitle``
             The capability to edit the title of the item
 
+    ``IsOptical``
+            Determines is the service_item is based on an optical device
+
     ``HasDisplayTitle``
             The item contains 'displaytitle' on every frame which should be
             preferred over 'title' when displaying the item
@@ -139,9 +142,10 @@ class ItemCapabilities(object):
     HasBackgroundAudio = 15
     CanAutoStartForLive = 16
     CanEditTitle = 17
-    HasDisplayTitle = 18
-    HasNotes = 19
-    HasThumbnails = 20
+    IsOptical = 18
+    HasDisplayTitle = 19
+    HasNotes = 20
+    HasThumbnails = 21
 
 
 class ServiceItem(RegistryProperties):
@@ -441,7 +445,10 @@ class ServiceItem(RegistryProperties):
             for text_image in service_item['serviceitem']['data']:
                 if not self.title:
                     self.title = text_image['title']
-                if path:
+                if self.is_capable(ItemCapabilities.IsOptical):
+                    self.has_original_files = False
+                    self.add_from_command(text_image['path'], text_image['title'], text_image['image'])
+                elif path:
                     self.has_original_files = False
                     self.add_from_command(path, text_image['title'], text_image['image'],
                                           text_image.get('display_title', ''), text_image.get('notes', ''))
@@ -453,7 +460,8 @@ class ServiceItem(RegistryProperties):
         """
         Returns the title of the service item.
         """
-        if self.is_text() or ItemCapabilities.CanEditTitle in self.capabilities:
+        if self.is_text() or self.is_capable(ItemCapabilities.IsOptical) \
+                or self.is_capable(ItemCapabilities.CanEditTitle):
             return self.title
         else:
             if len(self._raw_frames) > 1:
@@ -521,7 +529,8 @@ class ServiceItem(RegistryProperties):
         """
         Confirms if the ServiceItem uses a file
         """
-        return self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command
+        return self.service_item_type == ServiceItemType.Image or \
+            (self.service_item_type == ServiceItemType.Command and not self.is_capable(ItemCapabilities.IsOptical))
 
     def is_text(self):
         """
@@ -579,7 +588,7 @@ class ServiceItem(RegistryProperties):
                 frame = self._raw_frames[row]
             except IndexError:
                 return ''
-        if self.is_image():
+        if self.is_image() or self.is_capable(ItemCapabilities.IsOptical):
             path_from = frame['path']
         else:
             path_from = os.path.join(frame['path'], frame['title'])
@@ -649,12 +658,17 @@ class ServiceItem(RegistryProperties):
                 self.is_valid = False
                 break
             elif self.is_command():
-                file_name = os.path.join(frame['path'], frame['title'])
-                if not os.path.exists(file_name):
-                    self.is_valid = False
-                    break
-                if suffix_list and not self.is_text():
-                    file_suffix = frame['title'].split('.')[-1]
-                    if file_suffix.lower() not in suffix_list:
+                if self.is_capable(ItemCapabilities.IsOptical):
+                    if not os.path.exists(frame['title']):
                         self.is_valid = False
                         break
+                else:
+                    file_name = os.path.join(frame['path'], frame['title'])
+                    if not os.path.exists(file_name):
+                        self.is_valid = False
+                        break
+                    if suffix_list and not self.is_text():
+                        file_suffix = frame['title'].split('.')[-1]
+                        if file_suffix.lower() not in suffix_list:
+                            self.is_valid = False
+                            break

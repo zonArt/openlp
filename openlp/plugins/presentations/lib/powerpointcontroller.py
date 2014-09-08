@@ -33,7 +33,9 @@ This module is for controlling powerpoint. PPT API documentation:
 import os
 import logging
 
-if os.name == 'nt':
+from openlp.core.common import is_win
+
+if is_win():
     from win32com.client import Dispatch
     import win32com
     import winreg
@@ -70,7 +72,7 @@ class PowerpointController(PresentationController):
         PowerPoint is able to run on this machine.
         """
         log.debug('check_available')
-        if os.name == 'nt':
+        if is_win():
             try:
                 winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, 'PowerPoint.Application').Close()
                 return True
@@ -78,7 +80,7 @@ class PowerpointController(PresentationController):
                 pass
         return False
 
-    if os.name == 'nt':
+    if is_win():
         def start_process(self):
             """
             Loads PowerPoint process.
@@ -273,7 +275,7 @@ class PowerpointDocument(PresentationDocument):
             trace_error_handler(log)
             self.show_error_msg()
 
-    if os.name == 'nt':
+    if is_win():
         def start_presentation(self):
             """
             Starts a presentation from the beginning.

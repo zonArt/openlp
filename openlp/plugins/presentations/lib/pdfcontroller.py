@@ -34,7 +34,7 @@ import re
 from subprocess import check_output, CalledProcessError, STDOUT
 
 from openlp.core.utils import AppLocation
-from openlp.core.common import Settings
+from openlp.core.common import Settings, is_win
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
 
@@ -123,7 +123,7 @@ class PdfController(PresentationController):
         else:
             # Fallback to autodetection
             application_path = AppLocation.get_directory(AppLocation.AppDir)
-            if os.name == 'nt':
+            if is_win():
                 # for windows we only accept mudraw.exe in the base folder
                 application_path = AppLocation.get_directory(AppLocation.AppDir)
                 if os.path.isfile(os.path.join(application_path, 'mudraw.exe')):

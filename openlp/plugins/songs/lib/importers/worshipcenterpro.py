@@ -58,7 +58,7 @@ class WorshipCenterProImport(SongImport):
         try:
             conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s' % self.import_source)
         except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError) as e:
-            log.warn('Unable to connect the WorshipCenter Pro database %s. %s', self.import_source, str(e))
+            log.warning('Unable to connect the WorshipCenter Pro database %s. %s', self.import_source, str(e))
             # Unfortunately no specific exception type
             self.log_error(self.import_source, translate('SongsPlugin.WorshipCenterProImport',
                                                          'Unable to connect the WorshipCenter Pro database.'))
