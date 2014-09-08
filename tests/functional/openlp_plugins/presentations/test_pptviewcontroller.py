@@ -31,8 +31,6 @@ This module contains tests for the pptviewcontroller module of the Presentations
 """
 import os
 import shutil
-if os.name == 'nt':
-    from ctypes import cdll
 
 from tempfile import mkdtemp
 from unittest import TestCase
@@ -42,6 +40,10 @@ from tests.helpers.testmixin import TestMixin
 from tests.utils.constants import TEST_RESOURCES_PATH
 
 from openlp.plugins.presentations.lib.pptviewcontroller import PptviewDocument, PptviewController
+from openlp.core.common import is_win
+
+if is_win():
+    from ctypes import cdll
 
 
 class TestPptviewController(TestCase, TestMixin):
@@ -99,7 +101,7 @@ class TestPptviewController(TestCase, TestMixin):
             available = controller.check_available()
 
             # THEN: On windows it should return True, on other platforms False
-            if os.name == 'nt':
+            if is_win():
                 self.assertTrue(available, 'check_available should return True on windows.')
             else:
                 self.assertFalse(available, 'check_available should return False when not on windows.')
@@ -180,7 +182,7 @@ class TestPptviewDocument(TestCase):
         instance = PptviewDocument(self.mock_controller, self.mock_presentation)
         instance.file_path = 'test\path.ppt'
 
-        if os.name == 'nt':
+        if is_win():
             result = instance.load_presentation()
 
             # THEN: PptviewDocument.load_presentation should return True
@@ -200,7 +202,7 @@ class TestPptviewDocument(TestCase):
             self.mock_controller.process.OpenPPT.return_value = -1
             instance = PptviewDocument(self.mock_controller, self.mock_presentation)
             instance.file_path = 'test\path.ppt'
-            if os.name == 'nt':
+            if is_win():
                 result = instance.load_presentation()
 
                 # THEN: The temp folder should be created and PptviewDocument.load_presentation should return False

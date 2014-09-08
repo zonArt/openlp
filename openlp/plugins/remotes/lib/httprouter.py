@@ -505,7 +505,7 @@ class HttpRouter(RegistryProperties):
                     item['text'] = str(frame['text'])
                     item['html'] = str(frame['html'])
                 # Handle images, unless a custom thumbnail is given or if thumbnails is disabled
-                elif current_item.is_image() and not frame['image'] and Settings().value('remotes/thumbnails'):
+                elif current_item.is_image() and not frame.get('image', None) and Settings().value('remotes/thumbnails'):
                     item['tag'] = str(index + 1)
                     thumbnail_path = os.path.sep + os.path.join('images', 'thumbnails', frame['title'])
                     item['img'] = urllib.request.pathname2url(thumbnail_path)

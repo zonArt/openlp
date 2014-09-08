@@ -30,8 +30,6 @@
 Functional tests to test the PowerPointController class and related methods.
 """
 import os
-if os.name == 'nt':
-    import pywintypes
 import shutil
 from unittest import TestCase
 from tempfile import mkdtemp
@@ -42,6 +40,10 @@ from tests.utils.constants import TEST_RESOURCES_PATH
 
 from openlp.plugins.presentations.lib.powerpointcontroller import PowerpointController, PowerpointDocument,\
     _get_text_from_shapes
+from openlp.core.common import is_win
+
+if is_win():
+    import pywintypes
 
 
 class TestPowerpointController(TestCase, TestMixin):
@@ -124,7 +126,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
         """
         Test the PowerpointDocument.show_error_msg() method gets called on com exception
         """
-        if os.name == 'nt':
+        if is_win():
             # GIVEN: A PowerpointDocument with mocked controller and presentation
             with patch('openlp.plugins.presentations.lib.powerpointcontroller.critical_error_message_box') as \
                     mocked_critical_error_message_box:
@@ -146,7 +148,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
         """
         Test loading a document in PowerPoint
         """
-        if os.name == 'nt' and self.real_controller.check_available():
+        if is_win() and self.real_controller.check_available():
             # GIVEN: A PowerpointDocument and a presentation
             doc = PowerpointDocument(self.real_controller, self.file_name)
 
@@ -163,7 +165,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
         """
         Test creating the titles from PowerPoint
         """
-        if os.name == 'nt' and self.real_controller.check_available():
+        if is_win() and self.real_controller.check_available():
             # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
             self.doc = PowerpointDocument(self.real_controller, self.file_name)
             self.doc.save_titles_and_notes = MagicMock()
@@ -186,7 +188,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
         """
         Test creating the titles from PowerPoint when it returns no slides
         """
-        if os.name == 'nt' and self.real_controller.check_available():
+        if is_win() and self.real_controller.check_available():
             # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
             doc = PowerpointDocument(self.real_controller, self.file_name)
             doc.save_titles_and_notes = MagicMock()
