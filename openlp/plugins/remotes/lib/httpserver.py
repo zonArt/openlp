@@ -144,6 +144,7 @@ class OpenLPServer(RegistryProperties):
             try:
                 self.httpd = server_class((address, port), CustomHandler)
                 log.debug("Server started for class %s %s %d" % (server_class, address, port))
+                break
             except OSError:
                 log.debug("failed to start http server thread state %d %s" %
                           (loop, self.http_thread.isRunning()))
@@ -151,6 +152,8 @@ class OpenLPServer(RegistryProperties):
                 time.sleep(0.1)
             except:
                 log.error('Failed to start server ')
+                loop += 1
+                time.sleep(0.1)
 
     def stop_server(self):
         """
