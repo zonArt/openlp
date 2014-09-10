@@ -66,7 +66,8 @@ class TestThemeManager(TestCase):
 
             # THEN: The zipfile should be created at the given path
             mocked_zipfile_init.assert_called_with(os.path.join('some', 'path', 'Default.otz'), 'w')
-            mocked_zipfile_write.assert_called_with(os.path.join(TEST_RESOURCES_PATH, 'themes', 'Default', 'Default.xml'),
+            mocked_zipfile_write.assert_called_with(os.path.join(TEST_RESOURCES_PATH, 'themes',
+                                                                 'Default', 'Default.xml'),
                                                     os.path.join('Default', 'Default.xml'))
 
     def initial_theme_manager_test(self):
