@@ -407,7 +407,7 @@ class HttpRouter(RegistryProperties):
                                                               'thumbnails/' + full_path))
                     if os.path.exists(full_path):
                         ext, content_type = self.get_content_type(full_path)
-                        image = self.image_manager.get_image(full_path, ImageSource.ImagePlugin , width, height)
+                        image = self.image_manager.get_image(full_path, ImageSource.ImagePlugin, width, height)
                         content = image_to_byte(image, False)
         if len(content) == 0:
             return self.do_not_found()

@@ -590,7 +590,8 @@ class ImageMediaItem(MediaManagerItem):
         # Continue with the existing images.
         for filename in images_file_names:
             name = os.path.split(filename)[1]
-            service_item.add_from_image(filename, ImageSource.ImagePlugin, background, os.path.join(self.service_path, name))
+            service_item.add_from_image(filename, ImageSource.ImagePlugin, background,
+                                        os.path.join(self.service_path, name))
         return True
 
     def check_group_exists(self, new_group):
