@@ -124,7 +124,7 @@ class TestServiceItem(TestCase):
                 patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path') as \
                 mocked_get_section_data_path:
             mocked_exists.return_value = True
-            mocked_get_section_data_path.return_value = '/path/'
+            mocked_get_section_data_path.return_value = os.path.normpath('/path/')
             service_item.set_from_service(line, TEST_PATH)
 
         # THEN: We should get back a valid service item
@@ -178,7 +178,7 @@ class TestServiceItem(TestCase):
                 patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path') as \
                 mocked_get_section_data_path:
             mocked_exists.return_value = True
-            mocked_get_section_data_path.return_value = '/path/'
+            mocked_get_section_data_path.return_value = os.path.normpath('/path/')
             service_item2.set_from_service(line2)
             service_item.set_from_service(line)
 
