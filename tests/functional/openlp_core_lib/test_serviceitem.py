@@ -111,15 +111,20 @@ class TestServiceItem(TestCase):
         # GIVEN: A new service item and a mocked add icon function
         image_name = 'image_1.jpg'
         test_file = os.path.join(TEST_PATH, image_name)
-        frame_array = {'path': test_file, 'title': image_name}
+        thumb_file = os.path.normpath(os.path.join('/path/thumbnails', image_name))
+        frame_array = {'path': test_file, 'title': image_name, 'image': thumb_file}
 
         service_item = ServiceItem(None)
         service_item.add_icon = MagicMock()
 
         # WHEN: adding an image from a saved Service and mocked exists
         line = convert_file_service_item(TEST_PATH, 'serviceitem_image_1.osj')
-        with patch('openlp.core.ui.servicemanager.os.path.exists') as mocked_exists:
+        with patch('openlp.core.ui.servicemanager.os.path.exists') as mocked_exists,\
+                patch('openlp.core.lib.serviceitem.create_thumb') as mocked_create_thumb,\
+                patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path') as \
+                mocked_get_section_data_path:
             mocked_exists.return_value = True
+            mocked_get_section_data_path.return_value = '/path/'
             service_item.set_from_service(line, TEST_PATH)
 
         # THEN: We should get back a valid service item
@@ -153,8 +158,10 @@ class TestServiceItem(TestCase):
         image_name2 = 'image_2.jpg'
         test_file1 = os.path.normpath(os.path.join('/home/openlp', image_name1))
         test_file2 = os.path.normpath(os.path.join('/home/openlp', image_name2))
-        frame_array1 = {'path': test_file1, 'title': image_name1}
-        frame_array2 = {'path': test_file2, 'title': image_name2}
+        thumb_file1 = os.path.normpath(os.path.join('/path/thumbnails', image_name1))
+        thumb_file2 = os.path.normpath(os.path.join('/path/thumbnails', image_name2))
+        frame_array1 = {'path': test_file1, 'title': image_name1, 'image': thumb_file1}
+        frame_array2 = {'path': test_file2, 'title': image_name2, 'image': thumb_file2}
 
         service_item = ServiceItem(None)
         service_item.add_icon = MagicMock()
@@ -166,8 +173,12 @@ class TestServiceItem(TestCase):
         line = convert_file_service_item(TEST_PATH, 'serviceitem_image_2.osj')
         line2 = convert_file_service_item(TEST_PATH, 'serviceitem_image_2.osj', 1)
 
-        with patch('openlp.core.ui.servicemanager.os.path.exists') as mocked_exists:
+        with patch('openlp.core.ui.servicemanager.os.path.exists') as mocked_exists, \
+                patch('openlp.core.lib.serviceitem.create_thumb') as mocked_create_thumb, \
+                patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path') as \
+                mocked_get_section_data_path:
             mocked_exists.return_value = True
+            mocked_get_section_data_path.return_value = '/path/'
             service_item2.set_from_service(line2)
             service_item.set_from_service(line)
 
