@@ -302,7 +302,8 @@ class ServiceItem(RegistryProperties):
             thumbnail = os.path.join(AppLocation.get_section_data_path('images'), 'thumbnails', os.path.split(path)[1])
             create_thumb(path, thumbnail, False)
         self._raw_frames.append({'title': title, 'path': path, 'image': thumbnail})
-        self.image_manager.add_image(thumbnail, ImageSource.ImagePlugin, self.image_border)
+        self.image_manager.add_image(thumbnail, ImageSource.ImagePlugin, self.image_border, 88, 88)
+        self.image_manager.add_image(thumbnail, ImageSource.ImagePlugin, self.image_border, 320, 240)
         self.image_manager.add_image(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
