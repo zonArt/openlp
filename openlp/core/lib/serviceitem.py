@@ -39,8 +39,8 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.common import RegistryProperties, Settings, translate
-from openlp.core.lib import ImageSource, build_icon, clean_tags, expand_tags
+from openlp.core.common import RegistryProperties, Settings, translate, AppLocation
+from openlp.core.lib import ImageSource, build_icon, clean_tags, expand_tags, create_thumb
 
 log = logging.getLogger(__name__)
 
@@ -292,16 +292,17 @@ class ServiceItem(RegistryProperties):
         :param path: The directory in which the image file is located.
         :param title: A title for the slide in the service item.
         :param background:
-        :param thumbnail: Optional alternative thumbnail, used for remote thumbnails.
+        :param thumbnail: Optional thumbnail, used for remote thumbnails.
         """
         if background:
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
-        if thumbnail:
-            self._raw_frames.append({'title': title, 'path': path, 'image': thumbnail})
-            self.image_manager.add_image(thumbnail, ImageSource.ImagePlugin, self.image_border)
-        else:
-            self._raw_frames.append({'title': title, 'path': path})
+        # If no thumbnail was given we create one
+        if not thumbnail:
+            thumbnail = os.path.join(AppLocation.get_section_data_path('images'), 'thumbnails', os.path.split(path)[1])
+            create_thumb(path, thumbnail, False)
+        self._raw_frames.append({'title': title, 'path': path, 'image': thumbnail})
+        self.image_manager.add_image(thumbnail, ImageSource.ImagePlugin, self.image_border)
         self.image_manager.add_image(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 

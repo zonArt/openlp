@@ -407,7 +407,6 @@ class HttpRouter(RegistryProperties):
                                                               'thumbnails/' + full_path))
                     if os.path.exists(full_path):
                         path, just_file_name = os.path.split(full_path)
-                        self.image_manager.add_image(full_path, just_file_name, None, width, height)
                         ext, content_type = self.get_content_type(full_path)
                         image = self.image_manager.get_image(full_path, just_file_name, width, height)
                         content = image_to_byte(image, False)
@@ -504,8 +503,8 @@ class HttpRouter(RegistryProperties):
                         item['tag'] = str(index + 1)
                     item['text'] = str(frame['text'])
                     item['html'] = str(frame['html'])
-                # Handle images, unless a custom thumbnail is given or if thumbnails is disabled
-                elif current_item.is_image() and not frame.get('image', None) and Settings().value('remotes/thumbnails'):
+                # Handle images, unless a thumbnail is given or if thumbnails is disabled
+                elif current_item.is_image() and not frame.get('image', '') and Settings().value('remotes/thumbnails'):
                     item['tag'] = str(index + 1)
                     thumbnail_path = os.path.sep + os.path.join('images', 'thumbnails', frame['title'])
                     item['img'] = urllib.request.pathname2url(thumbnail_path)
