@@ -36,7 +36,6 @@ import logging
 import os
 import time
 import queue
-import re
 
 from PyQt4 import QtCore
 
