@@ -125,7 +125,7 @@ from mako.template import Template
 from PyQt4 import QtCore
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, translate
-from openlp.core.lib import PluginStatus, StringContent, image_to_byte, ItemCapabilities, ImageSource
+from openlp.core.lib import PluginStatus, StringContent, image_to_byte, ItemCapabilities
 
 log = logging.getLogger(__name__)
 FILE_TYPES = {
@@ -406,8 +406,10 @@ class HttpRouter(RegistryProperties):
                     full_path = os.path.normpath(os.path.join(AppLocation.get_section_data_path(controller_name),
                                                               'thumbnails/' + full_path))
                     if os.path.exists(full_path):
+                        path, just_file_name = os.path.split(full_path)
+                        self.image_manager.add_image(full_path, just_file_name, None, width, height)
                         ext, content_type = self.get_content_type(full_path)
-                        image = self.image_manager.get_image(full_path, ImageSource.ImagePlugin, width, height)
+                        image = self.image_manager.get_image(full_path, just_file_name, width, height)
                         content = image_to_byte(image, False)
         if len(content) == 0:
             return self.do_not_found()
@@ -502,7 +504,7 @@ class HttpRouter(RegistryProperties):
                         item['tag'] = str(index + 1)
                     item['text'] = str(frame['text'])
                     item['html'] = str(frame['html'])
-                # Handle images, unless a thumbnail is given or if thumbnails is disabled
+                # Handle images, unless a custom thumbnail is given or if thumbnails is disabled
                 elif current_item.is_image() and not frame.get('image', '') and Settings().value('remotes/thumbnails'):
                     item['tag'] = str(index + 1)
                     thumbnail_path = os.path.sep + os.path.join('images', 'thumbnails', frame['title'])
@@ -528,6 +530,7 @@ class HttpRouter(RegistryProperties):
                 item['selected'] = (self.live_controller.selected_row == index)
                 if current_item.notes:
                     item['notes'] = item.get('notes', '') + '\n' + current_item.notes
+                print(item)
                 data.append(item)
         json_data = {'results': {'slides': data}}
         if current_item:

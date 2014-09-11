@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, AppLocation, Settings, UiStrings, check_directory_exists, translate
 from openlp.core.lib import ItemCapabilities, MediaManagerItem, ServiceItemContext, StringContent, TreeWidgetWithDnD,\
-    build_icon, check_item_selected, create_thumb, validate_thumb, ImageSource
+    build_icon, check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 from openlp.core.utils import delete_file, get_locale_key, get_images_filter
 from openlp.plugins.images.forms import AddGroupForm, ChooseGroupForm
@@ -590,8 +590,7 @@ class ImageMediaItem(MediaManagerItem):
         # Continue with the existing images.
         for filename in images_file_names:
             name = os.path.split(filename)[1]
-            service_item.add_from_image(filename, ImageSource.ImagePlugin, background,
-                                        os.path.join(self.service_path, name))
+            service_item.add_from_image(filename, name, background, os.path.join(self.service_path, name))
         return True
 
     def check_group_exists(self, new_group):
