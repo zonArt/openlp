@@ -31,8 +31,6 @@ The :mod:`db` module provides the database and schema that is the backend for
 the Songs plugin
 """
 
-import re
-
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func, text
@@ -329,7 +327,9 @@ def init_schema(url):
         Column('topic_id', types.Integer(), ForeignKey('topics.id'), primary_key=True)
     )
 
-    mapper(Author, authors_table)
+    mapper(Author, authors_table, properties={
+        'songs': relation(Song, secondary=authors_songs_table, viewonly=True)
+    })
     mapper(AuthorSong, authors_songs_table, properties={
         'author': relation(Author)
     })
