@@ -154,6 +154,34 @@ class TestUi(TestCase):
         self.assertEqual('my tooltip', action.toolTip())
         self.assertEqual('my statustip', action.statusTip())
 
+    def test_create_action_2(self):
+        """
+        Test creating an action
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create an action with some properties
+        action = create_action(dialog, 'my_action', checked=True, enabled=False, visible=False)
+
+        # THEN: These properties should be set
+        self.assertTrue(action.isChecked())
+        self.assertFalse(action.isEnabled())
+        self.assertFalse(action.isVisible())
+
+    def test_create_action_separator(self):
+        """
+        Test creating an action as separator
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create an action as a separator
+        action = create_action(dialog, 'my_action', separator=True)
+
+        # THEN: The action should be a separator
+        self.assertTrue(action.isSeparator())
+
     def test_create_checked_enabled_visible_action(self):
         """
         Test creating an action with the 'checked', 'enabled' and 'visible' properties.
