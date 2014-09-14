@@ -29,10 +29,14 @@
 """
 Package to test the openlp.core.lib.ui package.
 """
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 from unittest import TestCase
 
-from openlp.core.lib.ui import *
+from openlp.core.common import UiStrings, translate
+from openlp.core.lib.ui import add_welcome_page, create_button_box, create_horizontal_adjusting_combo_box, \
+    create_button, create_action, create_valign_selection_widgets, find_and_set_in_combo_box, create_widget_action, \
+    set_case_insensitive_completer
+from tests.functional import MagicMock, patch
 
 
 class TestUi(TestCase):
@@ -153,6 +157,43 @@ class TestUi(TestCase):
         self.assertIsInstance(action.icon(), QtGui.QIcon)
         self.assertEqual('my tooltip', action.toolTip())
         self.assertEqual('my statustip', action.statusTip())
+
+    def create_action_on_mac_osx_test(self):
+        """
+        Test creating an action on OS X calls the correct method
+        """
+        # GIVEN: A dialog and a mocked out is_macosx() method to always return True
+        with patch('openlp.core.lib.ui.is_macosx') as mocked_is_macosx, \
+                patch('openlp.core.lib.ui.QtGui.QAction') as MockedQAction:
+            mocked_is_macosx.return_value = True
+            mocked_action = MagicMock()
+            MockedQAction.return_value = mocked_action
+            dialog = QtGui.QDialog()
+
+            # WHEN: An action is created
+            create_action(dialog, 'my_action')
+
+            # THEN: setIconVisibleInMenu should be called
+            mocked_action.setIconVisibleInMenu.assert_called_with(False)
+
+    def create_action_not_on_mac_osx_test(self):
+        """
+        Test creating an action on something other than OS X doesn't call the method
+        """
+        # GIVEN: A dialog and a mocked out is_macosx() method to always return True
+        with patch('openlp.core.lib.ui.is_macosx') as mocked_is_macosx, \
+                patch('openlp.core.lib.ui.QtGui.QAction') as MockedQAction:
+            mocked_is_macosx.return_value = False
+            mocked_action = MagicMock()
+            MockedQAction.return_value = mocked_action
+            dialog = QtGui.QDialog()
+
+            # WHEN: An action is created
+            create_action(dialog, 'my_action')
+
+            # THEN: setIconVisibleInMenu should not be called
+            self.assertEqual(0, mocked_action.setIconVisibleInMenu.call_count,
+                             'setIconVisibleInMenu should not have been called')
 
     def create_checked_disabled_invisible_action_test(self):
         """

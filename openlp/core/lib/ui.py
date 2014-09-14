@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, UiStrings, translate
+from openlp.core.common import Registry, UiStrings, translate, is_macosx
 from openlp.core.lib import build_icon
 from openlp.core.utils.actions import ActionList
 
@@ -247,6 +247,8 @@ def create_action(parent, name, **kwargs):
     """
     action = QtGui.QAction(parent)
     action.setObjectName(name)
+    if is_macosx():
+        action.setIconVisibleInMenu(False)
     if kwargs.get('text'):
         action.setText(kwargs.pop('text'))
     if kwargs.get('icon'):
