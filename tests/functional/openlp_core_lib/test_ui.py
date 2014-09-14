@@ -40,7 +40,7 @@ class TestUi(TestCase):
     Test the functions in the ui module
     """
 
-    def test_add_welcome_page(self):
+    def add_welcome_page_test(self):
         """
         Test appending a welcome page to a wizard
         """
@@ -54,7 +54,7 @@ class TestUi(TestCase):
         self.assertEqual(1, len(wizard.pageIds()), 'The wizard should have one page.')
         self.assertIsInstance(wizard.page(0).pixmap(QtGui.QWizard.WatermarkPixmap), QtGui.QPixmap)
 
-    def test_create_button_box(self):
+    def create_button_box_test(self):
         """
         Test creating a button box for a dialog
         """
@@ -82,7 +82,7 @@ class TestUi(TestCase):
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtGui.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
 
-    def test_create_horizontal_adjusting_combo_box(self):
+    def create_horizontal_adjusting_combo_box_test(self):
         """
         Test creating a horizontal adjusting combo box
         """
@@ -97,7 +97,7 @@ class TestUi(TestCase):
         self.assertEqual('combo1', combo.objectName())
         self.assertEqual(QtGui.QComboBox.AdjustToMinimumContentsLength, combo.sizeAdjustPolicy())
 
-    def test_create_button(self):
+    def create_button_test(self):
         """
         Test creating a button
         """
@@ -129,7 +129,7 @@ class TestUi(TestCase):
         self.assertEqual('my_btn', btn.objectName())
         self.assertTrue(btn.isEnabled())
 
-    def test_create_action(self):
+    def create_action_test(self):
         """
         Test creating an action
         """
@@ -154,9 +154,9 @@ class TestUi(TestCase):
         self.assertEqual('my tooltip', action.toolTip())
         self.assertEqual('my statustip', action.statusTip())
 
-    def test_create_action_2(self):
+    def create_checked_disabled_invisible_action_test(self):
         """
-        Test creating an action
+        Test that an invisible, disabled, checked action is created correctly
         """
         # GIVEN: A dialog
         dialog = QtGui.QDialog()
@@ -165,11 +165,11 @@ class TestUi(TestCase):
         action = create_action(dialog, 'my_action', checked=True, enabled=False, visible=False)
 
         # THEN: These properties should be set
-        self.assertTrue(action.isChecked())
-        self.assertFalse(action.isEnabled())
-        self.assertFalse(action.isVisible())
+        self.assertTrue(action.isChecked(), 'The action should be checked')
+        self.assertFalse(action.isEnabled(), 'The action should be disabled')
+        self.assertFalse(action.isVisible(), 'The action should be invisble')
 
-    def test_create_action_separator(self):
+    def create_action_separator_test(self):
         """
         Test creating an action as separator
         """
@@ -180,24 +180,9 @@ class TestUi(TestCase):
         action = create_action(dialog, 'my_action', separator=True)
 
         # THEN: The action should be a separator
-        self.assertTrue(action.isSeparator())
+        self.assertTrue(action.isSeparator(), 'The action should be a separator')
 
-    def test_create_checked_enabled_visible_action(self):
-        """
-        Test creating an action with the 'checked', 'enabled' and 'visible' properties.
-        """
-        # GIVEN: A dialog
-        dialog = QtGui.QDialog()
-
-        # WHEN: We create an action with some properties
-        action = create_action(dialog, 'my_action', checked=True, enabled=False, visible=False)
-
-        # THEN: These properties should be set
-        self.assertEqual(True, action.isChecked())
-        self.assertEqual(False, action.isEnabled())
-        self.assertEqual(False, action.isVisible())
-
-    def test_create_valign_selection_widgets(self):
+    def create_valign_selection_widgets_test(self):
         """
         Test creating a combo box for valign selection
         """
@@ -214,7 +199,7 @@ class TestUi(TestCase):
         for text in [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]:
             self.assertTrue(combo.findText(text) >= 0)
 
-    def test_find_and_set_in_combo_box(self):
+    def find_and_set_in_combo_box_test(self):
         """
         Test finding a string in a combo box and setting it as the selected item if present
         """
@@ -241,7 +226,7 @@ class TestUi(TestCase):
         # THEN: The index should have changed
         self.assertEqual(2, combo.currentIndex())
 
-    def test_create_widget_action(self):
+    def create_widget_action_test(self):
         """
         Test creating an action for a widget
         """
@@ -255,7 +240,7 @@ class TestUi(TestCase):
         self.assertIsInstance(action, QtGui.QAction)
         self.assertEqual(action.objectName(), 'some action')
 
-    def test_set_case_insensitive_completer(self):
+    def set_case_insensitive_completer_test(self):
         """
         Test setting a case insensitive completer on a widget
         """
