@@ -339,7 +339,8 @@ def init_schema(url):
         # Use the authors_songs relation when you need access to the 'author_type' attribute
         # or when creating new relations
         'authors_songs': relation(AuthorSong, cascade="all, delete-orphan"),
-        'authors': relation(Author, secondary=authors_songs_table, viewonly=True),
+        # Use lazy='joined' to always load authors when the song is fetched from the database (bug 1366198)
+        'authors': relation(Author, secondary=authors_songs_table, viewonly=True, lazy='joined'),
         'book': relation(Book, backref='songs'),
         'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
         'topics': relation(Topic, backref='songs', secondary=songs_topics_table)
