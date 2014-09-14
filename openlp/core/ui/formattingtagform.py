@@ -60,6 +60,12 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         super(FormattingTagForm, self).__init__(parent)
         self.setupUi(self)
+        self._setup()
+
+    def _setup(self):
+        """
+        Set up the class. This method is mocked out by the tests.
+        """
         self.services = FormattingTagController()
         self.tag_table_widget.itemSelectionChanged.connect(self.on_row_selected)
         self.new_button.clicked.connect(self.on_new_clicked)

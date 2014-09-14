@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
+from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate, is_macosx
 from openlp.core.lib import build_icon
 from openlp.core.lib.ui import add_welcome_page
 
@@ -121,9 +121,10 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         """
         self.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         self.setModal(True)
-        self.setWizardStyle(QtGui.QWizard.ModernStyle)
         self.setOptions(QtGui.QWizard.IndependentPages |
                         QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
+        if is_macosx():
+            self.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
         add_welcome_page(self, image)
         self.add_custom_pages()
         if self.with_progress_page:
