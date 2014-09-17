@@ -195,9 +195,9 @@ class TestUi(TestCase):
             self.assertEqual(0, mocked_action.setIconVisibleInMenu.call_count,
                              'setIconVisibleInMenu should not have been called')
 
-    def create_checked_enabled_visible_action_test(self):
+    def create_checked_disabled_invisible_action_test(self):
         """
-        Test creating an action with the 'checked', 'enabled' and 'visible' properties.
+        Test that an invisible, disabled, checked action is created correctly
         """
         # GIVEN: A dialog
         dialog = QtGui.QDialog()
@@ -206,9 +206,22 @@ class TestUi(TestCase):
         action = create_action(dialog, 'my_action', checked=True, enabled=False, visible=False)
 
         # THEN: These properties should be set
-        self.assertEqual(True, action.isChecked())
-        self.assertEqual(False, action.isEnabled())
-        self.assertEqual(False, action.isVisible())
+        self.assertTrue(action.isChecked(), 'The action should be checked')
+        self.assertFalse(action.isEnabled(), 'The action should be disabled')
+        self.assertFalse(action.isVisible(), 'The action should be invisble')
+
+    def create_action_separator_test(self):
+        """
+        Test creating an action as separator
+        """
+        # GIVEN: A dialog
+        dialog = QtGui.QDialog()
+
+        # WHEN: We create an action as a separator
+        action = create_action(dialog, 'my_action', separator=True)
+
+        # THEN: The action should be a separator
+        self.assertTrue(action.isSeparator(), 'The action should be a separator')
 
     def create_valign_selection_widgets_test(self):
         """
