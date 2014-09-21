@@ -92,6 +92,8 @@ class Ui_MainWindow(object):
         main_window.setObjectName('MainWindow')
         main_window.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
         main_window.setDockNestingEnabled(True)
+        if is_macosx():
+            main_window.setDocumentMode(True)
         # Set up the main container, which contains all the other form widgets.
         self.main_content = QtGui.QWidget(main_window)
         self.main_content.setObjectName('main_content')
@@ -118,10 +120,12 @@ class Ui_MainWindow(object):
         self.recent_files_menu = QtGui.QMenu(self.file_menu)
         self.recent_files_menu.setObjectName('recentFilesMenu')
         self.file_import_menu = QtGui.QMenu(self.file_menu)
-        self.file_import_menu.setIcon(build_icon(u':/general/general_import.png'))
+        if not is_macosx():
+            self.file_import_menu.setIcon(build_icon(u':/general/general_import.png'))
         self.file_import_menu.setObjectName('file_import_menu')
         self.file_export_menu = QtGui.QMenu(self.file_menu)
-        self.file_export_menu.setIcon(build_icon(u':/general/general_export.png'))
+        if not is_macosx():
+            self.file_export_menu.setIcon(build_icon(u':/general/general_export.png'))
         self.file_export_menu.setObjectName('file_export_menu')
         # View Menu
         self.view_menu = QtGui.QMenu(self.menu_bar)
