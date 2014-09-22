@@ -79,7 +79,7 @@ class TestImpressController(TestCase, TestMixin):
                          'The name of the presentation controller should be correct')
 
 
-class TestImpressDocumnt(TestCase):
+class TestImpressDocument(TestCase):
     """
     Test the ImpressDocument Class
     """

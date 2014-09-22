@@ -496,7 +496,7 @@ class HttpRouter(RegistryProperties):
         if current_item:
             for index, frame in enumerate(current_item.get_frames()):
                 item = {}
-                # Handle text (songs, custom)
+                # Handle text (songs, custom, bibles)
                 if current_item.is_text():
                     if frame['verseTag']:
                         item['tag'] = str(frame['verseTag'])
