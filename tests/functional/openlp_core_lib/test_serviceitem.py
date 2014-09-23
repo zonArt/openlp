@@ -111,8 +111,7 @@ class TestServiceItem(TestCase):
         # GIVEN: A new service item and a mocked add icon function
         image_name = 'image_1.jpg'
         test_file = os.path.join(TEST_PATH, image_name)
-        thumb_file = os.path.normpath(os.path.join('/path/thumbnails', image_name))
-        frame_array = {'path': test_file, 'title': image_name, 'image': thumb_file}
+        frame_array = {'path': test_file, 'title': image_name}
 
         service_item = ServiceItem(None)
         service_item.add_icon = MagicMock()
@@ -158,10 +157,8 @@ class TestServiceItem(TestCase):
         image_name2 = 'image_2.jpg'
         test_file1 = os.path.normpath(os.path.join('/home/openlp', image_name1))
         test_file2 = os.path.normpath(os.path.join('/home/openlp', image_name2))
-        thumb_file1 = os.path.normpath(os.path.join('/path/thumbnails', image_name1))
-        thumb_file2 = os.path.normpath(os.path.join('/path/thumbnails', image_name2))
-        frame_array1 = {'path': test_file1, 'title': image_name1, 'image': thumb_file1}
-        frame_array2 = {'path': test_file2, 'title': image_name2, 'image': thumb_file2}
+        frame_array1 = {'path': test_file1, 'title': image_name1}
+        frame_array2 = {'path': test_file2, 'title': image_name2}
 
         service_item = ServiceItem(None)
         service_item.add_icon = MagicMock()

@@ -297,11 +297,10 @@ class ServiceItem(RegistryProperties):
         if background:
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
-        # If no thumbnail was given we create one
         if not thumbnail:
-            thumbnail = os.path.join(AppLocation.get_section_data_path('images'), 'thumbnails', os.path.split(path)[1])
-            create_thumb(path, thumbnail, False)
-        self._raw_frames.append({'title': title, 'path': path, 'image': thumbnail})
+            self._raw_frames.append({'title': title, 'path': path})
+        else:
+            self._raw_frames.append({'title': title, 'path': path, 'image': thumbnail})
         self.image_manager.add_image(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 

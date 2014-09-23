@@ -125,7 +125,7 @@ from mako.template import Template
 from PyQt4 import QtCore
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, translate
-from openlp.core.lib import PluginStatus, StringContent, image_to_byte, ItemCapabilities
+from openlp.core.lib import PluginStatus, StringContent, image_to_byte, ItemCapabilities, create_thumb
 
 log = logging.getLogger(__name__)
 FILE_TYPES = {
@@ -508,6 +508,9 @@ class HttpRouter(RegistryProperties):
                 elif current_item.is_image() and not frame.get('image', '') and Settings().value('remotes/thumbnails'):
                     item['tag'] = str(index + 1)
                     thumbnail_path = os.path.sep + os.path.join('images', 'thumbnails', frame['title'])
+                    # Create thumbnail if it doesn't exists
+                    if not os.path.exists(thumbnail_path):
+                        create_thumb(current_item.get_frame_path(), thumbnail_path, False)
                     item['img'] = urllib.request.pathname2url(thumbnail_path)
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
