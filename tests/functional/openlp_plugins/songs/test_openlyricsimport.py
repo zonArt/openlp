@@ -66,7 +66,13 @@ SONG_TEST_DATA = {
     }
 }
 
-tags_str ='[{"protected": false, "desc": "z", "start tag": "{z}", "end html": "</strong>", "temporary": false, "end tag": "{/z}", "start html": "strong>"}]'
+start_tags = [{"protected": False, "desc": "z", "start tag": "{z}", "end html": "</strong>", "temporary": False,
+               "end tag": "{/z}", "start html": "strong>"}]
+result_tags = [{"temporary": False, "protected": False, "desc": "z", "start tag": "{z}", "start html": "strong>",
+                "end html": "</strong>", "end tag": "{/z}"},
+               {"temporary": False, "end tag": "{/c}", "desc": "c", "start tag": "{c}",
+                "start html": "<span class=\"chord\" style=\"display:none\"><strong>", "end html": "</strong></span>",
+                "protected": False}]
 
 
 class TestOpenLyricsImport(TestCase, TestMixin):
@@ -126,9 +132,9 @@ class TestOpenLyricsImport(TestCase, TestMixin):
         """
         Test that _process_formatting_tags works
         """
-        # GIVEN: A OpenLyric XML with formatting and a mocked out formattingtag-setting
+        # GIVEN: A OpenLyric XML with formatting tags and a mocked out manager
         mocked_manager = MagicMock()
-        Settings().setValue('formattingTags/html_tags', json.loads(tags_str))
+        Settings().setValue('formattingTags/html_tags', json.dumps(start_tags))
         ol = OpenLyrics(mocked_manager)
         parser = etree.XMLParser(remove_blank_text=True)
         parsed_file = etree.parse(open(os.path.join(TEST_PATH, 'duchu-tags.xml'), 'rb'), parser)
@@ -136,9 +142,9 @@ class TestOpenLyricsImport(TestCase, TestMixin):
         song_xml = objectify.fromstring(xml)
 
         # WHEN: processing the formatting tags
-        print(Settings().value('formattingTags/html_tags'))
         ol._process_formatting_tags(song_xml, False)
 
         # THEN: New tags should have been saved
-        print(str(Settings().value('formattingTags/html_tags')))
-        self.assertTrue(False)
+        self.assertListEqual(json.loads(json.dumps(result_tags)),
+                             json.loads(str(Settings().value('formattingTags/html_tags'))),
+                             'The formatting tags should contain both the old and the new')
