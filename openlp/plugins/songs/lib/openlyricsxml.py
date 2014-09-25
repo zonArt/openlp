@@ -594,7 +594,8 @@ class OpenLyrics(object):
         if new_tags:
             FormattingTags.add_html_tags(new_tags)
             if not temporary:
-                custom_tags = [tag for tag in FormattingTags.get_html_tags() if not tag['protected'] and not tag['temporary']]
+                custom_tags = [tag for tag in FormattingTags.get_html_tags()
+                               if not tag['protected'] and not tag['temporary']]
                 FormattingTags.save_html_tags(custom_tags)
 
     def _process_lines_mixed_content(self, element, newlines=True):

@@ -86,7 +86,6 @@ class TestOpenLyricsImport(TestCase, TestMixin):
         self.get_application()
         Registry.create()
         self.build_settings()
-        #Settings().extend_default_settings(__default_settings__)
 
     def tearDown(self):
         """
