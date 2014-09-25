@@ -35,12 +35,19 @@ from unittest import TestCase
 from tests.functional import MagicMock, patch
 from openlp.plugins.songs.lib.importers.zionworx import ZionWorxImport
 from openlp.plugins.songs.lib.importers.songimport import SongImport
+from openlp.core.common import Registry
 
 
 class TestZionWorxImport(TestCase):
     """
     Test the functions in the :mod:`zionworximport` module.
     """
+    def setUp(self):
+        """
+        Create the registry
+        """
+        Registry.create()
+
     def create_importer_test(self):
         """
         Test creating an instance of the ZionWorx file importer

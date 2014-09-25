@@ -35,6 +35,7 @@ from unittest import TestCase
 
 from tests.functional import MagicMock, patch
 
+from openlp.core.common import Registry
 from openlp.plugins.songs.lib.importers.easyworship import EasyWorshipSongImport, FieldDescEntry, FieldType
 
 TEST_PATH = os.path.abspath(
@@ -153,6 +154,11 @@ class TestEasyWorshipSongImport(TestCase):
     """
     Test the functions in the :mod:`ewimport` module.
     """
+    def setUp(self):
+        """
+        Create the registry
+        """
+        Registry.create()
 
     def create_field_desc_entry_test(self):
         """
