@@ -29,9 +29,7 @@
 """
 Provide Registry values for adding to classes
 """
-import os
-
-from openlp.core.common import Registry
+from openlp.core.common import Registry, is_win
 
 
 class RegistryProperties(object):
@@ -45,7 +43,7 @@ class RegistryProperties(object):
         Adds the openlp to the class dynamically.
         Windows needs to access the application in a dynamic manner.
         """
-        if os.name == 'nt':
+        if is_win():
             return Registry().get('application')
         else:
             if not hasattr(self, '_application') or not self._application:

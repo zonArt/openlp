@@ -30,7 +30,7 @@
 import logging
 from lxml import etree, objectify
 
-from openlp.core.common import translate
+from openlp.core.common import translate, trace_error_handler
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
@@ -88,6 +88,7 @@ class OpenSongBible(BibleDB):
                                       'Incorrect Bible file type supplied. This looks like a Zefania XML bible, '
                                       'please use the Zefania import option.'))
                 return False
+            # No language info in the opensong format, so ask the user
             language_id = self.get_language(bible_name)
             if not language_id:
                 log.error('Importing books from "%s" failed' % self.filename)
@@ -123,7 +124,7 @@ class OpenSongBible(BibleDB):
                                 if len(verse_parts) > 1:
                                     number = int(verse_parts[0])
                             except TypeError:
-                                log.warn('Illegal verse number: %s', str(verse.attrib['n']))
+                                log.warning('Illegal verse number: %s', str(verse.attrib['n']))
                             verse_number = number
                         else:
                             verse_number += 1
@@ -134,6 +135,7 @@ class OpenSongBible(BibleDB):
                 self.session.commit()
             self.application.process_events()
         except etree.XMLSyntaxError as inst:
+            trace_error_handler(log)
             critical_error_message_box(
                 message=translate('BiblesPlugin.OpenSongImport',
                                   'Incorrect Bible file type supplied. OpenSong Bibles may be '

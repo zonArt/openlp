@@ -206,3 +206,24 @@ class TestServiceItem(TestCase):
                         'This service item should be able to be run in a can be made to Loop')
         self.assertTrue(service_item.is_capable(ItemCapabilities.CanAppend),
                         'This service item should be able to have new items added to it')
+
+    def service_item_load_optical_media_from_service_test(self):
+        """
+        Test the Service Item - load an optical media item
+        """
+        # GIVEN: A new service item and a mocked add icon function
+        service_item = ServiceItem(None)
+        service_item.add_icon = MagicMock()
+
+        # WHEN: We load a serviceitem with optical media
+        line = convert_file_service_item(TEST_PATH, 'serviceitem-dvd.osj')
+        with patch('openlp.core.ui.servicemanager.os.path.exists') as mocked_exists:
+            mocked_exists.return_value = True
+            service_item.set_from_service(line)
+
+        # THEN: We should get back a valid service item with optical media info
+        self.assertTrue(service_item.is_valid, 'The service item should be valid')
+        self.assertTrue(service_item.is_capable(ItemCapabilities.IsOptical), 'The item should be Optical')
+        self.assertEqual(service_item.start_time, 654.375, 'Start time should be 654.375')
+        self.assertEqual(service_item.end_time, 672.069, 'End time should be 672.069')
+        self.assertEqual(service_item.media_length, 17.694, 'Media length should be 17.694')

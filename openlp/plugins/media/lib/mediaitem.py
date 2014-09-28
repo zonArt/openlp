@@ -29,6 +29,7 @@
 
 import logging
 import os
+from datetime import time
 
 from PyQt4 import QtCore, QtGui
 
@@ -38,17 +39,21 @@ from openlp.core.lib import ItemCapabilities, MediaManagerItem, MediaType, Servi
     build_icon, check_item_selected
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
-from openlp.core.ui.media import get_media_players, set_media_players
+from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path, format_milliseconds
 from openlp.core.utils import get_locale_key
+from openlp.core.ui.media.vlcplayer import VLC_AVAILABLE
+if VLC_AVAILABLE:
+    from openlp.plugins.media.forms.mediaclipselectorform import MediaClipSelectorForm
 
 
 log = logging.getLogger(__name__)
 
 
 CLAPPERBOARD = ':/media/slidecontroller_multimedia.png'
+OPTICAL = ':/media/media_optical.png'
 VIDEO_ICON = build_icon(':/media/media_video.png')
 AUDIO_ICON = build_icon(':/media/media_audio.png')
-DVD_ICON = build_icon(':/media/media_video.png')
+OPTICAL_ICON = build_icon(OPTICAL)
 ERROR_ICON = build_icon(':/general/general_delete.png')
 
 
@@ -88,6 +93,10 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.list_view.activateDnD()
 
     def retranslateUi(self):
+        """
+        This method is called automatically to provide OpenLP with the opportunity to translate the ``MediaManagerItem``
+        to another language.
+        """
         self.on_new_prompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.replace_action.setText(UiStrings().ReplaceBG)
         self.replace_action.setToolTip(UiStrings().ReplaceLiveBG)
@@ -106,10 +115,35 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.has_edit_icon = False
 
     def add_list_view_to_toolbar(self):
+        """
+        Creates the main widget for listing items.
+        """
         MediaManagerItem.add_list_view_to_toolbar(self)
         self.list_view.addAction(self.replace_action)
 
+    def add_start_header_bar(self):
+        """
+        Adds buttons to the start of the header bar.
+        """
+        if 'vlc' in get_media_players()[0]:
+            diable_optical_button_text = False
+            optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
+            optical_button_tooltip = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
+        else:
+            diable_optical_button_text = True
+            optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
+            optical_button_tooltip = translate('MediaPlugin.MediaItem',
+                                               'Load CD/DVD - only supported when VLC is installed and enabled')
+        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=OPTICAL_ICON, text=optical_button_text,
+                                                            tooltip=optical_button_tooltip,
+                                                            triggers=self.on_load_optical)
+        if diable_optical_button_text:
+            self.load_optical.setDisabled(True)
+
     def add_end_header_bar(self):
+        """
+        Adds buttons to the end of the header bar.
+        """
         # Replace backgrounds do not work at present so remove functionality.
         self.replace_action = self.toolbar.add_toolbar_action('replace_action', icon=':/slides/slide_blank.png',
                                                               triggers=self.on_replace_click)
@@ -198,22 +232,42 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             if item is None:
                 return False
         filename = item.data(QtCore.Qt.UserRole)
-        if not os.path.exists(filename):
-            if not remote:
-                # File is no longer present
-                critical_error_message_box(
-                    translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                    translate('MediaPlugin.MediaItem', 'The file %s no longer exists.') % filename)
-            return False
-        (path, name) = os.path.split(filename)
-        service_item.title = name
-        service_item.processor = self.display_type_combo_box.currentText()
-        service_item.add_from_command(path, name, CLAPPERBOARD)
-        # Only get start and end times if going to a service
-        if context == ServiceItemContext.Service:
-            # Start media and obtain the length
-            if not self.media_controller.media_length(service_item):
+        # Special handling if the filename is a optical clip
+        if filename.startswith('optical:'):
+            (name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(filename)
+            if not os.path.exists(name):
+                if not remote:
+                    # Optical disc is no longer present
+                    critical_error_message_box(
+                        translate('MediaPlugin.MediaItem', 'Missing Media File'),
+                        translate('MediaPlugin.MediaItem', 'The optical disc %s is no longer available.') % name)
                 return False
+            service_item.processor = self.display_type_combo_box.currentText()
+            service_item.add_from_command(filename, name, CLAPPERBOARD)
+            service_item.title = clip_name
+            # Set the length
+            self.media_controller.media_setup_optical(name, title, audio_track, subtitle_track, start, end, None, None)
+            service_item.set_media_length((end - start) / 1000)
+            service_item.start_time = start / 1000
+            service_item.end_time = end / 1000
+            service_item.add_capability(ItemCapabilities.IsOptical)
+        else:
+            if not os.path.exists(filename):
+                if not remote:
+                    # File is no longer present
+                    critical_error_message_box(
+                        translate('MediaPlugin.MediaItem', 'Missing Media File'),
+                        translate('MediaPlugin.MediaItem', 'The file %s no longer exists.') % filename)
+                return False
+            (path, name) = os.path.split(filename)
+            service_item.title = name
+            service_item.processor = self.display_type_combo_box.currentText()
+            service_item.add_from_command(path, name, CLAPPERBOARD)
+            # Only get start and end times if going to a service
+            if context == ServiceItemContext.Service:
+                # Start media and obtain the length
+                if not self.media_controller.media_length(service_item):
+                    return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.CanEditTitle)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
@@ -224,6 +278,9 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         return True
 
     def initialise(self):
+        """
+        Initialize media item.
+        """
         self.list_view.clear()
         self.list_view.setIconSize(QtCore.QSize(88, 50))
         self.service_path = os.path.join(AppLocation.get_section_data_path(self.settings_section), 'thumbnails')
@@ -241,6 +298,9 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             ' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
 
     def display_setup(self):
+        """
+        Setup media controller display.
+        """
         self.media_controller.setup_display(self.display_controller.preview_display, False)
 
     def populate_display_types(self):
@@ -280,7 +340,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             Settings().setValue(self.settings_section + '/media files', self.get_file_list())
 
     def load_list(self, media, target_group=None):
-        # Sort the media by its filename considering language specific characters.
         """
         Load the media list
 
@@ -290,12 +349,22 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         media.sort(key=lambda file_name: get_locale_key(os.path.split(str(file_name))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)
-            if not os.path.exists(track):
+            if track.startswith('optical:'):
+                # Handle optical based item
+                (file_name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(track)
+                item_name = QtGui.QListWidgetItem(clip_name)
+                item_name.setIcon(OPTICAL_ICON)
+                item_name.setData(QtCore.Qt.UserRole, track)
+                item_name.setToolTip('%s@%s-%s' % (file_name, format_milliseconds(start), format_milliseconds(end)))
+            elif not os.path.exists(track):
+                # File doesn't exist, mark as error.
                 file_name = os.path.split(str(track))[1]
                 item_name = QtGui.QListWidgetItem(file_name)
                 item_name.setIcon(ERROR_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
+                item_name.setToolTip(track)
             elif track_info.isFile():
+                # Normal media file handling.
                 file_name = os.path.split(str(track))[1]
                 item_name = QtGui.QListWidgetItem(file_name)
                 if '*.%s' % (file_name.split('.')[-1].lower()) in self.media_controller.audio_extensions_list:
@@ -303,15 +372,16 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 else:
                     item_name.setIcon(VIDEO_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
-            else:
-                file_name = os.path.split(str(track))[1]
-                item_name = QtGui.QListWidgetItem(file_name)
-                item_name.setIcon(build_icon(DVD_ICON))
-                item_name.setData(QtCore.Qt.UserRole, track)
-            item_name.setToolTip(track)
+                item_name.setToolTip(track)
             self.list_view.addItem(item_name)
 
     def get_list(self, type=MediaType.Audio):
+        """
+        Get the list of media, optional select media type.
+
+        :param type: Type to get, defaults to audio.
+        :return: The media list
+        """
         media = Settings().value(self.settings_section + '/media files')
         media.sort(key=lambda filename: get_locale_key(os.path.split(str(filename))[1]))
         if type == MediaType.Audio:
@@ -323,6 +393,13 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         return media
 
     def search(self, string, show_error):
+        """
+        Performs a search for items containing ``string``
+
+        :param string: String to be displayed
+        :param show_error: Should the error be shown (True)
+        :return: The search result.
+        """
         files = Settings().value(self.settings_section + '/media files')
         results = []
         string = string.lower()
@@ -331,3 +408,32 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             if filename.lower().find(string) > -1:
                 results.append([file, filename])
         return results
+
+    def on_load_optical(self):
+        """
+        When the load optical button is clicked, open the clip selector window.
+        """
+        # self.media_clip_selector_form.exec_()
+        if VLC_AVAILABLE:
+            media_clip_selector_form = MediaClipSelectorForm(self, self.main_window, None)
+            media_clip_selector_form.exec_()
+            del media_clip_selector_form
+        else:
+            QtGui.QMessageBox.critical(self, 'VLC is not available', 'VLC is not available')
+
+    def add_optical_clip(self, optical):
+        """
+        Add a optical based clip to the mediamanager, called from media_clip_selector_form.
+
+        :param optical: The clip to add.
+        """
+        full_list = self.get_file_list()
+        # If the clip already is in the media list it isn't added and an error message is displayed.
+        if optical in full_list:
+            critical_error_message_box(translate('MediaPlugin.MediaItem', 'Mediaclip already saved'),
+                                       translate('MediaPlugin.MediaItem', 'This mediaclip has already been saved'))
+            return
+        # Append the optical string to the media list
+        full_list.append(optical)
+        self.load_list([optical])
+        Settings().setValue(self.settings_section + '/media files', self.get_file_list())

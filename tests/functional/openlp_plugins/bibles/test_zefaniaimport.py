@@ -31,6 +31,7 @@ This module contains tests for the Zefania Bible importer.
 """
 
 import os
+import json
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
@@ -39,29 +40,6 @@ from openlp.plugins.bibles.lib.db import BibleDB
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'bibles'))
-ZEFANIA_TEST_DATA = {
-    'zefania-dk1933.xml': {
-        'book': 'Genesis',
-        'chapter': 1,
-        'verses': [
-            ('1', 'I Begyndelsen skabte Gud Himmelen og Jorden.'),
-            ('2', 'Og Jorden var øde og tom, og der var Mørke over Verdensdybet. '
-             'Men Guds Ånd svævede over Vandene.'),
-            ('3', 'Og Gud sagde: "Der blive Lys!" Og der blev Lys.'),
-            ('4', 'Og Gud så, at Lyset var godt, og Gud satte Skel mellem Lyset og Mørket,'),
-            ('5', 'og Gud kaldte Lyset Dag, og Mørket kaldte han Nat. Og det blev Aften, '
-             'og det blev Morgen, første Dag.'),
-            ('6', 'Derpå sagde Gud: "Der blive en Hvælving midt i Vandene til at skille Vandene ad!"'),
-            ('7', 'Og således skete det: Gud gjorde Hvælvingen og skilte Vandet under Hvælvingen '
-             'fra Vandet over Hvælvingen;'),
-            ('8', 'og Gud kaldte Hvælvingen Himmel. Og det blev Aften, og det blev Morgen, anden Dag.'),
-            ('9', 'Derpå sagde Gud: "Vandet under Himmelen samle sig på eet Sted, så det faste Land kommer til Syne!" '
-             'Og således skete det;'),
-            ('10', 'og Gud kaldte det faste Land Jord, og Stedet, hvor Vandet samlede sig, kaldte han Hav. Og Gud så, '
-             'at det var godt.')
-        ]
-    }
-}
 
 
 class TestZefaniaImport(TestCase):
@@ -94,28 +72,30 @@ class TestZefaniaImport(TestCase):
 
     def file_import_test(self):
         """
-        Test the actual import of real song files
+        Test the actual import of Zefania Bible file
         """
         # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
         #        get_book_ref_id_by_name, create_verse, create_book, session and get_language.
+        result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
+        test_data = json.loads(result_file.read().decode())
+        bible_file = 'zefania-dk1933.xml'
         with patch('openlp.plugins.bibles.lib.zefania.ZefaniaBible.application'):
-            for bible_file in ZEFANIA_TEST_DATA:
-                mocked_manager = MagicMock()
-                mocked_import_wizard = MagicMock()
-                importer = ZefaniaBible(mocked_manager, path='.', name='.', filename='')
-                importer.wizard = mocked_import_wizard
-                importer.get_book_ref_id_by_name = MagicMock()
-                importer.create_verse = MagicMock()
-                importer.create_book = MagicMock()
-                importer.session = MagicMock()
-                importer.get_language = MagicMock()
-                importer.get_language.return_value = 'Danish'
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            importer = ZefaniaBible(mocked_manager, path='.', name='.', filename='')
+            importer.wizard = mocked_import_wizard
+            importer.get_book_ref_id_by_name = MagicMock()
+            importer.create_verse = MagicMock()
+            importer.create_book = MagicMock()
+            importer.session = MagicMock()
+            importer.get_language = MagicMock()
+            importer.get_language.return_value = 'Danish'
 
-                # WHEN: Importing bible file
-                importer.filename = os.path.join(TEST_PATH, bible_file)
-                importer.do_import()
+            # WHEN: Importing bible file
+            importer.filename = os.path.join(TEST_PATH, bible_file)
+            importer.do_import()
 
-                # THEN: The create_verse() method should have been called with each verse in the file.
-                self.assertTrue(importer.create_verse.called)
-                for verse_tag, verse_text in ZEFANIA_TEST_DATA[bible_file]['verses']:
-                    importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
+            # THEN: The create_verse() method should have been called with each verse in the file.
+            self.assertTrue(importer.create_verse.called)
+            for verse_tag, verse_text in test_data['verses']:
+                importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)

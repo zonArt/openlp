@@ -38,7 +38,7 @@ import bs4
 import sqlalchemy
 from lxml import etree
 
-from openlp.core.common import RegistryProperties
+from openlp.core.common import RegistryProperties, is_linux
 
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
@@ -137,7 +137,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
             'pyICU: %s\n' % ICU_VERSION + \
             'pyUNO bridge: %s\n' % self._pyuno_import() + \
             'VLC: %s\n' % VLC_VERSION
-        if platform.system() == 'Linux':
+        if is_linux():
             if os.environ.get('KDE_FULL_SESSION') == 'true':
                 system += 'Desktop: KDE SC\n'
             elif os.environ.get('GNOME_DESKTOP_SESSION_ID'):

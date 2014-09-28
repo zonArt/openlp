@@ -124,7 +124,7 @@ class SongExportForm(OpenLPWizard):
         self.export_song_layout = QtGui.QHBoxLayout(self.export_song_page)
         self.export_song_layout.setObjectName('export_song_layout')
         self.grid_layout = QtGui.QGridLayout()
-        self.grid_layout.setObjectName('grid_layout')
+        self.grid_layout.setObjectName('range_layout')
         self.selected_list_widget = QtGui.QListWidget(self.export_song_page)
         self.selected_list_widget.setObjectName('selected_list_widget')
         self.grid_layout.addWidget(self.selected_list_widget, 1, 0, 1, 1)
