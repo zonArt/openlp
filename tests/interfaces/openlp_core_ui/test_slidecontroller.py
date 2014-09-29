@@ -32,12 +32,10 @@ Package to test the openlp.core.ui.slidecontroller package.
 from PyQt4 import QtCore, QtTest
 
 from unittest import TestCase
-from openlp.core import Registry
-from openlp.core.lib import ServiceItemAction
+from openlp.core.common import Registry
 from openlp.core.lib import ScreenList
 
 from openlp.core.ui import SlideController
-from openlp.core.ui.slidecontroller import WIDE_MENU, NON_TEXT_MENU
 
 from tests.interfaces import MagicMock, patch
 from tests.helpers.testmixin import TestMixin

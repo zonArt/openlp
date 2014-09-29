@@ -320,10 +320,10 @@ class MessageListener(object):
         file = item.get_frame_path()
         self.handler = item.processor
         # When starting presentation from the servicemanager we convert
-        # PDF/XPS-serviceitems into image-serviceitems. When started from the mediamanager
+        # PDF/XPS/OXPS-serviceitems into image-serviceitems. When started from the mediamanager
         # the conversion has already been done at this point.
-        if file.endswith('.pdf') or file.endswith('.xps'):
-            log.debug('Converting from pdf/xps to images for serviceitem with file %s', file)
+        if file.endswith('.pdf') or file.endswith('xps'):
+            log.debug('Converting from pdf/xps/oxps to images for serviceitem with file %s', file)
             # Create a copy of the original item, and then clear the original item so it can be filled with images
             item_cpy = copy.copy(item)
             item.__init__(None)

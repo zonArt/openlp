@@ -264,7 +264,7 @@ class PresentationMediaItem(MediaManagerItem):
         if not self.display_type_combo_box.currentText():
             return False
         service_item.add_capability(ItemCapabilities.CanEditTitle)
-        if (file_type == 'pdf' or file_type == 'xps') and context != ServiceItemContext.Service:
+        if (file_type == 'pdf' or file_type == 'xps' or filetype == 'oxps') and context != ServiceItemContext.Service:
             service_item.add_capability(ItemCapabilities.CanMaintain)
             service_item.add_capability(ItemCapabilities.CanPreview)
             service_item.add_capability(ItemCapabilities.CanLoop)

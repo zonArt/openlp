@@ -148,7 +148,7 @@ class PdfController(PresentationController):
                     if os.path.isfile(os.path.join(application_path, 'mudraw')):
                         self.mudrawbin = os.path.join(application_path, 'mudraw')
         if self.mudrawbin:
-            self.also_supports = ['xps']
+            self.also_supports = ['xps', 'oxps']
             return True
         elif self.gsbin:
             return True
