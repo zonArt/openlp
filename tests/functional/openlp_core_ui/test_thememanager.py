@@ -57,17 +57,18 @@ class TestThemeManager(TestCase):
         # GIVEN: A new ThemeManager instance.
         theme_manager = ThemeManager()
         theme_manager.path = os.path.join(TEST_RESOURCES_PATH, 'themes')
-        zipfile.ZipFile.__init__ = MagicMock()
-        zipfile.ZipFile.__init__.return_value = None
-        zipfile.ZipFile.write = MagicMock()
+        with patch('zipfile.ZipFile.__init__') as mocked_zipfile_init, \
+                patch('zipfile.ZipFile.write') as mocked_zipfile_write:
+            mocked_zipfile_init.return_value = None
 
-        # WHEN: The theme is exported
-        theme_manager._export_theme(os.path.join('some', 'path'), 'Default')
+            # WHEN: The theme is exported
+            theme_manager._export_theme(os.path.join('some', 'path'), 'Default')
 
-        # THEN: The zipfile should be created at the given path
-        zipfile.ZipFile.__init__.assert_called_with(os.path.join('some', 'path', 'Default.otz'), 'w')
-        zipfile.ZipFile.write.assert_called_with(os.path.join(TEST_RESOURCES_PATH, 'themes', 'Default', 'Default.xml'),
-                                                 os.path.join('Default', 'Default.xml'))
+            # THEN: The zipfile should be created at the given path
+            mocked_zipfile_init.assert_called_with(os.path.join('some', 'path', 'Default.otz'), 'w')
+            mocked_zipfile_write.assert_called_with(os.path.join(TEST_RESOURCES_PATH, 'themes',
+                                                                 'Default', 'Default.xml'),
+                                                    os.path.join('Default', 'Default.xml'))
 
     def initial_theme_manager_test(self):
         """

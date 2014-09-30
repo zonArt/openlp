@@ -102,7 +102,21 @@ window.OpenLP = {
     $("#verseorder span").removeClass("currenttag");
     $("#tag" + OpenLP.currentTags[OpenLP.currentSlide]).addClass("currenttag");
     var slide = OpenLP.currentSlides[OpenLP.currentSlide];
-    var text = slide["text"];
+    var text = "";
+    // use title if available
+    if (slide["title"]) {
+        text = slide["title"];
+    } else {
+        text = slide["text"];
+    }
+    // use thumbnail if available
+    if (slide["img"]) {
+        text += "<br /><img src='" + slide["img"].replace("/thumbnails/", "/thumbnails320x240/") + "'><br />";
+    }
+    // use notes if available
+    if (slide["notes"]) {
+        text += '<br />' + slide["notes"];
+    }
     text = text.replace(/\n/g, "<br />");
     $("#currentslide").html(text);
     text = "";
@@ -110,7 +124,11 @@ window.OpenLP = {
       for (var idx = OpenLP.currentSlide + 1; idx < OpenLP.currentSlides.length; idx++) {
         if (OpenLP.currentTags[idx] != OpenLP.currentTags[idx - 1])
             text = text + "<p class=\"nextslide\">";
-        text = text + OpenLP.currentSlides[idx]["text"];
+        if (OpenLP.currentSlides[idx]["title"]) {
+            text = text + OpenLP.currentSlides[idx]["title"];
+        } else {
+            text = text + OpenLP.currentSlides[idx]["text"];
+        }
         if (OpenLP.currentTags[idx] != OpenLP.currentTags[idx - 1])
             text = text + "</p>";
         else

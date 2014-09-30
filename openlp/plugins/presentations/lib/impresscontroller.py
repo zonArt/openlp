@@ -65,7 +65,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import ScreenList
 from openlp.core.utils import delete_file, get_uno_command, get_uno_instance
-from .presentationcontroller import PresentationController, PresentationDocument
+from .presentationcontroller import PresentationController, PresentationDocument, TextType
 
 
 log = logging.getLogger(__name__)
@@ -257,6 +257,7 @@ class ImpressDocument(PresentationDocument):
         self.presentation.Display = ScreenList().current['number'] + 1
         self.control = None
         self.create_thumbnails()
+        self.create_titles_and_notes()
         return True
 
     def create_thumbnails(self):
@@ -450,22 +451,44 @@ class ImpressDocument(PresentationDocument):
 
         :param slide_no: The slide the notes are required for, starting at 1
         """
-        return self.__get_text_from_page(slide_no, True)
+        return self.__get_text_from_page(slide_no, TextType.Notes)
 
-    def __get_text_from_page(self, slide_no, notes=False):
+    def __get_text_from_page(self, slide_no, text_type=TextType.SlideText):
         """
         Return any text extracted from the presentation page.
 
         :param slide_no: The slide the notes are required for, starting at 1
         :param notes: A boolean. If set the method searches the notes of the slide.
+        :param text_type: A TextType. Enumeration of the types of supported text.
         """
         text = ''
-        pages = self.document.getDrawPages()
-        page = pages.getByIndex(slide_no - 1)
-        if notes:
-            page = page.getNotesPage()
-        for index in range(page.getCount()):
-            shape = page.getByIndex(index)
-            if shape.supportsService("com.sun.star.drawing.Text"):
-                text += shape.getString() + '\n'
+        if TextType.Title <= text_type <= TextType.Notes:
+            pages = self.document.getDrawPages()
+            if 0 < slide_no <= pages.getCount():
+                page = pages.getByIndex(slide_no - 1)
+                if text_type == TextType.Notes:
+                    page = page.getNotesPage()
+                for index in range(page.getCount()):
+                    shape = page.getByIndex(index)
+                    shape_type = shape.getShapeType()
+                    if shape.supportsService("com.sun.star.drawing.Text"):
+                        # if they requested title, make sure it is the title
+                        if text_type != TextType.Title or shape_type == "com.sun.star.presentation.TitleTextShape":
+                            text += shape.getString() + '\n'
         return text
+
+    def create_titles_and_notes(self):
+        """
+        Writes the list of titles (one per slide) to 'titles.txt' and the notes to 'slideNotes[x].txt'
+        in the thumbnails directory
+        """
+        titles = []
+        notes = []
+        pages = self.document.getDrawPages()
+        for slide_no in range(1, pages.getCount() + 1):
+            titles.append(self.__get_text_from_page(slide_no, TextType.Title).replace('\n', ' ') + '\n')
+            note = self.__get_text_from_page(slide_no, TextType.Notes)
+            if len(note) == 0:
+                note = ' '
+            notes.append(note)
+        self.save_titles_and_notes(titles, notes)

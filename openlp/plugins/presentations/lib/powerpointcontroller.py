@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This modul is for controlling powerpiont. PPT API documentation:
+This module is for controlling powerpoint. PPT API documentation:
 `http://msdn.microsoft.com/en-us/library/aa269321(office.10).aspx`_
 """
 import os
@@ -37,15 +37,16 @@ from openlp.core.common import is_win
 
 if is_win():
     from win32com.client import Dispatch
+    import win32com
     import winreg
     import win32ui
     import pywintypes
 
 from openlp.core.lib import ScreenList
+from openlp.core.common import Registry
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, translate
 from openlp.core.common import trace_error_handler
 from .presentationcontroller import PresentationController, PresentationDocument
-
 
 log = logging.getLogger(__name__)
 
@@ -136,6 +137,7 @@ class PowerpointDocument(PresentationDocument):
             self.controller.process.Presentations.Open(self.file_path, False, False, True)
             self.presentation = self.controller.process.Presentations(self.controller.process.Presentations.Count)
             self.create_thumbnails()
+            self.create_titles_and_notes()
             # Powerpoint 2013 pops up when loading a file, so we minimize it again
             if self.presentation.Application.Version == u'15.0':
                 try:
@@ -392,6 +394,28 @@ class PowerpointDocument(PresentationDocument):
         """
         return _get_text_from_shapes(self.presentation.Slides(slide_no).NotesPage.Shapes)
 
+    def create_titles_and_notes(self):
+        """
+        Writes the list of titles (one per slide)
+        to 'titles.txt'
+        and the notes to 'slideNotes[x].txt'
+        in the thumbnails directory
+        """
+        titles = []
+        notes = []
+        for slide in self.presentation.Slides:
+            try:
+                text = slide.Shapes.Title.TextFrame.TextRange.Text
+            except Exception as e:
+                log.exception(e)
+                text = ''
+            titles.append(text.replace('\n', ' ').replace('\x0b', ' ') + '\n')
+            note = _get_text_from_shapes(slide.NotesPage.Shapes)
+            if len(note) == 0:
+                note = ' '
+            notes.append(note)
+        self.save_titles_and_notes(titles, notes)
+
     def show_error_msg(self):
         """
         Stop presentation and display an error message.
@@ -410,8 +434,8 @@ def _get_text_from_shapes(shapes):
     :param shapes: A set of shapes to search for text.
     """
     text = ''
-    for index in range(shapes.Count):
-        shape = shapes(index + 1)
-        if shape.HasTextFrame:
-            text += shape.TextFrame.TextRange.Text + '\n'
+    for shape in shapes:
+        if shape.PlaceholderFormat.Type == 2:  # 2 from is enum PpPlaceholderType.ppPlaceholderBody
+            if shape.HasTextFrame and shape.TextFrame.HasText:
+                text += shape.TextFrame.TextRange.Text + '\n'
     return text

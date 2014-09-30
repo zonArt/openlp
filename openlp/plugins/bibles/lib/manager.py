@@ -85,7 +85,7 @@ class BibleFormat(object):
             BibleFormat.CSV,
             BibleFormat.OpenSong,
             BibleFormat.WebDownload,
-            BibleFormar.Zefania,
+            BibleFormat.Zefania,
         ]
 
 
