@@ -41,7 +41,7 @@ from tests.interfaces import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 
 
-class TestSlideController(TestCase,TestMixin):
+class TestSlideController(TestCase, TestMixin):
 
     def setUp(self):
         """
@@ -67,7 +67,6 @@ class TestSlideController(TestCase,TestMixin):
         """
         self.destroy_settings()
 
-
     def click_preview_widget_test(self):
         """
         Test that when the preview_widget is clicked then on_slide_selected is called
@@ -81,7 +80,6 @@ class TestSlideController(TestCase,TestMixin):
             # WHEN: The preview_widget is clicked
             QtTest.QTest.mouseClick(self.slide_controller.preview_widget, QtCore.Qt.LeftButton)
             QtTest.QTest.mouseClick(self.slide_controller.preview_widget.verticalHeader(), QtCore.Qt.LeftButton)
-
 
             # THEN slide_selected should have been called twice
             self.assertEqual(self.slide_controller.on_slide_selected.call_count, 2,
