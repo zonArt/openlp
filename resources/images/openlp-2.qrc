@@ -106,6 +106,7 @@
     <file>wizard_firsttime.bmp</file>
     <file>wizard_createtheme.bmp</file>
     <file>wizard_duplicateremoval.bmp</file>
+    <file>wizard_createprojector.png</file>
   </qresource>
   <qresource prefix="services">
     <file>service_collapse_all.png</file>
@@ -168,6 +169,26 @@
     <file>theme_delete.png</file>
     <file>theme_new.png</file>
     <file>theme_edit.png</file>
+  </qresource>
+  <qresource prefix="projector">
+    <file>projector_blank.png</file>
+    <file>projector_connect.png</file>
+    <file>projector_connectors.png</file>
+    <file>projector_cooldown.png</file>
+    <file>projector_disconnect.png</file>
+    <file>projector_edit.png</file>
+    <file>projector_error.png</file>
+    <file>projector_manager.png</file>
+    <file>projector_new.png</file>
+    <file>projector_not_connected.png</file>
+    <file>projector_off.png</file>
+    <file>projector_on.png</file>
+    <file>projector_power_off.png</file>
+    <file>projector_power_on.png</file>
+    <file>projector_show.png</file>
+    <file>projector_status.png</file>
+    <file>projector_warmup.png</file>
+    <file>projector_view.png</file>
   </qresource>
   <qresource prefix="remotes">
     <file>android_app_qr.png</file>

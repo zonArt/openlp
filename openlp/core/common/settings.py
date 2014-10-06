@@ -275,6 +275,7 @@ class Settings(QtCore.QSettings):
         'shortcuts/toolsAddToolItem': [],
         'shortcuts/updateThemeImages': [],
         'shortcuts/up': [QtGui.QKeySequence(QtCore.Qt.Key_Up)],
+        'shortcuts/viewProjectorManagerItem': [QtGui.QKeySequence('F6')],
         'shortcuts/viewThemeManagerItem': [QtGui.QKeySequence('F10')],
         'shortcuts/viewMediaManagerItem': [QtGui.QKeySequence('F8')],
         'shortcuts/viewPreviewPanel': [QtGui.QKeySequence('F11')],
@@ -295,7 +296,13 @@ class Settings(QtCore.QSettings):
         'user interface/main window splitter geometry': QtCore.QByteArray(),
         'user interface/main window state': QtCore.QByteArray(),
         'user interface/preview panel': True,
-        'user interface/preview splitter geometry': QtCore.QByteArray()
+        'user interface/preview splitter geometry': QtCore.QByteArray(),
+        'projector/db type': 'sqlite',
+        'projector/enable': True,
+        'projector/connect on start': False,
+        'projector/last directory import': '',
+        'projector/last directory export': '',
+        'projector/query time': 20  # PJLink socket timeout is 30 seconds
     }
     __file_path__ = ''
     __obsolete_settings__ = [

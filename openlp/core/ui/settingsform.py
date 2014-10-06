@@ -38,6 +38,7 @@ from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
 from .settingsdialog import Ui_SettingsDialog
+from openlp.core.ui.projector.tab import ProjectorTab
 
 log = logging.getLogger(__name__)
 
@@ -67,9 +68,10 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
             self.stacked_layout.takeAt(0)
         self.insert_tab(self.general_tab, 0, PluginStatus.Active)
         self.insert_tab(self.themes_tab, 1, PluginStatus.Active)
-        self.insert_tab(self.advanced_tab, 2, PluginStatus.Active)
-        self.insert_tab(self.player_tab, 3, PluginStatus.Active)
-        count = 4
+        self.insert_tab(self.projector_tab, 2, PluginStatus.Active)
+        self.insert_tab(self.advanced_tab, 3, PluginStatus.Active)
+        self.insert_tab(self.player_tab, 4, PluginStatus.Active)
+        count = 5
         for plugin in self.plugin_manager.plugins:
             if plugin.settings_tab:
                 self.insert_tab(plugin.settings_tab, count, plugin.status)
@@ -125,6 +127,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         self.general_tab = GeneralTab(self)
         # Themes tab
         self.themes_tab = ThemesTab(self)
+        # Projector Tab
+        self.projector_tab = ProjectorTab(self)
         # Advanced tab
         self.advanced_tab = AdvancedTab(self)
         # Advanced tab

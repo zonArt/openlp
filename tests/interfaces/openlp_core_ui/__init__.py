@@ -26,3 +26,28 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Module-level functions for the functional test suite
+"""
+
+from tests.interfaces import patch
+
+from openlp.core.common import is_win
+
+from .test_projectormanager import tmpfile
+
+
+def setUp():
+    if not is_win():
+        # Wine creates a sharing violation during tests. Ignore.
+        try:
+            os.remove(tmpfile)
+        except:
+            pass
+
+
+def tearDown():
+    """
+    Ensure test suite has been cleaned up after tests
+    """
+    patch.stopall()

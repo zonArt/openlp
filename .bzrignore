@@ -33,3 +33,4 @@ tests.kdev4
 __pycache__
 *.dll
 .directory
+*.kate-swp
