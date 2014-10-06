@@ -145,7 +145,7 @@ class PresentationMediaItem(MediaManagerItem):
             if self.controllers[item].enabled():
                 self.display_type_combo_box.addItem(item)
         if self.display_type_combo_box.count() > 1:
-            self.display_type_combo_box.insertItem(0, self.automatic)
+            self.display_type_combo_box.insertItem(0, self.automatic, userData='automatic')
             self.display_type_combo_box.setCurrentIndex(0)
         if Settings().value(self.settings_section + '/override app') == QtCore.Qt.Checked:
             self.presentation_widget.show()
@@ -313,7 +313,7 @@ class PresentationMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 service_item.title = name
                 if os.path.exists(filename):
-                    if service_item.processor == self.automatic:
+                    if self.display_type_combo_box.itemData(self.display_type_combo_box.currentIndex()) == 'automatic':
                         service_item.processor = self.find_controller_by_type(filename)
                         if not service_item.processor:
                             return False
