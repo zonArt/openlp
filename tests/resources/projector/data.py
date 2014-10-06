@@ -30,7 +30,7 @@
 The :mod:`tests.resources.projector.data file contains test data
 """
 
-from openlp.core.lib.projectordb import Projector
+from openlp.core.lib.projector.db import Projector
 
 # Test data
 TEST1_DATA = Projector(ip='111.111.111.111',

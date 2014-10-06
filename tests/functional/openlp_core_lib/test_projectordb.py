@@ -36,7 +36,7 @@ PREREQUISITE: add_record() and get_all() functions validated.
 from unittest import TestCase
 from tests.functional import MagicMock, patch
 
-from openlp.core.lib.projectordb import Projector, ProjectorDB
+from openlp.core.lib.projector.db import Projector, ProjectorDB
 
 from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
 
@@ -85,7 +85,7 @@ class TestProjectorDB(TestCase):
         Set up anything necessary for all tests
         """
         if not hasattr(self, 'projector'):
-            with patch('openlp.core.lib.projectordb.init_url') as mocked_init_url:
+            with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
                 mocked_init_url.start()
                 mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
                 self.projector = ProjectorDB()

@@ -36,7 +36,7 @@ from tests.functional import patch, MagicMock
 from tests.helpers.testmixin import TestMixin
 
 from openlp.core.ui import ProjectorManager, ProjectorWizard
-from openlp.core.lib.projectordb import Projector, ProjectorDB
+from openlp.core.lib.projector.db import Projector, ProjectorDB
 
 from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
 
@@ -55,7 +55,7 @@ class TestProjectorManager(TestCase, TestMixin):
         self.get_application()
         Registry.create()
         if not hasattr(self, 'projector_manager'):
-            with patch('openlp.core.lib.projectordb.init_url') as mocked_init_url:
+            with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
                 mocked_init_url.start()
                 mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
                 self.projectordb = ProjectorDB()
