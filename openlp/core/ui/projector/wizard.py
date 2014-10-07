@@ -492,7 +492,7 @@ class ConnectEditPage(ConnectBase):
             self.wizard().projector.location = location
             self.wizard().projector.notes = notes
             self.wizard().projector.pin = pin
-            saved = self.db.update_projector(self.wizard().projector)
+            saved = self.wizard().db.update_projector(self.wizard().projector)
             if not saved:
                 QtGui.QMessageBox.error(self, translate('OpenLP.ProjectorWizard', 'Database Error'),
                                         translate('OpenLP.ProjectorWizard', 'There was an error saving projector '
