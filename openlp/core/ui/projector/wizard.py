@@ -246,7 +246,7 @@ class ConnectWelcomePage(ConnectBase):
             self.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
         else:
             self.setPixmap(QtGui.QWizard.WatermarkPixmap,
-                        QtGui.QPixmap(':/wizards/wizard_createprojector.png'))
+                           QtGui.QPixmap(':/wizards/wizard_createprojector.png'))
         self.setObjectName('welcome_page')
         self.myButtons = [QtGui.QWizard.Stretch,
                           QtGui.QWizard.NextButton]
