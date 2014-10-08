@@ -242,8 +242,11 @@ class ConnectWelcomePage(ConnectBase):
     """
     def __init__(self, parent, page):
         super().__init__(parent, page)
-        self.setPixmap(QtGui.QWizard.WatermarkPixmap,
-                       QtGui.QPixmap(':/wizards/wizard_createprojector.png'))
+        if is_macosx():
+            self.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
+        else:
+            self.setPixmap(QtGui.QWizard.WatermarkPixmap,
+                        QtGui.QPixmap(':/wizards/wizard_createprojector.png'))
         self.setObjectName('welcome_page')
         self.myButtons = [QtGui.QWizard.Stretch,
                           QtGui.QWizard.NextButton]
@@ -537,7 +540,10 @@ class ConnectFinishPage(ConnectBase):
     def __init__(self, parent, page):
         super().__init__(parent, page)
         self.setObjectName('connect_finish_page')
-        self.setPixmap(QtGui.QWizard.WatermarkPixmap, QtGui.QPixmap(':/wizards/wizard_createprojector.png'))
+        if is_macosx():
+            self.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
+        else:
+            self.setPixmap(QtGui.QWizard.WatermarkPixmap, QtGui.QPixmap(':/wizards/wizard_createprojector.png'))
         self.myButtons = [QtGui.QWizard.Stretch,
                           QtGui.QWizard.FinishButton]
         self.isFinalPage()
