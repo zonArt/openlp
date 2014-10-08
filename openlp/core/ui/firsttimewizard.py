@@ -68,6 +68,8 @@ class Ui_FirstTimeWizard(object):
             first_time_wizard.setPixmap(QtGui.QWizard.BackgroundPixmap,
                                         QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
             first_time_wizard.resize(634, 386)
+        else:
+            first_time_wizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         self.finish_button = self.button(QtGui.QWizard.FinishButton)
         self.no_internet_finish_button = self.button(QtGui.QWizard.CustomButton1)
         self.cancel_button = self.button(QtGui.QWizard.CancelButton)
