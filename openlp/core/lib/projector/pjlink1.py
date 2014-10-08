@@ -191,6 +191,8 @@ class PJLink1(QTcpSocket):
         for i in ['POWR', 'ERST', 'LAMP', 'AVMT', 'INPT']:
             self.send_command(i)
             self.waitForReadyRead()
+        if self.source_available is None:
+            self.send_command('INST')
 
     def _get_status(self, status):
         """
