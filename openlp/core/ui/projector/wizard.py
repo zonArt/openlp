@@ -72,7 +72,10 @@ class ProjectorWizard(QtGui.QWizard, RegistryProperties):
         self.setObjectName('projector_wizard')
         self.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         self.setModal(True)
-        self.setWizardStyle(QtGui.QWizard.ModernStyle)
+        if is_macosx():
+            self.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
+        else:
+            self.setWizardStyle(QtGui.QWizard.ModernStyle)
         self.setMinimumSize(650, 550)
         self.setOption(QtGui.QWizard.NoBackButtonOnStartPage)
         self.spacer = QtGui.QSpacerItem(10, 0,
