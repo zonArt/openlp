@@ -40,7 +40,7 @@ from ipaddress import IPv4Address, IPv6Address, AddressValueError
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSlot, pyqtSignal
 
-from openlp.core.common import Registry, RegistryProperties, translate
+from openlp.core.common import Registry, RegistryProperties, translate, is_macosx
 from openlp.core.lib import build_icon
 
 from openlp.core.common import verify_ip_address
