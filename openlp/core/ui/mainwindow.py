@@ -432,9 +432,9 @@ class Ui_MainWindow(object):
                                            'exported on this or another machine'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
         self.view_projector_manager_item.setText(translate('OPenLP.MainWindow', '&ProjectorManager'))
-        self.view_projector_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toogle Projector Manager'))
+        self.view_projector_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Projector Manager'))
         self.view_projector_manager_item.setStatusTip(translate('OpenLP.MainWindow',
-                                                                'Toggle the visibiilty of the Projector Manager'))
+                                                                'Toggle the visibility of the Projector Manager'))
         self.view_media_manager_item.setText(translate('OpenLP.MainWindow', '&Media Manager'))
         self.view_media_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Media Manager'))
         self.view_media_manager_item.setStatusTip(translate('OpenLP.MainWindow',

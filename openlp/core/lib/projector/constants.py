@@ -69,7 +69,7 @@ PJLINK_VALID_CMD = {'1': ['POWR',  # Power option
                           'INST',  # Input sources available query
                           'NAME',  # Projector name query
                           'INF1',  # Manufacturer name query
-                          'INF2',  # Projuct name query
+                          'INF2',  # Product name query
                           'INFO',  # Other information query
                           'CLSS'   # PJLink class support query
                           ]}
@@ -221,7 +221,6 @@ STATUS_STRING = {S_NOT_CONNECTED: translate('OpenLP.ProjectorConstants', 'S_NOT_
 ERROR_MSG = {E_OK: translate('OpenLP.ProjectorConstants', 'OK'),  # E_OK | S_OK
              E_GENERAL: translate('OpenLP.ProjectorConstants', 'General projector error'),
              E_NOT_CONNECTED: translate('OpenLP.ProjectorConstants', 'Not connected error'),
-             E_NETWORK: translate('OpenLP.ProjectorConstants', 'Network error'),
              E_LAMP: translate('OpenLP.ProjectorConstants', 'Lamp error'),
              E_FAN: translate('OpenLP.ProjectorConstants', 'Fan error'),
              E_TEMP: translate('OpenLP.ProjectorConstants', 'High temperature detected'),
@@ -232,7 +231,7 @@ ERROR_MSG = {E_OK: translate('OpenLP.ProjectorConstants', 'OK'),  # E_OK | S_OK
              E_PARAMETER: translate('OpenLP.ProjectorConstants', 'Invalid Parameter'),
              E_UNAVAILABLE: translate('OpenLP.ProjectorConstants', 'Projector Busy'),
              E_PROJECTOR: translate('OpenLP.ProjectorConstants', 'Projector/Display Error'),
-             E_INVALID_DATA: translate('OpenLP.ProjectorConstants', 'Invald packet received'),
+             E_INVALID_DATA: translate('OpenLP.ProjectorConstants', 'Invalid packet received'),
              E_WARN: translate('OpenLP.ProjectorConstants', 'Warning condition detected'),
              E_ERROR: translate('OpenLP.ProjectorConstants', 'Error condition detected'),
              E_CLASS: translate('OpenLP.ProjectorConstants', 'PJLink class not supported'),
@@ -295,7 +294,7 @@ ERROR_MSG = {E_OK: translate('OpenLP.ProjectorConstants', 'OK'),  # E_OK | S_OK
              S_WARMUP: translate('OpenLP.ProjectorConstants', 'Warmup in progress'),
              S_ON: translate('OpenLP.ProjectorConstants', 'Power is on'),
              S_COOLDOWN: translate('OpenLP.ProjectorConstants', 'Cooldown in progress'),
-             S_INFO: translate('OpenLP.ProjectorConstants', 'Projector Information availble'),
+             S_INFO: translate('OpenLP.ProjectorConstants', 'Projector Information available'),
              S_NETWORK_SENDING: translate('OpenLP.ProjectorConstants', 'Sending data'),
              S_NETWORK_RECEIVED: translate('OpenLP.ProjectorConstants', 'Received data')}
 

@@ -123,7 +123,7 @@ class PJLink1(QTcpSocket):
         self.projector_status = S_NOT_CONNECTED
         self.error_status = S_OK
         # Socket information
-        # Account for self.readLine appending \0 and/or exraneous \r
+        # Account for self.readLine appending \0 and/or extraneous \r
         self.maxSize = PJLINK_MAX_PACKET + 2
         self.setReadBufferSize(self.maxSize)
         # PJLink projector information
@@ -239,21 +239,24 @@ class PJLink1(QTcpSocket):
         return self.pjlink_class in PJLINK_VALID_CMD and \
             cmd in PJLINK_VALID_CMD[self.pjlink_class]
 
-    def check_login(self):
+    @pyqtSlot()
+    def check_login(self, data=None):
         """
         Processes the initial connection and authentication (if needed).
         """
-        self.waitForReadyRead(5000)  # 5 seconds should be more than enough
-        read = self.readLine(self.maxSize)
-        dontcare = self.readLine(self.maxSize)  # Clean out the trailing \r\n
-        if len(read) < 8:
-            log.warn('(%s) Not enough data read)' % self.ip)
-            return
-        data = decode(read, 'ascii')
-        # Possibility of extraneous data on input when reading.
-        # Clean out extraneous characters in buffer.
-        dontcare = self.readLine(self.maxSize)
-        log.debug('(%s) check_login() read "%s"' % (self.ip, data))
+        if data is None:
+            # Reconnected setup?
+            self.waitForReadyRead(5000)  # 5 seconds should be more than enough
+            read = self.readLine(self.maxSize)
+            dontcare = self.readLine(self.maxSize)  # Clean out the trailing \r\n
+            if len(read) < 8:
+                log.warn('(%s) Not enough data read)' % self.ip)
+                return
+            data = decode(read, 'ascii')
+            # Possibility of extraneous data on input when reading.
+            # Clean out extraneous characters in buffer.
+            dontcare = self.readLine(self.maxSize)
+            log.debug('(%s) check_login() read "%s"' % (self.ip, data))
         # At this point, we should only have the initial login prompt with
         # possible authentication
         if not data.upper().startswith('PJLINK'):
@@ -304,10 +307,13 @@ class PJLink1(QTcpSocket):
             log.debug('(%s) get_data(): Packet length < 8: "%s"' % (self.ip, data))
             return
         log.debug('(%s) Checking new data "%s"' % (self.ip, data))
+        if data.upper().startswith('PJLINK'):
+            # Reconnected from remote host disconnect ?
+            return self.check_login(data)
         if '=' in data:
             pass
         else:
-            log.warn('(%s) Invalid packet received')
+            log.warn('(%s) Invalid packet received' % self.ip)
             return
         data_split = data.split('=')
         try:
@@ -622,7 +628,7 @@ class PJLink1(QTcpSocket):
 
     def get_shutter_status(self):
         """
-        Send command to retrive shutter status.
+        Send command to retrieve shutter status.
         """
         return self.send_command(cmd='AVMT')
 

@@ -96,7 +96,7 @@ class Model(CommonBase, Base):
 
 class Source(CommonBase, Base):
     """
-    Input ource table.
+    Input source table.
     Model table links here.
 
     These entries map PJLink source codes to text strings.
@@ -170,7 +170,7 @@ class ProjectorDB(Manager):
         Locate a projector by host IP/Name.
 
         :param ip: Host IP/Name
-        :returns: Projetor() instance
+        :returns: Projector() instance
         """
         log.debug('get_projector_by_ip(ip="%s")' % ip)
         projector = self.get_object_filtered(Projector, Projector.ip == ip)
@@ -186,7 +186,7 @@ class ProjectorDB(Manager):
         Locate a projector by name field
 
         :param name: Name of projector
-        :returns: Projetor() instance
+        :returns: Projector() instance
         """
         log.debug('get_projector_by_name(name="%s")' % name)
         projector = self.get_object_filtered(Projector, Projector.name == name)
@@ -203,7 +203,7 @@ class ProjectorDB(Manager):
 
         NOTE: Will not add new entry if IP is the same as already in the table.
 
-        :param projector: Projetor() instance to add
+        :param projector: Projector() instance to add
         :returns: bool
         """
         old_projector = self.get_object_filtered(Projector, Projector.ip == projector.ip)

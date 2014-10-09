@@ -217,8 +217,8 @@ def md5_hash(salt, data):
 
 def qmd5_hash(salt, data):
     """
-    Returns the hashed output of MD%Sum on salt, data
-    using PyQt4.QCryptograhicHash.
+    Returns the hashed output of MD5Sum on salt, data
+    using PyQt4.QCryptographicHash.
 
     :param salt: Initial salt
     :param data: Data to hash

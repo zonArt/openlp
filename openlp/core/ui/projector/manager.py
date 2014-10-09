@@ -786,7 +786,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             if ip == list_item.link.ip:
                 item = list_item
                 break
-        message = 'No message' if msg is None else msg
+        message = translate('OpenLP.ProjectorManager', 'No message') if msg is None else msg
         if status in STATUS_STRING:
             status_code = STATUS_STRING[status]
             message = ERROR_MSG[status] if msg is None else msg
