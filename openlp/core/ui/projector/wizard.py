@@ -221,17 +221,18 @@ class ConnectBase(QtGui.QWizardPage):
         Set buttons for bottom of page.
         """
         QtGui.QWizardPage.setVisible(self, visible)
-        if visible:
-            try:
-                self.myCustomButton()
-            except:
+        if not is_macosx():
+            if visible:
                 try:
-                    self.wizard().setButtonLayout(self.myButtons)
+                    self.myCustomButton()
                 except:
-                    self.wizard().setButtonLayout([QtGui.QWizard.Stretch,
-                                                   QtGui.QWizard.BackButton,
-                                                   QtGui.QWizard.NextButton,
-                                                   QtGui.QWizard.CancelButton])
+                    try:
+                        self.wizard().setButtonLayout(self.myButtons)
+                    except:
+                        self.wizard().setButtonLayout([QtGui.QWizard.Stretch,
+                                                    QtGui.QWizard.BackButton,
+                                                    QtGui.QWizard.NextButton,
+                                                    QtGui.QWizard.CancelButton])
 
 
 class ConnectWelcomePage(ConnectBase):
