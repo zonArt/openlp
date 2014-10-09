@@ -38,17 +38,14 @@ log.debug('projectormanager loaded')
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import QObject, QThread, pyqtSlot
 
-from openlp.core.common import Registry, RegistryProperties, Settings, OpenLPMixin, \
+from openlp.core.common import RegistryProperties, Settings, OpenLPMixin, \
     RegistryMixin, translate
-from openlp.core.lib import OpenLPToolbar, ImageSource, get_text_file_string, build_icon,\
-    check_item_selected, create_thumb
-from openlp.core.lib.ui import critical_error_message_box, create_widget_action
-from openlp.core.utils import get_locale_key, get_filesystem_encoding
-
+from openlp.core.lib import OpenLPToolbar
+from openlp.core.lib.ui import create_widget_action
+from openlp.core.lib.projector.constants import *
 from openlp.core.lib.projector.db import ProjectorDB
 from openlp.core.lib.projector.pjlink1 import PJLink1
 from openlp.core.ui.projector.wizard import ProjectorWizard
-from openlp.core.lib.projector.constants import *
 
 # Dict for matching projector status to display icon
 STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_item_disconnect.png',

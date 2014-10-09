@@ -37,9 +37,8 @@ log.debug('projectortab module loaded')
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.lib import SettingsTab
-from openlp.core.lib.ui import find_and_set_in_combo_box
 
 
 class ProjectorTab(SettingsTab):

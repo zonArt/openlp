@@ -37,14 +37,13 @@ log.debug('projector.lib.db module loaded')
 
 from os import path
 
-from sqlalchemy import Column, ForeignKey, Integer, MetaData, Sequence, String, and_
+from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, and_
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
-from sqlalchemy.orm import backref, joinedload, relationship
+from sqlalchemy.orm import backref, relationship
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from sqlalchemy.sql import select
 
 from openlp.core.common import translate
-from openlp.core.lib.db import BaseModel, Manager, init_db, init_url
+from openlp.core.lib.db import Manager, init_db, init_url
 from openlp.core.lib.projector.constants import PJLINK_DEFAULT_SOURCES
 
 metadata = MetaData()
