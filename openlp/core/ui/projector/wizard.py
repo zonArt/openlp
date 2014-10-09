@@ -159,22 +159,22 @@ class ProjectorWizard(QtGui.QWizard, RegistryProperties):
         self.welcome_page.information_label.setText(translate('OpenLP.ProjectorWizard', 'This wizard will help you to '
                                                               'create and edit your Projector control. <br /><br />'
                                                               'Press "Next" button below to continue.'))
-        self.host_page.setTitle(translate('OpenLP.ProjectorWizard', 'Host IP Number'))
+        self.host_page.setTitle(translate('OpenLP.ProjectorWizard', 'Host Address'))
         self.host_page.setSubTitle(translate('OpenLP.ProjectorWizard',
                                              'Enter the IP address, port, and PIN used to conenct to the projector. '
                                              'The port should only be changed if you know what you\'re doing, and '
                                              'the pin should only be entered if it\'s required.'
-                                             '<br /><br />Once the IP address is checked and is '
-                                             'not in the database, you can continue to the next page'))
+                                             '<br /><br />Once the IP address has been verified as correct and not '
+                                             'in the database, the rest of the information can be added on the next page.'))
         self.host_page.help_ = translate('OpenLP.ProjectorWizard',
-                                         '<b>IP</b>: The IP address of the projector to connect to.<br />'
-                                         '<b>Port</b>: The port number. Default is 4352.<br />'
-                                         '<b>PIN</b>: If needed, enter the PIN access code for the projector.<br />'
-                                         '<br />Once I verify the address is a valid IP and not in the database, you '
-                                         'can then add the rest of the information on the next page.')
-        self.host_page.ip_number_label.setText(translate('OpenLP.ProjectorWizard', 'IP Number: '))
-        self.host_page.pjlink_port_label.setText(translate('OpenLP.ProjectorWizard', 'Port: '))
-        self.host_page.pjlink_pin_label.setText(translate('OpenLP.ProjectorWizard', 'PIN: '))
+                                         '<b>IP Address</b>: The IP address of the projector to connect to.<br />'
+                                         '<b>PJLink Port</b>: The port number. Default is 4352.<br />'
+                                         '<b>PJLink PIN</b>: If needed, enter the PIN access code for the projector.<br />'
+                                         '<br />Once I verify the address is a valid IP address and not in the '
+                                         'database, you can then add the rest of the information on the next page.')
+        self.host_page.ip_number_label.setText(translate('OpenLP.ProjectorWizard', 'IP Address: '))
+        self.host_page.pjlink_port_label.setText(translate('OpenLP.ProjectorWizard', 'PJLink Port: '))
+        self.host_page.pjlink_pin_label.setText(translate('OpenLP.ProjectorWizard', 'PJLink PIN: '))
         self.edit_page.setTitle(translate('OpenLP.ProjectorWizard', 'Add/Edit Projector Information'))
         self.edit_page.setSubTitle(translate('OpenLP.ProjectorWizard',
                                              'Enter the information below in the left panel for the projector.'))
@@ -190,7 +190,7 @@ class ProjectorWizard(QtGui.QWizard, RegistryProperties):
                                          'information will only be available if the projector is connected to the '
                                          'network and can be accessed while running this wizard. '
                                          '(Currently not implemented)' % PJLINK_PORT)
-        self.edit_page.ip_number_label.setText(translate('OpenLP.ProjectorWizard', 'IP Number: '))
+        self.edit_page.ip_number_label.setText(translate('OpenLP.ProjectorWizard', 'IP Address: '))
         self.edit_page.pjlink_port_label.setText(translate('OpenLP.ProjectorWizard', 'PJLink port: '))
         self.edit_page.pjlink_pin_label.setText(translate('OpenLP.ProjectorWizard', 'PJLink PIN: '))
         self.edit_page.name_label.setText(translate('OpenLP.ProjectorWizard', 'Name: '))
@@ -272,7 +272,6 @@ class ConnectHostPage(ConnectBase):
         self.setObjectName('host_page')
         self.myButtons = [QtGui.QWizard.HelpButton,
                           QtGui.QWizard.Stretch,
-                          QtGui.QWizard.BackButton,
                           QtGui.QWizard.NextButton,
                           QtGui.QWizard.CancelButton]
         self.hostPageLayout = QtGui.QHBoxLayout(self)
@@ -320,16 +319,16 @@ class ConnectHostPage(ConnectBase):
                 valid = True
             else:
                 QtGui.QMessageBox.warning(self,
-                                          translate('OpenLP.ProjectorWizard', 'Already Saved'),
+                                          translate('OpenLP.ProjectorWizard', 'Duplicate IP Address'),
                                           translate('OpenLP.ProjectorWizard',
-                                                    'IP "%s"<br />is already in the database as ID %s.'
-                                                    '<br /><br />Please Enter a different IP.' % (adx, ip.id)))
+                                                    'IP address "%s"<br />is already in the database as ID %s.'
+                                                    '<br /><br />Please Enter a different IP address.' % (adx, ip.id)))
                 valid = False
         else:
             QtGui.QMessageBox.warning(self,
-                                      translate('OpenLP.ProjectorWizard', 'Invalid IP'),
+                                      translate('OpenLP.ProjectorWizard', 'Invalid IP Address'),
                                       translate('OpenLP.ProjectorWizard',
-                                                'IP "%s"<br>is not a valid IP address.'
+                                                'IP address "%s"<br>is not a valid IP address.'
                                                 '<br /><br />Please enter a valid IP address.' % adx))
             valid = False
         """
@@ -457,11 +456,13 @@ class ConnectEditPage(ConnectBase):
             make = self.wizard().field('projector_make')
             model = self.wizard().field('projector_model')
             if make is None or make.strip() == '':
-                self.projector_make_text.setText('Unavailable           ')
+                self.projector_make_text.setText(translate('OpenLP.ProjectorWizard',
+                                                           'Unavailable           '))
             else:
                 self.projector_make_text.setText(make)
             if model is None or model.strip() == '':
-                self.projector_model_text.setText('Unavailable           ')
+                self.projector_model_text.setText(translate('OpenLP.ProjectorWizard',
+                                                            'Unavailable           '))
             else:
                 self.projector_model_text.setText(model)
             self.myButtons = [QtGui.QWizard.HelpButton,
@@ -486,9 +487,9 @@ class ConnectEditPage(ConnectBase):
             valid = verify_ip_address(ip)
             if not valid:
                 QtGui.QMessageBox.warning(self,
-                                          translate('OpenLP.ProjectorWizard', 'Invalid IP'),
+                                          translate('OpenLP.ProjectorWizard', 'Invalid IP Address'),
                                           translate('OpenLP.ProjectorWizard',
-                                                    'IP "%s"<br>is not a valid IP address.'
+                                                    'IP address "%s"<br>is not a valid IP address.'
                                                     '<br /><br />Please enter a valid IP address.' % ip))
                 return False
             log.debug('Saving edited projector %s' % ip)
