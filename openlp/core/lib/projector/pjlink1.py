@@ -45,7 +45,7 @@ The :mod:`projector.pjlink1` module provides the necessary functions
 import logging
 log = logging.getLogger(__name__)
 
-log.debug('projectorpjlink1 loaded')
+log.debug('rpjlink1 loaded')
 
 __all__ = ['PJLink1']
 
@@ -188,10 +188,10 @@ class PJLink1(QTcpSocket):
         log.debug('(%s) Updating projector status' % self.ip)
         # Reset timer in case we were called from a set command
         self.timer.start()
-        for i in ['POWR', 'ERST', 'LAMP', 'AVMT', 'INPT']:
-            self.send_command(i)
+        for command in ['POWR', 'ERST', 'LAMP', 'AVMT', 'INPT']:
+            self.send_command(command)
             self.waitForReadyRead()
-        if self.source_available is None:
+        if self.power == S_ON and self.source_available is None:
             self.send_command('INST')
 
     def _get_status(self, status):
@@ -204,14 +204,14 @@ class PJLink1(QTcpSocket):
         elif status in STATUS_STRING:
             return (STATUS_STRING[status], ERROR_MSG[status])
         else:
-            return (status, 'Unknown status')
+            return (status, translate('OpenLP.PJLink1', 'Unknown status'))
 
     def change_status(self, status, msg=None):
         """
         Check connection/error status, set status for projector, then emit status change signal
         for gui to allow changing the icons.
         """
-        message = 'No message' if msg is None else msg
+        message = translate('OpenLP.PJLink1', 'No message') if msg is None else msg
         (code, message) = self._get_status(status)
         if msg is not None:
             message = msg
@@ -275,8 +275,8 @@ class PJLink1(QTcpSocket):
         self.waitForReadyRead()
         # These should never change once we get this information
         if self.manufacturer is None:
-            for i in ['INF1', 'INF2', 'INFO', 'NAME', 'INST']:
-                self.send_command(cmd=i)
+            for command in ['INF1', 'INF2', 'INFO', 'NAME', 'INST']:
+                self.send_command(cmd=command)
                 self.waitForReadyRead()
         self.change_status(S_CONNECTED)
         if not self.new_wizard:
@@ -364,7 +364,8 @@ class PJLink1(QTcpSocket):
         if sent == -1:
             # Network error?
             self.projectorNetwork.emit(S_NETWORK_RECEIVED)
-            self.change_status(E_NETWORK, 'Error while sending data to projector')
+            self.change_status(E_NETWORK,
+                               translate('OpenLP.PJLink1', 'Error while sending data to projector'))
 
     def process_command(self, cmd, data):
         """
@@ -379,7 +380,8 @@ class PJLink1(QTcpSocket):
                 return
             elif data.upper() == 'ERR1':
                 # Undefined command
-                self.change_status(E_UNDEFINED, 'Undefined command: "%s"' % cmd)
+                self.change_status(E_UNDEFINED, '%s "%s"' %
+                                   (translate('OpenLP.PJLink1', 'Undefined command:'), cmd))
                 return
             elif data.upper() == 'ERR2':
                 # Invalid parameter

@@ -51,8 +51,8 @@ from openlp.core.ui.projector.wizard import ProjectorWizard
 from openlp.core.lib.projector.constants import *
 
 # Dict for matching projector status to display icon
-STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_disconnect.png',
-                S_CONNECTING:  ':/projector/projector_connect.png',
+STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_item_disconnect.png',
+                S_CONNECTING:  ':/projector/projector_item_connect.png',
                 S_CONNECTED:  ':/projector/projector_off.png',
                 S_OFF:  ':/projector/projector_off.png',
                 S_INITIALIZE:  ':/projector/projector_off.png',
