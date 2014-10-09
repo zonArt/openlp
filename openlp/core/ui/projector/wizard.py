@@ -163,26 +163,24 @@ class ProjectorWizard(QtGui.QWizard, RegistryProperties):
         self.host_page.setSubTitle(translate('OpenLP.ProjectorWizard',
                                              'Enter the IP address, port, and PIN used to conenct to the projector. '
                                              'The port should only be changed if you know what you\'re doing, and '
-                                             'the pin should only be entered if it\'s required.'
-                                             '<br /><br />Once the IP address has been verified as correct and not '
-                                             'in the database, the rest of the information can be added on the next page.'))
+                                             'the pin should only be entered if it\'s required.'))
         self.host_page.help_ = translate('OpenLP.ProjectorWizard',
                                          '<b>IP Address</b>: The IP address of the projector to connect to.<br />'
-                                         '<b>PJLink Port</b>: The port number. Default is 4352.<br />'
-                                         '<b>PJLink PIN</b>: If needed, enter the PIN access code for the projector.<br />'
-                                         '<br />Once I verify the address is a valid IP address and not in the '
-                                         'database, you can then add the rest of the information on the next page.')
+                                         '<b>Port</b>: The port number. Default is 4352.<br />'
+                                         '<b>PIN</b>: If needed, enter the PIN access code for the projector.<br />'
+                                         '<br />Once the IP address has been verified as correct and not '
+                                             'in the database, the rest of the information can be added on the next page.')
         self.host_page.ip_number_label.setText(translate('OpenLP.ProjectorWizard', 'IP Address: '))
-        self.host_page.pjlink_port_label.setText(translate('OpenLP.ProjectorWizard', 'PJLink Port: '))
-        self.host_page.pjlink_pin_label.setText(translate('OpenLP.ProjectorWizard', 'PJLink PIN: '))
+        self.host_page.pjlink_port_label.setText(translate('OpenLP.ProjectorWizard', 'Port: '))
+        self.host_page.pjlink_pin_label.setText(translate('OpenLP.ProjectorWizard', 'PIN: '))
         self.edit_page.setTitle(translate('OpenLP.ProjectorWizard', 'Add/Edit Projector Information'))
         self.edit_page.setSubTitle(translate('OpenLP.ProjectorWizard',
                                              'Enter the information below in the left panel for the projector.'))
         self.edit_page.help_ = translate('OpenLP.ProjectorWizard',
                                          'Please enter the following information:'
-                                         '<br /><br /><b>PJLink Port</b>: The network port to use. Default is %s.'
-                                         '<br /><br /><b>PJLink PIN</b>: The PJLink access PIN. Only required if '
-                                         'PJLink PIN is set in projector. 4 characters max. <br /><br /><b>Name</b>: '
+                                         '<br /><br /><b>Port</b>: The network port to use. Default is %s.'
+                                         '<br /><br /><b>PIN</b>: The PJLink access PIN. Only required if '
+                                         'PJLink PIN is set in projector.<br /><br /><b>Name</b>: '
                                          'A unique name you want to give to this projector entry. 20 characters max. '
                                          '<br /><br /><b>Location</b>: The location of the projector. 30 characters '
                                          'max.<br /><br /><b>Notes</b>: Any notes you want to add about this '
@@ -191,8 +189,8 @@ class ProjectorWizard(QtGui.QWizard, RegistryProperties):
                                          'network and can be accessed while running this wizard. '
                                          '(Currently not implemented)' % PJLINK_PORT)
         self.edit_page.ip_number_label.setText(translate('OpenLP.ProjectorWizard', 'IP Address: '))
-        self.edit_page.pjlink_port_label.setText(translate('OpenLP.ProjectorWizard', 'PJLink port: '))
-        self.edit_page.pjlink_pin_label.setText(translate('OpenLP.ProjectorWizard', 'PJLink PIN: '))
+        self.edit_page.pjlink_port_label.setText(translate('OpenLP.ProjectorWizard', 'Port: '))
+        self.edit_page.pjlink_pin_label.setText(translate('OpenLP.ProjectorWizard', 'PIN: '))
         self.edit_page.name_label.setText(translate('OpenLP.ProjectorWizard', 'Name: '))
         self.edit_page.location_label.setText(translate('OpenLP.ProjectorWizard', 'Location: '))
         self.edit_page.notes_label.setText(translate('OpenLP.ProjectorWizard', 'Notes: '))
