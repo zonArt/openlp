@@ -132,34 +132,29 @@ class Ui_ProjectorManager(object):
                                                triggers=self.on_show_projector)
         self.top_toolbar.addSeparator()
         self.layout.addWidget(self.top_toolbar)
-        # Add the projector list box
         self.projector_widget = QtGui.QWidgetAction(self.top_toolbar)
         self.projector_widget.setObjectName('projector_widget')
-        # Create projector manager list
-        self.projector_list_widget = QtGui.QListWidget(widget)
-        self.projector_list_widget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.projector_list_widget.setAlternatingRowColors(True)
-        self.projector_list_widget.setIconSize(QtCore.QSize(90, 50))
-        self.projector_list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.projector_list_widget.setObjectName('projector_list_widget')
-        self.layout.addWidget(self.projector_list_widget)
         self.bottom_toolbar = OpenLPToolbar(widget)
         self.bottom_toolbar.add_toolbar_action('connect_all_projectors',
+                                               text=translate('OpenLP.ProjectorManager', 'Nothing here'),
+                                               icon=':/projector/projector_spacer.png')
+        self.bottom_toolbar.addSeparator()
+        self.bottom_toolbar.add_toolbar_action('connect_all_projectors',
                                                text=translate('OpenLP.ProjectorManager', 'Connect to all projectors'),
-                                               icon=':/projector/projector_connect-tiled.png',
+                                               icon=':/projector/projector_connect_tiled.png',
                                                tootip=translate('OpenLP.ProjectorManager', 'Connect to all projectors'),
                                                triggers=self.on_connect_all_projectors)
         self.bottom_toolbar.add_toolbar_action('disconnect_all_projectors',
                                                text=translate('OpenLP.ProjectorManager',
                                                               'Disconnect from all projectors'),
-                                               icon=':/projector/projector_disconnect-tiled.png',
+                                               icon=':/projector/projector_disconnect_tiled.png',
                                                tooltip=translate('OpenLP.ProjectorManager',
                                                                  'Disconnect from all projectors'),
                                                triggers=self.on_disconnect_all_projectors)
         self.bottom_toolbar.addSeparator()
         self.bottom_toolbar.add_toolbar_action('poweron_all_projectors',
                                                text=translate('OpenLP.ProjectorManager', 'Power On All Projectors'),
-                                               icon=':/projector/projector_power_on-tiled.png',
+                                               icon=':/projector/projector_power_on_tiled.png',
                                                tooltip=translate('OpenLP.ProjectorManager', 'Power on all projectors'),
                                                triggers=self.on_poweron_all_projectors)
         self.bottom_toolbar.add_toolbar_action('poweroff_all_projectors',
@@ -181,7 +176,16 @@ class Ui_ProjectorManager(object):
                                                tooltip=translate('OpenLP.ProjectorManager',
                                                                  'Show all projector screens'),
                                                triggers=self.on_show_all_projectors)
+        self.bottom_toolbar.addSeparator()
         self.layout.addWidget(self.bottom_toolbar, alignment=QtCore.Qt.AlignBottom)
+        # Create projector manager list
+        self.projector_list_widget = QtGui.QListWidget(widget)
+        self.projector_list_widget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.projector_list_widget.setAlternatingRowColors(True)
+        self.projector_list_widget.setIconSize(QtCore.QSize(90, 50))
+        self.projector_list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.projector_list_widget.setObjectName('projector_list_widget')
+        self.layout.addWidget(self.projector_list_widget)
         self.projector_list_widget.customContextMenuRequested.connect(self.context_menu)
         # Build the context menu
         self.menu = QtGui.QMenu()
