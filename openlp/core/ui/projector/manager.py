@@ -287,9 +287,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         :param op2: future
         :returns: Selected button role
         """
-        for i in self.radio_buttons:
-            if i.isChecked():
-                self.radio_button_selected = i.button_role
+        for button in self.radio_buttons:
+            if button.isChecked():
+                self.radio_button_selected = button.button_role
                 break
         return
 
