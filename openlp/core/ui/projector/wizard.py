@@ -169,7 +169,7 @@ class ProjectorWizard(QtGui.QWizard, RegistryProperties):
                                          '<b>Port</b>: The port number. Default is 4352.<br />'
                                          '<b>PIN</b>: If needed, enter the PIN access code for the projector.<br />'
                                          '<br />Once the IP address has been verified as correct and not '
-                                             'in the database, the rest of the information can be added on the next page.')
+                                         'in the database, the rest of the information can be added on the next page.')
         self.host_page.ip_number_label.setText(translate('OpenLP.ProjectorWizard', 'IP Address: '))
         self.host_page.pjlink_port_label.setText(translate('OpenLP.ProjectorWizard', 'Port: '))
         self.host_page.pjlink_pin_label.setText(translate('OpenLP.ProjectorWizard', 'PIN: '))
@@ -230,9 +230,9 @@ class ConnectBase(QtGui.QWizardPage):
                         self.wizard().setButtonLayout(self.myButtons)
                     except:
                         self.wizard().setButtonLayout([QtGui.QWizard.Stretch,
-                                                    QtGui.QWizard.BackButton,
-                                                    QtGui.QWizard.NextButton,
-                                                    QtGui.QWizard.CancelButton])
+                                                       QtGui.QWizard.BackButton,
+                                                       QtGui.QWizard.NextButton,
+                                                       QtGui.QWizard.CancelButton])
 
 
 class ConnectWelcomePage(ConnectBase):
