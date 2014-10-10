@@ -82,3 +82,16 @@ class OpenLPToolbar(QtGui.QToolBar):
                 self.actions[handle].setVisible(visible)
             else:
                 log.warning('No handle "%s" in actions list.', str(handle))
+
+    def set_widget_enabled(self, widgets, enabled=True):
+        """
+        Set the enabled state for a widget or a list of widgets.
+
+        :param widgets: A list of string with widget object names.
+        :param enabled: The new state as bool.
+        """
+        for handle in widgets:
+            if handle in self.actions:
+                self.actions[handle].setEnabled(enabled)
+            else:
+                log.warning('No handle "%s" in actions list.', str(handle))
