@@ -110,13 +110,12 @@ class ProjectorWizard(QtGui.QWizard, RegistryProperties):
             self.setWindowTitle(translate('OpenLP.ProjectorWizard',
                                           'New Projector Wizard'))
             self.setStartId(ConnectWelcome)
-            self.restart()
         else:
             log.debug('ProjectorWizard() Editing existing projector')
             self.setWindowTitle(translate('OpenLP.ProjectorWizard',
                                           'Edit Projector Wizard'))
             self.setStartId(ConnectEdit)
-            self.restart()
+        self.restart()
         saved = QtGui.QWizard.exec_(self)
         self.projector = None
         return saved
