@@ -601,7 +601,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Power status'),
                                                  ERROR_MSG[projector.link.power])
             message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Shutter is'),
-                                                 'Closed' if projector.link.shutter else 'Open')
+                                                 translate('OpenLP.ProjectorManager', 'Closed')
+                                                 if projector.link.shutter else translate('OpenLP', 'Open'))
             message = '%s<b>%s</b>: %s<br />' % (message,
                                                  translate('OpenLP.ProjectorManager', 'Current source input is'),
                                                  projector.link.source)

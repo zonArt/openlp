@@ -161,9 +161,7 @@ class ProjectorWizard(QtGui.QWizard, RegistryProperties):
                                                               'Press "Next" button below to continue.'))
         self.host_page.setTitle(translate('OpenLP.ProjectorWizard', 'Host Address'))
         self.host_page.setSubTitle(translate('OpenLP.ProjectorWizard',
-                                             'Enter the IP address, port, and PIN used to conenct to the projector. '
-                                             'The port should only be changed if you know what you\'re doing, and '
-                                             'the pin should only be entered if it\'s required.'))
+                                             'Enter the IP address, port, and PIN used to conenct to the projector.'))
         self.host_page.help_ = translate('OpenLP.ProjectorWizard',
                                          '<b>IP Address</b>: The IP address of the projector to connect to.<br />'
                                          '<b>Port</b>: The port number. Default is 4352.<br />'
@@ -331,7 +329,7 @@ class ConnectHostPage(ConnectBase):
                                                 '<br /><br />Please enter a valid IP address.' % adx))
             valid = False
         """
-        FIXME - Future plan to retrieve manufacture/model input source information. Not implemented yet.
+        TODO - Future plan to retrieve manufacture/model input source information. Not implemented yet.
         new = PJLink(host=adx, port=port, pin=pin if pin.strip() != '' else None)
         if new.connect():
             mfg = new.get_manufacturer()
