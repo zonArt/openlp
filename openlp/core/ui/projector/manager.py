@@ -317,14 +317,14 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         if source_list is None:
             return
         sort = []
-        for i in source_list.keys():
-            sort.append(i)
+        for item in source_list.keys():
+            sort.append(item)
         sort.sort()
-        for i in sort:
+        for item in sort:
             button = self._select_input_widget(parent=self,
                                                selected=projector.link.source,
-                                               code=i,
-                                               text=source_list[i])
+                                               code=item,
+                                               text=source_list[item])
             layout.addWidget(button)
         button_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
                                             QtGui.QDialogButtonBox.Cancel)
@@ -554,8 +554,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         :param opt: Needed by PyQt4
         :returns: None
         """
-        for i in self.projector_list:
-            self.on_show_projector(i.link)
+        for item in self.projector_list:
+            self.on_show_projector(item.link)
 
     def on_show_projector(self, opt=None):
         """
@@ -583,44 +583,49 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         """
         lwi = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = lwi.data(QtCore.Qt.UserRole)
-        s = '<b>%s</b>: %s<BR />' % (translate('OpenLP.ProjectorManager', 'Name'), projector.link.name)
-        s = '%s<b>%s</b>: %s<br />' % (s, translate('OpenLP.ProjectorManager', 'IP'), projector.link.ip)
-        s = '%s<b>%s</b>: %s<br />' % (s, translate('OpenLP.ProjectorManager', 'Port'), projector.link.port)
-        s = '%s<hr /><br >' % s
+        message = '<b>%s</b>: %s<BR />' % (translate('OpenLP.ProjectorManager', 'Name'),
+                                           projector.link.name)
+        message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'IP'),
+                                             projector.link.ip)
+        message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Port'),
+                                             projector.link.port)
+        message = '%s<hr /><br >' % message
         if projector.link.manufacturer is None:
-            s = '%s%s' % (s, translate('OpenLP.ProjectorManager',
-                                       'Projector information not available at this time.'))
+            message = '%s%s' % (message, translate('OpenLP.ProjectorManager',
+                                                   'Projector information not available at this time.'))
         else:
-            s = '%s<b>%s</b>: %s<br />' % (s, translate('OpenLP.ProjectorManager', 'Manufacturer'),
-                                           projector.link.manufacturer)
-            s = '%s<b>%s</b>: %s<br /><br />' % (s, translate('OpenLP.ProjectorManager', 'Model'),
-                                                 projector.link.model)
-            s = '%s<b>%s</b>: %s<br />' % (s, translate('OpenLP.ProjectorManager', 'Power status'),
-                                           ERROR_MSG[projector.link.power])
-            s = '%s<b>%s</b>: %s<br />' % (s, translate('OpenLP.ProjectorManager', 'Shutter is'),
-                                           'Closed' if projector.link.shutter else 'Open')
-            s = '%s<b>%s</b>: %s<br />' % (s, translate('OpenLP.ProjectorManager', 'Current source input is'),
-                                           projector.link.source)
-            s = '%s<hr /><br />' % s
+            message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Manufacturer'),
+                                                 projector.link.manufacturer)
+            message = '%s<b>%s</b>: %s<br /><br />' % (message, translate('OpenLP.ProjectorManager', 'Model'),
+                                                       projector.link.model)
+            message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Power status'),
+                                                 ERROR_MSG[projector.link.power])
+            message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Shutter is'),
+                                                 'Closed' if projector.link.shutter else 'Open')
+            message = '%s<b>%s</b>: %s<br />' % (message,
+                                                 translate('OpenLP.ProjectorManager', 'Current source input is'),
+                                                 projector.link.source)
+            message = '%s<hr /><br />' % message
             if projector.link.projector_errors is None:
-                s = '%s%s' % (s, translate('OpenLP.ProjectorManager', 'No current errors or warnings'))
+                message = '%s%s' % (message, translate('OpenLP.ProjectorManager', 'No current errors or warnings'))
             else:
-                s = '%s<b>%s</b>' % (s, translate('OpenLP.ProjectorManager', 'Current errors/warnings'))
+                message = '%s<b>%s</b>' % (message, translate('OpenLP.ProjectorManager', 'Current errors/warnings'))
                 for (key, val) in projector.link.projector_errors.items():
-                    s = '%s<b>%s</b>: %s<br />' % (s, key, ERROR_MSG[val])
-            s = '%s<hr /><br />' % s
-            s = '%s<b>%s</b><br />' % (s, translate('OpenLP.ProjectorManager', 'Lamp status'))
-            c = 1
-            for i in projector.link.lamp:
-                s = '%s <b>%s %s</b> (%s) %s: %s<br />' % (s,
-                                                           translate('OpenLP.ProjectorManager', 'Lamp'),
-                                                           c,
-                                                           translate('OpenLP.ProjectorManager', 'On') if i['On'] else
-                                                           translate('OpenLP.ProjectorManager', 'Off'),
-                                                           translate('OpenLP.ProjectorManager', 'Hours'),
-                                                           i['Hours'])
-                c = c + 1
-        QtGui.QMessageBox.information(self, translate('OpenLP.ProjectorManager', 'Projector Information'), s)
+                    message = '%s<b>%s</b>: %s<br />' % (message, key, ERROR_MSG[val])
+            message = '%s<hr /><br />' % message
+            message = '%s<b>%s</b><br />' % (message, translate('OpenLP.ProjectorManager', 'Lamp status'))
+            count = 1
+            for item in projector.link.lamp:
+                message = '%s <b>%s %s</b> (%s) %s: %s<br />' % (message,
+                                                                 translate('OpenLP.ProjectorManager', 'Lamp'),
+                                                                 count,
+                                                                 translate('OpenLP.ProjectorManager', 'On')
+                                                                 if item['On']
+                                                                 else translate('OpenLP.ProjectorManager', 'Off'),
+                                                                 translate('OpenLP.ProjectorManager', 'Hours'),
+                                                                 item['Hours'])
+                count = count + 1
+        QtGui.QMessageBox.information(self, translate('OpenLP.ProjectorManager', 'Projector Information'), message)
 
     def on_view_projector(self, opt=None):
         """
@@ -758,8 +763,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         """
         log.debug('load_projectors()')
         self.projector_list_widget.clear()
-        for i in self.projectordb.get_projector_all():
-            self.add_projector(i)
+        for item in self.projectordb.get_projector_all():
+            self.add_projector(item)
 
     def get_projector_list(self):
         """
