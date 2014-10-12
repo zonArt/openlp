@@ -94,8 +94,8 @@ class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
         Displays the given slide.
         """
         self.service_item = service_item
-        self.clear()
         self.setRowCount(0)
+        self.clear()
         self.setColumnWidth(0, width)
         row = 0
         text = []

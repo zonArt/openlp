@@ -1281,7 +1281,11 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             # Add the children to their parent tree_widget_item.
             for count, frame in enumerate(service_item_from_item.get_frames()):
                 child = QtGui.QTreeWidgetItem(tree_widget_item)
-                text = frame['title'].replace('\n', ' ')
+                # prefer to use a display_title
+                if service_item_from_item.is_capable(ItemCapabilities.HasDisplayTitle):
+                    text = frame['display_title'].replace('\n', ' ')
+                else:
+                    text = frame['title'].replace('\n', ' ')
                 child.setText(0, text[:40])
                 child.setData(0, QtCore.Qt.UserRole, count)
                 if service_item == item_count:

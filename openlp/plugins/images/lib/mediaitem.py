@@ -551,6 +551,7 @@ class ImageMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanAppend)
         service_item.add_capability(ItemCapabilities.CanEditTitle)
+        service_item.add_capability(ItemCapabilities.HasThumbnails)
         # force a nonexistent theme
         service_item.theme = -1
         missing_items_file_names = []
@@ -589,7 +590,7 @@ class ImageMediaItem(MediaManagerItem):
         # Continue with the existing images.
         for filename in images_file_names:
             name = os.path.split(filename)[1]
-            service_item.add_from_image(filename, name, background)
+            service_item.add_from_image(filename, name, background, os.path.join(self.service_path, name))
         return True
 
     def check_group_exists(self, new_group):

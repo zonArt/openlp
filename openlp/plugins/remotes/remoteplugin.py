@@ -44,7 +44,8 @@ __default_settings__ = {
     'remotes/user id': 'openlp',
     'remotes/password': 'password',
     'remotes/authentication enabled': False,
-    'remotes/ip address': '0.0.0.0'
+    'remotes/ip address': '0.0.0.0',
+    'remotes/thumbnails': True
 }
 
 

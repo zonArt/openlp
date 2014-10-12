@@ -873,6 +873,7 @@ class SlideController(DisplayController, RegistryProperties):
         if self.service_item.is_command():
             Registry().execute('%s_slide' % self.service_item.name.lower(), [self.service_item, self.is_live, index])
             self.update_preview()
+            self.selected_row = index
         else:
             self.preview_widget.change_slide(index)
             self.slide_selected()
@@ -1042,8 +1043,8 @@ class SlideController(DisplayController, RegistryProperties):
                         self.display.image(to_display)
                     # reset the store used to display first image
                     self.service_item.bg_image_bytes = None
-            self.update_preview()
             self.selected_row = row
+            self.update_preview()
             self.preview_widget.change_slide(row)
         self.display.setFocus()
 
@@ -1055,6 +1056,7 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.preview_widget.change_slide(row)
         self.update_preview()
+        self.selected_row = row
 
     def update_preview(self):
         """

@@ -29,6 +29,11 @@
 
 import logging
 import os
+import logging
+import zipfile
+import re
+from xml.etree import ElementTree
+
 
 from openlp.core.common import is_win
 
@@ -127,14 +132,14 @@ class PptviewDocument(PresentationDocument):
         temp_folder = self.get_temp_folder()
         size = ScreenList().current['size']
         rect = RECT(size.x(), size.y(), size.right(), size.bottom())
-        file_path = os.path.normpath(self.file_path)
+        self.file_path = os.path.normpath(self.file_path)
         preview_path = os.path.join(temp_folder, 'slide')
         # Ensure that the paths are null terminated
-        file_path = file_path.encode('utf-16-le') + b'\0'
+        self.file_path = self.file_path.encode('utf-16-le') + b'\0'
         preview_path = preview_path.encode('utf-16-le') + b'\0'
         if not os.path.isdir(temp_folder):
             os.makedirs(temp_folder)
-        self.ppt_id = self.controller.process.OpenPPT(file_path, None, rect, preview_path)
+        self.ppt_id = self.controller.process.OpenPPT(self.file_path, None, rect, preview_path)
         if self.ppt_id >= 0:
             self.create_thumbnails()
             self.stop_presentation()
@@ -153,6 +158,68 @@ class PptviewDocument(PresentationDocument):
         for idx in range(self.get_slide_count()):
             path = '%s\\slide%s.bmp' % (self.get_temp_folder(), str(idx + 1))
             self.convert_thumbnail(path, idx + 1)
+
+    def create_titles_and_notes(self):
+        """
+        Extracts the titles and notes from the zipped file
+        and writes the list of titles (one per slide)
+        to 'titles.txt'
+        and the notes to 'slideNotes[x].txt'
+        in the thumbnails directory
+        """
+        titles = None
+        notes = None
+        filename = os.path.normpath(self.file_path)
+        # let's make sure we have a valid zipped presentation
+        if os.path.exists(filename) and zipfile.is_zipfile(filename):
+            namespaces = {"p": "http://schemas.openxmlformats.org/presentationml/2006/main",
+                          "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+            # open the file
+            with zipfile.ZipFile(filename) as zip_file:
+                # find the presentation.xml to get the slide count
+                with zip_file.open('ppt/presentation.xml') as pres:
+                    tree = ElementTree.parse(pres)
+                nodes = tree.getroot().findall(".//p:sldIdLst/p:sldId", namespaces=namespaces)
+                # initialize the lists
+                titles = ['' for i in range(len(nodes))]
+                notes = ['' for i in range(len(nodes))]
+                # loop thru the file list to find slides and notes
+                for zip_info in zip_file.infolist():
+                    node_type = ''
+                    index = -1
+                    list_to_add = None
+                    # check if it is a slide
+                    match = re.search("slides/slide(.+)\.xml", zip_info.filename)
+                    if match:
+                        index = int(match.group(1))-1
+                        node_type = 'ctrTitle'
+                        list_to_add = titles
+                    # or a note
+                    match = re.search("notesSlides/notesSlide(.+)\.xml", zip_info.filename)
+                    if match:
+                        index = int(match.group(1))-1
+                        node_type = 'body'
+                        list_to_add = notes
+                    # if it is one of our files, index shouldn't be -1
+                    if index >= 0:
+                        with zip_file.open(zip_info) as zipped_file:
+                            tree = ElementTree.parse(zipped_file)
+                        text = ''
+                        nodes = tree.getroot().findall(".//p:ph[@type='" + node_type + "']../../..//p:txBody//a:t",
+                                                       namespaces=namespaces)
+                        # if we found any content
+                        if nodes and len(nodes) > 0:
+                            for node in nodes:
+                                if len(text) > 0:
+                                    text += '\n'
+                                text += node.text
+                        # Let's remove the \n from the titles and
+                        # just add one at the end
+                        if node_type == 'ctrTitle':
+                            text = text.replace('\n', ' ').replace('\x0b', ' ') + '\n'
+                        list_to_add[index] = text
+        # now let's write the files
+        self.save_titles_and_notes(titles, notes)
 
     def close_presentation(self):
         """
