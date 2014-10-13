@@ -51,7 +51,7 @@ class TestTheme(TestCase):
         """
         pass
 
-    def test_new_theme(self):
+    def new_theme_test(self):
         """
         Test the theme creation - basic test
         """

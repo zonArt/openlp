@@ -162,9 +162,9 @@ class TestAppLocation(TestCase):
                 patch('openlp.core.common.applocation.os.path.abspath') as mocked_abspath, \
                 patch('openlp.core.common.applocation.os.path.split') as mocked_split, \
                 patch('openlp.core.common.applocation.sys') as mocked_sys:
-            mocked_abspath.return_value = 'plugins/dir'
+            mocked_abspath.return_value = os.path.join('plugins', 'dir')
             mocked_split.return_value = ['openlp']
-            mocked_get_frozen_path.return_value = 'plugins/dir'
+            mocked_get_frozen_path.return_value = os.path.join('plugins', 'dir')
             mocked_sys.frozen = 1
             mocked_sys.argv = ['openlp']
 
@@ -172,7 +172,7 @@ class TestAppLocation(TestCase):
             directory = AppLocation.get_directory(AppLocation.PluginsDir)
 
             # THEN: The correct directory should be returned
-            self.assertEqual('plugins/dir', directory, 'Directory should be "plugins/dir"')
+            self.assertEqual(os.path.join('plugins', 'dir'), directory, 'Directory should be "plugins/dir"')
 
     def get_frozen_path_in_unfrozen_app_test(self):
         """

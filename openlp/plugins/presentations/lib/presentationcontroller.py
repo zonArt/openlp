@@ -293,6 +293,49 @@ class PresentationDocument(object):
         """
         return ''
 
+    def get_titles_and_notes(self):
+        """
+        Reads the titles from the titles file and
+        the notes files and returns the content in two lists
+        """
+        titles = []
+        notes = []
+        titles_file = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
+        if os.path.exists(titles_file):
+            try:
+                with open(titles_file) as fi:
+                    titles = fi.read().splitlines()
+            except:
+                log.exception('Failed to open/read existing titles file')
+                titles = []
+        for slide_no, title in enumerate(titles, 1):
+            notes_file = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % slide_no)
+            note = ''
+            if os.path.exists(notes_file):
+                try:
+                    with open(notes_file) as fn:
+                        note = fn.read()
+                except:
+                    log.exception('Failed to open/read notes file')
+                    note = ''
+            notes.append(note)
+        return titles, notes
+
+    def save_titles_and_notes(self, titles, notes):
+        """
+        Performs the actual persisting of titles to the titles.txt
+        and notes to the slideNote%.txt
+        """
+        if titles:
+            titles_file = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
+            with open(titles_file, mode='w') as fo:
+                fo.writelines(titles)
+        if notes:
+            for slide_no, note in enumerate(notes, 1):
+                notes_file = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % slide_no)
+                with open(notes_file, mode='w') as fn:
+                    fn.write(note)
+
 
 class PresentationController(object):
     """
@@ -427,3 +470,12 @@ class PresentationController(object):
 
     def close_presentation(self):
         pass
+
+
+class TextType(object):
+    """
+    Type Enumeration for Types of Text to request
+    """
+    Title = 0
+    SlideText = 1
+    Notes = 2

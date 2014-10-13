@@ -27,132 +27,140 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the Presentation Controller.
+Functional tests to test the PresentationController and PresentationDocument
+classes and related methods.
 """
 from unittest import TestCase
-
+import os
 from openlp.plugins.presentations.lib.presentationcontroller import PresentationController, PresentationDocument
-from tests.functional import MagicMock, patch
+from tests.functional import MagicMock, patch, mock_open
+
+FOLDER_TO_PATCH = 'openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder'
 
 
 class TestPresentationController(TestCase):
     """
     Test the PresentationController.
     """
-    # TODO: Items left to test
-    #   PresentationController
-    #       __init__
-    #       enabled
-    #       is_available
-    #       check_available
-    #       start_process
-    #       kill
-    #       add_document
-    #       remove_doc
-    #       close_presentation
-    #       _get_plugin_manager
+    def setUp(self):
+        mocked_plugin = MagicMock()
+        mocked_plugin.settings_section = 'presentations'
+        self.presentation = PresentationController(mocked_plugin)
+        self.document = PresentationDocument(self.presentation, '')
 
     def constructor_test(self):
         """
         Test the Constructor
         """
-        # GIVEN: No presentation controller
-        controller = None
+        # GIVEN: A mocked plugin
 
-        # WHEN: The presentation controller object is created
-        mock_plugin = MagicMock()
-        mock_plugin.settings_section = ''
-        controller = PresentationController(plugin=mock_plugin)
+        # WHEN: The PresentationController is created
 
         # THEN: The name of the presentation controller should be correct
-        self.assertEqual('PresentationController', controller.name,
+        self.assertEqual('PresentationController', self.presentation.name,
                          'The name of the presentation controller should be correct')
 
-
-class TestPresentationDocument(TestCase):
-    """
-    Test the PresentationDocument Class
-    """
-    # TODO: Items left to test
-    #   PresentationDocument
-    #       __init__
-    #       load_presentation
-    #       presentation_deleted
-    #       get_file_name
-    #       get_thumbnail_folder
-    #       get_temp_folder
-    #       check_thumbnails
-    #       close_presentation
-    #       is_active
-    #       is_loaded
-    #       blank_screen
-    #       unblank_screen
-    #       is_blank
-    #       stop_presentation
-    #       start_presentation
-    #       get_slide_number
-    #       get_slide_count
-    #       goto_slide
-    #       next_step
-    #       previous_step
-    #       convert_thumbnail
-    #       get_thumbnail_path
-    #       poll_slidenumber
-    #       get_slide_text
-    #       get_slide_notes
-
-    def setUp(self):
+    def save_titles_and_notes_test(self):
         """
-        Set up the patches and mocks need for all tests.
+        Test PresentationDocument.save_titles_and_notes method with two valid lists
         """
-        self.check_directory_exists_patcher = \
-            patch('openlp.plugins.presentations.lib.presentationcontroller.check_directory_exists')
-        self.get_thumbnail_folder_patcher = \
-            patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder')
-        self._setup_patcher = \
-            patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument._setup')
+        # GIVEN: two lists of length==2 and a mocked open and get_thumbnail_folder
+        mocked_open = mock_open()
+        with patch('builtins.open', mocked_open), patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder:
+            titles = ['uno', 'dos']
+            notes = ['one', 'two']
 
-        self.mock_check_directory_exists = self.check_directory_exists_patcher.start()
-        self.mock_get_thumbnail_folder = self.get_thumbnail_folder_patcher.start()
-        self.mock_setup = self._setup_patcher.start()
+            # WHEN: calling save_titles_and_notes
+            mocked_get_thumbnail_folder.return_value = 'test'
+            self.document.save_titles_and_notes(titles, notes)
 
-        self.mock_controller = MagicMock()
+            # THEN: the last call to open should have been for slideNotes2.txt
+            mocked_open.assert_any_call(os.path.join('test', 'titles.txt'), mode='w')
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes1.txt'), mode='w')
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes2.txt'), mode='w')
+            self.assertEqual(mocked_open.call_count, 3, 'There should be exactly three files opened')
+            mocked_open().writelines.assert_called_once_with(['uno', 'dos'])
+            mocked_open().write.assert_called_any('one')
+            mocked_open().write.assert_called_any('two')
 
-        self.mock_get_thumbnail_folder.return_value = 'returned/path/'
-
-    def tearDown(self):
+    def save_titles_and_notes_with_None_test(self):
         """
-        Stop the patches
+        Test PresentationDocument.save_titles_and_notes method with no data
         """
-        self.check_directory_exists_patcher.stop()
-        self.get_thumbnail_folder_patcher.stop()
-        self._setup_patcher.stop()
+        # GIVEN: None and an empty list and a mocked open and get_thumbnail_folder
+        with patch('builtins.open') as mocked_open, patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder:
+            titles = None
+            notes = None
 
-    def initialise_presentation_document_test(self):
+            # WHEN: calling save_titles_and_notes
+            mocked_get_thumbnail_folder.return_value = 'test'
+            self.document.save_titles_and_notes(titles, notes)
+
+            # THEN: No file should have been created
+            self.assertEqual(mocked_open.call_count, 0, 'No file should be created')
+
+    def get_titles_and_notes_test(self):
         """
-        Test the PresentationDocument __init__ method when initialising the PresentationDocument Class
+        Test PresentationDocument.get_titles_and_notes method
         """
-        # GIVEN: A reset mock_setup and mocked controller
-        self.mock_setup.reset()
+        # GIVEN: A mocked open, get_thumbnail_folder and exists
 
-        # WHEN: Creating an instance of PresentationDocument
-        PresentationDocument(self.mock_controller, 'Name')
+        with patch('builtins.open', mock_open(read_data='uno\ndos\n')) as mocked_open, \
+                patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder, \
+                patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
+            mocked_get_thumbnail_folder.return_value = 'test'
+            mocked_exists.return_value = True
 
-        # THEN: PresentationDocument.__init__ should have been called with the correct arguments
-        self.mock_setup.assert_called_once_with('Name')
+            # WHEN: calling get_titles_and_notes
+            result_titles, result_notes = self.document.get_titles_and_notes()
 
-    def presentation_document_setup_test(self):
+            # THEN: it should return two items for the titles and two empty strings for the notes
+            self.assertIs(type(result_titles), list, 'result_titles should be of type list')
+            self.assertEqual(len(result_titles), 2, 'There should be two items in the titles')
+            self.assertIs(type(result_notes), list, 'result_notes should be of type list')
+            self.assertEqual(len(result_notes), 2, 'There should be two items in the notes')
+            self.assertEqual(mocked_open.call_count, 3, 'Three files should be opened')
+            mocked_open.assert_any_call(os.path.join('test', 'titles.txt'))
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes1.txt'))
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes2.txt'))
+            self.assertEqual(mocked_exists.call_count, 3, 'Three files should have been checked')
+
+    def get_titles_and_notes_with_file_not_found_test(self):
         """
-        Test the PresentationDocument _setup method when initialising the PresentationDocument Class
+        Test PresentationDocument.get_titles_and_notes method with file not found
         """
-        self._setup_patcher.stop()
+        # GIVEN: A mocked open, get_thumbnail_folder and exists
+        with patch('builtins.open') as mocked_open, \
+                patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder, \
+                patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
+            mocked_get_thumbnail_folder.return_value = 'test'
+            mocked_exists.return_value = False
 
-        # GIVEN: A  mocked controller, patched check_directory_exists_patcher and patched get_thumbnail_folder method
+            # WHEN: calling get_titles_and_notes
+            result_titles, result_notes = self.document.get_titles_and_notes()
 
-        # WHEN: Creating an instance of PresentationDocument
-        PresentationDocument(self.mock_controller, 'Name')
+            # THEN: it should return two empty lists
+            self.assertIs(type(result_titles), list, 'result_titles should be of type list')
+            self.assertEqual(len(result_titles), 0, 'there be no titles')
+            self.assertIs(type(result_notes), list, 'result_notes should be a list')
+            self.assertEqual(len(result_notes), 0, 'but the list should be empty')
+            self.assertEqual(mocked_open.call_count, 0, 'No calls to open files')
+            self.assertEqual(mocked_exists.call_count, 1, 'There should be one call to file exists')
 
-        # THEN: check_directory_exists should have been called with the correct arguments
-        self.mock_check_directory_exists.assert_called_once_with('returned/path/')
+    def get_titles_and_notes_with_file_error_test(self):
+        """
+        Test PresentationDocument.get_titles_and_notes method with file errors
+        """
+        # GIVEN: A mocked open, get_thumbnail_folder and exists
+        with patch('builtins.open') as mocked_open, \
+                patch(FOLDER_TO_PATCH) as mocked_get_thumbnail_folder, \
+                patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
+            mocked_get_thumbnail_folder.return_value = 'test'
+            mocked_exists.return_value = True
+            mocked_open.side_effect = IOError()
 
-        self._setup_patcher.start()
+            # WHEN: calling get_titles_and_notes
+            result_titles, result_notes = self.document.get_titles_and_notes()
+
+            # THEN: it should return two empty lists
+            self.assertIs(type(result_titles), list, 'result_titles should be a list')

@@ -125,7 +125,7 @@ from mako.template import Template
 from PyQt4 import QtCore
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, translate
-from openlp.core.lib import PluginStatus, StringContent, image_to_byte
+from openlp.core.lib import PluginStatus, StringContent, image_to_byte, ItemCapabilities, create_thumb
 
 log = logging.getLogger(__name__)
 FILE_TYPES = {
@@ -159,6 +159,7 @@ class HttpRouter(RegistryProperties):
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
+            (r'^/(\w+)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
             (r'^/api/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/poll$', {'function': self.main_poll, 'secure': False}),
             (r'^/main/image$', {'function': self.main_image, 'secure': False}),
@@ -328,7 +329,8 @@ class HttpRouter(RegistryProperties):
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
             'options': translate('RemotePlugin.Mobile', 'Options'),
             'service': translate('RemotePlugin.Mobile', 'Service'),
-            'slides': translate('RemotePlugin.Mobile', 'Slides')
+            'slides': translate('RemotePlugin.Mobile', 'Slides'),
+            'settings': translate('RemotePlugin.Mobile', 'Settings'),
         }
 
     def serve_file(self, file_name=None):
@@ -379,6 +381,42 @@ class HttpRouter(RegistryProperties):
         ext = os.path.splitext(file_name)[1]
         content_type = FILE_TYPES.get(ext, 'text/plain')
         return ext, content_type
+
+    def serve_thumbnail(self, controller_name=None, dimensions=None, file_name=None):
+        """
+        Serve an image file. If not found return 404.
+        """
+        log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name, dimensions, file_name))
+        supported_controllers = ['presentations', 'images']
+        # -1 means use the default dimension in ImageManager
+        width = -1
+        height = -1
+        if dimensions:
+            match = re.search('(\d+)x(\d+)', dimensions)
+            if match:
+                # let's make sure that the dimensions are within reason
+                width = sorted([10, int(match.group(1)), 1000])[1]
+                height = sorted([10, int(match.group(2)), 1000])[1]
+        content = ''
+        content_type = None
+        if controller_name and file_name:
+            if controller_name in supported_controllers:
+                full_path = urllib.parse.unquote(file_name)
+                if '..' not in full_path:  # no hacking please
+                    full_path = os.path.normpath(os.path.join(AppLocation.get_section_data_path(controller_name),
+                                                              'thumbnails/' + full_path))
+                    if os.path.exists(full_path):
+                        path, just_file_name = os.path.split(full_path)
+                        self.image_manager.add_image(full_path, just_file_name, None, width, height)
+                        ext, content_type = self.get_content_type(full_path)
+                        image = self.image_manager.get_image(full_path, just_file_name, width, height)
+                        content = image_to_byte(image, False)
+        if len(content) == 0:
+            return self.do_not_found()
+        self.send_response(200)
+        self.send_header('Content-type', content_type)
+        self.end_headers()
+        return content
 
     def poll(self):
         """
@@ -458,6 +496,7 @@ class HttpRouter(RegistryProperties):
         if current_item:
             for index, frame in enumerate(current_item.get_frames()):
                 item = {}
+                # Handle text (songs, custom, bibles)
                 if current_item.is_text():
                     if frame['verseTag']:
                         item['tag'] = str(frame['verseTag'])
@@ -465,11 +504,37 @@ class HttpRouter(RegistryProperties):
                         item['tag'] = str(index + 1)
                     item['text'] = str(frame['text'])
                     item['html'] = str(frame['html'])
-                else:
+                # Handle images, unless a custom thumbnail is given or if thumbnails is disabled
+                elif current_item.is_image() and not frame.get('image', '') and Settings().value('remotes/thumbnails'):
                     item['tag'] = str(index + 1)
+                    thumbnail_path = os.path.join('images', 'thumbnails', frame['title'])
+                    full_thumbnail_path = os.path.join(AppLocation.get_data_path(), thumbnail_path)
+                    # Create thumbnail if it doesn't exists
+                    if not os.path.exists(full_thumbnail_path):
+                        create_thumb(current_item.get_frame_path(index), full_thumbnail_path, False)
+                    item['img'] = urllib.request.pathname2url(os.path.sep + thumbnail_path)
+                    item['text'] = str(frame['title'])
+                    item['html'] = str(frame['title'])
+                else:
+                    # Handle presentation etc.
+                    item['tag'] = str(index + 1)
+                    if current_item.is_capable(ItemCapabilities.HasDisplayTitle):
+                        item['title'] = str(frame['display_title'])
+                    if current_item.is_capable(ItemCapabilities.HasNotes):
+                        item['notes'] = str(frame['notes'])
+                    if current_item.is_capable(ItemCapabilities.HasThumbnails) and \
+                            Settings().value('remotes/thumbnails'):
+                        # If the file is under our app directory tree send the portion after the match
+                        data_path = AppLocation.get_data_path()
+                        print(frame)
+                        if frame['image'][0:len(data_path)] == data_path:
+                            item['img'] = urllib.request.pathname2url(frame['image'][len(data_path):])
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 item['selected'] = (self.live_controller.selected_row == index)
+                if current_item.notes:
+                    item['notes'] = item.get('notes', '') + '\n' + current_item.notes
+                print(item)
                 data.append(item)
         json_data = {'results': {'slides': data}}
         if current_item:

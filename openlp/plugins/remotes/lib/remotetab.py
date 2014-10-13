@@ -62,6 +62,9 @@ class RemoteTab(SettingsTab):
         self.twelve_hour_check_box = QtGui.QCheckBox(self.server_settings_group_box)
         self.twelve_hour_check_box.setObjectName('twelve_hour_check_box')
         self.server_settings_layout.addRow(self.twelve_hour_check_box)
+        self.thumbnails_check_box = QtGui.QCheckBox(self.server_settings_group_box)
+        self.thumbnails_check_box.setObjectName('thumbnails_check_box')
+        self.server_settings_layout.addRow(self.thumbnails_check_box)
         self.left_layout.addWidget(self.server_settings_group_box)
         self.http_settings_group_box = QtGui.QGroupBox(self.left_column)
         self.http_settings_group_box.setObjectName('http_settings_group_box')
@@ -163,6 +166,7 @@ class RemoteTab(SettingsTab):
         self.left_layout.addStretch()
         self.right_layout.addStretch()
         self.twelve_hour_check_box.stateChanged.connect(self.on_twelve_hour_check_box_changed)
+        self.thumbnails_check_box.stateChanged.connect(self.on_thumbnails_check_box_changed)
         self.address_edit.textChanged.connect(self.set_urls)
         self.port_spin_box.valueChanged.connect(self.set_urls)
         self.https_port_spin_box.valueChanged.connect(self.set_urls)
@@ -176,6 +180,8 @@ class RemoteTab(SettingsTab):
         self.stage_url_label.setText(translate('RemotePlugin.RemoteTab', 'Stage view URL:'))
         self.live_url_label.setText(translate('RemotePlugin.RemoteTab', 'Live view URL:'))
         self.twelve_hour_check_box.setText(translate('RemotePlugin.RemoteTab', 'Display stage time in 12h format'))
+        self.thumbnails_check_box.setText(translate('RemotePlugin.RemoteTab',
+                                                    'Show thumbnails of non-text slides in remote and stage view.'))
         self.android_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
         self.qr_description_label.setText(
             translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="https://play.google.com/store/'
@@ -240,6 +246,8 @@ class RemoteTab(SettingsTab):
         self.address_edit.setText(Settings().value(self.settings_section + '/ip address'))
         self.twelve_hour = Settings().value(self.settings_section + '/twelve hour')
         self.twelve_hour_check_box.setChecked(self.twelve_hour)
+        self.thumbnails = Settings().value(self.settings_section + '/thumbnails')
+        self.thumbnails_check_box.setChecked(self.thumbnails)
         local_data = AppLocation.get_directory(AppLocation.DataDir)
         if not os.path.exists(os.path.join(local_data, 'remotes', 'openlp.crt')) or \
                 not os.path.exists(os.path.join(local_data, 'remotes', 'openlp.key')):
@@ -271,6 +279,7 @@ class RemoteTab(SettingsTab):
         Settings().setValue(self.settings_section + '/https enabled', self.https_settings_group_box.isChecked())
         Settings().setValue(self.settings_section + '/ip address', self.address_edit.text())
         Settings().setValue(self.settings_section + '/twelve hour', self.twelve_hour)
+        Settings().setValue(self.settings_section + '/thumbnails', self.thumbnails)
         Settings().setValue(self.settings_section + '/authentication enabled', self.user_login_group_box.isChecked())
         Settings().setValue(self.settings_section + '/user id', self.user_id.text())
         Settings().setValue(self.settings_section + '/password', self.password.text())
@@ -284,6 +293,15 @@ class RemoteTab(SettingsTab):
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
             self.twelve_hour = True
+
+    def on_thumbnails_check_box_changed(self, check_state):
+        """
+        Toggle the thumbnail check box.
+        """
+        self.thumbnails = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.thumbnails = True
 
     def https_changed(self):
         """

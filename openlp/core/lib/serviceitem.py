@@ -39,8 +39,8 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.common import RegistryProperties, Settings, translate
-from openlp.core.lib import ImageSource, build_icon, clean_tags, expand_tags
+from openlp.core.common import RegistryProperties, Settings, translate, AppLocation
+from openlp.core.lib import ImageSource, build_icon, clean_tags, expand_tags, create_thumb
 
 log = logging.getLogger(__name__)
 
@@ -112,7 +112,17 @@ class ItemCapabilities(object):
             The capability to edit the title of the item
 
     ``IsOptical``
-            .Determines is the service_item is based on an optical device
+            Determines is the service_item is based on an optical device
+
+    ``HasDisplayTitle``
+            The item contains 'displaytitle' on every frame which should be
+            preferred over 'title' when displaying the item
+
+    ``HasNotes``
+            The item contains 'notes'
+
+    ``HasThumbnails``
+            The item has related thumbnails available
 
     """
     CanPreview = 1
@@ -133,6 +143,9 @@ class ItemCapabilities(object):
     CanAutoStartForLive = 16
     CanEditTitle = 17
     IsOptical = 18
+    HasDisplayTitle = 19
+    HasNotes = 20
+    HasThumbnails = 21
 
 
 class ServiceItem(RegistryProperties):
@@ -272,18 +285,22 @@ class ServiceItem(RegistryProperties):
             self.raw_footer = []
         self.foot_text = '<br>'.join([_f for _f in self.raw_footer if _f])
 
-    def add_from_image(self, path, title, background=None):
+    def add_from_image(self, path, title, background=None, thumbnail=None):
         """
         Add an image slide to the service item.
 
         :param path: The directory in which the image file is located.
         :param title: A title for the slide in the service item.
         :param background:
+        :param thumbnail: Optional alternative thumbnail, used for remote thumbnails.
         """
         if background:
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
-        self._raw_frames.append({'title': title, 'path': path})
+        if not thumbnail:
+            self._raw_frames.append({'title': title, 'path': path})
+        else:
+            self._raw_frames.append({'title': title, 'path': path, 'image': thumbnail})
         self.image_manager.add_image(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
@@ -301,16 +318,22 @@ class ServiceItem(RegistryProperties):
         self._raw_frames.append({'title': title, 'raw_slide': raw_slide, 'verseTag': verse_tag})
         self._new_item()
 
-    def add_from_command(self, path, file_name, image):
+    def add_from_command(self, path, file_name, image, display_title=None, notes=None):
         """
         Add a slide from a command.
 
         :param path: The title of the slide in the service item.
         :param file_name: The title of the slide in the service item.
         :param image: The command of/for the slide.
+        :param display_title: Title to show in gui/webinterface, optional.
+        :param notes: Notes to show in the webinteface, optional.
         """
         self.service_item_type = ServiceItemType.Command
-        self._raw_frames.append({'title': file_name, 'image': image, 'path': path})
+        # If the item should have a display title but this frame doesn't have one, we make one up
+        if self.is_capable(ItemCapabilities.HasDisplayTitle) and not display_title:
+            display_title = translate('OpenLP.ServiceItem', '[slide %d]') % (len(self._raw_frames) + 1)
+        self._raw_frames.append({'title': file_name, 'image': image, 'path': path,
+                                 'display_title': display_title, 'notes': notes})
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -354,7 +377,8 @@ class ServiceItem(RegistryProperties):
                 service_data = [slide['title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
-                service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path']})
+                service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path'],
+                                     'display_title': slide['display_title'], 'notes': slide['notes']})
         return {'header': service_header, 'data': service_data}
 
     def set_from_service(self, service_item, path=None):
@@ -425,7 +449,8 @@ class ServiceItem(RegistryProperties):
                     self.add_from_command(text_image['path'], text_image['title'], text_image['image'])
                 elif path:
                     self.has_original_files = False
-                    self.add_from_command(path, text_image['title'], text_image['image'])
+                    self.add_from_command(path, text_image['title'], text_image['image'],
+                                          text_image.get('display_title', ''), text_image.get('notes', ''))
                 else:
                     self.add_from_command(text_image['path'], text_image['title'], text_image['image'])
         self._new_item()
