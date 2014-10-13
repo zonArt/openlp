@@ -143,6 +143,7 @@ class PJLink1(QTcpSocket):
                              'INST': self.process_inst,
                              'LAMP': self.process_lamp,
                              'NAME': self.process_name,
+                             'PJLINK': self.check_login,
                              'POWR': self.process_powr
                              }
 
@@ -157,7 +158,8 @@ class PJLink1(QTcpSocket):
         self.fan = None
         self.source_available = None
         self.source = None
-        self.projector_errors = None
+        if hasattr(self, 'timer'):
+            self.timer.stop()
 
     def thread_started(self):
         """
@@ -192,10 +194,16 @@ class PJLink1(QTcpSocket):
         # Reset timer in case we were called from a set command
         self.timer.start()
         for command in ['POWR', 'ERST', 'LAMP', 'AVMT', 'INPT']:
+            # Changeable information
             self.send_command(command)
             self.waitForReadyRead()
         if self.power == S_ON and self.source_available is None:
             self.send_command('INST')
+        if self.manufacturer is None:
+            for command in ['INF1', 'INF2', 'INFO', 'NAME', 'INST']:
+                log.debug('(%s) Updating %s information' % (self.ip, command))
+                self.send_command(cmd=command)
+                self.waitForReadyRead()
 
     def _get_status(self, status):
         """
@@ -265,27 +273,25 @@ class PJLink1(QTcpSocket):
         if not data.upper().startswith('PJLINK'):
             # Invalid response
             return self.disconnect_from_host()
-        data_check = data.strip().split(' ')
+        if '=' in data:
+            data_check = data.strip().split('=')
+        else:
+            data_check = data.strip().split(' ')
         log.debug('(%s) data_check="%s"' % (self.ip, data_check))
-        salt = None
         # PJLink initial login will be:
         # 'PJLink 0' - Unauthenticated login - no extra steps required.
         # 'PJLink 1 XXXXXX' Authenticated login - extra processing required.
         if data_check[1] == '1':
             # Authenticated login with salt
             salt = qmd5_hash(salt=data_check[2], data=self.pin)
+        else:
+            salt = None
         # We're connected at this point, so go ahead and do regular I/O
         self.readyRead.connect(self.get_data)
         # Initial data we should know about
         self.send_command(cmd='CLSS', salt=salt)
         self.waitForReadyRead()
-        # These should never change once we get this information
-        if self.manufacturer is None:
-            for command in ['INF1', 'INF2', 'INFO', 'NAME', 'INST']:
-                self.send_command(cmd=command)
-                self.waitForReadyRead()
-        self.change_status(S_CONNECTED)
-        if not self.new_wizard:
+        if not self.new_wizard and self.state() == self.ConnectedState:
             self.timer.start()
             self.poll_loop()
 
@@ -313,9 +319,7 @@ class PJLink1(QTcpSocket):
         if data.upper().startswith('PJLINK'):
             # Reconnected from remote host disconnect ?
             return self.check_login(data)
-        if '=' in data:
-            pass
-        else:
+        if not '=' in data:
             log.warn('(%s) Invalid packet received' % self.ip)
             return
         data_split = data.split('=')
@@ -339,7 +343,7 @@ class PJLink1(QTcpSocket):
         """
         log.debug('(%s) get_error(err=%s): %s' % (self.ip, err, self.errorString()))
         if err <= 18:
-            # QSocket errors. Redefined in projectorconstants so we don't mistake
+            # QSocket errors. Redefined in projector.constants so we don't mistake
             # them for system errors
             check = err + E_CONNECTION_REFUSED
             self.timer.stop()
@@ -368,13 +372,17 @@ class PJLink1(QTcpSocket):
             out = '%s%s %s%s' % (PJLINK_HEADER, cmd, opts, CR)
         else:
             out = '%s%s %s%s' % (salt, cmd, opts, CR)
-        sent = self.write(out)
-        self.waitForBytesWritten(5000)  # 5 seconds should be enough
-        if sent == -1:
-            # Network error?
+        try:
+            sent = self.write(out)
+            self.waitForBytesWritten(2000)  # 2 seconds should be enough
             self.projectorNetwork.emit(S_NETWORK_RECEIVED)
-            self.change_status(E_NETWORK,
-                               translate('OpenLP.PJLink1', 'Error while sending data to projector'))
+            if sent == -1:
+                # Network error?
+                self.change_status(E_NETWORK,
+                                translate('OpenLP.PJLink1', 'Error while sending data to projector'))
+        except SocketError as e:
+            self.disconnect_from_host()
+            self.changeStatus(E_NETWORK, '%s : %s' % (e.error(), e.errorString()))
 
     def process_command(self, cmd, data):
         """
@@ -385,6 +393,7 @@ class PJLink1(QTcpSocket):
             # Oops - projector error
             if data.upper() == 'ERRA':
                 # Authentication error
+                self.disconnect_from_host()
                 self.change_status(E_AUTHENTICATION)
                 return
             elif data.upper() == 'ERR1':
@@ -573,7 +582,7 @@ class PJLink1(QTcpSocket):
         except TypeError:
             pass
         self.change_status(S_NOT_CONNECTED)
-        self.timer.stop()
+        self.reset_information()
 
     def get_available_inputs(self):
         """
