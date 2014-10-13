@@ -118,7 +118,7 @@ class Projector(CommonBase, Base):
     """
     ip = Column(String(100))
     port = Column(String(8))
-    pin = Column(String(6))
+    pin = Column(String(20))
     name = Column(String(20))
     location = Column(String(30))
     notes = Column(String(200))
