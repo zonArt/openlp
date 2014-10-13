@@ -226,8 +226,8 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
                 QtGui.QMessageBox.information(None, translate('OpenLP', 'Backup'),
                                               translate('OpenLP', 'A backup of the data folder has been created at %s')
                                               % data_folder_backup_path)
-                # Update the version in the settings
-                Settings().setValue('core/data version', openlp_version)
+            # Update the version in the settings
+            Settings().setValue('core/data version', openlp_version)
 
     def process_events(self):
         """
