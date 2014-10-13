@@ -150,6 +150,22 @@ class ProjectorDB(Manager):
         Base.metadata.create_all(checkfirst=True)
         return session
 
+    def get_projector_by_id(self, dbid):
+        """
+        Locate a DB record by record ID.
+
+        :param dbid: DB record
+        :returns: Projector() instance
+        """
+        log.debug('get_projector_by_id(id="%s")' % dbid)
+        projector = self.get_object_filtered(Projector, Projector.id == dbid)
+        if projector is None:
+            # Not found
+            log.warn('get_projector_by_id() did not find %s' % id)
+            return None
+        log.debug('get_projectorby_id() returning 1 entry for "%s" id="%s"' % (dbid, projector.id))
+        return projector
+
     def get_projector_all(self):
         """
         Retrieve all projector entries so they can be added to the Projector
