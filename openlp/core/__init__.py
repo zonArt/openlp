@@ -195,16 +195,16 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
         self.set_normal_cursor()
         self.exception_form.exec_()
 
-    def backup_on_upgrade(self, old_install):
+    def backup_on_upgrade(self, has_run_wizard):
         """
         Check if OpenLP has been upgraded, and ask if a backup of data should be made
 
-        :param old_install: OpenLP has been run before
+        :param has_run_wizard: OpenLP has been run before
         """
         data_version = Settings().value('core/data version')
         openlp_version = get_application_version()['version']
         # New installation, no need to create backup
-        if not old_install:
+        if not has_run_wizard:
             Settings().setValue('core/data version', openlp_version)
         # If data_version is different from the current version ask if we should backup the data folder
         elif data_version != openlp_version:
