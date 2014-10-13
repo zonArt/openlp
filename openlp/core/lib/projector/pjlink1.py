@@ -76,6 +76,7 @@ class PJLink1(QTcpSocket):
     changeStatus = pyqtSignal(str, int, str)
     projectorNetwork = pyqtSignal(int)  # Projector network activity
     projectorStatus = pyqtSignal(int)
+    projectorAuthentication = pyqtSignal(str) # Authentication error - str=self.name
 
     def __init__(self, name=None, ip=None, port=PJLINK_PORT, pin=None, *args, **kwargs):
         """
@@ -319,7 +320,7 @@ class PJLink1(QTcpSocket):
         if data.upper().startswith('PJLINK'):
             # Reconnected from remote host disconnect ?
             return self.check_login(data)
-        if not '=' in data:
+        if '=' not in data:
             log.warn('(%s) Invalid packet received' % self.ip)
             return
         data_split = data.split('=')
@@ -379,7 +380,7 @@ class PJLink1(QTcpSocket):
             if sent == -1:
                 # Network error?
                 self.change_status(E_NETWORK,
-                                translate('OpenLP.PJLink1', 'Error while sending data to projector'))
+                                   translate('OpenLP.PJLink1', 'Error while sending data to projector'))
         except SocketError as e:
             self.disconnect_from_host()
             self.changeStatus(E_NETWORK, '%s : %s' % (e.error(), e.errorString()))
@@ -395,6 +396,7 @@ class PJLink1(QTcpSocket):
                 # Authentication error
                 self.disconnect_from_host()
                 self.change_status(E_AUTHENTICATION)
+                self.projectorAuthentication.emit(self.name)
                 return
             elif data.upper() == 'ERR1':
                 # Undefined command
