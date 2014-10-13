@@ -61,7 +61,8 @@ LF = chr(0x0A)  # \n
 PJLINK_PORT = 4352
 TIMEOUT = 30.0
 PJLINK_MAX_PACKET = 136
-PJLINK_VALID_CMD = {'1': ['POWR',  # Power option
+PJLINK_VALID_CMD = {'1': ['PJLINK',  # Initial connection
+                          'POWR',  # Power option
                           'INPT',  # Video sources option
                           'AVMT',  # Shutter option
                           'ERST',  # Error status option

@@ -128,17 +128,7 @@ class PJLink1(QTcpSocket):
         self.setReadBufferSize(self.maxSize)
         # PJLink projector information
         self.pjlink_class = '1'  # Default class
-        self.power = S_OFF
-        self.pjlink_name = None
-        self.manufacturer = None
-        self.model = None
-        self.shutter = None
-        self.mute = None
-        self.lamp = None
-        self.fan = None
-        self.source_available = None
-        self.source = None
-        self.projector_errors = None
+        self.reset_information()
         # Set from ProjectorManager.add_projector()
         self.widget = None  # QListBox entry
         self.timer = None  # Timer that calls the poll_loop
@@ -155,6 +145,19 @@ class PJLink1(QTcpSocket):
                              'NAME': self.process_name,
                              'POWR': self.process_powr
                              }
+
+    def reset_information(self):
+        self.power = S_OFF
+        self.pjlink_name = None
+        self.manufacturer = None
+        self.model = None
+        self.shutter = None
+        self.mute = None
+        self.lamp = None
+        self.fan = None
+        self.source_available = None
+        self.source = None
+        self.projector_errors = None
 
     def thread_started(self):
         """

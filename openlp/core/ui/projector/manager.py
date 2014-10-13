@@ -60,7 +60,8 @@ STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_item_disconnect.png',
                 E_ERROR:  ':/projector/projector_error.png',
                 E_NETWORK:  ':/projector/projector_not_connected.png',
                 E_AUTHENTICATION:  ':/projector/projector_not_connected.png',
-                E_UNKNOWN_SOCKET_ERROR: ':/icons/openlp-logo-64x64.png'
+                E_UNKNOWN_SOCKET_ERROR: ':/icons/openlp-logo-64x64.png',
+                E_NOT_CONNECTED: ':/projector/projector_not_connected.png'
                 }
 
 
@@ -730,10 +731,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         notes = translate('OpenLP.ProjectorManager', 'Notes')
         QtGui.QMessageBox.information(self, translate('OpenLP.ProjectorManager',
                                       'Projector %s Information' % projector.link.name),
-                                      '%s: %s<br /><br />%s: %s<br /><br />%s: %s<br /><br />'
+                                      '<br />%s: %s<br /><br />%s: %s<br /><br />'
                                       '%s: %s<br /><br />%s: %s<br /><br />'
-                                      '%s:<br />%s' % (dbid, projector.link.dbid,
-                                                       ip, projector.link.ip,
+                                      '%s:<br />%s' % (ip, projector.link.ip,
                                                        port, projector.link.port,
                                                        name, projector.link.name,
                                                        location, projector.link.location,
@@ -890,7 +890,11 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         log.debug('(%s) updateStatus(status=%s) message: "%s"' % (item.link.name, status_code, message))
         if status in STATUS_ICONS:
             item.icon = QtGui.QIcon(QtGui.QPixmap(STATUS_ICONS[status]))
-            log.debug('(%s) Updating icon' % item.link.name)
+            if status in ERROR_STRING:
+                status_code = ERROR_STRING[status]
+            elif status in STATUS_STRING:
+                status_code = STATUS_STRING[status]
+            log.debug('(%s) Updating icon with %s' % (item.link.name, status_code))
             item.widget.setIcon(item.icon)
 
     @pyqtSlot()
