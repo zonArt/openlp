@@ -76,7 +76,8 @@ class PJLink1(QTcpSocket):
     changeStatus = pyqtSignal(str, int, str)
     projectorNetwork = pyqtSignal(int)  # Projector network activity
     projectorStatus = pyqtSignal(int)
-    projectorAuthentication = pyqtSignal(str) # Authentication error - str=self.name
+    projectorAuthentication = pyqtSignal(str)  # Authentication error
+    projectorNoAuthentication = pyqtSignal(str)  # PIN set and no authentication needed
 
     def __init__(self, name=None, ip=None, port=PJLINK_PORT, pin=None, *args, **kwargs):
         """
@@ -200,11 +201,19 @@ class PJLink1(QTcpSocket):
             self.waitForReadyRead()
         if self.power == S_ON and self.source_available is None:
             self.send_command('INST')
+            self.waitForReadyRead()
         if self.manufacturer is None:
-            for command in ['INF1', 'INF2', 'INFO', 'NAME', 'INST']:
-                log.debug('(%s) Updating %s information' % (self.ip, command))
-                self.send_command(cmd=command)
-                self.waitForReadyRead()
+            self.send_command('INF1')
+            self.waitForReadyRead()
+        if self.model is None:
+            self.send_command('INF2')
+            self.waitForReadyRead()
+        if self.pjlink_name is None:
+            self.send_command('NAME')
+            self.waitForReadyRead()
+        if self.power == S_ON and self.source_available is None:
+            self.send_command('INST')
+            self.waitForReadyRead()
 
     def _get_status(self, status):
         """
@@ -256,24 +265,29 @@ class PJLink1(QTcpSocket):
         """
         Processes the initial connection and authentication (if needed).
         """
+        log.debug('(%s) check_login(data="%s")' % (self.ip, data))
         if data is None:
             # Reconnected setup?
             self.waitForReadyRead(5000)  # 5 seconds should be more than enough
             read = self.readLine(self.maxSize)
             dontcare = self.readLine(self.maxSize)  # Clean out the trailing \r\n
-            if len(read) < 8:
+            if read is None:
+                log.warn('(%s) read is None - socket error?' % self.ip)
+                return
+            elif len(read) < 8:
                 log.warn('(%s) Not enough data read)' % self.ip)
                 return
             data = decode(read, 'ascii')
             # Possibility of extraneous data on input when reading.
             # Clean out extraneous characters in buffer.
             dontcare = self.readLine(self.maxSize)
-            log.debug('(%s) check_login() read "%s"' % (self.ip, data))
+            log.debug('(%s) check_login() read "%s"' % (self.ip, data.strip()))
         # At this point, we should only have the initial login prompt with
         # possible authentication
         if not data.upper().startswith('PJLINK'):
             # Invalid response
             return self.disconnect_from_host()
+        # Test for authentication error
         if '=' in data:
             data_check = data.strip().split('=')
         else:
@@ -282,8 +296,25 @@ class PJLink1(QTcpSocket):
         # PJLink initial login will be:
         # 'PJLink 0' - Unauthenticated login - no extra steps required.
         # 'PJLink 1 XXXXXX' Authenticated login - extra processing required.
-        if data_check[1] == '1':
+        # Oops - projector error
+        if data_check[1].upper() == 'ERRA':
+            # Authentication error
+            self.disconnect_from_host()
+            self.change_status(E_AUTHENTICATION)
+            log.debug('(%s) emitting projectorAuthentication() signal' % self.name)
+            self.projectorAuthentication.emit(self.name)
+            return
+        elif data_check[1] == '0' and self.pin is not None:
+            # Pin set and no authentication needed
+            self.disconnect_from_host()
+            self.change_status(E_AUTHENTICATION)
+            log.debug('(%s) emitting projectorNoAuthentication() signal' % self.name)
+            self.projectorNoAuthentication.emit(self.name)
+            return
+        elif data_check[1] == '1':
             # Authenticated login with salt
+            log.debug('(%s) Setting hash with salt="%s"' % (self.ip, data_check[2]))
+            log.debug('(%s) pin="%s"' % (self.ip, self.pin))
             salt = qmd5_hash(salt=data_check[2], data=self.pin)
         else:
             salt = None
@@ -294,7 +325,6 @@ class PJLink1(QTcpSocket):
         self.waitForReadyRead()
         if not self.new_wizard and self.state() == self.ConnectedState:
             self.timer.start()
-            self.poll_loop()
 
     def get_data(self):
         """
@@ -333,7 +363,7 @@ class PJLink1(QTcpSocket):
             return
 
         if not self.check_command(cmd):
-            log.warn('(%s) Invalid packet - unknown command "%s"' % self.ip, cmd)
+            log.warn('(%s) Invalid packet - unknown command "%s"' % (self.ip, cmd))
             return
         return self.process_command(cmd, data)
 
@@ -396,6 +426,7 @@ class PJLink1(QTcpSocket):
                 # Authentication error
                 self.disconnect_from_host()
                 self.change_status(E_AUTHENTICATION)
+                log.debug('(%s) emitting projectorAuthentication() signal' % self.ip)
                 self.projectorAuthentication.emit(self.name)
                 return
             elif data.upper() == 'ERR1':

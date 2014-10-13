@@ -501,7 +501,14 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             projector.link.changeStatus.disconnect(self.update_status)
         except TypeError:
             pass
-
+        try:
+            projector.link.authentication_error.disconnect(self.authentication_error)
+        except TypeError:
+            pass
+        try:
+            projector.link.no_authentication_error.disconnect(self.no_authentication_error)
+        except TypeError:
+            pass
         try:
             projector.timer.stop()
             projector.timer.timeout.disconnect(projector.link.poll_loop)
@@ -566,6 +573,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         projector.link.disconnect_from_host()
         record = self.projectordb.get_projector_by_ip(projector.link.ip)
         self.projector_form.exec_(record)
+        new_record = self.projectordb.get_projector_by_id(record.id)
 
     def on_poweroff_all_projectors(self, opt=None):
         """
@@ -753,7 +761,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                        name=projector.name,
                        location=projector.location,
                        notes=projector.notes,
-                       pin=projector.pin
+                       pin=None if projector.pin == '' else projector.pin
                        )
 
     def add_projector(self, opt1, opt2=None):
@@ -798,6 +806,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         thread.finished.connect(thread.deleteLater)
         item.link.projectorNetwork.connect(self.update_status)
         item.link.changeStatus.connect(self.update_status)
+        item.link.projectorAuthentication.connect(self.authentication_error)
+        item.link.projectorNoAuthentication.connect(self.no_authentication_error)
         timer = QtCore.QTimer(self)
         timer.setInterval(20000)  # 20 second poll interval
         timer.timeout.connect(item.link.poll_loop)
@@ -837,7 +847,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
 
         self.old_projector.link.name = projector.name
         self.old_projector.link.ip = projector.ip
-        self.old_projector.link.pin = projector.pin
+        self.old_projector.link.pin = None if projector.pin == '' else projector.pin
         self.old_projector.link.port = projector.port
         self.old_projector.link.location = projector.location
         self.old_projector.link.notes = projector.notes
@@ -912,6 +922,22 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                                                  'poweron_selected_projectors', 'poweroff_selected_projectors',
                                                  'blank_selected_projectors', 'show_selected_projectors'],
                                                 enabled=True)
+
+    @pyqtSlot(str)
+    def authentication_error(self, name):
+        QtGui.QMessageBox.warning(self, translate('OpenLP.ProjectorManager',
+                                                  '"%s" Authentication Error' % name),
+                                  '<br />There was an authentictaion error while trying to connect.'
+                                  '<br /><br />Please verify your PIN setting '
+                                  'for projector item "%s"' % name)
+
+    @pyqtSlot(str)
+    def no_authentication_error(self, name):
+        QtGui.QMessageBox.warning(self, translate('OpenLP.ProjectorManager',
+                                                  '"%s" No Authentication Error' % name),
+                                  '<br />PIN is set and projector does not require authentication.'
+                                  '<br /><br />Please verify your PIN setting '
+                                  'for projector item "%s"' % name)
 
 
 class ProjectorItem(QObject):
