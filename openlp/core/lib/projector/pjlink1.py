@@ -194,6 +194,9 @@ class PJLink1(QTcpSocket):
             return
         log.debug('(%s) Updating projector status' % self.ip)
         # Reset timer in case we were called from a set command
+        if self.timer.interval() < 5000:
+            # Reset timer to 5 seconds
+            self.timer.setInterval(5000)
         self.timer.start()
         for command in ['POWR', 'ERST', 'LAMP', 'AVMT', 'INPT']:
             # Changeable information
@@ -324,6 +327,7 @@ class PJLink1(QTcpSocket):
         self.send_command(cmd='CLSS', salt=salt)
         self.waitForReadyRead()
         if not self.new_wizard and self.state() == self.ConnectedState:
+            self.timer.setInterval(1000)  # Set 1 second for initial information
             self.timer.start()
 
     def get_data(self):
