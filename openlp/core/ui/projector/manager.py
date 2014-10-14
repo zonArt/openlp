@@ -274,6 +274,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         settings = Settings()
         settings.beginGroup(self.settings_section)
         self.autostart = settings.value('connect on start')
+        self.poll_time = settings.value('poll time')
+        self.socket_timeout = settings.value('socket timeout')
         settings.endGroup()
         del(settings)
 
@@ -761,7 +763,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                        name=projector.name,
                        location=projector.location,
                        notes=projector.notes,
-                       pin=None if projector.pin == '' else projector.pin
+                       pin=None if projector.pin == '' else projector.pin,
+                       poll_time=self.poll_time,
+                       socket_timeout=self.socket_timeout
                        )
 
     def add_projector(self, opt1, opt2=None):
@@ -809,7 +813,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         item.link.projectorAuthentication.connect(self.authentication_error)
         item.link.projectorNoAuthentication.connect(self.no_authentication_error)
         timer = QtCore.QTimer(self)
-        timer.setInterval(20000)  # 20 second poll interval
+        timer.setInterval(self.poll_time)
         timer.timeout.connect(item.link.poll_loop)
         item.timer = timer
         thread.start()
@@ -953,6 +957,8 @@ class ProjectorItem(QObject):
         self.my_parent = None
         self.timer = None
         self.projectordb_item = None
+        self.poll_time = None
+        self.socket_timeout = None
         super(ProjectorItem, self).__init__()
 
 

@@ -302,7 +302,8 @@ class Settings(QtCore.QSettings):
         'projector/connect on start': False,
         'projector/last directory import': '',
         'projector/last directory export': '',
-        'projector/query time': 20  # PJLink socket timeout is 30 seconds
+        'projector/poll time': 20,  # PJLink  timeout is 30 seconds
+        'projector/socket timeout': 5  # 5 second socket timeout
     }
     __file_path__ = ''
     __obsolete_settings__ = [

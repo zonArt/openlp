@@ -119,6 +119,15 @@ class PJLink1(QTcpSocket):
             self.new_wizard = True
         else:
             self.new_wizard = False
+        if 'poll_time' in kwargs:
+            # Convert seconds to milliseconds
+            self.poll_time = kwargs['poll_time'] * 1000
+        else:
+            # Default
+            self.poll_time = 20000
+        if 'socket_timeout' in kwargs:
+            # Convert seconds to milliseconds
+            self.socket_timeout = kwargs['socket_timeout'] * 1000
         self.i_am_running = False
         self.status_connect = S_NOT_CONNECTED
         self.last_command = ''
@@ -194,9 +203,9 @@ class PJLink1(QTcpSocket):
             return
         log.debug('(%s) Updating projector status' % self.ip)
         # Reset timer in case we were called from a set command
-        if self.timer.interval() < 5000:
+        if self.timer.interval() < self.poll_time:
             # Reset timer to 5 seconds
-            self.timer.setInterval(5000)
+            self.timer.setInterval(self.poll_time)
         self.timer.start()
         for command in ['POWR', 'ERST', 'LAMP', 'AVMT', 'INPT']:
             # Changeable information
@@ -271,7 +280,11 @@ class PJLink1(QTcpSocket):
         log.debug('(%s) check_login(data="%s")' % (self.ip, data))
         if data is None:
             # Reconnected setup?
-            self.waitForReadyRead(5000)  # 5 seconds should be more than enough
+            if not self.waitForReadyRead(2000):
+                # Possible timeout issue
+                log.error('(%s) Socket timeout waiting for login' % self.ip)
+                self.change_status(E_SOCKET_TIMEOUT)
+                return
             read = self.readLine(self.maxSize)
             dontcare = self.readLine(self.maxSize)  # Clean out the trailing \r\n
             if read is None:
@@ -327,7 +340,7 @@ class PJLink1(QTcpSocket):
         self.send_command(cmd='CLSS', salt=salt)
         self.waitForReadyRead()
         if not self.new_wizard and self.state() == self.ConnectedState:
-            self.timer.setInterval(1000)  # Set 1 second for initial information
+            self.timer.setInterval(2000)  # Set 2 seconds for initial information
             self.timer.start()
 
     def get_data(self):

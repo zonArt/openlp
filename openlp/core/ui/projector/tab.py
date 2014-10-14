@@ -57,15 +57,33 @@ class ProjectorTab(SettingsTab):
         self.setObjectName('ProjectorTab')
         super(ProjectorTab, self).setupUi()
         self.connect_box = QtGui.QGroupBox(self.left_column)
-        self.connect_box.setTitle('Communication Options')
         self.connect_box.setObjectName('connect_box')
-        self.connect_box_layout = QtGui.QVBoxLayout(self.connect_box)
+        self.connect_box_layout = QtGui.QFormLayout(self.connect_box)
         self.connect_box_layout.setObjectName('connect_box_layout')
+
         # Start comms with projectors on startup
         self.connect_on_startup = QtGui.QCheckBox(self.connect_box)
         self.connect_on_startup.setObjectName('connect_on_startup')
-        self.connect_box_layout.addWidget(self.connect_on_startup)
+        self.connect_box_layout.addRow(self.connect_on_startup)
+        # Socket timeout
+        self.socket_timeout_label = QtGui.QLabel(self.connect_box)
+        self.socket_timeout_label.setObjectName('socket_timeout_label')
+        self.socket_timeout_spin_box = QtGui.QSpinBox(self.connect_box)
+        self.socket_timeout_spin_box.setObjectName('socket_timeout_spin_box')
+        self.socket_timeout_spin_box.setMinimum(2)
+        self.socket_timeout_spin_box.setMaximum(10)
+        self.connect_box_layout.addRow(self.socket_timeout_label, self.socket_timeout_spin_box)
+        # Poll interval
+        self.socket_poll_label = QtGui.QLabel(self.connect_box)
+        self.socket_poll_label.setObjectName('socket_poll.label')
+        self.socket_poll_spin_box = QtGui.QSpinBox(self.connect_box)
+        self.socket_poll_spin_box.setObjectName('socket_timeout_spin_box')
+        self.socket_poll_spin_box.setMinimum(5)
+        self.socket_poll_spin_box.setMaximum(60)
+        self.connect_box_layout.addRow(self.socket_poll_label, self.socket_poll_spin_box)
+
         self.left_layout.addWidget(self.connect_box)
+
         self.left_layout.addStretch()
 
     def retranslateUi(self):
@@ -73,8 +91,14 @@ class ProjectorTab(SettingsTab):
         Translate the UI on the fly
         """
         self.tab_title_visible = UiStrings().Projectors
+        self.connect_box.setTitle(
+            translate('OpenLP.ProjectorTab', 'Communication Options'))
         self.connect_on_startup.setText(
             translate('OpenLP.ProjectorTab', 'Connect to projectors on startup'))
+        self.socket_timeout_label.setText(
+            translate('OpenLP.ProjectorTab', 'Socket timeout (seconds)'))
+        self.socket_poll_label.setText(
+            translate('OpenLP.ProjectorTab', 'Poll time (seconds)'))
 
     def load(self):
         """
@@ -83,6 +107,8 @@ class ProjectorTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settings_section)
         self.connect_on_startup.setChecked(settings.value('connect on start'))
+        self.socket_timeout_spin_box.setValue(settings.value('socket timeout'))
+        self.socket_poll_spin_box.setValue(settings.value('poll time'))
         settings.endGroup()
 
     def save(self):
@@ -92,4 +118,6 @@ class ProjectorTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settings_section)
         settings.setValue('connect on start', self.connect_on_startup.isChecked())
+        settings.setValue('socket timeout', self.socket_timeout_spin_box.value())
+        settings.setValue('poll time', self.socket_poll_spin_box.value())
         settings.endGroup
