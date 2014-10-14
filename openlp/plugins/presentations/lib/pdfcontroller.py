@@ -43,6 +43,8 @@ if is_win():
 
 log = logging.getLogger(__name__)
 
+PDF_CONTROLLER_FILETYPES = ['pdf', 'xps', 'oxps']
+
 
 class PdfController(PresentationController):
     """

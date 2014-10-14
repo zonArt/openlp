@@ -29,12 +29,14 @@
 
 import logging
 import copy
+import os
 
 from PyQt4 import QtCore
 
 from openlp.core.common import Registry
 from openlp.core.ui import HideMode
 from openlp.core.lib import ServiceItemContext, ServiceItem
+from openlp.plugins.presentations.lib.pdfcontroller import PDF_CONTROLLER_FILETYPES
 
 log = logging.getLogger(__name__)
 
@@ -322,7 +324,8 @@ class MessageListener(object):
         # When starting presentation from the servicemanager we convert
         # PDF/XPS/OXPS-serviceitems into image-serviceitems. When started from the mediamanager
         # the conversion has already been done at this point.
-        if file.endswith('.pdf') or file.endswith('xps'):
+        file_type = os.path.splitext(file.lower())[1][1:]
+        if file_type in PDF_CONTROLLER_FILETYPES:
             log.debug('Converting from pdf/xps/oxps to images for serviceitem with file %s', file)
             # Create a copy of the original item, and then clear the original item so it can be filled with images
             item_cpy = copy.copy(item)
@@ -338,7 +341,7 @@ class MessageListener(object):
             item.image_border = item_cpy.image_border
             item.main = item_cpy.main
             item.theme_data = item_cpy.theme_data
-            # When presenting PDF or XPS, we are using the image presentation code,
+            # When presenting PDF/XPS/OXPS, we are using the image presentation code,
             # so handler & processor is set to None, and we skip adding the handler.
             self.handler = None
         if self.handler == self.media_item.automatic:
@@ -349,7 +352,7 @@ class MessageListener(object):
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        # When presenting PDF or XPS, we are using the image presentation code,
+        # When presenting PDF/XPS/OXPS, we are using the image presentation code,
         # so handler & processor is set to None, and we skip adding the handler.
         if self.handler is None:
             self.controller = controller
