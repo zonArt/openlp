@@ -89,19 +89,25 @@ class Ui_ProjectorManager(object):
                                            triggers=self.on_add_projector)
         self.no_toolbar.addSeparator()
         self.no_toolbar.add_toolbar_action('connect_no_projectors',
-                                           icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_connect.png',
+                                           enabled=False)
         self.no_toolbar.add_toolbar_action('disconnect_no_projectors',
-                                           icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_disconnect.png',
+                                           enabled=False)
         self.no_toolbar.addSeparator()
         self.no_toolbar.add_toolbar_action('poweron_no_projectors',
-                                           icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_power_on.png',
+                                           enabled=False)
         self.no_toolbar.add_toolbar_action('poweroff_no_projectors',
-                                           icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_power_off.png',
+                                           enabled=False)
         self.no_toolbar.addSeparator()
         self.no_toolbar.add_toolbar_action('blank_no_projectors',
-                                           icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_blank.png',
+                                           enabled=False)
         self.no_toolbar.add_toolbar_action('show_no_projectors',
-                                           icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_show.png',
+                                           enabled=False)
         self.no_toolbar.addSeparator()
         self.layout.addWidget(self.no_toolbar)
         self.projector_one_widget = QtGui.QWidgetAction(self.no_toolbar)
