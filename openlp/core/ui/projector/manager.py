@@ -58,10 +58,10 @@ STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_item_disconnect.png',
                 S_ON:  ':/projector/projector_on.png',
                 S_COOLDOWN:  ':/projector/projector_cooldown.png',
                 E_ERROR:  ':/projector/projector_error.png',
-                E_NETWORK:  ':/projector/projector_error.png',
-                E_AUTHENTICATION:  ':/projector/projector_error.png',
-                E_UNKNOWN_SOCKET_ERROR: ':/icons/projector_error.png',
-                E_NOT_CONNECTED: ':/projector/projector_error.png'
+                E_NETWORK:  ':/projector/projector_not_connected.png',
+                E_AUTHENTICATION:  ':/projector/projector_not_connected.png',
+                E_UNKNOWN_SOCKET_ERROR: ':/icons/projector_not_connected.png',
+                E_NOT_CONNECTED: ':/projector/projector_not_connected.png'
                 }
 
 
@@ -83,25 +83,25 @@ class Ui_ProjectorManager(object):
         # Add spacer toolbar
         self.no_toolbar = OpenLPToolbar(widget)
         self.no_toolbar.add_toolbar_action('new_projector',
-                                            text=translate('OpenLP.Projector', 'Add Projector'),
-                                            icon=':/projector/projector_new.png',
-                                            tooltip=translate('OpenLP.ProjectorManager', 'Add a new projector'),
-                                            triggers=self.on_add_projector)
+                                           text=translate('OpenLP.Projector', 'Add Projector'),
+                                           icon=':/projector/projector_new.png',
+                                           tooltip=translate('OpenLP.ProjectorManager', 'Add a new projector'),
+                                           triggers=self.on_add_projector)
         self.no_toolbar.addSeparator()
         self.no_toolbar.add_toolbar_action('connect_no_projectors',
-                                            icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_spacer.png')
         self.no_toolbar.add_toolbar_action('disconnect_no_projectors',
-                                            icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_spacer.png')
         self.no_toolbar.addSeparator()
         self.no_toolbar.add_toolbar_action('poweron_no_projectors',
-                                            icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_spacer.png')
         self.no_toolbar.add_toolbar_action('poweroff_no_projectors',
-                                            icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_spacer.png')
         self.no_toolbar.addSeparator()
         self.no_toolbar.add_toolbar_action('blank_no_projectors',
-                                            icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_spacer.png')
         self.no_toolbar.add_toolbar_action('show_no_projectors',
-                                            icon=':/projector/projector_spacer.png')
+                                           icon=':/projector/projector_spacer.png')
         self.no_toolbar.addSeparator()
         self.layout.addWidget(self.no_toolbar)
         self.projector_one_widget = QtGui.QWidgetAction(self.no_toolbar)
@@ -116,46 +116,46 @@ class Ui_ProjectorManager(object):
         self.one_toolbar.addSeparator()
         self.one_toolbar.add_toolbar_action('connect_selected_projectors',
                                             text=translate('OpenLP.ProjectorManager',
-                                                           'Connect to selected projectors'),
+                                                           'Connect to selected projector'),
                                             icon=':/projector/projector_connect.png',
                                             tootip=translate('OpenLP.ProjectorManager',
-                                                             'Connect to selected projectors'),
+                                                             'Connect to selected projector'),
                                             triggers=self.on_connect_projector)
         self.one_toolbar.add_toolbar_action('disconnect_selected_projectors',
                                             text=translate('OpenLP.ProjectorManager',
-                                                           'Disconnect from selected projectors'),
+                                                           'Disconnect from selected projector'),
                                             icon=':/projector/projector_disconnect.png',
                                             tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Disconnect from selected projectors'),
+                                                              'Disconnect from selected projector'),
                                             triggers=self.on_disconnect_projector)
         self.one_toolbar.addSeparator()
         self.one_toolbar.add_toolbar_action('poweron_selected_projectors',
                                             text=translate('OpenLP.ProjectorManager',
-                                                           'Power on selected projectors'),
+                                                           'Power on selected projector'),
                                             icon=':/projector/projector_power_on.png',
                                             tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Power on selected projectors'),
+                                                              'Power on selected projector'),
                                             triggers=self.on_poweron_projector)
         self.one_toolbar.add_toolbar_action('poweroff_selected_projectors',
-                                            text=translate('OpenLP.ProjectorManager', 'Standby selected projectors'),
+                                            text=translate('OpenLP.ProjectorManager', 'Standby selected projector'),
                                             icon=':/projector/projector_power_off.png',
                                             tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Put selected projectors in standby'),
+                                                              'Put selected projector in standby'),
                                             triggers=self.on_poweroff_projector)
         self.one_toolbar.addSeparator()
         self.one_toolbar.add_toolbar_action('blank_selected_projectors',
                                             text=translate('OpenLP.ProjectorManager',
-                                                           'Blank selected projector screens'),
+                                                           'Blank selected projector screen'),
                                             icon=':/projector/projector_blank.png',
                                             tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Blank selected projector screens'),
+                                                              'Blank selected projector screen'),
                                             triggers=self.on_blank_projector)
         self.one_toolbar.add_toolbar_action('show_selected_projectors',
                                             ext=translate('OpenLP.ProjectorManager',
-                                                          'Show selected projector screens'),
+                                                          'Show selected projector screen'),
                                             icon=':/projector/projector_show.png',
                                             tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Show selected projector screens'),
+                                                              'Show selected projector screen'),
                                             triggers=self.on_show_projector)
         self.one_toolbar.addSeparator()
         self.layout.addWidget(self.one_toolbar)
@@ -164,54 +164,54 @@ class Ui_ProjectorManager(object):
         # Add many selection toolbar
         self.many_toolbar = OpenLPToolbar(widget)
         self.many_toolbar.add_toolbar_action('new_projector',
-                                            text=translate('OpenLP.Projector', 'Add Projector'),
-                                            icon=':/projector/projector_new.png',
-                                            tooltip=translate('OpenLP.ProjectorManager', 'Add a new projector'),
-                                            triggers=self.on_add_projector)
+                                             text=translate('OpenLP.Projector', 'Add Projector'),
+                                             icon=':/projector/projector_new.png',
+                                             tooltip=translate('OpenLP.ProjectorManager', 'Add a new projector'),
+                                             triggers=self.on_add_projector)
         self.many_toolbar.addSeparator()
         self.many_toolbar.add_toolbar_action('connect_selected_projectors',
-                                            text=translate('OpenLP.ProjectorManager',
-                                                           'Connect to selected projectors'),
-                                            icon=':/projector/projector_connect_tiled.png',
-                                            tootip=translate('OpenLP.ProjectorManager',
-                                                             'Connect to selected projectors'),
-                                            triggers=self.on_connect_projector)
+                                             text=translate('OpenLP.ProjectorManager',
+                                                            'Connect to selected projectors'),
+                                             icon=':/projector/projector_connect_tiled.png',
+                                             tootip=translate('OpenLP.ProjectorManager',
+                                                              'Connect to selected projectors'),
+                                             triggers=self.on_connect_projector)
         self.many_toolbar.add_toolbar_action('disconnect_selected_projectors',
-                                            text=translate('OpenLP.ProjectorManager',
-                                                           'Disconnect from selected projectors'),
-                                            icon=':/projector/projector_disconnect_tiled.png',
-                                            tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Disconnect from selected projectors'),
-                                            triggers=self.on_disconnect_projector)
+                                             text=translate('OpenLP.ProjectorManager',
+                                                            'Disconnect from selected projectors'),
+                                             icon=':/projector/projector_disconnect_tiled.png',
+                                             tooltip=translate('OpenLP.ProjectorManager',
+                                                               'Disconnect from selected projectors'),
+                                             triggers=self.on_disconnect_projector)
         self.many_toolbar.addSeparator()
         self.many_toolbar.add_toolbar_action('poweron_selected_projectors',
-                                            text=translate('OpenLP.ProjectorManager',
-                                                           'Power on selected projectors'),
-                                            icon=':/projector/projector_power_on_tiled.png',
-                                            tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Power on selected projectors'),
-                                            triggers=self.on_poweron_projector)
+                                             text=translate('OpenLP.ProjectorManager',
+                                                            'Power on selected projectors'),
+                                             icon=':/projector/projector_power_on_tiled.png',
+                                             tooltip=translate('OpenLP.ProjectorManager',
+                                                               'Power on selected projectors'),
+                                             triggers=self.on_poweron_projector)
         self.many_toolbar.add_toolbar_action('poweroff_selected_projectors',
-                                            text=translate('OpenLP.ProjectorManager', 'Standby selected projectors'),
-                                            icon=':/projector/projector_power_off_tiled.png',
-                                            tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Put selected projectors in standby'),
-                                            triggers=self.on_poweroff_projector)
+                                             text=translate('OpenLP.ProjectorManager', 'Standby selected projectors'),
+                                             icon=':/projector/projector_power_off_tiled.png',
+                                             tooltip=translate('OpenLP.ProjectorManager',
+                                                               'Put selected projectors in standby'),
+                                             triggers=self.on_poweroff_projector)
         self.many_toolbar.addSeparator()
         self.many_toolbar.add_toolbar_action('blank_selected_projectors',
-                                            text=translate('OpenLP.ProjectorManager',
-                                                           'Blank selected projector screens'),
-                                            icon=':/projector/projector_blank_tiled.png',
-                                            tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Blank selected projector screens'),
-                                            triggers=self.on_blank_projector)
+                                             text=translate('OpenLP.ProjectorManager',
+                                                            'Blank selected projector screens'),
+                                             icon=':/projector/projector_blank_tiled.png',
+                                             tooltip=translate('OpenLP.ProjectorManager',
+                                                               'Blank selected projector screens'),
+                                             triggers=self.on_blank_projector)
         self.many_toolbar.add_toolbar_action('show_selected_projectors',
-                                            ext=translate('OpenLP.ProjectorManager',
-                                                          'Show selected projector screens'),
-                                            icon=':/projector/projector_show_tiled.png',
-                                            tooltip=translate('OpenLP.ProjectorManager',
-                                                              'Show selected projector screens'),
-                                            triggers=self.on_show_projector)
+                                             ext=translate('OpenLP.ProjectorManager',
+                                                           'Show selected projector screens'),
+                                             icon=':/projector/projector_show_tiled.png',
+                                             tooltip=translate('OpenLP.ProjectorManager',
+                                                               'Show selected projector screens'),
+                                             triggers=self.on_show_projector)
         self.many_toolbar.addSeparator()
         self.layout.addWidget(self.many_toolbar)
         self.projector_one_widget = QtGui.QWidgetAction(self.many_toolbar)
@@ -319,12 +319,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
     def bootstrap_post_set_up(self):
         self.load_projectors()
         self.projector_form = ProjectorWizard(self, projectordb=self.projectordb)
-        '''
-        self.one_toolbar.set_widget_enabled(['connect_selected_projectors', 'disconnect_selected_projectors',
-                                             'poweron_selected_projectors', 'poweroff_selected_projectors',
-                                             'blank_selected_projectors', 'show_selected_projectors'],
-                                            enabled=False)
-        '''
         self.projector_form.edit_page.newProjector.connect(self.add_projector_from_wizard)
         self.projector_form.edit_page.editProjector.connect(self.edit_projector_from_wizard)
         self.projector_list_widget.itemSelectionChanged.connect(self.update_icons)
@@ -453,16 +447,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         """
         self.projector_form.exec_()
 
-    def on_blank_all_projectors(self, opt=None):
-        """
-        Cycles through projector list to send blank screen command
-
-        :param opt: Needed by PyQt4
-        :returns: None
-        """
-        for item in self.projector_list:
-            self.on_blank_projector(item)
-
     def on_blank_projector(self, opt=None):
         """
         Calls projector thread to send blank screen command
@@ -504,16 +488,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                     projector.link.connect_to_host()
                 except:
                     continue
-
-    def on_connect_all_projectors(self, opt=None):
-        """
-        Cycles through projector list to tell threads to connect to projectors
-
-        :param opt: Needed by PyQt4
-        :returns: None
-        """
-        for item in self.projector_list:
-            self.on_connect_projector(item)
 
     def on_delete_projector(self, opt=None):
         """
@@ -589,16 +563,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                 except:
                     continue
 
-    def on_disconnect_all_projectors(self, opt=None):
-        """
-        Cycles through projector list to have projector threads disconnect
-
-        :param opt: Needed by PyQt4
-        :returns: None
-        """
-        for item in self.projector_list:
-            self.on_disconnect_projector(item)
-
     def on_edit_projector(self, opt=None):
         """
         Calls wizard with selected projector to edit information
@@ -615,16 +579,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         record = self.projectordb.get_projector_by_ip(projector.link.ip)
         self.projector_form.exec_(record)
         new_record = self.projectordb.get_projector_by_id(record.id)
-
-    def on_poweroff_all_projectors(self, opt=None):
-        """
-        Cycles through projector list to send Power Off command
-
-        :param opt: Needed by PyQt4
-        :returns: None
-        """
-        for item in self.projector_list:
-            self.on_poweroff_projector(item)
 
     def on_poweroff_projector(self, opt=None):
         """
@@ -647,16 +601,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                 except:
                     continue
 
-    def on_poweron_all_projectors(self, opt=None):
-        """
-        Cycles through projector list to send Power On command
-
-        :param opt: Needed by PyQt4
-        :returns: None
-        """
-        for item in self.projector_list:
-            self.on_poweron_projector(item)
-
     def on_poweron_projector(self, opt=None):
         """
         Calls projector link to send Power On command
@@ -677,16 +621,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                     projector.link.set_power_on()
                 except:
                     continue
-
-    def on_show_all_projectors(self, opt=None):
-        """
-        Cycles through projector list to send open shutter command
-
-        :param opt: Needed by PyQt4
-        :returns: None
-        """
-        for item in self.projector_list:
-            self.on_show_projector(item.link)
 
     def on_show_projector(self, opt=None):
         """
@@ -959,14 +893,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         self.no_toolbar.setHidden(False if count == 0 else True)
         self.one_toolbar.setHidden(False if count == 1 else True)
         self.many_toolbar.setHidden(False if count > 1 else True)
-        '''
-        enable = False if count == 0 else True
-        item_list = ['connect_selected_projectors', 'disconnect_selected_projectors',
-                     'poweron_selected_projectors', 'poweroff_selected_projectors',
-                     'blank_selected_projectors', 'show_selected_projectors']
-        for item in item_list:
-            self.one_toolbar.set_widget_enabled([item,], enabled=enable)
-        '''
 
     @pyqtSlot(str)
     def authentication_error(self, name):
