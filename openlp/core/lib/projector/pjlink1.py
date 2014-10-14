@@ -421,9 +421,9 @@ class PJLink1(QTcpSocket):
         else:
             out = '%s%s %s%s' % (salt, cmd, opts, CR)
         try:
+            self.projectorNetwork.emit(S_NETWORK_SENDING)
             sent = self.write(out)
             self.waitForBytesWritten(2000)  # 2 seconds should be enough
-            self.projectorNetwork.emit(S_NETWORK_RECEIVED)
             if sent == -1:
                 # Network error?
                 self.change_status(E_NETWORK,
