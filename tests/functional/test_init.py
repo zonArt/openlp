@@ -83,7 +83,7 @@ class TestInit(TestCase, TestMixin):
             'version': '2.2.0',
             'build': 'bzr000'
         }
-        Settings().setValue('core/data version', '2.2.0')
+        Settings().setValue('core/application version', '2.2.0')
         with patch('openlp.core.get_application_version') as mocked_get_application_version,\
                 patch('openlp.core.QtGui.QMessageBox.question') as mocked_question:
             mocked_get_application_version.return_value = MOCKED_VERSION
@@ -93,7 +93,7 @@ class TestInit(TestCase, TestMixin):
             self.openlp.backup_on_upgrade(old_install)
 
             # THEN: It should not ask if we want to create a backup
-            self.assertEqual(Settings().value('core/data version'), '2.2.0', 'Version should be the same!')
+            self.assertEqual(Settings().value('core/application version'), '2.2.0', 'Version should be the same!')
             self.assertEqual(mocked_question.call_count, 0, 'No question should have been asked!')
 
     def backup_on_upgrade_test(self):
@@ -107,7 +107,7 @@ class TestInit(TestCase, TestMixin):
             'version': '2.2.0',
             'build': 'bzr000'
         }
-        Settings().setValue('core/data version', '2.0.5')
+        Settings().setValue('core/application version', '2.0.5')
         with patch('openlp.core.get_application_version') as mocked_get_application_version,\
                 patch('openlp.core.QtGui.QMessageBox.question') as mocked_question:
             mocked_get_application_version.return_value = MOCKED_VERSION
@@ -117,5 +117,5 @@ class TestInit(TestCase, TestMixin):
             self.openlp.backup_on_upgrade(old_install)
 
             # THEN: It should ask if we want to create a backup
-            self.assertEqual(Settings().value('core/data version'), '2.2.0', 'Version should be upgraded!')
+            self.assertEqual(Settings().value('core/application version'), '2.2.0', 'Version should be upgraded!')
             self.assertEqual(mocked_question.call_count, 1, 'A question should have been asked!')

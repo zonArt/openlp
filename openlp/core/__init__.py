@@ -201,11 +201,11 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
 
         :param has_run_wizard: OpenLP has been run before
         """
-        data_version = Settings().value('core/data version')
+        data_version = Settings().value('core/application version')
         openlp_version = get_application_version()['version']
         # New installation, no need to create backup
         if not has_run_wizard:
-            Settings().setValue('core/data version', openlp_version)
+            Settings().setValue('core/application version', openlp_version)
         # If data_version is different from the current version ask if we should backup the data folder
         elif data_version != openlp_version:
             if QtGui.QMessageBox.question(None, translate('OpenLP', 'Backup'),
@@ -227,7 +227,7 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
                                               translate('OpenLP', 'A backup of the data folder has been created at %s')
                                               % data_folder_backup_path)
             # Update the version in the settings
-            Settings().setValue('core/data version', openlp_version)
+            Settings().setValue('core/application version', openlp_version)
 
     def process_events(self):
         """
