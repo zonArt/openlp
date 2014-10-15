@@ -606,8 +606,10 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                                                  projector.link.pjlink_name)
             message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Manufacturer'),
                                                  projector.link.manufacturer)
-            message = '%s<b>%s</b>: %s<br /><br />' % (message, translate('OpenLP.ProjectorManager', 'Model'),
-                                                       projector.link.model)
+            message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Model'),
+                                                 projector.link.model)
+            message = '%s<b>%s</b>: %s<br /><br />' % (message, translate('OpenLP.ProjectorManager', 'Other info'),
+                                                       projector.link.other_info)
             message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Power status'),
                                                  ERROR_MSG[projector.link.power])
             message = '%s<b>%s</b>: %s<br />' % (message, translate('OpenLP.ProjectorManager', 'Shutter is'),
@@ -616,15 +618,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             message = '%s<b>%s</b>: %s<br />' % (message,
                                                  translate('OpenLP.ProjectorManager', 'Current source input is'),
                                                  projector.link.source)
-            message = '%s<hr /><br />' % message
-            if projector.link.projector_errors is None:
-                message = '%s%s' % (message, translate('OpenLP.ProjectorManager', 'No current errors or warnings'))
-            else:
-                message = '%s<b>%s</b>' % (message, translate('OpenLP.ProjectorManager', 'Current errors/warnings'))
-                for (key, val) in projector.link.projector_errors.items():
-                    message = '%s<b>%s</b>: %s<br />' % (message, key, ERROR_MSG[val])
-            message = '%s<hr /><br />' % message
-            message = '%s<b>%s</b><br />' % (message, translate('OpenLP.ProjectorManager', 'Lamp status'))
             count = 1
             for item in projector.link.lamp:
                 message = '%s <b>%s %s</b> (%s) %s: %s<br />' % (message,
@@ -636,6 +629,13 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                                                                  translate('OpenLP.ProjectorManager', 'Hours'),
                                                                  item['Hours'])
                 count = count + 1
+            message = '%s<hr /><br />' % message
+            if projector.link.projector_errors is None:
+                message = '%s%s' % (message, translate('OpenLP.ProjectorManager', 'No current errors or warnings'))
+            else:
+                message = '%s<b>%s</b>' % (message, translate('OpenLP.ProjectorManager', 'Current errors/warnings'))
+                for (key, val) in projector.link.projector_errors.items():
+                    message = '%s<b>%s</b>: %s<br />' % (message, key, ERROR_MSG[val])
         QtGui.QMessageBox.information(self, translate('OpenLP.ProjectorManager', 'Projector Information'), message)
 
     def _add_projector(self, projector):
