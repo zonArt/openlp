@@ -791,6 +791,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             message = ERROR_MSG[status] if msg is None else msg
         log.debug('(%s) updateStatus(status=%s) message: "%s"' % (item.link.name, status_code, message))
         if status in STATUS_ICONS:
+            if item.status == status:
+                return
+            item.status = status
             item.icon = QtGui.QIcon(QtGui.QPixmap(STATUS_ICONS[status]))
             if status in ERROR_STRING:
                 status_code = ERROR_STRING[status]
@@ -895,6 +898,7 @@ class ProjectorItem(QObject):
         self.projectordb_item = None
         self.poll_time = None
         self.socket_timeout = None
+        self.status = S_NOT_CONNECTED
         super(ProjectorItem, self).__init__()
 
 
