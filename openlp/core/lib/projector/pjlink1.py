@@ -348,11 +348,16 @@ class PJLink1(QTcpSocket):
             self.timer.setInterval(2000)  # Set 2 seconds for initial information
             self.timer.start()
 
+    @pyqtSlot()
     def get_data(self):
+        log.debug('(%s) get_data() Received readyRead signal' % self.ip)
+        return self._get_data()
+
+    def _get_data(self):
         """
         Socket interface to retrieve data.
         """
-        log.debug('(%s) Reading data' % self.ip)
+        log.debug('(%s) get_data(): Reading data' % self.ip)
         if self.state() != self.ConnectedState:
             log.debug('(%s) get_data(): Not connected - returning' % self.ip)
             return
@@ -370,28 +375,28 @@ class PJLink1(QTcpSocket):
             log.debug('(%s) get_data(): Packet length < 7: "%s"' % (self.ip, data))
             self.projectorReceivedData.emit()
             return
-        log.debug('(%s) Checking new data "%s"' % (self.ip, data))
+        log.debug('(%s) get_data(): Checking new data "%s"' % (self.ip, data))
         if data.upper().startswith('PJLINK'):
             # Reconnected from remote host disconnect ?
             self.check_login(data)
             self.projectorReceivedData.emit()
             return
         elif '=' not in data:
-            log.warn('(%s) Invalid packet received' % self.ip)
+            log.warn('(%s) get_data(): Invalid packet received' % self.ip)
             self.projectorReceivedData.emit()
             return
         data_split = data.split('=')
         try:
             (prefix, class_, cmd, data) = (data_split[0][0], data_split[0][1], data_split[0][2:], data_split[1])
         except ValueError as e:
-            log.warn('(%s) Invalid packet - expected header + command + data' % self.ip)
-            log.warn('(%s) Received data: "%s"' % (self.ip, read))
+            log.warn('(%s) get_data(): Invalid packet - expected header + command + data' % self.ip)
+            log.warn('(%s) get_data(): Received data: "%s"' % (self.ip, read))
             self.change_status(E_INVALID_DATA)
             self.projectorReceivedData.emit()
             return
 
         if not self.check_command(cmd):
-            log.warn('(%s) Invalid packet - unknown command "%s"' % (self.ip, cmd))
+            log.warn('(%s) get_data(): Invalid packet - unknown command "%s"' % (self.ip, cmd))
             self.projectorReceivedData.emit()
             return
         return self.process_command(cmd, data)
@@ -414,6 +419,7 @@ class PJLink1(QTcpSocket):
             self.change_status(err, self.errorString())
         else:
             self.change_status(E_NETWORK, self.errorString())
+        self.projectorUpdateIcons.emit()
         return
 
     def send_command(self, cmd, opts='?', salt=None):
@@ -425,17 +431,19 @@ class PJLink1(QTcpSocket):
             self.send_queue = []
             return
         self.projectorNetwork.emit(S_NETWORK_SENDING)
-        log.debug('(%s) Sending cmd="%s" opts="%s" %s' % (self.ip,
-                                                          cmd,
-                                                          opts,
-                                                          '' if salt is None else 'with hash'))
+        log.debug('(%s) send_command(): Sending cmd="%s" opts="%s" %s' % (self.ip,
+                                                                          cmd,
+                                                                          opts,
+                                                                          '' if salt is None else 'with hash'))
         if salt is None:
             out = '%s%s %s%s' % (PJLINK_HEADER, cmd, opts, CR)
         else:
             out = '%s%s %s%s' % (salt, cmd, opts, CR)
         if out in self.send_queue:
             # Already there, so don't add
-            log.debug('(%s) send_command(out=%s) Already in queue - skipping' % (self.ip, out))
+            log.debug('(%s) send_command(out=%s) Already in queue - skipping' % (self.ip, out.strip()))
+        elif len(self.send_queue) == 0:
+            return self._send_string(out)
         else:
             self.send_queue.append(out)
             if not self.send_busy:
@@ -454,6 +462,11 @@ class PJLink1(QTcpSocket):
         :returns: None
         """
         log.debug('(%s) _send_string()' % self.ip)
+        if self.state() != self.ConnectedState:
+            log.debug('(%s) _send_string() Not connected - abort' % self.ip)
+            self.send_queue = []
+            self.send_busy = False
+            return
         if data is not None:
             out = data
             log.debug('(%s) _send_string(data=%s)' % (self.ip, out))
@@ -466,7 +479,7 @@ class PJLink1(QTcpSocket):
             self.send_busy = False
             return
         self.send_busy = True
-        log.debug('(%s) _sed_string(): Sending "%s"' % (self.ip, out))
+        log.debug('(%s) _send_string(): Sending "%s"' % (self.ip, out))
         log.debug('(%s) _send_string(): Queue = %s' % (self.ip, self.send_queue))
         try:
             self.projectorNetwork.emit(S_NETWORK_SENDING)
