@@ -218,19 +218,19 @@ class PJLink1(QTcpSocket):
         self.timer.start()
         for command in ['POWR', 'ERST', 'LAMP', 'AVMT', 'INPT']:
             # Changeable information
-            self.send_command(command)
+            self.send_command(command, queue=True)
         if self.power == S_ON and self.source_available is None:
-            self.send_command('INST')
+            self.send_command('INST', queue=True)
         if self.other_info is None:
-            self.send_command('INFO')
+            self.send_command('INFO', queue=True)
         if self.manufacturer is None:
-            self.send_command('INF1')
+            self.send_command('INF1', queue=True)
         if self.model is None:
-            self.send_command('INF2')
+            self.send_command('INF2', queue=True)
         if self.pjlink_name is None:
-            self.send_command('NAME')
+            self.send_command('NAME', queue=True)
         if self.power == S_ON and self.source_available is None:
-            self.send_command('INST')
+            self.send_command('INST', queue=True)
 
     def _get_status(self, status):
         """
@@ -422,7 +422,7 @@ class PJLink1(QTcpSocket):
         self.projectorUpdateIcons.emit()
         return
 
-    def send_command(self, cmd, opts='?', salt=None):
+    def send_command(self, cmd, opts='?', salt=None, queue=False):
         """
         Add command to output queue if not already in queue
         """
@@ -442,12 +442,11 @@ class PJLink1(QTcpSocket):
         if out in self.send_queue:
             # Already there, so don't add
             log.debug('(%s) send_command(out=%s) Already in queue - skipping' % (self.ip, out.strip()))
-        elif len(self.send_queue) == 0:
+        elif not queue and len(self.send_queue) == 0 and not self.send_busy:
             return self._send_string(out)
         else:
             self.send_queue.append(out)
-            if not self.send_busy:
-                self._send_string()
+            self.projectorReceivedData.emit()
 
     @pyqtSlot()
     def _send_command(self):
@@ -701,6 +700,7 @@ class PJLink1(QTcpSocket):
         """
         if self.state() != self.ConnectedState:
             log.warn('(%s) disconnect_from_host(): Not connected - returning' % self.ip)
+            self.projectorUpdateIcons.emit()
             return
         self.disconnectFromHost()
         try:
@@ -709,6 +709,7 @@ class PJLink1(QTcpSocket):
             pass
         self.change_status(S_NOT_CONNECTED)
         self.reset_information()
+        self.projectorUpdateIcons.emit()
 
     def get_available_inputs(self):
         """
