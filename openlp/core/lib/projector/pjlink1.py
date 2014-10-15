@@ -474,6 +474,8 @@ class PJLink1(QTcpSocket):
         # Command succeeded - no extra information
         if data.upper() == 'OK':
             log.debug('(%s) Command returned OK' % self.ip)
+            # A command returned successfully, recheck data
+            self.poll_loop()
             return
 
         if cmd in self.PJLINK1_FUNC:
