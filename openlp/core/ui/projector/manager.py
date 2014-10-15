@@ -140,7 +140,7 @@ class Ui_ProjectorManager(object):
                                             tooltip=translate('OpenLP.ProjectorManager',
                                                               'Put selected projector in standby'),
                                             triggers=self.on_poweroff_projector)
-        self.one_toolbar.addSeparator()
+        #self.one_toolbar.addSeparator()
         self.one_toolbar.add_toolbar_action('blank_projector',
                                             text=translate('OpenLP.ProjectorManager',
                                                            'Blank selected projector screen'),
@@ -155,7 +155,6 @@ class Ui_ProjectorManager(object):
                                             tooltip=translate('OpenLP.ProjectorManager',
                                                               'Show selected projector screen'),
                                             triggers=self.on_show_projector)
-        self.one_toolbar.addSeparator()
         self.layout.addWidget(self.one_toolbar)
         self.projector_one_widget = QtGui.QWidgetAction(self.one_toolbar)
         self.projector_one_widget.setObjectName('projector_one_toolbar_widget')
