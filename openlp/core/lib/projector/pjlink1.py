@@ -123,11 +123,14 @@ class PJLink1(QTcpSocket):
             # Convert seconds to milliseconds
             self.poll_time = kwargs['poll_time'] * 1000
         else:
-            # Default
+            # Default 20 seconds
             self.poll_time = 20000
         if 'socket_timeout' in kwargs:
             # Convert seconds to milliseconds
             self.socket_timeout = kwargs['socket_timeout'] * 1000
+        else:
+            # Default is 5 seconds
+            self.socket_timeout = 5000
         self.i_am_running = False
         self.status_connect = S_NOT_CONNECTED
         self.last_command = ''
