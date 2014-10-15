@@ -841,12 +841,16 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                 self.get_toolbar_item('source_projector', hidden=True)
                 self.get_toolbar_item('edit_projector', enabled=True)
                 self.get_toolbar_item('delete_projector', enabled=True)
-            self.get_toolbar_item('connect_projector', enabled=True)
-            self.get_toolbar_item('disconnect_projector', enabled=True)
-            self.get_toolbar_item('poweron_projector', enabled=True)
-            self.get_toolbar_item('poweroff_projector', enabled=True)
-            self.get_toolbar_item('blank_projector', enabled=True)
-            self.get_toolbar_item('show_projector', enabled=True)
+            self.get_toolbar_item('connect_projector', enabled=not connected)
+            self.get_toolbar_item('disconnect_projector', enabled=connected)
+            self.get_toolbar_item('poweron_projector', enabled=projector.link.power == S_STANDBY)
+            self.get_toolbar_item('poweroff_projector', enabled=projector.link.power == S_ON)
+            if projector.link.shutter is not None:
+                self.get_toolbar_item('blank_projector', enabled=not projector.link.shutter)
+                self.get_toolbar_item('show_projector', enabled=projector.link.shutter)
+            else:
+                self.get_toolbar_item('blank_projector', enabled=False)
+                self.get_toolbar_item('show_projector', enabled=False)
         else:
             self.get_toolbar_item('edit_projector', enabled=False)
             self.get_toolbar_item('delete_projector', enabled=False)
