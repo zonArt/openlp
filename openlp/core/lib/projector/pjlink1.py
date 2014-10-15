@@ -467,7 +467,7 @@ class PJLink1(QTcpSocket):
             return
         self.send_busy = True
         log.debug('(%s) _sed_string(): Sending "%s"' % (self.ip, out))
-        log.debug('(%s) _send_string(): Queue = %s' % ( self.ip, self.send_queue))
+        log.debug('(%s) _send_string(): Queue = %s' % (self.ip, self.send_queue))
         try:
             self.projectorNetwork.emit(S_NETWORK_SENDING)
             sent = self.write(out)
@@ -637,11 +637,11 @@ class PJLink1(QTcpSocket):
         Error status. See PJLink Specifications for format.
         """
         try:
-            dontcare = int(data)
+            datacheck = int(data)
         except ValueError:
             # Bad data - ignore
             return
-        if int(data) == 0:
+        if datacheck == 0:
             self.projector_errors = None
         else:
             self.projector_errors = {}

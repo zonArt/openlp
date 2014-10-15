@@ -259,7 +259,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         self.projector_form.edit_page.editProjector.connect(self.edit_projector_from_wizard)
         self.projector_list_widget.itemSelectionChanged.connect(self.update_icons)
 
-
     def context_menu(self, point):
         """
         Build the Right Click Context menu and set state.
