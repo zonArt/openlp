@@ -140,7 +140,6 @@ class Ui_ProjectorManager(object):
                                             tooltip=translate('OpenLP.ProjectorManager',
                                                               'Put selected projector in standby'),
                                             triggers=self.on_poweroff_projector)
-        #self.one_toolbar.addSeparator()
         self.one_toolbar.add_toolbar_action('blank_projector',
                                             text=translate('OpenLP.ProjectorManager',
                                                            'Blank selected projector screen'),
@@ -259,6 +258,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         self.projector_form.edit_page.newProjector.connect(self.add_projector_from_wizard)
         self.projector_form.edit_page.editProjector.connect(self.edit_projector_from_wizard)
         self.projector_list_widget.itemSelectionChanged.connect(self.update_icons)
+
 
     def context_menu(self, point):
         """
@@ -458,6 +458,10 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             pass
         try:
             projector.link.no_authentication_error.disconnect(self.no_authentication_error)
+        except TypeError:
+            pass
+        try:
+            projector.link.projectorUpdateIcons.disconnect(self.update_icons)
         except TypeError:
             pass
         try:
@@ -700,6 +704,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         item.link.changeStatus.connect(self.update_status)
         item.link.projectorAuthentication.connect(self.authentication_error)
         item.link.projectorNoAuthentication.connect(self.no_authentication_error)
+        item.link.projectorUpdateIcons.connect(self.update_icons)
         timer = QtCore.QTimer(self)
         timer.setInterval(self.poll_time)
         timer.timeout.connect(item.link.poll_loop)
@@ -849,8 +854,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             self.get_toolbar_item('poweron_projector', enabled=projector.link.power == S_STANDBY)
             self.get_toolbar_item('poweroff_projector', enabled=projector.link.power == S_ON)
             if projector.link.shutter is not None:
-                self.get_toolbar_item('blank_projector', enabled=not projector.link.shutter)
-                self.get_toolbar_item('show_projector', enabled=projector.link.shutter)
+                self.get_toolbar_item('blank_projector', enabled=(connected and power and not projector.link.shutter))
+                self.get_toolbar_item('show_projector', enabled=(connected and power and projector.link.shutter))
             else:
                 self.get_toolbar_item('blank_projector', enabled=False)
                 self.get_toolbar_item('show_projector', enabled=False)
