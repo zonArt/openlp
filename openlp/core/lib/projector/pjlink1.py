@@ -636,6 +636,11 @@ class PJLink1(QTcpSocket):
         """
         Error status. See PJLink Specifications for format.
         """
+        try:
+            dontcare = int(data)
+        except ValueError:
+            # Bad data - ignore
+            return
         if int(data) == 0:
             self.projector_errors = None
         else:
