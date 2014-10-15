@@ -841,7 +841,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             power = projector.link.power == S_ON
             if connected:
                 self.get_toolbar_item('view_projector', enabled=True)
-                self.get_toolbar_item('source_projector', enabled=connected & power)
+                self.get_toolbar_item('source_projector',
+                                      enabled=connected and power and projector.link.source_available is not None)
                 self.get_toolbar_item('edit_projector', hidden=True)
                 self.get_toolbar_item('delete_projector', hidden=True)
             else:

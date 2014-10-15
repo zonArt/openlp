@@ -475,17 +475,17 @@ class PJLink1(QTcpSocket):
             return
         if data is not None:
             out = data
-            log.debug('(%s) _send_string(data=%s)' % (self.ip, out))
+            log.debug('(%s) _send_string(data=%s)' % (self.ip, out.strip()))
         elif len(self.send_queue) != 0:
             out = self.send_queue.pop(0)
-            log.debug('(%s) _send_string(queued data=%s)' % (self.ip, out))
+            log.debug('(%s) _send_string(queued data=%s)' % (self.ip, out.strip()))
         else:
             # No data to send
             log.debug('(%s) _send_string(): No data to send' % self.ip)
             self.send_busy = False
             return
         self.send_busy = True
-        log.debug('(%s) _send_string(): Sending "%s"' % (self.ip, out))
+        log.debug('(%s) _send_string(): Sending "%s"' % (self.ip, out.strip()))
         log.debug('(%s) _send_string(): Queue = %s' % (self.ip, self.send_queue))
         try:
             self.projectorNetwork.emit(S_NETWORK_SENDING)
@@ -550,7 +550,12 @@ class PJLink1(QTcpSocket):
         lamps = []
         data_dict = data.split()
         while data_dict:
-            fill = {'Hours': int(data_dict[0]), 'On': False if data_dict[1] == '0' else True}
+            try:
+                fill = {'Hours': int(data_dict[0]), 'On': False if data_dict[1] == '0' else True}
+            except ValueError:
+                # In case of invalid entry
+                log.warn('(%s) process_lamp(): Invalid data "%s"' %( self.ip, data))
+                return
             lamps.append(fill)
             data_dict.pop(0)  # Remove lamp hours
             data_dict.pop(0)  # Remove lamp on/off
@@ -653,6 +658,7 @@ class PJLink1(QTcpSocket):
         for source in check:
             sources.append(source)
         self.source_available = sources
+        self.projectorUpdateIcons.emit()
         return
 
     def process_erst(self, data):
