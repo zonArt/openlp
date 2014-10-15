@@ -172,6 +172,7 @@ class PJLink1(QTcpSocket):
         self.fan = None
         self.source_available = None
         self.source = None
+        self.other_info = None
         if hasattr(self, 'timer'):
             self.timer.stop()
 
@@ -216,6 +217,9 @@ class PJLink1(QTcpSocket):
             self.waitForReadyRead()
         if self.power == S_ON and self.source_available is None:
             self.send_command('INST')
+            self.waitForReadyRead()
+        if self.other_info is None:
+            self.send_command('INFO')
             self.waitForReadyRead()
         if self.manufacturer is None:
             self.send_command('INF1')
@@ -362,9 +366,9 @@ class PJLink1(QTcpSocket):
         self.projectorNetwork.emit(S_NETWORK_RECEIVED)
         data_in = decode(read, 'ascii')
         data = data_in.strip()
-        if len(data) < 8:
+        if len(data) < 7:
             # Not enough data for a packet
-            log.debug('(%s) get_data(): Packet length < 8: "%s"' % (self.ip, data))
+            log.debug('(%s) get_data(): Packet length < 7: "%s"' % (self.ip, data))
             return
         log.debug('(%s) Checking new data "%s"' % (self.ip, data))
         if data.upper().startswith('PJLINK'):
