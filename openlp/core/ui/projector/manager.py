@@ -140,6 +140,7 @@ class Ui_ProjectorManager(object):
                                             tooltip=translate('OpenLP.ProjectorManager',
                                                               'Put selected projector in standby'),
                                             triggers=self.on_poweroff_projector)
+        self.one_toolbar.addSeparator()
         self.one_toolbar.add_toolbar_action('blank_projector',
                                             text=translate('OpenLP.ProjectorManager',
                                                            'Blank selected projector screen'),
