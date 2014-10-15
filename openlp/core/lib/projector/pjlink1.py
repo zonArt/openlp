@@ -762,27 +762,32 @@ class PJLink1(QTcpSocket):
         elif src not in self.source_available:
             return
         self.send_command(cmd='INPT', opts=src)
+        self.poll_loop()
 
     def set_power_on(self):
         """
         Send command to turn power to on.
         """
         self.send_command(cmd='POWR', opts='1')
+        self.poll_loop()
 
     def set_power_off(self):
         """
         Send command to turn power to standby.
         """
         self.send_command(cmd='POWR', opts='0')
+        self.poll_loop()
 
     def set_shutter_closed(self):
         """
         Send command to set shutter to closed position.
         """
         self.send_command(cmd='AVMT', opts='11')
+        self.poll_loop()
 
     def set_shutter_open(self):
         """
         Send command to set shutter to open position.
         """
         self.send_command(cmd='AVMT', opts='10')
+        self.poll_loop()
