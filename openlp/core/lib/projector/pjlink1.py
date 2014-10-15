@@ -431,10 +431,10 @@ class PJLink1(QTcpSocket):
             self.send_queue = []
             return
         self.projectorNetwork.emit(S_NETWORK_SENDING)
-        log.debug('(%s) send_command(): Sending cmd="%s" opts="%s" %s' % (self.ip,
-                                                                          cmd,
-                                                                          opts,
-                                                                          '' if salt is None else 'with hash'))
+        log.debug('(%s) send_command(): Building cmd="%s" opts="%s" %s' % (self.ip,
+                                                                           cmd,
+                                                                           opts,
+                                                                           '' if salt is None else 'with hash'))
         if salt is None:
             out = '%s%s %s%s' % (PJLINK_HEADER, cmd, opts, CR)
         else:
@@ -442,11 +442,18 @@ class PJLink1(QTcpSocket):
         if out in self.send_queue:
             # Already there, so don't add
             log.debug('(%s) send_command(out=%s) Already in queue - skipping' % (self.ip, out.strip()))
-        elif not queue and len(self.send_queue) == 0 and not self.send_busy:
+        elif not queue and len(self.send_queue) == 0:
+
             return self._send_string(out)
         else:
+            log.debug('(%s) send_command(out=%s) adding to queue' % (self.ip, out.strip()))
             self.send_queue.append(out)
-            self.projectorReceivedData.emit()
+            if not self.send_busy:
+                self.projectorReceivedData.emit()
+        log.debug('(%s) send_command(): send_busy is %s' % (self.ip, self.send_busy))
+        if not self.send_busy:
+            log.debug('(%s) send_command() calling _send_string()')
+            self._send_string()
 
     @pyqtSlot()
     def _send_command(self):
@@ -519,17 +526,21 @@ class PJLink1(QTcpSocket):
                 # Projector/display error
                 self.change_status(E_PROJECTOR)
             self.projectorReceivedData.emit()
-
+            self.send_busy = False
+            return
         # Command succeeded - no extra information
-        if data.upper() == 'OK':
+        elif data.upper() == 'OK':
             log.debug('(%s) Command returned OK' % self.ip)
             # A command returned successfully, recheck data
             self.projectorReceivedData.emit()
+            self.send_busy = False
+            return
 
         if cmd in self.PJLINK1_FUNC:
             self.PJLINK1_FUNC[cmd](data)
         else:
             log.warn('(%s) Invalid command %s' % (self.ip, cmd))
+        self.send_busy = False
         self.projectorReceivedData.emit()
 
     def process_lamp(self, data):
