@@ -46,6 +46,7 @@ from openlp.core.lib import build_icon
 from openlp.core.lib.projector.db import Projector
 from openlp.core.lib.projector.constants import PJLINK_PORT
 
+
 class Ui_ProjectorEditForm(object):
     """
     The :class:`~opelp.core.lib.ui.projector.editform.Ui_ProjectorEdiForm` class defines
@@ -63,7 +64,7 @@ class Ui_ProjectorEditForm(object):
         self.dialog_layout = QGridLayout(edit_projector_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
         self.dialog_layout.setSpacing(8)
-        self.dialog_layout.setContentsMargins(8,8,8,8)
+        self.dialog_layout.setContentsMargins(8, 8, 8, 8)
         # IP Address
         self.ip_label = QLabel(edit_projector_dialog)
         self.ip_label.setObjectName('projector_edit_ip_label')
@@ -108,8 +109,8 @@ class Ui_ProjectorEditForm(object):
         self.dialog_layout.addWidget(self.notes_text, 5, 1)
         # Time for the buttons
         self.button_box = QDialogButtonBox(QDialogButtonBox.Help |
-                                    QDialogButtonBox.Save |
-                                    QDialogButtonBox.Cancel)
+                                           QDialogButtonBox.Save |
+                                           QDialogButtonBox.Cancel)
         self.dialog_layout.addWidget(self.button_box, 8, 0, 1, 2)
 
     def retranslateUi(self, edit_projector_dialog):
@@ -133,6 +134,7 @@ class Ui_ProjectorEditForm(object):
         self.location_text.setText(self.projector.location)
         self.notes_label.setText(translate('OpenLP.ProjectorEditForm', 'Notes'))
         self.notes_text.insertPlainText(self.projector.notes)
+
 
 class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
     """

@@ -566,7 +566,7 @@ class PJLink1(QTcpSocket):
                 fill = {'Hours': int(data_dict[0]), 'On': False if data_dict[1] == '0' else True}
             except ValueError:
                 # In case of invalid entry
-                log.warn('(%s) process_lamp(): Invalid data "%s"' %( self.ip, data))
+                log.warn('(%s) process_lamp(): Invalid data "%s"' % (self.ip, data))
                 return
             lamps.append(fill)
             data_dict.pop(0)  # Remove lamp hours

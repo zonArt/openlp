@@ -45,7 +45,6 @@ from openlp.core.lib.ui import create_widget_action
 from openlp.core.lib.projector.constants import *
 from openlp.core.lib.projector.db import ProjectorDB
 from openlp.core.lib.projector.pjlink1 import PJLink1
-#from openlp.core.ui.projector.wizard import ProjectorWizard
 from openlp.core.ui.projector.editform import ProjectorEditForm
 
 # Dict for matching projector status to display icon
