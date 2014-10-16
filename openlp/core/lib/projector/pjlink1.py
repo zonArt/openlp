@@ -593,6 +593,9 @@ class PJLink1(QTcpSocket):
             self.change_status(PJLINK_POWR_STATUS[data])
             if update_icons:
                 self.projectorUpdateIcons.emit()
+                # Update the input sources available
+                if power == S_ON:
+                    self.send_command('INST')
         else:
             # Log unknown status response
             log.warn('Unknown power response: %s' % data)
