@@ -125,12 +125,12 @@ from .mediadockmanager import MediaDockManager
 from .servicemanager import ServiceManager
 from .thememanager import ThemeManager
 from .projector.manager import ProjectorManager
-from .projector.wizard import ProjectorWizard
 from .projector.tab import ProjectorTab
+from .projector.editform import ProjectorEditForm
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeForm',
            'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm',
            'Display', 'ServiceNoteForm', 'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay',
            'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
            'FormattingTagForm', 'ShortcutListForm', 'FormattingTagController', 'SingleColumnTableWidget',
-           'ProjectorManager', 'ProjectorTab', 'ProjectorWizard']
+           'ProjectorManager', 'ProjectorTab',' ProjectorEditForm']

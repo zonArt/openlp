@@ -195,10 +195,22 @@ class PJLink1(QTcpSocket):
         Cleanups when thread is stopped.
         """
         log.debug('(%s) Thread stopped' % self.ip)
-        self.connected.disconnect(self.check_login)
-        self.disconnected.disconnect(self.disconnect_from_host)
-        self.error.disconnect(self.get_error)
-        self.projectorReceivedData.disconnect(self._send_command)
+        try:
+            self.connected.disconnect(self.check_login)
+        except TypeError:
+            pass
+        try:
+            self.disconnected.disconnect(self.disconnect_from_host)
+        except TypeError:
+            pass
+        try:
+            self.error.disconnect(self.get_error)
+        except TypeError:
+            pass
+        try:
+            self.projectorReceivedData.disconnect(self._send_command)
+        except TypeError:
+            pass
         self.disconnect_from_host()
         self.deleteLater()
         self.i_am_running = False

@@ -45,7 +45,8 @@ from openlp.core.lib.ui import create_widget_action
 from openlp.core.lib.projector.constants import *
 from openlp.core.lib.projector.db import ProjectorDB
 from openlp.core.lib.projector.pjlink1 import PJLink1
-from openlp.core.ui.projector.wizard import ProjectorWizard
+#from openlp.core.ui.projector.wizard import ProjectorWizard
+from openlp.core.ui.projector.editform import ProjectorEditForm
 
 # Dict for matching projector status to display icon
 STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_item_disconnect.png',
@@ -255,9 +256,15 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
 
     def bootstrap_post_set_up(self):
         self.load_projectors()
+        '''
         self.projector_form = ProjectorWizard(self, projectordb=self.projectordb)
         self.projector_form.edit_page.newProjector.connect(self.add_projector_from_wizard)
         self.projector_form.edit_page.editProjector.connect(self.edit_projector_from_wizard)
+        '''
+        self.projector_form = ProjectorEditForm(self, projectordb=self.projectordb)
+        self.projector_form.newProjector.connect(self.add_projector_from_wizard)
+        self.projector_form.editProjector.connect(self.edit_projector_from_wizard)
+
         self.projector_list_widget.itemSelectionChanged.connect(self.update_icons)
 
     def context_menu(self, point):
@@ -446,28 +453,28 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             return
         try:
             projector.link.projectorNetwork.disconnect(self.update_status)
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
         try:
             projector.link.changeStatus.disconnect(self.update_status)
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
         try:
             projector.link.authentication_error.disconnect(self.authentication_error)
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
         try:
             projector.link.no_authentication_error.disconnect(self.no_authentication_error)
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
         try:
             projector.link.projectorUpdateIcons.disconnect(self.update_icons)
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
         try:
             projector.timer.stop()
             projector.timer.timeout.disconnect(projector.link.poll_loop)
-        except TypeError:
+        except (AttributeError, TypeError):
             pass
         projector.thread.quit()
         new_list = []
