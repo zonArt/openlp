@@ -167,6 +167,7 @@ class Ui_ProjectorManager(object):
         self.projector_list_widget.setObjectName('projector_list_widget')
         self.layout.addWidget(self.projector_list_widget)
         self.projector_list_widget.customContextMenuRequested.connect(self.context_menu)
+        self.projector_list_widget.itemDoubleClicked.connect(self.on_doubleclick_item)
         # Build the context menu
         self.menu = QtGui.QMenu()
         self.status_action = create_widget_action(self.menu,
@@ -409,6 +410,14 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                     projector.link.set_shutter_closed()
                 except:
                     continue
+
+    def on_doubleclick_item(self, item, opt=None):
+        projector = item.data(QtCore.Qt.UserRole)
+        try:
+            projector.link.connect_to_host()
+        except:
+            pass
+        return
 
     def on_connect_projector(self, opt=None):
         """
