@@ -195,7 +195,6 @@
     <file>projector_show.png</file>
     <file>projector_show_tiled.png</file>
     <file>projector_spacer.png</file>
-    <file>projector_status.png</file>
     <file>projector_warmup.png</file>
     <file>projector_view.png</file>
   </qresource>
