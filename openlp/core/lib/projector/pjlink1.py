@@ -453,12 +453,12 @@ class PJLink1(QTcpSocket):
             out = '%s%s %s%s' % (salt, cmd, opts, CR)
         if out in self.send_queue:
             # Already there, so don't add
-            log.debug('(%s) send_command(out=%s) Already in queue - skipping' % (self.ip, out.strip()))
+            log.debug('(%s) send_command(out="%s") Already in queue - skipping' % (self.ip, out.strip()))
         elif not queue and len(self.send_queue) == 0:
 
             return self._send_string(out)
         else:
-            log.debug('(%s) send_command(out=%s) adding to queue' % (self.ip, out.strip()))
+            log.debug('(%s) send_command(out="%s") adding to queue' % (self.ip, out.strip()))
             self.send_queue.append(out)
             if not self.send_busy:
                 self.projectorReceivedData.emit()
@@ -484,6 +484,9 @@ class PJLink1(QTcpSocket):
             log.debug('(%s) _send_string() Not connected - abort' % self.ip)
             self.send_queue = []
             self.send_busy = False
+            return
+        if self.send_busy:
+            # Still waiting for response from last command sent
             return
         if data is not None:
             out = data
@@ -520,32 +523,37 @@ class PJLink1(QTcpSocket):
             # Oops - projector error
             if data.upper() == 'ERRA':
                 # Authentication error
+                self.send_busy = False
                 self.disconnect_from_host()
                 self.change_status(E_AUTHENTICATION)
                 log.debug('(%s) emitting projectorAuthentication() signal' % self.ip)
                 self.projectorAuthentication.emit(self.name)
             elif data.upper() == 'ERR1':
                 # Undefined command
+                self.send_busy = False
                 self.change_status(E_UNDEFINED, '%s "%s"' %
                                    (translate('OpenLP.PJLink1', 'Undefined command:'), cmd))
             elif data.upper() == 'ERR2':
                 # Invalid parameter
+                self.send_busy = False
                 self.change_status(E_PARAMETER)
             elif data.upper() == 'ERR3':
                 # Projector busy
+                self.send_busy = False
                 self.change_status(E_UNAVAILABLE)
             elif data.upper() == 'ERR4':
                 # Projector/display error
+                self.send_busy = False
                 self.change_status(E_PROJECTOR)
-            self.projectorReceivedData.emit()
             self.send_busy = False
+            self.projectorReceivedData.emit()
             return
         # Command succeeded - no extra information
         elif data.upper() == 'OK':
             log.debug('(%s) Command returned OK' % self.ip)
             # A command returned successfully, recheck data
-            self.projectorReceivedData.emit()
             self.send_busy = False
+            self.projectorReceivedData.emit()
             return
 
         if cmd in self.PJLINK1_FUNC:
