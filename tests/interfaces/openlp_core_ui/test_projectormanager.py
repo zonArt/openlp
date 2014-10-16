@@ -35,7 +35,7 @@ from openlp.core.common import Registry, Settings
 from tests.functional import patch, MagicMock
 from tests.helpers.testmixin import TestMixin
 
-from openlp.core.ui import ProjectorManager, ProjectorWizard
+from openlp.core.ui import ProjectorManager
 from openlp.core.lib.projector.db import Projector, ProjectorDB
 
 from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
@@ -94,8 +94,8 @@ class TestProjectorManager(TestCase, TestMixin):
                          'Initialization should have called load_projectors()')
 
         # THEN: Verify wizard page is initialized
-        self.assertEqual(type(self.projector_manager.projector_form), ProjectorWizard,
-                         'Initialization should have created a Wizard')
+        self.assertEqual(type(self.projector_manager.projector_form), ProjectorEditForm,
+                         'Initialization should have created a Projector Edit Form')
         self.assertIs(self.projector_manager.projectordb,
-                      self.projector_manager.projector_form.db,
-                      'Wizard should be using same ProjectorDB() instance')
+                      self.projector_manager.projector_form.projectordb,
+                      'ProjectorEditForm should be using same ProjectorDB() instance')
