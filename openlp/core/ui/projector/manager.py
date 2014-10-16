@@ -413,10 +413,11 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
 
     def on_doubleclick_item(self, item, opt=None):
         projector = item.data(QtCore.Qt.UserRole)
-        try:
-            projector.link.connect_to_host()
-        except:
-            pass
+        if projector.link.state() != projector.link.ConnectedState:
+            try:
+                projector.link.connect_to_host()
+            except:
+                pass
         return
 
     def on_connect_projector(self, opt=None):
