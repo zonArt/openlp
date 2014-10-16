@@ -107,7 +107,7 @@ class Ui_ProjectorManager(object):
                                             triggers=self.on_select_input)
         self.one_toolbar.add_toolbar_action('view_projector',
                                             text=translate('OpenLP.ProjectorManager', 'View Projector'),
-                                            icon=':/messagebox/messagebox_info.png',
+                                            icon=':/system/system_about.png',
                                             tooltip=translate('OpenLP.ProjectorManager',
                                                               'View selected projector information'),
                                             triggers=self.on_status_projector)
@@ -172,7 +172,7 @@ class Ui_ProjectorManager(object):
         self.status_action = create_widget_action(self.menu,
                                                   text=translate('OpenLP.ProjectorManager',
                                                                  '&View Projector Information'),
-                                                  icon=':/messagebox/messagebox_info.png',
+                                                  icon=':/system/system_about.png',
                                                   triggers=self.on_status_projector)
         self.edit_action = create_widget_action(self.menu,
                                                 text=translate('OpenLP.ProjectorManager',
