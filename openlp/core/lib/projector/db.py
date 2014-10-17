@@ -27,8 +27,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`projector.db` module provides the database functions for the
-    Projector module.
+    :mod:`openlp.core.lib.projector.db` module
+
+    Provides the database functions for the Projector module.
+
+    The Manufacturer, Model, Source tables keep track of the video source
+    strings used for display of input sources. The Source table maps
+    manufacturer-defined or user-defined strings from PJLink default strings
+    to end-user readable strings; ex: PJLink code 11 would map "RGB 1"
+    default string to "RGB PC (analog)" string.
+    (Future feature).
+
+    The Projector table keeps track of entries for controlled projectors.
 """
 
 import logging
@@ -37,12 +47,10 @@ log.debug('projector.lib.db module loaded')
 
 from os import path
 
-from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, and_
+from sqlalchemy import Column, ForeignKey, Integer, MetaData, String
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import backref, relationship
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from openlp.core.common import translate
 from openlp.core.lib.db import Manager, init_db, init_url
 from openlp.core.lib.projector.constants import PJLINK_DEFAULT_SOURCES
 
@@ -57,16 +65,26 @@ class CommonBase(object):
     @declared_attr
     def __tablename__(cls):
         return cls.__name__.lower()
+
     id = Column(Integer, primary_key=True)
 
 
 class Manufacturer(CommonBase, Base):
     """
-    Manufacturer table.
+    Projector manufacturer table.
+
+    Manufacturer:
+        name:   Column(String(30))
+        models: Relationship(Model.id)
+
     Model table is related.
     """
     def __repr__(self):
+        """
+        Returns a basic representation of a Manufacturer table entry.
+        """
         return '<Manufacturer(name="%s")>' % self.name
+
     name = Column(String(30))
     models = relationship('Model',
                           order_by='Model.name',
@@ -78,12 +96,22 @@ class Manufacturer(CommonBase, Base):
 
 class Model(CommonBase, Base):
     """
-    Model table.
+    Projector model table.
+
+    Model:
+        name:               Column(String(20))
+        sources:            Relationship(Source.id)
+        manufacturer_id:    Foreign_key(Manufacturer.id)
+
     Manufacturer table links here.
     Source table is related.
     """
     def __repr__(self):
+        """
+        Returns a basic representation of a Model table entry.
+        """
         return '<Model(name=%s)>' % self.name
+
     manufacturer_id = Column(Integer, ForeignKey('manufacturer.id'))
     name = Column(String(20))
     sources = relationship('Source',
@@ -96,12 +124,22 @@ class Model(CommonBase, Base):
 
 class Source(CommonBase, Base):
     """
-    Input source table.
+    Projector video source table.
+
+    Source:
+        pjlink_name:    Column(String(15))
+        pjlink_code:    Column(String(2))
+        text:           Column(String(30))
+        model_id:       Foreign_key(Model.id)
+
     Model table links here.
 
-    These entries map PJLink source codes to text strings.
+    These entries map PJLink input video source codes to text strings.
     """
     def __repr__(self):
+        """
+        Return basic representation of Source table entry.
+        """
         return '<Source(pjlink_name="%s", pjlink_code="%s", text="%s")>' % \
             (self.pjlink_name, self.pjlink_code, self.text)
     model_id = Column(Integer, ForeignKey('model.id'))
@@ -114,7 +152,18 @@ class Projector(CommonBase, Base):
     """
     Projector table.
 
-    No relation. This keeps track of installed projectors.
+    Projector:
+        ip:             Column(String(100))  # Allow for IPv6 or FQDN
+        port:           Column(String(8))
+        pin:            Column(String(20))   # Allow for test strings
+        name:           Column(String(20))
+        location:       Column(String(30))
+        notes:          Column(String(200))
+        pjlink_name:    Column(String(128))  # From projector (future)
+        manufacturer:   Column(String(128))  # From projector (future)
+        model:          Column(String(128))  # From projector (future)
+        other:          Column(String(128))  # From projector (future)
+        sources:        Column(String(128))  # From projector (future)
     """
     ip = Column(String(100))
     port = Column(String(8))
@@ -143,7 +192,7 @@ class ProjectorDB(Manager):
         """
         Setup the projector database and initialize the schema.
 
-        Change to Declarative means we really don't do much here.
+        Declarative uses table classes to define schema.
         """
         url = init_url('projector')
         session, metadata = init_db(url, base=Base)
@@ -154,7 +203,7 @@ class ProjectorDB(Manager):
         """
         Locate a DB record by record ID.
 
-        :param dbid: DB record
+        :param dbid: DB record id
         :returns: Projector() instance
         """
         log.debug('get_projector_by_id(id="%s")' % dbid)
@@ -168,8 +217,9 @@ class ProjectorDB(Manager):
 
     def get_projector_all(self):
         """
-        Retrieve all projector entries so they can be added to the Projector
-        Manager list pane.
+        Retrieve all projector entries.
+
+        :returns: List with Projector() instances used in Manager() QListWidget.
         """
         log.debug('get_all() called')
         return_list = []
@@ -217,10 +267,10 @@ class ProjectorDB(Manager):
         """
         Add a new projector entry
 
-        NOTE: Will not add new entry if IP is the same as already in the table.
-
         :param projector: Projector() instance to add
         :returns: bool
+                  True if entry added
+                  False if entry already in DB or db error
         """
         old_projector = self.get_object_filtered(Projector, Projector.ip == projector.ip)
         if old_projector is not None:
@@ -239,6 +289,8 @@ class ProjectorDB(Manager):
 
         :param projector: Projector() instance with new information
         :returns: bool
+                  True if DB record updated
+                  False if entry not in DB or DB error
         """
         if projector is None:
             log.error('No Projector() instance to update - cancelled')
@@ -266,6 +318,8 @@ class ProjectorDB(Manager):
 
         :param projector: Projector() instance to delete
         :returns: bool
+                  True if record deleted
+                  False if DB error
         """
         deleted = self.delete_object(Projector, projector.id)
         if deleted:
@@ -282,7 +336,10 @@ class ProjectorDB(Manager):
 
         :param make: Manufacturer name as retrieved from projector
         :param model: Manufacturer model as retrieved from projector
+        :param sources: List of available sources (from projector)
         :returns: dict
+                  key: (str) PJLink code for source
+                  value: (str) From Sources table or default PJLink strings
         """
         source_dict = {}
         model_list = self.get_all_objects(Model, Model.name == model)

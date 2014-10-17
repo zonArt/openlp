@@ -27,8 +27,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod: projectormanager` module provides the functions for
-    the display/control of Projectors.
+    :mod: openlp.core.ui.projector.manager` module
+
+    Provides the functions for the display/control of Projectors.
 """
 
 import logging
@@ -232,6 +233,12 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
     Manage the projectors.
     """
     def __init__(self, parent=None, projectordb=None):
+        """
+        Basic initialization.
+
+        :param parent: Who I belong to.
+        :param projectordb: Database session inherited from superclass.
+        """
         log.debug('__init__()')
         super().__init__(parent)
         self.settings_section = 'projector'
@@ -239,6 +246,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         self.projector_list = []
 
     def bootstrap_initialise(self):
+        """
+        Pre-initialize setups.
+        """
         self.setup_ui(self)
         if self.projectordb is None:
             # Work around for testing creating a ~/.openlp.data.projector.projector.sql file
@@ -255,12 +265,10 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         del(settings)
 
     def bootstrap_post_set_up(self):
+        """
+        Post-initialize setups.
+        """
         self.load_projectors()
-        '''
-        self.projector_form = ProjectorWizard(self, projectordb=self.projectordb)
-        self.projector_form.edit_page.newProjector.connect(self.add_projector_from_wizard)
-        self.projector_form.edit_page.editProjector.connect(self.edit_projector_from_wizard)
-        '''
         self.projector_form = ProjectorEditForm(self, projectordb=self.projectordb)
         self.projector_form.newProjector.connect(self.add_projector_from_wizard)
         self.projector_form.editProjector.connect(self.edit_projector_from_wizard)
@@ -273,7 +281,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
 
         :param point: The position of the mouse so the correct item can be found.
         """
-        # QListWidgetItem
+        # QListWidgetItem to build menu for.
         item = self.projector_list_widget.itemAt(point)
         if item is None:
             return
@@ -340,7 +348,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         item to change input source.
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = list_item.data(QtCore.Qt.UserRole)
@@ -386,10 +393,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
 
     def on_add_projector(self, opt=None):
         """
-        Calls wizard to add a new projector to the database
+        Calls edit dialog to add a new projector to the database
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         self.projector_form.exec_()
 
@@ -398,7 +404,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         Calls projector thread to send blank screen command
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         try:
             ip = opt.link.ip
@@ -415,6 +420,12 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
                     continue
 
     def on_doubleclick_item(self, item, opt=None):
+        """
+        When item is doubleclicked, will connect to projector.
+
+        :param item: List widget item for connection.
+        :param opt: Needed by PyQt4
+        """
         projector = item.data(QtCore.Qt.UserRole)
         if projector.link.state() != projector.link.ConnectedState:
             try:
@@ -428,7 +439,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         Calls projector thread to connect to projector
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         try:
             ip = opt.link.ip
@@ -449,7 +459,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         Deletes a projector from the list and the database
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         if list_item is None:
@@ -511,7 +520,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         Calls projector thread to disconnect from projector
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         try:
             ip = opt.link.ip
@@ -529,10 +537,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
 
     def on_edit_projector(self, opt=None):
         """
-        Calls wizard with selected projector to edit information
+        Calls edit dialog with selected projector to edit information
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = list_item.data(QtCore.Qt.UserRole)
@@ -549,7 +556,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         Calls projector link to send Power Off command
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         try:
             ip = opt.link.ip
@@ -570,7 +576,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         Calls projector link to send Power On command
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         try:
             ip = opt.link.ip
@@ -591,7 +596,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         Calls projector thread to send open shutter command
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         try:
             ip = opt.link.ip
@@ -612,7 +616,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         Builds message box with projector status information
 
         :param opt: Needed by PyQt4
-        :returns: None
         """
         lwi = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = lwi.data(QtCore.Qt.UserRole)
@@ -670,7 +673,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         Helper app to build a projector instance
 
         :param p: Dict of projector database information
-        :returns: PJLink() instance
+        :returns: PJLink1() instance
         """
         log.debug('_add_projector()')
         return PJLink1(dbid=projector.id,
@@ -698,9 +701,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         We are not concerned with the wizard instance,
         just the projector item
 
-        :param opt1: See docstring
-        :param opt2: See docstring
-        :returns: None
+        :param opt1: See above
+        :param opt2: See above
         """
         if opt1 is None:
             return
@@ -751,11 +753,10 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
     @pyqtSlot(str)
     def add_projector_from_wizard(self, ip, opts=None):
         """
-        Add a projector from the wizard
+        Add a projector from the edit dialog
 
-        :param ip: IP address of new record item
+        :param ip: IP address of new record item to find
         :param opts: Needed by PyQt4
-        :returns: None
         """
         log.debug('load_projector(ip=%s)' % ip)
         item = self.projectordb.get_projector_by_ip(ip)
@@ -768,7 +769,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
 
         :param projector: Projector() instance of projector with updated information
         :param opts: Needed by PyQt4
-        :returns: None
         """
 
         self.old_projector.link.name = projector.name
@@ -804,7 +804,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         :param ip: IP address of projector
         :param status: Optional status code
         :param msg: Optional status message
-        :returns: None
         """
         if status is None:
             return
@@ -903,6 +902,11 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
 
     @pyqtSlot(str)
     def authentication_error(self, name):
+        """
+        Display warning dialog when attempting to connect with invalid pin
+
+        :param name: Name from QListWidgetItem
+        """
         QtGui.QMessageBox.warning(self, translate('OpenLP.ProjectorManager',
                                                   '"%s" Authentication Error' % name),
                                   '<br />There was an authentictaion error while trying to connect.'
@@ -911,6 +915,12 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
 
     @pyqtSlot(str)
     def no_authentication_error(self, name):
+        """
+        Display warning dialog when pin saved for item but projector does not
+        require pin.
+
+        :param name: Name from QListWidgetItem
+        """
         QtGui.QMessageBox.warning(self, translate('OpenLP.ProjectorManager',
                                                   '"%s" No Authentication Error' % name),
                                   '<br />PIN is set and projector does not require authentication.'
@@ -924,6 +934,11 @@ class ProjectorItem(QObject):
     NOTE: Actual PJLink class instance should be saved as self.link
     """
     def __init__(self, link=None):
+        """
+        Initialization for ProjectorItem instance
+
+        :param link: PJLink1 instance for QListWidgetItem
+        """
         self.link = link
         self.thread = None
         self.icon = None
@@ -942,7 +957,6 @@ def not_implemented(function):
     Temporary function to build an information message box indicating function not implemented yet
 
     :param func: Function name
-    :returns: None
     """
     QtGui.QMessageBox.information(None,
                                   translate('OpenLP.ProjectorManager', 'Not Implemented Yet'),

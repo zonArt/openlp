@@ -28,8 +28,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod: `editform` module provides the functions for adding/editing the
-    list of controlled projectors.
+    :mod: `openlp.core.ui.projector.editform` module
+
+    Provides the functions for adding/editing entries in the projector database.
 """
 
 import logging

@@ -27,8 +27,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`projector.ui.projectortab` module provides the settings tab in the
-    settings dialog.
+    :mod:`openlp.core.ui.projector.tab`
+
+    Provides the settings tab in the settings dialog.
 """
 
 import logging
@@ -46,6 +47,11 @@ class ProjectorTab(SettingsTab):
     Openlp Settings -> Projector settings
     """
     def __init__(self, parent):
+        """
+        ProjectorTab initialization
+
+        :param parent: Parent widget
+        """
         self.icon_path = ':/projector/projector_manager.png'
         projector_translated = translate('OpenLP.ProjectorTab', 'Projector')
         super(ProjectorTab, self).__init__(parent, 'Projector', projector_translated)

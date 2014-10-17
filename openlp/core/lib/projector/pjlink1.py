@@ -27,19 +27,19 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`projector.pjlink1` module provides the necessary functions
-        for connecting to a PJLink-capable projector.
+    :mod:`openlp.core.lib.projector.pjlink1` module
+    Provides the necessary functions for connecting to a PJLink-capable projector.
 
-    See PJLink Specifications for Class 1 for details.
+    See PJLink Class 1 Specifications for details.
+    http://pjlink.jbmia.or.jp/english/dl.html
+        Section 5-1 PJLink Specifications
+        Section 5-5 Guidelines for Input Terminals
 
     NOTE:
       Function names follow  the following syntax:
             def process_CCCC(...):
       WHERE:
             CCCC = PJLink command being processed.
-
-      See PJLINK_FUNC(...) for command returned from projector.
-
 """
 
 import logging
@@ -49,11 +49,10 @@ log.debug('rpjlink1 loaded')
 
 __all__ = ['PJLink1']
 
-from time import sleep
-from codecs import decode, encode
+from codecs import decode
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QObject, pyqtSignal, pyqtSlot
+from PyQt4.QtCore import pyqtSignal, pyqtSlot
 from PyQt4.QtNetwork import QAbstractSocket, QTcpSocket
 
 from openlp.core.common import translate, qmd5_hash
@@ -73,6 +72,7 @@ class PJLink1(QTcpSocket):
     """
     Socket service for connecting to a PJLink-capable projector.
     """
+    # Signals sent by this module
     changeStatus = pyqtSignal(str, int, str)
     projectorNetwork = pyqtSignal(int)  # Projector network activity
     projectorStatus = pyqtSignal(int)  # Status update
@@ -151,7 +151,7 @@ class PJLink1(QTcpSocket):
         self.send_queue = []
         self.send_busy = False
         self.socket_timer = None  # Test for send_busy and brain-dead projectors
-        # Map command returned to function
+        # Map command to function
         self.PJLINK1_FUNC = {'AVMT': self.process_avmt,
                              'CLSS': self.process_clss,
                              'ERST': self.process_erst,
@@ -167,6 +167,9 @@ class PJLink1(QTcpSocket):
                              }
 
     def reset_information(self):
+        """
+        Reset projector-specific information to default
+        """
         log.debug('(%s) reset_information() connect status is %s' % (self.ip, self.state()))
         self.power = S_OFF
         self.pjlink_name = None
@@ -224,14 +227,15 @@ class PJLink1(QTcpSocket):
     def socket_abort(self):
         """
         Aborts connection and closes socket in case of brain-dead projectors.
+        Should normally be called by socket_timer().
         """
         log.debug('(%s) socket_abort() - Killing connection' % self.ip)
         self.disconnect_from_host(abort=True)
 
     def poll_loop(self):
         """
-        Called by QTimer in ProjectorManager.ProjectorItem.
-        Retrieves status information.
+        Retrieve information from projector that changes.
+        Normally called by timer().
         """
         if self.state() != self.ConnectedState:
             return
@@ -260,8 +264,10 @@ class PJLink1(QTcpSocket):
     def _get_status(self, status):
         """
         Helper to retrieve status/error codes and convert to strings.
+
+        :param status: Status/Error code
+        :returns: (Status/Error code, String)
         """
-        # Return the status code as a string
         if status in ERROR_STRING:
             return (ERROR_STRING[status], ERROR_MSG[status])
         elif status in STATUS_STRING:
@@ -273,6 +279,9 @@ class PJLink1(QTcpSocket):
         """
         Check connection/error status, set status for projector, then emit status change signal
         for gui to allow changing the icons.
+
+        :param status: Status code
+        :param msg: Optional message
         """
         message = translate('OpenLP.PJLink1', 'No message') if msg is None else msg
         (code, message) = self._get_status(status)
@@ -298,6 +307,11 @@ class PJLink1(QTcpSocket):
     def check_command(self, cmd):
         """
         Verifies command is valid based on PJLink class.
+
+        :param cmd: PJLink command to validate.
+        :returns: bool
+                  True if command is valid PJLink command
+                  False if command is not a valid PJLink command
         """
         return self.pjlink_class in PJLINK_VALID_CMD and \
             cmd in PJLINK_VALID_CMD[self.pjlink_class]
@@ -306,6 +320,9 @@ class PJLink1(QTcpSocket):
     def check_login(self, data=None):
         """
         Processes the initial connection and authentication (if needed).
+        Starts poll timer if connection is established.
+
+        :param data: Optional data if called from another routine
         """
         log.debug('(%s) check_login(data="%s")' % (self.ip, data))
         if data is None:
@@ -426,7 +443,10 @@ class PJLink1(QTcpSocket):
     @pyqtSlot(int)
     def get_error(self, err):
         """
-        Process error from SocketError signal
+        Process error from SocketError signal.
+        Remaps system error codes to projector error codes.
+
+        :param err: Error code
         """
         log.debug('(%s) get_error(err=%s): %s' % (self.ip, err, self.errorString()))
         if err <= 18:
@@ -449,7 +469,12 @@ class PJLink1(QTcpSocket):
 
     def send_command(self, cmd, opts='?', salt=None, queue=False):
         """
-        Add command to output queue if not already in queue
+        Add command to output queue if not already in queue.
+
+        :param cmd: Command to send
+        :param opts: Optional command option - defaults to '?' (get information)
+        :param salt: Optional  salt for md5 hash for initial authentication
+        :param queue: Option to force add to queue rather than sending directly
         """
         if self.state() != self.ConnectedState:
             log.warn('(%s) send_command(): Not connected - returning' % self.ip)
@@ -484,7 +509,6 @@ class PJLink1(QTcpSocket):
         Socket interface to send data. If data=None, then check queue.
 
         :param data: Immediate data to send
-        :returns: None
         """
         log.debug('(%s) _send_string()' % self.ip)
         log.debug('(%s) _send_string(): Connection status: %s' % (self.ip, self.state()))
@@ -526,6 +550,9 @@ class PJLink1(QTcpSocket):
     def process_command(self, cmd, data):
         """
         Verifies any return error code. Calls the appropriate command handler.
+
+        :param cmd: Command to process
+        :param data: Data being processed
         """
         log.debug('(%s) Processing command "%s"' % (self.ip, cmd))
         if data in PJLINK_ERRORS:
@@ -575,6 +602,10 @@ class PJLink1(QTcpSocket):
     def process_lamp(self, data):
         """
         Lamp(s) status. See PJLink Specifications for format.
+        Data may have more than 1 lamp to process.
+        Update self.lamp dictionary with lamp status.
+
+        :param data: Lamp(s) status.
         """
         lamps = []
         data_dict = data.split()
@@ -594,6 +625,9 @@ class PJLink1(QTcpSocket):
     def process_powr(self, data):
         """
         Power status. See PJLink specification for format.
+        Update self.power with status. Update icons if change from previous setting.
+
+        :param data: Power status
         """
         if data in PJLINK_POWR_STATUS:
             power = PJLINK_POWR_STATUS[data]
@@ -612,7 +646,10 @@ class PJLink1(QTcpSocket):
 
     def process_avmt(self, data):
         """
-        Shutter open/closed. See PJLink specification for format.
+        Process shutter and speaker status. See PJLink specification for format.
+        Update self.mute (audio) and self.shutter (video shutter).
+
+        :param data: Shutter and audio status
         """
         shutter = self.shutter
         mute = self.mute
@@ -641,6 +678,9 @@ class PJLink1(QTcpSocket):
     def process_inpt(self, data):
         """
         Current source input selected. See PJLink specification for format.
+        Update self.source
+
+        :param data: Currently selected source
         """
         self.source = data
         return
@@ -648,6 +688,9 @@ class PJLink1(QTcpSocket):
     def process_clss(self, data):
         """
         PJLink class that this projector supports. See PJLink specification for format.
+        Updates self.class.
+
+        :param data: Class that projector supports.
         """
         self.pjlink_class = data
         log.debug('(%s) Setting pjlink_class for this projector to "%s"' % (self.ip, self.pjlink_class))
@@ -655,28 +698,40 @@ class PJLink1(QTcpSocket):
 
     def process_name(self, data):
         """
-        Projector name set by customer.
+        Projector name set in projector.
+        Updates self.pjlink_name
+
+        :param data: Projector name
         """
         self.pjlink_name = data
         return
 
     def process_inf1(self, data):
         """
-        Manufacturer name set by manufacturer.
+        Manufacturer name set in projector.
+        Updates self.manufacturer
+
+        :param data: Projector manufacturer
         """
         self.manufacturer = data
         return
 
     def process_inf2(self, data):
         """
-        Projector Model set by manufacturer.
+        Projector Model set in projector.
+        Updates self.model.
+
+        :param data: Model name
         """
         self.model = data
         return
 
     def process_info(self, data):
         """
-        Any extra info set by manufacturer.
+        Any extra info set in projector.
+        Updates self.other_info.
+
+        :param data: Projector other info
         """
         self.other_info = data
         return
@@ -684,6 +739,9 @@ class PJLink1(QTcpSocket):
     def process_inst(self, data):
         """
         Available source inputs. See PJLink specification for format.
+        Updates self.source_available
+
+        :param data: Sources list
         """
         sources = []
         check = data.split()
@@ -696,6 +754,9 @@ class PJLink1(QTcpSocket):
     def process_erst(self, data):
         """
         Error status. See PJLink Specifications for format.
+        Updates self.projector_errors
+
+        :param data: Error status
         """
         try:
             datacheck = int(data)
@@ -734,7 +795,7 @@ class PJLink1(QTcpSocket):
 
     def connect_to_host(self):
         """
-        Initiate connection.
+        Initiate connection to projector.
         """
         if self.state() == self.ConnectedState:
             log.warn('(%s) connect_to_host(): Already connected - returning' % self.ip)
@@ -832,6 +893,8 @@ class PJLink1(QTcpSocket):
         """
         Verify input source available as listed in 'INST' command,
         then send the command to select the input source.
+
+        :param src: Video source to select in projector
         """
         if self.source_available is None:
             return

@@ -27,7 +27,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`projector` module
+    :mod:`openlp.core.lib.projector.constants` module
+
+    Provides the constants used for projector errors/status/defaults
 """
 
 import logging
