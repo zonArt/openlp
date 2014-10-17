@@ -28,8 +28,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod: projectormanager` module provides the functions for
-    the display/control of Projectors.
+The :mod: `editform` module provides the functions for adding/editing the
+    list of controlled projectors.
 """
 
 import logging
@@ -37,9 +37,8 @@ log = logging.getLogger(__name__)
 log.debug('editform loaded')
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QObject, pyqtSlot, pyqtSignal
-from PyQt4.QtGui import QDialog, QFormLayout, QPlainTextEdit, QPushButton, QVBoxLayout, \
-    QLineEdit, QDialogButtonBox, QHBoxLayout, QLabel, QGridLayout
+from PyQt4.QtCore import pyqtSlot, pyqtSignal
+from PyQt4.QtGui import QDialog, QPlainTextEdit, QLineEdit, QDialogButtonBox, QLabel, QGridLayout
 
 from openlp.core.common import translate, verify_ip_address
 from openlp.core.lib import build_icon
