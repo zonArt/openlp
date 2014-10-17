@@ -361,6 +361,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         for item in source_list.keys():
             sort.append(item)
         sort.sort()
+        current = QtGui.QLabel(translate('OpenLP.ProjectorManager', 'Current source is %s' % source_list[projector.link.source]))
+        layout.addWidget(current)
         for item in sort:
             button = self._select_input_widget(parent=self,
                                                selected=projector.link.source,

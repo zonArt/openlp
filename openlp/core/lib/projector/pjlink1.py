@@ -450,7 +450,7 @@ class PJLink1(QTcpSocket):
         if salt is None:
             out = '%s%s %s%s' % (PJLINK_HEADER, cmd, opts, CR)
         else:
-            out = '%s%s %s%s' % (salt, cmd, opts, CR)
+            out = '%s%s%s %s%s' % (salt, PJLINK_HEADER, cmd, opts, CR)
         if out in self.send_queue:
             # Already there, so don't add
             log.debug('(%s) send_command(out="%s") Already in queue - skipping' % (self.ip, out.strip()))
