@@ -150,6 +150,7 @@ class PJLink1(QTcpSocket):
         self.timer = None  # Timer that calls the poll_loop
         self.send_queue = []
         self.send_busy = False
+        self.socket_timer = None  # Test for send_busy and brain-dead projectors
         # Map command returned to function
         self.PJLINK1_FUNC = {'AVMT': self.process_avmt,
                              'CLSS': self.process_clss,
@@ -166,6 +167,7 @@ class PJLink1(QTcpSocket):
                              }
 
     def reset_information(self):
+        log.debug('(%s) reset_information() connect status is %s' % (self.ip, self.state()))
         self.power = S_OFF
         self.pjlink_name = None
         self.manufacturer = None
@@ -179,6 +181,10 @@ class PJLink1(QTcpSocket):
         self.other_info = None
         if hasattr(self, 'timer'):
             self.timer.stop()
+        if hasattr(self, 'socket_timer'):
+            self.socket_timer.stop()
+        self.send_queue = []
+        self.send_busy = False
 
     def thread_started(self):
         """
@@ -214,6 +220,13 @@ class PJLink1(QTcpSocket):
         self.disconnect_from_host()
         self.deleteLater()
         self.i_am_running = False
+
+    def socket_abort(self):
+        """
+        Aborts connection and closes socket in case of brain-dead projectors.
+        """
+        log.debug('(%s) socket_abort() - Killing connection' % self.ip)
+        self.disconnect_from_host(abort=True)
 
     def poll_loop(self):
         """
@@ -362,10 +375,6 @@ class PJLink1(QTcpSocket):
 
     @pyqtSlot()
     def get_data(self):
-        log.debug('(%s) get_data() Received readyRead signal' % self.ip)
-        return self._get_data()
-
-    def _get_data(self):
         """
         Socket interface to retrieve data.
         """
@@ -379,6 +388,7 @@ class PJLink1(QTcpSocket):
             log.debug('(%s) get_data(): No data available (-1)' % self.ip)
             self.projectorReceivedData.emit()
             return
+        self.socket_timer.stop()
         self.projectorNetwork.emit(S_NETWORK_RECEIVED)
         data_in = decode(read, 'ascii')
         data = data_in.strip()
@@ -432,6 +442,9 @@ class PJLink1(QTcpSocket):
         else:
             self.change_status(E_NETWORK, self.errorString())
         self.projectorUpdateIcons.emit()
+        if self.status_connect == E_NOT_CONNECTED:
+            self.abort()
+            self.reset_information()
         return
 
     def send_command(self, cmd, opts='?', salt=None, queue=False):
@@ -455,24 +468,18 @@ class PJLink1(QTcpSocket):
             # Already there, so don't add
             log.debug('(%s) send_command(out="%s") Already in queue - skipping' % (self.ip, out.strip()))
         elif not queue and len(self.send_queue) == 0:
-
-            return self._send_string(out)
+            return self._send_command(data=out)
         else:
             log.debug('(%s) send_command(out="%s") adding to queue' % (self.ip, out.strip()))
             self.send_queue.append(out)
-            if not self.send_busy:
-                self.projectorReceivedData.emit()
+            self.projectorReceivedData.emit()
         log.debug('(%s) send_command(): send_busy is %s' % (self.ip, self.send_busy))
         if not self.send_busy:
             log.debug('(%s) send_command() calling _send_string()')
-            self._send_string()
+            self._send_command()
 
     @pyqtSlot()
-    def _send_command(self):
-        log.debug('Received projectorReceivedData signal')
-        return self._send_string()
-
-    def _send_string(self, data=None):
+    def _send_command(self, data=None):
         """
         Socket interface to send data. If data=None, then check queue.
 
@@ -480,6 +487,7 @@ class PJLink1(QTcpSocket):
         :returns: None
         """
         log.debug('(%s) _send_string()' % self.ip)
+        log.debug('(%s) _send_string(): Connection status: %s' % (self.ip, self.state()))
         if self.state() != self.ConnectedState:
             log.debug('(%s) _send_string() Not connected - abort' % self.ip)
             self.send_queue = []
@@ -502,6 +510,7 @@ class PJLink1(QTcpSocket):
         self.send_busy = True
         log.debug('(%s) _send_string(): Sending "%s"' % (self.ip, out.strip()))
         log.debug('(%s) _send_string(): Queue = %s' % (self.ip, self.send_queue))
+        self.socket_timer.start()
         try:
             self.projectorNetwork.emit(S_NETWORK_SENDING)
             sent = self.write(out)
@@ -511,7 +520,7 @@ class PJLink1(QTcpSocket):
                 self.change_status(E_NETWORK,
                                    translate('OpenLP.PJLink1', 'Error while sending data to projector'))
         except SocketError as e:
-            self.disconnect_from_host()
+            self.disconnect_from_host(abort=True)
             self.changeStatus(E_NETWORK, '%s : %s' % (e.error(), e.errorString()))
 
     def process_command(self, cmd, data):
@@ -734,20 +743,25 @@ class PJLink1(QTcpSocket):
         self.connectToHost(self.ip, self.port if type(self.port) is int else int(self.port))
 
     @pyqtSlot()
-    def disconnect_from_host(self):
+    def disconnect_from_host(self, abort=False):
         """
         Close socket and cleanup.
         """
-        if self.state() != self.ConnectedState:
-            log.warn('(%s) disconnect_from_host(): Not connected - returning' % self.ip)
-            self.projectorUpdateIcons.emit()
-            return
+        if abort or self.state() != self.ConnectedState:
+            if abort:
+                log.warn('(%s) disconnect_from_host(): Aborting connection' % self.ip)
+            else:
+                log.warn('(%s) disconnect_from_host(): Not connected - returning' % self.ip)
+            self.reset_information()
         self.disconnectFromHost()
         try:
             self.readyRead.disconnect(self.get_data)
         except TypeError:
             pass
-        self.change_status(S_NOT_CONNECTED)
+        if abort:
+            self.change_status(E_NOT_CONNECTED)
+        else:
+            self.change_status(S_NOT_CONNECTED)
         self.reset_information()
         self.projectorUpdateIcons.emit()
 

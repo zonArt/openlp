@@ -487,6 +487,11 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
             projector.timer.timeout.disconnect(projector.link.poll_loop)
         except (AttributeError, TypeError):
             pass
+        try:
+            projector.socket_timer.stop()
+            projector.socket_timer.timeout.disconnect(projector.link.socket_abort)
+        except (AttributeError, TypeError):
+            pass
         projector.thread.quit()
         new_list = []
         for item in self.projector_list:
@@ -727,9 +732,14 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         timer.setInterval(self.poll_time)
         timer.timeout.connect(item.link.poll_loop)
         item.timer = timer
+        socket_timer = QtCore.QTimer(self)
+        socket_timer.setInterval(5000)  # % second timer in case of brain-dead projectors
+        socket_timer.timeout.connect(item.link.socket_abort)
+        item.socket_timer = socket_timer
         thread.start()
         item.thread = thread
         item.link.timer = timer
+        item.link.socket_timer = socket_timer
         item.link.widget = item.widget
         self.projector_list.append(item)
         if self.autostart:
