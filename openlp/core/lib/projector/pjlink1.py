@@ -761,7 +761,10 @@ class PJLink1(QTcpSocket):
         if abort:
             self.change_status(E_NOT_CONNECTED)
         else:
-            self.change_status(S_NOT_CONNECTED)
+            log.debug('(%s) disconnect_from_host() Current status %s' % (self.ip,
+                                                                         self._get_status(self.status_connect)[0]))
+            if self.status_connect != E_NOT_CONNECTED:
+                self.change_status(S_NOT_CONNECTED)
         self.reset_information()
         self.projectorUpdateIcons.emit()
 
