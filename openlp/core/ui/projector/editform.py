@@ -250,12 +250,14 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
                 self.editProjector.emit(self.projector)
             self.close()
 
+    @pyqtSlot()
     def help_me(self):
         """
         Show a help message about the input fields.
         """
         log.debug('help_me() signal received')
 
+    @pyqtSlot()
     def cancel_me(self):
         """
         Cancel button clicked - just close.

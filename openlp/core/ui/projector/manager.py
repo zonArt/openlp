@@ -353,14 +353,16 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = list_item.data(QtCore.Qt.UserRole)
-
-        # Testing tabwidget for source select
+        # QTabwidget for source select
         source_select_form = SourceSelectDialog(parent=self,
                                                 projectordb=self.projectordb)
 
         source = source_select_form.exec_(projector.link)
+        log.debug('(%s) source_select_form() returned %s' % (projector.link.ip, source))
+        if source is not None and source > 0:
+            projector.link.set_input_source(str(source))
         return
-
+        # QDialog for source select - Delete when QTabWidget finished
         layout = QtGui.QVBoxLayout()
         box = QtGui.QDialog(parent=self)
         box.setModal(True)

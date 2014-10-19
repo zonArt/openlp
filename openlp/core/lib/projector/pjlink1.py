@@ -897,10 +897,12 @@ class PJLink1(QTcpSocket):
 
         :param src: Video source to select in projector
         """
+        log.debug('(%s) set_input_source(src=%s)' % (self.ip, src))
         if self.source_available is None:
             return
         elif src not in self.source_available:
             return
+        log.debug('(%s) Setting input source to %s' % (self.ip, src))
         self.send_command(cmd='INPT', opts=src)
         self.poll_loop()
 
