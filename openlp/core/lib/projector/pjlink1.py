@@ -747,6 +747,7 @@ class PJLink1(QTcpSocket):
         check = data.split()
         for source in check:
             sources.append(source)
+        sources.sort()
         self.source_available = sources
         self.projectorUpdateIcons.emit()
         return

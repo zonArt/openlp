@@ -38,6 +38,7 @@ log.debug('projectormanager loaded')
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import QObject, QThread, pyqtSlot
+from PyQt4.QtGui import QWidget
 
 from openlp.core.common import RegistryProperties, Settings, OpenLPMixin, \
     RegistryMixin, translate
@@ -47,6 +48,7 @@ from openlp.core.lib.projector.constants import *
 from openlp.core.lib.projector.db import ProjectorDB
 from openlp.core.lib.projector.pjlink1 import PJLink1
 from openlp.core.ui.projector.editform import ProjectorEditForm
+from openlp.core.ui.projector.sourceselectform import SourceSelectDialog
 
 # Dict for matching projector status to display icon
 STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_item_disconnect.png',
@@ -228,7 +230,7 @@ class Ui_ProjectorManager(object):
         self.update_icons()
 
 
-class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorManager, RegistryProperties):
+class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager, RegistryProperties):
     """
     Manage the projectors.
     """
@@ -244,6 +246,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         self.settings_section = 'projector'
         self.projectordb = projectordb
         self.projector_list = []
+        self.source_select_form = None
 
     def bootstrap_initialise(self):
         """
@@ -272,7 +275,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         self.projector_form = ProjectorEditForm(self, projectordb=self.projectordb)
         self.projector_form.newProjector.connect(self.add_projector_from_wizard)
         self.projector_form.editProjector.connect(self.edit_projector_from_wizard)
-
         self.projector_list_widget.itemSelectionChanged.connect(self.update_icons)
 
     def context_menu(self, point):
@@ -351,6 +353,14 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ProjectorMa
         """
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = list_item.data(QtCore.Qt.UserRole)
+
+        # Testing tabwidget for source select
+        source_select_form = SourceSelectDialog(parent=self,
+                                                projectordb=self.projectordb)
+
+        source = source_select_form.exec_(projector.link)
+        return
+
         layout = QtGui.QVBoxLayout()
         box = QtGui.QDialog(parent=self)
         box.setModal(True)
