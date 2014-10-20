@@ -183,27 +183,28 @@ class FingerTabWidget(QTabWidget):
         self.setTabBar(FingerTabBarWidget(self))
 
 
-class SourceSelectDialog(QDialog):
+class SourceSelectTabs(QDialog):
     """
     Class for handling selecting the source for the projector to use.
+    Uses tabbed interface.
     """
     def __init__(self, parent, projectordb):
         """
-        Build the source select dialog.
+        Build the source select dialog using tabbed interface.
 
         :param projectordb: ProjectorDB session to use
         """
-        log.debug('Initializing SourceSelectDialog()')
+        log.debug('Initializing SourceSelectTabs()')
         self.projectordb = projectordb
-        super(SourceSelectDialog, self).__init__(parent)
-        self.setWindowTitle(translate('OpenLP.SourceSelectDialog', 'Select Projector Source'))
-        self.setObjectName('source_select_dialog')
+        super(SourceSelectTabs, self).__init__(parent)
+        self.setWindowTitle(translate('OpenLP.SourceSelectForm', 'Select Projector Source'))
+        self.setObjectName('source_select_tabs')
         self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
         self.setModal(True)
         self.layout = QVBoxLayout()
-        self.layout.setObjectName('source_select_dialog_layout')
+        self.layout.setObjectName('source_select_tabs_layout')
         self.tabwidget = FingerTabWidget(self)
-        self.tabwidget.setObjectName('source_select_dialog_tabwidget')
+        self.tabwidget.setObjectName('source_select_tabs_tabwidget')
         self.tabwidget.setUsesScrollButtons(False)
         if is_macosx():
             self.tabwidget.setTabPosition(QTabWidget.North)
@@ -239,16 +240,122 @@ class SourceSelectDialog(QDialog):
         self.button_box.accepted.connect(self.accept_me)
         self.button_box.rejected.connect(self.reject_me)
         self.layout.addWidget(self.button_box)
-        selected = super(SourceSelectDialog, self).exec_()
+        selected = super(SourceSelectTabs, self).exec_()
         return selected
 
     @pyqtSlot()
     def accept_me(self):
+        """
+        Slot to accept 'OK' button
+        """
+        selected = self.button_group.checkedId()
+        log.debug('SourceSelectTabs().accepted() Setting source to %s' % selected)
+        self.done(selected)
+
+    @pyqtSlot()
+    def reject_me(self):
+        """
+        Slot to accept 'Cancel' button
+        """
+        log.debug('SourceSelectTabs() - Rejected')
+        self.done(0)
+
+
+class SourceSelectSingle(QDialog):
+    """
+    Class for handling selecting the source for the projector to use.
+    Uses single dialog interface.
+    """
+    def __init__(self, parent, projectordb):
+        """
+        Build the source select dialog.
+
+        :param projectordb: ProjectorDB session to use
+        """
+        log.debug('Initializing SourceSelectSingle()')
+        self.projectordb = projectordb
+        super(SourceSelectSingle, self).__init__(parent)
+        self.setWindowTitle(translate('OpenLP.SourceSelectSingle', 'Select Projector Source'))
+        self.setObjectName('source_select_single')
+        self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
+        self.setModal(True)
+        self.layout = QVBoxLayout()
+        self.layout.setObjectName('source_select_tabs_layout')
+        self.layout.setSpacing(10)
+        self.setLayout(self.layout)
+        self.setMinimumWidth(350)
+        self.button_group = QButtonGroup()
+        self.button_group.setObjectName('source_select_single_buttongroup')
+
+    def exec_(self, projector):
+        """
+        Override initial method so we can build the tabs.
+
+        :param projector: Projector instance to build source list from
+        """
+        self.projector = projector
+        self.source_text = self.projectordb.get_source_list(projector.manufacturer,
+                                                            projector.model,
+                                                            projector.source_available)
+        keys = list(self.source_text.keys())
+        keys.sort()
+        key_count = len(keys)
+        button_list = []
+        for key in keys:
+            button = QtGui.QRadioButton(self.source_text[key])
+            button.setChecked(True if key == projector.source else False)
+            self.layout.addWidget(button)
+            self.button_group.addButton(button, int(key))
+            button_list.append(key)
+        self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
+                                           QtGui.QDialogButtonBox.Cancel)
+        self.button_box.accepted.connect(self.accept_me)
+        self.button_box.rejected.connect(self.reject_me)
+        self.layout.addWidget(self.button_box)
+        self.setMinimumHeight(key_count*25)
+        selected = super(SourceSelectSingle, self).exec_()
+        return selected
+
+        title = QtGui.QLabel(translate('OpenLP.SourceSelectSingle', 'Select the input source below'))
+        self.layout.addWidget(title)
+        self.radio_buttons = []
+        source_list = self.projectordb.get_source_list(make=projector.link.manufacturer,
+                                                       model=projector.link.model,
+                                                       sources=projector.link.source_available)
+        sort = []
+        for item in source_list.keys():
+            sort.append(item)
+        sort.sort()
+        current = QtGui.QLabel(translate('OpenLP.SourceSelectSingle', 'Current source is %s' %
+                                         source_list[projector.link.source]))
+        layout.addWidget(current)
+        for item in sort:
+            button = self._select_input_widget(parent=self,
+                                               selected=projector.link.source,
+                                               code=item,
+                                               text=source_list[item])
+            layout.addWidget(button)
+        button_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
+                                            QtGui.QDialogButtonBox.Cancel)
+        button_box.accepted.connect(box.accept_me)
+        button_box.rejected.connect(box.reject_me)
+        layout.addWidget(button_box)
+        selected = super(SourceSelectSingle, self).exec_()
+        return selected
+
+    @pyqtSlot()
+    def accept_me(self):
+        """
+        Slot to accept 'OK' button
+        """
         selected = self.button_group.checkedId()
         log.debug('SourceSelectDialog().accepted() Setting source to %s' % selected)
         self.done(selected)
 
     @pyqtSlot()
     def reject_me(self):
+        """
+        Slot to accept 'Cancel' button
+        """
         log.debug('SourceSelectDialog() - Rejected')
         self.done(0)

@@ -303,7 +303,8 @@ class Settings(QtCore.QSettings):
         'projector/last directory import': '',
         'projector/last directory export': '',
         'projector/poll time': 20,  # PJLink  timeout is 30 seconds
-        'projector/socket timeout': 5  # 5 second socket timeout
+        'projector/socket timeout': 5,  # 5 second socket timeout
+        'projector/source dialog type': 0  # Source select dialog box type
     }
     __file_path__ = ''
     __obsolete_settings__ = [

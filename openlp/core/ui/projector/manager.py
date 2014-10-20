@@ -44,11 +44,12 @@ from openlp.core.common import RegistryProperties, Settings, OpenLPMixin, \
     RegistryMixin, translate
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib.ui import create_widget_action
+from openlp.core.lib.projector import DialogSourceStyle
 from openlp.core.lib.projector.constants import *
 from openlp.core.lib.projector.db import ProjectorDB
 from openlp.core.lib.projector.pjlink1 import PJLink1
 from openlp.core.ui.projector.editform import ProjectorEditForm
-from openlp.core.ui.projector.sourceselectform import SourceSelectDialog
+from openlp.core.ui.projector.sourceselectform import SourceSelectTabs, SourceSelectSingle
 
 # Dict for matching projector status to display icon
 STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_item_disconnect.png',
@@ -300,13 +301,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             self.projectordb = ProjectorDB()
         else:
             log.debug('Using existing ProjectorDB() instance')
-        settings = Settings()
-        settings.beginGroup(self.settings_section)
-        self.autostart = settings.value('connect on start')
-        self.poll_time = settings.value('poll time')
-        self.socket_timeout = settings.value('socket timeout')
-        settings.endGroup()
-        del(settings)
+        self.get_settings()
 
     def bootstrap_post_set_up(self):
         """
@@ -317,6 +312,16 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         self.projector_form.newProjector.connect(self.add_projector_from_wizard)
         self.projector_form.editProjector.connect(self.edit_projector_from_wizard)
         self.projector_list_widget.itemSelectionChanged.connect(self.update_icons)
+
+    def get_settings(self):
+        settings = Settings()
+        settings.beginGroup(self.settings_section)
+        self.autostart = settings.value('connect on start')
+        self.poll_time = settings.value('poll time')
+        self.socket_timeout = settings.value('socket timeout')
+        self.source_select_dialog_type = settings.value('source dialog type')
+        settings.endGroup()
+        del(settings)
 
     def context_menu(self, point):
         """
@@ -354,37 +359,6 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         self.menu.projector = real_projector
         self.menu.exec_(self.projector_list_widget.mapToGlobal(point))
 
-    def _select_input_widget(self, parent, selected, code, text):
-        """
-        Build the radio button widget for selecting source input menu
-
-        :param parent: parent widget
-        :param selected: Selected widget text
-        :param code: PJLink code for this widget
-        :param text: Text to display
-        :returns: radio button widget
-        """
-        widget = QtGui.QRadioButton(text, parent=parent)
-        widget.setChecked(True if code == selected else False)
-        widget.button_role = code
-        widget.clicked.connect(self._select_input_radio)
-        self.radio_buttons.append(widget)
-        return widget
-
-    def _select_input_radio(self, opt1=None, opt2=None):
-        """
-        Returns the currently selected radio button
-
-        :param opt1: Needed by PyQt4
-        :param op2: future
-        :returns: Selected button role
-        """
-        for button in self.radio_buttons:
-            if button.isChecked():
-                self.radio_button_selected = button.button_role
-                break
-        return
-
     def on_select_input(self, opt=None):
         """
         Builds menu for 'Select Input' option, then calls the selected projector
@@ -392,57 +366,21 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
 
         :param opt: Needed by PyQt4
         """
+        self.get_settings()  # In case the dialog interface setting was changed
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = list_item.data(QtCore.Qt.UserRole)
         # QTabwidget for source select
-        source_select_form = SourceSelectDialog(parent=self,
+        if self.source_select_dialog_type == DialogSourceStyle.Tabbed:
+            source_select_form = SourceSelectTabs(parent=self,
                                                 projectordb=self.projectordb)
-
+        else:
+            source_select_form = SourceSelectSingle(parent=self,
+                                                    projectordb=self.projectordb)
         source = source_select_form.exec_(projector.link)
         log.debug('(%s) source_select_form() returned %s' % (projector.link.ip, source))
         if source is not None and source > 0:
             projector.link.set_input_source(str(source))
         return
-        # QDialog for source select - Delete when QTabWidget finished
-        layout = QtGui.QVBoxLayout()
-        box = QtGui.QDialog(parent=self)
-        box.setModal(True)
-        title = QtGui.QLabel(translate('OpenLP.ProjectorManager', 'Select the input source below'))
-        layout.addWidget(title)
-        self.radio_button_selected = None
-        self.radio_buttons = []
-        source_list = self.projectordb.get_source_list(make=projector.link.manufacturer,
-                                                       model=projector.link.model,
-                                                       sources=projector.link.source_available
-                                                       )
-        if source_list is None:
-            return
-        sort = []
-        for item in source_list.keys():
-            sort.append(item)
-        sort.sort()
-        current = QtGui.QLabel(translate('OpenLP.ProjectorManager', 'Current source is %s' %
-                                         source_list[projector.link.source]))
-        layout.addWidget(current)
-        for item in sort:
-            button = self._select_input_widget(parent=self,
-                                               selected=projector.link.source,
-                                               code=item,
-                                               text=source_list[item])
-            layout.addWidget(button)
-        button_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
-                                            QtGui.QDialogButtonBox.Cancel)
-        button_box.accepted.connect(box.accept)
-        button_box.rejected.connect(box.reject)
-        layout.addWidget(button_box)
-        box.setLayout(layout)
-        check = box.exec_()
-        if check == 0:
-            # Cancel button clicked or window closed - don't set source
-            return
-        selected = self.radio_button_selected
-        projector.link.set_input_source(self.radio_button_selected)
-        self.radio_button_selected = None
 
     def on_add_projector(self, opt=None):
         """
