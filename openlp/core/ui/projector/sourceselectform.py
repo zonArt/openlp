@@ -49,12 +49,18 @@ def source_group(inputs, source_text):
     """
     Return a dictionary where key is source[0] and values are inputs
     grouped by source[0].
+
+    source_text = dict{"key1": "key1-text",
+                       "key2": "key2-text",
+                       ...}
     ex:
-        dict{ "key": { "key1": source_text[key1],
-                     "key2": source_text[key2],
-                     "key3": source_text[key3],
-                     ... }
-               "key": ... }
+        dict{ key1[0]: { "key11": "key11-text",
+                         "key12": "key12-text",
+                         "key13": "key13-text",
+                         ... }
+              key2[0]: {"key21": "key21-text",
+                        "key22": "key22-text",
+                        ... }
 
     :param inputs: List of inputs
     :param source_text: Dictionary of {code: text} values to display
@@ -81,12 +87,12 @@ def Build_Tab(group, source_key, default):
     Create the radio button page for a tab.
     Dictionary will be a 1-key entry where key=tab to setup, val=list of inputs.
 
-    source_key: {"groupkey1": {"key1": string,
-                               "key2": string,
+    source_key: {"groupkey1": {"key11": "key11-text",
+                               "key12": "key12-text",
                                ...
                               },
-                 "groupkey2": {"key1": string,
-                               "key2": string
+                 "groupkey2": {"key21": "key21-text",
+                               "key22": "key22-text",
                                ....
                               },
                  ...
