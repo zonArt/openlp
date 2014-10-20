@@ -124,11 +124,27 @@ def Build_Tab(group, source_key, default):
 
 
 class FingerTabBarWidget(QTabBar):
+    """
+    Realign west -orientation tabs to left-right text rather than south-north text
+    Borrowed from
+    http://www.kidstrythisathome.com/2013/03/fingertabs-horizontal-tabs-with-horizontal-text-in-pyqt/
+    """
     def __init__(self, parent=None, *args, **kwargs):
-        self.tabSize = QSize(kwargs.pop('width',100), kwargs.pop('height',25))
+        """
+        Reset tab text orientation on initialization
+
+        :param width: Remove default width parameter in kwargs
+        :param height: Remove default height parameter in kwargs
+        """
+        self.tabSize = QSize(kwargs.pop('width', 100), kwargs.pop('height', 25))
         QTabBar.__init__(self, parent, *args, **kwargs)
 
     def paintEvent(self, event):
+        """
+        Repaint tab in left-right text orientation.
+
+        :param event: Repaint event signal
+        """
         painter = QStylePainter(self)
         option = QStyleOptionTab()
 
@@ -137,18 +153,32 @@ class FingerTabBarWidget(QTabBar):
             tabRect = self.tabRect(index)
             tabRect.moveLeft(10)
             painter.drawControl(QStyle.CE_TabBarTabShape, option)
-            painter.drawText(tabRect, QtCore.Qt.AlignVCenter |\
-                             QtCore.Qt.TextDontClip, \
-                             self.tabText(index));
+            painter.drawText(tabRect, QtCore.Qt.AlignVCenter |
+                             QtCore.Qt.TextDontClip,
+                             self.tabText(index))
         painter.end()
-    def tabSizeHint(self,index):
+
+    def tabSizeHint(self, index):
+        """
+        Return tabsize
+
+        :param index: Tab index to fetch tabsize from
+        :returns: instance tabSize
+        """
         return self.tabSize
 
-# Shamelessly stolen from this thread:
-#   http://www.riverbankcomputing.com/pipermail/pyqt/2005-December/011724.html
-class FingerTabWidget(QtGui.QTabWidget):
-    """A QTabWidget equivalent which uses our FingerTabBarWidget"""
+
+class FingerTabWidget(QTabWidget):
+    """
+    A QTabWidget equivalent which uses our FingerTabBarWidget
+
+    Based on thread discussion
+    http://www.riverbankcomputing.com/pipermail/pyqt/2005-December/011724.html
+    """
     def __init__(self, parent, *args):
+        """
+        Initialize FingerTabWidget instance
+        """
         QTabWidget.__init__(self, parent, *args)
         self.setTabBar(FingerTabBarWidget(self))
 
