@@ -32,6 +32,7 @@
     Initialization for the openlp.core.ui.projector modules.
 """
 
+
 class DialogSourceStyle(object):
     """
     An enumeration for projector dialog box type.

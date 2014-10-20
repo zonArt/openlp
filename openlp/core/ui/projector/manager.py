@@ -76,6 +76,7 @@ class Ui_ProjectorManager(object):
     def setup_ui(self, widget):
         """
         Define the UI
+
         :param widget: The screen object the dialog is to be attached to.
         """
         log.debug('setup_ui()')
@@ -307,13 +308,16 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Post-initialize setups.
         """
-        self.load_projectors()
+        self._load_projectors()
         self.projector_form = ProjectorEditForm(self, projectordb=self.projectordb)
         self.projector_form.newProjector.connect(self.add_projector_from_wizard)
         self.projector_form.editProjector.connect(self.edit_projector_from_wizard)
         self.projector_list_widget.itemSelectionChanged.connect(self.update_icons)
 
     def get_settings(self):
+        """
+        Retrieve the saved settings
+        """
         settings = Settings()
         settings.beginGroup(self.settings_section)
         self.autostart = settings.value('connect on start')
@@ -372,7 +376,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         # QTabwidget for source select
         if self.source_select_dialog_type == DialogSourceStyle.Tabbed:
             source_select_form = SourceSelectTabs(parent=self,
-                                                projectordb=self.projectordb)
+                                                  projectordb=self.projectordb)
         else:
             source_select_form = SourceSelectSingle(parent=self,
                                                     projectordb=self.projectordb)
@@ -663,7 +667,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Helper app to build a projector instance
 
-        :param p: Dict of projector database information
+        :param projector: Dict of projector database information
         :returns: PJLink1() instance
         """
         log.debug('_add_projector()')
@@ -770,7 +774,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         self.old_projector.link.notes = projector.notes
         self.old_projector.widget.setText(projector.name)
 
-    def load_projectors(self):
+    def _load_projectors(self):
         """'
         Load projectors - only call when initializing
         """
