@@ -36,9 +36,9 @@ log = logging.getLogger(__name__)
 log.debug('editform loaded')
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import pyqtSlot, pyqtSignal
+from PyQt4.QtCore import pyqtSlot, pyqtSignal, QSize
 from PyQt4.QtGui import QDialog, QButtonGroup, QDialogButtonBox, QGroupBox, QRadioButton, \
-    QTabBar, QTabWidget, QVBoxLayout, QWidget
+    QStyle, QStylePainter, QStyleOptionTab, QTabBar, QTabWidget, QVBoxLayout, QWidget
 
 from openlp.core.common import translate, is_macosx
 from openlp.core.lib import build_icon
@@ -123,6 +123,36 @@ def Build_Tab(group, source_key, default):
     return (widget, button_count, buttonchecked)
 
 
+class FingerTabBarWidget(QTabBar):
+    def __init__(self, parent=None, *args, **kwargs):
+        self.tabSize = QSize(kwargs.pop('width',100), kwargs.pop('height',25))
+        QTabBar.__init__(self, parent, *args, **kwargs)
+
+    def paintEvent(self, event):
+        painter = QStylePainter(self)
+        option = QStyleOptionTab()
+
+        for index in range(self.count()):
+            self.initStyleOption(option, index)
+            tabRect = self.tabRect(index)
+            tabRect.moveLeft(10)
+            painter.drawControl(QStyle.CE_TabBarTabShape, option)
+            painter.drawText(tabRect, QtCore.Qt.AlignVCenter |\
+                             QtCore.Qt.TextDontClip, \
+                             self.tabText(index));
+        painter.end()
+    def tabSizeHint(self,index):
+        return self.tabSize
+
+# Shamelessly stolen from this thread:
+#   http://www.riverbankcomputing.com/pipermail/pyqt/2005-December/011724.html
+class FingerTabWidget(QtGui.QTabWidget):
+    """A QTabWidget equivalent which uses our FingerTabBarWidget"""
+    def __init__(self, parent, *args):
+        QTabWidget.__init__(self, parent, *args)
+        self.setTabBar(FingerTabBarWidget(self))
+
+
 class SourceSelectDialog(QDialog):
     """
     Class for handling selecting the source for the projector to use.
@@ -142,7 +172,7 @@ class SourceSelectDialog(QDialog):
         self.setModal(True)
         self.layout = QVBoxLayout()
         self.layout.setObjectName('source_select_dialog_layout')
-        self.tabwidget = QTabWidget(self)
+        self.tabwidget = FingerTabWidget(self)
         self.tabwidget.setObjectName('source_select_dialog_tabwidget')
         self.tabwidget.setUsesScrollButtons(False)
         if is_macosx():
