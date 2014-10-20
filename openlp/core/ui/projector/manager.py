@@ -209,7 +209,7 @@ class Ui_ProjectorManager(object):
         self.select_input_action = create_widget_action(self.menu,
                                                         text=translate('OpenLP.ProjectorManager',
                                                                        'Select &Input'),
-                                                        icon=':/projector/projector_connectors.png',
+                                                        icon=':/projector/projector_hdmi.png',
                                                         triggers=self.on_select_input)
         self.blank_action = create_widget_action(self.menu,
                                                  text=translate('OpenLP.ProjectorManager',
