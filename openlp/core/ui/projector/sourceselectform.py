@@ -96,6 +96,7 @@ def Build_Tab(group, source_key, default):
     :param source_key: Dictionary of sources for radio buttons
     :param default: Default radio button to check
     """
+    buttonchecked = False
     widget = QWidget()
     layout = QVBoxLayout()
     layout.setSpacing(10)
@@ -109,10 +110,11 @@ def Build_Tab(group, source_key, default):
         itemwidget.setAutoExclusive(True)
         if default == key:
             itemwidget.setChecked(True)
+            buttonchecked = itemwidget.isChecked() or buttonchecked
         group.addButton(itemwidget, int(key))
         layout.addWidget(itemwidget)
     layout.addStretch()
-    return (widget, button_count)
+    return (widget, button_count, buttonchecked)
 
 
 class SourceSelectDialog(QDialog):
@@ -132,7 +134,6 @@ class SourceSelectDialog(QDialog):
         self.setObjectName('source_select_dialog')
         self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
         self.setModal(True)
-        self.button_count = 0  # Maximum number of buttons in a single page
         self.layout = QVBoxLayout()
         self.layout.setObjectName('source_select_dialog_layout')
         self.tabwidget = QTabWidget(self)
@@ -161,11 +162,12 @@ class SourceSelectDialog(QDialog):
         keys = list(self.source_group.keys())
         keys.sort()
         for key in keys:
-            (tab, button_count) = Build_Tab(group=self.button_group,
-                                            source_key={key: self.source_group[key]},
-                                            default=self.projector.source)
-            self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
-            self.button_count = self.button_count if self.button_count > button_count else button_count
+            (tab, button_count, buttonchecked) = Build_Tab(group=self.button_group,
+                                                           source_key={key: self.source_group[key]},
+                                                           default=self.projector.source)
+            thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
+            if buttonchecked:
+                self.tabwidget.setCurrentIndex(thistab)
         self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
                                            QtGui.QDialogButtonBox.Cancel)
         self.button_box.accepted.connect(self.accept_me)
