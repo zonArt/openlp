@@ -203,7 +203,10 @@ class SourceSelectTabs(QDialog):
         self.setModal(True)
         self.layout = QVBoxLayout()
         self.layout.setObjectName('source_select_tabs_layout')
-        self.tabwidget = FingerTabWidget(self)
+        if is_macosx():
+            self.tabwidget = QTabWidget(self)
+        else:
+            self.tabwidget = FingerTabWidget(self)
         self.tabwidget.setObjectName('source_select_tabs_tabwidget')
         self.tabwidget.setUsesScrollButtons(False)
         if is_macosx():
