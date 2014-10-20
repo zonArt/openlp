@@ -142,7 +142,7 @@ class SourceSelectDialog(QDialog):
             self.tabwidget.setTabPosition(QTabWidget.North)
         else:
             self.tabwidget.setTabPosition(QTabWidget.West)
-            self.layout.addWidget(self.tabwidget)
+        self.layout.addWidget(self.tabwidget)
         self.setLayout(self.layout)
 
     def exec_(self, projector):
