@@ -162,6 +162,8 @@ class Projector(CommonBase, Base):
         model:          Column(String(128))  # From projector (future)
         other:          Column(String(128))  # From projector (future)
         sources:        Column(String(128))  # From projector (future)
+
+        ProjectorSource relates
     """
     ip = Column(String(100))
     port = Column(String(8))
@@ -174,6 +176,12 @@ class Projector(CommonBase, Base):
     model = Column(String(128))
     other = Column(String(128))
     sources = Column(String(128))
+    source_list = relationship('ProjectorSource',
+                               order_by='ProjectorSource.code',
+                               backref='projector',
+                               cascade='all, delete-orphan',
+                               primaryjoin='Projector.id==ProjectorSource.projector_id',
+                               lazy='joined')
 
 
 class ProjectorSource(CommonBase, Base):
@@ -191,7 +199,7 @@ class ProjectorSource(CommonBase, Base):
     """
     code = Column(String(3))
     text = Column(String(20))
-    projector_id = (Integer, ForeignKey('projector.id'))
+    projector_id = Column(Integer, ForeignKey('projector.id'))
 
 
 class ProjectorDB(Manager):
