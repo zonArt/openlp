@@ -45,7 +45,7 @@
 import logging
 log = logging.getLogger(__name__)
 
-log.debug('rpjlink1 loaded')
+log.debug('pjlink1 loaded')
 
 __all__ = ['PJLink1']
 
@@ -268,11 +268,11 @@ class PJLink1(QTcpSocket):
         :returns: (Status/Error code, String)
         """
         if status in ERROR_STRING:
-            return (ERROR_STRING[status], ERROR_MSG[status])
+            return ERROR_STRING[status], ERROR_MSG[status]
         elif status in STATUS_STRING:
-            return (STATUS_STRING[status], ERROR_MSG[status])
+            return STATUS_STRING[status], ERROR_MSG[status]
         else:
-            return (status, translate('OpenLP.PJLink1', 'Unknown status'))
+            return status, translate('OpenLP.PJLink1', 'Unknown status')
 
     def change_status(self, status, msg=None):
         """
