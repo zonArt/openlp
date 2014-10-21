@@ -191,7 +191,7 @@ class ProjectorSource(CommonBase, Base):
     """
     code = Column(String(3))
     text = Column(String(20))
-    projector_id = Integer(ForeignKey('projector.id'))
+    projector_id = (Integer, ForeignKey('projector.id'))
 
 
 class ProjectorDB(Manager):
