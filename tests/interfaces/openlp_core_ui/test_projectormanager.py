@@ -29,6 +29,8 @@
 """
 Interface tests to test the themeManager class and related methods.
 """
+
+import os
 from unittest import TestCase
 
 from openlp.core.common import Registry, Settings
@@ -41,7 +43,11 @@ from openlp.core.lib.projector.db import Projector, ProjectorDB
 from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
 
 tmpfile = '/tmp/openlp-test-projectormanager.sql'
-
+try:
+    # In case of changed schema, remove old test file
+    os.remove(tmpfile)
+except FileNotFoundError:
+    pass
 
 class TestProjectorManager(TestCase, TestMixin):
     """
@@ -93,7 +99,7 @@ class TestProjectorManager(TestCase, TestMixin):
         self.assertEqual(1, self.projector_manager.load_projectors.call_count,
                          'Initialization should have called load_projectors()')
 
-        # THEN: Verify wizard page is initialized
+        # THEN: Verify edit page is initialized
         self.assertEqual(type(self.projector_manager.projector_form), ProjectorEditForm,
                          'Initialization should have created a Projector Edit Form')
         self.assertIs(self.projector_manager.projectordb,
