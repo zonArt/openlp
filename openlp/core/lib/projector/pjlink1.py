@@ -129,6 +129,8 @@ class PJLink1(QTcpSocket):
         else:
             # Default is 5 seconds
             self.socket_timeout = 5000
+        # In case we're called from somewhere that only wants information
+        self.no_poll = 'no_poll' in kwargs
         self.i_am_running = False
         self.status_connect = S_NOT_CONNECTED
         self.last_command = ''
@@ -386,7 +388,7 @@ class PJLink1(QTcpSocket):
         # Initial data we should know about
         self.send_command(cmd='CLSS', salt=salt)
         self.waitForReadyRead()
-        if not self.new_wizard and self.state() == self.ConnectedState:
+        if (not self.no_poll) and (self.state() == self.ConnectedState):
             self.timer.setInterval(2000)  # Set 2 seconds for initial information
             self.timer.start()
 
