@@ -43,11 +43,13 @@ from openlp.core.lib.projector.db import Projector, ProjectorDB
 from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
 
 tmpfile = '/tmp/openlp-test-projectormanager.sql'
+
 try:
     # In case of changed schema, remove old test file
     os.remove(tmpfile)
 except FileNotFoundError:
     pass
+
 
 class TestProjectorManager(TestCase, TestMixin):
     """
