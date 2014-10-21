@@ -36,8 +36,8 @@ log = logging.getLogger(__name__)
 log.debug('editform loaded')
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import pyqtSlot, pyqtSignal, QSize
-from PyQt4.QtGui import QDialog, QButtonGroup, QDialogButtonBox, QGroupBox, QRadioButton, \
+from PyQt4.QtCore import pyqtSlot, QSize
+from PyQt4.QtGui import QDialog, QButtonGroup, QDialogButtonBox, QRadioButton, \
     QStyle, QStylePainter, QStyleOptionTab, QTabBar, QTabWidget, QVBoxLayout, QWidget
 
 from openlp.core.common import translate, is_macosx

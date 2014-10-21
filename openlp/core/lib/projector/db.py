@@ -45,14 +45,12 @@ import logging
 log = logging.getLogger(__name__)
 log.debug('projector.lib.db module loaded')
 
-from os import path
-
 from sqlalchemy import Column, ForeignKey, Integer, MetaData, String
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import backref, relationship
 
 from openlp.core.lib.db import Manager, init_db, init_url
-from openlp.core.lib.projector.constants import PJLINK_DEFAULT_SOURCES, PJLINK_DEFAULT_CODES
+from openlp.core.lib.projector.constants import PJLINK_DEFAULT_CODES
 
 metadata = MetaData()
 Base = declarative_base(metadata)
@@ -188,6 +186,8 @@ class ProjectorSource(CommonBase, Base):
         projector_id:   Foreign_key(Column(Projector.id))
         code:           Column(String(3)) #  PJLink source code
         text:           Column(String(20))  # Text to display
+
+    Projector table links here
     """
     code = Column(String(3))
     text = Column(String(20))

@@ -51,7 +51,6 @@ __all__ = ['PJLink1']
 
 from codecs import decode
 
-from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal, pyqtSlot
 from PyQt4.QtNetwork import QAbstractSocket, QTcpSocket
 
@@ -94,6 +93,8 @@ class PJLink1(QTcpSocket):
         :param dbid: Database ID number
         :param location: Location where projector is physically located
         :param notes: Extra notes about the projector
+        :param poll_time: Time (in seconds) to poll connected projector
+        :param socket_timeout: Time (in seconds) to abort the connection if no response
         """
         log.debug('PJlink(args="%s" kwargs="%s")' % (args, kwargs))
         self.name = name
@@ -104,7 +105,6 @@ class PJLink1(QTcpSocket):
         self.dbid = None
         self.location = None
         self.notes = None
-        # Allowances for Projector Wizard option
         if 'dbid' in kwargs:
             self.dbid = kwargs['dbid']
         else:
@@ -117,10 +117,6 @@ class PJLink1(QTcpSocket):
             self.notes = kwargs['notes']
         else:
             self.notes = None
-        if 'wizard' in kwargs:
-            self.new_wizard = True
-        else:
-            self.new_wizard = False
         if 'poll_time' in kwargs:
             # Convert seconds to milliseconds
             self.poll_time = kwargs['poll_time'] * 1000
@@ -139,10 +135,10 @@ class PJLink1(QTcpSocket):
         self.projector_status = S_NOT_CONNECTED
         self.error_status = S_OK
         # Socket information
-        # Account for self.readLine appending \0 and/or extraneous \r
+        # Add enough space to input buffer for extraneous \n \r
         self.maxSize = PJLINK_MAX_PACKET + 2
         self.setReadBufferSize(self.maxSize)
-        # PJLink projector information
+        # PJLink information
         self.pjlink_class = '1'  # Default class
         self.reset_information()
         # Set from ProjectorManager.add_projector()
@@ -150,7 +146,8 @@ class PJLink1(QTcpSocket):
         self.timer = None  # Timer that calls the poll_loop
         self.send_queue = []
         self.send_busy = False
-        self.socket_timer = None  # Test for send_busy and brain-dead projectors
+        # Socket timer for some possible brain-dead projectors or network cable pulled
+        self.socket_timer = None
         # Map command to function
         self.PJLINK1_FUNC = {'AVMT': self.process_avmt,
                              'CLSS': self.process_clss,
@@ -244,10 +241,12 @@ class PJLink1(QTcpSocket):
         if self.timer.interval() < self.poll_time:
             # Reset timer to 5 seconds
             self.timer.setInterval(self.poll_time)
+        # Restart timer
         self.timer.start()
+        # These commands may change during connetion
         for command in ['POWR', 'ERST', 'LAMP', 'AVMT', 'INPT']:
-            # Changeable information
             self.send_command(command, queue=True)
+        # The following commands do not change, so only check them once
         if self.power == S_ON and self.source_available is None:
             self.send_command('INST', queue=True)
         if self.other_info is None:
@@ -347,19 +346,20 @@ class PJLink1(QTcpSocket):
             log.debug('(%s) check_login() read "%s"' % (self.ip, data.strip()))
         # At this point, we should only have the initial login prompt with
         # possible authentication
-        if not data.upper().startswith('PJLINK'):
-            # Invalid response
-            return self.disconnect_from_host()
-        # Test for authentication error
-        if '=' in data:
-            data_check = data.strip().split('=')
-        else:
-            data_check = data.strip().split(' ')
-        log.debug('(%s) data_check="%s"' % (self.ip, data_check))
         # PJLink initial login will be:
         # 'PJLink 0' - Unauthenticated login - no extra steps required.
         # 'PJLink 1 XXXXXX' Authenticated login - extra processing required.
-        # Oops - projector error
+        if not data.upper().startswith('PJLINK'):
+            # Invalid response
+            return self.disconnect_from_host()
+        if '=' in data:
+            # Processing a login reply
+            data_check = data.strip().split('=')
+        else:
+            # Process initial connection
+            data_check = data.strip().split(' ')
+        log.debug('(%s) data_check="%s"' % (self.ip, data_check))
+        # Check for projector reporting an error
         if data_check[1].upper() == 'ERRA':
             # Authentication error
             self.disconnect_from_host()
@@ -382,10 +382,10 @@ class PJLink1(QTcpSocket):
             salt = None
         # We're connected at this point, so go ahead and do regular I/O
         self.readyRead.connect(self.get_data)
+        self.projectorReceivedData.connect(self._send_command)
         # Initial data we should know about
         self.send_command(cmd='CLSS', salt=salt)
         self.waitForReadyRead()
-        self.projectorReceivedData.connect(self._send_command)
         if not self.new_wizard and self.state() == self.ConnectedState:
             self.timer.setInterval(2000)  # Set 2 seconds for initial information
             self.timer.start()
@@ -472,8 +472,8 @@ class PJLink1(QTcpSocket):
         Add command to output queue if not already in queue.
 
         :param cmd: Command to send
-        :param opts: Optional command option - defaults to '?' (get information)
-        :param salt: Optional  salt for md5 hash for initial authentication
+        :param opts: Command option (if any) - defaults to '?' (get information)
+        :param salt: Optional  salt for md5 hash initial authentication
         :param queue: Option to force add to queue rather than sending directly
         """
         if self.state() != self.ConnectedState:
@@ -493,6 +493,8 @@ class PJLink1(QTcpSocket):
             # Already there, so don't add
             log.debug('(%s) send_command(out="%s") Already in queue - skipping' % (self.ip, out.strip()))
         elif not queue and len(self.send_queue) == 0:
+            # Nothing waiting to send, so just send it
+            log.debug('(%s) send_command(out="%s") Sending data' % (self.ip, out.strip()))
             return self._send_command(data=out)
         else:
             log.debug('(%s) send_command(out="%s") adding to queue' % (self.ip, out.strip()))
@@ -559,27 +561,22 @@ class PJLink1(QTcpSocket):
             # Oops - projector error
             if data.upper() == 'ERRA':
                 # Authentication error
-                self.send_busy = False
                 self.disconnect_from_host()
                 self.change_status(E_AUTHENTICATION)
                 log.debug('(%s) emitting projectorAuthentication() signal' % self.ip)
                 self.projectorAuthentication.emit(self.name)
             elif data.upper() == 'ERR1':
                 # Undefined command
-                self.send_busy = False
                 self.change_status(E_UNDEFINED, '%s "%s"' %
                                    (translate('OpenLP.PJLink1', 'Undefined command:'), cmd))
             elif data.upper() == 'ERR2':
                 # Invalid parameter
-                self.send_busy = False
                 self.change_status(E_PARAMETER)
             elif data.upper() == 'ERR3':
                 # Projector busy
-                self.send_busy = False
                 self.change_status(E_UNAVAILABLE)
             elif data.upper() == 'ERR4':
                 # Projector/display error
-                self.send_busy = False
                 self.change_status(E_PROJECTOR)
             self.send_busy = False
             self.projectorReceivedData.emit()
