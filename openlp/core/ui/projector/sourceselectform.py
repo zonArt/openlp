@@ -223,9 +223,7 @@ class SourceSelectTabs(QDialog):
         :param projector: Projector instance to build source list from
         """
         self.projector = projector
-        self.source_text = self.projectordb.get_source_list(projector.manufacturer,
-                                                            projector.model,
-                                                            projector.source_available)
+        self.source_text = self.projectordb.get_source_list(projector=projector)
         self.source_group = source_group(projector.source_available, self.source_text)
         # self.source_group = {'4': {'41': 'Storage 1'}, '5': {"51": 'Network 1'}}
         self.button_group = QButtonGroup()
