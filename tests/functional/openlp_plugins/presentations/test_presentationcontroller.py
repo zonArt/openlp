@@ -243,13 +243,13 @@ class TestPresentationDocument(TestCase):
         """
         Test the PresentationDocument __init__ method when initialising the PresentationDocument Class
         """
-        # GIVEN: A reset mock_setup and mocked controller
+        # GIVEN: A mocked setup method and mocked controller
         self.mock_setup.reset()
 
         # WHEN: Creating an instance of PresentationDocument
         PresentationDocument(self.mock_controller, 'Name')
 
-        # THEN: PresentationDocument.__init__ should have been called with the correct arguments
+        # THEN: PresentationDocument._setup should have been called with the argument 'Name'
         self.mock_setup.assert_called_once_with('Name')
 
     def presentation_document_setup_test(self):
@@ -258,19 +258,19 @@ class TestPresentationDocument(TestCase):
         """
         self._setup_patcher.stop()
 
-        # GIVEN: A  mocked controller, patched check_directory_exists_patcher and patched get_thumbnail_folder method
+        # GIVEN: A mocked controller, patched check_directory_exists and get_thumbnail_folder methods
 
         # WHEN: Creating an instance of PresentationDocument
         PresentationDocument(self.mock_controller, 'Name')
 
-        # THEN: check_directory_exists should have been called with the correct arguments
+        # THEN: check_directory_exists should have been called with 'returned/path/'
         self.mock_check_directory_exists.assert_called_once_with('returned/path/')
 
         self._setup_patcher.start()
 
     def load_presentation_test(self):
         """
-        Test the PresentationDocument load_presentation method.
+        Test the PresentationDocument.load_presentation method.
         """
 
         # GIVEN: An instance of PresentationDocument
@@ -279,16 +279,16 @@ class TestPresentationDocument(TestCase):
         # WHEN: Calling load_presentation()
         result = instance.load_presentation()
 
-        # THEN: False should be returned
+        # THEN: load_presentation should return false
         self.assertFalse(result, "PresentationDocument.load_presentation should return false.")
 
     def get_file_name_test(self):
         """
-        Test the get_file_name method.
+        Test the PresentationDocument.get_file_name method.
         """
 
-        # GIVEN: A mocked out os.path.split with specified return value, an instance of PresentationDocument and
-        #       arbitary file_path
+        # GIVEN: A mocked os.path.split which returns a list, an instance of PresentationDocument and
+        #       arbitary file_path.
         self.mock_os.path.split.return_value = ['directory', 'file.ext']
         instance = PresentationDocument(self.mock_controller, 'Name')
         instance.file_path = 'filepath'
@@ -296,5 +296,5 @@ class TestPresentationDocument(TestCase):
         # WHEN: Calling get_file_name
         result = instance.get_file_name()
 
-        # THEN: The file name should have been returned
+        # THEN: get_file_name should return 'file.ext'
         self.assertEqual(result, 'file.ext')
