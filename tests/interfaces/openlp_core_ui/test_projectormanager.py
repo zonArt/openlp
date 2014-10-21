@@ -89,7 +89,7 @@ class TestProjectorManager(TestCase, TestMixin):
         Test post-initialize calls proper setups
         """
         # GIVEN: setup mocks
-        self.projector_manager.load_projectors = MagicMock()
+        self.projector_manager._load_projectors = MagicMock()
 
         # WHEN: Call to initialize is run
         self.projector_manager.bootstrap_initialise()
