@@ -295,9 +295,7 @@ class SourceSelectSingle(QDialog):
         :param projector: Projector instance to build source list from
         """
         self.projector = projector
-        self.source_text = self.projectordb.get_source_list(projector.manufacturer,
-                                                            projector.model,
-                                                            projector.source_available)
+        self.source_text = self.projectordb.get_source_list(projector=projector)
         keys = list(self.source_text.keys())
         keys.sort()
         key_count = len(keys)
