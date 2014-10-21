@@ -116,8 +116,8 @@ class VersionThread(QtCore.QThread):
         app_version = get_application_version()
         version = check_latest_version(app_version)
         log.debug("Versions %s and %s " % (LooseVersion(str(version)), LooseVersion(str(app_version['full']))))
-        #if LooseVersion(str(version)) > LooseVersion(str(app_version['full'])):
-        self.main_window.emit(QtCore.SIGNAL('openlp_version_check'), '%s' % version)
+        if LooseVersion(str(version)) > LooseVersion(str(app_version['full'])):
+            self.main_window.emit(QtCore.SIGNAL('openlp_version_check'), '%s' % version)
 
 
 class HTTPRedirectHandlerFixed(urllib.request.HTTPRedirectHandler):
@@ -227,8 +227,6 @@ def check_latest_version(current_version):
     this_test = str(datetime.now().date())
     settings.setValue('last version test', this_test)
     settings.endGroup()
-    # Tell the main window whether there will ever be data to display
-    Registry().get('main_window').version_update_running = last_test != this_test
     if last_test != this_test:
         if current_version['build']:
             req = urllib.request.Request('http://www.openlp.org/files/nightly_version.txt')
