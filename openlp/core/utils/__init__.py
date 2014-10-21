@@ -97,6 +97,16 @@ class VersionThread(QtCore.QThread):
     A special Qt thread class to fetch the version of OpenLP from the website.
     This is threaded so that it doesn't affect the loading time of OpenLP.
     """
+    def __init__(self, main_window):
+        """
+        Constructor for the thread class.
+
+        :param main_window: The main window Object.
+        """
+        log.debug("VersionThread - Initialise")
+        super(VersionThread, self).__init__(None)
+        self.main_window = main_window
+
     def run(self):
         """
         Run the thread.
@@ -105,8 +115,9 @@ class VersionThread(QtCore.QThread):
         log.debug('Version thread - run')
         app_version = get_application_version()
         version = check_latest_version(app_version)
-        if LooseVersion(str(version)) > LooseVersion(str(app_version['full'])):
-            Registry().execute('openlp_version_check', '%s' % version)
+        log.debug("Versions %s and %s " % (LooseVersion(str(version)), LooseVersion(str(app_version['full']))))
+        #if LooseVersion(str(version)) > LooseVersion(str(app_version['full'])):
+        self.main_window.emit(QtCore.SIGNAL('openlp_version_check'), '%s' % version)
 
 
 class HTTPRedirectHandlerFixed(urllib.request.HTTPRedirectHandler):

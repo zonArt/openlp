@@ -490,7 +490,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.header_section = 'SettingsImport'
         self.recent_files = []
         self.timer_id = 0
-        self.timer_version_id = 0
         self.new_data_path = None
         self.copy_data = False
         Settings().set_up_default_values()
@@ -536,7 +535,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.application.set_busy_cursor()
         # Simple message boxes
         Registry().register_function('theme_update_global', self.default_theme_changed)
-        Registry().register_function('openlp_version_check', self.version_notice)
+        QtCore.QObject.connect(self, QtCore.SIGNAL('openlp_version_check'),  self.version_notice)
         Registry().register_function('config_screen_changed', self.screen_changed)
         Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
         # Reset the cursor
@@ -585,12 +584,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Notifies the user that a newer version of OpenLP is available.
         Triggered by delay thread and cannot display popup.
+
+        :param version: The Version to be displayed.
         """
         log.debug('version_notice')
         version_text = translate('OpenLP.MainWindow', 'Version %s of OpenLP is now available for download (you are '
                                  'currently running version %s). \n\nYou can download the latest version from '
                                  'http://openlp.org/.')
-        self.version_text = version_text % (version, get_application_version()['full'])
+        QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
+                                   version_text % (version, get_application_version()[u'full']))
 
     def show(self):
         """
@@ -604,7 +606,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.open_cmd_line_files()
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_last_file()
-        self.timer_version_id = self.startTimer(1000)
         view_mode = Settings().value('%s/view mode' % self.general_settings_section)
         if view_mode == 'default':
             self.mode_default_item.setChecked(True)
@@ -1303,17 +1304,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if event.timerId() == self.timer_id:
             self.timer_id = 0
             self.load_progress_bar.hide()
-            self.application.process_events()
-        if event.timerId() == self.timer_version_id:
-            self.timer_version_id = 0
-            # Has the thread passed some data to be displayed so display it and stop all waiting
-            if hasattr(self, 'version_text'):
-                QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
-                                           self.version_text)
-            else:
-                # the thread has not confirmed it is running or it has not yet sent any data so lets keep waiting
-                if not hasattr(self, 'version_update_running') or self.version_update_running:
-                    self.timer_version_id = self.startTimer(1000)
             self.application.process_events()
 
     def set_new_data_path(self, new_data_path):

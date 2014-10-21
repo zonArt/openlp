@@ -154,7 +154,8 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
             self.main_window.first_time()
         update_check = Settings().value('core/update check')
         if update_check:
-            VersionThread(self.main_window).start()
+            version = VersionThread(self.main_window)
+            version.start()
         self.main_window.is_display_blank()
         self.main_window.app_startup()
         return self.exec_()
