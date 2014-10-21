@@ -114,11 +114,13 @@ class Ui_ProjectorEditForm(object):
         self.dialog_layout.addWidget(self.button_box, 8, 0, 1, 2)
 
     def retranslateUi(self, edit_projector_dialog):
-        if self.new_projector:
+        if self.projector.port is None:
             title = translate('OpenLP.ProjectorEditForm', 'Add New Projector')
             self.projector.port = PJLINK_PORT
+            self.new_projecor = True
         else:
             title = translate('OpenLP.ProjectorEditForm', 'Edit Projector')
+            self.new_projector = False
         edit_projector_dialog.setWindowTitle(title)
         self.ip_label.setText(translate('OpenLP.ProjetorEditForm', 'IP Address'))
         self.ip_text.setText(self.projector.ip)
@@ -157,13 +159,9 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
         self.button_box.helpRequested.connect(self.help_me)
         self.button_box.rejected.connect(self.cancel_me)
 
-    def exec_(self, projector=None):
-        if projector is None:
-            self.projector = Projector()
-            self.new_projector = True
-        else:
-            self.projector = projector
-            self.new_projector = False
+    def exec_(self, projector=Projector()):
+        self.projector = projector
+        self.new_projector = False
         self.retranslateUi(self)
         reply = QDialog.exec_(self)
         self.projector = None

@@ -52,7 +52,7 @@ from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import backref, relationship
 
 from openlp.core.lib.db import Manager, init_db, init_url
-from openlp.core.lib.projector.constants import PJLINK_DEFAULT_SOURCES, PJLINK_DEFAULT_CODES
+from openlp.core.lib.projector.constants import PJLINK_DEFAULT_SOURCES
 
 metadata = MetaData()
 Base = declarative_base(metadata)
@@ -176,22 +176,6 @@ class Projector(CommonBase, Base):
     model = Column(String(128))
     other = Column(String(128))
     sources = Column(String(128))
-
-
-class ProjectorSource(CommonBase, Base):
-    """
-    Projector local source table
-    This table allows mapping specific projector source input to a local
-    connection; i.e., '11': 'DVD Player'
-
-    Projector Source:
-        projector_id:   Foreign_key(Column(Projector.id))
-        code:           Column(String(3)) #  PJLink source code
-        text:           Column(String(20))  # Text to display
-    """
-    code = Column(String(3))
-    text = Column(String(20))
-    projector_id = Integer(ForeignKey('projector.id'))
 
 
 class ProjectorDB(Manager):
@@ -344,40 +328,36 @@ class ProjectorDB(Manager):
             log.error('delete_by_id() Entry id="%s" not deleted for some reason' % projector.id)
         return deleted
 
-    def get_source_list(self, projector):
+    def get_source_list(self, make, model, sources):
         """
         Retrieves the source inputs pjlink code-to-text if available based on
         manufacturer and model.
         If not available, then returns the PJLink code to default text.
 
-        :param projector: Projector instance
+        :param make: Manufacturer name as retrieved from projector
+        :param model: Manufacturer model as retrieved from projector
+        :param sources: List of available sources (from projector)
         :returns: dict
                   key: (str) PJLink code for source
-                  value: (str) From ProjectorSource, Sources tables or PJLink default code list
+                  value: (str) From Sources table or default PJLink strings
         """
-        # Get manufacturer-defined source text
-        model_list = self.get_all_objects(Model, Model.name == projector.model)
+        source_dict = {}
+        model_list = self.get_all_objects(Model, Model.name == model)
         if model_list is None or len(model_list) < 1:
             # No entry for model, so see if there's a default entry
-            default_list = self.get_object_filtered(Manufacturer, Manufacturer.name == projector.manufacturer)
+            default_list = self.get_object_filtered(Manufacturer, Manufacturer.name == make)
             if default_list is None or len(default_list) < 1:
                 # No entry for manufacturer, so can't check for default text
-                model_list = {}
+                log.debug('Using default PJLink text for input select')
+                for source in sources:
+                    log.debug('source = "%s"' % source)
+                    source_dict[source] = '%s %s' % (PJLINK_DEFAULT_SOURCES[source[0]], source[1])
             else:
-                model_list = default_list.models['DEFAULT']
-        # Get user-defined source text
-        local_list = self.get_all_objects(ProjectorSource, ProjectorSource.projector_id == projector.dbid)
-        if local_list is None or len(local_list) < 1:
-            local_list = {}
-        source_dict = {}
-        for source in projector.source_available:
-            if source in local_list:
-                # User defined source text
-                source_dict[source] = local_list[source]
-            elif source in model_list:
-                # Default manufacturer defined source text
-                source_dict[source] = model_list[source]
-            else:
-                # Default PJLink source text
-                source_dict[source] = PJLINK_DEFAULT_CODES[source]
+                # We have a manufacturer entry, see if there's a default
+                # TODO: Finish this section once edit source input is done
+                pass
+        else:
+            # There's at least one model entry, see if there's more than one manufacturer
+            # TODO: Finish this section once edit source input text is done
+            pass
         return source_dict
