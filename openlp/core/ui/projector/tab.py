@@ -120,7 +120,7 @@ class ProjectorTab(SettingsTab):
 
     def load(self):
         """
-        Load the projetor settings on startup
+        Load the projector settings on startup
         """
         settings = Settings()
         settings.beginGroup(self.settings_section)

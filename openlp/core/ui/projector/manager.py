@@ -325,7 +325,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         self.socket_timeout = settings.value('socket timeout')
         self.source_select_dialog_type = settings.value('source dialog type')
         settings.endGroup()
-        del(settings)
+        del settings
 
     def context_menu(self, point):
         """
@@ -922,7 +922,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         QtGui.QMessageBox.warning(self, translate('OpenLP.ProjectorManager',
                                                   '"%s" Authentication Error' % name),
-                                  '<br />There was an authentictaion error while trying to connect.'
+                                  '<br />There was an authentication error while trying to connect.'
                                   '<br /><br />Please verify your PIN setting '
                                   'for projector item "%s"' % name)
 

@@ -49,7 +49,7 @@ from openlp.core.lib.projector.constants import PJLINK_PORT
 
 class Ui_ProjectorEditForm(object):
     """
-    The :class:`~opelp.core.lib.ui.projector.editform.Ui_ProjectorEdiForm` class defines
+    The :class:`~openlp.core.lib.ui.projector.editform.Ui_ProjectorEditForm` class defines
     the user interface for the ProjectorEditForm dialog.
     """
     def setupUi(self, edit_projector_dialog):
@@ -120,7 +120,7 @@ class Ui_ProjectorEditForm(object):
         else:
             title = translate('OpenLP.ProjectorEditForm', 'Edit Projector')
         edit_projector_dialog.setWindowTitle(title)
-        self.ip_label.setText(translate('OpenLP.ProjetorEditForm', 'IP Address'))
+        self.ip_label.setText(translate('OpenLP.ProjectorEditForm', 'IP Address'))
         self.ip_text.setText(self.projector.ip)
         self.port_label.setText(translate('OpenLP.ProjectorEditForm', 'Port Number'))
         self.port_text.setText(str(self.projector.port))

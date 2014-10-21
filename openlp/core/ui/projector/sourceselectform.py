@@ -120,7 +120,7 @@ def Build_Tab(group, source_key, default):
         group.addButton(itemwidget, int(key))
         layout.addWidget(itemwidget)
     layout.addStretch()
-    return (widget, button_count, buttonchecked)
+    return widget, button_count, buttonchecked
 
 
 class FingerTabBarWidget(QTabBar):
@@ -314,33 +314,6 @@ class SourceSelectSingle(QDialog):
         self.button_box.rejected.connect(self.reject_me)
         self.layout.addWidget(self.button_box)
         self.setMinimumHeight(key_count*25)
-        selected = super(SourceSelectSingle, self).exec_()
-        return selected
-
-        title = QtGui.QLabel(translate('OpenLP.SourceSelectSingle', 'Select the input source below'))
-        self.layout.addWidget(title)
-        self.radio_buttons = []
-        source_list = self.projectordb.get_source_list(make=projector.link.manufacturer,
-                                                       model=projector.link.model,
-                                                       sources=projector.link.source_available)
-        sort = []
-        for item in source_list.keys():
-            sort.append(item)
-        sort.sort()
-        current = QtGui.QLabel(translate('OpenLP.SourceSelectSingle', 'Current source is %s' %
-                                         source_list[projector.link.source]))
-        layout.addWidget(current)
-        for item in sort:
-            button = self._select_input_widget(parent=self,
-                                               selected=projector.link.source,
-                                               code=item,
-                                               text=source_list[item])
-            layout.addWidget(button)
-        button_box = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
-                                            QtGui.QDialogButtonBox.Cancel)
-        button_box.accepted.connect(box.accept_me)
-        button_box.rejected.connect(box.reject_me)
-        layout.addWidget(button_box)
         selected = super(SourceSelectSingle, self).exec_()
         return selected
 
