@@ -32,7 +32,7 @@
   background-image: url(images/ui-icon-unblank.png);
 }
 
-/* Overwrite style from jquery-mobile.css */
+/* Overwrite style from jquery-mobile.min.css */
 .ui-li .ui-btn-text a.ui-link-inherit{
   white-space: normal;
 }

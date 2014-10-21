@@ -106,7 +106,7 @@ class JenkinsTrigger(object):
 
     def print_output(self):
         """
-        Print the status information of the build tirggered.
+        Print the status information of the build triggered.
         """
         print('Add this to your merge proposal:')
         print('--------------------------------')
