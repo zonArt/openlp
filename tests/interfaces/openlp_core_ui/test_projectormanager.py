@@ -44,12 +44,6 @@ from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
 
 tmpfile = '/tmp/openlp-test-projectormanager.sql'
 
-try:
-    # In case of changed schema, remove old test file
-    os.remove(tmpfile)
-except FileNotFoundError:
-    pass
-
 
 class TestProjectorManager(TestCase, TestMixin):
     """
@@ -72,8 +66,11 @@ class TestProjectorManager(TestCase, TestMixin):
 
     def tearDown(self):
         """
-        Delete all the C++ objects at the end so that we don't have a segfault
+        Remove test database.
+        Delete all the C++ objects at the end so that we don't have a segfault.
         """
+        self.projectordb.session.close()
+        del(self.projector_manager)
         self.destroy_settings()
 
     def bootstrap_initialise_test(self):

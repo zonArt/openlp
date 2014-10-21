@@ -30,6 +30,7 @@
 Module-level functions for the functional test suite
 """
 
+import os
 from tests.interfaces import patch
 
 from openlp.core.common import is_win
@@ -51,3 +52,9 @@ def tearDown():
     Ensure test suite has been cleaned up after tests
     """
     patch.stopall()
+    if not is_win():
+        try:
+            # In case of changed schema, remove old test file
+            os.remove(tmpfile)
+        except FileNotFoundError:
+            pass
