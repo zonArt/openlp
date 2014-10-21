@@ -96,7 +96,7 @@ class TestProjectorManager(TestCase, TestMixin):
         self.projector_manager.bootstrap_post_set_up()
 
         # THEN: verify calls to retrieve saved projectors
-        self.assertEqual(1, self.projector_manager.load_projectors.call_count,
+        self.assertEqual(1, self.projector_manager._load_projectors.call_count,
                          'Initialization should have called load_projectors()')
 
         # THEN: Verify edit page is initialized
