@@ -52,7 +52,7 @@ class TestImageManager(TestCase, TestMixin):
         Create the UI
         """
         Registry.create()
-        self.get_application()
+        self.setup_application()
         ScreenList.create(self.app.desktop())
         self.image_manager = ImageManager()
         self.lock = Lock()

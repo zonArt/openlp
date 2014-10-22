@@ -29,44 +29,78 @@
 """
 Package to test the openlp.core.ui.firsttimeform package.
 """
+from configparser import ConfigParser
 from unittest import TestCase
 
 from openlp.core.common import Registry
 from openlp.core.ui.firsttimeform import FirstTimeForm
 
-from tests.functional import MagicMock
+from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
+
+FAKE_CONFIG = b"""
+[general]
+base url = http://example.com/frw/
+[songs]
+directory = songs
+[bibles]
+directory = bibles
+[themes]
+directory = themes
+"""
 
 
 class TestFirstTimeForm(TestCase, TestMixin):
 
     def setUp(self):
-        screens = MagicMock()
-        self.get_application()
+        self.setup_application()
+        self.app.setApplicationVersion('0.0')
         Registry.create()
         Registry().register('application', self.app)
-        self.first_time_form = FirstTimeForm(screens)
 
-    def access_to_config_test(self):
+    def basic_initialise_test(self):
         """
-        Test if we can access the First Time Form's config file
+        Test if we can intialise the FirstTimeForm without a config file
         """
-        # GIVEN A new First Time Form instance.
+        # GIVEN: A mocked get_web_page, a First Time Wizard and an expected screen object
+        with patch('openlp.core.ui.firsttimeform.get_web_page') as mocked_get_web_page:
+            first_time_form = FirstTimeForm(None)
+            expected_screens = MagicMock()
+            expected_web_url = 'http://openlp.org/files/frw/'
+            expected_user_agent = 'OpenLP/0.0'
+            mocked_get_web_page.return_value = None
 
-        # WHEN The default First Time Form is built.
+            # WHEN: The First Time Wizard is initialised
+            first_time_form.initialize(expected_screens)
 
-        # THEN The First Time Form web configuration file should be accessable.
-        self.assertTrue(self.first_time_form.web_access,
-                        'First Time Wizard\'s web configuration file should be available')
+            # THEN: The First Time Form web configuration file should be accessible and parseable
+            self.assertEqual(expected_screens, first_time_form.screens, 'The screens should be correct')
+            self.assertEqual(expected_web_url, first_time_form.web, 'The base path of the URL should be correct')
+            self.assertIsInstance(first_time_form.config, ConfigParser, 'The config object should be a ConfigParser')
+            mocked_get_web_page.assert_called_with(expected_web_url + 'download.cfg',
+                                                   header=('User-Agent', expected_user_agent))
 
-    def parsable_config_test(self):
+    def config_initialise_test(self):
         """
-        Test if the First Time Form's config file is parsable
+        Test if we can intialise the FirstTimeForm with a config file
         """
-        # GIVEN A new First Time Form instance.
+        # GIVEN: A mocked get_web_page, a First Time Wizard and an expected screen object
+        with patch('openlp.core.ui.firsttimeform.get_web_page') as mocked_get_web_page:
+            first_time_form = FirstTimeForm(None)
+            expected_web_url = 'http://openlp.org/files/frw/'
+            expected_songs_url = 'http://example.com/frw/songs/'
+            expected_bibles_url = 'http://example.com/frw/bibles/'
+            expected_themes_url = 'http://example.com/frw/themes/'
+            expected_user_agent = 'OpenLP/0.0'
+            mocked_get_web_page.return_value.read.return_value = FAKE_CONFIG
 
-        # WHEN The default First Time Form is built.
+            # WHEN: The First Time Wizard is initialised
+            first_time_form.initialize(MagicMock())
 
-        # THEN The First Time Form web configuration file should be parsable
-        self.assertTrue(self.first_time_form.songs_url,
-                        'First Time Wizard\'s web configuration file should be parsable')
+            # THEN: The First Time Form web configuration file should be accessible and parseable
+            self.assertIsInstance(first_time_form.config, ConfigParser, 'The config object should be a ConfigParser')
+            mocked_get_web_page.assert_called_with(expected_web_url + 'download.cfg',
+                                                   header=('User-Agent', expected_user_agent))
+            self.assertEqual(expected_songs_url, first_time_form.songs_url, 'The songs URL should be correct')
+            self.assertEqual(expected_bibles_url, first_time_form.bibles_url, 'The bibles URL should be correct')
+            self.assertEqual(expected_themes_url, first_time_form.themes_url, 'The themes URL should be correct')

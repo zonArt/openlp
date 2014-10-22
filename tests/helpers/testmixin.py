@@ -37,8 +37,11 @@ from openlp.core.common import Settings
 
 
 class TestMixin(object):
+    """
+    The :class:`TestMixin` class provides test with extra functionality
+    """
 
-    def get_application(self):
+    def setup_application(self):
         """
         Build or reuse the Application object
         """

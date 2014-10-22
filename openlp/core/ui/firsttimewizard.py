@@ -50,13 +50,15 @@ class FirstTimePage(object):
     Progress = 7
 
 
-class Ui_FirstTimeWizard(object):
+class UiFirstTimeWizard(object):
     """
     The UI widgets for the first time wizard.
     """
-    def setupUi(self, first_time_wizard):
+    def setup_ui(self, first_time_wizard):
         """
         Set up the UI.
+
+        :param first_time_wizard: The wizard form
         """
         first_time_wizard.setObjectName('first_time_wizard')
         first_time_wizard.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
@@ -204,19 +206,21 @@ class Ui_FirstTimeWizard(object):
         self.progress_bar.setObjectName('progress_bar')
         self.progress_layout.addWidget(self.progress_bar)
         first_time_wizard.setPage(FirstTimePage.Progress, self.progress_page)
-        self.retranslateUi(first_time_wizard)
+        self.retranslate_ui(first_time_wizard)
 
-    def retranslateUi(self, first_time_wizard):
+    def retranslate_ui(self, first_time_wizard):
         """
         Translate the UI on the fly
+
+        :param first_time_wizard: The wizard form
         """
         first_time_wizard.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'First Time Wizard'))
-        self.title_label.setText('<span style="font-size:14pt; font-weight:600;">%s</span>' %
-                                 translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
-        self.information_label.setText(
+        first_time_wizard.title_label.setText('<span style="font-size:14pt; font-weight:600;">%s</span>' %
+                                              translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
+        first_time_wizard.information_label.setText(
             translate('OpenLP.FirstTimeWizard', 'This wizard will help you to configure OpenLP for initial use. '
                                                 'Click the %s button below to start.') %
-            self.buttonText(QtGui.QWizard.NextButton))
+            first_time_wizard.buttonText(QtGui.QWizard.NextButton))
         self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
         self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
         self.songs_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
@@ -238,9 +242,10 @@ class Ui_FirstTimeWizard(object):
                                           'no sample data.\n\nTo re-run the First Time Wizard and import this sample '
                                           'data at a later time, check your Internet connection and re-run this '
                                           'wizard by selecting "Tools/Re-run First Time Wizard" from OpenLP.')
-        self.cancelWizardText = translate('OpenLP.FirstTimeWizard',
-                                          '\n\nTo cancel the First Time Wizard completely (and not start OpenLP), '
-                                          'click the %s button now.') % self.buttonText(QtGui.QWizard.CancelButton)
+        self.cancel_wizard_text = translate('OpenLP.FirstTimeWizard',
+                                            '\n\nTo cancel the First Time Wizard completely (and not start OpenLP), '
+                                            'click the %s button now.') % \
+            first_time_wizard.buttonText(QtGui.QWizard.CancelButton)
         self.songs_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Songs'))
         self.songs_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select and download public domain songs.'))
         self.bibles_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Bibles'))

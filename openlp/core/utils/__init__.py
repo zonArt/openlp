@@ -52,6 +52,7 @@ if not is_win() and not is_macosx():
         from xdg import BaseDirectory
         XDG_BASE_AVAILABLE = True
     except ImportError:
+        BaseDirectory = None
         XDG_BASE_AVAILABLE = False
 
 from openlp.core.common import translate
@@ -114,14 +115,25 @@ class HTTPRedirectHandlerFixed(urllib.request.HTTPRedirectHandler):
     Special HTTPRedirectHandler used to work around http://bugs.python.org/issue22248
     (Redirecting to urls with special chars)
     """
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        # Test if the newurl can be decoded to ascii
+    def redirect_request(self, req, fp, code, msg, headers, new_url):
+        #
+        """
+        Test if the new_url can be decoded to ascii
+
+        :param req:
+        :param fp:
+        :param code:
+        :param msg:
+        :param headers:
+        :param new_url:
+        :return:
+        """
         try:
-            test_url = newurl.encode('latin1').decode('ascii')
-            fixed_url = newurl
+            new_url.encode('latin1').decode('ascii')
+            fixed_url = new_url
         except Exception:
             # The url could not be decoded to ascii, so we do some url encoding
-            fixed_url = urllib.parse.quote(newurl.encode('latin1').decode('utf-8', 'replace'), safe='/:')
+            fixed_url = urllib.parse.quote(new_url.encode('latin1').decode('utf-8', 'replace'), safe='/:')
         return super(HTTPRedirectHandlerFixed, self).redirect_request(req, fp, code, msg, headers, fixed_url)
 
 
@@ -170,18 +182,18 @@ def get_application_version():
             full_version = '%s-bzr%s' % (tag_version.decode('utf-8'), tree_revision.decode('utf-8'))
     else:
         # We're not running the development version, let's use the file.
-        filepath = AppLocation.get_directory(AppLocation.VersionDir)
-        filepath = os.path.join(filepath, '.version')
-        fversion = None
+        file_path = AppLocation.get_directory(AppLocation.VersionDir)
+        file_path = os.path.join(file_path, '.version')
+        version_file = None
         try:
-            fversion = open(filepath, 'r')
-            full_version = str(fversion.read()).rstrip()
+            version_file = open(file_path, 'r')
+            full_version = str(version_file.read()).rstrip()
         except IOError:
             log.exception('Error in version file.')
             full_version = '0.0.0-bzr000'
         finally:
-            if fversion:
-                fversion.close()
+            if version_file:
+                version_file.close()
     bits = full_version.split('-')
     APPLICATION_VERSION = {
         'full': full_version,
@@ -200,13 +212,13 @@ def check_latest_version(current_version):
     Check the latest version of OpenLP against the version file on the OpenLP
     site.
 
-    :param current_version: The current version of OpenLP.
-
     **Rules around versions and version files:**
 
     * If a version number has a build (i.e. -bzr1234), then it is a nightly.
     * If a version number's minor version is an odd number, it is a development release.
     * If a version number's minor version is an even number, it is a stable release.
+
+    :param current_version: The current version of OpenLP.
     """
     version_string = current_version['full']
     # set to prod in the distribution config file.
