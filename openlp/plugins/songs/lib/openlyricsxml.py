@@ -239,6 +239,7 @@ class OpenLyrics(object):
 
     def __init__(self, manager):
         self.manager = manager
+        FormattingTags.load_tags()
 
     def song_to_xml(self, song):
         """
@@ -582,18 +583,20 @@ class OpenLyrics(object):
                 # Some tags have only start html e.g. {br}
                 'end html': tag.close.text if hasattr(tag, 'close') else '',
                 'protected': False,
+                # Add 'temporary' key in case the formatting tag should not be saved otherwise it is supposed that
+                # formatting tag is permanent.
+                'temporary': temporary
             }
-            # Add 'temporary' key in case the formatting tag should not be saved otherwise it is supposed that
-            # formatting tag is permanent.
-            if temporary:
-                openlp_tag['temporary'] = temporary
             found_tags.append(openlp_tag)
         existing_tag_ids = [tag['start tag'] for tag in FormattingTags.get_html_tags()]
         new_tags = [tag for tag in found_tags if tag['start tag'] not in existing_tag_ids]
         # Do not save an empty list.
         if new_tags:
             FormattingTags.add_html_tags(new_tags)
-            FormattingTags.save_html_tags()
+            if not temporary:
+                custom_tags = [tag for tag in FormattingTags.get_html_tags()
+                               if not tag['protected'] and not tag['temporary']]
+                FormattingTags.save_html_tags(custom_tags)
 
     def _process_lines_mixed_content(self, element, newlines=True):
         """

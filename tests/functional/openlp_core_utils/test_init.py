@@ -27,37 +27,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the ZionWorx song importer.
+Package to test the openlp.core.utils.actions package.
 """
-
 from unittest import TestCase
 
+from openlp.core.common.settings import Settings
+from openlp.core.utils import VersionThread, get_application_version
 from tests.functional import MagicMock, patch
-from openlp.plugins.songs.lib.importers.zionworx import ZionWorxImport
-from openlp.plugins.songs.lib.importers.songimport import SongImport
-from openlp.core.common import Registry
+from tests.helpers.testmixin import TestMixin
 
 
-class TestZionWorxImport(TestCase):
-    """
-    Test the functions in the :mod:`zionworximport` module.
-    """
+class TestInitFunctions(TestMixin, TestCase):
+
     def setUp(self):
         """
-        Create the registry
+        Create an instance and a few example actions.
         """
-        Registry.create()
+        self.build_settings()
 
-    def create_importer_test(self):
+    def tearDown(self):
         """
-        Test creating an instance of the ZionWorx file importer
+        Clean up
         """
-        # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.importers.zionworx.SongImport'):
-            mocked_manager = MagicMock()
+        self.destroy_settings()
 
-            # WHEN: An importer object is created
-            importer = ZionWorxImport(mocked_manager, filenames=[])
-
-            # THEN: The importer should be an instance of SongImport
-            self.assertIsInstance(importer, SongImport)
+    def version_thread_triggered_test(self):
+        """
+        Test the version thread call does not trigger UI
+        :return:
+        """
+        # GIVEN: a equal version setup and the data is not today.
+        mocked_main_window = MagicMock()
+        Settings().setValue('core/last version test', '1950-04-01')
+        # WHEN: We check to see if the version is different .
+        with patch('PyQt4.QtCore.QThread'),\
+                patch('openlp.core.utils.get_application_version') as mocked_get_application_version:
+            mocked_get_application_version.return_value = \
+                {'version': '1.0.0', 'build': '', 'full': '2.0.4'}
+            version_thread = VersionThread(mocked_main_window)
+            version_thread.run()
+        # THEN: If the version has changed the main window is notified
+        self.assertTrue(mocked_main_window.emit.called, 'The main windows should have been notified')

@@ -38,12 +38,12 @@ TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'presentationmanagersongs'))
 
 
-class TestSongShowPlusFileImport(SongImportTestHelper):
+class TestPresentationManagerFileImport(SongImportTestHelper):
 
     def __init__(self, *args, **kwargs):
         self.importer_class_name = 'PresentationManagerImport'
         self.importer_module_name = 'presentationmanager'
-        super(TestSongShowPlusFileImport, self).__init__(*args, **kwargs)
+        super(TestPresentationManagerFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
         """
@@ -51,3 +51,5 @@ class TestSongShowPlusFileImport(SongImportTestHelper):
         """
         self.file_import([os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.sng')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.json')))
+        self.file_import([os.path.join(TEST_PATH, 'Agnus Dei.sng')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Agnus Dei.json')))
