@@ -212,7 +212,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             if self.has_run_wizard:
                 self.no_internet_label.setText(self.no_internet_text)
             else:
-                self.no_internet_label.setText(self.no_internet_text + self.cancelWizardText)
+                self.no_internet_label.setText(self.no_internet_text + self.cancel_wizard_text)
         elif page_id == FirstTimePage.Defaults:
             self.theme_combo_box.clear()
             for index in range(self.themes_list_widget.count()):
