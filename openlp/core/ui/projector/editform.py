@@ -122,6 +122,7 @@ class Ui_ProjectorEditForm(object):
         edit_projector_dialog.setWindowTitle(title)
         self.ip_label.setText(translate('OpenLP.ProjectorEditForm', 'IP Address'))
         self.ip_text.setText(self.projector.ip)
+        self.ip_text.setFocus()
         self.port_label.setText(translate('OpenLP.ProjectorEditForm', 'Port Number'))
         self.port_text.setText(str(self.projector.port))
         self.pin_label.setText(translate('OpenLP.ProjectorEditForm', 'PIN'))
