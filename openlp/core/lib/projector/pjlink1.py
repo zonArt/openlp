@@ -389,6 +389,7 @@ class PJLink1(QTcpSocket):
         self.send_command(cmd='CLSS', salt=salt)
         self.waitForReadyRead()
         if (not self.no_poll) and (self.state() == self.ConnectedState):
+            log.debug('(%s) Starting timer' % self.ip)
             self.timer.setInterval(2000)  # Set 2 seconds for initial information
             self.timer.start()
 
