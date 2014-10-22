@@ -132,6 +132,7 @@ class TestRouter(TestCase, TestMixin):
         Test the main poll logic
         """
         # GIVEN: a defined router with two slides
+        Registry.create()
         Registry().register('live_controller', MagicMock)
         router = HttpRouter()
         router.send_response = MagicMock()

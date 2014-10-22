@@ -35,6 +35,7 @@ from unittest import TestCase
 
 from tests.helpers.songfileimport import SongImportTestHelper
 from openlp.plugins.songs.lib.importers.opensong import OpenSongImport
+from openlp.core.common import Registry
 from tests.functional import patch, MagicMock
 
 TEST_PATH = os.path.abspath(
@@ -64,6 +65,12 @@ class TestOpenSongImport(TestCase):
     """
     Test the functions in the :mod:`opensongimport` module.
     """
+    def setUp(self):
+        """
+        Create the registry
+        """
+        Registry.create()
+
     def create_importer_test(self):
         """
         Test creating an instance of the OpenSong file importer

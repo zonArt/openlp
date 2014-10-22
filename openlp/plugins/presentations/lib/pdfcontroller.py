@@ -34,11 +34,16 @@ import re
 from subprocess import check_output, CalledProcessError, STDOUT
 
 from openlp.core.utils import AppLocation
-from openlp.core.common import Settings, is_win
+from openlp.core.common import Settings, is_win, trace_error_handler
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
 
+if is_win():
+    from subprocess import STARTUPINFO, STARTF_USESHOWWINDOW
+
 log = logging.getLogger(__name__)
+
+PDF_CONTROLLER_FILETYPES = ['pdf', 'xps', 'oxps']
 
 
 class PdfController(PresentationController):
@@ -74,11 +79,19 @@ class PdfController(PresentationController):
         runlog = ''
         log.debug('testing program_path: %s', program_path)
         try:
-            runlog = check_output([program_path, '--help'], stderr=STDOUT)
+            # Setup startupinfo options for check_output to avoid console popping up on windows
+            if is_win():
+                startupinfo = STARTUPINFO()
+                startupinfo.dwFlags |= STARTF_USESHOWWINDOW
+            else:
+                startupinfo = None
+            runlog = check_output([program_path, '--help'], stderr=STDOUT, startupinfo=startupinfo)
         except CalledProcessError as e:
             runlog = e.output
         except Exception:
+            trace_error_handler(log)
             runlog = ''
+        log.debug('check_output returned: %s' % runlog)
         # Analyse the output to see it the program is mudraw, ghostscript or neither
         for line in runlog.splitlines():
             decoded_line = line.decode()
@@ -148,7 +161,7 @@ class PdfController(PresentationController):
                     if os.path.isfile(os.path.join(application_path, 'mudraw')):
                         self.mudrawbin = os.path.join(application_path, 'mudraw')
         if self.mudrawbin:
-            self.also_supports = ['xps']
+            self.also_supports = ['xps', 'oxps']
             return True
         elif self.gsbin:
             return True
@@ -182,6 +195,12 @@ class PdfDocument(PresentationDocument):
         self.hidden = False
         self.image_files = []
         self.num_pages = -1
+        # Setup startupinfo options for check_output to avoid console popping up on windows
+        if is_win():
+            self.startupinfo = STARTUPINFO()
+            self.startupinfo.dwFlags |= STARTF_USESHOWWINDOW
+        else:
+            self.startupinfo = None
 
     def gs_get_resolution(self, size):
         """
@@ -199,7 +218,8 @@ class PdfDocument(PresentationDocument):
         runlog = []
         try:
             runlog = check_output([self.controller.gsbin, '-dNOPAUSE', '-dNODISPLAY', '-dBATCH',
-                                   '-sFile=' + self.file_path, gs_resolution_script])
+                                   '-sFile=' + self.file_path, gs_resolution_script],
+                                  startupinfo=self.startupinfo)
         except CalledProcessError as e:
             log.debug(' '.join(e.cmd))
             log.debug(e.output)
@@ -248,13 +268,14 @@ class PdfDocument(PresentationDocument):
                 os.makedirs(self.get_temp_folder())
             if self.controller.mudrawbin:
                 runlog = check_output([self.controller.mudrawbin, '-w', str(size.right()), '-h', str(size.bottom()),
-                                       '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path])
+                                       '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path],
+                                      startupinfo=self.startupinfo)
             elif self.controller.gsbin:
                 resolution = self.gs_get_resolution(size)
                 runlog = check_output([self.controller.gsbin, '-dSAFER', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m',
                                        '-r' + str(resolution), '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4',
                                        '-sOutputFile=' + os.path.join(self.get_temp_folder(), 'mainslide%03d.png'),
-                                       self.file_path])
+                                       self.file_path], startupinfo=self.startupinfo)
             created_files = sorted(os.listdir(self.get_temp_folder()))
             for fn in created_files:
                 if os.path.isfile(os.path.join(self.get_temp_folder(), fn)):

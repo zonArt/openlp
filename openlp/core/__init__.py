@@ -39,11 +39,12 @@ import sys
 import logging
 from optparse import OptionParser
 from traceback import format_exception
-
+import shutil
+import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, OpenLPMixin, AppLocation, Settings, UiStrings, check_directory_exists, \
-    is_macosx, is_win
+    is_macosx, is_win, translate
 from openlp.core.lib import ScreenList
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -138,6 +139,8 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
+        # Check if OpenLP has been upgrade and if a backup of data should be created
+        self.backup_on_upgrade(has_run_wizard)
         # start the main app window
         self.main_window = MainWindow()
         Registry().execute('bootstrap_initialise')
@@ -156,7 +159,8 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
             self.main_window.first_time()
         update_check = Settings().value('core/update check')
         if update_check:
-            VersionThread(self.main_window).start()
+            version = VersionThread(self.main_window)
+            version.start()
         self.main_window.is_display_blank()
         self.main_window.app_startup()
         return self.exec_()
@@ -193,6 +197,40 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
         self.exception_form.exception_text_edit.setPlainText(''.join(format_exception(exc_type, value, traceback)))
         self.set_normal_cursor()
         self.exception_form.exec_()
+
+    def backup_on_upgrade(self, has_run_wizard):
+        """
+        Check if OpenLP has been upgraded, and ask if a backup of data should be made
+
+        :param has_run_wizard: OpenLP has been run before
+        """
+        data_version = Settings().value('core/application version')
+        openlp_version = get_application_version()['version']
+        # New installation, no need to create backup
+        if not has_run_wizard:
+            Settings().setValue('core/application version', openlp_version)
+        # If data_version is different from the current version ask if we should backup the data folder
+        elif data_version != openlp_version:
+            if QtGui.QMessageBox.question(None, translate('OpenLP', 'Backup'),
+                                          translate('OpenLP', 'OpenLP has been upgraded, '
+                                                              'do you want to create a backup of OpenLPs data folder?'),
+                                          QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                                          QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
+                # Create copy of data folder
+                data_folder_path = AppLocation.get_data_path()
+                timestamp = time.strftime("%Y%m%d-%H%M%S")
+                data_folder_backup_path = data_folder_path + '-' + timestamp
+                try:
+                    shutil.copytree(data_folder_path, data_folder_backup_path)
+                except OSError:
+                    QtGui.QMessageBox.warning(None, translate('OpenLP', 'Backup'),
+                                              translate('OpenLP', 'Backup of the data folder failed!'))
+                    return
+                QtGui.QMessageBox.information(None, translate('OpenLP', 'Backup'),
+                                              translate('OpenLP', 'A backup of the data folder has been created at %s')
+                                              % data_folder_backup_path)
+            # Update the version in the settings
+            Settings().setValue('core/application version', openlp_version)
 
     def process_events(self):
         """

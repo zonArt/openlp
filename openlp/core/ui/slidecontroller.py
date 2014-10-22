@@ -374,7 +374,8 @@ class SlideController(DisplayController, RegistryProperties):
                                                       triggers=self._slide_shortcut_activated) for s in shortcuts])
             self.shortcut_timer.timeout.connect(self._slide_shortcut_activated)
         # Signals
-        self.preview_widget.itemSelectionChanged.connect(self.on_slide_selected)
+        self.preview_widget.clicked.connect(self.on_slide_selected)
+        self.preview_widget.verticalHeader().sectionClicked.connect(self.on_slide_selected)
         if self.is_live:
             # Need to use event as called across threads and UI is updated
             QtCore.QObject.connect(self, QtCore.SIGNAL('slidecontroller_toggle_display'), self.toggle_display)

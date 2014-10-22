@@ -31,11 +31,17 @@ This module contains tests for the OpenLyrics song importer.
 """
 
 import os
+import json
 from unittest import TestCase
+from lxml import etree, objectify
 
 from tests.functional import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
 from openlp.plugins.songs.lib.importers.openlyrics import OpenLyricsImport
 from openlp.plugins.songs.lib.importers.songimport import SongImport
+from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics
+from openlp.core.common import Registry, Settings
+
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'openlyricssongs'))
@@ -59,11 +65,33 @@ SONG_TEST_DATA = {
     }
 }
 
+start_tags = [{"protected": False, "desc": "z", "start tag": "{z}", "end html": "</strong>", "temporary": False,
+               "end tag": "{/z}", "start html": "strong>"}]
+result_tags = [{"temporary": False, "protected": False, "desc": "z", "start tag": "{z}", "start html": "strong>",
+                "end html": "</strong>", "end tag": "{/z}"},
+               {"temporary": False, "end tag": "{/c}", "desc": "c", "start tag": "{c}",
+                "start html": "<span class=\"chord\" style=\"display:none\"><strong>", "end html": "</strong></span>",
+                "protected": False}]
 
-class TestOpenLyricsImport(TestCase):
+
+class TestOpenLyricsImport(TestCase, TestMixin):
     """
     Test the functions in the :mod:`openlyricsimport` module.
     """
+    def setUp(self):
+        """
+        Create the registry
+        """
+        self.setup_application()
+        Registry.create()
+        self.build_settings()
+
+    def tearDown(self):
+        """
+        Cleanup
+        """
+        self.destroy_settings()
+
     def create_importer_test(self):
         """
         Test creating an instance of the OpenLyrics file importer
@@ -97,3 +125,24 @@ class TestOpenLyricsImport(TestCase):
 
             # THEN: The xml_to_song() method should have been called
             self.assertTrue(importer.open_lyrics.xml_to_song.called)
+
+    def process_formatting_tags_test(self):
+        """
+        Test that _process_formatting_tags works
+        """
+        # GIVEN: A OpenLyric XML with formatting tags and a mocked out manager
+        mocked_manager = MagicMock()
+        Settings().setValue('formattingTags/html_tags', json.dumps(start_tags))
+        ol = OpenLyrics(mocked_manager)
+        parser = etree.XMLParser(remove_blank_text=True)
+        parsed_file = etree.parse(open(os.path.join(TEST_PATH, 'duchu-tags.xml'), 'rb'), parser)
+        xml = etree.tostring(parsed_file).decode()
+        song_xml = objectify.fromstring(xml)
+
+        # WHEN: processing the formatting tags
+        ol._process_formatting_tags(song_xml, False)
+
+        # THEN: New tags should have been saved
+        self.assertListEqual(json.loads(json.dumps(result_tags)),
+                             json.loads(str(Settings().value('formattingTags/html_tags'))),
+                             'The formatting tags should contain both the old and the new')

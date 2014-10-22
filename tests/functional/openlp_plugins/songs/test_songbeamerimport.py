@@ -36,6 +36,7 @@ from unittest import TestCase
 from tests.functional import MagicMock, patch
 from openlp.plugins.songs.lib.importers.songbeamer import SongBeamerImport
 from openlp.plugins.songs.lib import VerseType
+from openlp.core.common import Registry
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'songbeamersongs'))
@@ -59,6 +60,12 @@ class TestSongBeamerImport(TestCase):
     """
     Test the functions in the :mod:`songbeamerimport` module.
     """
+    def setUp(self):
+        """
+        Create the registry
+        """
+        Registry.create()
+
     def create_importer_test(self):
         """
         Test creating an instance of the SongBeamer file importer

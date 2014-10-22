@@ -34,6 +34,8 @@ import json
 import logging
 from unittest import TestCase
 
+from openlp.plugins.songs.lib.importers.opensong import OpenSongImport
+from openlp.core.common import Registry
 from tests.functional import patch, MagicMock, call
 
 log = logging.getLogger(__name__)
@@ -53,6 +55,7 @@ class SongImportTestHelper(TestCase):
         """
         Patch and set up the mocks required.
         """
+        Registry.create()
         self.add_copyright_patcher = patch('openlp.plugins.songs.lib.importers.%s.%s.add_copyright' %
                                            (self.importer_module_name, self.importer_class_name))
         self.add_verse_patcher = patch('openlp.plugins.songs.lib.importers.%s.%s.add_verse' %
