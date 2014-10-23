@@ -313,7 +313,13 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Post-initialize setups.
         """
-        self._load_projectors()
+        # Set 1.5 second delay before loading all projectors
+        if self.autostart:
+            log.debug('Delaying 1.5 seconds before loading all projectors')
+            QtCore.QTimer().singleShot(1500, self._load_projectors)
+        else:
+            log.debug('Loading all projectors')
+            self._load_projectors()
         self.projector_form = ProjectorEditForm(self, projectordb=self.projectordb)
         self.projector_form.newProjector.connect(self.add_projector_from_wizard)
         self.projector_form.editProjector.connect(self.edit_projector_from_wizard)
