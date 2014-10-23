@@ -37,7 +37,7 @@ import sys
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
-from openlp.core.lib import SettingsTab, build_icon
+from openlp.core.lib import ColorButton, SettingsTab, build_icon
 from openlp.core.utils import format_time, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -181,7 +181,7 @@ class AdvancedTab(SettingsTab):
         self.default_image_layout.setObjectName('default_image_layout')
         self.default_color_label = QtGui.QLabel(self.default_image_group_box)
         self.default_color_label.setObjectName('default_color_label')
-        self.default_color_button = QtGui.QPushButton(self.default_image_group_box)
+        self.default_color_button = ColorButton(self.default_image_group_box)
         self.default_color_button.setObjectName('default_color_button')
         self.default_image_layout.addRow(self.default_color_label, self.default_color_button)
         self.default_file_label = QtGui.QLabel(self.default_image_group_box)
@@ -247,7 +247,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_time.timeChanged.connect(self.update_service_name_example)
         self.service_name_edit.textChanged.connect(self.update_service_name_example)
         self.service_name_revert_button.clicked.connect(self.on_service_name_revert_button_clicked)
-        self.default_color_button.clicked.connect(self.on_default_color_button_clicked)
+        self.default_color_button.colorChanged.connect(self.on_default_color_button_changed)
         self.default_browse_button.clicked.connect(self.on_default_browse_button_clicked)
         self.default_revert_button.clicked.connect(self.on_default_revert_button_clicked)
         self.alternate_rows_check_box.toggled.connect(self.on_alternate_rows_check_box_toggled)
@@ -395,7 +395,7 @@ class AdvancedTab(SettingsTab):
             self.current_data_path = AppLocation.get_data_path()
             log.warning('User requested data path set to default %s' % self.current_data_path)
         self.data_directory_label.setText(os.path.abspath(self.current_data_path))
-        self.default_color_button.setStyleSheet('background-color: %s' % self.default_color)
+        self.default_color_button.color = self.default_color
         # Don't allow data directory move if running portable.
         if settings.value('advanced/is portable'):
             self.data_directory_group_box.hide()
@@ -498,14 +498,11 @@ class AdvancedTab(SettingsTab):
         self.service_name_edit.setText(UiStrings().DefaultServiceName)
         self.service_name_edit.setFocus()
 
-    def on_default_color_button_clicked(self):
+    def on_default_color_button_changed(self, color):
         """
         Select the background colour of the default display screen.
         """
-        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.default_color), self)
-        if new_color.isValid():
-            self.default_color = new_color.name()
-            self.default_color_button.setStyleSheet('background-color: %s' % self.default_color)
+        self.default_color = color
 
     def on_default_browse_button_clicked(self):
         """

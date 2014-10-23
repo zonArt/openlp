@@ -32,7 +32,7 @@ The :mod:`~openlp.core.ui.media.playertab` module holds the configuration tab fo
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, Settings, UiStrings, translate
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import ColorButton, SettingsTab
 from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 
@@ -76,7 +76,7 @@ class PlayerTab(SettingsTab):
         self.background_color_label = QtGui.QLabel(self.background_color_group_box)
         self.background_color_label.setObjectName('background_color_label')
         self.color_layout.addWidget(self.background_color_label)
-        self.background_color_button = QtGui.QPushButton(self.background_color_group_box)
+        self.background_color_button = ColorButton(self.background_color_group_box)
         self.background_color_button.setObjectName('background_color_button')
         self.color_layout.addWidget(self.background_color_button)
         self.form_layout.addRow(self.color_layout)
@@ -124,7 +124,7 @@ class PlayerTab(SettingsTab):
         self.left_layout.addStretch()
         self.right_layout.addStretch()
         # Signals and slots
-        self.background_color_button.clicked.connect(self.on_background_color_button_clicked)
+        self.background_color_button.colorChanged.connect(self.on_background_color_button_changed)
 
     def retranslateUi(self):
         """
@@ -138,14 +138,11 @@ class PlayerTab(SettingsTab):
                                        'Visible background for videos with aspect ratio different to screen.'))
         self.retranslate_players()
 
-    def on_background_color_button_clicked(self):
+    def on_background_color_button_changed(self, color):
         """
         Set the background color
         """
-        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.background_color), self)
-        if new_color.isValid():
-            self.background_color = new_color.name()
-            self.background_color_button.setStyleSheet('background-color: %s' % self.background_color)
+        self.background_color = color
 
     def on_player_check_box_changed(self, check_state):
         """
@@ -212,7 +209,7 @@ class PlayerTab(SettingsTab):
         self.background_color = settings.value('background color')
         self.initial_color = self.background_color
         settings.endGroup()
-        self.background_color_button.setStyleSheet('background-color: %s' % self.background_color)
+        self.background_color_button.color = self.background_color
 
     def save(self):
         """
