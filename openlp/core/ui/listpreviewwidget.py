@@ -38,17 +38,30 @@ from openlp.core.lib import ImageSource, ServiceItem
 
 
 class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
+    """
+    A special type of QTableWidget which lists the slides in the slide controller
+
+    :param parent:
+    :param screen_ratio:
+    """
+
     def __init__(self, parent, screen_ratio):
         """
         Initializes the widget to default state.
-        An empty ServiceItem is used per default.
-        One needs to call replace_service_manager_item() to make this widget display something.
+
+        An empty ``ServiceItem`` is used by default. replace_service_manager_item() needs to be called to make this
+        widget display something.
         """
         super(QtGui.QTableWidget, self).__init__(parent)
-        # Set up the widget.
+        self._setup(screen_ratio)
+
+    def _setup(self, screen_ratio):
+        """
+        Set up the widget
+        """
         self.setColumnCount(1)
         self.horizontalHeader().setVisible(False)
-        self.setColumnWidth(0, parent.width())
+        self.setColumnWidth(0, self.parent().width())
         self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
@@ -58,7 +71,7 @@ class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
         self.service_item = ServiceItem()
         self.screen_ratio = screen_ratio
 
-    def resizeEvent(self, QResizeEvent):
+    def resizeEvent(self, event):
         """
         Overloaded method from QTableWidget. Will recalculate the layout.
         """
@@ -82,16 +95,20 @@ class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
 
     def screen_size_changed(self, screen_ratio):
         """
-        To be called whenever the live screen size changes.
-        Because this makes a layout recalculation necessary.
+        This method is called whenever the live screen size changes, which then makes a layout recalculation necessary
+
+        :param screen_ratio: The new screen ratio
         """
         self.screen_ratio = screen_ratio
         self.__recalculate_layout()
 
     def replace_service_item(self, service_item, width, slide_number):
         """
-        Replaces the current preview items with the ones in service_item.
-        Displays the given slide.
+        Replace the current preview items with the ones in service_item and display the given slide
+
+        :param service_item: The service item to insert
+        :param width: The width of the column
+        :param slide_number: The slide number to pre-select
         """
         self.service_item = service_item
         self.setRowCount(0)

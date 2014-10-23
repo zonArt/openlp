@@ -46,7 +46,7 @@ class TestUtils(TestCase, TestMixin):
         """
         Some pre-test setup required.
         """
-        self.get_application()
+        self.setup_application()
 
     def is_not_image_empty_test(self):
         """

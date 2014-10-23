@@ -29,9 +29,7 @@
 """
 Package to test the openlp.core.ui.formattingtagsform package.
 """
-from PyQt4 import QtGui
 from unittest import TestCase
-from openlp.core.common import translate
 
 from tests.functional import MagicMock, patch, call
 

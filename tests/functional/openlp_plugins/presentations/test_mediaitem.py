@@ -51,7 +51,7 @@ class TestMediaItem(TestCase, TestMixin):
         with patch('openlp.plugins.presentations.lib.mediaitem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.presentations.lib.mediaitem.PresentationMediaItem.setup_item'):
             self.media_item = PresentationMediaItem(None, MagicMock, MagicMock())
-        self.get_application()
+        self.setup_application()
 
     def build_file_mask_string_test(self):
         """

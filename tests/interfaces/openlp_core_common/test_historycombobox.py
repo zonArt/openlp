@@ -43,7 +43,7 @@ from tests.interfaces import MagicMock, patch
 class TestHistoryComboBox(TestCase, TestMixin):
     def setUp(self):
         Registry.create()
-        self.get_application()
+        self.setup_application()
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
         self.combo = HistoryComboBox(self.main_window)

@@ -63,7 +63,7 @@ class TestRemoteTab(TestCase, TestMixin):
         """
         Create the UI
         """
-        self.get_application()
+        self.setup_application()
         self.build_settings()
         Settings().extend_default_settings(__default_settings__)
         self.parent = QtGui.QMainWindow()
