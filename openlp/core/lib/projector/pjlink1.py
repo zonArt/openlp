@@ -105,30 +105,13 @@ class PJLink1(QTcpSocket):
         self.dbid = None
         self.location = None
         self.notes = None
-        if 'dbid' in kwargs:
-            self.dbid = kwargs['dbid']
-        else:
-            self.dbid = None
-        if 'location' in kwargs:
-            self.location = kwargs['location']
-        else:
-            self.location = None
-        if 'notes' in kwargs:
-            self.notes = kwargs['notes']
-        else:
-            self.notes = None
-        if 'poll_time' in kwargs:
-            # Convert seconds to milliseconds
-            self.poll_time = kwargs['poll_time'] * 1000
-        else:
-            # Default 20 seconds
-            self.poll_time = 20000
-        if 'socket_timeout' in kwargs:
-            # Convert seconds to milliseconds
-            self.socket_timeout = kwargs['socket_timeout'] * 1000
-        else:
-            # Default is 5 seconds
-            self.socket_timeout = 5000
+        self.dbid = None if 'dbid' not in kwargs else kwargs['dbid']
+        self.location = None if 'location' not in kwargs else kwargs['notes']
+        self.notes = None if 'notes' not in kwargs else kwargs['notes']
+        # Poll time 20 seconds unless called with something else
+        self.poll_time = 20000 if 'poll_time' not in kwargs else kwargs['poll_time'] * 1000
+        # Timeout 5 seconds unless called with something else
+        self.socket_timeout = 5000 if 'socket_timeout' not in kwargs else kwargs['socket_timeout'] * 1000
         # In case we're called from somewhere that only wants information
         self.no_poll = 'no_poll' in kwargs
         self.i_am_running = False
@@ -305,18 +288,6 @@ class PJLink1(QTcpSocket):
         log.debug('(%s) error_status: %s: %s' % (self.ip, status_code, status_message if msg is None else msg))
         self.changeStatus.emit(self.ip, status, message)
 
-    def check_command(self, cmd):
-        """
-        Verifies command is valid based on PJLink class.
-
-        :param cmd: PJLink command to validate.
-        :returns: bool
-                  True if command is valid PJLink command
-                  False if command is not a valid PJLink command
-        """
-        return self.pjlink_class in PJLINK_VALID_CMD and \
-            cmd in PJLINK_VALID_CMD[self.pjlink_class]
-
     @pyqtSlot()
     def check_login(self, data=None):
         """
@@ -401,11 +372,13 @@ class PJLink1(QTcpSocket):
         log.debug('(%s) get_data(): Reading data' % self.ip)
         if self.state() != self.ConnectedState:
             log.debug('(%s) get_data(): Not connected - returning' % self.ip)
+            self.send_busy = False
             return
         read = self.readLine(self.maxSize)
         if read == -1:
             # No data available
             log.debug('(%s) get_data(): No data available (-1)' % self.ip)
+            self.send_busy = False
             self.projectorReceivedData.emit()
             return
         self.socket_timer.stop()
@@ -415,16 +388,19 @@ class PJLink1(QTcpSocket):
         if len(data) < 7:
             # Not enough data for a packet
             log.debug('(%s) get_data(): Packet length < 7: "%s"' % (self.ip, data))
+            self.send_busy = False
             self.projectorReceivedData.emit()
             return
         log.debug('(%s) get_data(): Checking new data "%s"' % (self.ip, data))
         if data.upper().startswith('PJLINK'):
             # Reconnected from remote host disconnect ?
             self.check_login(data)
+            self.send_busy = False
             self.projectorReceivedData.emit()
             return
         elif '=' not in data:
             log.warn('(%s) get_data(): Invalid packet received' % self.ip)
+            self.send_busy = False
             self.projectorReceivedData.emit()
             return
         data_split = data.split('=')
@@ -434,11 +410,13 @@ class PJLink1(QTcpSocket):
             log.warn('(%s) get_data(): Invalid packet - expected header + command + data' % self.ip)
             log.warn('(%s) get_data(): Received data: "%s"' % (self.ip, read))
             self.change_status(E_INVALID_DATA)
+            self.send_busy = False
             self.projectorReceivedData.emit()
             return
 
-        if not self.check_command(cmd):
+        if not (self.pjlink_class in PJLINK_VALID_CMD and cmd in PJLINK_VALID_CMD[self.pjlink_class]):
             log.warn('(%s) get_data(): Invalid packet - unknown command "%s"' % (self.ip, cmd))
+            self.send_busy = False
             self.projectorReceivedData.emit()
             return
         return self.process_command(cmd, data)

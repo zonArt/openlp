@@ -45,7 +45,7 @@ import logging
 log = logging.getLogger(__name__)
 log.debug('projector.lib.db module loaded')
 
-from sqlalchemy import Column, ForeignKey, Integer, MetaData, String
+from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, and_
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import backref, relationship
 
@@ -165,6 +165,15 @@ class Projector(CommonBase, Base):
 
         ProjectorSource relates
     """
+    def __repr__(self):
+        """
+        Return basic representation of Source table entry.
+        """
+        return '< Projector(id="%s", ip="%s", port="%s", pin="%s", name="%s", location="%s",' \
+            'notes="%s", pjlink_name="%s", manufacturer="%s", model="%s", other="%s",' \
+            'sources="%s", source_list="%s") >' % (self.id, self.ip, self.port, self.pin, self.name, self.location,
+                                                   self.notes, self.pjlink_name, self.manufacturer, self.model,
+                                                   self.other, self.sources, self.source_list)
     ip = Column(String(100))
     port = Column(String(8))
     pin = Column(String(20))
@@ -197,6 +206,14 @@ class ProjectorSource(CommonBase, Base):
 
     Projector table links here
     """
+    def __repr__(self):
+        """
+        Return basic representation of Source table entry.
+        """
+        return '<ProjectorSource(id="%s", code="%s", text="%s", projector_id="%s")>' % (self.id,
+                                                                                        self.code,
+                                                                                        self.text,
+                                                                                        self.projector_id)
     code = Column(String(3))
     text = Column(String(20))
     projector_id = Column(Integer, ForeignKey('projector.id'))
@@ -363,29 +380,57 @@ class ProjectorDB(Manager):
                   key: (str) PJLink code for source
                   value: (str) From ProjectorSource, Sources tables or PJLink default code list
         """
-        # Get manufacturer-defined source text
-        model_list = self.get_all_objects(Model, Model.name == projector.model)
-        if model_list is None or len(model_list) < 1:
-            # No entry for model, so see if there's a default entry
-            default_list = self.get_object_filtered(Manufacturer, Manufacturer.name == projector.manufacturer)
-            if default_list is None or len(default_list) < 1:
-                # No entry for manufacturer, so can't check for default text
-                model_list = {}
-            else:
-                model_list = default_list.models['DEFAULT']
-        # Get user-defined source text
-        local_list = self.get_all_objects(ProjectorSource, ProjectorSource.projector_id == projector.dbid)
-        if local_list is None or len(local_list) < 1:
-            local_list = {}
         source_dict = {}
-        for source in projector.source_available:
-            if source in local_list:
-                # User defined source text
-                source_dict[source] = local_list[source]
-            elif source in model_list:
-                # Default manufacturer defined source text
-                source_dict[source] = model_list[source]
+        # Get default list first
+        for key in projector.source_available:
+            item = self.get_object_filtered(ProjectorSource,
+                                            and_(ProjectorSource.code == key,
+                                                 ProjectorSource.projector_id == projector.dbid))
+            if item is None:
+                source_dict[key] = PJLINK_DEFAULT_CODES[key]
             else:
-                # Default PJLink source text
-                source_dict[source] = PJLINK_DEFAULT_CODES[source]
+                source_dict[key] = item.text
         return source_dict
+
+    def get_source_by_id(self, source):
+        """
+        Retrieves the ProjectorSource by ProjectorSource.id
+
+        :param source: ProjectorSource id
+        :returns: ProjetorSource instance or None
+        """
+        source_entry = self.get_object_filtered(ProjetorSource, ProjectorSource.id == source)
+        if source_entry is None:
+            # Not found
+            log.warn('get_source_by_id() did not find "%s"' % source)
+            return None
+        log.debug('get_source_by_id() returning one entry for "%s""' % (source))
+        return source_entry
+
+    def get_source_by_code(self, code, projector_id):
+        """
+        Retrieves the ProjectorSource by ProjectorSource.id
+
+        :param source: PJLink ID
+        :param projector_id: Projector.id
+        :returns: ProjetorSource instance or None
+        """
+        source_entry = self.get_object_filtered(ProjectorSource,
+                                                and_(ProjectorSource.code == code,
+                                                     ProjectorSource.projector_id == projector_id))
+        if source_entry is None:
+            # Not found
+            log.warn('get_source_by_id() did not find code="%s" projector_id="%s"' % (code, projector_id))
+            return None
+        log.debug('get_source_by_id() returning one entry for code="%s" projector_id="%s"' % (code, projector_id))
+        return source_entry
+
+    def add_source(self, source):
+        """
+        Add a new ProjectorSource record
+
+        :param source: ProjectorSource() instance to add
+        """
+        log.debug('Saving ProjectorSource(projector_id="%s" code="%s" text="%s")' % (source.projector_id,
+                                                                                     source.code, source.text))
+        return self.save_object(source)

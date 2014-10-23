@@ -104,7 +104,7 @@ class Ui_ProjectorManager(object):
                                             tooltip=translate('OpenLP.ProjectorManager', 'Delete selected projector'),
                                             triggers=self.on_delete_projector)
         # Show source/view when projector connected
-        self.one_toolbar.add_toolbar_action('source_projector',
+        self.one_toolbar.add_toolbar_action('source_view_projector',
                                             text=translate('OpenLP.ProjectorManager', 'Select Input Source'),
                                             icon=':/projector/projector_hdmi.png',
                                             tooltip=translate('OpenLP.ProjectorManager',
@@ -254,6 +254,11 @@ class Ui_ProjectorManager(object):
                                                                        'Select &Input'),
                                                         icon=':/projector/projector_hdmi.png',
                                                         triggers=self.on_select_input)
+        self.edit_input_action = create_widget_action(self.menu,
+                                                      text=translate('OpenLP.ProjectorManager',
+                                                                     'Edit Input Source'),
+                                                      icon=':/general/general_edit.png',
+                                                      triggers=self.on_edit_input)
         self.blank_action = create_widget_action(self.menu,
                                                  text=translate('OpenLP.ProjectorManager',
                                                                 '&Blank Projector Screen'),
@@ -348,6 +353,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         self.status_action.setVisible(visible)
         if visible:
             self.select_input_action.setVisible(real_projector.link.power == S_ON)
+            self.edit_input_action.setVisible(real_projector.link.power == S_ON)
             self.poweron_action.setVisible(real_projector.link.power == S_STANDBY)
             self.poweroff_action.setVisible(real_projector.link.power == S_ON)
             self.blank_action.setVisible(real_projector.link.power == S_ON and
@@ -356,6 +362,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
                                         real_projector.link.shutter)
         else:
             self.select_input_action.setVisible(False)
+            self.edit_input_action.setVisible(False)
             self.poweron_action.setVisible(False)
             self.poweroff_action.setVisible(False)
             self.blank_action.setVisible(False)
@@ -363,7 +370,10 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         self.menu.projector = real_projector
         self.menu.exec_(self.projector_list_widget.mapToGlobal(point))
 
-    def on_select_input(self, opt=None):
+    def on_edit_input(self, opt=None):
+        self.on_select_input(opt=opt, edit=True)
+
+    def on_select_input(self, opt=None, edit=False):
         """
         Builds menu for 'Select Input' option, then calls the selected projector
         item to change input source.
@@ -374,13 +384,17 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = list_item.data(QtCore.Qt.UserRole)
         # QTabwidget for source select
-        if self.source_select_dialog_type == DialogSourceStyle.Tabbed:
-            source_select_form = SourceSelectTabs(parent=self,
-                                                  projectordb=self.projectordb)
-        else:
-            source_select_form = SourceSelectSingle(parent=self,
-                                                    projectordb=self.projectordb)
-        source = source_select_form.exec_(projector.link)
+        source = 100
+        while source > 99:
+            if self.source_select_dialog_type == DialogSourceStyle.Tabbed:
+                source_select_form = SourceSelectTabs(parent=self,
+                                                      projectordb=self.projectordb,
+                                                      edit=edit)
+            else:
+                source_select_form = SourceSelectSingle(parent=self,
+                                                        projectordb=self.projectordb,
+                                                        edit=edit)
+            source = source_select_form.exec_(projector.link)
         log.debug('(%s) source_select_form() returned %s' % (projector.link.ip, source))
         if source is not None and source > 0:
             projector.link.set_input_source(str(source))
@@ -682,29 +696,14 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
                        socket_timeout=self.socket_timeout
                        )
 
-    def add_projector(self, opt1, opt2=None):
+    def add_projector(self, projector, start=False):
         """
         Builds manager list item, projector thread, and timer for projector instance.
 
-        If called by add projector wizard:
-            opt1 = wizard instance
-            opt2 = item
-        Otherwise:
-            opt1 = item
-            opt2 = None
 
-        We are not concerned with the wizard instance,
-        just the projector item
-
-        :param opt1: See above
-        :param opt2: See above
+        :param projector: Projector instance to add
+        :param start: Start projector if True
         """
-        if opt1 is None:
-            return
-        if opt2 is None:
-            projector = opt1
-        else:
-            projector = opt2
         item = ProjectorItem(link=self._add_projector(projector))
         item.db_item = projector
         icon = QtGui.QIcon(QtGui.QPixmap(STATUS_ICONS[S_NOT_CONNECTED]))
@@ -714,6 +713,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
                                        self.projector_list_widget
                                        )
         widget.setData(QtCore.Qt.UserRole, item)
+        item.link.db_item = item.db_item
         item.widget = widget
         thread = QThread(parent=self)
         thread.my_parent = self
@@ -730,8 +730,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         timer.setInterval(self.poll_time)
         timer.timeout.connect(item.link.poll_loop)
         item.timer = timer
+        # Timeout in case of brain-dead projectors or cable disconnected
         socket_timer = QtCore.QTimer(self)
-        socket_timer.setInterval(5000)  # % second timer in case of brain-dead projectors
+        socket_timer.setInterval(11000)
         socket_timer.timeout.connect(item.link.socket_abort)
         item.socket_timer = socket_timer
         thread.start()
@@ -740,10 +741,10 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         item.link.socket_timer = socket_timer
         item.link.widget = item.widget
         self.projector_list.append(item)
-        if self.autostart:
+        if start:
             item.link.connect_to_host()
-        for i in self.projector_list:
-            log.debug('New projector list - item: (%s) %s' % (i.link.ip, i.link.name))
+        for item in self.projector_list:
+            log.debug('New projector list - item: (%s) %s' % (item.link.ip, item.link.name))
 
     @pyqtSlot(str)
     def add_projector_from_wizard(self, ip, opts=None):
@@ -753,19 +754,18 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         :param ip: IP address of new record item to find
         :param opts: Needed by PyQt4
         """
-        log.debug('load_projector(ip=%s)' % ip)
+        log.debug('add_projector_from_wizard(ip=%s)' % ip)
         item = self.projectordb.get_projector_by_ip(ip)
         self.add_projector(item)
 
     @pyqtSlot(object)
-    def edit_projector_from_wizard(self, projector, opts=None):
+    def edit_projector_from_wizard(self, projector):
         """
         Update projector from the wizard edit page
 
         :param projector: Projector() instance of projector with updated information
-        :param opts: Needed by PyQt4
         """
-
+        log.debug('edit_projector_from_wizard(ip=%s)' % projector.ip)
         self.old_projector.link.name = projector.name
         self.old_projector.link.ip = projector.ip
         self.old_projector.link.pin = None if projector.pin == '' else projector.pin
@@ -778,10 +778,10 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """'
         Load projectors - only call when initializing
         """
-        log.debug('load_projectors()')
+        log.debug('_load_projectors()')
         self.projector_list_widget.clear()
         for item in self.projectordb.get_projector_all():
-            self.add_projector(item)
+            self.add_projector(projector=item, start=self.autostart)
 
     def get_projector_list(self):
         """
@@ -835,8 +835,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         item = self.one_toolbar.findChild(QtGui.QAction, name)
         if item == 0:
             log.debug('No item found with name "%s"' % name)
-        else:
-            log.debug('item "%s" updating enabled=%s hidden=%s' % (name, enabled, hidden))
+            return
         item.setVisible(False if hidden else True)
         item.setEnabled(True if enabled else False)
 
@@ -851,7 +850,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             self.get_toolbar_item('edit_projector')
             self.get_toolbar_item('delete_projector')
             self.get_toolbar_item('view_projector', hidden=True)
-            self.get_toolbar_item('source_projector', hidden=True)
+            self.get_toolbar_item('source_view_projector', hidden=True)
             self.get_toolbar_item('connect_projector')
             self.get_toolbar_item('disconnect_projector')
             self.get_toolbar_item('poweron_projector')
@@ -876,13 +875,13 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             self.get_toolbar_item('show_projector_multiple', hidden=True)
             if connected:
                 self.get_toolbar_item('view_projector', enabled=True)
-                self.get_toolbar_item('source_projector',
+                self.get_toolbar_item('source_view_projector',
                                       enabled=connected and power and projector.link.source_available is not None)
                 self.get_toolbar_item('edit_projector', hidden=True)
                 self.get_toolbar_item('delete_projector', hidden=True)
             else:
                 self.get_toolbar_item('view_projector', hidden=True)
-                self.get_toolbar_item('source_projector', hidden=True)
+                self.get_toolbar_item('source_view_projector', hidden=True)
                 self.get_toolbar_item('edit_projector', enabled=True)
                 self.get_toolbar_item('delete_projector', enabled=True)
             self.get_toolbar_item('connect_projector', enabled=not connected)
@@ -899,7 +898,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             self.get_toolbar_item('edit_projector', enabled=False)
             self.get_toolbar_item('delete_projector', enabled=False)
             self.get_toolbar_item('view_projector', hidden=True)
-            self.get_toolbar_item('source_projector', hidden=True)
+            self.get_toolbar_item('source_view_projector', hidden=True)
             self.get_toolbar_item('connect_projector', hidden=True)
             self.get_toolbar_item('disconnect_projector', hidden=True)
             self.get_toolbar_item('poweron_projector', hidden=True)

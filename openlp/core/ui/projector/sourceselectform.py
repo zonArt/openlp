@@ -37,12 +37,13 @@ log.debug('editform loaded')
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSlot, QSize
-from PyQt4.QtGui import QDialog, QButtonGroup, QDialogButtonBox, QRadioButton, \
+from PyQt4.QtGui import QDialog, QButtonGroup, QDialogButtonBox, QFormLayout, QLineEdit, QRadioButton, \
     QStyle, QStylePainter, QStyleOptionTab, QTabBar, QTabWidget, QVBoxLayout, QWidget
 
 from openlp.core.common import translate, is_macosx
 from openlp.core.lib import build_icon
-from openlp.core.lib.projector.constants import PJLINK_DEFAULT_SOURCES
+from openlp.core.lib.projector.db import ProjectorSource
+from openlp.core.lib.projector.constants import PJLINK_DEFAULT_SOURCES, PJLINK_DEFAULT_CODES
 
 
 def source_group(inputs, source_text):
@@ -53,7 +54,7 @@ def source_group(inputs, source_text):
     source_text = dict{"key1": "key1-text",
                        "key2": "key2-text",
                        ...}
-    ex:
+    return:
         dict{ key1[0]: { "key11": "key11-text",
                          "key12": "key12-text",
                          "key13": "key13-text",
@@ -82,7 +83,7 @@ def source_group(inputs, source_text):
     return keydict
 
 
-def Build_Tab(group, source_key, default):
+def Build_Tab(group, source_key, default, projector, projectordb, edit=False):
     """
     Create the radio button page for a tab.
     Dictionary will be a 1-key entry where key=tab to setup, val=list of inputs.
@@ -101,25 +102,45 @@ def Build_Tab(group, source_key, default):
     :param group: Button group widget to add buttons to
     :param source_key: Dictionary of sources for radio buttons
     :param default: Default radio button to check
+    :param projector: Projector instance
+    :param projectordb: ProjectorDB instance for session
+    :param edit: If we're editing the source text
     """
     buttonchecked = False
     widget = QWidget()
-    layout = QVBoxLayout()
+    layout = QFormLayout() if edit else QVBoxLayout()
     layout.setSpacing(10)
     widget.setLayout(layout)
     tempkey = list(source_key.keys())[0]  # Should only be 1 key
     sourcelist = list(source_key[tempkey])
     sourcelist.sort()
     button_count = len(sourcelist)
-    for key in sourcelist:
-        itemwidget = QRadioButton(source_key[tempkey][key])
-        itemwidget.setAutoExclusive(True)
-        if default == key:
-            itemwidget.setChecked(True)
-            buttonchecked = itemwidget.isChecked() or buttonchecked
-        group.addButton(itemwidget, int(key))
-        layout.addWidget(itemwidget)
-    layout.addStretch()
+    if edit:
+        for key in sourcelist:
+            item = QLineEdit()
+            item.setObjectName('source_key_%s' % key)
+            source_item = projectordb.get_source_by_code(code=key, projector_id=projector.db_item.id)
+            if source_item is None:
+                item.setText(PJLINK_DEFAULT_CODES[key])
+            else:
+                item.setText(source_item.text)
+            layout.addRow(PJLINK_DEFAULT_CODES[key], item)
+            group.append(item)
+    else:
+        for key in sourcelist:
+            source_item = projectordb.get_source_by_code(code=key, projector_id=projector.db_item.id)
+            if source_item is None:
+                text = source_key[tempkey][key]
+            else:
+                text = source_item.text
+            itemwidget = QRadioButton(text)
+            itemwidget.setAutoExclusive(True)
+            if default == key:
+                itemwidget.setChecked(True)
+                buttonchecked = itemwidget.isChecked() or buttonchecked
+            group.addButton(itemwidget, int(key))
+            layout.addWidget(itemwidget)
+        layout.addStretch()
     return widget, button_count, buttonchecked
 
 
@@ -188,16 +209,21 @@ class SourceSelectTabs(QDialog):
     Class for handling selecting the source for the projector to use.
     Uses tabbed interface.
     """
-    def __init__(self, parent, projectordb):
+    def __init__(self, parent, projectordb, edit=False):
         """
         Build the source select dialog using tabbed interface.
 
         :param projectordb: ProjectorDB session to use
         """
         log.debug('Initializing SourceSelectTabs()')
-        self.projectordb = projectordb
         super(SourceSelectTabs, self).__init__(parent)
-        self.setWindowTitle(translate('OpenLP.SourceSelectForm', 'Select Projector Source'))
+        self.projectordb = projectordb
+        self.edit = edit
+        if self.edit:
+            title = translate('OpenLP.SourceSelectForm', 'Select Projector Source')
+        else:
+            title = translate('OpenLP.SourceSelectForm', 'Edit Projector Source Text')
+        self.setWindowTitle(title)
         self.setObjectName('source_select_tabs')
         self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
         self.setModal(True)
@@ -226,40 +252,98 @@ class SourceSelectTabs(QDialog):
         self.source_text = self.projectordb.get_source_list(projector=projector)
         self.source_group = source_group(projector.source_available, self.source_text)
         # self.source_group = {'4': {'41': 'Storage 1'}, '5': {"51": 'Network 1'}}
-        self.button_group = QButtonGroup()
+        self.button_group = [] if self.edit else QButtonGroup()
         keys = list(self.source_group.keys())
         keys.sort()
-        for key in keys:
-            (tab, button_count, buttonchecked) = Build_Tab(group=self.button_group,
-                                                           source_key={key: self.source_group[key]},
-                                                           default=self.projector.source)
-            thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
-            if buttonchecked:
-                self.tabwidget.setCurrentIndex(thistab)
-        self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
+        if self.edit:
+            for key in keys:
+                (tab, button_count, buttonchecked) = Build_Tab(group=self.button_group,
+                                                               source_key={key: self.source_group[key]},
+                                                               default=self.projector.source,
+                                                               projector=self.projector,
+                                                               projectordb=self.projectordb,
+                                                               edit=self.edit)
+                thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
+                if buttonchecked:
+                    self.tabwidget.setCurrentIndex(thistab)
+        else:
+            for key in keys:
+                (tab, button_count, buttonchecked) = Build_Tab(group=self.button_group,
+                                                               source_key={key: self.source_group[key]},
+                                                               default=self.projector.source,
+                                                               projector=self.projector,
+                                                               projectordb=self.projectordb,
+                                                               edit=self.edit)
+                thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
+                if buttonchecked:
+                    self.tabwidget.setCurrentIndex(thistab)
+        self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
+                                           QtGui.QDialogButtonBox.Discard |
+                                           QtGui.QDialogButtonBox.Ok |
                                            QtGui.QDialogButtonBox.Cancel)
-        self.button_box.accepted.connect(self.accept_me)
-        self.button_box.rejected.connect(self.reject_me)
+        self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         selected = super(SourceSelectTabs, self).exec_()
         return selected
 
-    @pyqtSlot()
+    @pyqtSlot(object)
+    def button_clicked(self, button):
+        """
+        Checks which button was clicked
+
+        :param button: Button that was clicked
+        :returns: Ok: calls accept_me()
+                  Reset: 100
+                  Cancel: self.done(0)
+        """
+        if self.button_box.standardButton(button) == self.button_box.Cancel:
+            self.done(0)
+        elif self.button_box.standardButton(button) == self.button_box.Reset:
+            self.done(100)
+        elif self.button_box.standardButton(button) == self.button_box.Discard:
+            self.delete_sources()
+        elif self.button_box.standardButton(button) == self.button_box.Ok:
+            return self.accept_me()
+        else:
+            return 100
+
+    def delete_sources(self):
+        msg = QtGui.QMessageBox()
+        msg.setText('Delete entries for this projector')
+        msg.setInformativeText('Are you sure you want to delete ALL user-defined '
+                               'source input text for this projector?')
+        msg.setStandardButtons(msg.Cancel | msg.Ok)
+        msg.setDefaultButton(msg.Cancel)
+        ans = msg.exec_()
+        if ans == msg.Cancel:
+            return
+        self.projectordb.delete_all_objects(ProjectorSource, ProjectorSource.projector_id == self.projector.db_item.id)
+        self.done(100)
+
     def accept_me(self):
         """
         Slot to accept 'OK' button
         """
-        selected = self.button_group.checkedId()
-        log.debug('SourceSelectTabs().accepted() Setting source to %s' % selected)
+        projector = self.projector.db_item
+        if self.edit:
+            for key in self.button_group:
+                code = key.objectName().split("_")[-1]
+                text = key.text().strip()
+                if key.text().strip().lower() == PJLINK_DEFAULT_CODES[code].strip().lower():
+                    continue
+                item = self.projectordb.get_source_by_code(code=code, projector_id=projector.id)
+                if item is None:
+                    log.debug("(%s) Adding new source text %s: %s" % (projector.ip, code, text))
+                    item = ProjectorSource(projector_id=projector.id, code=code, text=text)
+                else:
+                    item.text = text
+                    log.debug('(%s) Updating source code %s with text="%s"' % (projector.ip, item.code, item.text))
+                self.projectordb.add_source(item)
+            selected = 0
+        else:
+            selected = self.button_group.checkedId()
+            log.debug('SourceSelectTabs().accepted() Setting source to %s' % selected)
         self.done(selected)
-
-    @pyqtSlot()
-    def reject_me(self):
-        """
-        Slot to accept 'Cancel' button
-        """
-        log.debug('SourceSelectTabs() - Rejected')
-        self.done(0)
 
 
 class SourceSelectSingle(QDialog):
@@ -267,7 +351,7 @@ class SourceSelectSingle(QDialog):
     Class for handling selecting the source for the projector to use.
     Uses single dialog interface.
     """
-    def __init__(self, parent, projectordb):
+    def __init__(self, parent, projectordb, edit=False):
         """
         Build the source select dialog.
 
@@ -280,54 +364,113 @@ class SourceSelectSingle(QDialog):
         self.setObjectName('source_select_single')
         self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
         self.setModal(True)
-        self.layout = QVBoxLayout()
-        self.layout.setObjectName('source_select_tabs_layout')
-        self.layout.setSpacing(10)
-        self.setLayout(self.layout)
-        self.setMinimumWidth(350)
-        self.button_group = QButtonGroup()
-        self.button_group.setObjectName('source_select_single_buttongroup')
+        self.edit = edit
 
-    def exec_(self, projector):
+    def exec_(self, projector, edit=False):
         """
         Override initial method so we can build the tabs.
 
         :param projector: Projector instance to build source list from
         """
         self.projector = projector
+        self.layout = QFormLayout() if self.edit else QVBoxLayout()
+        self.layout.setObjectName('source_select_tabs_layout')
+        self.layout.setSpacing(10)
+        self.setLayout(self.layout)
+        self.setMinimumWidth(350)
+        self.button_group = [] if self.edit else QButtonGroup()
         self.source_text = self.projectordb.get_source_list(projector=projector)
         keys = list(self.source_text.keys())
         keys.sort()
         key_count = len(keys)
         button_list = []
-        for key in keys:
-            button = QtGui.QRadioButton(self.source_text[key])
-            button.setChecked(True if key == projector.source else False)
-            self.layout.addWidget(button)
-            self.button_group.addButton(button, int(key))
-            button_list.append(key)
-        self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
+        if self.edit:
+            for key in keys:
+                item = QLineEdit()
+                item.setObjectName('source_key_%s' % key)
+                source_item = self.projectordb.get_source_by_code(code=key, projector_id=self.projector.db_item.id)
+                if source_item is None:
+                    item.setText(PJLINK_DEFAULT_CODES[key])
+                else:
+                    item.old_text = item.text()
+                    item.setText(source_item.text)
+                self.layout.addRow(PJLINK_DEFAULT_CODES[key], item)
+                self.button_group.append(item)
+        else:
+            for key in keys:
+                source_text = self.projectordb.get_source_by_code(code=key, projector_id=self.projector.db_item.id)
+                text = self.source_text[key] if source_text is None else source_text.text
+                button = QtGui.QRadioButton(text)
+                button.setChecked(True if key == projector.source else False)
+                self.layout.addWidget(button)
+                self.button_group.addButton(button, int(key))
+                button_list.append(key)
+        self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
+                                           QtGui.QDialogButtonBox.Discard |
+                                           QtGui.QDialogButtonBox.Ok |
                                            QtGui.QDialogButtonBox.Cancel)
-        self.button_box.accepted.connect(self.accept_me)
-        self.button_box.rejected.connect(self.reject_me)
+        self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         self.setMinimumHeight(key_count*25)
         selected = super(SourceSelectSingle, self).exec_()
         return selected
+
+    @pyqtSlot(object)
+    def button_clicked(self, button):
+        """
+        Checks which button was clicked
+
+        :param button: Button that was clicked
+        :returns: Ok: calls accept_me()
+                  Reset: 100
+                  Cancel: self.done(0)
+        """
+        if self.button_box.standardButton(button) == self.button_box.Cancel:
+            self.done(0)
+        elif self.button_box.standardButton(button) == self.button_box.Reset:
+            self.done(100)
+        elif self.button_box.standardButton(button) == self.button_box.Discard:
+            self.delete_sources()
+        elif self.button_box.standardButton(button) == self.button_box.Ok:
+            return self.accept_me()
+        else:
+            return 100
+
+    def delete_sources(self):
+        msg = QtGui.QMessageBox()
+        msg.setText('Delete entries for this projector')
+        msg.setInformativeText('Are you sure you want to delete ALL user-defined '
+                               'source input text for this projector?')
+        msg.setStandardButtons(msg.Cancel | msg.Ok)
+        msg.setDefaultButton(msg.Cancel)
+        ans = msg.exec_()
+        if ans == msg.Cancel:
+            return
+        self.projectordb.delete_all_objects(ProjectorSource, ProjectorSource.projector_id == self.projector.db_item.id)
+        self.done(100)
 
     @pyqtSlot()
     def accept_me(self):
         """
         Slot to accept 'OK' button
         """
-        selected = self.button_group.checkedId()
-        log.debug('SourceSelectDialog().accepted() Setting source to %s' % selected)
+        projector = self.projector.db_item
+        if self.edit:
+            for key in self.button_group:
+                code = key.objectName().split("_")[-1]
+                text = key.text().strip()
+                if key.text().strip().lower() == PJLINK_DEFAULT_CODES[code].strip().lower():
+                    continue
+                item = self.projectordb.get_source_by_code(code=code, projector_id=projector.id)
+                if item is None:
+                    log.debug("(%s) Adding new source text %s: %s" % (projector.ip, code, text))
+                    item = ProjectorSource(projector_id=projector.id, code=code, text=text)
+                else:
+                    item.text = text
+                    log.debug('(%s) Updating source code %s with text="%s"' % (projector.ip, item.code, item.text))
+                self.projectordb.add_source(item)
+            selected = 0
+        else:
+            selected = self.button_group.checkedId()
+            log.debug('SourceSelectDialog().accepted() Setting source to %s' % selected)
         self.done(selected)
-
-    @pyqtSlot()
-    def reject_me(self):
-        """
-        Slot to accept 'Cancel' button
-        """
-        log.debug('SourceSelectDialog() - Rejected')
-        self.done(0)
