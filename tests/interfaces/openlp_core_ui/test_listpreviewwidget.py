@@ -49,7 +49,7 @@ class TestListPreviewWidget(TestCase, TestMixin):
         Create the UI.
         """
         Registry.create()
-        self.get_application()
+        self.setup_application()
         self.main_window = QtGui.QMainWindow()
         self.image = QtGui.QImage(1, 1, QtGui.QImage.Format_RGB32)
         self.image_manager = MagicMock()

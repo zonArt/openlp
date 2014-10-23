@@ -58,7 +58,7 @@ class TestPluginManager(TestCase, TestMixin):
         Settings().setValue('advanced/data path', self.temp_dir)
         Registry.create()
         Registry().register('service_list', MagicMock())
-        self.get_application()
+        self.setup_application()
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
 

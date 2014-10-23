@@ -27,8 +27,38 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`resources` module contains a bunch of resources for OpenLP.
-
-DO NOT REMOVE THIS FILE, IT IS REQUIRED FOR INCLUDING THE RESOURCES ON SOME
-PLATFORMS!
+Package to test the openlp.core.ui.listpreviewwidget package.
 """
+from unittest import TestCase
+from openlp.core.ui.listpreviewwidget import ListPreviewWidget
+
+from tests.functional import patch
+
+
+class TestListPreviewWidget(TestCase):
+
+    def setUp(self):
+        """
+        Mock out stuff for all the tests
+        """
+        self.setup_patcher = patch('openlp.core.ui.listpreviewwidget.ListPreviewWidget._setup')
+        self.mocked_setup = self.setup_patcher.start()
+
+    def tearDown(self):
+        """
+        Remove the mocks
+        """
+        self.setup_patcher.stop()
+
+    def new_list_preview_widget_test(self):
+        """
+        Test that creating an instance of ListPreviewWidget works
+        """
+        # GIVEN: A ListPreviewWidget class
+
+        # WHEN: An object is created
+        list_preview_widget = ListPreviewWidget(None, 1)
+
+        # THEN: The object is not None, and the _setup() method was called.
+        self.assertIsNotNone(list_preview_widget, 'The ListPreviewWidget object should not be None')
+        self.mocked_setup.assert_called_with(1)

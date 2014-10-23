@@ -59,7 +59,7 @@ class TestSettingsForm(TestCase, TestMixin):
         self.dummy2 = MagicMock()
         self.dummy3 = MagicMock()
         self.desktop = MagicMock()
-        self.get_application()
+        self.setup_application()
         self.desktop.primaryScreen.return_value = SCREEN['primary']
         self.desktop.screenCount.return_value = SCREEN['number']
         self.desktop.screenGeometry.return_value = SCREEN['size']

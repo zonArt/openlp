@@ -49,7 +49,7 @@ class TestEditSongForm(TestCase, TestMixin):
         Create the UI
         """
         Registry.create()
-        self.get_application()
+        self.setup_application()
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
         Registry().register('theme_manager', MagicMock())

@@ -55,7 +55,7 @@ class TestPowerpointController(TestCase, TestMixin):
         """
         Set up the patches and mocks need for all tests.
         """
-        self.get_application()
+        self.setup_application()
         self.build_settings()
         self.mock_plugin = MagicMock()
         self.temp_folder = mkdtemp()
@@ -92,7 +92,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
         """
         Set up the patches and mocks need for all tests.
         """
-        self.get_application()
+        self.setup_application()
         self.build_settings()
         self.mock_plugin = MagicMock()
         self.temp_folder = mkdtemp()

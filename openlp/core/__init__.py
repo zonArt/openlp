@@ -118,7 +118,9 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
         # First time checks in settings
         has_run_wizard = Settings().value('core/has run wizard')
         if not has_run_wizard:
-            if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
+            ftw = FirstTimeForm()
+            ftw.initialize(screens)
+            if ftw.exec_() == QtGui.QDialog.Accepted:
                 Settings().setValue('core/has run wizard', True)
         # Correct stylesheet bugs
         application_stylesheet = ''

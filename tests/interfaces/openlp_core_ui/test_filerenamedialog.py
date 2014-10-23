@@ -46,7 +46,7 @@ class TestStartFileRenameForm(TestCase, TestMixin):
         Create the UI
         """
         Registry.create()
-        self.get_application()
+        self.setup_application()
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
         self.form = filerenameform.FileRenameForm()
