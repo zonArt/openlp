@@ -144,6 +144,26 @@ def Build_Tab(group, source_key, default, projector, projectordb, edit=False):
     return widget, button_count, buttonchecked
 
 
+def set_button_tooltip(bar):
+    """
+    Set the toolip for the standard buttons used
+
+    :param bar: QDialogButtonBar instance to update
+    """
+    for button in bar.buttons():
+        if bar.standardButton(button) == QDialogButtonBox.Cancel:
+            tip = "Ignoring current changes and return to OpenLP"
+        elif bar.standardButton(button) == QDialogButtonBox.Reset:
+            tip = "Delete all user-defined text and revert to PJLink default text"
+        elif bar.standardButton(button) == QDialogButtonBox.Discard:
+            tip = "Discard changes and reset to previous user-defined text"
+        elif bar.standardButton(button) == QDialogButtonBox.Ok:
+            tip = "Save changes and return to OpenLP"
+        else:
+            tip = ""
+        button.setToolTip(tip)
+
+
 class FingerTabBarWidget(QTabBar):
     """
     Realign west -orientation tabs to left-right text rather than south-north text
@@ -283,6 +303,7 @@ class SourceSelectTabs(QDialog):
                                            QtGui.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
+        set_button_tooltip(self.button_box)
         selected = super(SourceSelectTabs, self).exec_()
         return selected
 
@@ -292,16 +313,17 @@ class SourceSelectTabs(QDialog):
         Checks which button was clicked
 
         :param button: Button that was clicked
-        :returns: Ok: calls accept_me()
-                  Reset: 100
-                  Cancel: self.done(0)
+        :returns: Ok:      Saves current edits
+                  Delete:  Resets text to last-saved text
+                  Reset:   Reset all text to PJLink default text
+                  Cancel:  Cancel text edit
         """
         if self.button_box.standardButton(button) == self.button_box.Cancel:
             self.done(0)
         elif self.button_box.standardButton(button) == self.button_box.Reset:
-            self.done(100)
-        elif self.button_box.standardButton(button) == self.button_box.Discard:
             self.delete_sources()
+        elif self.button_box.standardButton(button) == self.button_box.Discard:
+            self.done(100)
         elif self.button_box.standardButton(button) == self.button_box.Ok:
             return self.accept_me()
         else:
@@ -412,6 +434,7 @@ class SourceSelectSingle(QDialog):
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         self.setMinimumHeight(key_count*25)
+        set_button_tooltip(self.button_box)
         selected = super(SourceSelectSingle, self).exec_()
         return selected
 
@@ -421,16 +444,17 @@ class SourceSelectSingle(QDialog):
         Checks which button was clicked
 
         :param button: Button that was clicked
-        :returns: Ok: calls accept_me()
-                  Reset: 100
-                  Cancel: self.done(0)
+        :returns: Ok:      Saves current edits
+                  Delete:  Resets text to last-saved text
+                  Reset:   Reset all text to PJLink default text
+                  Cancel:  Cancel text edit
         """
         if self.button_box.standardButton(button) == self.button_box.Cancel:
             self.done(0)
         elif self.button_box.standardButton(button) == self.button_box.Reset:
-            self.done(100)
-        elif self.button_box.standardButton(button) == self.button_box.Discard:
             self.delete_sources()
+        elif self.button_box.standardButton(button) == self.button_box.Discard:
+            self.done(100)
         elif self.button_box.standardButton(button) == self.button_box.Ok:
             return self.accept_me()
         else:
