@@ -125,6 +125,8 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
                         QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
         if is_macosx():
             self.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
+        else:
+            self.setWizardStyle(QtGui.QWizard.ModernStyle)
         add_welcome_page(self, image)
         self.add_custom_pages()
         if self.with_progress_page:

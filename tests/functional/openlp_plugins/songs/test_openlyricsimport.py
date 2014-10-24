@@ -41,7 +41,6 @@ from openlp.plugins.songs.lib.importers.openlyrics import OpenLyricsImport
 from openlp.plugins.songs.lib.importers.songimport import SongImport
 from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics
 from openlp.core.common import Registry, Settings
-from openlp.core.lib import FormattingTags
 
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -83,7 +82,7 @@ class TestOpenLyricsImport(TestCase, TestMixin):
         """
         Create the registry
         """
-        self.get_application()
+        self.setup_application()
         Registry.create()
         self.build_settings()
 

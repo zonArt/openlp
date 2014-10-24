@@ -656,8 +656,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                                            QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
-        screens = ScreenList()
-        first_run_wizard = FirstTimeForm(screens, self)
+        first_run_wizard = FirstTimeForm(self)
+        first_run_wizard.initialize(ScreenList())
         first_run_wizard.exec_()
         if first_run_wizard.was_download_cancelled:
             return
