@@ -66,7 +66,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         self.background_combo_box.currentIndexChanged.connect(self.on_background_combo_box_current_index_changed)
         self.gradient_combo_box.currentIndexChanged.connect(self.on_gradient_combo_box_current_index_changed)
         self.color_button.colorChanged.connect(self.on_color_button_changed)
-        #self.color_button.clicked.connect(self.on_color_button_clicked)
         self.image_color_button.colorChanged.connect(self.on_image_color_button_changed)
         self.gradient_start_button.colorChanged.connect(self.on_gradient_start_button_changed)
         self.gradient_end_button.colorChanged.connect(self.on_gradient_end_button_changed)

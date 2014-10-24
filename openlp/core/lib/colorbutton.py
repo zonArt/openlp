@@ -2,6 +2,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import translate
 
+
 class ColorButton(QtGui.QPushButton):
     """
     Subclasses QPushbutton to create a "Color Chooser" button
