@@ -54,7 +54,7 @@ class TestProjectorManager(TestCase, TestMixin):
         Create the UI and setup necessary options
         """
         self.build_settings()
-        self.get_application()
+        self.setup_application()
         Registry.create()
         if not hasattr(self, 'projector_manager'):
             with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
