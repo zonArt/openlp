@@ -299,7 +299,6 @@ class AdvancedTab(SettingsTab):
         self.hide_mouse_check_box.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
         self.default_image_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Default Image'))
         self.default_color_label.setText(translate('OpenLP.AdvancedTab', 'Background color:'))
-        self.default_color_button.setToolTip(translate('OpenLP.AdvancedTab', 'Click to select a color.'))
         self.default_file_label.setText(translate('OpenLP.AdvancedTab', 'Image file:'))
         self.default_browse_button.setToolTip(translate('OpenLP.AdvancedTab', 'Browse for an image file to display.'))
         self.default_revert_button.setToolTip(translate('OpenLP.AdvancedTab', 'Revert to the default OpenLP logo.'))

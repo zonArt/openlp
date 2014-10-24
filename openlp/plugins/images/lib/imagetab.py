@@ -73,7 +73,7 @@ class ImageTab(SettingsTab):
             translate('ImagesPlugin.ImageTab', 'Visible background for images with aspect ratio different to screen.'))
 
     def on_background_color_button_changed(self, color):
-        self.background_color = new_color.name()
+        self.background_color = color
 
     def load(self):
         settings = Settings()
