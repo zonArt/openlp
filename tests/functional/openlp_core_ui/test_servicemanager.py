@@ -35,7 +35,7 @@ from openlp.core.common import Registry, ThemeLevel
 from openlp.core.lib import ServiceItem, ServiceItemType, ItemCapabilities
 from openlp.core.ui import ServiceManager
 
-from tests.interfaces import MagicMock, patch
+from tests.functional import MagicMock
 
 
 class TestServiceManager(TestCase):
