@@ -44,7 +44,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate
 from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.utils import get_web_page
-from .firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
+from .firsttimewizard import UiFirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
 
@@ -75,18 +75,58 @@ class ThemeScreenshotThread(QtCore.QThread):
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
 
-class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
+class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
     """
     This is the Theme Import Wizard, which allows easy creation and editing of OpenLP themes.
     """
     log.info('ThemeWizardForm loaded')
 
-    def __init__(self, screens, parent=None):
+    def __init__(self, parent=None):
         """
         Create and set up the first time wizard.
         """
         super(FirstTimeForm, self).__init__(parent)
-        self.setupUi(self)
+        self.setup_ui(self)
+
+    def nextId(self):
+        """
+        Determine the next page in the Wizard to go to.
+        """
+        self.application.process_events()
+        if self.currentId() == FirstTimePage.Plugins:
+            if not self.web_access:
+                return FirstTimePage.NoInternet
+            else:
+                return FirstTimePage.Songs
+        elif self.currentId() == FirstTimePage.Progress:
+            return -1
+        elif self.currentId() == FirstTimePage.NoInternet:
+            return FirstTimePage.Progress
+        elif self.currentId() == FirstTimePage.Themes:
+            self.application.set_busy_cursor()
+            while not self.theme_screenshot_thread.isFinished():
+                time.sleep(0.1)
+                self.application.process_events()
+            # Build the screenshot icons, as this can not be done in the thread.
+            self._build_theme_screenshots()
+            self.application.set_normal_cursor()
+            return FirstTimePage.Defaults
+        else:
+            return self.currentId() + 1
+
+    def exec_(self):
+        """
+        Run the wizard.
+        """
+        self.set_defaults()
+        return QtGui.QWizard.exec_(self)
+
+    def initialize(self, screens):
+        """
+        Set up the First Time Wizard
+
+        :param screens: The screens detected by OpenLP
+        """
         self.screens = screens
         # check to see if we have web access
         self.web = 'http://openlp.org/files/frw/'
@@ -109,13 +149,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
         self.no_internet_finish_button.clicked.connect(self.on_no_internet_finish_button_clicked)
         self.currentIdChanged.connect(self.on_current_id_changed)
         Registry().register_function('config_screen_changed', self.update_screen_list_combo)
-
-    def exec_(self):
-        """
-        Run the wizard.
-        """
-        self.set_defaults()
-        return QtGui.QWizard.exec_(self)
 
     def set_defaults(self):
         """
@@ -157,31 +190,14 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
             self.theme_screenshot_thread.start()
         self.application.set_normal_cursor()
 
-    def nextId(self):
+    def update_screen_list_combo(self):
         """
-        Determine the next page in the Wizard to go to.
+        The user changed screen resolution or enabled/disabled more screens, so
+        we need to update the combo box.
         """
-        self.application.process_events()
-        if self.currentId() == FirstTimePage.Plugins:
-            if not self.web_access:
-                return FirstTimePage.NoInternet
-            else:
-                return FirstTimePage.Songs
-        elif self.currentId() == FirstTimePage.Progress:
-            return -1
-        elif self.currentId() == FirstTimePage.NoInternet:
-            return FirstTimePage.Progress
-        elif self.currentId() == FirstTimePage.Themes:
-            self.application.set_busy_cursor()
-            while not self.theme_screenshot_thread.isFinished():
-                time.sleep(0.1)
-                self.application.process_events()
-            # Build the screenshot icons, as this can not be done in the thread.
-            self._build_theme_screenshots()
-            self.application.set_normal_cursor()
-            return FirstTimePage.Defaults
-        else:
-            return self.currentId() + 1
+        self.display_combo_box.clear()
+        self.display_combo_box.addItems(self.screens.get_screen_list())
+        self.display_combo_box.setCurrentIndex(self.display_combo_box.count() - 1)
 
     def on_current_id_changed(self, page_id):
         """
@@ -196,7 +212,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
             if self.has_run_wizard:
                 self.no_internet_label.setText(self.no_internet_text)
             else:
-                self.no_internet_label.setText(self.no_internet_text + self.cancelWizardText)
+                self.no_internet_label.setText(self.no_internet_text + self.cancel_wizard_text)
         elif page_id == FirstTimePage.Defaults:
             self.theme_combo_box.clear()
             for index in range(self.themes_list_widget.count()):
@@ -229,15 +245,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard, RegistryProperties):
             self._perform_wizard()
             self._post_wizard()
             self.application.set_normal_cursor()
-
-    def update_screen_list_combo(self):
-        """
-        The user changed screen resolution or enabled/disabled more screens, so
-        we need to update the combo box.
-        """
-        self.display_combo_box.clear()
-        self.display_combo_box.addItems(self.screens.get_screen_list())
-        self.display_combo_box.setCurrentIndex(self.display_combo_box.count() - 1)
 
     def on_cancel_button_clicked(self):
         """

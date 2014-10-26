@@ -38,7 +38,7 @@ from openlp.core.lib import MediaManagerItem, ItemCapabilities, ServiceItemConte
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.utils import get_locale_key
 from openlp.plugins.presentations.lib import MessageListener
-
+from openlp.plugins.presentations.lib.pdfcontroller import PDF_CONTROLLER_FILETYPES
 
 log = logging.getLogger(__name__)
 
@@ -145,7 +145,7 @@ class PresentationMediaItem(MediaManagerItem):
             if self.controllers[item].enabled():
                 self.display_type_combo_box.addItem(item)
         if self.display_type_combo_box.count() > 1:
-            self.display_type_combo_box.insertItem(0, self.automatic)
+            self.display_type_combo_box.insertItem(0, self.automatic, userData='automatic')
             self.display_type_combo_box.setCurrentIndex(0)
         if Settings().value(self.settings_section + '/override app') == QtCore.Qt.Checked:
             self.presentation_widget.show()
@@ -260,11 +260,11 @@ class PresentationMediaItem(MediaManagerItem):
         filename = presentation_file
         if filename is None:
             filename = items[0].data(QtCore.Qt.UserRole)
-        file_type = os.path.splitext(filename)[1][1:]
+        file_type = os.path.splitext(filename.lower())[1][1:]
         if not self.display_type_combo_box.currentText():
             return False
         service_item.add_capability(ItemCapabilities.CanEditTitle)
-        if (file_type == 'pdf' or file_type == 'xps') and context != ServiceItemContext.Service:
+        if file_type in PDF_CONTROLLER_FILETYPES and context != ServiceItemContext.Service:
             service_item.add_capability(ItemCapabilities.CanMaintain)
             service_item.add_capability(ItemCapabilities.CanPreview)
             service_item.add_capability(ItemCapabilities.CanLoop)
@@ -313,7 +313,7 @@ class PresentationMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 service_item.title = name
                 if os.path.exists(filename):
-                    if service_item.processor == self.automatic:
+                    if self.display_type_combo_box.itemData(self.display_type_combo_box.currentIndex()) == 'automatic':
                         service_item.processor = self.find_controller_by_type(filename)
                         if not service_item.processor:
                             return False

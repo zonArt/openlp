@@ -45,7 +45,7 @@ def try_int(s):
     """
     try:
         return int(s)
-    except Exception:
+    except (TypeError, ValueError):
         return s
 
 
@@ -58,27 +58,23 @@ def natural_sort_key(s):
     return list(map(try_int, SPLIT_ALPHA_DIGITS.findall(s)))
 
 
-def natural_compare(a, b):
-    """
-    Compare two strings naturally and return the result.
-
-    :param a:  A string to compare.
-    :param b: A string to compare.
-    """
-    return cmp(natural_sort_key(a), natural_sort_key(b))
-
-
-def natural_sort(seq, compare=natural_compare):
+def natural_sort(seq):
     """
     Returns a copy of seq, sorted by natural string sort.
+
+    :param seq: The sequence to sort.
+    :param compare: The comparison method to use
+    :return: The sorted sequence
     """
     import copy
     temp = copy.copy(seq)
-    temp.sort(compare)
+    temp.sort(key=natural_sort_key)
     return temp
+
 
 # NOTE: The following code is a duplicate of the code in openlp/core/utils/__init__.py. Any fix applied here should also
 # be applied there.
+ver_file = None
 try:
     # Get the revision of this tree.
     bzr = Popen(('bzr', 'revno'), stdout=PIPE)

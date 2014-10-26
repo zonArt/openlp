@@ -33,9 +33,10 @@ import os
 
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
 from openlp.core import OpenLP
+from openlp.core.common import Settings
 from tests.helpers.testmixin import TestMixin
 
 
@@ -44,11 +45,13 @@ TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resou
 
 class TestInit(TestCase, TestMixin):
     def setUp(self):
+        self.build_settings()
         with patch('openlp.core.common.OpenLPMixin.__init__') as constructor:
             constructor.return_value = None
             self.openlp = OpenLP(list())
 
     def tearDown(self):
+        self.destroy_settings()
         del self.openlp
 
     def event_test(self):
@@ -68,3 +71,51 @@ class TestInit(TestCase, TestMixin):
         self.assertTrue(result, "The method should have returned True.")
         mocked_file_method.assert_called_once_with()
         self.assertEqual(self.openlp.args[0], file_path, "The path should be in args.")
+
+    def backup_on_upgrade_first_install_test(self):
+        """
+        Test that we don't try to backup on a new install
+        """
+        # GIVEN: Mocked data version and OpenLP version which are the same
+        old_install = False
+        MOCKED_VERSION = {
+            'full': '2.2.0-bzr000',
+            'version': '2.2.0',
+            'build': 'bzr000'
+        }
+        Settings().setValue('core/application version', '2.2.0')
+        with patch('openlp.core.get_application_version') as mocked_get_application_version,\
+                patch('openlp.core.QtGui.QMessageBox.question') as mocked_question:
+            mocked_get_application_version.return_value = MOCKED_VERSION
+            mocked_question.return_value = QtGui.QMessageBox.No
+
+            # WHEN: We check if a backup should be created
+            self.openlp.backup_on_upgrade(old_install)
+
+            # THEN: It should not ask if we want to create a backup
+            self.assertEqual(Settings().value('core/application version'), '2.2.0', 'Version should be the same!')
+            self.assertEqual(mocked_question.call_count, 0, 'No question should have been asked!')
+
+    def backup_on_upgrade_test(self):
+        """
+        Test that we try to backup on a new install
+        """
+        # GIVEN: Mocked data version and OpenLP version which are different
+        old_install = True
+        MOCKED_VERSION = {
+            'full': '2.2.0-bzr000',
+            'version': '2.2.0',
+            'build': 'bzr000'
+        }
+        Settings().setValue('core/application version', '2.0.5')
+        with patch('openlp.core.get_application_version') as mocked_get_application_version,\
+                patch('openlp.core.QtGui.QMessageBox.question') as mocked_question:
+            mocked_get_application_version.return_value = MOCKED_VERSION
+            mocked_question.return_value = QtGui.QMessageBox.No
+
+            # WHEN: We check if a backup should be created
+            self.openlp.backup_on_upgrade(old_install)
+
+            # THEN: It should ask if we want to create a backup
+            self.assertEqual(Settings().value('core/application version'), '2.2.0', 'Version should be upgraded!')
+            self.assertEqual(mocked_question.call_count, 1, 'A question should have been asked!')

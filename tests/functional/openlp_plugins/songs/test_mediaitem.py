@@ -29,7 +29,7 @@ class TestMediaItem(TestCase, TestMixin):
             self.media_item = SongMediaItem(None, MagicMock())
             self.media_item.display_songbook = False
             self.media_item.display_copyright_symbol = False
-        self.get_application()
+        self.setup_application()
         self.build_settings()
         QtCore.QLocale.setDefault(QtCore.QLocale('en_GB'))
 

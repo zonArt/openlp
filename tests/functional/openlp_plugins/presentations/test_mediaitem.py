@@ -51,7 +51,7 @@ class TestMediaItem(TestCase, TestMixin):
         with patch('openlp.plugins.presentations.lib.mediaitem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.presentations.lib.mediaitem.PresentationMediaItem.setup_item'):
             self.media_item = PresentationMediaItem(None, MagicMock, MagicMock())
-        self.get_application()
+        self.setup_application()
 
     def build_file_mask_string_test(self):
         """
@@ -71,7 +71,7 @@ class TestMediaItem(TestCase, TestMixin):
         pdf_controller = MagicMock()
         pdf_controller.enabled.return_value = True
         pdf_controller.supports = ['pdf']
-        pdf_controller.also_supports = ['xps']
+        pdf_controller.also_supports = ['xps', 'oxps']
         # Mock the controllers.
         self.media_item.controllers = {
             'Impress': impress_controller,
@@ -90,3 +90,4 @@ class TestMediaItem(TestCase, TestMixin):
         self.assertIn('*.ppt', self.media_item.on_new_file_masks, 'The file mask should contain the ppt extension')
         self.assertIn('*.pdf', self.media_item.on_new_file_masks, 'The file mask should contain the pdf extension')
         self.assertIn('*.xps', self.media_item.on_new_file_masks, 'The file mask should contain the xps extension')
+        self.assertIn('*.oxps', self.media_item.on_new_file_masks, 'The file mask should contain the oxps extension')

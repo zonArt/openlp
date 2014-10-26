@@ -46,7 +46,7 @@ class TestThemeManager(TestCase, TestMixin):
         Create the UI
         """
         self.build_settings()
-        self.get_application()
+        self.setup_application()
         Registry.create()
         self.theme_manager = ThemeManager()
 

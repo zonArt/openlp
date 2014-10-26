@@ -34,6 +34,7 @@ ProPresenter song files into the current installation database.
 import os
 
 from tests.helpers.songfileimport import SongImportTestHelper
+from openlp.core.common import Registry
 
 TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'powerpraisesongs'))

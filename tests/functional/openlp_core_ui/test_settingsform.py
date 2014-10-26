@@ -27,37 +27,59 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the ZionWorx song importer.
+Package to test the openlp.core.ui.settingsform package.
 """
-
 from unittest import TestCase
 
-from tests.functional import MagicMock, patch
-from openlp.plugins.songs.lib.importers.zionworx import ZionWorxImport
-from openlp.plugins.songs.lib.importers.songimport import SongImport
 from openlp.core.common import Registry
+from openlp.core.ui.generaltab import GeneralTab
+from openlp.core.ui.settingsform import SettingsForm
+
+from tests.functional import MagicMock, patch
 
 
-class TestZionWorxImport(TestCase):
-    """
-    Test the functions in the :mod:`zionworximport` module.
-    """
+class TestSettingsForm(TestCase):
+
     def setUp(self):
         """
-        Create the registry
+        Set up a few things for the tests
         """
         Registry.create()
 
-    def create_importer_test(self):
+    def insert_tab_visible_test(self):
         """
-        Test creating an instance of the ZionWorx file importer
+        Test that the insert_tab() method works correctly when a visible tab is inserted
         """
-        # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch('openlp.plugins.songs.lib.importers.zionworx.SongImport'):
-            mocked_manager = MagicMock()
+        # GIVEN: A mocked tab and a Settings Form
+        settings_form = SettingsForm(None)
+        general_tab = MagicMock()
+        general_tab.tab_title = 'mock'
+        general_tab.tab_title_visible = 'Mock'
+        general_tab.icon_path = ':/icon/openlp-logo-16x16.png'
 
-            # WHEN: An importer object is created
-            importer = ZionWorxImport(mocked_manager, filenames=[])
+        # WHEN: We insert the general tab
+        with patch.object(settings_form.stacked_layout, 'addWidget') as mocked_add_widget, \
+                patch.object(settings_form.setting_list_widget, 'addItem') as mocked_add_item:
+            settings_form.insert_tab(general_tab, is_visible=True)
 
-            # THEN: The importer should be an instance of SongImport
-            self.assertIsInstance(importer, SongImport)
+            # THEN: Stuff should happen
+            mocked_add_widget.assert_called_with(general_tab)
+            self.assertEqual(1, mocked_add_item.call_count, 'addItem should have been called')
+
+    def insert_tab_not_visible_test(self):
+        """
+        Test that the insert_tab() method works correctly when a tab that should not be visible is inserted
+        """
+        # GIVEN: A general tab and a Settings Form
+        settings_form = SettingsForm(None)
+        general_tab = MagicMock()
+        general_tab.tab_title = 'mock'
+
+        # WHEN: We insert the general tab
+        with patch.object(settings_form.stacked_layout, 'addWidget') as mocked_add_widget, \
+                patch.object(settings_form.setting_list_widget, 'addItem') as mocked_add_item:
+            settings_form.insert_tab(general_tab, is_visible=False)
+
+            # THEN: Stuff should happen
+            mocked_add_widget.assert_called_with(general_tab)
+            self.assertEqual(0, mocked_add_item.call_count, 'addItem should not have been called')

@@ -43,7 +43,7 @@ class TestSettings(TestCase, TestMixin):
         """
         Create the UI
         """
-        self.get_application()
+        self.setup_application()
         self.build_settings()
 
     def tearDown(self):

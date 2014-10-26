@@ -46,7 +46,7 @@ class TestMainWindow(TestCase, TestMixin):
         """
         Registry.create()
         self.registry = Registry()
-        self.get_application()
+        self.setup_application()
         # Mock cursor busy/normal methods.
         self.app.set_busy_cursor = MagicMock()
         self.app.set_normal_cursor = MagicMock()

@@ -61,7 +61,7 @@ class TestRouter(TestCase, TestMixin):
         """
         Create the UI
         """
-        self.get_application()
+        self.setup_application()
         self.build_settings()
         Settings().extend_default_settings(__default_settings__)
         self.router = HttpRouter()
@@ -132,6 +132,7 @@ class TestRouter(TestCase, TestMixin):
         Test the main poll logic
         """
         # GIVEN: a defined router with two slides
+        Registry.create()
         Registry().register('live_controller', MagicMock)
         router = HttpRouter()
         router.send_response = MagicMock()
