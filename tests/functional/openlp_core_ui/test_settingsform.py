@@ -27,44 +27,59 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The UI widgets of the settings dialog.
+Package to test the openlp.core.ui.settingsform package.
 """
-from PyQt4 import QtCore, QtGui
+from unittest import TestCase
 
-from openlp.core.common import translate
-from openlp.core.lib import build_icon
-from openlp.core.lib.ui import create_button_box
+from openlp.core.common import Registry
+from openlp.core.ui.generaltab import GeneralTab
+from openlp.core.ui.settingsform import SettingsForm
+
+from tests.functional import MagicMock, patch
 
 
-class Ui_SettingsDialog(object):
-    """
-    The UI widgets of the settings dialog.
-    """
-    def setupUi(self, settings_dialog):
-        """
-        Set up the UI
-        """
-        settings_dialog.setObjectName('settings_dialog')
-        settings_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
-        settings_dialog.resize(800, 500)
-        self.dialog_layout = QtGui.QGridLayout(settings_dialog)
-        self.dialog_layout.setObjectName('dialog_layout')
-        self.dialog_layout.setMargin(8)
-        self.setting_list_widget = QtGui.QListWidget(settings_dialog)
-        self.setting_list_widget.setUniformItemSizes(True)
-        self.setting_list_widget.setMinimumSize(QtCore.QSize(150, 0))
-        self.setting_list_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setting_list_widget.setObjectName('setting_list_widget')
-        self.dialog_layout.addWidget(self.setting_list_widget, 0, 0, 1, 1)
-        self.stacked_layout = QtGui.QStackedLayout()
-        self.stacked_layout.setObjectName('stacked_layout')
-        self.dialog_layout.addLayout(self.stacked_layout, 0, 1, 1, 1)
-        self.button_box = create_button_box(settings_dialog, 'button_box', ['cancel', 'ok'])
-        self.dialog_layout.addWidget(self.button_box, 1, 1, 1, 1)
-        self.retranslateUi(settings_dialog)
+class TestSettingsForm(TestCase):
 
-    def retranslateUi(self, settings_dialog):
+    def setUp(self):
         """
-        Translate the UI on the fly
+        Set up a few things for the tests
         """
-        settings_dialog.setWindowTitle(translate('OpenLP.SettingsForm', 'Configure OpenLP'))
+        Registry.create()
+
+    def insert_tab_visible_test(self):
+        """
+        Test that the insert_tab() method works correctly when a visible tab is inserted
+        """
+        # GIVEN: A mocked tab and a Settings Form
+        settings_form = SettingsForm(None)
+        general_tab = MagicMock()
+        general_tab.tab_title = 'mock'
+        general_tab.tab_title_visible = 'Mock'
+        general_tab.icon_path = ':/icon/openlp-logo-16x16.png'
+
+        # WHEN: We insert the general tab
+        with patch.object(settings_form.stacked_layout, 'addWidget') as mocked_add_widget, \
+                patch.object(settings_form.setting_list_widget, 'addItem') as mocked_add_item:
+            settings_form.insert_tab(general_tab, is_visible=True)
+
+            # THEN: Stuff should happen
+            mocked_add_widget.assert_called_with(general_tab)
+            self.assertEqual(1, mocked_add_item.call_count, 'addItem should have been called')
+
+    def insert_tab_not_visible_test(self):
+        """
+        Test that the insert_tab() method works correctly when a tab that should not be visible is inserted
+        """
+        # GIVEN: A general tab and a Settings Form
+        settings_form = SettingsForm(None)
+        general_tab = MagicMock()
+        general_tab.tab_title = 'mock'
+
+        # WHEN: We insert the general tab
+        with patch.object(settings_form.stacked_layout, 'addWidget') as mocked_add_widget, \
+                patch.object(settings_form.setting_list_widget, 'addItem') as mocked_add_item:
+            settings_form.insert_tab(general_tab, is_visible=False)
+
+            # THEN: Stuff should happen
+            mocked_add_widget.assert_called_with(general_tab)
+            self.assertEqual(0, mocked_add_item.call_count, 'addItem should not have been called')
