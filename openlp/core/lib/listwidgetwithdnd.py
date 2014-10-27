@@ -109,6 +109,6 @@ class ListWidgetWithDnD(QtGui.QListWidget):
                     listing = os.listdir(local_file)
                     for file in listing:
                         files.append(os.path.join(local_file, file))
-            Registry().execute('%s_dnd' % self.mime_data_text, files)
+            Registry().execute('%s_dnd' % self.mime_data_text, {'files': files, 'target': self.itemAt(event.pos())})
         else:
             event.ignore()
