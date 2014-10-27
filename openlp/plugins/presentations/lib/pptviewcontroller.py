@@ -135,11 +135,11 @@ class PptviewDocument(PresentationDocument):
         self.file_path = os.path.normpath(self.file_path)
         preview_path = os.path.join(temp_folder, 'slide')
         # Ensure that the paths are null terminated
-        self.file_path = self.file_path.encode('utf-16-le') + b'\0'
+        byte_file_path = self.file_path.encode('utf-16-le') + b'\0'
         preview_path = preview_path.encode('utf-16-le') + b'\0'
         if not os.path.isdir(temp_folder):
             os.makedirs(temp_folder)
-        self.ppt_id = self.controller.process.OpenPPT(self.file_path, None, rect, preview_path)
+        self.ppt_id = self.controller.process.OpenPPT(byte_file_path, None, rect, preview_path)
         if self.ppt_id >= 0:
             self.create_thumbnails()
             self.stop_presentation()
