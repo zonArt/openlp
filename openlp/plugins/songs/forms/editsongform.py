@@ -625,7 +625,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Remove the author from the list when the delete button is clicked.
         """
-        self.author_remove_button.setEnabled(False)
+        if self.authors_list_view.count() <= 2:
+            self.author_remove_button.setEnabled(False)
         item = self.authors_list_view.currentItem()
         row = self.authors_list_view.row(item)
         self.authors_list_view.takeItem(row)
