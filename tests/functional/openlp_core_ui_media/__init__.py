@@ -27,5 +27,5 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.ui package.
+Package to test the openlp.core.ui.media package.
 """
