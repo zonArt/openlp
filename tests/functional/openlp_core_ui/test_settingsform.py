@@ -33,7 +33,6 @@ from PyQt4 import QtGui
 from unittest import TestCase
 
 from openlp.core.common import Registry
-from openlp.core.ui.generaltab import GeneralTab
 from openlp.core.ui.settingsform import SettingsForm
 
 from tests.functional import MagicMock, patch
@@ -63,7 +62,7 @@ class TestSettingsForm(TestCase):
                 patch.object(settings_form.setting_list_widget, 'addItem') as mocked_add_item:
             settings_form.insert_tab(general_tab, is_visible=True)
 
-            # THEN: Stuff should happen
+            # THEN: The general tab should have been inserted into the stacked layout and an item inserted into the list
             mocked_add_widget.assert_called_with(general_tab)
             self.assertEqual(1, mocked_add_item.call_count, 'addItem should have been called')
 
@@ -81,7 +80,7 @@ class TestSettingsForm(TestCase):
                 patch.object(settings_form.setting_list_widget, 'addItem') as mocked_add_item:
             settings_form.insert_tab(general_tab, is_visible=False)
 
-            # THEN: Stuff should happen
+            # THEN: The general tab should have been inserted, but no list item should have been inserted into the list
             mocked_add_widget.assert_called_with(general_tab)
             self.assertEqual(0, mocked_add_item.call_count, 'addItem should not have been called')
 
@@ -112,3 +111,22 @@ class TestSettingsForm(TestCase):
         # THEN: The general tab's save() method should have been called, but not the themes tab
         mocked_general_save.assert_called_with()
         self.assertEqual(0, mocked_theme_save.call_count, 'The Themes tab\'s save() should not have been called')
+
+    def list_item_changed_invalid_item_test(self):
+        """
+        Test that the list_item_changed() slot handles a non-existent item
+        """
+        # GIVEN: A mocked tab inserted into a Settings Form
+        settings_form = SettingsForm(None)
+        general_tab = QtGui.QWidget(None)
+        general_tab.tab_title = 'mock'
+        general_tab.tab_title_visible = 'Mock'
+        general_tab.icon_path = ':/icon/openlp-logo-16x16.png'
+        settings_form.insert_tab(general_tab, is_visible=True)
+
+        with patch.object(settings_form.stacked_layout, 'count') as mocked_count:
+            # WHEN: The list_item_changed() slot is called with an invalid item index
+            settings_form.list_item_changed(100)
+
+            # THEN: The rest of the method should not have been called
+            self.assertEqual(0, mocked_count.call_count, 'The count method of the stacked layout should not be called')

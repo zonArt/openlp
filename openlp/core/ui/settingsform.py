@@ -155,6 +155,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         """
         # Get the item we clicked on
         list_item = self.setting_list_widget.item(item_index)
+        # Quick exit to the left if the item doesn't exist (maybe -1?)
+        if not list_item:
+            return
         # Loop through the list of tabs in the stacked layout
         for tab_index in range(self.stacked_layout.count()):
             # Get the widget
