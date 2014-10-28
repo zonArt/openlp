@@ -29,6 +29,7 @@
 """
 Package to test the openlp.core.ui.settingsform package.
 """
+from PyQt4 import QtGui
 from unittest import TestCase
 
 from openlp.core.common import Registry
@@ -83,3 +84,31 @@ class TestSettingsForm(TestCase):
             # THEN: Stuff should happen
             mocked_add_widget.assert_called_with(general_tab)
             self.assertEqual(0, mocked_add_item.call_count, 'addItem should not have been called')
+
+    def accept_with_inactive_plugins_test(self):
+        """
+        Test that the accept() method works correctly when some of the plugins are inactive
+        """
+        # GIVEN: A visible general tab and an invisible theme tab in a Settings Form
+        settings_form = SettingsForm(None)
+        general_tab = QtGui.QWidget(None)
+        general_tab.tab_title = 'mock-general'
+        general_tab.tab_title_visible = 'Mock General'
+        general_tab.icon_path = ':/icon/openlp-logo-16x16.png'
+        mocked_general_save = MagicMock()
+        general_tab.save = mocked_general_save
+        settings_form.insert_tab(general_tab, is_visible=True)
+        themes_tab = QtGui.QWidget(None)
+        themes_tab.tab_title = 'mock-themes'
+        themes_tab.tab_title_visible = 'Mock Themes'
+        themes_tab.icon_path = ':/icon/openlp-logo-16x16.png'
+        mocked_theme_save = MagicMock()
+        themes_tab.save = mocked_theme_save
+        settings_form.insert_tab(themes_tab, is_visible=False)
+
+        # WHEN: The accept() method is called
+        settings_form.accept()
+
+        # THEN: The general tab's save() method should have been called, but not the themes tab
+        mocked_general_save.assert_called_with()
+        self.assertEqual(0, mocked_theme_save.call_count, 'The Themes tab\'s save() should not have been called')
