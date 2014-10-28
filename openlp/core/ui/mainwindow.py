@@ -53,6 +53,7 @@ from openlp.core.ui.media import MediaController
 from openlp.core.utils import LanguageManager, add_actions, get_application_version
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
+from openlp.core.ui.projector.manager import ProjectorManager
 
 log = logging.getLogger(__name__)
 
@@ -178,6 +179,14 @@ class Ui_MainWindow(object):
         self.theme_manager_contents.setObjectName('theme_manager_contents')
         self.theme_manager_dock.setWidget(self.theme_manager_contents)
         main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.theme_manager_dock)
+        # Create the projector manager
+        self.projector_manager_dock = OpenLPDockWidget(parent=main_window,
+                                                       name='projector_manager_dock',
+                                                       icon=':/projector/projector_manager.png')
+        self.projector_manager_contents = ProjectorManager(self.projector_manager_dock)
+        self.projector_manager_contents.setObjectName('projector_manager_contents')
+        self.projector_manager_dock.setWidget(self.projector_manager_contents)
+        main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.projector_manager_dock)
         # Create the menu items
         action_list = ActionList.get_instance()
         action_list.add_category(UiStrings().File, CategoryOrder.standard_menu)
@@ -210,6 +219,16 @@ class Ui_MainWindow(object):
                                                can_shortcuts=True)
         self.export_language_item = create_action(main_window, 'exportLanguageItem')
         action_list.add_category(UiStrings().View, CategoryOrder.standard_menu)
+        # Projector items
+        self.import_projector_item = create_action(main_window, 'importProjectorItem', category=UiStrings().Import,
+                                                   can_shortcuts=False)
+        action_list.add_category(UiStrings().Import, CategoryOrder.standard_menu)
+        self.view_projector_manager_item = create_action(main_window, 'viewProjectorManagerItem',
+                                                         icon=':/projector/projector_manager.png',
+                                                         checked=self.projector_manager_dock.isVisible(),
+                                                         can_shortcuts=True,
+                                                         category=UiStrings().View,
+                                                         triggers=self.toggle_projector_manager)
         self.view_media_manager_item = create_action(main_window, 'viewMediaManagerItem',
                                                      icon=':/system/system_mediamanager.png',
                                                      checked=self.media_manager_dock.isVisible(),
@@ -310,6 +329,11 @@ class Ui_MainWindow(object):
                                                     'searchShortcut', can_shortcuts=True,
                                                     category=translate('OpenLP.MainWindow', 'General'),
                                                     triggers=self.on_search_shortcut_triggered)
+        '''
+        Leave until the import projector options are finished
+        add_actions(self.file_import_menu, (self.settings_import_item, self.import_theme_item,
+                    self.import_projector_item, self.import_language_item, None))
+        '''
         add_actions(self.file_import_menu, (self.settings_import_item, self.import_theme_item,
                     self.import_language_item, None))
         add_actions(self.file_export_menu, (self.settings_export_item, self.export_theme_item,
@@ -320,8 +344,8 @@ class Ui_MainWindow(object):
                     self.print_service_order_item, self.file_exit_item))
         add_actions(self.view_mode_menu, (self.mode_default_item, self.mode_setup_item, self.mode_live_item))
         add_actions(self.view_menu, (self.view_mode_menu.menuAction(), None, self.view_media_manager_item,
-                    self.view_service_manager_item, self.view_theme_manager_item, None, self.view_preview_panel,
-                    self.view_live_panel, None, self.lock_panel))
+                    self.view_projector_manager_item, self.view_service_manager_item, self.view_theme_manager_item,
+                    None, self.view_preview_panel, self.view_live_panel, None, self.lock_panel))
         # i18n add Language Actions
         add_actions(self.settings_language_menu, (self.auto_language_item, None))
         add_actions(self.settings_language_menu, self.language_group.actions())
@@ -375,6 +399,7 @@ class Ui_MainWindow(object):
         self.media_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Library'))
         self.service_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Service Manager'))
         self.theme_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Theme Manager'))
+        self.projector_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Projector Manager'))
         self.file_new_item.setText(translate('OpenLP.MainWindow', '&New'))
         self.file_new_item.setToolTip(UiStrings().NewService)
         self.file_new_item.setStatusTip(UiStrings().CreateService)
@@ -406,6 +431,10 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Import OpenLP settings from a specified *.config file previously '
                                            'exported on this or another machine'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
+        self.view_projector_manager_item.setText(translate('OPenLP.MainWindow', '&ProjectorManager'))
+        self.view_projector_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Projector Manager'))
+        self.view_projector_manager_item.setStatusTip(translate('OpenLP.MainWindow',
+                                                                'Toggle the visibility of the Projector Manager'))
         self.view_media_manager_item.setText(translate('OpenLP.MainWindow', '&Media Manager'))
         self.view_media_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Media Manager'))
         self.view_media_manager_item.setStatusTip(translate('OpenLP.MainWindow',
@@ -485,6 +514,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.service_manager_settings_section = 'servicemanager'
         self.songs_settings_section = 'songs'
         self.themes_settings_section = 'themes'
+        self.projector_settings_section = 'projector'
         self.players_settings_section = 'players'
         self.display_tags_section = 'displayTags'
         self.header_section = 'SettingsImport'
@@ -514,6 +544,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.media_manager_dock.visibilityChanged.connect(self.view_media_manager_item.setChecked)
         self.service_manager_dock.visibilityChanged.connect(self.view_service_manager_item.setChecked)
         self.theme_manager_dock.visibilityChanged.connect(self.view_theme_manager_item.setChecked)
+        self.projector_manager_dock.visibilityChanged.connect(self.view_projector_manager_item.setChecked)
         self.import_theme_item.triggered.connect(self.theme_manager_contents.on_import_theme)
         self.export_theme_item.triggered.connect(self.theme_manager_contents.on_export_theme)
         self.web_site_item.triggered.connect(self.on_help_web_site_clicked)
@@ -826,6 +857,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         setting_sections.extend([self.shortcuts_settings_section])
         setting_sections.extend([self.service_manager_settings_section])
         setting_sections.extend([self.themes_settings_section])
+        setting_sections.extend([self.projector_settings_section])
         setting_sections.extend([self.players_settings_section])
         setting_sections.extend([self.display_tags_section])
         setting_sections.extend([self.header_section])
@@ -1114,6 +1146,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         Toggle the visibility of the media manager
         """
         self.media_manager_dock.setVisible(not self.media_manager_dock.isVisible())
+
+    def toggle_projector_manager(self):
+        """
+        Toggle visibility of the projector manager
+        """
+        self.projector_manager_dock.setVisible(not self.projector_manager_dock.isVisible())
 
     def toggle_service_manager(self):
         """

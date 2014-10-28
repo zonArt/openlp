@@ -9,9 +9,9 @@
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Christian Richter, Philip Ridout, Ken Roberts, Simon Scudder,               #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble,             #
+# Dave Warnock, Frode Woldsund, Martin Zibricky, Patrick Zimmermann           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,28 +27,15 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Module-level functions for the functional test suite
+    :mod:`openlp.core.ui.projector`
+
+    Initialization for the openlp.core.ui.projector modules.
 """
 
-import os
-from tests.functional import patch
 
-from openlp.core.common import is_win
-
-from .test_projectordb import tmpfile
-
-
-def setUp():
-    if not is_win():
-        # Wine creates a sharing violation during tests. Ignore.
-        try:
-            os.remove(tmpfile)
-        except:
-            pass
-
-
-def tearDown():
+class DialogSourceStyle(object):
     """
-    Ensure test suite has been cleaned up after tests
+    An enumeration for projector dialog box type.
     """
-    patch.stopall()
+    Tabbed = 0
+    Single = 1

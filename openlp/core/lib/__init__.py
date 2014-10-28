@@ -334,3 +334,6 @@ from .dockwidget import OpenLPDockWidget
 from .imagemanager import ImageManager
 from .renderer import Renderer
 from .mediamanageritem import MediaManagerItem
+from .projector.db import ProjectorDB, Projector
+from .projector.pjlink1 import PJLink1
+from .projector.constants import PJLINK_PORT, ERROR_MSG, ERROR_STRING

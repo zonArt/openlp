@@ -148,3 +148,12 @@ class RegistryProperties(object):
         if not hasattr(self, '_alerts_manager') or not self._alerts_manager:
             self._alerts_manager = Registry().get('alerts_manager')
         return self._alerts_manager
+
+    @property
+    def projector_manager(self):
+        """
+        Adds the projector manager to the class dynamically
+        """
+        if not hasattr(self, '_projector_manager') or not self._projector_manager:
+            self._projector_manager = Registry().get('projector_manager')
+        return self._projector_manager
