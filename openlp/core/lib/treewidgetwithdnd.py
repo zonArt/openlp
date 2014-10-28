@@ -127,7 +127,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
                     listing = os.listdir(local_file)
                     for file_name in listing:
                         files.append(os.path.join(local_file, file_name))
-            Registry().execute('%s_dnd' % self.mime_Data_Text, {'files': files, 'target': self.itemAt(event.pos())})
+            Registry().execute('%s_dnd' % self.mime_data_text, {'files': files, 'target': self.itemAt(event.pos())})
         elif self.allow_internal_dnd:
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()

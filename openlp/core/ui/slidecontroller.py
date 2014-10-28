@@ -1245,7 +1245,7 @@ class SlideController(DisplayController, RegistryProperties):
         if event.timerId() == self.timer_id:
             self.on_slide_selected_next(self.play_slides_loop.isChecked())
 
-    def on_edit_song(self):
+    def on_edit_song(self, field=None):
         """
         From the preview display requires the service Item to be editied
         """
@@ -1254,7 +1254,7 @@ class SlideController(DisplayController, RegistryProperties):
         if new_item:
             self.add_service_item(new_item)
 
-    def on_preview_add_to_service(self):
+    def on_preview_add_to_service(self, field=None):
         """
         From the preview display request the Item to be added to service
         """
@@ -1351,7 +1351,7 @@ class SlideController(DisplayController, RegistryProperties):
         seconds %= 60
         self.audio_time_label.setText(' %02d:%02d ' % (minutes, seconds))
 
-    def on_track_triggered(self):
+    def on_track_triggered(self, field=None):
         """
         Start playing a track
         """

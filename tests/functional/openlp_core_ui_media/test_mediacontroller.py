@@ -27,5 +27,41 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.ui package.
+Package to test the openlp.core.ui.media package.
 """
+from unittest import TestCase
+
+from openlp.core.ui.media.mediacontroller import MediaController
+from openlp.core.ui.media.mediaplayer import MediaPlayer
+from openlp.core.common import Registry
+
+from tests.functional import MagicMock
+from tests.helpers.testmixin import TestMixin
+
+
+class TestMediaController(TestCase, TestMixin):
+
+    def setUp(self):
+        Registry.create()
+        Registry().register('service_manager', MagicMock())
+
+    def generate_extensions_lists_test(self):
+        """
+        Test that the extensions are create correctly
+        """
+        # GIVEN: A MediaController and an active player with audio and video extensions
+        media_controller = MediaController()
+        media_player = MediaPlayer(None)
+        media_player.is_active = True
+        media_player.audio_extensions_list = ['*.mp3', '*.wav', '*.wma', '*.ogg']
+        media_player.video_extensions_list = ['*.mp4', '*.mov', '*.avi', '*.ogm']
+        media_controller.register_players(media_player)
+
+        # WHEN: calling _generate_extensions_lists
+        media_controller._generate_extensions_lists()
+
+        # THEN: extensions list should have been copied from the player to the mediacontroller
+        self.assertListEqual(media_player.video_extensions_list, media_controller.video_extensions_list,
+                             'Video extensions should be the same')
+        self.assertListEqual(media_player.audio_extensions_list, media_controller.audio_extensions_list,
+                             'Audio extensions should be the same')

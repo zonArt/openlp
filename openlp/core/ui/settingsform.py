@@ -31,10 +31,10 @@ The :mod:`settingsform` provides a user interface for the OpenLP settings
 """
 import logging
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, RegistryProperties
-from openlp.core.lib import PluginStatus, build_icon
+from openlp.core.lib import build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
 from .settingsdialog import Ui_SettingsDialog
@@ -56,6 +56,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         super(SettingsForm, self).__init__(parent)
         self.processes = []
         self.setupUi(self)
+        self.setting_list_widget.currentRowChanged.connect(self.list_item_changed)
 
     def exec_(self):
         """
@@ -66,43 +67,52 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         while self.stacked_layout.count():
             # take at 0 and the rest shuffle up.
             self.stacked_layout.takeAt(0)
-        self.insert_tab(self.general_tab, 0, PluginStatus.Active)
-        self.insert_tab(self.themes_tab, 1, PluginStatus.Active)
-        self.insert_tab(self.projector_tab, 2, PluginStatus.Active)
-        self.insert_tab(self.advanced_tab, 3, PluginStatus.Active)
-        self.insert_tab(self.player_tab, 4, PluginStatus.Active)
-        count = 5
+        self.insert_tab(self.general_tab)
+        self.insert_tab(self.themes_tab)
+        self.insert_tab(self.advanced_tab)
+        self.insert_tab(self.player_tab)
+        self.insert_tab(self.projector_tab)
         for plugin in self.plugin_manager.plugins:
             if plugin.settings_tab:
-                self.insert_tab(plugin.settings_tab, count, plugin.status)
-                count += 1
+                self.insert_tab(plugin.settings_tab, plugin.is_active())
         self.setting_list_widget.setCurrentRow(0)
         return QtGui.QDialog.exec_(self)
 
-    def insert_tab(self, tab, location, is_active):
+    def insert_tab(self, tab_widget, is_visible=True):
         """
         Add a tab to the form at a specific location
+
+        :param tab_widget: The widget to add
+        :param is_visible: If this tab should be visible
         """
-        log.debug('Inserting %s tab' % tab.tab_title)
+        log.debug('Inserting %s tab' % tab_widget.tab_title)
         # add the tab to get it to display in the correct part of the screen
-        pos = self.stacked_layout.addWidget(tab)
-        if is_active:
-            item_name = QtGui.QListWidgetItem(tab.tab_title_visible)
-            icon = build_icon(tab.icon_path)
-            item_name.setIcon(icon)
-            self.setting_list_widget.insertItem(location, item_name)
-        else:
-            # then remove tab to stop the UI displaying it even if it is not required.
-            self.stacked_layout.takeAt(pos)
+        self.stacked_layout.addWidget(tab_widget)
+        if is_visible:
+            list_item = QtGui.QListWidgetItem(build_icon(tab_widget.icon_path), tab_widget.tab_title_visible)
+            list_item.setData(QtCore.Qt.UserRole, tab_widget.tab_title)
+            self.setting_list_widget.addItem(list_item)
 
     def accept(self):
         """
         Process the form saving the settings
         """
         log.debug('Processing settings exit')
-        for tabIndex in range(self.stacked_layout.count()):
-            self.stacked_layout.widget(tabIndex).save()
-        # if the display of image background are changing we need to regenerate the image cache
+        # We add all the forms into the stacked layout, even if the plugin is inactive,
+        # but we don't add the item to the list on the side if the plugin is inactive,
+        # so loop through the list items, and then find the tab for that item.
+        for item_index in range(self.setting_list_widget.count()):
+            # Get the list item
+            list_item = self.setting_list_widget.item(item_index)
+            if not list_item:
+                continue
+            # Now figure out if there's a tab for it, and save the tab.
+            plugin_name = list_item.data(QtCore.Qt.UserRole)
+            for tab_index in range(self.stacked_layout.count()):
+                tab_widget = self.stacked_layout.widget(tab_index)
+                if tab_widget.tab_title == plugin_name:
+                    tab_widget.save()
+        # if the image background has been changed we need to regenerate the image cache
         if 'images_config_updated' in self.processes or 'config_screen_changed' in self.processes:
             self.register_post_process('images_regenerate')
         # Now lets process all the post save handlers
@@ -141,12 +151,23 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
             if plugin.settings_tab:
                 plugin.settings_tab.post_set_up()
 
-    def tab_changed(self, tab_index):
+    def list_item_changed(self, item_index):
         """
         A different settings tab is selected
+
+        :param item_index: The index of the item that was selected
         """
-        self.stacked_layout.setCurrentIndex(tab_index)
-        self.stacked_layout.currentWidget().tab_visible()
+        # Get the item we clicked on
+        list_item = self.setting_list_widget.item(item_index)
+        # Loop through the list of tabs in the stacked layout
+        for tab_index in range(self.stacked_layout.count()):
+            # Get the widget
+            tab_widget = self.stacked_layout.itemAt(tab_index).widget()
+            # Check that the title of the tab (i.e. plugin name) is the same as the data in the list item
+            if tab_widget.tab_title == list_item.data(QtCore.Qt.UserRole):
+                # Make the matching tab visible
+                self.stacked_layout.setCurrentIndex(tab_index)
+                self.stacked_layout.currentWidget().tab_visible()
 
     def register_post_process(self, function):
         """

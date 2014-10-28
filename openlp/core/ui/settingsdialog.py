@@ -62,7 +62,6 @@ class Ui_SettingsDialog(object):
         self.button_box = create_button_box(settings_dialog, 'button_box', ['cancel', 'ok'])
         self.dialog_layout.addWidget(self.button_box, 1, 1, 1, 1)
         self.retranslateUi(settings_dialog)
-        self.setting_list_widget.currentRowChanged.connect(self.tab_changed)
 
     def retranslateUi(self, settings_dialog):
         """
