@@ -96,9 +96,21 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         Process the form saving the settings
         """
         log.debug('Processing settings exit')
-        for tabIndex in range(self.stacked_layout.count()):
-            self.stacked_layout.widget(tabIndex).save()
-        # if the display of image background are changing we need to regenerate the image cache
+        # We add all the forms into the stacked layout, even if the plugin is inactive,
+        # but we don't add the item to the list on the side if the plugin is inactive,
+        # so loop through the list items, and then find the tab for that item.
+        for item_index in range(self.setting_list_widget.count()):
+            # Get the list item
+            list_item = self.setting_list_widget.item(item_index)
+            if not list_item:
+                continue
+            # Now figure out if there's a tab for it, and save the tab.
+            plugin_name = list_item.data(QtCore.Qt.UserRole)
+            for tab_index in range(self.stacked_layout.count()):
+                tab_widget = self.stacked_layout.widget(tab_index)
+                if tab_widget.tab_title == plugin_name:
+                    tab_widget.save()
+        # if the image background has been changed we need to regenerate the image cache
         if 'images_config_updated' in self.processes or 'config_screen_changed' in self.processes:
             self.register_post_process('images_regenerate')
         # Now lets process all the post save handlers
