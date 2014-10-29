@@ -31,7 +31,7 @@ class TestFileDialog(TestCase):
             Test that FileDialog.getOpenFileNames() returns and empty QStringList when QFileDialog is canceled
             (returns an empty QStringList)
         """
-        self.mocked_os.reset()
+        self.mocked_os.reset_mock()
 
         # GIVEN: An empty QStringList as a return value from QFileDialog.getOpenFileNames
         self.mocked_qt_gui.QFileDialog.getOpenFileNames.return_value = []
@@ -50,8 +50,8 @@ class TestFileDialog(TestCase):
             Test that FileDialog.getOpenFileNames handles a list of files properly when QFileList.getOpenFileNames
             returns a good file name, a url encoded file name and a non-existing file
         """
-        self.mocked_os.rest()
-        self.mocked_qt_gui.reset()
+        self.mocked_os.rest_mock()
+        self.mocked_qt_gui.reset_mock()
 
         # GIVEN: A List of known values as a return value from QFileDialog.getOpenFileNames and a list of valid file
         # names.
@@ -59,6 +59,8 @@ class TestFileDialog(TestCase):
             '/Valid File', '/url%20encoded%20file%20%231', '/non-existing']
         self.mocked_os.path.exists.side_effect = lambda file_name: file_name in [
             '/Valid File', '/url encoded file #1']
+        self.mocked_ui_strings().FileNotFound = 'File Not Found'
+        self.mocked_ui_strings().FileNotFoundMessage = 'File %s not found.\nPlease try selecting it individually.'
 
         # WHEN: FileDialog.getOpenFileNames is called
         result = FileDialog.getOpenFileNames(self.mocked_parent)
@@ -68,6 +70,6 @@ class TestFileDialog(TestCase):
         call_list = [call('/Valid File'), call('/url%20encoded%20file%20%231'), call('/url encoded file #1'),
                      call('/non-existing'), call('/non-existing')]
         self.mocked_os.path.exists.assert_has_calls(call_list)
-        self.mocked_qt_gui.QmessageBox.information.called_with(self.mocked_parent, UiStrings().FileNotFound,
-                                                               UiStrings().FileNotFoundMessage % '/non-existing')
+        self.mocked_qt_gui.QMessageBox.information.assert_called_with(self.mocked_parent, 'File Not Found',
+            'File /non-existing not found.\nPlease try selecting it individually.')
         self.assertEqual(result, ['/Valid File', '/url encoded file #1'], 'The returned file list is incorrect')
