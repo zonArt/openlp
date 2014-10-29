@@ -107,6 +107,33 @@ class TestRouter(TestCase, TestMixin):
         self.assertEqual(mocked_function, function['function'], 'The mocked function should match defined value.')
         self.assertFalse(function['secure'], 'The mocked function should not require any security.')
 
+    def process_secure_http_request_test(self):
+        """
+        Test the router control functionality
+        """
+        # GIVEN: A testing set of Routes
+        mocked_function = MagicMock()
+        test_route = [
+            (r'^/stage/api/poll$', {'function': mocked_function, 'secure': True}),
+        ]
+        self.router.routes = test_route
+        self.router.settings_section = 'remotes'
+        Settings().setValue('remotes/authentication enabled', True)
+        self.router.path = '/stage/api/poll'
+        self.router.auth = ''
+        self.router.headers = {'Authorization': None}
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+
+        # WHEN: called with a poll route
+        self.router.do_post_processor()
+
+        # THEN: the function should have been called only once
+        self.router.send_response.assert_called_once_with(401)
+        self.assertEqual(self.router.send_header.call_count, 2, 'The header should have been called twice.')
+
     def get_content_type_test(self):
         """
         Test the get_content_type logic

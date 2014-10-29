@@ -30,13 +30,17 @@
 The :mod:`common` module contains most of the components and libraries that make
 OpenLP work.
 """
+import hashlib
 import re
 import os
 import logging
 import sys
 import traceback
+from ipaddress import IPv4Address, IPv6Address, AddressValueError
+from codecs import decode, encode
 
 from PyQt4 import QtCore
+from PyQt4.QtCore import QCryptographicHash as QHash
 
 log = logging.getLogger(__name__ + '.__init__')
 
@@ -153,6 +157,81 @@ def is_linux():
     :return: True if system is running a linux kernel false otherwise
     """
     return sys.platform.startswith('linux')
+
+
+def verify_ipv4(addr):
+    """
+    Validate an IPv4 address
+
+    :param addr: Address to validate
+    :returns: bool
+    """
+    try:
+        valid = IPv4Address(addr)
+        return True
+    except AddressValueError:
+        return False
+
+
+def verify_ipv6(addr):
+    """
+    Validate an IPv6 address
+
+    :param addr: Address to validate
+    :returns: bool
+    """
+    try:
+        valid = IPv6Address(addr)
+        return True
+    except AddressValueError:
+        return False
+
+
+def verify_ip_address(addr):
+    """
+    Validate an IP address as either IPv4 or IPv6
+
+    :param addr: Address to validate
+    :returns: bool
+    """
+    return True if verify_ipv4(addr) else verify_ipv6(addr)
+
+
+def md5_hash(salt, data):
+    """
+    Returns the hashed output of md5sum on salt,data
+    using Python3 hashlib
+
+    :param salt: Initial salt
+    :param data: Data to hash
+    :returns: str
+    """
+    log.debug('md5_hash(salt="%s")' % salt)
+    hash_obj = hashlib.new('md5')
+    hash_obj.update(salt.encode('ascii'))
+    hash_obj.update(data.encode('ascii'))
+    hash_value = hash_obj.hexdigest()
+    log.debug('md5_hash() returning "%s"' % hash_value)
+    return hash_value
+
+
+def qmd5_hash(salt, data):
+    """
+    Returns the hashed output of MD5Sum on salt, data
+    using PyQt4.QCryptographicHash.
+
+    :param salt: Initial salt
+    :param data: Data to hash
+    :returns: str
+    """
+    log.debug('qmd5_hash(salt="%s"' % salt)
+    hash_obj = QHash(QHash.Md5)
+    hash_obj.addData(salt)
+    hash_obj.addData(data)
+    hash_value = hash_obj.result().toHex()
+    log.debug('qmd5_hash() returning "%s"' % hash_value)
+    return decode(hash_value.data(), 'ascii')
+
 
 from .openlpmixin import OpenLPMixin
 from .registry import Registry

@@ -146,7 +146,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             if player.is_active:
                 for item in player.video_extensions_list:
                     if item not in self.video_extensions_list:
-                        self.video_extensions_list.extend(item)
+                        self.video_extensions_list.append(item)
                         suffix_list.append(item[2:])
         self.service_manager.supported_suffixes(suffix_list)
 
