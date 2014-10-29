@@ -9,9 +9,9 @@
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Christian Richter, Philip Ridout, Ken Roberts, Simon Scudder,               #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble,             #
+# Dave Warnock, Frode Woldsund, Martin Zibricky, Patrick Zimmermann           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,28 +27,29 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Module-level functions for the functional test suite
+The :mod:`tests.resources.projector.data file contains test data
 """
 
-import os
-from tests.functional import patch
+from openlp.core.lib.projector.db import Projector
 
-from openlp.core.common import is_win
+# Test data
+TEST1_DATA = Projector(ip='111.111.111.111',
+                       port='1111',
+                       pin='1111',
+                       name='___TEST_ONE___',
+                       location='location one',
+                       notes='notes one')
 
-from .test_projectordb import tmpfile
+TEST2_DATA = Projector(ip='222.222.222.222',
+                       port='2222',
+                       pin='2222',
+                       name='___TEST_TWO___',
+                       location='location two',
+                       notes='notes two')
 
-
-def setUp():
-    if not is_win():
-        # Wine creates a sharing violation during tests. Ignore.
-        try:
-            os.remove(tmpfile)
-        except:
-            pass
-
-
-def tearDown():
-    """
-    Ensure test suite has been cleaned up after tests
-    """
-    patch.stopall()
+TEST3_DATA = Projector(ip='333.333.333.333',
+                       port='3333',
+                       pin='3333',
+                       name='___TEST_THREE___',
+                       location='location three',
+                       notes='notes three')
