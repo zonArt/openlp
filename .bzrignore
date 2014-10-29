@@ -33,3 +33,10 @@ tests.kdev4
 __pycache__
 *.dll
 .directory
+*.kate-swp
+# Git files
+.git
+.gitignore
+# Rejected diff's
+*.rej
+*.~\?~

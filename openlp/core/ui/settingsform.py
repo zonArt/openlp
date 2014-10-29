@@ -38,6 +38,7 @@ from openlp.core.lib import build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
 from .settingsdialog import Ui_SettingsDialog
+from openlp.core.ui.projector.tab import ProjectorTab
 
 log = logging.getLogger(__name__)
 
@@ -70,6 +71,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         self.insert_tab(self.themes_tab)
         self.insert_tab(self.advanced_tab)
         self.insert_tab(self.player_tab)
+        self.insert_tab(self.projector_tab)
         for plugin in self.plugin_manager.plugins:
             if plugin.settings_tab:
                 self.insert_tab(plugin.settings_tab, plugin.is_active())
@@ -96,9 +98,21 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         Process the form saving the settings
         """
         log.debug('Processing settings exit')
-        for tabIndex in range(self.stacked_layout.count()):
-            self.stacked_layout.widget(tabIndex).save()
-        # if the display of image background are changing we need to regenerate the image cache
+        # We add all the forms into the stacked layout, even if the plugin is inactive,
+        # but we don't add the item to the list on the side if the plugin is inactive,
+        # so loop through the list items, and then find the tab for that item.
+        for item_index in range(self.setting_list_widget.count()):
+            # Get the list item
+            list_item = self.setting_list_widget.item(item_index)
+            if not list_item:
+                continue
+            # Now figure out if there's a tab for it, and save the tab.
+            plugin_name = list_item.data(QtCore.Qt.UserRole)
+            for tab_index in range(self.stacked_layout.count()):
+                tab_widget = self.stacked_layout.widget(tab_index)
+                if tab_widget.tab_title == plugin_name:
+                    tab_widget.save()
+        # if the image background has been changed we need to regenerate the image cache
         if 'images_config_updated' in self.processes or 'config_screen_changed' in self.processes:
             self.register_post_process('images_regenerate')
         # Now lets process all the post save handlers
@@ -123,6 +137,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         self.general_tab = GeneralTab(self)
         # Themes tab
         self.themes_tab = ThemesTab(self)
+        # Projector Tab
+        self.projector_tab = ProjectorTab(self)
         # Advanced tab
         self.advanced_tab = AdvancedTab(self)
         # Advanced tab
@@ -143,6 +159,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         """
         # Get the item we clicked on
         list_item = self.setting_list_widget.item(item_index)
+        # Quick exit to the left if the item doesn't exist (maybe -1?)
+        if not list_item:
+            return
         # Loop through the list of tabs in the stacked layout
         for tab_index in range(self.stacked_layout.count()):
             # Get the widget

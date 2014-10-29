@@ -53,5 +53,6 @@ cat openlp/core/resources.py.new | sed '/# Created: /d;/#      by: /d' > openlp/
 patch --posix -s openlp/core/resources.py scripts/resources.patch
 
 # Remove temporary file
-rm openlp/core/resources.py.new
-
+rm openlp/core/resources.py.new 2>/dev/null
+rm openlp/core/resources.py.old 2>/dev/null
+rm openlp/core/resources.py.orig 2>/dev/null

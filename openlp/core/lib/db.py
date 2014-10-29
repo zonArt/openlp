@@ -48,18 +48,51 @@ from openlp.core.utils import delete_file
 log = logging.getLogger(__name__)
 
 
-def init_db(url, auto_flush=True, auto_commit=False):
+def init_db(url, auto_flush=True, auto_commit=False, base=None):
     """
     Initialise and return the session and metadata for a database
 
     :param url: The database to initialise connection with
     :param auto_flush: Sets the flushing behaviour of the session
     :param auto_commit: Sets the commit behaviour of the session
+    :param base: If using declarative, the base class to bind with
     """
     engine = create_engine(url, poolclass=NullPool)
-    metadata = MetaData(bind=engine)
+    if base is None:
+        metadata = MetaData(bind=engine)
+    else:
+        base.metadata.bind = engine
+        metadata = None
     session = scoped_session(sessionmaker(autoflush=auto_flush, autocommit=auto_commit, bind=engine))
     return session, metadata
+
+
+def init_url(plugin_name, db_file_name=None):
+    """
+    Return the database URL.
+
+    :param plugin_name: The name of the plugin for the database creation.
+    :param db_file_name: The database file name. Defaults to None resulting in the plugin_name being used.
+    """
+    settings = Settings()
+    settings.beginGroup(plugin_name)
+    db_url = ''
+    db_type = settings.value('db type')
+    if db_type == 'sqlite':
+        if db_file_name is None:
+            db_url = 'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
+        else:
+            db_url = 'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
+    else:
+        db_url = '%s://%s:%s@%s/%s' % (db_type, urlquote(settings.value('db username')),
+                                       urlquote(settings.value('db password')),
+                                       urlquote(settings.value('db hostname')),
+                                       urlquote(settings.value('db database')))
+        if db_type == 'mysql':
+            db_encoding = settings.value('db encoding')
+            db_url += '?charset=%s' % urlquote(db_encoding)
+    settings.endGroup()
+    return db_url
 
 
 def get_upgrade_op(session):
@@ -159,7 +192,7 @@ class Manager(object):
     """
     Provide generic object persistence management
     """
-    def __init__(self, plugin_name, init_schema, db_file_name=None, upgrade_mod=None):
+    def __init__(self, plugin_name, init_schema, db_file_name=None, upgrade_mod=None, session=None):
         """
         Runs the initialisation process that includes creating the connection to the database and the tables if they do
         not exist.
@@ -170,26 +203,15 @@ class Manager(object):
         :param upgrade_mod: The file name to use for this database. Defaults to None resulting in the plugin_name
         being used.
         """
-        settings = Settings()
-        settings.beginGroup(plugin_name)
-        self.db_url = ''
         self.is_dirty = False
         self.session = None
-        db_type = settings.value('db type')
-        if db_type == 'sqlite':
-            if db_file_name:
-                self.db_url = 'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
-            else:
-                self.db_url = 'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
+        # See if we're using declarative_base with a pre-existing session.
+        log.debug('Manager: Testing for pre-existing session')
+        if session is not None:
+            log.debug('Manager: Using existing session')
         else:
-            self.db_url = '%s://%s:%s@%s/%s' % (db_type, urlquote(settings.value('db username')),
-                                                urlquote(settings.value('db password')),
-                                                urlquote(settings.value('db hostname')),
-                                                urlquote(settings.value('db database')))
-            if db_type == 'mysql':
-                db_encoding = settings.value('db encoding')
-                self.db_url += '?charset=%s' % urlquote(db_encoding)
-        settings.endGroup()
+            log.debug('Manager: Creating new session')
+            self.db_url = init_url(plugin_name, db_file_name)
         if upgrade_mod:
             try:
                 db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
