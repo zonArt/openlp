@@ -57,6 +57,11 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         self.processes = []
         self.setupUi(self)
         self.setting_list_widget.currentRowChanged.connect(self.list_item_changed)
+        self.general_tab = None
+        self.themes_tab = None
+        self.projector_tab = None
+        self.advanced_tab = None
+        self.player_tab = None
 
     def exec_(self):
         """
@@ -125,8 +130,18 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         Process the form saving the settings
         """
         self.processes = []
-        for tabIndex in range(self.stacked_layout.count()):
-            self.stacked_layout.widget(tabIndex).cancel()
+        # Same as accept(), we need to loop over the visible tabs, and skip the inactive ones
+        for item_index in range(self.setting_list_widget.count()):
+            # Get the list item
+            list_item = self.setting_list_widget.item(item_index)
+            if not list_item:
+                continue
+            # Now figure out if there's a tab for it, and save the tab.
+            plugin_name = list_item.data(QtCore.Qt.UserRole)
+            for tab_index in range(self.stacked_layout.count()):
+                tab_widget = self.stacked_layout.widget(tab_index)
+                if tab_widget.tab_title == plugin_name:
+                    tab_widget.cancel()
         return QtGui.QDialog.reject(self)
 
     def bootstrap_post_set_up(self):
