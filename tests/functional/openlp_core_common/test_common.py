@@ -202,4 +202,3 @@ class TestCommonFunctions(TestCase):
 
         # THEN: The text should have been cleaned
         self.assertEqual(expected_text, actual_text, 'The text should be clean')
-
