@@ -33,7 +33,6 @@ from datetime import datetime
 from distutils.version import LooseVersion
 import logging
 import os
-import sys
 import threading
 
 from PyQt4 import QtGui
@@ -55,6 +54,8 @@ except OSError as e:
     if is_win():
         if not isinstance(e, WindowsError) and e.winerror != 126:
             raise
+    elif is_macosx():
+        pass
     else:
         raise
 
