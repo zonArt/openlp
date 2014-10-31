@@ -232,6 +232,13 @@ def qmd5_hash(salt, data):
     log.debug('qmd5_hash() returning "%s"' % hash_value)
     return decode(hash_value.data(), 'ascii')
 
+def clean_button_text(button_text):
+    """
+    Clean the & and other characters out of button text
+    
+    :param button_text: The text to clean
+    """
+    return button_text.replace('&', '').replace('< ', '').replace(' >', '')
 
 from .openlpmixin import OpenLPMixin
 from .registry import Registry

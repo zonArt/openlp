@@ -33,7 +33,7 @@ Functional tests to test the AppLocation class and related methods.
 from unittest import TestCase
 
 from openlp.core.common import check_directory_exists, de_hump, trace_error_handler, translate, is_win, is_macosx, \
-    is_linux
+    is_linux, clean_button_text
 from tests.functional import MagicMock, patch
 
 
@@ -188,3 +188,17 @@ class TestCommonFunctions(TestCase):
             self.assertTrue(is_linux(), 'is_linux() should return True')
             self.assertFalse(is_win(), 'is_win() should return False')
             self.assertFalse(is_macosx(), 'is_macosx() should return False')
+
+    def clean_button_text_test(self):
+        """
+        Test the clean_button_text() function.
+        """
+        # GIVEN: Button text
+        input_text = '&Next >'
+        expected_text = 'Next'
+        
+        # WHEN: The button caption is sent through the clean_button_text function
+        actual_text = clean_button_text(input_text)
+        
+        # THEN: The text should have been cleaned
+        self.assertEqual(expected_text, actual_text, 'The text should be clean')
