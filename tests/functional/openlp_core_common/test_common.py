@@ -196,9 +196,10 @@ class TestCommonFunctions(TestCase):
         # GIVEN: Button text
         input_text = '&Next >'
         expected_text = 'Next'
-        
+
         # WHEN: The button caption is sent through the clean_button_text function
         actual_text = clean_button_text(input_text)
-        
+
         # THEN: The text should have been cleaned
         self.assertEqual(expected_text, actual_text, 'The text should be clean')
+
