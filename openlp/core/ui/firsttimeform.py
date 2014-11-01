@@ -41,7 +41,8 @@ from configparser import ConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate,
+    clean_button_text
 from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.utils import get_web_page
 from .firsttimewizard import UiFirstTimeWizard, FirstTimePage
@@ -395,20 +396,20 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             if self.has_run_wizard:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
                                             'Download complete. Click the %s button to return to OpenLP.') %
-                                            self.buttonText(QtGui.QWizard.FinishButton))
+                                            clean_button_text(self.buttonText(QtGui.QWizard.FinishButton)))
             else:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
                                             'Download complete. Click the %s button to start OpenLP.') %
-                                            self.buttonText(QtGui.QWizard.FinishButton))
+                                            clean_button_text(self.buttonText(QtGui.QWizard.FinishButton)))
         else:
             if self.has_run_wizard:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
                                             'Click the %s button to return to OpenLP.') %
-                                            self.buttonText(QtGui.QWizard.FinishButton))
+                                            clean_button_text(self.buttonText(QtGui.QWizard.FinishButton)))
             else:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
                                             'Click the %s button to start OpenLP.') %
-                                            self.buttonText(QtGui.QWizard.FinishButton))
+                                            clean_button_text(self.buttonText(QtGui.QWizard.FinishButton)))
         self.finish_button.setVisible(True)
         self.finish_button.setEnabled(True)
         self.cancel_button.setVisible(False)
