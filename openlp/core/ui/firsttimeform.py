@@ -41,8 +41,8 @@ from configparser import ConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate,
-    clean_button_text
+from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, \
+    translate, clean_button_text
 from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.utils import get_web_page
 from .firsttimewizard import UiFirstTimeWizard, FirstTimePage
