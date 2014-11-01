@@ -563,12 +563,12 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             else:
                 abort_import = False
             for name in theme_zip.namelist():
-                name = name.replace('/', os.path.sep)
-                split_name = name.split(os.path.sep)
+                out_name = name.replace('/', os.path.sep)
+                split_name = out_name.split(os.path.sep)
                 if split_name[-1] == '' or len(split_name) == 1:
                     # is directory or preview file
                     continue
-                full_name = os.path.join(directory, name)
+                full_name = os.path.join(directory, out_name)
                 check_directory_exists(os.path.dirname(full_name))
                 if os.path.splitext(name)[1].lower() == '.xml':
                     file_xml = str(theme_zip.read(name), 'utf-8')

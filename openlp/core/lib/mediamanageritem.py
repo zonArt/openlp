@@ -563,8 +563,11 @@ s
                 self.add_to_service(replace=self.remote_triggered)
             else:
                 items = self.list_view.selectedIndexes()
+                drop_position = self.service_manager.get_drop_position()
                 for item in items:
-                    self.add_to_service(item)
+                    self.add_to_service(item, position=drop_position)
+                    if drop_position != -1:
+                        drop_position += 1
 
     def add_to_service_remote(self, message):
         """
@@ -574,18 +577,19 @@ s
         """
         self.add_to_service(message[0], remote=message[1])
 
-    def add_to_service(self, item=None, replace=None, remote=False):
+    def add_to_service(self, item=None, replace=None, remote=False, position=-1):
         """
         Add this item to the current service.
 
         :param item: Item to be processed
         :param replace: Replace the existing item
         :param remote: Triggered from remote
+        :param position: Position to place item
         """
         service_item = self.build_service_item(item, True, remote=remote, context=ServiceItemContext.Service)
         if service_item:
             service_item.from_plugin = False
-            self.service_manager.add_service_item(service_item, replace=replace)
+            self.service_manager.add_service_item(service_item, replace=replace, position=position)
 
     def on_add_edit_click(self):
         """

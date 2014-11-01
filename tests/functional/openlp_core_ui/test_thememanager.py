@@ -31,9 +31,11 @@ Package to test the openlp.core.ui.thememanager package.
 """
 import zipfile
 import os
+import shutil
 
 from unittest import TestCase
 from tests.interfaces import MagicMock
+from tempfile import mkdtemp
 
 from openlp.core.ui import ThemeManager
 from openlp.core.common import Registry
@@ -135,3 +137,25 @@ class TestThemeManager(TestCase):
 
             # THEN: The mocked_copyfile should not have been called
             self.assertTrue(mocked_copyfile.called, 'shutil.copyfile should be called')
+
+    def unzip_theme_test(self):
+        """
+        Test that unzipping of themes works
+        """
+        # GIVEN: A theme file, a output folder and some mocked out internal functions
+        with patch('openlp.core.ui.thememanager.critical_error_message_box') \
+                as mocked_critical_error_message_box:
+            theme_manager = ThemeManager(None)
+            theme_manager._create_theme_from_xml = MagicMock()
+            theme_manager.generate_and_save_image = MagicMock()
+            theme_manager.path = ''
+            folder = mkdtemp()
+            theme_file = os.path.join(TEST_RESOURCES_PATH, 'themes', 'Moss_on_tree.otz')
+
+            # WHEN: We try to unzip it
+            theme_manager.unzip_theme(theme_file, folder)
+
+            # THEN: Files should be unpacked
+            self.assertTrue(os.path.exists(os.path.join(folder, 'Moss on tree', 'Moss on tree.xml')))
+            self.assertEqual(mocked_critical_error_message_box.call_count, 0, 'No errors should have happened')
+            shutil.rmtree(folder)
