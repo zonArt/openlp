@@ -81,7 +81,7 @@ class TestImageMediaItem(TestCase, TestMixin):
         self.initial_color = '#999999'
         # WHEN: the save is invoked
         self.form.save()
-        #THEN: the post process should not be requested
+        # THEN: the post process should not be requested
         self.assertEqual(0, self.form.settings_form.register_post_process.call_count,
                          'Image Post processing should not have been requested')
 
@@ -93,6 +93,6 @@ class TestImageMediaItem(TestCase, TestMixin):
         self.form.background_color = '#999999'
         # WHEN: the save is invoked
         self.form.save()
-        #THEN: the post process should be requested
+        # THEN: the post process should be requested
         self.assertEqual(1, self.form.settings_form.register_post_process.call_count,
                          'Image Post processing should have been requested')
