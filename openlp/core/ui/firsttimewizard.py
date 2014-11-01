@@ -31,7 +31,7 @@ The UI widgets for the first time wizard.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import translate, is_macosx
+from openlp.core.common import translate, is_macosx, clean_button_text
 from openlp.core.lib import build_icon
 from openlp.core.lib.ui import add_welcome_page
 
@@ -220,7 +220,7 @@ class UiFirstTimeWizard(object):
         first_time_wizard.information_label.setText(
             translate('OpenLP.FirstTimeWizard', 'This wizard will help you to configure OpenLP for initial use. '
                                                 'Click the %s button below to start.') %
-            first_time_wizard.buttonText(QtGui.QWizard.NextButton))
+            clean_button_text(first_time_wizard.buttonText(QtGui.QWizard.NextButton)))
         self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
         self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
         self.songs_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
@@ -245,7 +245,7 @@ class UiFirstTimeWizard(object):
         self.cancel_wizard_text = translate('OpenLP.FirstTimeWizard',
                                             '\n\nTo cancel the First Time Wizard completely (and not start OpenLP), '
                                             'click the %s button now.') % \
-            first_time_wizard.buttonText(QtGui.QWizard.CancelButton)
+            clean_button_text(first_time_wizard.buttonText(QtGui.QWizard.CancelButton))
         self.songs_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Songs'))
         self.songs_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select and download public domain songs.'))
         self.bibles_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Bibles'))
