@@ -96,7 +96,7 @@ class AlertsTab(SettingsTab):
         self.right_layout.addStretch()
         # Signals and slots
         self.background_color_button.colorChanged.connect(self.on_background_color_changed)
-        self.font_color_button.colorChanged.connect(self.on_font_color_button_changed)
+        self.font_color_button.colorChanged.connect(self.on_font_color_changed)
         self.font_combo_box.activated.connect(self.on_font_combo_box_clicked)
         self.timeout_spin_box.valueChanged.connect(self.on_timeout_spin_box_changed)
         self.font_size_spin_box.valueChanged.connect(self.on_font_size_spin_box_changed)
@@ -126,7 +126,7 @@ class AlertsTab(SettingsTab):
         """
         self.update_display()
 
-    def on_font_color_button_changed(self, color):
+    def on_font_color_changed(self, color):
         """
         The Font Color button has clicked.
         """
