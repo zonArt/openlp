@@ -219,7 +219,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
             return
         # VLC behaves a bit differently on windows and linux when loading, which creates problems when trying to
         # detect if we're dealing with a DVD or CD, so we use different loading approaches depending on the OS.
-        if os.name == 'nt':
+        if is_win():
             # If the given path is in the format "D:\" or "D:", prefix it with "/" to make VLC happy
             pattern = re.compile('^\w:\\\\*$')
             if pattern.match(path):

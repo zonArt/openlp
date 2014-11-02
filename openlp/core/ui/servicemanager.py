@@ -324,7 +324,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         self.inactive = build_icon(':/media/auto-start_inactive.png')
         self.service_items = []
         self.suffixes = []
-        self.drop_position = 0
+        self.drop_position = -1
         self.service_id = 0
         # is a new service and has not been saved
         self._modified = False
@@ -1377,7 +1377,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 self.live_controller.replace_service_manager_item(new_item)
                 self.set_modified()
 
-    def add_service_item(self, item, rebuild=False, expand=None, replace=False, repaint=True, selected=False):
+    def add_service_item(self, item, rebuild=False, expand=None, replace=False, repaint=True, selected=False,
+                         position=-1):
         """
         Add a Service item to the list
 
@@ -1387,11 +1388,13 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         :param replace: Is the service item a replacement (Default False)
         :param repaint: Do we need to repaint the service item list (Default True)
         :param selected: Has the item been selected (Default False)
+        :param position: The position where the item is dropped (Default -1)
         """
         # if not passed set to config value
         if expand is None:
             expand = Settings().value('advanced/expand service item')
         item.from_service = True
+        self.drop_position = position
         if replace:
             s_item, child = self.find_service_item()
             item.merge(self.service_items[s_item]['service_item'])
@@ -1401,7 +1404,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         else:
             item.render()
             # nothing selected for dnd
-            if self.drop_position == 0:
+            if self.drop_position == -1:
                 if isinstance(item, list):
                     for ind_item in item:
                         self.service_items.append({'service_item': ind_item,
@@ -1421,7 +1424,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             # if rebuilding list make sure live is fixed.
             if rebuild:
                 self.live_controller.replace_service_manager_item(item)
-        self.drop_position = 0
+        self.drop_position = -1
         self.set_modified()
 
     def make_preview(self):
@@ -1604,7 +1607,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                             item.setSelected(True)
                             replace = True
                     else:
-                        self.drop_position = self._get_parent_item_data(item)
+                        self.drop_position = self._get_parent_item_data(item) - 1
                 Registry().execute('%s_add_service_item' % plugin, replace)
 
     def update_theme_list(self, theme_list):
@@ -1666,3 +1669,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         setting_dialog = PrintServiceForm()
         setting_dialog.exec_()
+
+    def get_drop_position(self):
+        """
+        Getter for drop_position. Used in: MediaManagerItem
+        """
+        return self.drop_position

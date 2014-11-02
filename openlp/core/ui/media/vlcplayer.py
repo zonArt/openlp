@@ -33,7 +33,6 @@ from datetime import datetime
 from distutils.version import LooseVersion
 import logging
 import os
-import sys
 import threading
 
 from PyQt4 import QtGui
@@ -55,6 +54,8 @@ except OSError as e:
     if is_win():
         if not isinstance(e, WindowsError) and e.winerror != 126:
             raise
+    elif is_macosx():
+        pass
     else:
         raise
 
@@ -167,6 +168,8 @@ class VlcPlayer(MediaPlayer):
         path = os.path.normcase(file_path)
         # create the media
         if controller.media_info.media_type == MediaType.CD:
+            if is_win():
+                path = '/' + path
             display.vlc_media = display.vlc_instance.media_new_location('cdda://' + path)
             display.vlc_media_player.set_media(display.vlc_media)
             display.vlc_media_player.play()
