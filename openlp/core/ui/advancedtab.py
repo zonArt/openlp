@@ -247,7 +247,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_time.timeChanged.connect(self.update_service_name_example)
         self.service_name_edit.textChanged.connect(self.update_service_name_example)
         self.service_name_revert_button.clicked.connect(self.on_service_name_revert_button_clicked)
-        self.default_color_button.colorChanged.connect(self.on_default_color_button_changed)
+        self.default_color_button.colorChanged.connect(self.on_background_color_changed)
         self.default_browse_button.clicked.connect(self.on_default_browse_button_clicked)
         self.default_revert_button.clicked.connect(self.on_default_revert_button_clicked)
         self.alternate_rows_check_box.toggled.connect(self.on_alternate_rows_check_box_toggled)
@@ -497,7 +497,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_edit.setText(UiStrings().DefaultServiceName)
         self.service_name_edit.setFocus()
 
-    def on_default_color_button_changed(self, color):
+    def on_background_color_changed(self, color):
         """
         Select the background colour of the default display screen.
         """

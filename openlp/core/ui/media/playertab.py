@@ -124,7 +124,7 @@ class PlayerTab(SettingsTab):
         self.left_layout.addStretch()
         self.right_layout.addStretch()
         # Signals and slots
-        self.background_color_button.colorChanged.connect(self.on_background_color_button_changed)
+        self.background_color_button.colorChanged.connect(self.on_background_color_changed)
 
     def retranslateUi(self):
         """
@@ -138,7 +138,7 @@ class PlayerTab(SettingsTab):
                                        'Visible background for videos with aspect ratio different to screen.'))
         self.retranslate_players()
 
-    def on_background_color_button_changed(self, color):
+    def on_background_color_changed(self, color):
         """
         Set the background color
         """

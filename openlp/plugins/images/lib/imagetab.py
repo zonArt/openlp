@@ -64,7 +64,7 @@ class ImageTab(SettingsTab):
         self.right_column.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.right_layout.addStretch()
         # Signals and slots
-        self.background_color_button.colorChanged.connect(self.on_background_color_button_changed)
+        self.background_color_button.colorChanged.connect(self.on_background_color_changed)
 
     def retranslateUi(self):
         self.background_color_group_box.setTitle(UiStrings().BackgroundColor)
@@ -72,7 +72,7 @@ class ImageTab(SettingsTab):
         self.information_label.setText(
             translate('ImagesPlugin.ImageTab', 'Visible background for images with aspect ratio different to screen.'))
 
-    def on_background_color_button_changed(self, color):
+    def on_background_color_changed(self, color):
         self.background_color = color
 
     def load(self):

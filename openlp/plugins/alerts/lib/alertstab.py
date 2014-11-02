@@ -95,7 +95,7 @@ class AlertsTab(SettingsTab):
         self.right_layout.addWidget(self.preview_group_box)
         self.right_layout.addStretch()
         # Signals and slots
-        self.background_color_button.colorChanged.connect(self.on_background_color_button_changed)
+        self.background_color_button.colorChanged.connect(self.on_background_color_changed)
         self.font_color_button.colorChanged.connect(self.on_font_color_button_changed)
         self.font_combo_box.activated.connect(self.on_font_combo_box_clicked)
         self.timeout_spin_box.valueChanged.connect(self.on_timeout_spin_box_changed)
@@ -113,7 +113,7 @@ class AlertsTab(SettingsTab):
         self.preview_group_box.setTitle(UiStrings().Preview)
         self.font_preview.setText(UiStrings().OLPV2x)
 
-    def on_background_color_button_changed(self, color):
+    def on_background_color_changed(self, color):
         """
         The background color has been changed.
         """
