@@ -70,6 +70,7 @@ class TestFileDialog(TestCase):
         call_list = [call('/Valid File'), call('/url%20encoded%20file%20%231'), call('/url encoded file #1'),
                      call('/non-existing'), call('/non-existing')]
         self.mocked_os.path.exists.assert_has_calls(call_list)
-        self.mocked_qt_gui.QMessageBox.information.assert_called_with(self.mocked_parent, 'File Not Found',
+        self.mocked_qt_gui.QMessageBox.information.assert_called_with(
+            self.mocked_parent, 'File Not Found',
             'File /non-existing not found.\nPlease try selecting it individually.')
         self.assertEqual(result, ['/Valid File', '/url encoded file #1'], 'The returned file list is incorrect')

@@ -109,8 +109,6 @@ class TestColorDialog(TestCase):
         # THEN: The value set in _color should be returned
         self.assertEqual(value, '#000000', 'The value returned should be equal to the one we set')
 
-        #self.init_patcher.stop()
-
     def color_test(self):
         """
         Test that the color property method returns the set color
@@ -158,9 +156,9 @@ class TestColorDialog(TestCase):
 
         # THEN: change_color should not have been called and the colorChanged signal should not have been emitted
         self.assertEqual(
-            self.mocked_change_color.call_count, 0,'change_color should not have been called with an invalid color')
+            self.mocked_change_color.call_count, 0, 'change_color should not have been called with an invalid color')
         self.assertEqual(
-            self.mocked_color_changed.emit.call_count, 0, \
+            self.mocked_color_changed.emit.call_count, 0,
             'colorChange signal should not have been emitted with an invalid color')
 
     def on_clicked_same_color_test(self):
@@ -181,10 +179,10 @@ class TestColorDialog(TestCase):
 
         # THEN: change_color should not have been called and the colorChanged signal should not have been emitted
         self.assertEqual(
-            self.mocked_change_color.call_count, 0, \
+            self.mocked_change_color.call_count, 0,
             'change_color should not have been called when the color has not changed')
         self.assertEqual(
-            self.mocked_color_changed.emit.call_count, 0, \
+            self.mocked_color_changed.emit.call_count, 0,
             'colorChange signal should not have been emitted when the color has not changed')
 
     def on_clicked_new_color_test(self):
