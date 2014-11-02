@@ -42,13 +42,13 @@ class ColorButton(QtGui.QPushButton):
 
     colorChanged = QtCore.pyqtSignal(str)
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         """
         Initialise the ColorButton
         """
         super(ColorButton, self).__init__()
         self.parent = parent
-        self._color = '#ffffff'
+        self.change_color('#ffffff')
         self.setToolTip(translate('OpenLP.ColorButton', 'Click to select a color.'))
         self.clicked.connect(self.on_clicked)
 
