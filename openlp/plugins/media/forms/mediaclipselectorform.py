@@ -446,6 +446,12 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         # Set media length info
         self.playback_length = self.vlc_media_player.get_length()
         log.debug('playback_length: %d ms' % self.playback_length)
+        # if length is 0, wait a bit, maybe vlc will change its mind...
+        loop_count = 0
+        while self.playback_length == 0 and loop_count < 20:
+            sleep(0.1)
+            self.playback_length = self.vlc_media_player.get_length()
+            log.debug('in loop, playback_length: %d ms' % self.playback_length)
         self.position_slider.setMaximum(self.playback_length)
         # setup start and end time
         rounded_vlc_ms_length = int(round(self.playback_length / 100.0) * 100.0)
