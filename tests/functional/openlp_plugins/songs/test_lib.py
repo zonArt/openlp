@@ -58,8 +58,6 @@ class TestLib(TestCase):
             i love that old cross where the dearest and best for a world of lost sinners was slain  so ill cherish the
             old rugged cross till my trophies at last i lay down i will cling to the old rugged cross and exchange it
             some day for a crown'''
-        self.song1 = MagicMock()
-        self.song2 = MagicMock()
 
     def clean_string_test(self):
         """
@@ -92,53 +90,53 @@ class TestLib(TestCase):
         Test the songs_probably_equal function with twice the same song.
         """
         # GIVEN: Two equal songs.
-        self.song1.search_lyrics = self.full_lyrics
-        self.song2.search_lyrics = self.full_lyrics
+        song_tuple1 = (2, self.full_lyrics)
+        song_tuple2 = (4, self.full_lyrics)
 
         # WHEN: We compare those songs for equality.
-        result = songs_probably_equal((self.song1, self.song2))
+        result = songs_probably_equal((song_tuple1, song_tuple2))
 
         # THEN: The result should be a tuple..
-        assert result == (self.song1, self.song2), 'The result should be the tuble of songs'
+        assert result == (2, 4), 'The result should be the tuble of song positions'
 
     def songs_probably_equal_short_song_test(self):
         """
         Test the songs_probably_equal function with a song and a shorter version of the same song.
         """
         # GIVEN: A song and a short version of the same song.
-        self.song1.search_lyrics = self.full_lyrics
-        self.song2.search_lyrics = self.short_lyrics
+        song_tuple1 = (1, self.full_lyrics)
+        song_tuple2 = (3, self.short_lyrics)
 
         # WHEN: We compare those songs for equality.
-        result = songs_probably_equal((self.song1, self.song2))
+        result = songs_probably_equal((song_tuple1, song_tuple2))
 
         # THEN: The result should be a tuple..
-        assert result == (self.song1, self.song2), 'The result should be the tuble of songs'
+        assert result == (1, 3), 'The result should be the tuble of song positions'
 
     def songs_probably_equal_error_song_test(self):
         """
         Test the songs_probably_equal function with a song and a  very erroneous version of the same song.
         """
         # GIVEN: A song and the same song with lots of errors.
-        self.song1.search_lyrics = self.full_lyrics
-        self.song2.search_lyrics = self.error_lyrics
+        song_tuple1 = (4, self.full_lyrics)
+        song_tuple2 = (7, self.error_lyrics)
 
         # WHEN: We compare those songs for equality.
-        result = songs_probably_equal((self.song1, self.song2))
+        result = songs_probably_equal((song_tuple1, song_tuple2))
 
-        # THEN: The result should be a tuple of songs..
-        assert result == (self.song1, self.song2), 'The result should be the tuble of songs'
+        # THEN: The result should be a tuple of song positions.
+        assert result == (4, 7), 'The result should be the tuble of song positions'
 
     def songs_probably_equal_different_song_test(self):
         """
         Test the songs_probably_equal function with two different songs.
         """
         # GIVEN: Two different songs.
-        self.song1.search_lyrics = self.full_lyrics
-        self.song2.search_lyrics = self.different_lyrics
+        song_tuple1 = (5, self.full_lyrics)
+        song_tuple2 = (8, self.different_lyrics)
 
         # WHEN: We compare those songs for equality.
-        result = songs_probably_equal((self.song1, self.song2))
+        result = songs_probably_equal((song_tuple1, song_tuple2))
 
         # THEN: The result should be None.
         assert result is None, 'The result should be None'
