@@ -33,6 +33,7 @@ The duplicate song removal logic for OpenLP.
 import logging
 import multiprocessing
 import os
+import functools
 
 from PyQt4 import QtCore, QtGui
 
@@ -46,17 +47,16 @@ from openlp.plugins.songs.lib.songcompare import songs_probably_equal
 log = logging.getLogger(__name__)
 
 
-def song_generator(songs):
+def tuple_generator(number_of_songs):
     """
-    This is a generator function to return tuples of tuple with two songs and their position in the song array.
-    When completed then all songs have once been returned combined with any other songs.
+    This is a generator function to return tuples of two songs position. When completed then all songs position have
+    once been returned combined with any other songs position.
 
-    :param songs: All songs in the database.
+    :param number_of_songs: Number of songs in the DB.
     """
-    for outer_song_counter in range(len(songs) - 1):
-        for inner_song_counter in range(outer_song_counter + 1, len(songs)):
-            yield ((outer_song_counter, songs[outer_song_counter].search_lyrics),
-                   (inner_song_counter, songs[inner_song_counter].search_lyrics))
+    for outer_song_counter in range(number_of_songs - 1):
+        for inner_song_counter in range(outer_song_counter + 1, number_of_songs):
+            yield (outer_song_counter, inner_song_counter)
 
 
 class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
@@ -184,7 +184,9 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
                 # Create a worker/process pool to check the songs.
                 process_number = max(1, multiprocessing.cpu_count() - 1)
                 pool = multiprocessing.Pool(process_number)
-                result = pool.imap_unordered(songs_probably_equal, song_generator(songs), 30)
+                # Create array with all lyrics
+                song_lyrics = [song.search_lyrics for song in songs]
+                result = pool.imap_unordered(functools.partial(songs_probably_equal, song_lyrics), tuple_generator(len(songs)), 30)
                 # Do not accept any further tasks. Also this closes the processes if all tasks are done.
                 pool.close()
                 # While the processes are still working, start to look at the results.
