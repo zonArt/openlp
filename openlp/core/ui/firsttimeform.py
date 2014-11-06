@@ -50,30 +50,48 @@ from .firsttimewizard import UiFirstTimeWizard, FirstTimePage
 log = logging.getLogger(__name__)
 
 
-class ThemeScreenshotThread(QtCore.QThread):
+class ThemeScreenshotWorker(QtCore.QObject):
     """
     This thread downloads the theme screenshots.
     """
+    screenshot_downloaded = QtCore.pyqtSignal(str, str)
+
+    def __init__(self, config, themes_url):
+        """
+        Set up the worker object
+        """
+        self.config = config
+        self.themes_url = themes_url
+        self.was_download_cancelled = False
+        super(ThemeScreenshotWorker, self).__init__()
+
     def run(self):
         """
         Overridden method to run the thread.
         """
-        themes = self.parent().config.get('themes', 'files')
+        themes = self.config.get('themes', 'files')
         themes = themes.split(',')
-        config = self.parent().config
+        config = self.config
         for theme in themes:
             # Stop if the wizard has been cancelled.
-            if self.parent().was_download_cancelled:
+            if self.was_download_cancelled:
                 return
             title = config.get('theme_%s' % theme, 'title')
             filename = config.get('theme_%s' % theme, 'filename')
             screenshot = config.get('theme_%s' % theme, 'screenshot')
-            urllib.request.urlretrieve('%s%s' % (self.parent().themes_url, screenshot),
+            urllib.request.urlretrieve('%s%s' % (self.themes_url, screenshot),
                                        os.path.join(gettempdir(), 'openlp', screenshot))
-            item = QtGui.QListWidgetItem(title, self.parent().themes_list_widget)
-            item.setData(QtCore.Qt.UserRole, filename)
-            item.setCheckState(QtCore.Qt.Unchecked)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            # Signal that the screenshot has been downloaded
+            self.screenshot_downloaded.emit(title, filename)
+
+    @QtCore.pyqtSlot(bool)
+    def set_download_canceled(self, toggle):
+        """
+        Externally set if the download was canceled
+
+        :param toggle: Set if the download was canceled or not
+        """
+        self.was_download_cancelled = toggle
 
 
 class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
@@ -142,8 +160,8 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             self.bibles_url = self.web + self.config.get('bibles', 'directory') + '/'
             self.themes_url = self.web + self.config.get('themes', 'directory') + '/'
         self.update_screen_list_combo()
-        self.was_download_cancelled = False
         self.theme_screenshot_thread = None
+        self.theme_screenshot_worker = None
         self.has_run_wizard = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         self.cancel_button.clicked.connect(self.on_cancel_button_clicked)
@@ -187,7 +205,11 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             self.bibles_tree_widget.expandAll()
             # Download the theme screenshots.
-            self.theme_screenshot_thread = ThemeScreenshotThread(self)
+            self.theme_screenshot_worker = ThemeScreenshotWorker(self.config, self.themes_url)
+            self.theme_screenshot_worker.screenshot_downloaded.connect(self.on_screenshot_downloaded)
+            self.theme_screenshot_thread = QtCore.QThread(self)
+            self.theme_screenshot_thread.started.connect(self.theme_screenshot_worker.run)
+            self.theme_screenshot_worker.moveToThread(self.theme_screenshot_thread)
             self.theme_screenshot_thread.start()
         self.application.set_normal_cursor()
 
@@ -255,12 +277,25 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 (self.last_id <= FirstTimePage.Plugins and not self.has_run_wizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
-        self.was_download_cancelled = True
+        if self.theme_screenshot_worker:
+            self.theme_screenshot_worker.set_download_canceled(True)
         # Was the thread created.
         if self.theme_screenshot_thread:
             while self.theme_screenshot_thread.isRunning():
                 time.sleep(0.1)
         self.application.set_normal_cursor()
+
+    def on_screenshot_downloaded(self, title, filename):
+        """
+        Add an item to the list when a theme has been downloaded
+
+        :param title: The title of the theme
+        :param filename: The filename of the theme
+        """
+        item = QtGui.QListWidgetItem(title, self.themes_list_widget)
+        item.setData(QtCore.Qt.UserRole, filename)
+        item.setCheckState(QtCore.Qt.Unchecked)
+        item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
     def on_no_internet_finish_button_clicked(self):
         """
