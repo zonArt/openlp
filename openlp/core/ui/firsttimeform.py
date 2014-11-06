@@ -42,8 +42,9 @@ from configparser import ConfigParser
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, \
-    translate, clean_button_text
+    translate, clean_button_text, trace_error_handler
 from openlp.core.lib import PluginStatus, build_icon
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import get_web_page
 from .firsttimewizard import UiFirstTimeWizard, FirstTimePage
 
@@ -275,24 +276,34 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
     def url_get_file(self, url, f_path):
         """"
         Download a file given a URL.  The file is retrieved in chunks, giving the ability to cancel the download at any
-        point.
+        point. Returns False on download error.
+
+        :param url: URL to download
+        :param f_path: Destination file
         """
         block_count = 0
         block_size = 4096
-        url_file = urllib.request.urlopen(url)
-        filename = open(f_path, "wb")
-        # Download until finished or canceled.
-        while not self.was_download_cancelled:
-            data = url_file.read(block_size)
-            if not data:
-                break
-            filename.write(data)
-            block_count += 1
-            self._download_progress(block_count, block_size)
-        filename.close()
+        try:
+            url_file = urllib.request.urlopen(url, timeout=30)
+            filename = open(f_path, "wb")
+            # Download until finished or canceled.
+            while not self.was_download_cancelled:
+                data = url_file.read(block_size)
+                if not data:
+                    break
+                filename.write(data)
+                block_count += 1
+                self._download_progress(block_count, block_size)
+            filename.close()
+        except (ConnectionError, IOError):
+            trace_error_handler(log)
+            filename.close()
+            os.remove(f_path)
+            return False
         # Delete file if cancelled, it may be a partial file.
         if self.was_download_cancelled:
             os.remove(f_path)
+        return True
 
     def _build_theme_screenshots(self):
         """
@@ -311,7 +322,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
 
         :param url: The URL of the file we want to download.
         """
-        site = urllib.request.urlopen(url)
+        site = urllib.request.urlopen(url, timeout=30)
         meta = site.info()
         return int(meta.get("Content-Length"))
 
@@ -343,32 +354,41 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         self.max_progress = 0
         self.finish_button.setVisible(False)
         self.application.process_events()
-        # Loop through the songs list and increase for each selected item
-        for i in range(self.songs_list_widget.count()):
-            self.application.process_events()
-            item = self.songs_list_widget.item(i)
-            if item.checkState() == QtCore.Qt.Checked:
-                filename = item.data(QtCore.Qt.UserRole)
-                size = self._get_file_size('%s%s' % (self.songs_url, filename))
-                self.max_progress += size
-        # Loop through the Bibles list and increase for each selected item
-        iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
-        while iterator.value():
-            self.application.process_events()
-            item = iterator.value()
-            if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                filename = item.data(0, QtCore.Qt.UserRole)
-                size = self._get_file_size('%s%s' % (self.bibles_url, filename))
-                self.max_progress += size
-            iterator += 1
-        # Loop through the themes list and increase for each selected item
-        for i in range(self.themes_list_widget.count()):
-            self.application.process_events()
-            item = self.themes_list_widget.item(i)
-            if item.checkState() == QtCore.Qt.Checked:
-                filename = item.data(QtCore.Qt.UserRole)
-                size = self._get_file_size('%s%s' % (self.themes_url, filename))
-                self.max_progress += size
+        try:
+            # Loop through the songs list and increase for each selected item
+            for i in range(self.songs_list_widget.count()):
+                self.application.process_events()
+                item = self.songs_list_widget.item(i)
+                if item.checkState() == QtCore.Qt.Checked:
+                    filename = item.data(QtCore.Qt.UserRole)
+                    size = self._get_file_size('%s%s' % (self.songs_url, filename))
+                    self.max_progress += size
+            # Loop through the Bibles list and increase for each selected item
+            iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
+            while iterator.value():
+                self.application.process_events()
+                item = iterator.value()
+                if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
+                    filename = item.data(0, QtCore.Qt.UserRole)
+                    size = self._get_file_size('%s%s' % (self.bibles_url, filename))
+                    self.max_progress += size
+                iterator += 1
+            # Loop through the themes list and increase for each selected item
+            for i in range(self.themes_list_widget.count()):
+                self.application.process_events()
+                item = self.themes_list_widget.item(i)
+                if item.checkState() == QtCore.Qt.Checked:
+                    filename = item.data(QtCore.Qt.UserRole)
+                    size = self._get_file_size('%s%s' % (self.themes_url, filename))
+                    self.max_progress += size
+        except (ConnectionError, IOError):
+            trace_error_handler(log)
+            critical_error_message_box(translate('OpenLP.FirstTimeWizard', 'Download Error'),
+                                       translate('OpenLP.FirstTimeWizard', 'There was a connection problem during '
+                                                 'download, so further downloads will be skipped. Try to re-run the '
+                                                 'First Time Wizard later.'))
+            self.max_progress = 0
+            self.web_access = None
         if self.max_progress:
             # Add on 2 for plugins status setting plus a "finished" point.
             self.max_progress += 2
@@ -432,38 +452,11 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         self._set_plugin_status(self.song_usage_check_box, 'songusage/status')
         self._set_plugin_status(self.alert_check_box, 'alerts/status')
         if self.web_access:
-            # Build directories for downloads
-            songs_destination = os.path.join(gettempdir(), 'openlp')
-            bibles_destination = AppLocation.get_section_data_path('bibles')
-            themes_destination = AppLocation.get_section_data_path('themes')
-            # Download songs
-            for i in range(self.songs_list_widget.count()):
-                item = self.songs_list_widget.item(i)
-                if item.checkState() == QtCore.Qt.Checked:
-                    filename = item.data(QtCore.Qt.UserRole)
-                    self._increment_progress_bar(self.downloading % filename, 0)
-                    self.previous_size = 0
-                    destination = os.path.join(songs_destination, str(filename))
-                    self.url_get_file('%s%s' % (self.songs_url, filename), destination)
-            # Download Bibles
-            bibles_iterator = QtGui.QTreeWidgetItemIterator(
-                self.bibles_tree_widget)
-            while bibles_iterator.value():
-                item = bibles_iterator.value()
-                if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                    bible = item.data(0, QtCore.Qt.UserRole)
-                    self._increment_progress_bar(self.downloading % bible, 0)
-                    self.previous_size = 0
-                    self.url_get_file('%s%s' % (self.bibles_url, bible), os.path.join(bibles_destination, bible))
-                bibles_iterator += 1
-            # Download themes
-            for i in range(self.themes_list_widget.count()):
-                item = self.themes_list_widget.item(i)
-                if item.checkState() == QtCore.Qt.Checked:
-                    theme = item.data(QtCore.Qt.UserRole)
-                    self._increment_progress_bar(self.downloading % theme, 0)
-                    self.previous_size = 0
-                    self.url_get_file('%s%s' % (self.themes_url, theme), os.path.join(themes_destination, theme))
+            if not self._download_selected():
+                critical_error_message_box(translate('OpenLP.FirstTimeWizard', 'Download Error'),
+                                           translate('OpenLP.FirstTimeWizard', 'There was a connection problem while '
+                                                     'downloading, so further downloads will be skipped. Try to re-run '
+                                                     'the First Time Wizard later.'))
         # Set Default Display
         if self.display_combo_box.currentIndex() != -1:
             Settings().setValue('core/monitor', self.display_combo_box.currentIndex())
@@ -471,6 +464,46 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         # Set Global Theme
         if self.theme_combo_box.currentIndex() != -1:
             Settings().setValue('themes/global theme', self.theme_combo_box.currentText())
+
+    def _download_selected(self):
+        """
+        Download selected songs, bibles and themes. Returns False on download error
+        """
+        # Build directories for downloads
+        songs_destination = os.path.join(gettempdir(), 'openlp')
+        bibles_destination = AppLocation.get_section_data_path('bibles')
+        themes_destination = AppLocation.get_section_data_path('themes')
+        # Download songs
+        for i in range(self.songs_list_widget.count()):
+            item = self.songs_list_widget.item(i)
+            if item.checkState() == QtCore.Qt.Checked:
+                filename = item.data(QtCore.Qt.UserRole)
+                self._increment_progress_bar(self.downloading % filename, 0)
+                self.previous_size = 0
+                destination = os.path.join(songs_destination, str(filename))
+                if not self.url_get_file('%s%s' % (self.songs_url, filename), destination):
+                    return False
+        # Download Bibles
+        bibles_iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
+        while bibles_iterator.value():
+            item = bibles_iterator.value()
+            if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
+                bible = item.data(0, QtCore.Qt.UserRole)
+                self._increment_progress_bar(self.downloading % bible, 0)
+                self.previous_size = 0
+                if not self.url_get_file('%s%s' % (self.bibles_url, bible), os.path.join(bibles_destination, bible)):
+                    return False
+            bibles_iterator += 1
+        # Download themes
+        for i in range(self.themes_list_widget.count()):
+            item = self.themes_list_widget.item(i)
+            if item.checkState() == QtCore.Qt.Checked:
+                theme = item.data(QtCore.Qt.UserRole)
+                self._increment_progress_bar(self.downloading % theme, 0)
+                self.previous_size = 0
+                if not self.url_get_file('%s%s' % (self.themes_url, theme), os.path.join(themes_destination, theme)):
+                    return False
+        return True
 
     def _set_plugin_status(self, field, tag):
         """
