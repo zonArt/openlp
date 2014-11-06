@@ -45,7 +45,6 @@ if __name__ == '__main__':
     # Mac OS X passes arguments like '-psn_XXXX' to the application. This argument is actually a process serial number.
     # However, this causes a conflict with other OpenLP arguments. Since we do not use this argument we can delete it
     # to avoid any potential conflicts.
-    #if sys.platform.startswith('darwin'):
     if is_macosx():
         sys.argv = [x for x in sys.argv if not x.startswith('-psn')]
     main()
