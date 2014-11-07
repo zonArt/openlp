@@ -52,37 +52,37 @@ log = logging.getLogger(__name__)
 
 class ThemeScreenshotWorker(QtCore.QObject):
     """
-    This thread downloads the theme screenshots.
+    This thread downloads a theme's screenshot
     """
     screenshot_downloaded = QtCore.pyqtSignal(str, str)
+    finished = QtCore.pyqtSignal()
 
-    def __init__(self, config, themes_url):
+    def __init__(self, themes_url, title, filename, screenshot):
         """
         Set up the worker object
         """
-        self.config = config
-        self.themes_url = themes_url
         self.was_download_cancelled = False
+        self.themes_url = themes_url
+        self.title = title
+        self.filename = filename
+        self.screenshot = screenshot
         super(ThemeScreenshotWorker, self).__init__()
 
     def run(self):
         """
         Overridden method to run the thread.
         """
-        themes = self.config.get('themes', 'files')
-        themes = themes.split(',')
-        config = self.config
-        for theme in themes:
-            # Stop if the wizard has been cancelled.
-            if self.was_download_cancelled:
-                return
-            title = config.get('theme_%s' % theme, 'title')
-            filename = config.get('theme_%s' % theme, 'filename')
-            screenshot = config.get('theme_%s' % theme, 'screenshot')
-            urllib.request.urlretrieve('%s%s' % (self.themes_url, screenshot),
-                                       os.path.join(gettempdir(), 'openlp', screenshot))
+        if self.was_download_cancelled:
+            return
+        try:
+            urllib.request.urlretrieve('%s%s' % (self.themes_url, self.screenshot),
+                                       os.path.join(gettempdir(), 'openlp', self.screenshot))
             # Signal that the screenshot has been downloaded
-            self.screenshot_downloaded.emit(title, filename)
+            self.screenshot_downloaded.emit(self.title, self.filename)
+        except:
+            log.exception('Unable to download screenshot')
+        finally:
+            self.finished.emit()
 
     @QtCore.pyqtSlot(bool)
     def set_download_canceled(self, toggle):
@@ -105,6 +105,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         Create and set up the first time wizard.
         """
         super(FirstTimeForm, self).__init__(parent)
+        self.web_access = True
         self.setup_ui(self)
 
     def nextId(self):
@@ -112,18 +113,18 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         Determine the next page in the Wizard to go to.
         """
         self.application.process_events()
-        if self.currentId() == FirstTimePage.Plugins:
+        if self.currentId() == FirstTimePage.Download:
             if not self.web_access:
                 return FirstTimePage.NoInternet
             else:
-                return FirstTimePage.Songs
+                return FirstTimePage.Plugins
         elif self.currentId() == FirstTimePage.Progress:
             return -1
         elif self.currentId() == FirstTimePage.NoInternet:
             return FirstTimePage.Progress
         elif self.currentId() == FirstTimePage.Themes:
             self.application.set_busy_cursor()
-            while not self.theme_screenshot_thread.isFinished():
+            while not all([thread.isFinished() for thread in self.theme_screenshot_threads]):
                 time.sleep(0.1)
                 self.application.process_events()
             # Build the screenshot icons, as this can not be done in the thread.
@@ -146,9 +147,14 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
 
         :param screens: The screens detected by OpenLP
         """
+        self.was_download_cancelled = False
         self.screens = screens
+
+    def _download_index(self):
+        """
+        Download the configuration file and kick off the theme screenshot download threads
+        """
         # check to see if we have web access
-        self.web = 'http://openlp.org/files/frw/'
         self.config = ConfigParser()
         user_agent = 'OpenLP/' + Registry().get('application').applicationVersion()
         self.web_access = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
@@ -160,24 +166,10 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             self.bibles_url = self.web + self.config.get('bibles', 'directory') + '/'
             self.themes_url = self.web + self.config.get('themes', 'directory') + '/'
         self.update_screen_list_combo()
-        self.theme_screenshot_thread = None
-        self.theme_screenshot_worker = None
+        self.theme_screenshot_threads = []
+        self.theme_screenshot_workers = []
         self.has_run_wizard = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
-        self.cancel_button.clicked.connect(self.on_cancel_button_clicked)
-        self.no_internet_finish_button.clicked.connect(self.on_no_internet_finish_button_clicked)
-        self.currentIdChanged.connect(self.on_current_id_changed)
-        Registry().register_function('config_screen_changed', self.update_screen_list_combo)
-
-    def set_defaults(self):
-        """
-        Set up display at start of theme edit.
-        """
-        self.restart()
-        check_directory_exists(os.path.join(gettempdir(), 'openlp'))
-        self.no_internet_finish_button.setVisible(False)
-        # Check if this is a re-run of the wizard.
-        self.has_run_wizard = Settings().value('core/has run wizard')
         # Sort out internet access for downloads
         if self.web_access:
             songs = self.config.get('songs', 'languages')
@@ -204,13 +196,36 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             self.bibles_tree_widget.expandAll()
-            # Download the theme screenshots.
-            self.theme_screenshot_worker = ThemeScreenshotWorker(self.config, self.themes_url)
-            self.theme_screenshot_worker.screenshot_downloaded.connect(self.on_screenshot_downloaded)
-            self.theme_screenshot_thread = QtCore.QThread(self)
-            self.theme_screenshot_thread.started.connect(self.theme_screenshot_worker.run)
-            self.theme_screenshot_worker.moveToThread(self.theme_screenshot_thread)
-            self.theme_screenshot_thread.start()
+            # Download the theme screenshots
+            themes = self.config.get('themes', 'files').split(',')
+            for theme in themes:
+                title = self.config.get('theme_%s' % theme, 'title')
+                filename = self.config.get('theme_%s' % theme, 'filename')
+                screenshot = self.config.get('theme_%s' % theme, 'screenshot')
+                worker = ThemeScreenshotWorker(self.themes_url, title, filename, screenshot)
+                self.theme_screenshot_workers.append(worker)
+                worker.screenshot_downloaded.connect(self.on_screenshot_downloaded)
+                thread = QtCore.QThread(self)
+                self.theme_screenshot_threads.append(thread)
+                thread.started.connect(worker.run)
+                worker.finished.connect(thread.quit)
+                worker.moveToThread(thread)
+                thread.start()
+
+    def set_defaults(self):
+        """
+        Set up display at start of theme edit.
+        """
+        self.restart()
+        self.web = 'http://openlp.org/files/frw/'
+        self.cancel_button.clicked.connect(self.on_cancel_button_clicked)
+        self.no_internet_finish_button.clicked.connect(self.on_no_internet_finish_button_clicked)
+        self.currentIdChanged.connect(self.on_current_id_changed)
+        Registry().register_function('config_screen_changed', self.update_screen_list_combo)
+        self.no_internet_finish_button.setVisible(False)
+        # Check if this is a re-run of the wizard.
+        self.has_run_wizard = Settings().value('core/has run wizard')
+        check_directory_exists(os.path.join(gettempdir(), 'openlp'))
         self.application.set_normal_cursor()
 
     def update_screen_list_combo(self):
@@ -230,12 +245,20 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         self.application.process_events()
         if page_id != -1:
             self.last_id = page_id
-        if page_id == FirstTimePage.Plugins:
+        if page_id == FirstTimePage.Download:
+            self.back_button.setVisible(False)
+            self.next_button.setVisible(False)
             # Set the no internet page text.
             if self.has_run_wizard:
                 self.no_internet_label.setText(self.no_internet_text)
             else:
                 self.no_internet_label.setText(self.no_internet_text + self.cancel_wizard_text)
+            self.application.set_busy_cursor()
+            self._download_index()
+            self.application.set_normal_cursor()
+            self.back_button.setVisible(False)
+            self.next_button.setVisible(True)
+            self.next()
         elif page_id == FirstTimePage.Defaults:
             self.theme_combo_box.clear()
             for index in range(self.themes_list_widget.count()):
@@ -255,15 +278,10 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         elif page_id == FirstTimePage.NoInternet:
             self.back_button.setVisible(False)
             self.next_button.setVisible(False)
+            self.cancel_button.setVisible(False)
             self.no_internet_finish_button.setVisible(True)
-            if self.has_run_wizard:
-                self.cancel_button.setVisible(False)
         elif page_id == FirstTimePage.Progress:
             self.application.set_busy_cursor()
-            self.repaint()
-            self.application.process_events()
-            # Try to give the wizard a chance to redraw itself
-            time.sleep(0.2)
             self._pre_wizard()
             self._perform_wizard()
             self._post_wizard()
@@ -273,15 +291,16 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         """
         Process the triggering of the cancel button.
         """
-        if self.last_id == FirstTimePage.NoInternet or \
-                (self.last_id <= FirstTimePage.Plugins and not self.has_run_wizard):
+        self.was_download_cancelled = True
+        if not self.has_run_wizard:
             QtCore.QCoreApplication.exit()
             sys.exit()
-        if self.theme_screenshot_worker:
-            self.theme_screenshot_worker.set_download_canceled(True)
+        if self.theme_screenshot_workers:
+            for worker in self.theme_screenshot_workers:
+                worker.set_download_canceled(True)
         # Was the thread created.
-        if self.theme_screenshot_thread:
-            while self.theme_screenshot_thread.isRunning():
+        if self.theme_screenshot_threads:
+            while any([thread.isRunning() for thread in self.theme_screenshot_threads]):
                 time.sleep(0.1)
         self.application.set_normal_cursor()
 
