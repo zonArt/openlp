@@ -42,6 +42,7 @@ from openlp.core.lib.projector.constants import PJLINK_DEFAULT_CODES, PJLINK_DEF
 
 from openlp.core.ui.projector.sourceselectform import source_group
 
+
 def build_source_dict():
     """
     Builds a source dictionary to verify source_group returns a valid dictionary of dictionary items
@@ -54,6 +55,7 @@ def build_source_dict():
     for key in PJLINK_DEFAULT_CODES:
         test_group[key[0]][key] = PJLINK_DEFAULT_CODES[key]
     return test_group
+
 
 class ProjectorSourceFormTest(TestCase, TestMixin):
     """

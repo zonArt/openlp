@@ -152,16 +152,15 @@ def set_button_tooltip(bar):
     """
     for button in bar.buttons():
         if bar.standardButton(button) == QDialogButtonBox.Cancel:
-            tip = "Ignoring current changes and return to OpenLP"
+            button.setToolTip("Ignoring current changes and return to OpenLP")
         elif bar.standardButton(button) == QDialogButtonBox.Reset:
-            tip = "Delete all user-defined text and revert to PJLink default text"
+            button.setToolTip("Delete all user-defined text and revert to PJLink default text")
         elif bar.standardButton(button) == QDialogButtonBox.Discard:
-            tip = "Discard changes and reset to previous user-defined text"
+            button.setToolTip("Discard changes and reset to previous user-defined text")
         elif bar.standardButton(button) == QDialogButtonBox.Ok:
-            tip = "Save changes and return to OpenLP"
+            button.setToolTip("Save changes and return to OpenLP")
         else:
-            tip = ""
-        button.setToolTip(tip)
+            log.debug('No tooltip for button {}'.format(button.text()))
 
 
 class FingerTabBarWidget(QTabBar):
@@ -286,6 +285,10 @@ class SourceSelectTabs(QDialog):
                 thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
                 if buttonchecked:
                     self.tabwidget.setCurrentIndex(thistab)
+            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
+                                               QtGui.QDialogButtonBox.Discard |
+                                               QtGui.QDialogButtonBox.Ok |
+                                               QtGui.QDialogButtonBox.Cancel)
         else:
             for key in keys:
                 (tab, button_count, buttonchecked) = Build_Tab(group=self.button_group,
@@ -297,10 +300,8 @@ class SourceSelectTabs(QDialog):
                 thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
                 if buttonchecked:
                     self.tabwidget.setCurrentIndex(thistab)
-        self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
-                                           QtGui.QDialogButtonBox.Discard |
-                                           QtGui.QDialogButtonBox.Ok |
-                                           QtGui.QDialogButtonBox.Cancel)
+            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
+                                               QtGui.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         set_button_tooltip(self.button_box)
@@ -321,9 +322,9 @@ class SourceSelectTabs(QDialog):
         if self.button_box.standardButton(button) == self.button_box.Cancel:
             self.done(0)
         elif self.button_box.standardButton(button) == self.button_box.Reset:
-            self.delete_sources()
-        elif self.button_box.standardButton(button) == self.button_box.Discard:
             self.done(100)
+        elif self.button_box.standardButton(button) == self.button_box.Discard:
+            self.delete_sources()
         elif self.button_box.standardButton(button) == self.button_box.Ok:
             return self.accept_me()
         else:
@@ -418,6 +419,10 @@ class SourceSelectSingle(QDialog):
                     item.setText(source_item.text)
                 self.layout.addRow(PJLINK_DEFAULT_CODES[key], item)
                 self.button_group.append(item)
+            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
+                                               QtGui.QDialogButtonBox.Discard |
+                                               QtGui.QDialogButtonBox.Ok |
+                                               QtGui.QDialogButtonBox.Cancel)
         else:
             for key in keys:
                 source_text = self.projectordb.get_source_by_code(code=key, projector_id=self.projector.db_item.id)
@@ -427,10 +432,8 @@ class SourceSelectSingle(QDialog):
                 self.layout.addWidget(button)
                 self.button_group.addButton(button, int(key))
                 button_list.append(key)
-        self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
-                                           QtGui.QDialogButtonBox.Discard |
-                                           QtGui.QDialogButtonBox.Ok |
-                                           QtGui.QDialogButtonBox.Cancel)
+            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
+                                               QtGui.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         self.setMinimumHeight(key_count*25)
@@ -452,9 +455,9 @@ class SourceSelectSingle(QDialog):
         if self.button_box.standardButton(button) == self.button_box.Cancel:
             self.done(0)
         elif self.button_box.standardButton(button) == self.button_box.Reset:
-            self.delete_sources()
-        elif self.button_box.standardButton(button) == self.button_box.Discard:
             self.done(100)
+        elif self.button_box.standardButton(button) == self.button_box.Discard:
+            self.delete_sources()
         elif self.button_box.standardButton(button) == self.button_box.Ok:
             return self.accept_me()
         else:
