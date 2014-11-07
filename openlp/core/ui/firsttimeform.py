@@ -37,7 +37,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 from tempfile import gettempdir
-from configparser import ConfigParser
+from configparser import ConfigParser, MissingSectionHeaderError, NoSectionError, NoOptionError
 
 from PyQt4 import QtCore, QtGui
 
@@ -131,17 +131,23 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         """
         self.screens = screens
         # check to see if we have web access
+        self.web_access = False
         self.web = 'http://openlp.org/files/frw/'
         self.config = ConfigParser()
         user_agent = 'OpenLP/' + Registry().get('application').applicationVersion()
-        self.web_access = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
-        if self.web_access:
-            files = self.web_access.read()
-            self.config.read_string(files.decode())
-            self.web = self.config.get('general', 'base url')
-            self.songs_url = self.web + self.config.get('songs', 'directory') + '/'
-            self.bibles_url = self.web + self.config.get('bibles', 'directory') + '/'
-            self.themes_url = self.web + self.config.get('themes', 'directory') + '/'
+        web_config = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
+        if web_config:
+            files = web_config.read()
+            try:
+                self.config.read_string(files.decode())
+                self.web = self.config.get('general', 'base url')
+                self.songs_url = self.web + self.config.get('songs', 'directory') + '/'
+                self.bibles_url = self.web + self.config.get('bibles', 'directory') + '/'
+                self.themes_url = self.web + self.config.get('themes', 'directory') + '/'
+                self.web_access = True
+            except (NoSectionError, NoOptionError, MissingSectionHeaderError):
+                log.debug('A problem occured while parsing the downloaded config file')
+                trace_error_handler(log)
         self.update_screen_list_combo()
         self.was_download_cancelled = False
         self.theme_screenshot_thread = None
@@ -295,7 +301,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 block_count += 1
                 self._download_progress(block_count, block_size)
             filename.close()
-        except (ConnectionError, IOError):
+        except ConnectionError:
             trace_error_handler(log)
             filename.close()
             os.remove(f_path)
@@ -381,7 +387,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     filename = item.data(QtCore.Qt.UserRole)
                     size = self._get_file_size('%s%s' % (self.themes_url, filename))
                     self.max_progress += size
-        except (ConnectionError, IOError):
+        except ConnectionError:
             trace_error_handler(log)
             critical_error_message_box(translate('OpenLP.FirstTimeWizard', 'Download Error'),
                                        translate('OpenLP.FirstTimeWizard', 'There was a connection problem during '

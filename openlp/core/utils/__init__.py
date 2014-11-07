@@ -390,9 +390,9 @@ def get_web_page(url, header=None, update_openlp=False):
     page = None
     log.debug('Downloading URL = %s' % url)
     try:
-        page = urllib.request.urlopen(req)
+        page = urllib.request.urlopen(req, timeout=30)
         log.debug('Downloaded URL = %s' % page.geturl())
-    except urllib.error.URLError:
+    except (urllib.error.URLError, ConnectionError):
         log.exception('The web page could not be downloaded')
     if not page:
         return None
