@@ -27,5 +27,30 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The Projector driver module.
+This module contains tests for the Words of Worship song importer.
 """
+
+import os
+
+from tests.helpers.songfileimport import SongImportTestHelper
+from openlp.plugins.songs.lib.importers.wordsofworship import WordsOfWorshipImport
+
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'wordsofworshipsongs'))
+
+
+class TestWordsOfWorshipFileImport(SongImportTestHelper):
+
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'WordsOfWorshipImport'
+        self.importer_module_name = 'wordsofworship'
+        super(TestWordsOfWorshipFileImport, self).__init__(*args, **kwargs)
+
+    def test_song_import(self):
+        """
+        Test that loading a Words of Worship file works correctly
+        """
+        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace (6 Verses).wow-song')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace (6 Verses).json')))
+        self.file_import([os.path.join(TEST_PATH, 'When morning gilds the skies.wsg')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'When morning gilds the skies.json')))
