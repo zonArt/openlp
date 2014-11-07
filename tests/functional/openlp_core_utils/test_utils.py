@@ -335,7 +335,7 @@ class TestUtils(TestCase):
             self.assertEqual(1, mocked_request_object.add_header.call_count,
                              'There should only be 1 call to add_header')
             mock_get_user_agent.assert_called_with()
-            mock_urlopen.assert_called_with(mocked_request_object)
+            mock_urlopen.assert_called_with(mocked_request_object, timeout=30)
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(0, MockRegistry.call_count, 'The Registry() object should have never been called')
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
@@ -365,7 +365,7 @@ class TestUtils(TestCase):
             self.assertEqual(2, mocked_request_object.add_header.call_count,
                              'There should only be 2 calls to add_header')
             mock_get_user_agent.assert_called_with()
-            mock_urlopen.assert_called_with(mocked_request_object)
+            mock_urlopen.assert_called_with(mocked_request_object, timeout=30)
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
 
@@ -393,7 +393,7 @@ class TestUtils(TestCase):
             self.assertEqual(1, mocked_request_object.add_header.call_count,
                              'There should only be 1 call to add_header')
             self.assertEqual(0, mock_get_user_agent.call_count, '_get_user_agent should not have been called')
-            mock_urlopen.assert_called_with(mocked_request_object)
+            mock_urlopen.assert_called_with(mocked_request_object, timeout=30)
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
 
@@ -425,7 +425,7 @@ class TestUtils(TestCase):
             mocked_request_object.add_header.assert_called_with('User-Agent', 'user_agent')
             self.assertEqual(1, mocked_request_object.add_header.call_count,
                              'There should only be 1 call to add_header')
-            mock_urlopen.assert_called_with(mocked_request_object)
+            mock_urlopen.assert_called_with(mocked_request_object, timeout=30)
             mocked_page_object.geturl.assert_called_with()
             mocked_registry_object.get.assert_called_with('application')
             mocked_application_object.process_events.assert_called_with()
