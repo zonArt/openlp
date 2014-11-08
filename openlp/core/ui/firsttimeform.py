@@ -31,7 +31,6 @@ This module contains the first time wizard.
 """
 import logging
 import os
-import sys
 import time
 import urllib.request
 import urllib.parse
@@ -105,7 +104,6 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         Create and set up the first time wizard.
         """
         super(FirstTimeForm, self).__init__(parent)
-        self.web_access = True
         self.setup_ui(self)
 
     def nextId(self):
@@ -147,8 +145,12 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
 
         :param screens: The screens detected by OpenLP
         """
-        self.was_download_cancelled = False
         self.screens = screens
+        self.web_access = True
+        self.was_cancelled = False
+        self.theme_screenshot_threads = []
+        self.theme_screenshot_workers = []
+        self.has_run_wizard = False
 
     def _download_index(self):
         """
@@ -166,9 +168,6 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             self.bibles_url = self.web + self.config.get('bibles', 'directory') + '/'
             self.themes_url = self.web + self.config.get('themes', 'directory') + '/'
         self.update_screen_list_combo()
-        self.theme_screenshot_threads = []
-        self.theme_screenshot_workers = []
-        self.has_run_wizard = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         # Sort out internet access for downloads
         if self.web_access:
@@ -291,7 +290,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         """
         Process the triggering of the cancel button.
         """
-        self.was_download_cancelled = True
+        self.was_cancelled = True
         if self.theme_screenshot_workers:
             for worker in self.theme_screenshot_workers:
                 worker.set_download_canceled(True)
@@ -333,7 +332,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         url_file = urllib.request.urlopen(url)
         filename = open(f_path, "wb")
         # Download until finished or canceled.
-        while not self.was_download_cancelled:
+        while not self.was_cancelled:
             data = url_file.read(block_size)
             if not data:
                 break
@@ -342,7 +341,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             self._download_progress(block_count, block_size)
         filename.close()
         # Delete file if cancelled, it may be a partial file.
-        if self.was_download_cancelled:
+        if self.was_cancelled:
             os.remove(f_path)
 
     def _build_theme_screenshots(self):

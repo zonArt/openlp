@@ -122,7 +122,7 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
             ftw.initialize(screens)
             if ftw.exec_() == QtGui.QDialog.Accepted:
                 Settings().setValue('core/has run wizard', True)
-            elif ftw.was_download_cancelled:
+            elif ftw.was_cancelled:
                 QtCore.QCoreApplication.exit()
                 sys.exit()
         # Correct stylesheet bugs

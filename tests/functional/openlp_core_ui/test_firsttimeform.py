@@ -30,6 +30,7 @@
 Package to test the openlp.core.ui.firsttimeform package.
 """
 from configparser import ConfigParser
+import os
 from unittest import TestCase
 
 from openlp.core.common import Registry
@@ -55,52 +56,114 @@ class TestFirstTimeForm(TestCase, TestMixin):
     def setUp(self):
         self.setup_application()
         self.app.setApplicationVersion('0.0')
+        # Set up a fake "set_normal_cursor" method since we're not dealing with an actual OpenLP application object
+        self.app.set_normal_cursor = lambda: None
         Registry.create()
         Registry().register('application', self.app)
 
-    def basic_initialise_test(self):
+    def initialise_test(self):
         """
-        Test if we can intialise the FirstTimeForm without a config file
+        Test if we can intialise the FirstTimeForm
         """
-        # GIVEN: A mocked get_web_page, a First Time Wizard and an expected screen object
-        with patch('openlp.core.ui.firsttimeform.get_web_page') as mocked_get_web_page:
-            first_time_form = FirstTimeForm(None)
-            expected_screens = MagicMock()
-            expected_web_url = 'http://openlp.org/files/frw/'
-            expected_user_agent = 'OpenLP/0.0'
-            mocked_get_web_page.return_value = None
+        # GIVEN: A First Time Wizard and an expected screen object
+        frw = FirstTimeForm(None)
+        expected_screens = MagicMock()
 
-            # WHEN: The First Time Wizard is initialised
-            first_time_form.initialize(expected_screens)
+        # WHEN: The First Time Wizard is initialised
+        frw.initialize(expected_screens)
 
-            # THEN: The First Time Form web configuration file should be accessible and parseable
-            self.assertEqual(expected_screens, first_time_form.screens, 'The screens should be correct')
-            self.assertEqual(expected_web_url, first_time_form.web, 'The base path of the URL should be correct')
-            self.assertIsInstance(first_time_form.config, ConfigParser, 'The config object should be a ConfigParser')
-            mocked_get_web_page.assert_called_with(expected_web_url + 'download.cfg',
-                                                   header=('User-Agent', expected_user_agent))
+        # THEN: The screens should be set up, and the default values initialised
+        self.assertEqual(expected_screens, frw.screens, 'The screens should be correct')
+        self.assertTrue(frw.web_access, 'The default value of self.web_access should be True')
+        self.assertFalse(frw.was_cancelled, 'The default value of self.was_cancelled should be False')
+        self.assertListEqual([], frw.theme_screenshot_threads, 'The list of threads should be empty')
+        self.assertListEqual([], frw.theme_screenshot_workers, 'The list of workers should be empty')
+        self.assertFalse(frw.has_run_wizard, 'has_run_wizard should be False')
 
-    def config_initialise_test(self):
+    def set_defaults_test(self):
         """
-        Test if we can intialise the FirstTimeForm with a config file
+        Test that the default values are set when set_defaults() is run
         """
-        # GIVEN: A mocked get_web_page, a First Time Wizard and an expected screen object
-        with patch('openlp.core.ui.firsttimeform.get_web_page') as mocked_get_web_page:
-            first_time_form = FirstTimeForm(None)
-            expected_web_url = 'http://openlp.org/files/frw/'
-            expected_songs_url = 'http://example.com/frw/songs/'
-            expected_bibles_url = 'http://example.com/frw/bibles/'
-            expected_themes_url = 'http://example.com/frw/themes/'
-            expected_user_agent = 'OpenLP/0.0'
-            mocked_get_web_page.return_value.read.return_value = FAKE_CONFIG
+        # GIVEN: An initialised FRW and a whole lot of stuff mocked out
+        frw = FirstTimeForm(None)
+        frw.initialize(MagicMock())
+        with patch.object(frw, 'restart') as mocked_restart, \
+                patch.object(frw, 'cancel_button') as mocked_cancel_button, \
+                patch.object(frw, 'no_internet_finish_button') as mocked_no_internet_finish_btn, \
+                patch.object(frw, 'currentIdChanged') as mocked_currentIdChanged, \
+                patch.object(Registry, 'register_function') as mocked_register_function, \
+                patch('openlp.core.ui.firsttimeform.Settings') as MockedSettings, \
+                patch('openlp.core.ui.firsttimeform.gettempdir') as mocked_gettempdir, \
+                patch('openlp.core.ui.firsttimeform.check_directory_exists') as mocked_check_directory_exists, \
+                patch.object(frw.application, 'set_normal_cursor') as mocked_set_normal_cursor:
+            mocked_settings = MagicMock()
+            mocked_settings.value.return_value = True
+            MockedSettings.return_value = mocked_settings
+            mocked_gettempdir.return_value = 'temp'
+            expected_temp_path = os.path.join('temp', 'openlp')
 
-            # WHEN: The First Time Wizard is initialised
-            first_time_form.initialize(MagicMock())
+            # WHEN: The set_defaults() method is run
+            frw.set_defaults()
 
-            # THEN: The First Time Form web configuration file should be accessible and parseable
-            self.assertIsInstance(first_time_form.config, ConfigParser, 'The config object should be a ConfigParser')
-            mocked_get_web_page.assert_called_with(expected_web_url + 'download.cfg',
-                                                   header=('User-Agent', expected_user_agent))
-            self.assertEqual(expected_songs_url, first_time_form.songs_url, 'The songs URL should be correct')
-            self.assertEqual(expected_bibles_url, first_time_form.bibles_url, 'The bibles URL should be correct')
-            self.assertEqual(expected_themes_url, first_time_form.themes_url, 'The themes URL should be correct')
+            # THEN: The default values should have been set
+            mocked_restart.assert_called_with()
+            self.assertEqual('http://openlp.org/files/frw/', frw.web, 'The default URL should be set')
+            mocked_cancel_button.clicked.connect.assert_called_with(frw.on_cancel_button_clicked)
+            mocked_no_internet_finish_btn.clicked.connect.assert_called_with(frw.on_no_internet_finish_button_clicked)
+            mocked_currentIdChanged.connect.assert_called_with(frw.on_current_id_changed)
+            mocked_register_function.assert_called_with('config_screen_changed', frw.update_screen_list_combo)
+            mocked_no_internet_finish_btn.setVisible.assert_called_with(False)
+            mocked_settings.value.assert_called_with('core/has run wizard')
+            mocked_gettempdir.assert_called_with()
+            mocked_check_directory_exists.assert_called_with(expected_temp_path)
+            mocked_set_normal_cursor.assert_called_with()
+
+    def update_screen_list_combo_test(self):
+        """
+        Test that the update_screen_list_combo() method works correctly
+        """
+        # GIVEN: A mocked Screen() object and an initialised First Run Wizard and a mocked display_combo_box
+        expected_screen_list = ['Screen 1', 'Screen 2']
+        mocked_screens = MagicMock()
+        mocked_screens.get_screen_list.return_value = expected_screen_list
+        frw = FirstTimeForm(None)
+        frw.initialize(mocked_screens)
+        with patch.object(frw, 'display_combo_box') as mocked_display_combo_box:
+            mocked_display_combo_box.count.return_value = 2
+
+            # WHEN: update_screen_list_combo() is called
+            frw.update_screen_list_combo()
+
+            # THEN: The combobox should have been updated
+            mocked_display_combo_box.clear.assert_called_with()
+            mocked_screens.get_screen_list.assert_called_with()
+            mocked_display_combo_box.addItems.assert_called_with(expected_screen_list)
+            mocked_display_combo_box.count.assert_called_with()
+            mocked_display_combo_box.setCurrentIndex.assert_called_with(1)
+
+    def on_cancel_button_clicked_test(self):
+        """
+        Test that the cancel button click slot shuts down the threads correctly
+        """
+        # GIVEN: A FRW, some mocked threads and workers (that isn't quite done) and other mocked stuff
+        frw = FirstTimeForm(None)
+        frw.initialize(MagicMock())
+        mocked_worker = MagicMock()
+        mocked_thread = MagicMock()
+        mocked_thread.isRunning.side_effect = [True, False]
+        frw.theme_screenshot_workers.append(mocked_worker)
+        frw.theme_screenshot_threads.append(mocked_thread)
+        with patch('openlp.core.ui.firsttimeform.time') as mocked_time, \
+                patch.object(frw.application, 'set_normal_cursor') as mocked_set_normal_cursor:
+
+            # WHEN: on_cancel_button_clicked() is called
+            frw.on_cancel_button_clicked()
+
+            # THEN: The right things should be called in the right order
+            self.assertTrue(frw.was_cancelled, 'The was_cancelled property should have been set to True')
+            mocked_worker.set_download_canceled.assert_called_with(True)
+            mocked_thread.isRunning.assert_called_with()
+            self.assertEqual(2, mocked_thread.isRunning.call_count, 'isRunning() should have been called twice')
+            mocked_time.sleep.assert_called_with(0.1)
+            self.assertEqual(1, mocked_time.sleep.call_count, 'sleep() should have only been called once')
+            mocked_set_normal_cursor.assert_called_with()
