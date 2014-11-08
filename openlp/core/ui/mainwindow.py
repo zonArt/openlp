@@ -431,7 +431,7 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Import OpenLP settings from a specified *.config file previously '
                                            'exported on this or another machine'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
-        self.view_projector_manager_item.setText(translate('OPenLP.MainWindow', '&ProjectorManager'))
+        self.view_projector_manager_item.setText(translate('OPenLP.MainWindow', '&Projector Manager'))
         self.view_projector_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Projector Manager'))
         self.view_projector_manager_item.setStatusTip(translate('OpenLP.MainWindow',
                                                                 'Toggle the visibility of the Projector Manager'))
