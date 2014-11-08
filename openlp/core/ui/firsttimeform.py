@@ -292,9 +292,6 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         Process the triggering of the cancel button.
         """
         self.was_download_cancelled = True
-        if not self.has_run_wizard:
-            QtCore.QCoreApplication.exit()
-            sys.exit()
         if self.theme_screenshot_workers:
             for worker in self.theme_screenshot_workers:
                 worker.set_download_canceled(True)
