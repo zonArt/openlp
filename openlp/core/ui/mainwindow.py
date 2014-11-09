@@ -641,10 +641,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if view_mode == 'default':
             self.mode_default_item.setChecked(True)
         elif view_mode == 'setup':
-            self.set_view_mode(True, True, False, True, False)
+            self.set_view_mode(True, True, False, True, False, True)
             self.mode_setup_item.setChecked(True)
         elif view_mode == 'live':
-            self.set_view_mode(False, True, False, False, True)
+            self.set_view_mode(False, True, False, False, True, True)
             self.mode_live_item.setChecked(True)
 
     def app_startup(self):
@@ -1000,21 +1000,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Put OpenLP into "Default" view mode.
         """
-        self.set_view_mode(True, True, True, True, True, 'default')
+        self.set_view_mode(True, True, True, True, True, True, 'default')
 
     def on_mode_setup_item_clicked(self):
         """
         Put OpenLP into "Setup" view mode.
         """
-        self.set_view_mode(True, True, False, True, False, 'setup')
+        self.set_view_mode(True, True, False, True, False, True, 'setup')
 
     def on_mode_live_item_clicked(self):
         """
         Put OpenLP into "Live" view mode.
         """
-        self.set_view_mode(False, True, False, False, True, 'live')
+        self.set_view_mode(False, True, False, False, True, True, 'live')
 
-    def set_view_mode(self, media=True, service=True, theme=True, preview=True, live=True, mode=''):
+    def set_view_mode(self, media=True, service=True, theme=True, preview=True, live=True, projector=True, mode=''):
         """
         Set OpenLP to a different view mode.
         """
@@ -1024,6 +1024,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.media_manager_dock.setVisible(media)
         self.service_manager_dock.setVisible(service)
         self.theme_manager_dock.setVisible(theme)
+        self.projector_manager_dock.setVisible(projector)
         self.set_preview_panel_visibility(preview)
         self.set_live_panel_visibility(live)
 
@@ -1186,18 +1187,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.theme_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
             self.service_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
             self.media_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
+            self.projector_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
             self.view_media_manager_item.setEnabled(False)
             self.view_service_manager_item.setEnabled(False)
             self.view_theme_manager_item.setEnabled(False)
+            self.view_projector_manager_item.setEnabled(False)
             self.view_preview_panel.setEnabled(False)
             self.view_live_panel.setEnabled(False)
         else:
             self.theme_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
             self.service_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
             self.media_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
+            self.projector_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
             self.view_media_manager_item.setEnabled(True)
             self.view_service_manager_item.setEnabled(True)
             self.view_theme_manager_item.setEnabled(True)
+            self.view_projector_manager_item.setEnabled(True)
             self.view_preview_panel.setEnabled(True)
             self.view_live_panel.setEnabled(True)
         Settings().setValue('user interface/lock panel', lock)
