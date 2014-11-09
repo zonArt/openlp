@@ -89,13 +89,19 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
 
     def __init__(self, parent=None, plugin=None, db_manager=None):
         QtGui.QDialog.__init__(self, parent)
+        self.plugin = plugin
+        self.db_manager = db_manager
         self.setup_ui(self)
+
+    def initialise(self):
+        """
+        Initialise the SongSelectForm
+        """
         self.thread = None
         self.worker = None
         self.song_count = 0
         self.song = None
-        self.plugin = plugin
-        self.song_select_importer = SongSelectImport(db_manager)
+        self.song_select_importer = SongSelectImport(self.db_manager)
         self.save_password_checkbox.toggled.connect(self.on_save_password_checkbox_toggled)
         self.login_button.clicked.connect(self.on_login_button_clicked)
         self.search_button.clicked.connect(self.on_search_button_clicked)
@@ -264,6 +270,9 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         self.login_progress_bar.setValue(0)
         self.login_spacer.setVisible(True)
         self.login_button.setEnabled(True)
+        self.username_edit.setEnabled(True)
+        self.password_edit.setEnabled(True)
+        self.save_password_checkbox.setEnabled(True)
         self.search_combobox.setFocus()
         self.application.process_events()
 

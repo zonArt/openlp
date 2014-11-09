@@ -104,6 +104,7 @@ class SongsPlugin(Plugin):
         log.info('Songs Initialising')
         super(SongsPlugin, self).initialise()
         self.songselect_form = SongSelectForm(Registry().get('main_window'), self, self.manager)
+        self.songselect_form.initialise()
         self.song_import_item.setVisible(True)
         self.song_export_item.setVisible(True)
         self.tools_reindex_item.setVisible(True)
