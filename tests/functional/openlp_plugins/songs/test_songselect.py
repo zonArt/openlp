@@ -31,14 +31,17 @@ This module contains tests for the CCLI SongSelect importer.
 """
 from unittest import TestCase
 from urllib.error import URLError
+from openlp.core import Registry
+from openlp.plugins.songs.forms.songselectform import SongSelectForm
 from openlp.plugins.songs.lib import Author, Song
 
 from openlp.plugins.songs.lib.songselect import SongSelectImport, LOGOUT_URL, BASE_URL
 
 from tests.functional import MagicMock, patch, call
+from tests.helpers.testmixin import TestMixin
 
 
-class TestSongSelect(TestCase):
+class TestSongSelectImport(TestCase, TestMixin):
     """
     Test the :class:`~openlp.plugins.songs.lib.songselect.SongSelectImport` class
     """
@@ -380,3 +383,87 @@ class TestSongSelect(TestCase):
             mocked_db_manager.get_object_filtered.assert_called_with(MockedAuthor, False)
             self.assertEqual(0, MockedAuthor.populate.call_count, 'A new author should not have been instantiated')
             self.assertEqual(1, len(result.authors_songs), 'There should only be one author')
+
+
+class TestSongSelectForm(TestCase, TestMixin):
+    """
+    Test the :class:`~openlp.plugins.songs.forms.songselectform.SongSelectForm` class
+    """
+    def setUp(self):
+        """
+        Some set up for this test suite
+        """
+        self.setup_application()
+        self.app.setApplicationVersion('0.0')
+        self.app.process_events = lambda: None
+        Registry.create()
+        Registry().register('application', self.app)
+
+    def create_form_test(self):
+        """
+        Test that we can create the SongSelect form
+        """
+        # GIVEN: The SongSelectForm class and a mocked db manager
+        mocked_plugin = MagicMock()
+        mocked_db_manager = MagicMock()
+
+        # WHEN: We create an instance
+        ssform = SongSelectForm(None, mocked_plugin, mocked_db_manager)
+
+        # THEN: The correct properties should have been assigned
+        self.assertEqual(mocked_plugin, ssform.plugin, 'The correct plugin should have been assigned')
+        self.assertEqual(mocked_db_manager, ssform.db_manager, 'The correct db_manager should have been assigned')
+
+    def login_fails_test(self):
+        """
+        Test that when the login fails, the form returns to the correct state
+        """
+        # GIVEN: A valid SongSelectForm with a mocked out SongSelectImport, and a bunch of mocked out controls
+        with patch('openlp.plugins.songs.forms.songselectform.SongSelectImport') as MockedSongSelectImport, \
+                patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.critical') as mocked_critical, \
+                patch('openlp.plugins.songs.forms.songselectform.translate') as mocked_translate:
+            mocked_song_select_import = MagicMock()
+            mocked_song_select_import.login.return_value = False
+            MockedSongSelectImport.return_value = mocked_song_select_import
+            mocked_translate.side_effect = lambda *args: args[1]
+            ssform = SongSelectForm(None, MagicMock(), MagicMock())
+            ssform.initialise()
+            with patch.object(ssform, 'username_edit') as mocked_username_edit, \
+                    patch.object(ssform, 'password_edit') as mocked_password_edit, \
+                    patch.object(ssform, 'save_password_checkbox') as mocked_save_password_checkbox, \
+                    patch.object(ssform, 'login_button') as mocked_login_button, \
+                    patch.object(ssform, 'login_spacer') as mocked_login_spacer, \
+                    patch.object(ssform, 'login_progress_bar') as mocked_login_progress_bar, \
+                    patch.object(ssform.application, 'process_events') as mocked_process_events:
+
+                # WHEN: The login button is clicked, and the login is rigged to fail
+                ssform.on_login_button_clicked()
+
+                # THEN: The right things should have happened in the right order
+                expected_username_calls = [call(False), call(True)]
+                expected_password_calls = [call(False), call(True)]
+                expected_save_password_calls = [call(False), call(True)]
+                expected_login_btn_calls = [call(False), call(True)]
+                expected_login_spacer_calls = [call(False), call(True)]
+                expected_login_progress_visible_calls = [call(True), call(False)]
+                expected_login_progress_value_calls = [call(0), call(0)]
+                self.assertEqual(expected_username_calls, mocked_username_edit.setEnabled.call_args_list,
+                                 'The username edit should be disabled then enabled')
+                self.assertEqual(expected_password_calls, mocked_password_edit.setEnabled.call_args_list,
+                                 'The password edit should be disabled then enabled')
+                self.assertEqual(expected_save_password_calls, mocked_save_password_checkbox.setEnabled.call_args_list,
+                                 'The save password checkbox should be disabled then enabled')
+                self.assertEqual(expected_login_btn_calls, mocked_login_button.setEnabled.call_args_list,
+                                 'The login button should be disabled then enabled')
+                self.assertEqual(expected_login_spacer_calls, mocked_login_spacer.setVisible.call_args_list,
+                                 'Thee login spacer should be make invisible, then visible')
+                self.assertEqual(expected_login_progress_visible_calls,
+                                 mocked_login_progress_bar.setVisible.call_args_list,
+                                 'Thee login progress bar should be make visible, then invisible')
+                self.assertEqual(expected_login_progress_value_calls, mocked_login_progress_bar.setValue.call_args_list,
+                                 'Thee login progress bar should have the right values set')
+                self.assertEqual(2, mocked_process_events.call_count,
+                                 'The process_events() method should be called twice')
+                mocked_critical.assert_called_with(ssform, 'Error Logging In', 'There was a problem logging in, '
+                                                                               'perhaps your username or password is '
+                                                                               'incorrect?')
