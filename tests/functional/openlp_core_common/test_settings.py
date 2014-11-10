@@ -115,3 +115,15 @@ class TestSettings(TestCase, TestMixin):
 
         # THEN the new value is returned when re-read
         self.assertEqual('very short', Settings().value('test/extend'), 'The saved value should be returned')
+
+    def settings_nonexisting_test(self):
+        """
+        Test the Settings on query for non-existing value
+        """
+        # GIVEN: A new Settings setup
+
+        # WHEN reading a setting that doesn't exists
+        does_not_exist_value = Settings().value('core/does not exists')
+
+        # THEN None should be returned
+        self.assertEqual(does_not_exist_value, None, 'The value should be None')

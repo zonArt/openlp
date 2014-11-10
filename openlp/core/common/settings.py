@@ -431,10 +431,14 @@ class Settings(QtCore.QSettings):
         :param key: The key to return the value from.
         """
         # if group() is not empty the group has not been specified together with the key.
-        if self.group():
-            default_value = Settings.__default_settings__[self.group() + '/' + key]
-        else:
-            default_value = Settings.__default_settings__[key]
+        try:
+            if self.group():
+                default_value = Settings.__default_settings__[self.group() + '/' + key]
+            else:
+                default_value = Settings.__default_settings__[key]
+        except KeyError:
+            log.warning('Key "%s" was not found in settings, returning None!' % key)
+            return None
         setting = super(Settings, self).value(key, default_value)
         return self._convert_value(setting, default_value)
 
