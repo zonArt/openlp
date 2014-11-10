@@ -93,7 +93,7 @@ class WorshipAssistantImport(SongImport):
         details = chardet.detect(detect_content)
         detect_file.close()
         songs_file = open(self.import_source, 'r', encoding=details['encoding'])
-        songs_reader = csv.DictReader(songs_file)
+        songs_reader = csv.DictReader(songs_file, escapechar='\\')
         try:
             records = list(songs_reader)
         except csv.Error as e:
@@ -119,7 +119,6 @@ class WorshipAssistantImport(SongImport):
                 self.title = record['TITLE']
                 if record['AUTHOR'] != EMPTY_STR:
                     self.parse_author(record['AUTHOR'])
-                    print(record['AUTHOR'])
                 if record['COPYRIGHT'] != EMPTY_STR:
                     self.add_copyright(record['COPYRIGHT'])
                 if record['CCLINR'] != EMPTY_STR:
