@@ -37,7 +37,7 @@ from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, OpenLPMixin, RegistryMixin, \
-    check_directory_exists, UiStrings, translate
+    check_directory_exists, UiStrings, translate, is_win
 from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, get_text_file_string, build_icon, \
     check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType
@@ -662,8 +662,12 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 out_file.close()
         if image_from and os.path.abspath(image_from) != os.path.abspath(image_to):
             try:
-                encoding = get_filesystem_encoding()
-                shutil.copyfile(str(image_from).encode(encoding), str(image_to).encode(encoding))
+                # Windows is always unicode, so no need to encode filenames
+                if is_win():
+                    shutil.copyfile(image_from, image_to)
+                else:
+                    encoding = get_filesystem_encoding()
+                    shutil.copyfile(image_from.encode(encoding), image_to.encode(encoding))
             except IOError as xxx_todo_changeme:
                 shutil.Error = xxx_todo_changeme
                 self.log_exception('Failed to save theme image')
