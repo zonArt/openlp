@@ -152,13 +152,17 @@ def set_button_tooltip(bar):
     """
     for button in bar.buttons():
         if bar.standardButton(button) == QDialogButtonBox.Cancel:
-            button.setToolTip("Ignoring current changes and return to OpenLP")
+            button.setToolTip(translate('OpenLP.SourceSelectForm',
+                                        "Ignoring current changes and return to OpenLP"))
         elif bar.standardButton(button) == QDialogButtonBox.Reset:
-            button.setToolTip("Delete all user-defined text and revert to PJLink default text")
+            button.setToolTip(translate('OpenLP.SourceSelectForm',
+                                        "Delete all user-defined text and revert to PJLink default text"))
         elif bar.standardButton(button) == QDialogButtonBox.Discard:
-            button.setToolTip("Discard changes and reset to previous user-defined text")
+            button.setToolTip(translate('OpenLP.SourceSelectForm',
+                                        "Discard changes and reset to previous user-defined text"))
         elif bar.standardButton(button) == QDialogButtonBox.Ok:
-            button.setToolTip("Save changes and return to OpenLP")
+            button.setToolTip(translate('OpenLP.SourceSelectForm',
+                                        "Save changes and return to OpenLP"))
         else:
             log.debug('No tooltip for button {}'.format(button.text()))
 
@@ -236,12 +240,13 @@ class SourceSelectTabs(QDialog):
         """
         log.debug('Initializing SourceSelectTabs()')
         super(SourceSelectTabs, self).__init__(parent)
+        self.setMinimumWidth(350)
         self.projectordb = projectordb
         self.edit = edit
         if self.edit:
-            title = translate('OpenLP.SourceSelectForm', 'Select Projector Source')
-        else:
             title = translate('OpenLP.SourceSelectForm', 'Edit Projector Source Text')
+        else:
+            title = translate('OpenLP.SourceSelectForm', 'Select Projector Source')
         self.setWindowTitle(title)
         self.setObjectName('source_select_tabs')
         self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
@@ -332,9 +337,11 @@ class SourceSelectTabs(QDialog):
 
     def delete_sources(self):
         msg = QtGui.QMessageBox()
-        msg.setText('Delete entries for this projector')
-        msg.setInformativeText('Are you sure you want to delete ALL user-defined '
-                               'source input text for this projector?')
+        msg.setText(translate('OpenLP.SourceSelectForm', 'Delete entries for this projector'))
+        msg.setInformativeText(translate('OpenLP.SourceSelectForm',
+                                         'Are you sure you want to delete ALL user-defined '),
+                               translate('OpenLP.SourceSelectForm',
+                                         'source input text for this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
         ans = msg.exec_()
@@ -383,7 +390,11 @@ class SourceSelectSingle(QDialog):
         log.debug('Initializing SourceSelectSingle()')
         self.projectordb = projectordb
         super(SourceSelectSingle, self).__init__(parent)
-        self.setWindowTitle(translate('OpenLP.SourceSelectSingle', 'Select Projector Source'))
+        self.edit = edit
+        if self.edit:
+            title = translate('OpenLP.SourceSelectForm', 'Edit Projector Source Text')
+        else:
+            title = translate('OpenLP.SourceSelectForm', 'Select Projector Source')
         self.setObjectName('source_select_single')
         self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
         self.setModal(True)
@@ -465,9 +476,11 @@ class SourceSelectSingle(QDialog):
 
     def delete_sources(self):
         msg = QtGui.QMessageBox()
-        msg.setText('Delete entries for this projector')
-        msg.setInformativeText('Are you sure you want to delete ALL user-defined '
-                               'source input text for this projector?')
+        msg.setText(translate('OpenLP.SourceSelectForm', 'Delete entries for this projector'))
+        msg.setInformativeText(translate('OpenLP.SourceSelectForm',
+                                         'Are you sure you want to delete ALL user-defined '),
+                               translate('OpenLP.SourceSelectForm',
+                                         'source input text for this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
         ans = msg.exec_()
