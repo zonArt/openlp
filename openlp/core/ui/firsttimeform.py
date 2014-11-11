@@ -90,6 +90,21 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         super(FirstTimeForm, self).__init__(parent)
         self.setup_ui(self)
 
+    def get_next_page_id(self):
+        """
+        Returns the id of the next FirstTimePage to go to based on enabled plugins
+        """
+        # The songs plugin is enabled
+        if FirstTimePage.Welcome < self.currentId() < FirstTimePage.Songs and self.songs_check_box.isChecked():
+            return FirstTimePage.Songs
+        # The Bibles plugin is enabled
+        elif FirstTimePage.Welcome < self.currentId() < FirstTimePage.Bibles and self.bible_check_box.isChecked():
+            return FirstTimePage.Bibles
+        elif FirstTimePage.Welcome < self.currentId() < FirstTimePage.Themes:
+            return FirstTimePage.Themes
+        else:
+            return self.currentId() + 1
+
     def nextId(self):
         """
         Determine the next page in the Wizard to go to.
@@ -99,7 +114,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             if not self.web_access:
                 return FirstTimePage.NoInternet
             else:
-                return FirstTimePage.Songs
+                return self.get_next_page_id()
         elif self.currentId() == FirstTimePage.Progress:
             return -1
         elif self.currentId() == FirstTimePage.NoInternet:
@@ -114,7 +129,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             self.application.set_normal_cursor()
             return FirstTimePage.Defaults
         else:
-            return self.currentId() + 1
+            return self.get_next_page_id()
 
     def exec_(self):
         """
