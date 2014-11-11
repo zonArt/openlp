@@ -494,7 +494,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         service.append({'openlp_core': core})
         return service
 
-    def save_file(self):
+    def save_file(self, field=None):
         """
         Save the current service file.
 
