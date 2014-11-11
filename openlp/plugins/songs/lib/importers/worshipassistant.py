@@ -104,6 +104,8 @@ class WorshipAssistantImport(SongImport):
         num_records = len(records)
         log.info('%s records found in CSV file' % num_records)
         self.import_wizard.progress_bar.setMaximum(num_records)
+        # Create regex to strip html tags
+        re_html_strip = re.compile(r'<[^>]+>')
         for index, record in enumerate(records, 1):
             if self.stop_import_flag:
                 return
@@ -124,7 +126,7 @@ class WorshipAssistantImport(SongImport):
                 if record['CCLINR'] != EMPTY_STR:
                     self.ccli_number = record['CCLINR']
                 if record['ROADMAP'] != EMPTY_STR:
-                    verse_order_list = record['ROADMAP'].split(',')
+                    verse_order_list = [x.strip() for x in record['ROADMAP'].split(',')]
                 lyrics = record['LYRICS2']
             except UnicodeDecodeError as e:
                 self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d' % index),
@@ -135,8 +137,15 @@ class WorshipAssistantImport(SongImport):
                                          'File not valid WorshipAssistant CSV format.'), 'TypeError: %s' % e)
                 return
             verse = ''
+            used_verses = []
             for line in lyrics.splitlines():
                 if line.startswith('['):  # verse marker
+                    # Add previous verse
+                    if verse:
+                        # remove trailing linebreak, part of the WA syntax
+                        self.add_verse(verse[:-1], verse_id)
+                        used_verses.append(verse_id)
+                        verse = ''
                     # drop the square brackets
                     right_bracket = line.find(']')
                     content = line[1:right_bracket].lower()
@@ -151,19 +160,31 @@ class WorshipAssistantImport(SongImport):
                     verse_index = VerseType.from_loose_input(verse_tag) if verse_tag else 0
                     verse_tag = VerseType.tags[verse_index]
                     # Update verse order when the verse name has changed
-                    if content != verse_tag + verse_num:
+                    verse_id = verse_tag + verse_num
+                    # Make sure we've not choosen an id already used
+                    while verse_id in verse_order_list and content in verse_order_list:
+                        verse_num = str(int(verse_num) + 1)
+                        verse_id = verse_tag + verse_num
+                    if content != verse_id:
                         for i in range(len(verse_order_list)):
                             if verse_order_list[i].lower() == content.lower():
-                                verse_order_list[i] = verse_tag + verse_num
-                elif line and not line.isspace():
-                    verse += line + '\n'
-                elif verse:
-                    self.add_verse(verse, verse_tag+verse_num)
-                    verse = ''
+                                verse_order_list[i] = verse_id
+                else:
+                    # add line text to verse. Strip out html
+                    verse += re_html_strip.sub('', line) + '\n'
             if verse:
-                self.add_verse(verse, verse_tag+verse_num)
+                # remove trailing linebreak, part of the WA syntax
+                if verse.endswith('\n\n'):
+                    verse = verse[:-1]
+                self.add_verse(verse, verse_id)
+                used_verses.append(verse_id)
             if verse_order_list:
-                self.verse_order_list = verse_order_list
+                # Use the verse order in the import, but remove entries that doesn't have a text
+                cleaned_verse_order_list = []
+                for verse in verse_order_list:
+                    if verse in used_verses:
+                        cleaned_verse_order_list.append(verse)
+                self.verse_order_list = cleaned_verse_order_list
             if not self.finish():
                 self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d') % index
                                + (': "' + self.title + '"' if self.title else ''))
