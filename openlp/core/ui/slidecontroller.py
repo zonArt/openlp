@@ -691,7 +691,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.mediabar.show()
         self.previous_item.setVisible(not item.is_media())
         self.next_item.setVisible(not item.is_media())
-        self.set_blank_menu()
+        # The layout of the toolbar is size dependent, so make sure it fits
+        self.on_controller_size_changed(self.controller.width())
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
         self.toolbar.show()
