@@ -121,9 +121,9 @@ class TestSettings(TestCase, TestMixin):
         Test the Settings on query for non-existing value
         """
         # GIVEN: A new Settings setup
+        with self.assertRaises(KeyError) as cm:
+            # WHEN reading a setting that doesn't exists
+            does_not_exist_value = Settings().value('core/does not exists')
 
-        # WHEN reading a setting that doesn't exists
-        does_not_exist_value = Settings().value('core/does not exists')
-
-        # THEN None should be returned
-        self.assertEqual(does_not_exist_value, None, 'The value should be None')
+        # THEN: An exception with the non-existing key should be thrown
+        self.assertEqual(str(cm.exception), "'core/does not exists'", 'We should get an exception')

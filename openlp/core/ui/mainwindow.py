@@ -978,7 +978,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             # FIXME: We are conflicting with the standard "General" section.
             if 'eneral' in section_key:
                 section_key = section_key.lower()
-            key_value = settings.value(section_key)
+            try:
+                key_value = settings.value(section_key)
+            except KeyError:
+                QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
+                                           translate('OpenLP.MainWindow', 'The key "%s" does not have a default value '
+                                                     'so it will be skipped in this export.') % section_key,
+                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                key_value = None
             if key_value is not None:
                 export_settings.setValue(section_key, key_value)
         export_settings.sync()
