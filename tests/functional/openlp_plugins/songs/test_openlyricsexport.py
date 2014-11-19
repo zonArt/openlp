@@ -27,44 +27,60 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The UI widgets of the settings dialog.
+This module contains tests for the OpenLyrics song importer.
 """
-from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import translate
-from openlp.core.lib import build_icon
-from openlp.core.lib.ui import create_button_box
+import os
+import shutil
+from unittest import TestCase
+from tempfile import mkdtemp
+
+from tests.functional import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
+from openlp.plugins.songs.lib.openlyricsexport import OpenLyricsExport
+from openlp.core.common import Registry
 
 
-class Ui_SettingsDialog(object):
+class TestOpenLyricsExport(TestCase, TestMixin):
     """
-    The UI widgets of the settings dialog.
+    Test the functions in the :mod:`openlyricsexport` module.
     """
-    def setupUi(self, settings_dialog):
+    def setUp(self):
         """
-        Set up the UI
+        Create the registry
         """
-        settings_dialog.setObjectName('settings_dialog')
-        settings_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
-        settings_dialog.resize(800, 700)
-        self.dialog_layout = QtGui.QGridLayout(settings_dialog)
-        self.dialog_layout.setObjectName('dialog_layout')
-        self.dialog_layout.setMargin(8)
-        self.setting_list_widget = QtGui.QListWidget(settings_dialog)
-        self.setting_list_widget.setUniformItemSizes(True)
-        self.setting_list_widget.setMinimumSize(QtCore.QSize(150, 0))
-        self.setting_list_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setting_list_widget.setObjectName('setting_list_widget')
-        self.dialog_layout.addWidget(self.setting_list_widget, 0, 0, 1, 1)
-        self.stacked_layout = QtGui.QStackedLayout()
-        self.stacked_layout.setObjectName('stacked_layout')
-        self.dialog_layout.addLayout(self.stacked_layout, 0, 1, 1, 1)
-        self.button_box = create_button_box(settings_dialog, 'button_box', ['cancel', 'ok'])
-        self.dialog_layout.addWidget(self.button_box, 1, 1, 1, 1)
-        self.retranslateUi(settings_dialog)
+        Registry.create()
+        self.temp_folder = mkdtemp()
 
-    def retranslateUi(self, settings_dialog):
+    def tearDown(self):
         """
-        Translate the UI on the fly
+        Cleanup
         """
-        settings_dialog.setWindowTitle(translate('OpenLP.SettingsForm', 'Configure OpenLP'))
+        shutil.rmtree(self.temp_folder)
+
+    def export_same_filename_test(self):
+        """
+        Test that files is not overwritten if songs has same title and author
+        """
+        # GIVEN: A mocked song_to_xml, 2 mocked songs, a mocked application and an OpenLyricsExport instance
+        with patch('openlp.plugins.songs.lib.openlyricsexport.OpenLyrics.song_to_xml') as mocked_song_to_xml:
+            mocked_song_to_xml.return_value = '<?xml version="1.0" encoding="UTF-8"?>\n<empty/>'
+            author = MagicMock()
+            author.display_name = 'Test Author'
+            song = MagicMock()
+            song.authors = [author]
+            song.title = 'Test Title'
+            parent = MagicMock()
+            parent.stop_export_flag = False
+            mocked_application_object = MagicMock()
+            Registry().register('application', mocked_application_object)
+            ol_export = OpenLyricsExport(parent, [song, song], self.temp_folder)
+
+            # WHEN: Doing the export
+            ol_export.do_export()
+
+            # THEN: The exporter should have created 2 files
+            self.assertTrue(os.path.exists(os.path.join(self.temp_folder,
+                                                        '%s (%s).xml' % (song.title, author.display_name))))
+            self.assertTrue(os.path.exists(os.path.join(self.temp_folder,
+                                                        '%s (%s)-1.xml' % (song.title, author.display_name))))
