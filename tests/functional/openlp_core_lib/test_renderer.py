@@ -34,7 +34,7 @@ from unittest import TestCase
 from PyQt4 import QtCore
 
 from openlp.core.common import Registry
-from openlp.core.lib import Renderer, ScreenList
+from openlp.core.lib import Renderer, ScreenList, ServiceItem
 
 from tests.interfaces import MagicMock
 
@@ -108,4 +108,56 @@ class TestRenderer(TestCase):
         result_words = renderer._words_split(given_line)
 
         # THEN: The word lists should be the same.
+        self.assertListEqual(result_words, expected_words)
+
+    def format_slide_logical_split_test(self):
+        """
+        Test that a line with text and a logic break does not break the renderer just returns the input
+        """
+        # GIVEN: A line of with a space text and the logical split
+        renderer = Renderer()
+        renderer.empty_height = 25
+        given_line = 'a\n[---]\nb'
+        expected_words = ['a<br>[---]<br>b']
+        service_item = ServiceItem(None)
+
+        # WHEN: Split the line based on rules
+
+        result_words = renderer.format_slide(given_line, service_item)
+
+        # THEN: The word lists should be the same.
+        self.assertListEqual(result_words, expected_words)
+
+    def format_slide_blank_before_split_test(self):
+        """
+        Test that a line with blanks before the logical split at handled
+        """
+        # GIVEN: A line of with a space before the logical split
+        renderer = Renderer()
+        renderer.empty_height = 25
+        given_line = '\n       [---]\n'
+        expected_words = ['<br>       [---]']
+        service_item = ServiceItem(None)
+
+        # WHEN: Split the line
+        result_words = renderer.format_slide(given_line, service_item)
+
+        # THEN: The blanks have been removed.
+        self.assertListEqual(result_words, expected_words)
+
+    def format_slide_blank_after_split_test(self):
+        """
+        Test that a line with blanks before the logical split at handled
+        """
+        # GIVEN: A line of with a space after the logical split
+        renderer = Renderer()
+        renderer.empty_height = 25
+        given_line = '\n[---]  \n'
+        expected_words = ['<br>[---]  ']
+        service_item = ServiceItem(None)
+
+       # WHEN: Split the line
+        result_words = renderer.format_slide(given_line, service_item)
+
+        # THEN: The blanks have been removed.
         self.assertListEqual(result_words, expected_words)

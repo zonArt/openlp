@@ -250,7 +250,13 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
                 # Remove two or more option slide breaks next to each other (causing infinite loop).
                 while '\n[---]\n[---]\n' in text:
                     text = text.replace('\n[---]\n[---]\n', '\n[---]\n')
-                while True:
+                while ' [---]' in text:
+                    text = text.replace(' [---]', '[---]')
+                while '[---] ' in text:
+                    text = text.replace('[---] ', '[---]')
+                count = 0
+                # only loop 5 times as there will never be more than 5 incorrect logical splits on a single slide.
+                while True and count < 5:
                     slides = text.split('\n[---]\n', 2)
                     # If there are (at least) two occurrences of [---] we use the first two slides (and neglect the last
                     # for now).
@@ -296,6 +302,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
                         lines = text.strip('\n').split('\n')
                         pages.extend(self._paginate_slide(lines, line_end))
                         break
+                    count =+ 1
             else:
                 # Clean up line endings.
                 pages = self._paginate_slide(text.split('\n'), line_end)
