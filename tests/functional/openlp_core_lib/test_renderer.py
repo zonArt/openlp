@@ -88,7 +88,7 @@ class TestRenderer(TestCase):
         expected_tuple = ('{st}{r}Text text text{/r}{/st}', '{st}{r}',
                           '<strong><span style="-webkit-text-fill-color:red">')
 
-        # WHEN:
+        # WHEN: The renderer converts the start tags
         result = renderer._get_start_tags(given_raw_text)
 
         # THEN: Check if the correct tuple is returned.
@@ -104,7 +104,7 @@ class TestRenderer(TestCase):
         given_line = 'beginning asdf \n end asdf'
         expected_words = ['beginning', 'asdf', 'end', 'asdf']
 
-        # WHEN: Split the line
+        # WHEN: Split the line based on word split rules
         result_words = renderer._words_split(given_line)
 
         # THEN: The word lists should be the same.
@@ -121,7 +121,7 @@ class TestRenderer(TestCase):
         expected_words = ['a<br>[---]<br>b']
         service_item = ServiceItem(None)
 
-        # WHEN: Split the line based on rules
+        # WHEN: Split the line based on word split rules
 
         result_words = renderer.format_slide(given_line, service_item)
 
@@ -139,7 +139,7 @@ class TestRenderer(TestCase):
         expected_words = ['<br>       [---]']
         service_item = ServiceItem(None)
 
-        # WHEN: Split the line
+        # WHEN: Split the line based on word split rules
         result_words = renderer.format_slide(given_line, service_item)
 
         # THEN: The blanks have been removed.
@@ -156,7 +156,7 @@ class TestRenderer(TestCase):
         expected_words = ['<br>[---]  ']
         service_item = ServiceItem(None)
 
-       # WHEN: Split the line
+       # WHEN: Split the line based on word split rules
         result_words = renderer.format_slide(given_line, service_item)
 
         # THEN: The blanks have been removed.
