@@ -45,7 +45,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, Settin
     translate, clean_button_text, trace_error_handler
 from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import get_web_page
+from openlp.core.utils import get_web_page, CONNECTION_RETRIES, CONNECTION_TIMEOUT
 from .firsttimewizard import UiFirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
@@ -304,23 +304,30 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         """
         block_count = 0
         block_size = 4096
-        try:
-            url_file = urllib.request.urlopen(url, timeout=30)
-            filename = open(f_path, "wb")
-            # Download until finished or canceled.
-            while not self.was_download_cancelled:
-                data = url_file.read(block_size)
-                if not data:
-                    break
-                filename.write(data)
-                block_count += 1
-                self._download_progress(block_count, block_size)
-            filename.close()
-        except ConnectionError:
-            trace_error_handler(log)
-            filename.close()
-            os.remove(f_path)
-            return False
+        retries = 0
+        while True:
+            try:
+                url_file = urllib.request.urlopen(url, timeout=CONNECTION_TIMEOUT)
+                filename = open(f_path, "wb")
+                # Download until finished or canceled.
+                while not self.was_download_cancelled:
+                    data = url_file.read(block_size)
+                    if not data:
+                        break
+                    filename.write(data)
+                    block_count += 1
+                    self._download_progress(block_count, block_size)
+                filename.close()
+            except ConnectionError:
+                trace_error_handler(log)
+                filename.close()
+                os.remove(f_path)
+                if retries > CONNECTION_RETRIES:
+                    return False
+                else:
+                    retries += 1
+                    continue
+            break
         # Delete file if cancelled, it may be a partial file.
         if self.was_download_cancelled:
             os.remove(f_path)
@@ -343,9 +350,18 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
 
         :param url: The URL of the file we want to download.
         """
-        site = urllib.request.urlopen(url, timeout=30)
-        meta = site.info()
-        return int(meta.get("Content-Length"))
+        retries = 0
+        while True:
+            try:
+                site = urllib.request.urlopen(url, timeout=CONNECTION_TIMEOUT)
+                meta = site.info()
+                return int(meta.get("Content-Length"))
+            except ConnectionException:
+                if retries > CONNECTION_RETRIES:
+                    raise
+                else:
+                    retries += 1
+                    continue
 
     def _download_progress(self, count, block_size):
         """
