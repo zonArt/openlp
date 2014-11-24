@@ -35,10 +35,14 @@ from PyQt4 import QtCore, QtGui, QtTest
 
 from openlp.core.common import Registry
 from openlp.core.lib.searchedit import SearchEdit
+
 from tests.helpers.testmixin import TestMixin
 
 
 class SearchTypes(object):
+    """
+    Types of search
+    """
     First = 0
     Second = 1
 
@@ -69,6 +73,7 @@ class TestSearchEdit(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
+        del self.search_edit
         del self.main_window
 
     def set_search_types_test(self):
