@@ -35,6 +35,7 @@ import logging
 import locale
 import os
 import re
+import time
 from subprocess import Popen, PIPE
 import sys
 import urllib.request
@@ -261,6 +262,7 @@ def check_latest_version(current_version):
                     log.exception('Failed to download the latest OpenLP version file')
                 else:
                     retries += 1
+                    time.sleep(0.1)
                     continue
             break
         if remote_version:
@@ -408,6 +410,7 @@ def get_web_page(url, header=None, update_openlp=False):
                 log.exception('The web page could not be downloaded')
                 raise
             else:
+                time.sleep(0.1)
                 continue
         break
     if not page:

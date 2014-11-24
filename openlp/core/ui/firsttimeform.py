@@ -326,6 +326,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     return False
                 else:
                     retries += 1
+                    time.sleep(0.1)
                     continue
             break
         # Delete file if cancelled, it may be a partial file.
@@ -361,6 +362,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     raise
                 else:
                     retries += 1
+                    time.sleep(0.1)
                     continue
 
     def _download_progress(self, count, block_size):
