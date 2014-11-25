@@ -493,6 +493,11 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.display.setVisible(False)
         self.media_controller.media_stop(self)
+        # Stop looping if active
+        if self.play_slides_loop.isChecked():
+            self.on_play_slides_loop(False)
+        elif self.play_slides_once.isChecked():
+            self.on_play_slides_once(False)
 
     def toggle_display(self, action):
         """
