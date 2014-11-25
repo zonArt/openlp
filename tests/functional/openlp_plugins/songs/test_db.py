@@ -172,7 +172,7 @@ class TestDB(TestCase):
         # THEN: It should return the name with the type in brackets
         self.assertEqual("John Doe (Words)", display_name)
 
-    def test_upgrade_song_db(self):
+    def test_upgrade_old_song_db(self):
         """
         Test that we can upgrade an old song db to the current schema
         """
@@ -186,5 +186,22 @@ class TestDB(TestCase):
         updated_to_version, latest_version = upgrade_db(db_url, upgrade)
 
         # Then the song db should have been upgraded to the latest version
+        self.assertEqual(updated_to_version, latest_version,
+                         'The song DB should have been upgrade to the latest version')
+
+    def test_upgrade_invalid_song_db(self):
+        """
+        Test that we can upgrade an invalid song db to the current schema
+        """
+        # GIVEN: A song db with invalid version
+        invalid_db_path = os.path.join(TEST_RESOURCES_PATH, "songs", 'songs-2.2-invalid.sqlite')
+        invalid_db_tmp_path = os.path.join(self.tmp_folder, 'songs-2.2-invalid.sqlite')
+        shutil.copyfile(invalid_db_path, invalid_db_tmp_path)
+        db_url = 'sqlite:///' + invalid_db_tmp_path
+
+        # WHEN: upgrading the db
+        updated_to_version, latest_version = upgrade_db(db_url, upgrade)
+
+        # Then the song db should have been upgraded to the latest version without errors
         self.assertEqual(updated_to_version, latest_version,
                          'The song DB should have been upgrade to the latest version')
