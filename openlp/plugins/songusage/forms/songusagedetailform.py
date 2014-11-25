@@ -99,7 +99,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryPrope
         report_file_name = os.path.join(path, file_name)
         file_handle = None
         try:
-            file_handle = open(report_file_name, 'w')
+            file_handle = open(report_file_name, 'wb')
             for instance in usage:
                 record = '\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
                     '\"%s\",\"%s\"\n' % \
