@@ -114,8 +114,8 @@ window.OpenLP = {
         text += "<br /><img src='" + slide["img"].replace("/thumbnails/", "/thumbnails320x240/") + "'><br />";
     }
     // use notes if available
-    if (slide["notes"]) {
-        text += '<br />' + slide["notes"];
+    if (slide["slide_notes"]) {
+        text += '<br />' + slide["slide_notes"];
     }
     text = text.replace(/\n/g, "<br />");
     $("#currentslide").html(text);
