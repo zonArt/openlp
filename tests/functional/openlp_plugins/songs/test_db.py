@@ -29,15 +29,33 @@
 """
 This module contains tests for the db submodule of the Songs plugin.
 """
+import os
+import shutil
 from unittest import TestCase
+from tempfile import mkdtemp
 
 from openlp.plugins.songs.lib.db import Song, Author, AuthorType
+from openlp.plugins.songs.lib import upgrade
+from openlp.core.lib.db import upgrade_db
+from tests.utils.constants import TEST_RESOURCES_PATH
 
 
 class TestDB(TestCase):
     """
     Test the functions in the :mod:`db` module.
     """
+
+    def setUp(self):
+        """
+        Setup for tests
+        """
+        self.tmp_folder = mkdtemp()
+
+    def tearDown(self):
+        """
+        Clean up after tests
+        """
+        shutil.rmtree(self.tmp_folder)
 
     def test_add_author(self):
         """
@@ -153,3 +171,20 @@ class TestDB(TestCase):
 
         # THEN: It should return the name with the type in brackets
         self.assertEqual("John Doe (Words)", display_name)
+
+    def test_upgrade_song_db(self):
+        """
+        Test that we can upgrade an old song db to the current schema
+        """
+        # GIVEN: An old song db
+        old_db_path = os.path.join(TEST_RESOURCES_PATH, "songs", 'songs-1.9.7.sqlite')
+        old_db_tmp_path = os.path.join(self.tmp_folder, 'songs-1.9.7.sqlite')
+        shutil.copyfile(old_db_path, old_db_tmp_path)
+        db_url = 'sqlite:///' + old_db_tmp_path
+
+        # WHEN: upgrading the db
+        updated_to_version, latest_version = upgrade_db(db_url, upgrade)
+
+        # Then the song db should have been upgraded to the latest version
+        self.assertEqual(updated_to_version, latest_version,
+                         'The song DB should have been upgrade to the latest version')
