@@ -122,7 +122,6 @@ class TestRenderer(TestCase):
         service_item = ServiceItem(None)
 
         # WHEN: Split the line based on word split rules
-
         result_words = renderer.format_slide(given_line, service_item)
 
         # THEN: The word lists should be the same.
