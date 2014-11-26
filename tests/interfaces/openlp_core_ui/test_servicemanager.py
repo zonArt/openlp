@@ -57,6 +57,7 @@ class TestServiceManager(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
+        Registry().remove('service_manager')
         del self.main_window
         del self.service_manager
 
