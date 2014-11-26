@@ -153,16 +153,16 @@ def set_button_tooltip(bar):
     for button in bar.buttons():
         if bar.standardButton(button) == QDialogButtonBox.Cancel:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
-                                        "Ignoring current changes and return to OpenLP"))
+                                        'Ignoring current changes and return to OpenLP'))
         elif bar.standardButton(button) == QDialogButtonBox.Reset:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
-                                        "Delete all user-defined text and revert to PJLink default text"))
+                                        'Delete all user-defined text and revert to PJLink default text'))
         elif bar.standardButton(button) == QDialogButtonBox.Discard:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
-                                        "Discard changes and reset to previous user-defined text"))
+                                        'Discard changes and reset to previous user-defined text'))
         elif bar.standardButton(button) == QDialogButtonBox.Ok:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
-                                        "Save changes and return to OpenLP"))
+                                        'Save changes and return to OpenLP'))
         else:
             log.debug('No tooltip for button {}'.format(button.text()))
 
