@@ -70,7 +70,7 @@ class TestMainWindow(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        del self.main_window
+        # del self.main_window
 
     def restore_current_media_manager_item_test(self):
         """

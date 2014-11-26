@@ -49,8 +49,8 @@ class TestHistoryComboBox(TestCase, TestMixin):
         self.combo = HistoryComboBox(self.main_window)
 
     def tearDown(self):
-        del self.combo
-        del self.main_window
+        # del self.combo
+        # del self.main_window
 
     def get_items_test(self):
         """

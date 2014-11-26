@@ -63,7 +63,7 @@ class TestPluginManager(TestCase, TestMixin):
         Registry().register('main_window', self.main_window)
 
     def tearDown(self):
-        del self.main_window
+        # del self.main_window
         Settings().remove('advanced/data path')
         self.destroy_settings()
         # On windows we need to manually garbage collect to close sqlalchemy files
