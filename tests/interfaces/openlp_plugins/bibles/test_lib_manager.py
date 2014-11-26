@@ -73,7 +73,7 @@ class TestBibleManager(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        # del self.manager
+        del self.manager
         self.destroy_settings()
 
     def get_books_test(self):

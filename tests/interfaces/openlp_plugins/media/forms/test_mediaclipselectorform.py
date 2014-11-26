@@ -76,9 +76,9 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        # del self.form
+        del self.form
         self.vlc_patcher.stop()
-        # del self.main_window
+        del self.main_window
 
     def basic_test(self):
         """

@@ -55,8 +55,8 @@ class TestShortcutform(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        # del self.form
-        # del self.main_window
+        del self.form
+        del self.main_window
 
     def adjust_button_test(self):
         """

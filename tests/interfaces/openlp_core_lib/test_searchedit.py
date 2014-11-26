@@ -73,8 +73,8 @@ class TestSearchEdit(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        # del self.search_edit
-        # del self.main_window
+        del self.search_edit
+        del self.main_window
 
     def set_search_types_test(self):
         """

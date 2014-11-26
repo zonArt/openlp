@@ -71,7 +71,7 @@ class TestSettingsForm(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        # del self.form
+        del self.form
 
     def basic_cancel_test(self):
         """

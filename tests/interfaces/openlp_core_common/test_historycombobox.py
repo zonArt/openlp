@@ -42,6 +42,9 @@ from tests.interfaces import MagicMock, patch
 
 class TestHistoryComboBox(TestCase, TestMixin):
     def setUp(self):
+        """
+        Some pre-test setup required.
+        """
         Registry.create()
         self.setup_application()
         self.main_window = QtGui.QMainWindow()
@@ -49,9 +52,11 @@ class TestHistoryComboBox(TestCase, TestMixin):
         self.combo = HistoryComboBox(self.main_window)
 
     def tearDown(self):
-        # del self.combo
-        # del self.main_window
-        pass
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        del self.combo
+        del self.main_window
 
     def get_items_test(self):
         """

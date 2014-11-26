@@ -70,8 +70,8 @@ class TestProjectorManager(TestCase, TestMixin):
         Delete all the C++ objects at the end so that we don't have a segfault.
         """
         self.projectordb.session.close()
-        #del self.projector_manager
         self.destroy_settings()
+        del self.projector_manager
 
     def bootstrap_initialise_test(self):
         """
