@@ -48,14 +48,15 @@ log = logging.getLogger(__name__)
 
 def song_generator(songs):
     """
-    This is a generator function to return tuples of two songs. When completed then all songs have once been returned
-    combined with any other songs.
+    This is a generator function to return tuples of tuple with two songs and their position in the song array.
+    When completed then all songs have once been returned combined with any other songs.
 
     :param songs: All songs in the database.
     """
     for outer_song_counter in range(len(songs) - 1):
         for inner_song_counter in range(outer_song_counter + 1, len(songs)):
-            yield (songs[outer_song_counter], songs[inner_song_counter])
+            yield ((outer_song_counter, songs[outer_song_counter].search_lyrics),
+                   (inner_song_counter, songs[inner_song_counter].search_lyrics))
 
 
 class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
@@ -187,16 +188,17 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
                 # Do not accept any further tasks. Also this closes the processes if all tasks are done.
                 pool.close()
                 # While the processes are still working, start to look at the results.
-                for song_tuple in result:
+                for pos_tuple in result:
                     self.duplicate_search_progress_bar.setValue(self.duplicate_search_progress_bar.value() + 1)
                     # The call to process_events() will keep the GUI responsive.
                     self.application.process_events()
                     if self.break_search:
                         pool.terminate()
                         return
-                    if song_tuple is None:
+                    if pos_tuple is None:
                         continue
-                    song1, song2 = song_tuple
+                    song1 = songs[pos_tuple[0]]
+                    song2 = songs[pos_tuple[1]]
                     duplicate_added = self.add_duplicates_to_song_list(song1, song2)
                     if duplicate_added:
                         self.found_duplicates_edit.appendPlainText(song1.title + "  =  " + song2.title)

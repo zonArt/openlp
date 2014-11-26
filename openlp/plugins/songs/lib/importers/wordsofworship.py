@@ -99,7 +99,7 @@ class WordsOfWorshipImport(SongImport):
         """
         Initialise the Words of Worship importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(WordsOfWorshipImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
@@ -112,17 +112,17 @@ class WordsOfWorshipImport(SongImport):
                     return
                 self.set_defaults()
                 song_data = open(source, 'rb')
-                if song_data.read(19) != 'WoW File\nSong Words':
+                if song_data.read(19).decode() != 'WoW File\nSong Words':
                     self.log_error(source,
                                    str(translate('SongsPlugin.WordsofWorshipSongImport',
-                                                 'Invalid Words of Worship song file. Missing "Wow File\\nSong '
+                                                 'Invalid Words of Worship song file. Missing "WoW File\\nSong '
                                                  'Words" header.')))
                     continue
                 # Seek to byte which stores number of blocks in the song
                 song_data.seek(56)
                 no_of_blocks = ord(song_data.read(1))
                 song_data.seek(66)
-                if song_data.read(16) != 'CSongDoc::CBlock':
+                if song_data.read(16).decode() != 'CSongDoc::CBlock':
                     self.log_error(source,
                                    str(translate('SongsPlugin.WordsofWorshipSongImport',
                                                  'Invalid Words of Worship song file. Missing "CSongDoc::CBlock" '
@@ -131,11 +131,17 @@ class WordsOfWorshipImport(SongImport):
                 # Seek to the beginning of the first block
                 song_data.seek(82)
                 for block in range(no_of_blocks):
+                    skip_char_at_end = True
                     self.lines_to_read = ord(song_data.read(4)[:1])
                     block_text = ''
                     while self.lines_to_read:
                         self.line_text = str(song_data.read(ord(song_data.read(1))), 'cp1252')
-                        song_data.seek(1, os.SEEK_CUR)
+                        if skip_char_at_end:
+                            skip_char = ord(song_data.read(1))
+                            # Check if we really should skip a char. In some wsg files we shouldn't
+                            if skip_char != 0:
+                                song_data.seek(-1, os.SEEK_CUR)
+                                skip_char_at_end = False
                         if block_text:
                             block_text += '\n'
                         block_text += self.line_text

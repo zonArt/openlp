@@ -30,7 +30,7 @@
 from PyQt4 import QtGui
 
 from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import ColorButton, SettingsTab
 from openlp.core.lib.ui import create_valign_selection_widgets
 
 
@@ -57,14 +57,14 @@ class AlertsTab(SettingsTab):
         self.font_color_label.setObjectName('font_color_label')
         self.color_layout = QtGui.QHBoxLayout()
         self.color_layout.setObjectName('color_layout')
-        self.font_color_button = QtGui.QPushButton(self.font_group_box)
+        self.font_color_button = ColorButton(self.font_group_box)
         self.font_color_button.setObjectName('font_color_button')
         self.color_layout.addWidget(self.font_color_button)
         self.color_layout.addSpacing(20)
         self.background_color_label = QtGui.QLabel(self.font_group_box)
         self.background_color_label.setObjectName('background_color_label')
         self.color_layout.addWidget(self.background_color_label)
-        self.background_color_button = QtGui.QPushButton(self.font_group_box)
+        self.background_color_button = ColorButton(self.font_group_box)
         self.background_color_button.setObjectName('background_color_button')
         self.color_layout.addWidget(self.background_color_button)
         self.font_layout.addRow(self.font_color_label, self.color_layout)
@@ -95,8 +95,8 @@ class AlertsTab(SettingsTab):
         self.right_layout.addWidget(self.preview_group_box)
         self.right_layout.addStretch()
         # Signals and slots
-        self.background_color_button.clicked.connect(self.on_background_color_button_clicked)
-        self.font_color_button.clicked.connect(self.on_font_color_button_clicked)
+        self.background_color_button.colorChanged.connect(self.on_background_color_changed)
+        self.font_color_button.colorChanged.connect(self.on_font_color_changed)
         self.font_combo_box.activated.connect(self.on_font_combo_box_clicked)
         self.timeout_spin_box.valueChanged.connect(self.on_timeout_spin_box_changed)
         self.font_size_spin_box.valueChanged.connect(self.on_font_size_spin_box_changed)
@@ -113,15 +113,12 @@ class AlertsTab(SettingsTab):
         self.preview_group_box.setTitle(UiStrings().Preview)
         self.font_preview.setText(UiStrings().OLPV2x)
 
-    def on_background_color_button_clicked(self):
+    def on_background_color_changed(self, color):
         """
         The background color has been changed.
         """
-        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.background_color), self)
-        if new_color.isValid():
-            self.background_color = new_color.name()
-            self.background_color_button.setStyleSheet('background-color: %s' % self.background_color)
-            self.update_display()
+        self.background_color = color
+        self.update_display()
 
     def on_font_combo_box_clicked(self):
         """
@@ -129,15 +126,12 @@ class AlertsTab(SettingsTab):
         """
         self.update_display()
 
-    def on_font_color_button_clicked(self):
+    def on_font_color_changed(self, color):
         """
         The Font Color button has clicked.
         """
-        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.font_color), self)
-        if new_color.isValid():
-            self.font_color = new_color.name()
-            self.font_color_button.setStyleSheet('background-color: %s' % self.font_color)
-            self.update_display()
+        self.font_color = color
+        self.update_display()
 
     def on_timeout_spin_box_changed(self):
         """
@@ -169,8 +163,8 @@ class AlertsTab(SettingsTab):
         settings.endGroup()
         self.font_size_spin_box.setValue(self.font_size)
         self.timeout_spin_box.setValue(self.timeout)
-        self.font_color_button.setStyleSheet('background-color: %s' % self.font_color)
-        self.background_color_button.setStyleSheet('background-color: %s' % self.background_color)
+        self.font_color_button.color = self.font_color
+        self.background_color_button.color = self.background_color
         self.vertical_combo_box.setCurrentIndex(self.location)
         font = QtGui.QFont()
         font.setFamily(self.font_face)

@@ -46,7 +46,7 @@ class Ui_SettingsDialog(object):
         """
         settings_dialog.setObjectName('settings_dialog')
         settings_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
-        settings_dialog.resize(800, 500)
+        settings_dialog.resize(800, 700)
         self.dialog_layout = QtGui.QGridLayout(settings_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
         self.dialog_layout.setMargin(8)

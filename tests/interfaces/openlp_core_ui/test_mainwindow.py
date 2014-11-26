@@ -62,6 +62,7 @@ class TestMainWindow(TestCase, TestMixin):
                 patch('openlp.core.ui.mainwindow.QtGui.QMainWindow.addDockWidget') as mocked_add_dock_method, \
                 patch('openlp.core.ui.mainwindow.ServiceManager') as mocked_service_manager, \
                 patch('openlp.core.ui.mainwindow.ThemeManager') as mocked_theme_manager, \
+                patch('openlp.core.ui.mainwindow.ProjectorManager') as mocked_projector_manager, \
                 patch('openlp.core.ui.mainwindow.Renderer') as mocked_renderer:
             self.main_window = MainWindow()
 
@@ -85,3 +86,29 @@ class TestMainWindow(TestCase, TestMixin):
 
             # THEN: The current widget should have been set.
             self.main_window.media_tool_box.setCurrentIndex.assert_called_with(2)
+
+    def projector_manager_dock_locked_test(self):
+        """
+        Projector Manager enable UI options -  bug #1390702
+        """
+        # GIVEN: A mocked projector manager dock item:
+        projector_dock = self.main_window.projector_manager_dock
+
+        # WHEN: main_window.lock_panel action is triggered
+        self.main_window.lock_panel.triggered.emit(True)
+
+        # THEN: Projector manager dock should have been called with disable UI features
+        projector_dock.setFeatures.assert_called_with(0)
+
+    def projector_manager_dock_unlocked_test(self):
+        """
+        Projector Manager disable UI options -  bug #1390702
+        """
+        # GIVEN: A mocked projector manager dock item:
+        projector_dock = self.main_window.projector_manager_dock
+
+        # WHEN: main_window.lock_panel action is triggered
+        self.main_window.lock_panel.triggered.emit(False)
+
+        # THEN: Projector manager dock should have been called with enable UI features
+        projector_dock.setFeatures.assert_called_with(7)

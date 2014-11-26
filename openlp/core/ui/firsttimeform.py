@@ -112,6 +112,17 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         """
         self.application.process_events()
         if self.currentId() == FirstTimePage.Download:
+            if self.has_run_wizard:
+                self.songs_check_box.setChecked(self.plugin_manager.get_plugin_by_name('songs').is_active())
+                self.bible_check_box.setChecked(self.plugin_manager.get_plugin_by_name('bibles').is_active())
+                self.presentation_check_box.setChecked(self.plugin_manager.get_plugin_by_name(
+                    'presentations').is_active())
+                self.image_check_box.setChecked(self.plugin_manager.get_plugin_by_name('images').is_active())
+                self.media_check_box.setChecked(self.plugin_manager.get_plugin_by_name('media').is_active())
+                self.remote_check_box.setChecked(self.plugin_manager.get_plugin_by_name('remotes').is_active())
+                self.custom_check_box.setChecked(self.plugin_manager.get_plugin_by_name('custom').is_active())
+                self.song_usage_check_box.setChecked(self.plugin_manager.get_plugin_by_name('songusage').is_active())
+                self.alert_check_box.setChecked(self.plugin_manager.get_plugin_by_name('alerts').is_active())
             if not self.web_access:
                 return FirstTimePage.NoInternet
             else:
