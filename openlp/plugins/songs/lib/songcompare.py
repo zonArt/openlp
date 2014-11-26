@@ -59,12 +59,14 @@ def songs_probably_equal(song_tupel):
     :param song_tupel: A tuple of two songs to compare.
     """
     song1, song2 = song_tupel
-    if len(song1.search_lyrics) < len(song2.search_lyrics):
-        small = song1.search_lyrics
-        large = song2.search_lyrics
+    pos1, lyrics1 = song1
+    pos2, lyrics2 = song2
+    if len(lyrics1) < len(lyrics2):
+        small = lyrics1
+        large = lyrics2
     else:
-        small = song2.search_lyrics
-        large = song1.search_lyrics
+        small = lyrics2
+        large = lyrics1
     differ = difflib.SequenceMatcher(a=large, b=small)
     diff_tuples = differ.get_opcodes()
     diff_no_typos = _remove_typos(diff_tuples)
@@ -77,7 +79,7 @@ def songs_probably_equal(song_tupel):
             length_of_equal_blocks += _op_length(element)
 
     if length_of_equal_blocks >= MIN_BLOCK_SIZE:
-        return song1, song2
+        return pos1, pos2
     # Check 2: Similarity based on the relative length of the longest equal block.
     # Calculate the length of the largest equal block of the diff set.
     length_of_longest_equal_block = 0
@@ -85,7 +87,7 @@ def songs_probably_equal(song_tupel):
         if element[0] == "equal" and _op_length(element) > length_of_longest_equal_block:
             length_of_longest_equal_block = _op_length(element)
     if length_of_longest_equal_block > len(small) * 2 // 3:
-        return song1, song2
+        return pos1, pos2
     # Both checks failed. We assume the songs are not equal.
     return None
 

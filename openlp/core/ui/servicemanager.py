@@ -494,7 +494,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         service.append({'openlp_core': core})
         return service
 
-    def save_file(self):
+    def save_file(self, field=None):
         """
         Save the current service file.
 
@@ -1427,9 +1427,10 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         self.drop_position = -1
         self.set_modified()
 
-    def make_preview(self):
+    def make_preview(self, field=None):
         """
         Send the current item to the Preview slide controller
+        :param field:
         """
         self.application.set_busy_cursor()
         item, child = self.find_service_item()

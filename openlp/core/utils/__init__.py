@@ -256,7 +256,8 @@ def check_latest_version(current_version):
         retries = 0
         while True:
             try:
-                remote_version = str(urllib.request.urlopen(req, None, timeout=CONNECTION_TIMEOUT).read().decode()).strip()
+                remote_version = str(urllib.request.urlopen(req, None,
+                                                            timeout=CONNECTION_TIMEOUT).read().decode()).strip()
             except ConnectionException:
                 if retries > CONNECTION_RETRIES:
                     log.exception('Failed to download the latest OpenLP version file')

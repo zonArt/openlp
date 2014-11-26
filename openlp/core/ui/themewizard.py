@@ -32,7 +32,7 @@ The Create/Edit theme wizard
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import UiStrings, translate, is_macosx
-from openlp.core.lib import build_icon
+from openlp.core.lib import build_icon, ColorButton
 from openlp.core.lib.theme import HorizontalType, BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import add_welcome_page, create_valign_selection_widgets
 
@@ -82,7 +82,7 @@ class Ui_ThemeWizard(object):
         self.color_layout.setObjectName('color_layout')
         self.color_label = QtGui.QLabel(self.color_widget)
         self.color_label.setObjectName('color_label')
-        self.color_button = QtGui.QPushButton(self.color_widget)
+        self.color_button = ColorButton(self.color_widget)
         self.color_button.setObjectName('color_button')
         self.color_layout.addRow(self.color_label, self.color_button)
         self.color_layout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
@@ -94,12 +94,12 @@ class Ui_ThemeWizard(object):
         self.gradient_layout.setObjectName('gradient_layout')
         self.gradient_start_label = QtGui.QLabel(self.gradient_widget)
         self.gradient_start_label.setObjectName('gradient_start_label')
-        self.gradient_start_button = QtGui.QPushButton(self.gradient_widget)
+        self.gradient_start_button = ColorButton(self.gradient_widget)
         self.gradient_start_button.setObjectName('gradient_start_button')
         self.gradient_layout.addRow(self.gradient_start_label, self.gradient_start_button)
         self.gradient_end_label = QtGui.QLabel(self.gradient_widget)
         self.gradient_end_label.setObjectName('gradient_end_label')
-        self.gradient_end_button = QtGui.QPushButton(self.gradient_widget)
+        self.gradient_end_button = ColorButton(self.gradient_widget)
         self.gradient_end_button.setObjectName('gradient_end_button')
         self.gradient_layout.addRow(self.gradient_end_label, self.gradient_end_button)
         self.gradient_type_label = QtGui.QLabel(self.gradient_widget)
@@ -117,7 +117,7 @@ class Ui_ThemeWizard(object):
         self.image_layout.setObjectName('image_layout')
         self.image_color_label = QtGui.QLabel(self.color_widget)
         self.image_color_label.setObjectName('image_color_label')
-        self.image_color_button = QtGui.QPushButton(self.color_widget)
+        self.image_color_button = ColorButton(self.color_widget)
         self.image_color_button.setObjectName('image_color_button')
         self.image_layout.addRow(self.image_color_label, self.image_color_button)
         self.image_label = QtGui.QLabel(self.image_widget)
@@ -156,7 +156,7 @@ class Ui_ThemeWizard(object):
         self.main_color_label.setObjectName('main_color_label')
         self.main_properties_layout = QtGui.QHBoxLayout()
         self.main_properties_layout.setObjectName('main_properties_layout')
-        self.main_color_button = QtGui.QPushButton(self.main_area_page)
+        self.main_color_button = ColorButton(self.main_area_page)
         self.main_color_button.setObjectName('main_color_button')
         self.main_properties_layout.addWidget(self.main_color_button)
         self.main_properties_layout.addSpacing(20)
@@ -192,7 +192,7 @@ class Ui_ThemeWizard(object):
         self.outline_check_box.setObjectName('outline_check_box')
         self.outline_layout = QtGui.QHBoxLayout()
         self.outline_layout.setObjectName('outline_layout')
-        self.outline_color_button = QtGui.QPushButton(self.main_area_page)
+        self.outline_color_button = ColorButton(self.main_area_page)
         self.outline_color_button.setEnabled(False)
         self.outline_color_button.setObjectName('Outline_color_button')
         self.outline_layout.addWidget(self.outline_color_button)
@@ -209,7 +209,7 @@ class Ui_ThemeWizard(object):
         self.shadow_check_box.setObjectName('shadow_check_box')
         self.shadow_layout = QtGui.QHBoxLayout()
         self.shadow_layout.setObjectName('shadow_layout')
-        self.shadow_color_button = QtGui.QPushButton(self.main_area_page)
+        self.shadow_color_button = ColorButton(self.main_area_page)
         self.shadow_color_button.setEnabled(False)
         self.shadow_color_button.setObjectName('shadow_color_button')
         self.shadow_layout.addWidget(self.shadow_color_button)
@@ -235,7 +235,7 @@ class Ui_ThemeWizard(object):
         self.footer_area_layout.addRow(self.footer_font_label, self.footer_font_combo_box)
         self.footer_color_label = QtGui.QLabel(self.footer_area_page)
         self.footer_color_label.setObjectName('footer_color_label')
-        self.footer_color_button = QtGui.QPushButton(self.footer_area_page)
+        self.footer_color_button = ColorButton(self.footer_area_page)
         self.footer_color_button.setObjectName('footer_color_button')
         self.footer_area_layout.addRow(self.footer_color_label, self.footer_color_button)
         self.footer_size_label = QtGui.QLabel(self.footer_area_page)

@@ -96,6 +96,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         """
         # The songs plugin is enabled
         if FirstTimePage.Welcome < self.currentId() < FirstTimePage.Songs and self.songs_check_box.isChecked():
+            print('Go for songs! %r' % self.songs_check_box.isChecked())
             return FirstTimePage.Songs
         # The Bibles plugin is enabled
         elif FirstTimePage.Welcome < self.currentId() < FirstTimePage.Bibles and self.bible_check_box.isChecked():
@@ -182,6 +183,17 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         self.no_internet_finish_button.setVisible(False)
         # Check if this is a re-run of the wizard.
         self.has_run_wizard = Settings().value('core/has run wizard')
+        if self.has_run_wizard:
+            self.songs_check_box.setChecked(self.plugin_manager.get_plugin_by_name('songs').is_active())
+            self.bible_check_box.setChecked(self.plugin_manager.get_plugin_by_name('bibles').is_active())
+            self.presentation_check_box.setChecked(self.plugin_manager.get_plugin_by_name('presentations').is_active())
+            self.image_check_box.setChecked(self.plugin_manager.get_plugin_by_name('images').is_active())
+            self.media_check_box.setChecked(self.plugin_manager.get_plugin_by_name('media').is_active())
+            self.remote_check_box.setChecked(self.plugin_manager.get_plugin_by_name('remotes').is_active())
+            self.custom_check_box.setChecked(self.plugin_manager.get_plugin_by_name('custom').is_active())
+            self.song_usage_check_box.setChecked(self.plugin_manager.get_plugin_by_name('songusage').is_active())
+            self.alert_check_box.setChecked(self.plugin_manager.get_plugin_by_name('alerts').is_active())
+        self.application.set_normal_cursor()
         # Sort out internet access for downloads
         if self.web_access:
             songs = self.config.get('songs', 'languages')
@@ -211,7 +223,6 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             # Download the theme screenshots.
             self.theme_screenshot_thread = ThemeScreenshotThread(self)
             self.theme_screenshot_thread.start()
-        self.application.set_normal_cursor()
 
     def update_screen_list_combo(self):
         """

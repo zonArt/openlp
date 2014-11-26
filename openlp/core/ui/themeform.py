@@ -65,18 +65,18 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         self.theme_layout_form = ThemeLayoutForm(self)
         self.background_combo_box.currentIndexChanged.connect(self.on_background_combo_box_current_index_changed)
         self.gradient_combo_box.currentIndexChanged.connect(self.on_gradient_combo_box_current_index_changed)
-        self.color_button.clicked.connect(self.on_color_button_clicked)
-        self.image_color_button.clicked.connect(self.on_image_color_button_clicked)
-        self.gradient_start_button.clicked.connect(self.on_gradient_start_button_clicked)
-        self.gradient_end_button.clicked.connect(self.on_gradient_end_button_clicked)
+        self.color_button.colorChanged.connect(self.on_color_changed)
+        self.image_color_button.colorChanged.connect(self.on_image_color_changed)
+        self.gradient_start_button.colorChanged.connect(self.on_gradient_start_button_changed)
+        self.gradient_end_button.colorChanged.connect(self.on_gradient_end_button_changed)
         self.image_browse_button.clicked.connect(self.on_image_browse_button_clicked)
         self.image_file_edit.editingFinished.connect(self.on_image_file_edit_editing_finished)
-        self.main_color_button.clicked.connect(self.on_main_color_button_clicked)
-        self.outline_color_button.clicked.connect(self.on_outline_color_button_clicked)
-        self.shadow_color_button.clicked.connect(self.on_shadow_color_button_clicked)
+        self.main_color_button.colorChanged.connect(self.on_main_color_changed)
+        self.outline_color_button.colorChanged.connect(self.on_outline_color_changed)
+        self.shadow_color_button.colorChanged.connect(self.on_shadow_color_changed)
         self.outline_check_box.stateChanged.connect(self.on_outline_check_check_box_state_changed)
         self.shadow_check_box.stateChanged.connect(self.on_shadow_check_check_box_state_changed)
-        self.footer_color_button.clicked.connect(self.on_footer_color_button_clicked)
+        self.footer_color_button.colorChanged.connect(self.on_footer_color_changed)
         self.customButtonClicked.connect(self.on_custom_1_button_clicked)
         self.main_position_check_box.stateChanged.connect(self.on_main_position_check_box_state_changed)
         self.footer_position_check_box.stateChanged.connect(self.on_footer_position_check_box_state_changed)
@@ -295,14 +295,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         Handle the display and state of the Background page.
         """
         if self.theme.background_type == BackgroundType.to_string(BackgroundType.Solid):
-            self.color_button.setStyleSheet('background-color: %s' % self.theme.background_color)
+            self.color_button.color = self.theme.background_color
             self.setField('background_type', 0)
         elif self.theme.background_type == BackgroundType.to_string(BackgroundType.Gradient):
-            self.gradient_start_button.setStyleSheet('background-color: %s' % self.theme.background_start_color)
-            self.gradient_end_button.setStyleSheet('background-color: %s' % self.theme.background_end_color)
+            self.gradient_start_button.color = self.theme.background_start_color
+            self.gradient_end_button.color = self.theme.background_end_color
             self.setField('background_type', 1)
         elif self.theme.background_type == BackgroundType.to_string(BackgroundType.Image):
-            self.image_color_button.setStyleSheet('background-color: %s' % self.theme.background_border_color)
+            self.image_color_button.color = self.theme.background_border_color
             self.image_file_edit.setText(self.theme.background_filename)
             self.setField('background_type', 2)
         elif self.theme.background_type == BackgroundType.to_string(BackgroundType.Transparent):
@@ -323,14 +323,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         Handle the display and state of the Main Area page.
         """
         self.main_font_combo_box.setCurrentFont(QtGui.QFont(self.theme.font_main_name))
-        self.main_color_button.setStyleSheet('background-color: %s' % self.theme.font_main_color)
+        self.main_color_button.color = self.theme.font_main_color
         self.setField('main_size_spin_box', self.theme.font_main_size)
         self.setField('line_spacing_spin_box', self.theme.font_main_line_adjustment)
         self.setField('outline_check_box', self.theme.font_main_outline)
-        self.outline_color_button.setStyleSheet('background-color: %s' % self.theme.font_main_outline_color)
+        self.outline_color_button.color = self.theme.font_main_outline_color
         self.setField('outline_size_spin_box', self.theme.font_main_outline_size)
         self.setField('shadow_check_box', self.theme.font_main_shadow)
-        self.shadow_color_button.setStyleSheet('background-color: %s' % self.theme.font_main_shadow_color)
+        self.shadow_color_button.color = self.theme.font_main_shadow_color
         self.setField('shadow_size_spin_box', self.theme.font_main_shadow_size)
         self.setField('main_bold_check_box', self.theme.font_main_bold)
         self.setField('main_italics_check_box', self.theme.font_main_italics)
@@ -340,7 +340,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         Handle the display and state of the Footer Area page.
         """
         self.footer_font_combo_box.setCurrentFont(QtGui.QFont(self.theme.font_footer_name))
-        self.footer_color_button.setStyleSheet('background-color: %s' % self.theme.font_footer_color)
+        self.footer_color_button.color = self.theme.font_footer_color
         self.setField('footer_size_spin_box', self.theme.font_footer_size)
 
     def set_position_page_values(self):
@@ -399,33 +399,29 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
             self.theme.background_direction = BackgroundGradientType.to_string(index)
             self.set_background_page_values()
 
-    def on_color_button_clicked(self):
+    def on_color_changed(self, color):
         """
         Background / Gradient 1 _color button pushed.
         """
-        self.theme.background_color = self._color_button(self.theme.background_color)
-        self.set_background_page_values()
+        self.theme.background_color = color
 
-    def on_image_color_button_clicked(self):
+    def on_image_color_changed(self, color):
         """
         Background / Gradient 1 _color button pushed.
         """
-        self.theme.background_border_color = self._color_button(self.theme.background_border_color)
-        self.set_background_page_values()
+        self.theme.background_border_color = color
 
-    def on_gradient_start_button_clicked(self):
+    def on_gradient_start_button_changed(self, color):
         """
         Gradient 2 _color button pushed.
         """
-        self.theme.background_start_color = self._color_button(self.theme.background_start_color)
-        self.set_background_page_values()
+        self.theme.background_start_color = color
 
-    def on_gradient_end_button_clicked(self):
+    def on_gradient_end_button_changed(self, color):
         """
         Gradient 2 _color button pushed.
         """
-        self.theme.background_end_color = self._color_button(self.theme.background_end_color)
-        self.set_background_page_values()
+        self.theme.background_end_color = color
 
     def on_image_browse_button_clicked(self):
         """
@@ -445,33 +441,29 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         self.theme.background_filename = str(self.image_file_edit.text())
 
-    def on_main_color_button_clicked(self):
+    def on_main_color_changed(self, color):
         """
         Set the main colour value
         """
-        self.theme.font_main_color = self._color_button(self.theme.font_main_color)
-        self.set_main_area_page_values()
+        self.theme.font_main_color = color
 
-    def on_outline_color_button_clicked(self):
+    def on_outline_color_changed(self, color):
         """
         Set the outline colour value
         """
-        self.theme.font_main_outline_color = self._color_button(self.theme.font_main_outline_color)
-        self.set_main_area_page_values()
+        self.theme.font_main_outline_color = color
 
-    def on_shadow_color_button_clicked(self):
+    def on_shadow_color_changed(self, color):
         """
         Set the shadow colour value
         """
-        self.theme.font_main_shadow_color = self._color_button(self.theme.font_main_shadow_color)
-        self.set_main_area_page_values()
+        self.theme.font_main_shadow_color = color
 
-    def on_footer_color_button_clicked(self):
+    def on_footer_color_changed(self, color):
         """
         Set the footer colour value
         """
-        self.theme.font_footer_color = self._color_button(self.theme.font_footer_color)
-        self.set_footer_area_page_values()
+        self.theme.font_footer_color = color
 
     def update_theme(self):
         """
@@ -532,12 +524,3 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
             return
         self.theme_manager.save_theme(self.theme, save_from, save_to)
         return QtGui.QDialog.accept(self)
-
-    def _color_button(self, field):
-        """
-        Handle _color buttons
-        """
-        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(field), self)
-        if new_color.isValid():
-            field = new_color.name()
-        return field

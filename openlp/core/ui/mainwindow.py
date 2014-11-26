@@ -431,7 +431,7 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Import OpenLP settings from a specified *.config file previously '
                                            'exported on this or another machine'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
-        self.view_projector_manager_item.setText(translate('OPenLP.MainWindow', '&ProjectorManager'))
+        self.view_projector_manager_item.setText(translate('OPenLP.MainWindow', '&Projector Manager'))
         self.view_projector_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Projector Manager'))
         self.view_projector_manager_item.setStatusTip(translate('OpenLP.MainWindow',
                                                                 'Toggle the visibility of the Projector Manager'))
@@ -641,10 +641,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if view_mode == 'default':
             self.mode_default_item.setChecked(True)
         elif view_mode == 'setup':
-            self.set_view_mode(True, True, False, True, False)
+            self.set_view_mode(True, True, False, True, False, True)
             self.mode_setup_item.setChecked(True)
         elif view_mode == 'live':
-            self.set_view_mode(False, True, False, False, True)
+            self.set_view_mode(False, True, False, False, True, True)
             self.mode_live_item.setChecked(True)
 
     def app_startup(self):
@@ -981,7 +981,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             # FIXME: We are conflicting with the standard "General" section.
             if 'eneral' in section_key:
                 section_key = section_key.lower()
-            key_value = settings.value(section_key)
+            try:
+                key_value = settings.value(section_key)
+            except KeyError:
+                QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
+                                           translate('OpenLP.MainWindow', 'The key "%s" does not have a default value '
+                                                     'so it will be skipped in this export.') % section_key,
+                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                key_value = None
             if key_value is not None:
                 export_settings.setValue(section_key, key_value)
         export_settings.sync()
@@ -1003,21 +1010,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Put OpenLP into "Default" view mode.
         """
-        self.set_view_mode(True, True, True, True, True, 'default')
+        self.set_view_mode(True, True, True, True, True, True, 'default')
 
     def on_mode_setup_item_clicked(self):
         """
         Put OpenLP into "Setup" view mode.
         """
-        self.set_view_mode(True, True, False, True, False, 'setup')
+        self.set_view_mode(True, True, False, True, False, True, 'setup')
 
     def on_mode_live_item_clicked(self):
         """
         Put OpenLP into "Live" view mode.
         """
-        self.set_view_mode(False, True, False, False, True, 'live')
+        self.set_view_mode(False, True, False, False, True, True, 'live')
 
-    def set_view_mode(self, media=True, service=True, theme=True, preview=True, live=True, mode=''):
+    def set_view_mode(self, media=True, service=True, theme=True, preview=True, live=True, projector=True, mode=''):
         """
         Set OpenLP to a different view mode.
         """
@@ -1027,6 +1034,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.media_manager_dock.setVisible(media)
         self.service_manager_dock.setVisible(service)
         self.theme_manager_dock.setVisible(theme)
+        self.projector_manager_dock.setVisible(projector)
         self.set_preview_panel_visibility(preview)
         self.set_live_panel_visibility(live)
 
@@ -1189,18 +1197,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.theme_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
             self.service_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
             self.media_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
+            self.projector_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
             self.view_media_manager_item.setEnabled(False)
             self.view_service_manager_item.setEnabled(False)
             self.view_theme_manager_item.setEnabled(False)
+            self.view_projector_manager_item.setEnabled(False)
             self.view_preview_panel.setEnabled(False)
             self.view_live_panel.setEnabled(False)
         else:
             self.theme_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
             self.service_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
             self.media_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
+            self.projector_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
             self.view_media_manager_item.setEnabled(True)
             self.view_service_manager_item.setEnabled(True)
             self.view_theme_manager_item.setEnabled(True)
+            self.view_projector_manager_item.setEnabled(True)
             self.view_preview_panel.setEnabled(True)
             self.view_live_panel.setEnabled(True)
         Settings().setValue('user interface/lock panel', lock)

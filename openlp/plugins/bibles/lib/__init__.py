@@ -330,7 +330,10 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
         if not book_ref_id:
             book_ref_id = bible.get_book_ref_id_by_localised_name(book, language_selection)
         elif not bible.get_book_by_book_ref_id(book_ref_id):
-            book_ref_id = False
+            return False
+        # We have not found the book so do not continue
+        if not book_ref_id:
+            return False
         ranges = match.group('ranges')
         range_list = get_reference_match('range_separator').split(ranges)
         ref_list = []
