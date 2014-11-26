@@ -159,7 +159,10 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         # check to see if we have web access
         self.config = ConfigParser()
         user_agent = 'OpenLP/' + Registry().get('application').applicationVersion()
-        self.web_access = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
+        self.application.process_events()
+        self.web_access = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent),
+                                       update_openlp=True)
+        self.application.process_events()
         if self.web_access:
             files = self.web_access.read()
             self.config.read_string(files.decode())
@@ -168,12 +171,14 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             self.bibles_url = self.web + self.config.get('bibles', 'directory') + '/'
             self.themes_url = self.web + self.config.get('themes', 'directory') + '/'
         self.update_screen_list_combo()
+        self.application.process_events()
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         # Sort out internet access for downloads
         if self.web_access:
             songs = self.config.get('songs', 'languages')
             songs = songs.split(',')
             for song in songs:
+                self.application.process_events()
                 title = self.config.get('songs_%s' % song, 'title')
                 filename = self.config.get('songs_%s' % song, 'filename')
                 item = QtGui.QListWidgetItem(title, self.songs_list_widget)
@@ -183,11 +188,13 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             bible_languages = self.config.get('bibles', 'languages')
             bible_languages = bible_languages.split(',')
             for lang in bible_languages:
+                self.application.process_events()
                 language = self.config.get('bibles_%s' % lang, 'title')
                 lang_item = QtGui.QTreeWidgetItem(self.bibles_tree_widget, [language])
                 bibles = self.config.get('bibles_%s' % lang, 'translations')
                 bibles = bibles.split(',')
                 for bible in bibles:
+                    self.application.process_events()
                     title = self.config.get('bible_%s' % bible, 'title')
                     filename = self.config.get('bible_%s' % bible, 'filename')
                     item = QtGui.QTreeWidgetItem(lang_item, [title])
@@ -195,9 +202,11 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             self.bibles_tree_widget.expandAll()
+            self.application.process_events()
             # Download the theme screenshots
             themes = self.config.get('themes', 'files').split(',')
             for theme in themes:
+                self.application.process_events()
                 title = self.config.get('theme_%s' % theme, 'title')
                 filename = self.config.get('theme_%s' % theme, 'filename')
                 screenshot = self.config.get('theme_%s' % theme, 'screenshot')
@@ -279,6 +288,8 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             self.next_button.setVisible(False)
             self.cancel_button.setVisible(False)
             self.no_internet_finish_button.setVisible(True)
+        elif page_id == FirstTimePage.Plugins:
+            self.back_button.setVisible(False)
         elif page_id == FirstTimePage.Progress:
             self.application.set_busy_cursor()
             self._pre_wizard()

@@ -88,12 +88,6 @@ class UiFirstTimeWizard(object):
         self.download_label = QtGui.QLabel(self.download_page)
         self.download_label.setObjectName('download_label')
         self.download_layout.addWidget(self.download_label)
-        self.download_progress_bar = QtGui.QProgressBar(self.download_page)
-        self.download_progress_bar.setMinimum(0)
-        self.download_progress_bar.setMaximum(0)
-        self.download_progress_bar.setValue(0)
-        self.download_progress_bar.setObjectName('download_progress_bar')
-        self.download_layout.addWidget(self.download_progress_bar)
         first_time_wizard.setPage(FirstTimePage.Download, self.download_page)
         # The "you don't have an internet connection" page.
         self.no_internet_page = QtGui.QWizardPage()
@@ -241,7 +235,8 @@ class UiFirstTimeWizard(object):
         self.download_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Downloading Resource Index'))
         self.download_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Please wait while the resource index is '
                                                                            'downloaded.'))
-        self.download_label.setText(translate('OpenLP.FirstTimeWizard', 'Downloading resource index...'))
+        self.download_label.setText(translate('OpenLP.FirstTimeWizard', 'Please wait while OpenLP downloads the '
+                                                                        'resource index file...'))
         self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
         self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
         self.songs_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
