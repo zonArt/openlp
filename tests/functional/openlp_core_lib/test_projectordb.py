@@ -85,8 +85,11 @@ class TestProjectorDB(TestCase):
         Set up anything necessary for all tests
         """
         if not hasattr(self, 'projector'):
-            with patch('openlp.core.lib.db.init_url') as mocked_init_url:
-                mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
+            # We need to patch this twice to make it work across multiple platforms and versions.
+            with patch('openlp.core.lib.db.init_url') as mocked_init_url1, \
+                    patch('openlp.core.lib.projector.db.init_url') as mocked_init_url2:
+                mocked_init_url1.return_value = 'sqlite:///%s' % tmpfile
+                mocked_init_url2.return_value = 'sqlite:///%s' % tmpfile
                 self.projector = ProjectorDB()
 
     def find_record_by_ip_test(self):
