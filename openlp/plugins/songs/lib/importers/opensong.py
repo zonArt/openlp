@@ -126,7 +126,7 @@ class OpenSongImport(SongImport):
         for filename in self.import_source:
             if self.stop_import_flag:
                 return
-            song_file = open(filename)
+            song_file = open(filename, 'rb')
             self.do_import_file(song_file)
             song_file.close()
 
