@@ -54,3 +54,5 @@ class TestWorshipAssistantFileImport(SongImportTestHelper):
                          self.load_external_result_data(os.path.join(TEST_PATH, 'du_herr.json')))
         self.file_import(os.path.join(TEST_PATH, 'would_you_be_free.csv'),
                          self.load_external_result_data(os.path.join(TEST_PATH, 'would_you_be_free.json')))
+        self.file_import(os.path.join(TEST_PATH, 'would_you_be_free2.csv'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'would_you_be_free.json')))

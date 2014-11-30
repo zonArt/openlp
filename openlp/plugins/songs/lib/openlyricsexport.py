@@ -75,9 +75,14 @@ class OpenLyricsExport(RegistryProperties):
             filename = '%s (%s)' % (song.title, ', '.join([author.display_name for author in song.authors]))
             filename = clean_filename(filename)
             # Ensure the filename isn't too long for some filesystems
-            filename = '%s.xml' % filename[0:250 - len(self.save_path)]
+            filename_with_ext = '%s.xml' % filename[0:250 - len(self.save_path)]
+            # Make sure we're not overwriting an existing file
+            conflicts = 0
+            while os.path.exists(os.path.join(self.save_path, filename_with_ext)):
+                conflicts += 1
+                filename_with_ext = '%s-%d.xml' % (filename[0:247 - len(self.save_path)], conflicts)
             # Pass a file object, because lxml does not cope with some special
             # characters in the path (see lp:757673 and lp:744337).
-            tree.write(open(os.path.join(self.save_path, filename), 'wb'), encoding='utf-8', xml_declaration=True,
-                       pretty_print=True)
+            tree.write(open(os.path.join(self.save_path, filename_with_ext), 'wb'), encoding='utf-8',
+                       xml_declaration=True, pretty_print=True)
         return True

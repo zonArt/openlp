@@ -683,7 +683,8 @@ class SlideController(DisplayController, RegistryProperties):
         self.play_slides_loop.setChecked(False)
         self.play_slides_loop.setIcon(build_icon(':/media/media_time.png'))
         if item.is_text():
-            if Settings().value(self.main_window.songs_settings_section + '/display songbar') and self.slide_list:
+            if (Settings().value(self.main_window.songs_settings_section + '/display songbar')
+                    and not self.song_menu.menu().isEmpty()):
                 self.toolbar.set_widget_visible(['song_menu'], True)
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
             self.toolbar.set_widget_visible(LOOP_LIST)
@@ -691,7 +692,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.mediabar.show()
         self.previous_item.setVisible(not item.is_media())
         self.next_item.setVisible(not item.is_media())
-        self.set_blank_menu()
+        # The layout of the toolbar is size dependent, so make sure it fits
+        self.on_controller_size_changed(self.controller.width())
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
         self.toolbar.show()
