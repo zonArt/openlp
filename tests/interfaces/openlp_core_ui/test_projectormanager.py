@@ -31,7 +31,6 @@ Interface tests to test the themeManager class and related methods.
 """
 
 import os
-import sys
 from unittest import TestCase
 
 from openlp.core.common import Registry, Settings
@@ -58,16 +57,12 @@ class TestProjectorManager(TestCase, TestMixin):
         self.setup_application()
         Registry.create()
         if not hasattr(self, 'projector_manager'):
-            # We need to patch this in different ways to make to work an all versions
-            if sys.version_info > (3, 4, 0):
-                mocked_init_url = patch('openlp.core.lib.db.init_url')
-            else:
-                mocked_init_url = patch('openlp.core.lib.projector.db.init_url')
-            mocked_init_url.start()
-            mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
-            self.projectordb = ProjectorDB()
-            if not hasattr(self, 'projector_manager'):
-                self.projector_manager = ProjectorManager(projectordb=self.projectordb)
+            with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
+                mocked_init_url.start()
+                mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
+                self.projectordb = ProjectorDB()
+                if not hasattr(self, 'projector_manager'):
+                    self.projector_manager = ProjectorManager(projectordb=self.projectordb)
 
     def tearDown(self):
         """

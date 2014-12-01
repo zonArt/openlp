@@ -32,7 +32,7 @@ record functions.
 
 PREREQUISITE: add_record() and get_all() functions validated.
 """
-import sys
+
 from unittest import TestCase
 from tests.functional import MagicMock, patch
 
@@ -85,14 +85,10 @@ class TestProjectorDB(TestCase):
         Set up anything necessary for all tests
         """
         if not hasattr(self, 'projector'):
-            # We need to patch this in different ways to make to work an all versions
-            if sys.version_info > (3, 4, 0):
-                mocked_init_url = patch('openlp.core.lib.db.init_url')
-            else:
-                mocked_init_url = patch('openlp.core.lib.projector.db.init_url')
-            mocked_init_url.start()
-            mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
-            self.projector = ProjectorDB()
+            with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
+                mocked_init_url.start()
+                mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
+                self.projector = ProjectorDB()
 
     def find_record_by_ip_test(self):
         """
