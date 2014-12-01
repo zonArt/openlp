@@ -105,7 +105,7 @@ class Registry(object):
         if key in self.service_list:
             del self.service_list[key]
 
-    def register_function(self, event, function):
+    def register_function(self, event, function, overwrite=False):
         """
         Register an event and associated function to be called
 
@@ -113,8 +113,9 @@ class Registry(object):
             will/may need to respond to a single action and the caller does not need to understand or know about the
             recipients.
         :param function: The function to be called when the event happens.
+        :param overwrite: There should only be one function with the registred name.
         """
-        if event in self.functions_list:
+        if not overwrite and event in self.functions_list:
             self.functions_list[event].append(function)
         else:
             self.functions_list[event] = [function]

@@ -153,9 +153,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.set_transparency(False)
         if self.is_live:
-            Registry().register_function('live_display_hide', self.hide_display)
-            Registry().register_function('live_display_show', self.show_display)
-            Registry().register_function('update_display_css', self.css_changed)
+            Registry().register_function('live_display_hide', self.hide_display, True)
+            Registry().register_function('live_display_show', self.show_display, True)
+            Registry().register_function('update_display_css', self.css_changed, True)
 
     def set_transparency(self, enabled):
         """
