@@ -49,7 +49,17 @@ class TestServiceManager(TestCase, TestMixin):
         self.setup_application()
         ScreenList.create(self.app.desktop())
         Registry().register('application', MagicMock())
-        with patch('openlp.core.lib.PluginManager'):
+        # Mock classes and methods used by mainwindow.
+        with patch('openlp.core.ui.mainwindow.SettingsForm') as mocked_settings_form, \
+                patch('openlp.core.ui.mainwindow.ImageManager') as mocked_image_manager, \
+                patch('openlp.core.ui.mainwindow.LiveController') as mocked_live_controller, \
+                patch('openlp.core.ui.mainwindow.PreviewController') as mocked_preview_controller, \
+                patch('openlp.core.ui.mainwindow.OpenLPDockWidget') as mocked_dock_widget, \
+                patch('openlp.core.ui.mainwindow.QtGui.QToolBox') as mocked_q_tool_box_class, \
+                patch('openlp.core.ui.mainwindow.QtGui.QMainWindow.addDockWidget') as mocked_add_dock_method, \
+                patch('openlp.core.ui.mainwindow.ThemeManager') as mocked_theme_manager, \
+                patch('openlp.core.ui.mainwindow.ProjectorManager') as mocked_projector_manager, \
+                patch('openlp.core.ui.mainwindow.Renderer') as mocked_renderer:
             self.main_window = MainWindow()
         self.service_manager = Registry().get('service_manager')
 
@@ -57,6 +67,7 @@ class TestServiceManager(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
+        del self.main_window
 
     def basic_service_manager_test(self):
         """
