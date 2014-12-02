@@ -618,6 +618,9 @@ class SlideController(DisplayController, RegistryProperties):
             elif width < used_space - HIDE_MENU_THRESHOLD and not self.hide_menu.isVisible():
                 self.set_blank_menu(False)
                 self.toolbar.set_widget_visible(NARROW_MENU)
+            # Fallback to the standard blank toolbar if the hide_menu is not visible.
+            elif not self.hide_menu.isVisible():
+                self.set_blank_menu()
 
     def set_blank_menu(self, visible=True):
         """
