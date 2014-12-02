@@ -167,7 +167,6 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             Registry().remove_function('update_display_css', self.css_changed)
         super().close()
 
-
     def set_transparency(self, enabled):
         """
         Set the transparency of the window
