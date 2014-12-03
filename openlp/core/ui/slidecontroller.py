@@ -141,6 +141,7 @@ class SlideController(DisplayController, RegistryProperties):
         self.slide_list = {}
         self.slide_count = 0
         self.slide_image = None
+        self.controller_width = 0
         # Layout for holding panel
         self.panel_layout = QtGui.QVBoxLayout(self.panel)
         self.panel_layout.setSpacing(0)
@@ -382,13 +383,11 @@ class SlideController(DisplayController, RegistryProperties):
             Registry().register_function('slidecontroller_live_spin_delay', self.receive_spin_delay)
             self.toolbar.set_widget_visible(LOOP_LIST, False)
             self.toolbar.set_widget_visible(WIDE_MENU, False)
-        else:
-            self.preview_widget.doubleClicked.connect(self.on_preview_add_to_service)
-            self.toolbar.set_widget_visible(['editSong'], False)
-        if self.is_live:
             self.set_live_hot_keys(self)
             self.__add_actions_to_widget(self.controller)
         else:
+            self.preview_widget.doubleClicked.connect(self.on_preview_add_to_service)
+            self.toolbar.set_widget_visible(['editSong'], False)
             self.controller.addActions([self.next_item, self.previous_item])
         Registry().register_function('slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
         Registry().register_function('slidecontroller_%s_change' % self.type_prefix, self.on_slide_change)
@@ -599,7 +598,10 @@ class SlideController(DisplayController, RegistryProperties):
             self.slide_preview.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.screen = {'size': self.preview_display.geometry()}
-        self.on_controller_size_changed(self.controller.width())
+        # Only update controller layout if width has actually changed
+        if self.controller_width != self.controller.width():
+            self.controller_width = self.controller.width()
+            self.on_controller_size_changed(self.controller_width)
 
     def on_controller_size_changed(self, width):
         """
