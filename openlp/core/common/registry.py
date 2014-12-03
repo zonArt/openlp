@@ -126,10 +126,6 @@ class Registry(object):
         :param event: The function description..
         :param function: The function to be called when the event happens.
         """
-        if not self.running_under_test:
-            trace_error_handler(log)
-            log.error('Invalid Method call for key %s' % event)
-            raise KeyError('Invalid Method call for key %s' % event)
         if event in self.functions_list:
             self.functions_list[event].remove(function)
 
