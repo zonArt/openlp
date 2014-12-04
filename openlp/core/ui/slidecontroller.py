@@ -332,9 +332,6 @@ class SlideController(DisplayController, RegistryProperties):
         self.slide_layout.setMargin(0)
         self.slide_layout.setObjectName('SlideLayout')
         self.preview_display = Display(self)
-        self.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
-        self.preview_display.screen = {'size': self.preview_display.geometry()}
-        self.preview_display.setup()
         self.slide_layout.insertWidget(0, self.preview_display)
         self.preview_display.hide()
         # Actual preview screen
