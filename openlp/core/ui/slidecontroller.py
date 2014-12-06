@@ -141,7 +141,7 @@ class SlideController(DisplayController, RegistryProperties):
         self.slide_list = {}
         self.slide_count = 0
         self.slide_image = None
-        self.controller_width = 0
+        self.controller_width = -1
         # Layout for holding panel
         self.panel_layout = QtGui.QVBoxLayout(self.panel)
         self.panel_layout.setSpacing(0)
@@ -619,6 +619,7 @@ class SlideController(DisplayController, RegistryProperties):
                 self.toolbar.set_widget_visible(NARROW_MENU)
             # Fallback to the standard blank toolbar if the hide_menu is not visible.
             elif not self.hide_menu.isVisible():
+                self.toolbar.set_widget_visible(NARROW_MENU, False)
                 self.set_blank_menu()
 
     def set_blank_menu(self, visible=True):
@@ -694,7 +695,9 @@ class SlideController(DisplayController, RegistryProperties):
             self.mediabar.show()
         self.previous_item.setVisible(not item.is_media())
         self.next_item.setVisible(not item.is_media())
-        # The layout of the toolbar is size dependent, so make sure it fits
+        # The layout of the toolbar is size dependent, so make sure it fits. Reset stored controller_width.
+        if self.is_live:
+            self.controller_width = -1
         self.on_controller_size_changed(self.controller.width())
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
