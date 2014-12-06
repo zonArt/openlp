@@ -747,8 +747,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                                                'File is not a valid service.\n The content encoding is not UTF-8.'))
                     continue
                 os_file = ucs_file.replace('/', os.path.sep)
-                if not os_file.startswith('audio'):
-                    os_file = os.path.split(os_file)[1]
+                os_file = os.path.basename(os_file)
                 self.log_debug('Extract file: %s' % os_file)
                 zip_info.filename = os_file
                 zip_file.extract(zip_info, self.service_path)
