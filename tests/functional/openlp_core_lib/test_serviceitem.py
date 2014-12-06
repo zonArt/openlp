@@ -46,7 +46,7 @@ VERSE = 'The Lord said to {r}Noah{/r}: \n'\
         '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}'\
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = ['Arky Arky (Unknown)', 'Public Domain', 'CCLI 123456']
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources', 'service'))
 
 
 class TestServiceItem(TestCase):
@@ -281,7 +281,7 @@ class TestServiceItem(TestCase):
         service_item.add_icon = MagicMock()
 
         # WHEN: We add a custom from a saved service
-        line = convert_file_service_item(TEST_PATH, 'service/serviceitem-song-linked-audio.osj')
+        line = convert_file_service_item(TEST_PATH, 'serviceitem-song-linked-audio.osj')
         service_item.set_from_service(line, '/test/')
 
         # THEN: We should get back a valid service item
