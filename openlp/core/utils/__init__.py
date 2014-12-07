@@ -35,6 +35,8 @@ import logging
 import locale
 import os
 import re
+import time
+from shutil import which
 from subprocess import Popen, PIPE
 import sys
 import urllib.request
@@ -91,6 +93,8 @@ USER_AGENTS = {
         'Mozilla/5.0 (X11; NetBSD amd64; rv:18.0) Gecko/20130120 Firefox/18.0'
     ]
 }
+CONNECTION_TIMEOUT = 30
+CONNECTION_RETRIES = 2
 
 
 class VersionThread(QtCore.QThread):
@@ -250,10 +254,19 @@ def check_latest_version(current_version):
                 req = urllib.request.Request('http://www.openlp.org/files/version.txt')
         req.add_header('User-Agent', 'OpenLP/%s' % current_version['full'])
         remote_version = None
-        try:
-            remote_version = str(urllib.request.urlopen(req, None).read().decode()).strip()
-        except IOError:
-            log.exception('Failed to download the latest OpenLP version file')
+        retries = 0
+        while True:
+            try:
+                remote_version = str(urllib.request.urlopen(req, None,
+                                                            timeout=CONNECTION_TIMEOUT).read().decode()).strip()
+            except ConnectionException:
+                if retries > CONNECTION_RETRIES:
+                    log.exception('Failed to download the latest OpenLP version file')
+                else:
+                    retries += 1
+                    time.sleep(0.1)
+                    continue
+            break
         if remote_version:
             version_string = remote_version
     return version_string
@@ -389,11 +402,19 @@ def get_web_page(url, header=None, update_openlp=False):
         req.add_header(header[0], header[1])
     page = None
     log.debug('Downloading URL = %s' % url)
-    try:
-        page = urllib.request.urlopen(req)
-        log.debug('Downloaded URL = %s' % page.geturl())
-    except urllib.error.URLError:
-        log.exception('The web page could not be downloaded')
+    retries = 0
+    while True:
+        try:
+            page = urllib.request.urlopen(req, timeout=CONNECTION_TIMEOUT)
+            log.debug('Downloaded URL = %s' % page.geturl())
+        except (urllib.error.URLError, ConnectionError):
+            if retries > CONNECTION_RETRIES:
+                log.exception('The web page could not be downloaded')
+                raise
+            else:
+                time.sleep(0.1)
+                continue
+        break
     if not page:
         return None
     if update_openlp:
@@ -406,13 +427,18 @@ def get_uno_command():
     """
     Returns the UNO command to launch an openoffice.org instance.
     """
-    COMMAND = 'soffice'
+    for command in ['libreoffice', 'soffice']:
+        if which(command):
+             break
+    else:
+        raise FileNotFoundError('Command not found')
+
     OPTIONS = '--nologo --norestore --minimized --nodefault --nofirststartwizard'
     if UNO_CONNECTION_TYPE == 'pipe':
         CONNECTION = '"--accept=pipe,name=openlp_pipe;urp;"'
     else:
         CONNECTION = '"--accept=socket,host=localhost,port=2002;urp;"'
-    return '%s %s %s' % (COMMAND, OPTIONS, CONNECTION)
+    return '%s %s %s' % (command, OPTIONS, CONNECTION)
 
 
 def get_uno_instance(resolver):

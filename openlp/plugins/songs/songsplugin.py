@@ -60,7 +60,7 @@ __default_settings__ = {
     'songs/last search type': SongSearch.Entire,
     'songs/last import type': SongFormat.OpenLyrics,
     'songs/update service on edit': False,
-    'songs/search as type': False,
+    'songs/search as type': True,
     'songs/add song from service': True,
     'songs/display songbar': True,
     'songs/display songbook': False,

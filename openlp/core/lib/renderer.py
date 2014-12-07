@@ -302,7 +302,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
                         lines = text.strip('\n').split('\n')
                         pages.extend(self._paginate_slide(lines, line_end))
                         break
-                    count =+ 1
+                    count += 1
             else:
                 # Clean up line endings.
                 pages = self._paginate_slide(text.split('\n'), line_end)

@@ -85,7 +85,7 @@ class ImpressController(PresentationController):
         log.debug('Initialising')
         super(ImpressController, self).__init__(plugin, 'Impress', ImpressDocument)
         self.supports = ['odp']
-        self.also_supports = ['ppt', 'pps', 'pptx', 'ppsx']
+        self.also_supports = ['ppt', 'pps', 'pptx', 'ppsx', 'pptm']
         self.process = None
         self.desktop = None
         self.manager = None
