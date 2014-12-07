@@ -36,6 +36,7 @@ import locale
 import os
 import re
 import time
+from shutil import which
 from subprocess import Popen, PIPE
 import sys
 import urllib.request
@@ -426,13 +427,18 @@ def get_uno_command():
     """
     Returns the UNO command to launch an openoffice.org instance.
     """
-    COMMAND = 'soffice'
+    for command in ['libreoffice', 'soffice']:
+        if which(command):
+             break
+    else:
+        raise FileNotFoundError('Command not found')
+
     OPTIONS = '--nologo --norestore --minimized --nodefault --nofirststartwizard'
     if UNO_CONNECTION_TYPE == 'pipe':
         CONNECTION = '"--accept=pipe,name=openlp_pipe;urp;"'
     else:
         CONNECTION = '"--accept=socket,host=localhost,port=2002;urp;"'
-    return '%s %s %s' % (COMMAND, OPTIONS, CONNECTION)
+    return '%s %s %s' % (command, OPTIONS, CONNECTION)
 
 
 def get_uno_instance(resolver):
