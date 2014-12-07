@@ -225,6 +225,10 @@ class TestSlideController(TestCase):
         Registry().register('media_controller', mocked_media_controller)
         slide_controller = SlideController(None)
         slide_controller.display = mocked_display
+        play_slides = MagicMock()
+        play_slides.isChecked.return_value = False
+        slide_controller.play_slides_loop = play_slides
+        slide_controller.play_slides_once = play_slides
 
         # WHEN: live_escape() is called
         slide_controller.live_escape()

@@ -159,7 +159,7 @@ class BiblePlugin(Plugin):
             self.upgrade_wizard = BibleUpgradeForm(self.main_window, self.manager, self)
         # If the import was not cancelled then reload.
         if self.upgrade_wizard.exec_():
-            self.media_item.reloadBibles()
+            self.media_item.reload_bibles()
 
     def on_bible_import_click(self):
         if self.media_item:

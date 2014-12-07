@@ -31,6 +31,7 @@ import os
 import logging
 from tempfile import NamedTemporaryFile
 import re
+from shutil import which
 from subprocess import check_output, CalledProcessError, STDOUT
 
 from openlp.core.utils import AppLocation
@@ -144,17 +145,10 @@ class PdfController(PresentationController):
             else:
                 DEVNULL = open(os.devnull, 'wb')
                 # First try to find mupdf
-                try:
-                    self.mudrawbin = check_output(['which', 'mudraw'],
-                                                  stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
-                except CalledProcessError:
-                    self.mudrawbin = ''
+                self.mudrawbin = which('mudraw')
                 # if mupdf isn't installed, fallback to ghostscript
                 if not self.mudrawbin:
-                    try:
-                        self.gsbin = check_output(['which', 'gs'], stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
-                    except CalledProcessError:
-                        self.gsbin = ''
+                    self.gsbin = which('gs')
                 # Last option: check if mudraw is placed in OpenLP base folder
                 if not self.mudrawbin and not self.gsbin:
                     application_path = AppLocation.get_directory(AppLocation.AppDir)

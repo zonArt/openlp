@@ -141,6 +141,7 @@ class SlideController(DisplayController, RegistryProperties):
         self.slide_list = {}
         self.slide_count = 0
         self.slide_image = None
+        self.controller_width = -1
         # Layout for holding panel
         self.panel_layout = QtGui.QVBoxLayout(self.panel)
         self.panel_layout.setSpacing(0)
@@ -331,9 +332,6 @@ class SlideController(DisplayController, RegistryProperties):
         self.slide_layout.setMargin(0)
         self.slide_layout.setObjectName('SlideLayout')
         self.preview_display = Display(self)
-        self.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
-        self.preview_display.screen = {'size': self.preview_display.geometry()}
-        self.preview_display.setup()
         self.slide_layout.insertWidget(0, self.preview_display)
         self.preview_display.hide()
         # Actual preview screen
@@ -382,13 +380,11 @@ class SlideController(DisplayController, RegistryProperties):
             Registry().register_function('slidecontroller_live_spin_delay', self.receive_spin_delay)
             self.toolbar.set_widget_visible(LOOP_LIST, False)
             self.toolbar.set_widget_visible(WIDE_MENU, False)
-        else:
-            self.preview_widget.doubleClicked.connect(self.on_preview_add_to_service)
-            self.toolbar.set_widget_visible(['editSong'], False)
-        if self.is_live:
             self.set_live_hot_keys(self)
             self.__add_actions_to_widget(self.controller)
         else:
+            self.preview_widget.doubleClicked.connect(self.on_preview_add_to_service)
+            self.toolbar.set_widget_visible(['editSong'], False)
             self.controller.addActions([self.next_item, self.previous_item])
         Registry().register_function('slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
         Registry().register_function('slidecontroller_%s_change' % self.type_prefix, self.on_slide_change)
@@ -493,6 +489,11 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.display.setVisible(False)
         self.media_controller.media_stop(self)
+        # Stop looping if active
+        if self.play_slides_loop.isChecked():
+            self.on_play_slides_loop(False)
+        elif self.play_slides_once.isChecked():
+            self.on_play_slides_once(False)
 
     def toggle_display(self, action):
         """
@@ -599,7 +600,10 @@ class SlideController(DisplayController, RegistryProperties):
             self.slide_preview.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.screen = {'size': self.preview_display.geometry()}
-        self.on_controller_size_changed(self.controller.width())
+        # Only update controller layout if width has actually changed
+        if self.controller_width != self.controller.width():
+            self.controller_width = self.controller.width()
+            self.on_controller_size_changed(self.controller_width)
 
     def on_controller_size_changed(self, width):
         """
@@ -618,6 +622,10 @@ class SlideController(DisplayController, RegistryProperties):
             elif width < used_space - HIDE_MENU_THRESHOLD and not self.hide_menu.isVisible():
                 self.set_blank_menu(False)
                 self.toolbar.set_widget_visible(NARROW_MENU)
+            # Fallback to the standard blank toolbar if the hide_menu is not visible.
+            elif not self.hide_menu.isVisible():
+                self.toolbar.set_widget_visible(NARROW_MENU, False)
+                self.set_blank_menu()
 
     def set_blank_menu(self, visible=True):
         """
@@ -692,7 +700,9 @@ class SlideController(DisplayController, RegistryProperties):
             self.mediabar.show()
         self.previous_item.setVisible(not item.is_media())
         self.next_item.setVisible(not item.is_media())
-        # The layout of the toolbar is size dependent, so make sure it fits
+        # The layout of the toolbar is size dependent, so make sure it fits. Reset stored controller_width.
+        if self.is_live:
+            self.controller_width = -1
         self.on_controller_size_changed(self.controller.width())
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
