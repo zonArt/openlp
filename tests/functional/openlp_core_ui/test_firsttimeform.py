@@ -49,6 +49,22 @@ directory = bibles
 directory = themes
 """
 
+FAKE_BROKEN_CONFIG = b"""
+[general]
+base url = http://example.com/frw/
+[songs]
+directory = songs
+[bibles]
+directory = bibles
+"""
+
+FAKE_INVALID_CONFIG = b"""
+<html>
+<head><title>This is not a config file</title></head>
+<body>Some text</body>
+</html>
+"""
+
 
 class TestFirstTimeForm(TestCase, TestMixin):
 
@@ -104,3 +120,33 @@ class TestFirstTimeForm(TestCase, TestMixin):
             self.assertEqual(expected_songs_url, first_time_form.songs_url, 'The songs URL should be correct')
             self.assertEqual(expected_bibles_url, first_time_form.bibles_url, 'The bibles URL should be correct')
             self.assertEqual(expected_themes_url, first_time_form.themes_url, 'The themes URL should be correct')
+
+    def broken_config_test(self):
+        """
+        Test if we can handle an config file with missing data
+        """
+        # GIVEN: A mocked get_web_page, a First Time Wizard, an expected screen object, and a mocked broken config file
+        with patch('openlp.core.ui.firsttimeform.get_web_page') as mocked_get_web_page:
+            first_time_form = FirstTimeForm(None)
+            mocked_get_web_page.return_value.read.return_value = FAKE_BROKEN_CONFIG
+
+            # WHEN: The First Time Wizard is initialised
+            first_time_form.initialize(MagicMock())
+
+            # THEN: The First Time Form should not have web access
+            self.assertFalse(first_time_form.web_access, 'There should not be web access with a broken config file')
+
+    def invalid_config_test(self):
+        """
+        Test if we can handle an config file in invalid format
+        """
+        # GIVEN: A mocked get_web_page, a First Time Wizard, an expected screen object, and a mocked invalid config file
+        with patch('openlp.core.ui.firsttimeform.get_web_page') as mocked_get_web_page:
+            first_time_form = FirstTimeForm(None)
+            mocked_get_web_page.return_value.read.return_value = FAKE_INVALID_CONFIG
+
+            # WHEN: The First Time Wizard is initialised
+            first_time_form.initialize(MagicMock())
+
+            # THEN: The First Time Form should not have web access
+            self.assertFalse(first_time_form.web_access, 'There should not be web access with an invalid config file')

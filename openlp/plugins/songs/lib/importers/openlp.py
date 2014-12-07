@@ -217,4 +217,5 @@ class OpenLPSongImport(SongImport):
                 self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % new_song.title)
             if self.stop_import_flag:
                 break
+        self.source_session.close()
         engine.dispose()

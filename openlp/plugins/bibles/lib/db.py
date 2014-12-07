@@ -170,6 +170,9 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         Returns the version name of the Bible.
         """
         version_name = self.get_object(BibleMeta, 'name')
+        # Fallback to old way of naming
+        if not version_name:
+            version_name = self.get_object(BibleMeta, 'Version')
         self.name = version_name.value if version_name else None
         return self.name
 
@@ -969,11 +972,15 @@ class OldBibleDB(QtCore.QObject, Manager):
         """
         Returns the version name of the Bible.
         """
+        self.name = None
         version_name = self.run_sql('SELECT value FROM metadata WHERE key = "name"')
         if version_name:
             self.name = version_name[0][0]
         else:
-            self.name = None
+            # Fallback to old way of naming
+            version_name = self.run_sql('SELECT value FROM metadata WHERE key = "Version"')
+            if version_name:
+                self.name = version_name[0][0]
         return self.name
 
     def get_metadata(self):
