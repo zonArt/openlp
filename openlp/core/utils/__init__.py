@@ -434,7 +434,6 @@ def get_uno_command():
         raise FileNotFoundError('Command not found')
 
     OPTIONS = '--nologo --norestore --minimized --nodefault --nofirststartwizard'
-    print(UNO_CONNECTION_TYPE)
     if UNO_CONNECTION_TYPE == 'pipe':
         CONNECTION = '"--accept=pipe,name=openlp_pipe;urp;"'
     else:
