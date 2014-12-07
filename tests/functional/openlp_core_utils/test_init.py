@@ -79,7 +79,8 @@ class TestInitFunctions(TestMixin, TestCase):
         with patch('openlp.core.utils.which',
                    **{'side_effect': lambda command: {'libreoffice': '/usr/bin/libreoffice'}[command]}):
 
-            # WHEN: Calling get_uno_command
+            # WHEN: Calling get_uno_command with a pipe connection type
+            utils.UNO_CONNECTION_TYPE = 'pipe'
             result = utils.get_uno_command()
 
             # THEN: The command 'libreoffice' should be called with the appropriate parameters
@@ -97,7 +98,8 @@ class TestInitFunctions(TestMixin, TestCase):
         with patch('openlp.core.utils.which',
                    **{'side_effect': lambda command: {'libreoffice': None, 'soffice': '/usr/bin/soffice'}[command]}):
 
-            # WHEN: Calling get_uno_command
+            # WHEN: Calling get_uno_command with a pipe connection type
+            utils.UNO_CONNECTION_TYPE = 'pipe'
             result = utils.get_uno_command()
 
             # THEN: The command 'soffice' should be called with the appropriate parameters
@@ -114,9 +116,10 @@ class TestInitFunctions(TestMixin, TestCase):
         # GIVEN: A patched 'which' method which returns None
         with patch('openlp.core.utils.which', **{'return_value': None}):
 
-            # WHEN: Calling get_uno_command
+            # WHEN: Calling get_uno_command with a pipe connection type
+            utils.UNO_CONNECTION_TYPE = 'pipe'
 
-            # THEN: The command 'soffice' should be called with the appropriate parameters
+            # THEN: a FileNotFoundError exception should be raised
             self.assertRaises(FileNotFoundError, utils.get_uno_command)
 
     def get_uno_command_connection_type_test(self):
@@ -125,17 +128,13 @@ class TestInitFunctions(TestMixin, TestCase):
         :return:
         """
 
-        original_type = utils.UNO_CONNECTION_TYPE
-
         # GIVEN: A patched 'which' method which returns 'libreoffice'
         with patch('openlp.core.utils.which', **{'return_value': 'libreoffice'}):
 
-            # WHEN: Calling get_uno_command
+            # WHEN: Calling get_uno_command with a connection type other than pipe
             utils.UNO_CONNECTION_TYPE = 'socket'
             result = utils.get_uno_command()
 
-            # THEN: The command 'soffice' should be called with the appropriate parameters
+            # THEN: The connection parameters should be set for socket
             self.assertEqual(result, 'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
                                      ' "--accept=socket,host=localhost,port=2002;urp;"')
-
-            utils.UNO_CONNECTION_TYPE = original_type
