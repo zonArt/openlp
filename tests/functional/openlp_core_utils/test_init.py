@@ -32,8 +32,7 @@ Package to test the openlp.core.utils.actions package.
 from unittest import TestCase
 
 from openlp.core.common.settings import Settings
-from openlp.core import utils
-from openlp.core.utils import VersionThread, get_application_version
+from openlp.core.utils import VersionThread, get_application_version, get_uno_command
 from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 
@@ -79,9 +78,8 @@ class TestInitFunctions(TestMixin, TestCase):
         with patch('openlp.core.utils.which',
                    **{'side_effect': lambda command: {'libreoffice': '/usr/bin/libreoffice'}[command]}):
 
-            # WHEN: Calling get_uno_command with a pipe connection type
-            utils.UNO_CONNECTION_TYPE = 'pipe'
-            result = utils.get_uno_command()
+            # WHEN: Calling get_uno_command
+            result = get_uno_command()
 
             # THEN: The command 'libreoffice' should be called with the appropriate parameters
             self.assertEquals(result, 'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
@@ -98,9 +96,8 @@ class TestInitFunctions(TestMixin, TestCase):
         with patch('openlp.core.utils.which',
                    **{'side_effect': lambda command: {'libreoffice': None, 'soffice': '/usr/bin/soffice'}[command]}):
 
-            # WHEN: Calling get_uno_command with a pipe connection type
-            utils.UNO_CONNECTION_TYPE = 'pipe'
-            result = utils.get_uno_command()
+            # WHEN: Calling get_uno_command
+            result = get_uno_command()
 
             # THEN: The command 'soffice' should be called with the appropriate parameters
             self.assertEquals(result, 'soffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
@@ -116,11 +113,10 @@ class TestInitFunctions(TestMixin, TestCase):
         # GIVEN: A patched 'which' method which returns None
         with patch('openlp.core.utils.which', **{'return_value': None}):
 
-            # WHEN: Calling get_uno_command with a pipe connection type
-            utils.UNO_CONNECTION_TYPE = 'pipe'
+            # WHEN: Calling get_uno_command
 
             # THEN: a FileNotFoundError exception should be raised
-            self.assertRaises(FileNotFoundError, utils.get_uno_command)
+            self.assertRaises(FileNotFoundError, get_uno_command)
 
     def get_uno_command_connection_type_test(self):
         """
@@ -132,8 +128,7 @@ class TestInitFunctions(TestMixin, TestCase):
         with patch('openlp.core.utils.which', **{'return_value': 'libreoffice'}):
 
             # WHEN: Calling get_uno_command with a connection type other than pipe
-            utils.UNO_CONNECTION_TYPE = 'socket'
-            result = utils.get_uno_command()
+            result = get_uno_command('socket')
 
             # THEN: The connection parameters should be set for socket
             self.assertEqual(result, 'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'

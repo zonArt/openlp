@@ -64,7 +64,6 @@ log = logging.getLogger(__name__ + '.__init__')
 APPLICATION_VERSION = {}
 IMAGES_FILTER = None
 ICU_COLLATOR = None
-UNO_CONNECTION_TYPE = 'pipe'
 CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
 INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
 DIGITS_OR_NONDIGITS = re.compile(r'\d+|\D+', re.UNICODE)
@@ -423,7 +422,7 @@ def get_web_page(url, header=None, update_openlp=False):
     return page
 
 
-def get_uno_command():
+def get_uno_command(connection_type='pipe'):
     """
     Returns the UNO command to launch an openoffice.org instance.
     """
@@ -434,21 +433,21 @@ def get_uno_command():
         raise FileNotFoundError('Command not found')
 
     OPTIONS = '--nologo --norestore --minimized --nodefault --nofirststartwizard'
-    if UNO_CONNECTION_TYPE == 'pipe':
+    if connection_type == 'pipe':
         CONNECTION = '"--accept=pipe,name=openlp_pipe;urp;"'
     else:
         CONNECTION = '"--accept=socket,host=localhost,port=2002;urp;"'
     return '%s %s %s' % (command, OPTIONS, CONNECTION)
 
 
-def get_uno_instance(resolver):
+def get_uno_instance(resolver, connection_type='pipe'):
     """
     Returns a running openoffice.org instance.
 
     :param resolver: The UNO resolver to use to find a running instance.
     """
     log.debug('get UNO Desktop Openoffice - resolve')
-    if UNO_CONNECTION_TYPE == 'pipe':
+    if connection_type == 'pipe':
         return resolver.resolve('uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
     else:
         return resolver.resolve('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
