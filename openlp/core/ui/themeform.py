@@ -67,8 +67,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         self.gradient_combo_box.currentIndexChanged.connect(self.on_gradient_combo_box_current_index_changed)
         self.color_button.colorChanged.connect(self.on_color_changed)
         self.image_color_button.colorChanged.connect(self.on_image_color_changed)
-        self.gradient_start_button.colorChanged.connect(self.on_gradient_start_button_changed)
-        self.gradient_end_button.colorChanged.connect(self.on_gradient_end_button_changed)
+        self.gradient_start_button.colorChanged.connect(self.on_gradient_start_color_changed)
+        self.gradient_end_button.colorChanged.connect(self.on_gradient_end_color_changed)
         self.image_browse_button.clicked.connect(self.on_image_browse_button_clicked)
         self.image_file_edit.editingFinished.connect(self.on_image_file_edit_editing_finished)
         self.main_color_button.colorChanged.connect(self.on_main_color_changed)
@@ -411,13 +411,13 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         self.theme.background_border_color = color
 
-    def on_gradient_start_button_changed(self, color):
+    def on_gradient_start_color_changed(self, color):
         """
         Gradient 2 _color button pushed.
         """
         self.theme.background_start_color = color
 
-    def on_gradient_end_button_changed(self, color):
+    def on_gradient_end_color_changed(self, color):
         """
         Gradient 2 _color button pushed.
         """

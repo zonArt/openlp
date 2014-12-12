@@ -50,6 +50,22 @@ directory = bibles
 directory = themes
 """
 
+FAKE_BROKEN_CONFIG = b"""
+[general]
+base url = http://example.com/frw/
+[songs]
+directory = songs
+[bibles]
+directory = bibles
+"""
+
+FAKE_INVALID_CONFIG = b"""
+<html>
+<head><title>This is not a config file</title></head>
+<body>Some text</body>
+</html>
+"""
+
 
 class TestFirstTimeForm(TestCase, TestMixin):
 
@@ -58,6 +74,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
         self.app.setApplicationVersion('0.0')
         # Set up a fake "set_normal_cursor" method since we're not dealing with an actual OpenLP application object
         self.app.set_normal_cursor = lambda: None
+        self.app.process_events = lambda: None
         Registry.create()
         Registry().register('application', self.app)
 
@@ -116,7 +133,6 @@ class TestFirstTimeForm(TestCase, TestMixin):
             mocked_settings.value.assert_called_with('core/has run wizard')
             mocked_gettempdir.assert_called_with()
             mocked_check_directory_exists.assert_called_with(expected_temp_path)
-            mocked_set_normal_cursor.assert_called_with()
 
     def update_screen_list_combo_test(self):
         """
@@ -167,3 +183,35 @@ class TestFirstTimeForm(TestCase, TestMixin):
             mocked_time.sleep.assert_called_with(0.1)
             self.assertEqual(1, mocked_time.sleep.call_count, 'sleep() should have only been called once')
             mocked_set_normal_cursor.assert_called_with()
+
+    def broken_config_test(self):
+        """
+        Test if we can handle an config file with missing data
+        """
+        # GIVEN: A mocked get_web_page, a First Time Wizard, an expected screen object, and a mocked broken config file
+        with patch('openlp.core.ui.firsttimeform.get_web_page') as mocked_get_web_page:
+            first_time_form = FirstTimeForm(None)
+            first_time_form.initialize(MagicMock())
+            mocked_get_web_page.return_value.read.return_value = FAKE_BROKEN_CONFIG
+
+            # WHEN: The First Time Wizard is downloads the config file
+            first_time_form._download_index()
+
+            # THEN: The First Time Form should not have web access
+            self.assertFalse(first_time_form.web_access, 'There should not be web access with a broken config file')
+
+    def invalid_config_test(self):
+        """
+        Test if we can handle an config file in invalid format
+        """
+        # GIVEN: A mocked get_web_page, a First Time Wizard, an expected screen object, and a mocked invalid config file
+        with patch('openlp.core.ui.firsttimeform.get_web_page') as mocked_get_web_page:
+            first_time_form = FirstTimeForm(None)
+            first_time_form.initialize(MagicMock())
+            mocked_get_web_page.return_value.read.return_value = FAKE_INVALID_CONFIG
+
+            # WHEN: The First Time Wizard is downloads the config file
+            first_time_form._download_index()
+
+            # THEN: The First Time Form should not have web access
+            self.assertFalse(first_time_form.web_access, 'There should not be web access with an invalid config file')

@@ -46,7 +46,7 @@ VERSE = 'The Lord said to {r}Noah{/r}: \n'\
         '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}'\
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = ['Arky Arky (Unknown)', 'Public Domain', 'CCLI 123456']
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources', 'service'))
 
 
 class TestServiceItem(TestCase):
@@ -271,3 +271,36 @@ class TestServiceItem(TestCase):
         self.assertEqual(service_item.start_time, 654.375, 'Start time should be 654.375')
         self.assertEqual(service_item.end_time, 672.069, 'End time should be 672.069')
         self.assertEqual(service_item.media_length, 17.694, 'Media length should be 17.694')
+
+    def service_item_load_song_and_audio_from_service_test(self):
+        """
+        Test the Service Item - adding a song slide from a saved service
+        """
+        # GIVEN: A new service item and a mocked add icon function
+        service_item = ServiceItem(None)
+        service_item.add_icon = MagicMock()
+
+        # WHEN: We add a custom from a saved service
+        line = convert_file_service_item(TEST_PATH, 'serviceitem-song-linked-audio.osj')
+        service_item.set_from_service(line, '/test/')
+
+        # THEN: We should get back a valid service item
+        self.assertTrue(service_item.is_valid, 'The new service item should be valid')
+        assert_length(0, service_item._display_frames, 'The service item should have no display frames')
+        assert_length(7, service_item.capabilities, 'There should be 7 default custom item capabilities')
+
+        # WHEN: We render the frames of the service item
+        service_item.render(True)
+
+        # THEN: The frames should also be valid
+        self.assertEqual('Amazing Grace', service_item.get_display_title(), 'The title should be "Amazing Grace"')
+        self.assertEqual(VERSE[:-1], service_item.get_frames()[0]['text'],
+                         'The returned text matches the input, except the last line feed')
+        self.assertEqual(VERSE.split('\n', 1)[0], service_item.get_rendered_frame(1),
+                         'The first line has been returned')
+        self.assertEqual('Amazing Grace! how sweet the s', service_item.get_frame_title(0),
+                         '"Amazing Grace! how sweet the s" has been returned as the title')
+        self.assertEqual('’Twas grace that taught my hea', service_item.get_frame_title(1),
+                         '"’Twas grace that taught my hea" has been returned as the title')
+        self.assertEqual('/test/amazing_grace.mp3', service_item.background_audio[0],
+                         '"/test/amazing_grace.mp3" should be in the background_audio list')

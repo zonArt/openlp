@@ -73,7 +73,7 @@ class ColorButton(QtGui.QPushButton):
     @color.setter
     def color(self, color):
         """
-        Property setter to change the imstamce color
+        Property setter to change the instance color
 
         :param color:  String representation of a hexidecimal color
         """

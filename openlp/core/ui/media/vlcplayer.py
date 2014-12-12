@@ -77,6 +77,7 @@ VIDEO_EXT = [
     '*.asf', '*.wmv',
     '*.au',
     '*.avi',
+    '*.divx',
     '*.flv',
     '*.mov',
     '*.mp4', '*.m4v',
@@ -95,7 +96,8 @@ VIDEO_EXT = [
     '*.xa',
     '*.iso',
     '*.vob',
-    '*.webm'
+    '*.webm',
+    '*.xvid'
 ]
 
 

@@ -521,7 +521,7 @@ class HttpRouter(RegistryProperties):
                     if current_item.is_capable(ItemCapabilities.HasDisplayTitle):
                         item['title'] = str(frame['display_title'])
                     if current_item.is_capable(ItemCapabilities.HasNotes):
-                        item['notes'] = str(frame['notes'])
+                        item['slide_notes'] = str(frame['notes'])
                     if current_item.is_capable(ItemCapabilities.HasThumbnails) and \
                             Settings().value('remotes/thumbnails'):
                         # If the file is under our app directory tree send the portion after the match
@@ -531,8 +531,6 @@ class HttpRouter(RegistryProperties):
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 item['selected'] = (self.live_controller.selected_row == index)
-                if current_item.notes:
-                    item['notes'] = item.get('notes', '') + '\n' + current_item.notes
                 data.append(item)
         json_data = {'results': {'slides': data}}
         if current_item:
