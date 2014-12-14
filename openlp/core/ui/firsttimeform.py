@@ -113,16 +113,17 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         """
         Returns the id of the next FirstTimePage to go to based on enabled plugins
         """
-        # The songs plugin is enabled
         if FirstTimePage.Welcome < self.currentId() < FirstTimePage.Songs and self.songs_check_box.isChecked():
-            print('Go for songs! %r' % self.songs_check_box.isChecked())
+            # If the songs plugin is enabled then go to the songs page
             return FirstTimePage.Songs
-        # The Bibles plugin is enabled
         elif FirstTimePage.Welcome < self.currentId() < FirstTimePage.Bibles and self.bible_check_box.isChecked():
+            # Otherwise, if the Bibles plugin is enabled then go to the Bibles page
             return FirstTimePage.Bibles
         elif FirstTimePage.Welcome < self.currentId() < FirstTimePage.Themes:
+            # Otherwise, if the current page is somewhere between the Welcome and the Themes pages, go to the themes
             return FirstTimePage.Themes
         else:
+            # If all else fails, go to the next page
             return self.currentId() + 1
 
     def nextId(self):
@@ -134,7 +135,9 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             if not self.web_access:
                 return FirstTimePage.NoInternet
             else:
-                return self.get_next_page_id()
+                return FirstTimePage.Plugins
+        elif self.currentId() == FirstTimePage.Plugins:
+            return self.get_next_page_id()
         elif self.currentId() == FirstTimePage.Progress:
             return -1
         elif self.currentId() == FirstTimePage.NoInternet:
@@ -414,6 +417,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         for index, theme in enumerate(themes):
             screenshot = self.config.get('theme_%s' % theme, 'screenshot')
             item = self.themes_list_widget.item(index)
+            # if item:
             item.setIcon(build_icon(os.path.join(gettempdir(), 'openlp', screenshot)))
 
     def _get_file_size(self, url):
