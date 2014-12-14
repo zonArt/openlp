@@ -713,7 +713,8 @@ class BibleMediaItem(MediaManagerItem):
         items = self.build_display_results(bible, second_bible, self.search_results)
         for bible_verse in items:
             self.list_view.addItem(bible_verse)
-        self.list_view.selectAll()
+        if len(items) < 100:
+            self.list_view.selectAll()
         self.search_results = {}
         self.second_search_results = {}
 
