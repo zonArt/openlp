@@ -863,7 +863,8 @@ class SlideController(DisplayController, RegistryProperties):
         if service_item.is_media():
             self.on_media_start(service_item)
         self.slide_selected(True)
-        self.preview_widget.setFocus()
+        if service_item.from_service:
+            self.preview_widget.setFocus()
         if old_item:
             # Close the old item after the new one is opened
             # This avoids the service theme/desktop flashing on screen
