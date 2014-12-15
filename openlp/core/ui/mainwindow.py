@@ -690,7 +690,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         first_run_wizard = FirstTimeForm(self)
         first_run_wizard.initialize(ScreenList())
         first_run_wizard.exec_()
-        if first_run_wizard.was_download_cancelled:
+        if first_run_wizard.was_cancelled:
             return
         self.application.set_busy_cursor()
         self.first_time()
