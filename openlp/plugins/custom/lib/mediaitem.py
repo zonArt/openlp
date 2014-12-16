@@ -287,10 +287,15 @@ class CustomMediaItem(MediaManagerItem):
         log.debug('service_load')
         if self.plugin.status != PluginStatus.Active:
             return
-        custom = self.plugin.db_manager.get_object_filtered(CustomSlide, and_(CustomSlide.title == item.title,
-                                                                              CustomSlide.theme_name == item.theme,
-                                                                              CustomSlide.credits ==
-                                                                              item.raw_footer[0][len(item.title) + 1:]))
+        if item.theme:
+            custom = self.plugin.db_manager.get_object_filtered(CustomSlide, and_(CustomSlide.title == item.title,
+                                                                CustomSlide.theme_name == item.theme,
+                                                                CustomSlide.credits ==
+                                                                item.raw_footer[0][len(item.title) + 1:]))
+        else:
+            custom = self.plugin.db_manager.get_object_filtered(CustomSlide, and_(CustomSlide.title == item.title,
+                                                                CustomSlide.credits ==
+                                                                item.raw_footer[0][len(item.title) + 1:]))
         if custom:
             item.edit_id = custom.id
             return item
