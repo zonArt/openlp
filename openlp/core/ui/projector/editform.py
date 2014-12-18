@@ -132,6 +132,8 @@ class Ui_ProjectorEditForm(object):
         self.location_label.setText(translate('OpenLP.ProjectorEditForm', 'Location'))
         self.location_text.setText(self.projector.location)
         self.notes_label.setText(translate('OpenLP.ProjectorEditForm', 'Notes'))
+        self.notes_text.selectAll()
+        self.notes_text.cut()
         self.notes_text.insertPlainText(self.projector.notes)
 
 
@@ -158,7 +160,7 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
         self.button_box.helpRequested.connect(self.help_me)
         self.button_box.rejected.connect(self.cancel_me)
 
-    def exec_(self, projector=None):
+    def exec_(self, projector=None, test=False):
         if projector is None:
             self.projector = Projector()
             self.new_projector = True
@@ -167,7 +169,8 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
             self.new_projector = False
         self.retranslateUi(self)
         reply = QDialog.exec_(self)
-        self.projector = None
+        if not test:
+            self.projector = None
         return reply
 
     @pyqtSlot()
