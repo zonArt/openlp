@@ -562,7 +562,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             return
         self.old_projector = projector
         projector.link.disconnect_from_host()
-        self.projector_form.exec(projector.db_item)
+        self.projector_form.exec_(projector.db_item)
         projector.db_item = self.projectordb.get_projector_by_id(self.old_projector.db_item.id)
 
     def on_poweroff_projector(self, opt=None):
