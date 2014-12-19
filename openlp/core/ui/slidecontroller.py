@@ -33,6 +33,7 @@ The :mod:`slidecontroller` module contains the most important part of OpenLP - t
 import os
 import copy
 from collections import deque
+from threading import Lock
 
 from PyQt4 import QtCore, QtGui
 
@@ -131,6 +132,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.ratio = self.screens.current['size'].width() / self.screens.current['size'].height()
         except ZeroDivisionError:
             self.ratio = 1
+        self.process_queue_lock = Lock()
+        self.slide_selected_lock = Lock()
         self.timer_id = 0
         self.song_edit = False
         self.selected_row = 0
@@ -531,9 +534,9 @@ class SlideController(DisplayController, RegistryProperties):
         Process the service item request queue.  The key presses can arrive
         faster than the processing so implement a FIFO queue.
         """
-        if self.keypress_queue:
-            while len(self.keypress_queue) and not self.keypress_loop:
-                self.keypress_loop = True
+        # Make sure only one thread get in here. Just return if already locked.
+        if self.keypress_queue and self.process_queue_lock.acquire(False):
+            while len(self.keypress_queue):
                 keypress_command = self.keypress_queue.popleft()
                 if keypress_command == ServiceItemAction.Previous:
                     self.service_manager.previous_item()
@@ -542,7 +545,7 @@ class SlideController(DisplayController, RegistryProperties):
                     self.service_manager.previous_item(last_slide=True)
                 else:
                     self.service_manager.next_item()
-            self.keypress_loop = False
+            self.process_queue_lock.release()
 
     def screen_size_changed(self):
         """
@@ -1039,6 +1042,10 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param start:
         """
+        # Only one thread should be in here at the time. If already locked just skip, since the update will be
+        # done by the thread holding the lock. If it is a "start" slide, we must wait for the lock.
+        if not self.slide_selected_lock.acquire(start):
+            return
         row = self.preview_widget.current_slide_number()
         self.selected_row = 0
         if -1 < row < self.preview_widget.slide_count():
@@ -1061,6 +1068,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.update_preview()
             self.preview_widget.change_slide(row)
         self.display.setFocus()
+        # Release lock
+        self.slide_selected_lock.release()
 
     def on_slide_change(self, row):
         """
@@ -1405,7 +1414,6 @@ class LiveController(RegistryMixin, OpenLPMixin, SlideController):
         self.split = 1
         self.type_prefix = 'live'
         self.keypress_queue = deque()
-        self.keypress_loop = False
         self.category = UiStrings().LiveToolbar
         ActionList.get_instance().add_category(str(self.category), CategoryOrder.standard_toolbar)
 
