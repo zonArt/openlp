@@ -96,7 +96,6 @@ class CustomMediaItem(MediaManagerItem):
     def retranslateUi(self):
         """
 
-
         """
         self.search_text_label.setText('%s:' % UiStrings().Search)
         self.search_text_button.setText(UiStrings().Search)
@@ -134,6 +133,7 @@ class CustomMediaItem(MediaManagerItem):
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
         # active trigger it and clean up so it will not update again.
+        self.check_search_result()
 
     def on_new_click(self):
         """
