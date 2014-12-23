@@ -382,7 +382,7 @@ class TestUtils(TestCase):
             mocked_page_object = MagicMock()
             mock_urlopen.return_value = mocked_page_object
             fake_url = 'this://is.a.fake/url'
-            user_agent_header = ('User-Agent', 'OpenLP/2.1.0')
+            user_agent_header = ('User-Agent', 'OpenLP/2.2.0')
 
             # WHEN: The get_web_page() method is called
             returned_page = get_web_page(fake_url, header=user_agent_header)

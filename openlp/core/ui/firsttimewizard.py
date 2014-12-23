@@ -41,13 +41,14 @@ class FirstTimePage(object):
     An enumeration class with each of the pages of the wizard.
     """
     Welcome = 0
-    Plugins = 1
+    Download = 1
     NoInternet = 2
-    Songs = 3
-    Bibles = 4
-    Themes = 5
-    Defaults = 6
-    Progress = 7
+    Plugins = 3
+    Songs = 4
+    Bibles = 5
+    Themes = 6
+    Defaults = 7
+    Progress = 8
 
 
 class UiFirstTimeWizard(object):
@@ -78,6 +79,27 @@ class UiFirstTimeWizard(object):
         self.next_button = self.button(QtGui.QWizard.NextButton)
         self.back_button = self.button(QtGui.QWizard.BackButton)
         add_welcome_page(first_time_wizard, ':/wizards/wizard_firsttime.bmp')
+        # The download page
+        self.download_page = QtGui.QWizardPage()
+        self.download_page.setObjectName('download_page')
+        self.download_layout = QtGui.QVBoxLayout(self.download_page)
+        self.download_layout.setMargin(48)
+        self.download_layout.setObjectName('download_layout')
+        self.download_label = QtGui.QLabel(self.download_page)
+        self.download_label.setObjectName('download_label')
+        self.download_layout.addWidget(self.download_label)
+        first_time_wizard.setPage(FirstTimePage.Download, self.download_page)
+        # The "you don't have an internet connection" page.
+        self.no_internet_page = QtGui.QWizardPage()
+        self.no_internet_page.setObjectName('no_internet_page')
+        self.no_internet_layout = QtGui.QVBoxLayout(self.no_internet_page)
+        self.no_internet_layout.setContentsMargins(50, 30, 50, 40)
+        self.no_internet_layout.setObjectName('no_internet_layout')
+        self.no_internet_label = QtGui.QLabel(self.no_internet_page)
+        self.no_internet_label.setWordWrap(True)
+        self.no_internet_label.setObjectName('no_internet_label')
+        self.no_internet_layout.addWidget(self.no_internet_label)
+        first_time_wizard.setPage(FirstTimePage.NoInternet, self.no_internet_page)
         # The plugins page
         self.plugin_page = QtGui.QWizardPage()
         self.plugin_page.setObjectName('plugin_page')
@@ -120,17 +142,6 @@ class UiFirstTimeWizard(object):
         self.alert_check_box.setObjectName('alert_check_box')
         self.plugin_layout.addWidget(self.alert_check_box)
         first_time_wizard.setPage(FirstTimePage.Plugins, self.plugin_page)
-        # The "you don't have an internet connection" page.
-        self.no_internet_page = QtGui.QWizardPage()
-        self.no_internet_page.setObjectName('no_internet_page')
-        self.no_internet_layout = QtGui.QVBoxLayout(self.no_internet_page)
-        self.no_internet_layout.setContentsMargins(50, 30, 50, 40)
-        self.no_internet_layout.setObjectName('no_internet_layout')
-        self.no_internet_label = QtGui.QLabel(self.no_internet_page)
-        self.no_internet_label.setWordWrap(True)
-        self.no_internet_label.setObjectName('no_internet_label')
-        self.no_internet_layout.addWidget(self.no_internet_label)
-        first_time_wizard.setPage(FirstTimePage.NoInternet, self.no_internet_page)
         # The song samples page
         self.songs_page = QtGui.QWizardPage()
         self.songs_page.setObjectName('songs_page')
@@ -221,6 +232,11 @@ class UiFirstTimeWizard(object):
             translate('OpenLP.FirstTimeWizard', 'This wizard will help you to configure OpenLP for initial use. '
                                                 'Click the %s button below to start.') %
             clean_button_text(first_time_wizard.buttonText(QtGui.QWizard.NextButton)))
+        self.download_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Downloading Resource Index'))
+        self.download_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Please wait while the resource index is '
+                                                                           'downloaded.'))
+        self.download_label.setText(translate('OpenLP.FirstTimeWizard', 'Please wait while OpenLP downloads the '
+                                                                        'resource index file...'))
         self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
         self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
         self.songs_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
@@ -257,5 +273,8 @@ class UiFirstTimeWizard(object):
                                                  'Set up default settings to be used by OpenLP.'))
         self.display_label.setText(translate('OpenLP.FirstTimeWizard', 'Default output display:'))
         self.theme_label.setText(translate('OpenLP.FirstTimeWizard', 'Select default theme:'))
+        self.progress_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Downloading and Configuring'))
+        self.progress_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Please wait while resources are downloaded '
+                                                                           'and OpenLP is configured.'))
         self.progress_label.setText(translate('OpenLP.FirstTimeWizard', 'Starting configuration process...'))
         first_time_wizard.setButtonText(QtGui.QWizard.CustomButton1, translate('OpenLP.FirstTimeWizard', 'Finish'))

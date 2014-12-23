@@ -96,7 +96,6 @@ class CustomMediaItem(MediaManagerItem):
     def retranslateUi(self):
         """
 
-
         """
         self.search_text_label.setText('%s:' % UiStrings().Search)
         self.search_text_button.setText(UiStrings().Search)
@@ -134,6 +133,7 @@ class CustomMediaItem(MediaManagerItem):
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
         # active trigger it and clean up so it will not update again.
+        self.check_search_result()
 
     def on_new_click(self):
         """
@@ -287,10 +287,15 @@ class CustomMediaItem(MediaManagerItem):
         log.debug('service_load')
         if self.plugin.status != PluginStatus.Active:
             return
-        custom = self.plugin.db_manager.get_object_filtered(CustomSlide, and_(CustomSlide.title == item.title,
-                                                                              CustomSlide.theme_name == item.theme,
-                                                                              CustomSlide.credits ==
-                                                                              item.raw_footer[0][len(item.title) + 1:]))
+        if item.theme:
+            custom = self.plugin.db_manager.get_object_filtered(CustomSlide, and_(CustomSlide.title == item.title,
+                                                                CustomSlide.theme_name == item.theme,
+                                                                CustomSlide.credits ==
+                                                                item.raw_footer[0][len(item.title) + 1:]))
+        else:
+            custom = self.plugin.db_manager.get_object_filtered(CustomSlide, and_(CustomSlide.title == item.title,
+                                                                CustomSlide.credits ==
+                                                                item.raw_footer[0][len(item.title) + 1:]))
         if custom:
             item.edit_id = custom.id
             return item
