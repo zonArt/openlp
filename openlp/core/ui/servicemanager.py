@@ -1478,8 +1478,6 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 if self.service_items and item < len(self.service_items) and \
                         self.service_items[item]['service_item'].is_capable(ItemCapabilities.CanPreview):
                     self.preview_controller.add_service_manager_item(self.service_items[item]['service_item'], 0)
-                    next_item = self.service_manager_list.topLevelItem(item)
-                    self.service_manager_list.setCurrentItem(next_item)
                     self.live_controller.preview_widget.setFocus()
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
