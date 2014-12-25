@@ -883,7 +883,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             # TODO for future: make group explains itself more visually
         else:
             self.auto_play_slides_menu.menuAction().setVisible(False)
-        if service_item['service_item'].is_capable(ItemCapabilities.HasVariableStartTime):
+        if service_item['service_item'].is_capable(ItemCapabilities.HasVariableStartTime) and \
+                not service_item['service_item'].is_capable(ItemCapabilities.IsOptical):
             self.time_action.setVisible(True)
         if service_item['service_item'].is_capable(ItemCapabilities.CanAutoStartForLive):
             self.auto_start_action.setVisible(True)
