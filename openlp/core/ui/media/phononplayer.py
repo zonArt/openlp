@@ -39,6 +39,7 @@ from openlp.core.lib import translate
 
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
+from openlp.core.common import is_macosx
 
 
 log = logging.getLogger(__name__)
@@ -124,7 +125,11 @@ class PhononPlayer(MediaPlayer):
         """
         Check if the player is available
         """
-        return True
+        # At the moment we don't have support for phononplayer on Mac OS X
+        if is_macosx():
+            return False
+        else:
+            return True
 
     def load(self, display):
         """

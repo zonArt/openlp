@@ -33,7 +33,7 @@ from PyQt4 import QtGui
 
 import logging
 
-from openlp.core.common import Settings
+from openlp.core.common import Settings, is_macosx
 from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -231,7 +231,11 @@ class WebkitPlayer(MediaPlayer):
         """
         Check the availability of the media player
         """
-        return True
+        # At the moment we don't have support for webkitplayer on Mac OS X
+        if is_macosx():
+            return False
+        else:
+            return True
 
     def load(self, display):
         """
