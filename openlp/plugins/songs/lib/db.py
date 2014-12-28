@@ -84,13 +84,15 @@ class AuthorType(object):
         NoType,
         Words,
         Music,
-        WordsAndMusic
+        WordsAndMusic,
+        Translation
     ]
     TranslatedTypes = [
         Types[NoType],
         Types[Words],
         Types[Music],
-        Types[WordsAndMusic]
+        Types[WordsAndMusic],
+        Types[Translation]
     ]
 
     @staticmethod
