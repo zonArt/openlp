@@ -217,6 +217,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             if self.current_media_players[source].state != MediaState.Paused:
                 display = self._define_display(self.display_controllers[source])
                 display.controller.seek_slider.setSliderPosition(0)
+                display.controller.mediabar.actions['playbackPlay'].setVisible(True)
+                display.controller.mediabar.actions['playbackPause'].setVisible(False)
         self.timer.stop()
 
     def get_media_display_css(self):

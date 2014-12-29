@@ -85,6 +85,19 @@ class TestBibleHTTP(TestCase):
         # THEN: We should get back a valid service item
         assert len(results.verse_list) == 36, 'The book of John should not have had any verses added or removed'
 
+    def bible_gateway_extract_verse_nkjv_test(self):
+        """
+        Test the Bible Gateway retrieval of verse list for NKJV bible John 3
+        """
+        # GIVEN: A new Bible Gateway extraction class
+        handler = BGExtract()
+
+        # WHEN: The Books list is called
+        results = handler.get_bible_chapter('NKJV', 'John', 3)
+
+        # THEN: We should get back a valid service item
+        assert len(results.verse_list) == 36, 'The book of John should not have had any verses added or removed'
+
     def crosswalk_extract_books_test(self):
         """
         Test Crosswalk retrieval of book list for NIV bible
