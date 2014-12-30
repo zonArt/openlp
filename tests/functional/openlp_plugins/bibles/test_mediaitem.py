@@ -113,6 +113,6 @@ class TestMediaItem(TestCase, TestMixin):
                 # THEN: addItem should have been called 100 times, and the lsit items should not be selected.
                 mocked_build_display_results.assert_called_once_with('NIV', 'GNB', 'results')
                 self.assertEqual(mocked_list_view.addItem.call_count, 100)
-                self.assertFalse(mocked_list_view.selectAll.called)
+                mocked_list_view.selectAll.assert_called_once_with()
                 self.assertEqual(self.media_item.search_results, {})
                 self.assertEqual(self.media_item.second_search_results, {})
