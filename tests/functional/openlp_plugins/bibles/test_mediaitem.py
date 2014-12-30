@@ -29,6 +29,8 @@
 """
 This module contains tests for the lib submodule of the Presentations plugin.
 """
+from PyQt4 import QtGui
+
 from unittest import TestCase
 from openlp.plugins.bibles.lib.mediaitem import BibleMediaItem
 from tests.functional import MagicMock, patch
@@ -116,3 +118,19 @@ class TestMediaItem(TestCase, TestMixin):
                 mocked_list_view.selectAll.assert_called_once_with()
                 self.assertEqual(self.media_item.search_results, {})
                 self.assertEqual(self.media_item.second_search_results, {})
+
+
+    def elide_text_short_text_test(self):
+        result = elide_text('Test String', QtGui.QFont(),)
+
+def elide_text(text, font, width):
+    """
+    Add an ellipsis to text if it is wider than width.
+
+    :param text: The string to elide
+    :param font: The font that the text is being desplayed in
+    :param width: The width that the elided text string needs to fill
+    :return: The elided string or just text
+    """
+    font_metrics = QtGui.QFontMetrics(font)
+    return font_metrics.elidedText(text, QtCore.Qt.ElideRight, width)

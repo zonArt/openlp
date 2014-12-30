@@ -106,6 +106,34 @@ class DisplayController(QtGui.QWidget):
         Registry().execute('%s' % sender, [controller, args])
 
 
+class InfoLabel(QtGui.QLabel):
+    """
+    InfoLabel is a subclassed QLabel. Created to provide the ablilty add a ellipsis if the text is cut off. Original
+    source: https://stackoverflow.com/questions/11446478/pyside-pyqt-truncate-text-in-qlabel-based-on-minimumsize
+    """
+
+    def paintEvent(self, event):
+        """
+        Reimplemented to allow the drawing of elided text if the text is longer than the width of the label
+        """
+        painter = QtGui.QPainter(self)
+        metrics = QtGui.QFontMetrics(self.font())
+        elided = metrics.elidedText(self.text(), QtCore.Qt.ElideRight, self.width())
+        if elided == self.text():
+            alignment = QtCore.Qt.AlignCenter
+        else:
+            alignment = QtCore.Qt.AlignLeft
+        painter.drawText(self.rect(), alignment, elided)
+
+
+    def setText(self, text):
+        """
+        Reimplemented to set the tool tip text.
+        """
+        self.setToolTip(text)
+        super().setText(text)
+        
+
 class SlideController(DisplayController, RegistryProperties):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -160,8 +188,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.type_label.setText(UiStrings().Preview)
         self.panel_layout.addWidget(self.type_label)
         # Info label for the title of the current item, at the top of the slide controller
-        self.info_label = QtGui.QLabel(self.panel)
-        self.info_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.info_label = InfoLabel(self.panel)
         self.info_label.setSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Preferred)
         self.panel_layout.addWidget(self.info_label)
         # Splitter
@@ -810,8 +837,7 @@ class SlideController(DisplayController, RegistryProperties):
         if service_item.is_command():
             Registry().execute(
                 '%s_start' % service_item.name.lower(), [self.service_item, self.is_live, self.hide_mode(), slide_no])
-        self.info_label.setText(elide_text(self.service_item.title, self.info_label.font(), self.info_label.width()))
-        self.info_label.setToolTip(self.service_item.title)
+        self.info_label.setText(self.service_item.title)
         self.slide_list = {}
         if self.is_live:
             self.song_menu.menu().clear()
