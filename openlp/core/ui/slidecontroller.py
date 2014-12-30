@@ -132,7 +132,7 @@ class InfoLabel(QtGui.QLabel):
         """
         self.setToolTip(text)
         super().setText(text)
-        
+
 
 class SlideController(DisplayController, RegistryProperties):
     """

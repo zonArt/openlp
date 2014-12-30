@@ -133,4 +133,3 @@ class TestInitFunctions(TestMixin, TestCase):
             # THEN: The connection parameters should be set for socket
             self.assertEqual(result, 'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
                                      ' "--accept=socket,host=localhost,port=2002;urp;"')
-

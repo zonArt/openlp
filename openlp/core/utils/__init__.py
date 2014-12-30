@@ -506,18 +506,6 @@ def get_natural_key(string):
         return [b''] + key
     return key
 
-def elide_text(text, font, width):
-    """
-    Add an ellipsis to text if it is wider than width.
-
-    :param text: The string to elide
-    :param font: The font that the text is being desplayed in
-    :param width: The width that the elided text string needs to fill
-    :return: The elided string or just text
-    """
-    font_metrics = QtGui.QFontMetrics(font)
-    return font_metrics.elidedText(text, QtCore.Qt.ElideRight, width)
-
 from .languagemanager import LanguageManager
 from .actions import ActionList
 
