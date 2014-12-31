@@ -67,6 +67,7 @@ class UiStrings(object):
         self.Browse = translate('OpenLP.Ui', 'Browse...')
         self.Cancel = translate('OpenLP.Ui', 'Cancel')
         self.CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
+        self.CCLISongNumberLabel = translate('OpenLP.Ui', 'CCLI song number:')
         self.CreateService = translate('OpenLP.Ui', 'Create a new service.')
         self.ConfirmDelete = translate('OpenLP.Ui', 'Confirm Delete')
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
