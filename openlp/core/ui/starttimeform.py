@@ -56,7 +56,9 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog, RegistryProperties):
         self.hour_spin_box.setValue(hour)
         self.minute_spin_box.setValue(minutes)
         self.second_spin_box.setValue(seconds)
-        hours, minutes, seconds = self._time_split(self.item['service_item'].media_length)
+        hours, minutes, seconds = self._time_split(self.item['service_item'].end_time)
+        if hours == 0 and minutes == 0 and seconds == 0:
+            hours, minutes, seconds = self._time_split(self.item['service_item'].media_length)
         self.hour_finish_spin_box.setValue(hours)
         self.minute_finish_spin_box.setValue(minutes)
         self.second_finish_spin_box.setValue(seconds)

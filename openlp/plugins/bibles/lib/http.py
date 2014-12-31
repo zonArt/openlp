@@ -93,10 +93,10 @@ class BGExtract(RegistryProperties):
         """
         if isinstance(tag, NavigableString):
             return None, str(tag)
-        elif tag.get('class')[0] == "versenum" or tag.get('class')[0] == 'versenum mid-line':
+        elif tag.get('class') and (tag.get('class')[0] == 'versenum' or tag.get('class')[0] == 'versenum mid-line'):
             verse = str(tag.string).replace('[', '').replace(']', '').strip()
             return verse, None
-        elif tag.get('class')[0] == 'chapternum':
+        elif tag.get('class') and tag.get('class')[0] == 'chapternum':
             verse = '1'
             return verse, None
         else:
