@@ -30,28 +30,42 @@
 Package to test the openlp.core.ui.media.webkitplayer package.
 """
 from unittest import TestCase
+from tests.functional import patch
 
 from openlp.core.ui.media.webkitplayer import WebkitPlayer
-from openlp.core.common import is_macosx
 
 
-class TestPhononPlayer(TestCase):
+class TestWebkitPlayer(TestCase):
     """
     Test the functions in the :mod:`webkitplayer` module.
     """
 
-    def check_available_test(self):
+    def check_available_mac_test(self):
         """
-        Simple test of webkitplayer availability
+        Simple test of webkitplayer availability on Mac OS X
         """
-        # GIVEN: A WebkitPlayer
-        webkit_player = WebkitPlayer(None)
+        # GIVEN: A WebkitPlayer and a mocked is_macosx
+        with patch('openlp.core.ui.media.webkitplayer.is_macosx') as mocked_is_macosx:
+            mocked_is_macosx.return_value = True
+            webkit_player = WebkitPlayer(None)
 
-        # WHEN: An checking if the player is available
-        available = webkit_player.check_available()
+            # WHEN: An checking if the player is available
+            available = webkit_player.check_available()
 
-        # THEN: The player should be available, except on Mac OS X
-        if is_macosx():
+            # THEN: The player should not be available on Mac OS X
             self.assertEqual(False, available, 'The WebkitPlayer should not be available on Mac OS X.')
-        else:
-            self.assertEqual(True, available, 'The WebkitPlayer should be available on this platform.')
+
+    def check_available_non_mac_test(self):
+        """
+        Simple test of webkitplayer availability when not on Mac OS X
+        """
+        # GIVEN: A WebkitPlayer and a mocked is_macosx
+        with patch('openlp.core.ui.media.webkitplayer.is_macosx') as mocked_is_macosx:
+            mocked_is_macosx.return_value = False
+            webkit_player = WebkitPlayer(None)
+
+            # WHEN: An checking if the player is available
+            available = webkit_player.check_available()
+
+            # THEN: The player should be available when not on Mac OS X
+            self.assertEqual(True, available, 'The WebkitPlayer should be available when not on Mac OS X.')

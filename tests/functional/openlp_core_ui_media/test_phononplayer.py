@@ -30,9 +30,9 @@
 Package to test the openlp.core.ui.media.phononplayer package.
 """
 from unittest import TestCase
+from tests.functional import patch
 
 from openlp.core.ui.media.phononplayer import PhononPlayer
-from openlp.core.common import is_macosx
 
 
 class TestPhononPlayer(TestCase):
@@ -40,18 +40,32 @@ class TestPhononPlayer(TestCase):
     Test the functions in the :mod:`phononplayer` module.
     """
 
-    def check_available_test(self):
+    def check_available_mac_test(self):
         """
-        Simple test of phononplayer availability
+        Simple test of phononplayer availability on Mac OS X
         """
-        # GIVEN: A PhononPlayer
-        phonon_player = PhononPlayer(None)
+        # GIVEN: A PhononPlayer and a mocked is_macosx
+        with patch('openlp.core.ui.media.phononplayer.is_macosx') as mocked_is_macosx:
+            mocked_is_macosx.return_value = True
+            phonon_player = PhononPlayer(None)
 
-        # WHEN: An checking if the player is available
-        available = phonon_player.check_available()
+            # WHEN: An checking if the player is available
+            available = phonon_player.check_available()
 
-        # THEN: The player should be available, except on Mac OS X
-        if is_macosx():
+            # THEN: The player should not be available on Mac OS X
             self.assertEqual(False, available, 'The PhononPlayer should not be available on Mac OS X.')
-        else:
-            self.assertEqual(True, available, 'The PhononPlayer should be available on this platform.')
+
+    def check_available_non_mac_test(self):
+        """
+        Simple test of phononplayer availability when not on Mac OS X
+        """
+        # GIVEN: A PhononPlayer and a mocked is_macosx
+        with patch('openlp.core.ui.media.phononplayer.is_macosx') as mocked_is_macosx:
+            mocked_is_macosx.return_value = False
+            phonon_player = PhononPlayer(None)
+
+            # WHEN: An checking if the player is available
+            available = phonon_player.check_available()
+
+            # THEN: The player should be available when not on Mac OS X
+            self.assertEqual(True, available, 'The PhononPlayer should be available when not on Mac OS X.')
