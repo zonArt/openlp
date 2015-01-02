@@ -43,7 +43,6 @@ from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageS
     ScreenList, build_icon, build_html
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
-from openlp.core.utils import elide_text
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.listpreviewwidget import ListPreviewWidget
 
@@ -119,6 +118,7 @@ class InfoLabel(QtGui.QLabel):
         painter = QtGui.QPainter(self)
         metrics = QtGui.QFontMetrics(self.font())
         elided = metrics.elidedText(self.text(), QtCore.Qt.ElideRight, self.width())
+        # If the text is elided align it left to stop it jittering as the label is resized
         if elided == self.text():
             alignment = QtCore.Qt.AlignCenter
         else:
