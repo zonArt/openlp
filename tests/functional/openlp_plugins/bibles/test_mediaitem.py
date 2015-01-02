@@ -101,7 +101,7 @@ class TestMediaItem(TestCase, TestMixin):
             Test the display_results method a large number of results (> 100) are returned
             """
 
-            # GIVEN: A mocked build_displat_results which returns a large list of results
+            # GIVEN: A mocked build_display_results which returns a large list of results
             long_list = list(range(100))
             with patch('openlp.plugins.bibles.lib.BibleMediaItem.build_display_results', **{'return_value': long_list})\
                     as mocked_build_display_results:
