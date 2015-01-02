@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="id" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="id" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -97,14 +96,14 @@ Tetap lanjutkan?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="197"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
         <translation>Teks peringatan tidak berisikan &apos;&lt;&gt;&apos;.
 Tetap lanjutkan?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="114"/>
-        <source>You haven&apos;t specified any text for your alert. 
+        <source>You haven't specified any text for your alert. 
 Please type in some text before clicking New.</source>
         <translation>Teks isi peringatan belum ditentukan. 
 Silakan masukkan teks sebelum memilih Baru.</translation>
@@ -843,7 +842,7 @@ Perubahan tidak mempengaruhi ayat yang sudah ada di Layanan.</translation>
         <source>Multiple alternative verse separators may be defined.
 They have to be separated by a vertical bar &quot;|&quot;.
 Please clear this edit line to use the default value.</source>
-        <translation>Beberapa alternatif pemisah ayat dapat didefinisikan.
+        <translation>Beberapa alternatif pemisah ayat dapat ditetapkan.
 Semuanya harus dipisahkan oleh sebuah palang vertikal &quot;|&quot;.
 Silakan bersihkan baris penyuntingan ini untuk menggunakan nilai bawaan.</translation>
     </message>
@@ -1108,7 +1107,7 @@ Tidak mungkin untuk mengubahsuaikan Nama Kitab.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="335"/>
         <source>Password:</source>
-        <translation>Sandi:</translation>
+        <translation>Kata sandi:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="336"/>
@@ -1304,7 +1303,7 @@ permintaan dan membutuhkan sambungan internet.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="94"/>
         <source>You cannot combine single and dual Bible verse search results. Do you want to delete your search results and start a new search?</source>
-        <translation>Anda tidak dapat menggabungkan hasil penelusuran ayat kedua versi Alkitab. Apakah Anda ingin menghapus hasil penelusuran dan mulai penelusuran baru?</translation>
+        <translation>Anda tidak dapat menggabungkan hasil penelusuran ayat dari dua versi Alkitab. Apakah Anda ingin menghapus hasil penelusuran dan mulai penelusuran baru?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="417"/>
@@ -1346,12 +1345,12 @@ Anda harus mengimpor ulang Alkitab ini untuk menggunakannya kembali.</translatio
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="140"/>
         <source>Incorrect Bible file type supplied. OpenSong Bibles may be compressed. You must decompress them before import.</source>
-        <translation>Tipe berkas Alkitab tidak benar. Alkitab OpenSong mungkin dikompresi. Anda harus lakukan dekompresi sebelum mengimpor. </translation>
+        <translation>Jenis berkas Alkitab tidak benar. Alkitab OpenSong mungkin dikompresi. Anda harus lakukan dekompresi sebelum mengimpor. </translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="87"/>
         <source>Incorrect Bible file type supplied. This looks like a Zefania XML bible, please use the Zefania import option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jenis berkas Alkitab tidak benar. Nampaknya seperti sebuah alkitab XML Zefania, silakan gunakan opsi impor Zefania.</translation>
     </message>
 </context>
 <context>
@@ -1359,7 +1358,7 @@ Anda harus mengimpor ulang Alkitab ini untuk menggunakannya kembali.</translatio
     <message>
         <location filename="openlp/plugins/bibles/lib/osis.py" line="82"/>
         <source>Removing unused tags (this may take a few minutes)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menghapus label yang tidak digunakan ( mungkin butuh waktu beberapa menit)...</translation>
     </message>
 </context>
 <context>
@@ -1517,7 +1516,7 @@ Perlu diketahui bahwa ayat dari Alkitab Web akan diunduh sesuai permintaan dan s
     <message>
         <location filename="openlp/plugins/bibles/lib/zefania.py" line="107"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jenis berkas Alkitab tidak benar. Alkitab Zefania mungkin dikompresi. Anda harus lakukan dekompresi sebelum mengimpor. </translation>
     </message>
 </context>
 <context>
@@ -1680,9 +1679,7 @@ Perlu diketahui bahwa ayat dari Alkitab Web akan diunduh sesuai permintaan dan s
     <message numerus="yes">
         <location filename="openlp/plugins/custom/lib/mediaitem.py" line="189"/>
         <source>Are you sure you want to delete the %n selected custom slide(s)?</source>
-        <translation>
-            <numerusform>Anda yakin ingin menghapus %n salindia (- salindia) kustom terpilih ini?</numerusform>
-        </translation>
+        <translation><numerusform>Anda yakin ingin menghapus %n salindia (- salindia) kustom terpilih ini?</numerusform></translation>
     </message>
 </context>
 <context>
@@ -1977,87 +1974,87 @@ Anda tetap ingin menambah gambar lain?</translation>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="190"/>
         <source>Select Media Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih Klip Media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="191"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Sumber</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="192"/>
         <source>Media path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur media:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="193"/>
         <source>Select drive from list</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih penggerak dari daftar</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="195"/>
         <source>Load disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat disk</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="196"/>
         <source>Track Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Rincian Trek</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="197"/>
         <source>Title:</source>
-        <translation type="unfinished">Judul</translation>
+        <translation>Judul</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="198"/>
         <source>Audio track:</source>
-        <translation type="unfinished"></translation>
+        <translation>Trek audio:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="199"/>
         <source>Subtitle track:</source>
-        <translation type="unfinished"></translation>
+        <translation>Trek sub-judul:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="207"/>
         <source>HH:mm:ss.z</source>
-        <translation type="unfinished"></translation>
+        <translation>HH:mm:ss.z</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="201"/>
         <source>Clip Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Kisaran Klip</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="202"/>
         <source>Start point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Titik mulai:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="204"/>
         <source>Set start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Setel titik mulai</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="205"/>
         <source>Jump to start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindah ke titik mulai</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="206"/>
         <source>End point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Titik akhir:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="208"/>
         <source>Set end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Setel titik akhir</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="209"/>
         <source>Jump to end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindah ke titik akhir</translation>
     </message>
 </context>
 <context>
@@ -2065,67 +2062,67 @@ Anda tetap ingin menambah gambar lain?</translation>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="209"/>
         <source>No path was given</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur yang dipilih belum ada</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="215"/>
         <source>Given path does not exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur yang dipilih tidak ada</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="232"/>
         <source>An error happened during initialization of VLC player</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan saat inisialisasi pemutar VLC</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="253"/>
         <source>VLC player failed playing the media</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemutar VLC gagal memainkan media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="578"/>
         <source>CD not loaded correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>CD tidak termuat dengan benar</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="578"/>
         <source>The CD was not loaded correctly, please re-load and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>CD tidak termuat dengan benar, silakan muat-ulang dan coba lagi.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="589"/>
         <source>DVD not loaded correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>DVD tidak termuat dengan benar</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="589"/>
         <source>The DVD was not loaded correctly, please re-load and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>DVD tidak termuat dengan benar, silakan muat-ulang dan coba lagi.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="596"/>
         <source>Set name of mediaclip</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan nama klip media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="596"/>
         <source>Name of mediaclip:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama klip media:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="606"/>
         <source>Enter a valid name or cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukkan nama yang valid atau batal</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="612"/>
         <source>Invalid character</source>
-        <translation type="unfinished"></translation>
+        <translation>Karakter tidak valid</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="612"/>
         <source>The name of the mediaclip must not contain the character &quot;:&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama klip media tidak dapat berisikan karakter &quot;:&quot;</translation>
     </message>
 </context>
 <context>
@@ -2183,37 +2180,37 @@ Anda tetap ingin menambah gambar lain?</translation>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="505"/>
         <source>VLC player required</source>
-        <translation type="unfinished"></translation>
+        <translation>Butuh pemutar VLC</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="505"/>
         <source>VLC player required for playback of optical devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Butuh pemutar VLC untuk pemutaran perangkat optik</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="135"/>
         <source>Load CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat CD/DVD</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="136"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat CD/DVD - hanya didukung jika VLC terpasang dan diaktifkan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="242"/>
         <source>The optical disc %s is no longer available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Disk optik %s tidak lagi tersedia.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="434"/>
         <source>Mediaclip already saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Klip media telah tersimpan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="434"/>
         <source>This mediaclip has already been saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Klip media ini telah tersimpan sebelumnya</translation>
     </message>
 </context>
 <context>
@@ -2234,7 +2231,7 @@ Anda tetap ingin menambah gambar lain?</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="434"/>
         <source>&amp;Projector Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Manajer Proyektor</translation>
     </message>
 </context>
 <context>
@@ -2261,27 +2258,27 @@ Haruskah OpenLP dimutakhirkan sekarang?</translation>
     <message>
         <location filename="openlp/core/__init__.py" line="230"/>
         <source>Backup</source>
-        <translation type="unfinished"></translation>
+        <translation>Pencadangan</translation>
     </message>
     <message>
         <location filename="openlp/core/__init__.py" line="215"/>
         <source>OpenLP has been upgraded, do you want to create a backup of OpenLPs data folder?</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP telah dimutakhirkan, Anda ingin membuat sebuah cadangan folder data OpenLP?</translation>
     </message>
     <message>
         <location filename="openlp/core/__init__.py" line="227"/>
         <source>Backup of the data folder failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Pencadangan folder data gagal!</translation>
     </message>
     <message>
         <location filename="openlp/core/__init__.py" line="230"/>
         <source>A backup of the data folder has been created at %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Sebuah cadangan folder data telah dibuat di %s</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Buka</translation>
     </message>
 </context>
 <context>
@@ -2335,8 +2332,8 @@ OpenLP dibuat dan dikelola oleh sukarelawan. Jika Anda ingin menyaksikan lebih b
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="272"/>
-        <source>Copyright &#xa9; 2004-2014 %s
-Portions copyright &#xa9; 2004-2014 %s</source>
+        <source>Copyright © 2004-2014 %s
+Portions copyright © 2004-2014 %s</source>
         <translation>Hak Cipta © 2004-2014 %s
 Bagian Hak Cipta © 2004-2014 %s</translation>
     </message>
@@ -2386,7 +2383,7 @@ Translators
         %s
     Japanese (ja)
         %s
-    Norwegian Bokm&#xe5;l (nb)
+    Norwegian Bokmål (nb)
         %s
     Dutch (nl)
         %s
@@ -2422,7 +2419,87 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemimpin Proyek
+    %s
+
+Pengembang
+    %s
+
+Kontributor
+    %s
+
+Penguji-coba
+    %s
+
+Pemaket
+    %s
+
+Penterjemah
+    Afrikanas (af)
+        %s
+    Ceko (cs)
+        %s
+    Denmark (da)
+        %s
+    Jerman (de)
+        %s
+    Yunani (el)
+        %s
+    Inggris, Britania Raya (en_GB)
+        %s
+    Inggris, Afrika Selatan (en_ZA)
+        %s
+    Spanyol (es)
+        %s
+    Estonia (et)
+        %s
+    Finlandia (fi)
+        %s
+    Perancis (fr)
+        %s
+    Hongaria (hu)
+        %s
+    Indonesia (id)
+        %s
+    Jepang (ja)
+        %s
+    Norwegia Bokmål (nb)
+        %s
+    Belanda (nl)
+        %s
+    Portugis, Brasil (pt_BR)
+        %s
+    Rusia (ru)
+        %s
+    Swedia (sv)
+        %s
+    Tamil(Sri-Lanka) (ta_LK)
+        %s
+    Cina(China) (zh_CN)
+        %s
+
+Dokumentasi
+    %s
+
+Dibuat dengan
+    Python: http://www.python.org/
+    Qt4: http://qt.io
+    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro
+    Ikon Oxygen: http://techbase.kde.org/Projects/Oxygen/
+    MuPDF: http://www.mupdf.com/
+
+Kredit Akhir
+    &quot;Karena begitu besar kasih Allah akan dunia ini,
+    sehingga Ia telah mengaruniakan Anak-Nya yang  
+    tunggal, supaya setiap orang yang percaya kepada-
+    Nya tidak binasa, melainkan beroleh hidup yang
+    kekal.&quot;  -- Yohanes 3:16
+
+    Dan yang terakhir tapi terutama, kredit akhir kepada
+    Allah Bapa kita, yang mengirimkan Putra-Nya untuk
+    mati di kayu salib, untuk membebaskan kita dari dosa. 
+    Kami berikan perangkat lunak ini kepada Anda dengan
+    gratis karena Dia telah membebaskan kita.</translation>
     </message>
 </context>
 <context>
@@ -2440,7 +2517,7 @@ Final Credit
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="270"/>
         <source>Remember active media manager tab on startup</source>
-        <translation>Ingat tab Manajer Media yang aktif saat mulai</translation>
+        <translation>Ingat tab Manajer Media yang aktif saat memulai OpenLP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="272"/>
@@ -2758,7 +2835,7 @@ nampaknya berisi berkas data OpenLP.  Anda ingin mengganti berkas tersebut denga
     <message>
         <location filename="openlp/core/lib/colorbutton.py" line="52"/>
         <source>Click to select a color.</source>
-        <translation type="unfinished">Klik untuk memilih warna.</translation>
+        <translation>Klik untuk memilih warna.</translation>
     </message>
 </context>
 <context>
@@ -2766,252 +2843,252 @@ nampaknya berisi berkas data OpenLP.  Anda ingin mengganti berkas tersebut denga
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="315"/>
         <source>RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="316"/>
         <source>Video</source>
-        <translation type="unfinished">Video</translation>
+        <translation>Video</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="317"/>
         <source>Digital</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="318"/>
         <source>Storage</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="319"/>
         <source>Network</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="321"/>
         <source>RGB 1</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="322"/>
         <source>RGB 2</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="323"/>
         <source>RGB 3</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="324"/>
         <source>RGB 4</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="325"/>
         <source>RGB 5</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="326"/>
         <source>RGB 6</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="327"/>
         <source>RGB 7</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="328"/>
         <source>RGB 8</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="329"/>
         <source>RGB 9</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="330"/>
         <source>Video 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="331"/>
         <source>Video 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="332"/>
         <source>Video 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="333"/>
         <source>Video 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="334"/>
         <source>Video 5</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="335"/>
         <source>Video 6</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="336"/>
         <source>Video 7</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="337"/>
         <source>Video 8</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="338"/>
         <source>Video 9</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="339"/>
         <source>Digital 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="340"/>
         <source>Digital 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="341"/>
         <source>Digital 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="342"/>
         <source>Digital 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="343"/>
         <source>Digital 5</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="344"/>
         <source>Digital 6</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="345"/>
         <source>Digital 7</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="346"/>
         <source>Digital 8</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="347"/>
         <source>Digital 9</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="348"/>
         <source>Storage 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="349"/>
         <source>Storage 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="350"/>
         <source>Storage 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="351"/>
         <source>Storage 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="352"/>
         <source>Storage 5</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="353"/>
         <source>Storage 6</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="354"/>
         <source>Storage 7</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="355"/>
         <source>Storage 8</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="356"/>
         <source>Storage 9</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyimpanan 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="357"/>
         <source>Network 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="358"/>
         <source>Network 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="359"/>
         <source>Network 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="360"/>
         <source>Network 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="361"/>
         <source>Network 5</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="362"/>
         <source>Network 6</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="363"/>
         <source>Network 7</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="364"/>
         <source>Network 8</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="365"/>
         <source>Network 9</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaringan 9</translation>
     </message>
 </context>
 <context>
@@ -3024,7 +3101,7 @@ nampaknya berisi berkas data OpenLP.  Anda ingin mengganti berkas tersebut denga
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="102"/>
         <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
-        <translation>Ups! OpenLP mengalami masalah yang tidak dapat diatasi. Teks di kotak bawah berisikan informasi yang membantu pengembang OpenLP, silakan kirim via email ke bugs@openlp.org, bersama dengan deskripsi detail apa yang Anda lakukan saat masalah terjadi.</translation>
+        <translation>Ups! OpenLP mengalami masalah yang tidak dapat diatasi. Teks di kotak bawah berisikan informasi yang mungkin dapat membantu pengembang OpenLP, silakan kirim via email ke bugs@openlp.org, bersama dengan deskripsi detail apa yang Anda lakukan saat masalah terjadi.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="108"/>
@@ -3347,49 +3424,51 @@ Untuk menjalankan lagi Wisaya Kali Pertama dan mengimpor data contoh di lain wak
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="506"/>
         <source>Download Error</source>
-        <translation type="unfinished">Kesalahan Unduhan</translation>
+        <translation>Kesalahan Unduhan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="436"/>
         <source>There was a connection problem during download, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ada masalah sambungan saat pengunduhan, jadi unduhan berikutnya akan dilewatkan. Cobalah untuk menjalankan Wisaya Kali Pertama beberapa saat lagi.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="467"/>
         <source>Download complete. Click the %s button to return to OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengunduhan selesai. Klik tombol %s untuk kembali ke OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="471"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengunduhan selesai. Klik tombol %s untuk memulai OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="476"/>
         <source>Click the %s button to return to OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klik tombol %s untuk kembali ke OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="480"/>
         <source>Click the %s button to start OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klik tombol %s untuk memulai OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="506"/>
         <source>There was a connection problem while downloading, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ada masalah sambungan saat mengunduh, jadi unduhan berikutnya akan dilewatkan. Cobalah untuk menjalankan Wisaya Kali Pertama beberapa saat lagi.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="220"/>
         <source>This wizard will help you to configure OpenLP for initial use. Click the %s button below to start.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wisaya ini akan membantu Anda mengkonfigurasi OpenLP untuk penggunaan pertama kali. Klik tombol %s di bawah untuk memulainya.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
         <source>
 
 To cancel the First Time Wizard completely (and not start OpenLP), click the %s button now.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Untuk membatalkan sepenuhnya Wisaya Kali Pertama (dan tidak memulai OpenLP), klik tombol %s sekarang.</translation>
     </message>
 </context>
 <context>
@@ -3455,12 +3534,12 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="87"/>
         <source>Tag %s already defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Label %s sudah pernah ditetapkan.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="89"/>
         <source>Description %s already defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deskripsi %s sudah pernah ditetapkan.</translation>
     </message>
 </context>
 <context>
@@ -3611,7 +3690,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="230"/>
         <source>CCLI Details</source>
-        <translation>Detail CCLI</translation>
+        <translation>Rincian CCLI</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="232"/>
@@ -3621,7 +3700,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="233"/>
         <source>SongSelect password:</source>
-        <translation>Sandi SongSelect:</translation>
+        <translation>Kata sandi SongSelect:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="236"/>
@@ -3845,7 +3924,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="438"/>
         <source>&amp;Media Manager</source>
-        <translation>Manajer &amp;Media</translation>
+        <translation>&amp;Manajer Media</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="439"/>
@@ -3860,7 +3939,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="442"/>
         <source>&amp;Theme Manager</source>
-        <translation>Manajer &amp;Tema</translation>
+        <translation>&amp;Manajer Tema</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="443"/>
@@ -4055,7 +4134,7 @@ Versi terbaru dapat diunduh dari http://openlp.org/.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="478"/>
         <source>Open &amp;Data Folder...</source>
-        <translation>Buka Folder &amp;Data...</translation>
+        <translation>Buka &amp;Folder Data...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="479"/>
@@ -4246,27 +4325,27 @@ Proses telah dihentikan dan tidak ada perubahan yang telah dibuat.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="402"/>
         <source>Projector Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Manajer Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="435"/>
         <source>Toggle Projector Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganti Manajer Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="436"/>
         <source>Toggle the visibility of the Projector Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganti visibilitas Manajer Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="988"/>
         <source>Export setting error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan setelan ekspor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="988"/>
         <source>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunci &quot;%s&quot; tidak memiliki nilai bawaan sehingga akan dilewatkan saat ekspor kali ini.</translation>
     </message>
 </context>
 <context>
@@ -4350,7 +4429,7 @@ Basis-Data : %s</translation>
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="343"/>
         <source>Invalid File Type</source>
-        <translation>Tipe Berkas Tidak Valid</translation>
+        <translation>Jenis Berkas Tidak Valid</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="343"/>
@@ -4388,22 +4467,22 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="261"/>
         <source>Unknown status</source>
-        <translation type="unfinished"></translation>
+        <translation>Status tak diketahui</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="271"/>
         <source>No message</source>
-        <translation type="unfinished"></translation>
+        <translation>Tak ada pesan</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="528"/>
         <source>Error while sending data to projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan saat mengirim data ke proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="552"/>
         <source>Undefined command:</source>
-        <translation type="unfinished"></translation>
+        <translation>Perintah tak dapat didefinisikan:</translation>
     </message>
 </context>
 <context>
@@ -4444,7 +4523,7 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="89"/>
         <source>Plugin Details</source>
-        <translation>Detail Plugin</translation>
+        <translation>Rincian Plugin</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="92"/>
@@ -4573,542 +4652,542 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="156"/>
         <source>ERRA</source>
-        <translation type="unfinished"></translation>
+        <translation>ERRA</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="157"/>
         <source>ERR1</source>
-        <translation type="unfinished"></translation>
+        <translation>ERR1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="158"/>
         <source>ERR2</source>
-        <translation type="unfinished"></translation>
+        <translation>ERR2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="159"/>
         <source>ERR3</source>
-        <translation type="unfinished"></translation>
+        <translation>ERR3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="160"/>
         <source>ERR4</source>
-        <translation type="unfinished"></translation>
+        <translation>ERR4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="163"/>
         <source>S_OK</source>
-        <translation type="unfinished"></translation>
+        <translation>S_OK</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="164"/>
         <source>E_GENERAL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="165"/>
         <source>E_NOT_CONNECTED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="166"/>
         <source>E_FAN</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="167"/>
         <source>E_LAMP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="168"/>
         <source>E_TEMP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="169"/>
         <source>E_COVER</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="170"/>
         <source>E_FILTER</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="171"/>
         <source>E_AUTHENTICATION</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="172"/>
         <source>E_NO_AUTHENTICATION</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="173"/>
         <source>E_UNDEFINED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="174"/>
         <source>E_PARAMETER</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="175"/>
         <source>E_UNAVAILABLE</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="176"/>
         <source>E_PROJECTOR</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="177"/>
         <source>E_INVALID_DATA</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="178"/>
         <source>E_WARN</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="179"/>
         <source>E_ERROR</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="180"/>
         <source>E_CLASS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="181"/>
         <source>E_PREFIX</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="182"/>
         <source>E_CONNECTION_REFUSED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="184"/>
         <source>E_REMOTE_HOST_CLOSED_CONNECTION</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="186"/>
         <source>E_HOST_NOT_FOUND</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="187"/>
         <source>E_SOCKET_ACCESS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="188"/>
         <source>E_SOCKET_RESOURCE</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="189"/>
         <source>E_SOCKET_TIMEOUT</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="190"/>
         <source>E_DATAGRAM_TOO_LARGE</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="191"/>
         <source>E_NETWORK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="192"/>
         <source>E_ADDRESS_IN_USE</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="193"/>
         <source>E_SOCKET_ADDRESS_NOT_AVAILABLE</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="195"/>
         <source>E_UNSUPPORTED_SOCKET_OPERATION</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="197"/>
         <source>E_PROXY_AUTHENTICATION_REQUIRED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="199"/>
         <source>E_SLS_HANDSHAKE_FAILED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="200"/>
         <source>E_UNFINISHED_SOCKET_OPERATION</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="202"/>
         <source>E_PROXY_CONNECTION_REFUSED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="203"/>
         <source>E_PROXY_CONNECTION_CLOSED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="204"/>
         <source>E_PROXY_CONNECTION_TIMEOUT</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="205"/>
         <source>E_PROXY_NOT_FOUND</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="206"/>
         <source>E_PROXY_PROTOCOL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="207"/>
         <source>E_UNKNOWN_SOCKET_ERROR</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="209"/>
         <source>S_NOT_CONNECTED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="210"/>
         <source>S_CONNECTING</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="211"/>
         <source>S_CONNECTED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="212"/>
         <source>S_STATUS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="213"/>
         <source>S_OFF</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="214"/>
         <source>S_INITIALIZE</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="215"/>
         <source>S_STANDBY</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="216"/>
         <source>S_WARMUP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="217"/>
         <source>S_ON</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="218"/>
         <source>S_COOLDOWN</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="219"/>
         <source>S_INFO</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="220"/>
         <source>S_NETWORK_SENDING</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="221"/>
         <source>S_NETWORK_RECEIVED</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="224"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="225"/>
         <source>General projector error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan proyektor secara umum</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="226"/>
         <source>Not connected error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan tidak tersambung</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="227"/>
         <source>Lamp error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan lampu</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="228"/>
         <source>Fan error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan kipas</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="229"/>
         <source>High temperature detected</source>
-        <translation type="unfinished"></translation>
+        <translation>Suhu tinggi terdeteksi</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="230"/>
         <source>Cover open detected</source>
-        <translation type="unfinished"></translation>
+        <translation>Penutup yang terbuka terdeteksi</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="231"/>
         <source>Check filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Periksa filter</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="232"/>
         <source>Authentication Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan Otentikasi</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="233"/>
         <source>Undefined Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Perintah Tak Dapat Didefinisikan</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="234"/>
         <source>Invalid Parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter Tidak Valid</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="235"/>
         <source>Projector Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyektor Sibuk</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="236"/>
         <source>Projector/Display Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan Proyektor/Penayang</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="237"/>
         <source>Invalid packet received</source>
-        <translation type="unfinished"></translation>
+        <translation>Paket yang tidak valid diterima</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="238"/>
         <source>Warning condition detected</source>
-        <translation type="unfinished"></translation>
+        <translation>Kondisi yang perlu diperhatikan terdeteksi</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="239"/>
         <source>Error condition detected</source>
-        <translation type="unfinished"></translation>
+        <translation>Kondisi kesalahan terdeteksi</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="240"/>
         <source>PJLink class not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada dukungan untuk class PJLink</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="241"/>
         <source>Invalid prefix character</source>
-        <translation type="unfinished"></translation>
+        <translation>Awalan karakter tidak valid</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="242"/>
         <source>The connection was refused by the peer (or timed out)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sambungan ditolak oleh peer (atau melampaui batas waktu)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="244"/>
         <source>The remote host closed the connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Host remote telah menutup sambungan</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="246"/>
         <source>The host address was not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Alamat host tidak ditemukan</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="247"/>
         <source>The socket operation failed because the application lacked the required privileges</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengoperasian socket gagal karena aplikasi tidak memiliki hak khusus yang dibutuhkan</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="250"/>
         <source>The local system ran out of resources (e.g., too many sockets)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem lokal telah kehabisan sumber daya (mis. terlalu banyak socket)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="252"/>
         <source>The socket operation timed out</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengoperasian socket telah melampaui batas waktu</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="254"/>
         <source>The datagram was larger than the operating system&apos;s limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Datagram lebih besar dari batas yang dimiliki sistem operasi</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="256"/>
         <source>An error occurred with the network (Possibly someone pulled the plug?)</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan pada jaringan (Mungkin seseorang mencabut sambungannya?)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="258"/>
         <source>The address specified with socket.bind() is already in use and was set to be exclusive</source>
-        <translation type="unfinished"></translation>
+        <translation>Alamat yang ditentukan dengan socket.bind() sedang digunakan dan telah disetel eksklusif</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="261"/>
         <source>The address specified to socket.bind() does not belong to the host</source>
-        <translation type="unfinished"></translation>
+        <translation>Alamat yang ditentukan dengan socket.bind() bukanlah milik host</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="264"/>
         <source>The requested socket operation is not supported by the local operating system (e.g., lack of IPv6 support)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengoperasian socket yang diminta tidak didukung oleh sistem operasi lokal (mis. tiada dukungan IPv6)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="267"/>
         <source>The socket is using a proxy, and the proxy requires authentication</source>
-        <translation type="unfinished"></translation>
+        <translation>Socket tersebut menggunakan sebuah proxy yang membutuhkan otentikasi</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="270"/>
         <source>The SSL/TLS handshake failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Proses negosiasi SSL/TLS gagal</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="272"/>
         <source>The last operation attempted has not finished yet (still in progress in the background)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengoperasian terakhir masih diupayakan dan belum selesai (masih berlangsung di latar sistem)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="275"/>
         <source>Could not contact the proxy server because the connection to that server was denied</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menghubungi server proxy karena sambungan ke server tersebut ditolak</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="278"/>
         <source>The connection to the proxy server was closed unexpectedly (before the connection to the final peer was established)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sambungan ke server proxy ditutup secara tak terduga (sebelum sambungan ke peer akhir terjadi)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="281"/>
         <source>The connection to the proxy server timed out or the proxy server stopped responding in the authentication phase.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sambungan ke server proxy telah melampaui batas waktu atau server proxy berhenti merespon saat tahapan otentikasi.</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="284"/>
         <source>The proxy address set with setProxy() was not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Alamat proxy yang telah ditentukan dengan setProxy() tidak ditemukan</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="286"/>
         <source>The connection negotiation with the proxy server because the response from the proxy server could not be understood</source>
-        <translation type="unfinished"></translation>
+        <translation>Negosiasi sambungan dengan server proxy tidak dapat dilakukan karena respon dari server proxy tidak dapat dipahami</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="289"/>
         <source>An unidentified error occurred</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi suatu kesalahan yang tak teridentifikasi</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="290"/>
         <source>Not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak tersambung</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="291"/>
         <source>Connecting</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyambungkan</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="292"/>
         <source>Connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Tersambung</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="293"/>
         <source>Getting status</source>
-        <translation type="unfinished"></translation>
+        <translation>Mendapatkan status</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="294"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Padam</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="295"/>
         <source>Initialize in progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Inisialisasi sedang berlangsung</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="296"/>
         <source>Power in standby</source>
-        <translation type="unfinished"></translation>
+        <translation>Daya sedang siaga</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="297"/>
         <source>Warmup in progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemanasan sedang berlangsung</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="298"/>
         <source>Power is on</source>
-        <translation type="unfinished"></translation>
+        <translation>Daya sedang hidup</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="299"/>
         <source>Cooldown in progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Pendinginan sedang berlangsung</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="300"/>
         <source>Projector Information available</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi Proyektor tersedia</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="301"/>
         <source>Sending data</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengirim data</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="302"/>
         <source>Received data</source>
-        <translation type="unfinished"></translation>
+        <translation>Data yang diterima</translation>
     </message>
 </context>
 <context>
@@ -5116,17 +5195,17 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="179"/>
         <source>Name Not Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama Belum Ditetapkan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="179"/>
         <source>You must enter a name for this entry.&lt;br /&gt;Please enter a new name for this entry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda harus masukkan sebuah nama untuk entri ini.&lt;br /&gt;Silakan masukkan sebuah nama untuk entri ini.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="189"/>
         <source>Duplicate Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplikasi Nama</translation>
     </message>
 </context>
 <context>
@@ -5134,52 +5213,52 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="117"/>
         <source>Add New Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Proyektor Baru</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="120"/>
         <source>Edit Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunting Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="122"/>
         <source>IP Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Alamat IP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="125"/>
         <source>Port Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomor Port</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="127"/>
         <source>PIN</source>
-        <translation type="unfinished"></translation>
+        <translation>PIN</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="129"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="131"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="133"/>
         <source>Notes</source>
-        <translation type="unfinished">Catatan</translation>
+        <translation>Catatan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="243"/>
         <source>Database Error</source>
-        <translation type="unfinished">Kesalahan Basis-Data</translation>
+        <translation>Kesalahan Basis-Data</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="243"/>
         <source>There was an error saving projector information. See the log for the error</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan saat menyimpan informasi proyektor. Lihatlah log untuk kesalahan tersebut</translation>
     </message>
 </context>
 <context>
@@ -5187,262 +5266,262 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="90"/>
         <source>Add Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="90"/>
         <source>Add a new projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan sebuah proyektor baru</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="96"/>
         <source>Edit Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunting Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="96"/>
         <source>Edit selected projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunting proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="101"/>
         <source>Delete Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="101"/>
         <source>Delete selected projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="107"/>
         <source>Select Input Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih Sumber Masukan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="107"/>
         <source>Choose input source on selected projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih sumber masukan pada proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="113"/>
         <source>View Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Tinjau Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="113"/>
         <source>View selected projector information</source>
-        <translation type="unfinished"></translation>
+        <translation>Tinjau informasi proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="127"/>
         <source>Connect to selected projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Sambungkan ke proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="127"/>
         <source>Connect to selected projectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Sambungkan ke proyektor-proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="134"/>
         <source>Disconnect from selected projectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Putus sambungan dari proyektor-proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="141"/>
         <source>Disconnect from selected projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Putus sambungan dari proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="156"/>
         <source>Power on selected projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Hidupkan proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="169"/>
         <source>Standby selected projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Siagakan proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="169"/>
         <source>Put selected projector in standby</source>
-        <translation type="unfinished"></translation>
+        <translation>Siagakan proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="183"/>
         <source>Blank selected projector screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Kosongkan layar proyektor terplih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="197"/>
         <source>Show selected projector screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan layar proyektor terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="219"/>
         <source>&amp;View Projector Information</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tinjau Informasi Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="224"/>
         <source>&amp;Edit Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sunting Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="230"/>
         <source>&amp;Connect Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sambungkan Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="235"/>
         <source>D&amp;isconnect Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Putus-sambungan Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="241"/>
         <source>Power &amp;On Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Hidupkan &amp;Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="246"/>
         <source>Power O&amp;ff Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Padamkan &amp;Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="252"/>
         <source>Select &amp;Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih &amp;Masukan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="257"/>
         <source>Edit Input Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunting Sumber Masukan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="262"/>
         <source>&amp;Blank Projector Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kosongkan Layar Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="267"/>
         <source>&amp;Show Projector Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tampilkan Layar Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="273"/>
         <source>&amp;Delete Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hapus Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="637"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="639"/>
         <source>IP</source>
-        <translation type="unfinished"></translation>
+        <translation>IP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="641"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Port</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="643"/>
         <source>Notes</source>
-        <translation type="unfinished">Catatan</translation>
+        <translation>Catatan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="647"/>
         <source>Projector information not available at this time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi proyektor saat ini tidak tersedia.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="650"/>
         <source>Projector Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Manufacturer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pembuat</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="654"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Model</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="656"/>
         <source>Other info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info lainnya</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="658"/>
         <source>Power status</source>
-        <translation type="unfinished"></translation>
+        <translation>Status daya</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>Shutter is</source>
-        <translation type="unfinished"></translation>
+        <translation>Posisi shutter:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>Closed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutup</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="663"/>
         <source>Current source input is</source>
-        <translation type="unfinished"></translation>
+        <translation>Sumber masukan saat ini adalah</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="668"/>
         <source>Lamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Lampu</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="668"/>
         <source>On</source>
-        <translation type="unfinished"></translation>
+        <translation>Hidup</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="668"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Padam</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="668"/>
         <source>Hours</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitungan jam</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="679"/>
         <source>No current errors or warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada kesalahan atau peringatan pada saat ini</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="681"/>
         <source>Current errors/warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan/peringatan saat ini</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="684"/>
         <source>Projector Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="816"/>
         <source>No message</source>
-        <translation type="unfinished"></translation>
+        <translation>Tak ada pesan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="979"/>
         <source>Not Implemented Yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Belum Diimplementasikan</translation>
     </message>
 </context>
 <context>
@@ -5450,32 +5529,32 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="752"/>
         <source>Fan</source>
-        <translation type="unfinished"></translation>
+        <translation>Kipas</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="756"/>
         <source>Lamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Lampu</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="760"/>
         <source>Temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Suhu</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="764"/>
         <source>Cover</source>
-        <translation type="unfinished"></translation>
+        <translation>Penutup</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="768"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="772"/>
         <source>Other</source>
-        <translation type="unfinished">Lainnya</translation>
+        <translation>Lainnya</translation>
     </message>
 </context>
 <context>
@@ -5483,37 +5562,37 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="57"/>
         <source>Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="106"/>
         <source>Communication Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi Komunikasi</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="108"/>
         <source>Connect to projectors on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Sambungkan ke proyektor saat memulai OpenLP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="110"/>
         <source>Socket timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Batas waktu socket (detik)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="112"/>
         <source>Poll time (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Waktu Poll (detik)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="116"/>
         <source>Tabbed dialog box</source>
-        <translation type="unfinished"></translation>
+        <translation>Kotak dialog multi-tab</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="118"/>
         <source>Single dialog box</source>
-        <translation type="unfinished"></translation>
+        <translation>Kotak dialog tunggal</translation>
     </message>
 </context>
 <context>
@@ -5521,17 +5600,17 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="205"/>
         <source>Duplicate IP Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplikasi Alamat IP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="213"/>
         <source>Invalid IP Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Alamat IP Tidak Valid</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="222"/>
         <source>Invalid Port Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomor Port Tidak Valid</translation>
     </message>
 </context>
 <context>
@@ -5562,7 +5641,7 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/lib/serviceitem.py" line="341"/>
         <source>[slide %d]</source>
-        <translation type="unfinished"></translation>
+        <translation>[salindia %d]</translation>
     </message>
 </context>
 <context>
@@ -5823,12 +5902,12 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="652"/>
         <source>Error Saving File</source>
-        <translation>Kesalahan Penyimpanan Berkas</translation>
+        <translation>Kesalahan Saat Menyimpan Berkas</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="652"/>
         <source>There was an error saving your file.</source>
-        <translation>Terjadi kesalahan dalam penyimpanan berkas.</translation>
+        <translation>Terjadi kesalahan saat menyimpan berkas Anda.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="540"/>
@@ -6203,12 +6282,12 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="244"/>
         <source>Select Projector Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih Sumber Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="246"/>
         <source>Edit Projector Source Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunting Teks Sumber Proyektor</translation>
     </message>
 </context>
 <context>
@@ -6216,7 +6295,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="386"/>
         <source>Select Projector Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih Sumber Proyektor</translation>
     </message>
 </context>
 <context>
@@ -6540,7 +6619,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="411"/>
         <source>Background type:</source>
-        <translation>Tipe latar:</translation>
+        <translation>Jenis latar:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="414"/>
@@ -6585,7 +6664,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="436"/>
         <source>Define the font and display characteristics for the Display text</source>
-        <translation>Definisikan karakteristik fon dan tampilan untuk teks Tampilan</translation>
+        <translation>Tetapkan karakteristik fon dan tampilan untuk teks Tampilan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="455"/>
@@ -6630,7 +6709,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="453"/>
         <source>Define the font and display characteristics for the Footer text</source>
-        <translation>Definisikan karakteristik fon dan tampilan untuk teks Catatan Kaki</translation>
+        <translation>Tetapkan karakteristik fon dan tampilan untuk teks Catatan Kaki</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="459"/>
@@ -6640,7 +6719,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="460"/>
         <source>Allows additional display formatting information to be defined</source>
-        <translation>Izinkan informasi dari format tampilan tambahan untuk didefinisikan</translation>
+        <translation>Izinkan informasi dari format tampilan tambahan untuk ditetapkan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="462"/>
@@ -6820,7 +6899,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="182"/>
         <source>You have not selected a background image. Please select one before continuing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda belum memilih suatu gambar latar. Silakan pilih satu sebelum melanjutkan.</translation>
     </message>
 </context>
 <context>
@@ -6873,12 +6952,12 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="123"/>
         <source>Universal Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Setelan Universal</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="124"/>
         <source>&amp;Wrap footer text</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sembunyikan teks Catatan Kaki</translation>
     </message>
 </context>
 <context>
@@ -6988,7 +7067,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="44"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -7076,491 +7155,492 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="59"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentang</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="60"/>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tambahkan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="61"/>
         <source>Add group</source>
-        <translation type="unfinished">Tambahkan grup</translation>
+        <translation>Tambahkan grup</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="62"/>
         <source>Advanced</source>
-        <translation type="unfinished">Lanjutan</translation>
+        <translation>Lanjutan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="63"/>
         <source>All Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Semua Berkas</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="64"/>
         <source>Automatic</source>
-        <translation type="unfinished">Otomatis</translation>
+        <translation>Otomatis</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="65"/>
         <source>Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna Latar</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="66"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Dasar</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="67"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menelusuri...</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="68"/>
         <source>Cancel</source>
-        <translation type="unfinished">Batal</translation>
+        <translation>Batal</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="69"/>
         <source>CCLI number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomor CCLI:</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="70"/>
         <source>Create a new service.</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat suatu Layanan baru.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="71"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfirmasi Penghapusan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="72"/>
         <source>Continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontinu</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="73"/>
         <source>Default</source>
-        <translation type="unfinished">Bawaan</translation>
+        <translation>Bawaan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="74"/>
         <source>Default Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna Bawaan:</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="75"/>
         <source>Service %Y-%m-%d %H-%M</source>
         <comment>This may not contain any of the following characters: /\?*|&lt;&gt;[]&quot;:+
 See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for more information.</comment>
-        <translation type="unfinished"></translation>
+        <translation>Layanan %d-%m-%Y %H-%M</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="79"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hapus</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="80"/>
         <source>Display style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gaya tampilan:</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="81"/>
         <source>Duplicate Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan Duplikasi</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="82"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sunting</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="83"/>
         <source>Empty Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Bidang Kosong</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="84"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="85"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="86"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="87"/>
         <source>File Not Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas Tidak Ditemukan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="88"/>
         <source>File %s not found.
 Please try selecting it individually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas %s tidak ditemukan.
+Silakan coba memilih secara individu.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="89"/>
         <source>pt</source>
         <comment>Abbreviated font pointsize unit</comment>
-        <translation type="unfinished"></translation>
+        <translation> pn</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="90"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Bantuan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="91"/>
         <source>h</source>
         <comment>The abbreviated unit for hours</comment>
-        <translation type="unfinished"></translation>
+        <translation> jam</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="92"/>
         <source>Invalid Folder Selected</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Folder Terpilih Tidak Valid</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="93"/>
         <source>Invalid File Selected</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Berkas Terpilih Tidak Valid</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="94"/>
         <source>Invalid Files Selected</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Beberapa Berkas Terpilih Tidak Valid</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="95"/>
         <source>Image</source>
-        <translation type="unfinished">Gambar</translation>
+        <translation>Gambar</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="96"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Impor</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="97"/>
         <source>Layout style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gaya tata-letak:</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="98"/>
         <source>Live</source>
-        <translation type="unfinished"></translation>
+        <translation>Tayang</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="99"/>
         <source>Live Background Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan Latar Tayang</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="100"/>
         <source>Live Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilah Alat Tayang</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="101"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="102"/>
         <source>Manufacturer</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pembuat</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="103"/>
         <source>Manufacturers</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Para Pembuat</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="104"/>
         <source>Model</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Model</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="105"/>
         <source>Models</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Model-model</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="106"/>
         <source>m</source>
         <comment>The abbreviated unit for minutes</comment>
-        <translation type="unfinished"></translation>
+        <translation> mnt</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="107"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Tengah</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="108"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Baru</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="109"/>
         <source>New Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Layanan Baru</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="110"/>
         <source>New Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema Baru</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="111"/>
         <source>Next Track</source>
-        <translation type="unfinished"></translation>
+        <translation>Trek Selanjutnya</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="112"/>
         <source>No Folder Selected</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tidak Ada Folder Terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="113"/>
         <source>No File Selected</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tidak Ada Berkas Terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="114"/>
         <source>No Files Selected</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tidak Ada Satupun Berkas Terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="115"/>
         <source>No Item Selected</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tidak Ada Butir Terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="116"/>
         <source>No Items Selected</source>
         <comment>Plural</comment>
-        <translation type="unfinished">Tidak Ada Satupun Butir Terpilih</translation>
+        <translation>Tidak Ada Satupun Butir Terpilih</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="117"/>
         <source>OpenLP 2</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="118"/>
         <source>OpenLP 2.1</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.1</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="119"/>
         <source>OpenLP is already running. Do you wish to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP sudah berjalan. Anda ingin melanjutkan?</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="120"/>
         <source>Open service.</source>
-        <translation type="unfinished"></translation>
+        <translation>Buka Layanan.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="121"/>
         <source>Play Slides in Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Mainkan Semua Salindia Berulang-ulang</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="122"/>
         <source>Play Slides to End</source>
-        <translation type="unfinished"></translation>
+        <translation>Mainkan Semua Salindia sampai Akhir</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="123"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Pratinjau</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="124"/>
         <source>Print Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Cetak Layanan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="125"/>
         <source>Projector</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="126"/>
         <source>Projectors</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Proyektor-proyektor</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="127"/>
         <source>Replace Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganti Latar</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="128"/>
         <source>Replace live background.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganti Latar Tayang.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="129"/>
         <source>Reset Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Setel-Ulang Latar</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="130"/>
         <source>Reset live background.</source>
-        <translation type="unfinished"></translation>
+        <translation>Setel-Ulang latar Tayang.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="131"/>
         <source>s</source>
         <comment>The abbreviated unit for seconds</comment>
-        <translation type="unfinished"></translation>
+        <translation> dtk</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="132"/>
         <source>Save &amp;&amp; Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan &amp;&amp; Pratinjau</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="133"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Penelusuran</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="134"/>
         <source>Search Themes...</source>
         <comment>Search bar place holder text </comment>
-        <translation type="unfinished"></translation>
+        <translation>Telusuri Tema...</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="135"/>
         <source>You must select an item to delete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda harus memilih suatu butir untuk dihapus.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="136"/>
         <source>You must select an item to edit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda harus memilih suatu butir untuk disunting.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="137"/>
         <source>Settings</source>
-        <translation type="unfinished">Setelan</translation>
+        <translation>Setelan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="138"/>
         <source>Save Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan Layanan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="139"/>
         <source>Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Layanan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="140"/>
         <source>Optional &amp;Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Pisah &amp;Opsional</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="141"/>
         <source>Split a slide into two only if it does not fit on the screen as one slide.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pisah salindia menjadi dua jika tidak muat pada layar sebagai satu salindia.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="143"/>
         <source>Start %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Mulai %s</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="144"/>
         <source>Stop Play Slides in Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop Mainkan Semua Salindia Berulang-ulang</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="145"/>
         <source>Stop Play Slides to End</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop Mainkan Semua Salindia sampai Akhir</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="146"/>
         <source>Theme</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tema</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="147"/>
         <source>Themes</source>
         <comment>Plural</comment>
-        <translation type="unfinished">Tema</translation>
+        <translation>Tema</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="148"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Alat</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="149"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Puncak</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="150"/>
         <source>Unsupported File</source>
-        <translation type="unfinished">Tidak Ada Dukungan untuk Berkas</translation>
+        <translation>Tidak Ada Dukungan untuk Berkas</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="151"/>
         <source>Verse Per Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayat per Salindia</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="152"/>
         <source>Verse Per Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayat per Baris</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="153"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Versi</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="154"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Tinjau</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="155"/>
         <source>View Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode Tinjauan</translation>
     </message>
 </context>
 <context>
@@ -7595,7 +7675,7 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="114"/>
         <source>Source select dialog interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Antarmuka pemilihan sumber</translation>
     </message>
 </context>
 <context>
@@ -7679,7 +7759,7 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="208"/>
         <source>This type of presentation is not supported.</source>
-        <translation>Tidak ada dukungan untuk tipe presentasi ini.</translation>
+        <translation>Tidak ada dukungan untuk presentasi jenis ini.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="97"/>
@@ -7707,7 +7787,7 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="425"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan dalam integrasi PowerPoint dan presentasi akan dihentikan. Silakan mulai-ulang presentasi jika Anda ingin menampilkannya.</translation>
     </message>
 </context>
 <context>
@@ -7789,127 +7869,127 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="309"/>
         <source>OpenLP 2.1 Remote</source>
-        <translation type="unfinished"></translation>
+        <translation>Remote OpenLP 2.1</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="310"/>
         <source>OpenLP 2.1 Stage View</source>
-        <translation type="unfinished"></translation>
+        <translation>Tinjauan Bertahap OpenLP 2.1</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="311"/>
         <source>OpenLP 2.1 Live View</source>
-        <translation type="unfinished"></translation>
+        <translation>Tinjauan Tayang OpenLP 2.1</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="312"/>
         <source>Service Manager</source>
-        <translation type="unfinished">Manajer Layanan</translation>
+        <translation>Manajer Layanan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="313"/>
         <source>Slide Controller</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengontrol Salindia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="314"/>
         <source>Alerts</source>
-        <translation type="unfinished">Peringatan-Peringatan</translation>
+        <translation>Peringatan-Peringatan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="315"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Penelusuran</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="316"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Beranda</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="317"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Segarkan-ulang</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="318"/>
         <source>Blank</source>
-        <translation type="unfinished"></translation>
+        <translation>Kosong</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="319"/>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="320"/>
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Desktop</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="321"/>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="322"/>
         <source>Prev</source>
-        <translation type="unfinished"></translation>
+        <translation>Sebelumnya</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="323"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Selanjutnya</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="324"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Teks</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="325"/>
         <source>Show Alert</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan Peringatan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="326"/>
         <source>Go Live</source>
-        <translation type="unfinished">Tayangkan</translation>
+        <translation>Tayangkan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="327"/>
         <source>Add to Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan ke Layanan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="328"/>
         <source>Add &amp;amp; Go to Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan &amp;amp; Tuju ke Layanan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="329"/>
         <source>No Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak Ada Hasil</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="330"/>
         <source>Options</source>
-        <translation type="unfinished">Opsi</translation>
+        <translation>Opsi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="331"/>
         <source>Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Layanan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="332"/>
         <source>Slides</source>
-        <translation type="unfinished"></translation>
+        <translation>Salindia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="333"/>
         <source>Settings</source>
-        <translation type="unfinished">Setelan</translation>
+        <translation>Setelan</translation>
     </message>
 </context>
 <context>
@@ -7982,12 +8062,12 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="199"/>
         <source>Password:</source>
-        <translation>Sandi:</translation>
+        <translation>Kata sandi:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="183"/>
         <source>Show thumbnails of non-text slides in remote and stage view.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan thumbnail dari salindia yang bukan teks pada remote dan tinjauan bertahap.</translation>
     </message>
 </context>
 <context>
@@ -8378,25 +8458,25 @@ Pengodean ini bertanggung-jawab atas representasi karakter yang benar.</translat
         <location filename="openlp/plugins/songs/lib/db.py" line="78"/>
         <source>Words</source>
         <comment>Author who wrote the lyrics of a song</comment>
-        <translation type="unfinished">Teks</translation>
+        <translation>Teks</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/db.py" line="79"/>
         <source>Music</source>
         <comment>Author who wrote the music of a song</comment>
-        <translation type="unfinished">Musik</translation>
+        <translation>Musik</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/db.py" line="80"/>
         <source>Words and Music</source>
         <comment>Author who wrote both lyrics and music of a song</comment>
-        <translation type="unfinished">Teks dan Musik</translation>
+        <translation>Teks dan Musik</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/db.py" line="82"/>
         <source>Translation</source>
         <comment>Author who translated the song</comment>
-        <translation type="unfinished">Terjemahan</translation>
+        <translation>Terjemahan</translation>
     </message>
 </context>
 <context>
@@ -8485,22 +8565,22 @@ Pengodean ini bertanggung-jawab atas representasi karakter yang benar.</translat
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="206"/>
         <source>This file does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas ini tidak ada.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="210"/>
         <source>Could not find the &quot;Songs.MB&quot; file. It must be in the same folder as the &quot;Songs.DB&quot; file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan berkas &quot;Songs.MB&quot;. Berkas tersebut harus berada pada folder yang sama dengan &quot;Songs.DB&quot;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="226"/>
         <source>This file is not a valid EasyWorship database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas ini bukanlah sebuah basis-data EasyWorship yang valid.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="255"/>
         <source>Could not retrieve encoding.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengodean tak dapat diperoleh kembali.</translation>
     </message>
 </context>
 <context>
@@ -8735,17 +8815,17 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="311"/>
         <source>&amp;Edit Author Type</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sunting Jenis Pengarang</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="612"/>
         <source>Edit Author Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunting Jenis Pengarang</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="612"/>
         <source>Choose type for this author</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih jenis untuk pengarang ini</translation>
     </message>
 </context>
 <context>
@@ -8758,7 +8838,7 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editversedialog.py" line="78"/>
         <source>&amp;Verse type:</source>
-        <translation>&amp;Tipe bait:</translation>
+        <translation>&amp;Jenis bait:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editversedialog.py" line="88"/>
@@ -9047,32 +9127,32 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="275"/>
         <source>PowerPraise Song Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas Lagu PowerPraise</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="289"/>
         <source>PresentationManager Song Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas Lagu PresentationManager</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="295"/>
         <source>ProPresenter 4 Song Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas Lagu ProPresenter 4</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="345"/>
         <source>Worship Assistant Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas Worship Assistant</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="346"/>
         <source>Worship Assistant (CSV)</source>
-        <translation type="unfinished"></translation>
+        <translation>Worship Assistant (CSV)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="347"/>
         <source>In Worship Assistant, export your Database to a CSV file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dalam Worship Assistant, ekspor Basis-Data Anda ke sebuah berkas CSV.</translation>
     </message>
 </context>
 <context>
@@ -9113,9 +9193,7 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
     <message numerus="yes">
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="368"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
-        <translation>
-            <numerusform>Anda yakin ingin menghapus %n lagu (- lagu) terpilih ini?</numerusform>
-        </translation>
+        <translation><numerusform>Anda yakin ingin menghapus %n lagu (- lagu) terpilih ini?</numerusform></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="135"/>
@@ -9396,147 +9474,147 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="232"/>
         <source>CCLI SongSelect Importer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengimpor CCLI SongSelect</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="233"/>
         <source>&lt;strong&gt;Note:&lt;/strong&gt; An Internet connection is required in order to import songs from CCLI SongSelect.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Catatan:&lt;/strong&gt; Sambungan internet dibutuhkan untuk mengimpor lagu-lagu dari CCLI SongSelect.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="237"/>
         <source>Username:</source>
-        <translation type="unfinished">Nama Pengguna:</translation>
+        <translation>Nama Pengguna:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="238"/>
         <source>Password:</source>
-        <translation type="unfinished">Sandi:</translation>
+        <translation>Kata sandi:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="239"/>
         <source>Save username and password</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan nama pengguna dan kata sandi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="240"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation>Masuk</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="241"/>
         <source>Search Text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Telusuri Teks:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="242"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Penelusuran</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="323"/>
         <source>Found %s song(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s lagu (- lagu) ditemukan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
         <source>Logout</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluar</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="245"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Tinjau</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="246"/>
         <source>Title:</source>
-        <translation type="unfinished">Judul</translation>
+        <translation>Judul</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="247"/>
         <source>Author(s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengarang (- pengarang) :</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="248"/>
         <source>Copyright:</source>
-        <translation type="unfinished">Hak Cipta:</translation>
+        <translation>Hak Cipta:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="249"/>
         <source>CCLI Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomor CCLI:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="250"/>
         <source>Lyrics:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lirik:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="251"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Kembali</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="252"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Impor</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="68"/>
         <source>More than 1000 results</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebih dari 1000 hasil</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="68"/>
         <source>Your search has returned more than 1000 results, it has been stopped. Please refine your search to fetch better results.</source>
-        <translation type="unfinished"></translation>
+        <translation>Penelusuran Anda menghasilkan lebih dari 1000 hasil sehingga dihentikan. Silakan perbaiki penelusuran Anda untuk mendapatkan hasil yang lebih baik.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="147"/>
         <source>Logging out...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menuju keluar...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="231"/>
         <source>Save Username and Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan Nama Pengguna dan Kata Sandi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="231"/>
         <source>WARNING: Saving your username and password is INSECURE, your password is stored in PLAIN TEXT. Click Yes to save your password or No to cancel this.</source>
-        <translation type="unfinished"></translation>
+        <translation>PERINGATAN: Menyimpan nama pengguna dan kata sandi Anda TIDAKLAH AMAN, kata sandi Anda akan tersimpan dalam TEKS BIASA. Klik Ya untuk menyimpannya atau Tidak untuk membatalkannya.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="255"/>
         <source>Error Logging In</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan Saat Hendak Masuk</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="255"/>
         <source>There was a problem logging in, perhaps your username or password is incorrect?</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan saat hendak masuk, mungkin nama pengguna atau kata sandi Anda salah?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
         <source>Song Imported</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagu Telah Diimpor</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="371"/>
         <source>Your song has been imported, would you like to exit now, or import more songs?</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagu Anda telah diimpor. Apakah Anda ingin keluar sekarang, atau impor lagu lagi?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="373"/>
         <source>Import More Songs</source>
-        <translation type="unfinished"></translation>
+        <translation>Impor Lagu Lagi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="375"/>
         <source>Exit Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluar Sekarang</translation>
     </message>
 </context>
 <context>
@@ -9638,7 +9716,7 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/wordsofworship.py" line="116"/>
         <source>Invalid Words of Worship song file. Missing &quot;WoW File\nSong Words&quot; header.</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas lagu Words of Worship tidak valid. Header &quot;WoW File\nSong Words&quot; hilang.</translation>
     </message>
 </context>
 <context>
@@ -9646,27 +9724,27 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="100"/>
         <source>Error reading CSV file.</source>
-        <translation type="unfinished">Kesalahan pembacaan berkas CSV.</translation>
+        <translation>Kesalahan pembacaan berkas CSV.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="100"/>
         <source>Line %d: %s</source>
-        <translation type="unfinished">Baris %d: %s</translation>
+        <translation>Baris %d: %s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="132"/>
         <source>Decoding error: %s</source>
-        <translation type="unfinished">Kesalahan pendekodean: %s</translation>
+        <translation>Kesalahan pendekodean: %s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="136"/>
         <source>File not valid WorshipAssistant CSV format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Berkas bukan berupa format CSV Worship Assistant yang valid.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="191"/>
         <source>Record %d</source>
-        <translation type="unfinished">Rekaman %d</translation>
+        <translation>Rekaman %d</translation>
     </message>
 </context>
 <context>
@@ -9687,7 +9765,7 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="114"/>
         <source>File not valid ZionWorx CSV format.</source>
-        <translation>Berkas bukan format CSV ZionWorx yang valid.</translation>
+        <translation>Berkas bukan berupa format CSV ZionWorx yang valid.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="92"/>
