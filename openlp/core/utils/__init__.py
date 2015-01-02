@@ -506,6 +506,7 @@ def get_natural_key(string):
         return [b''] + key
     return key
 
+
 from .languagemanager import LanguageManager
 from .actions import ActionList
 
