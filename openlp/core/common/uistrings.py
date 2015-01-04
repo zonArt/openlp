@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -67,6 +67,7 @@ class UiStrings(object):
         self.Browse = translate('OpenLP.Ui', 'Browse...')
         self.Cancel = translate('OpenLP.Ui', 'Cancel')
         self.CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
+        self.CCLISongNumberLabel = translate('OpenLP.Ui', 'CCLI song number:')
         self.CreateService = translate('OpenLP.Ui', 'Create a new service.')
         self.ConfirmDelete = translate('OpenLP.Ui', 'Confirm Delete')
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
@@ -115,7 +116,7 @@ class UiStrings(object):
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
         self.NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
         self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2')
-        self.OLPV2x = translate('OpenLP.Ui', 'OpenLP 2.1')
+        self.OLPV2x = translate('OpenLP.Ui', 'OpenLP 2.2')
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. Do you wish to continue?')
         self.OpenService = translate('OpenLP.Ui', 'Open service.')
         self.PlaySlidesInLoop = translate('OpenLP.Ui', 'Play Slides in Loop')

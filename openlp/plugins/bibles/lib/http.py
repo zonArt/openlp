@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -93,10 +93,10 @@ class BGExtract(RegistryProperties):
         """
         if isinstance(tag, NavigableString):
             return None, str(tag)
-        elif tag.get('class')[0] == "versenum" or tag.get('class')[0] == 'versenum mid-line':
+        elif tag.get('class') and (tag.get('class')[0] == 'versenum' or tag.get('class')[0] == 'versenum mid-line'):
             verse = str(tag.string).replace('[', '').replace(']', '').strip()
             return verse, None
-        elif tag.get('class')[0] == 'chapternum':
+        elif tag.get('class') and tag.get('class')[0] == 'chapternum':
             verse = '1'
             return verse, None
         else:

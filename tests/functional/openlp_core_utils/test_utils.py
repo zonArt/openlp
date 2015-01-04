@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -382,7 +382,7 @@ class TestUtils(TestCase):
             mocked_page_object = MagicMock()
             mock_urlopen.return_value = mocked_page_object
             fake_url = 'this://is.a.fake/url'
-            user_agent_header = ('User-Agent', 'OpenLP/2.1.0')
+            user_agent_header = ('User-Agent', 'OpenLP/2.2.0')
 
             # WHEN: The get_web_page() method is called
             returned_page = get_web_page(fake_url, header=user_agent_header)

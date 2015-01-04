@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -84,13 +84,15 @@ class AuthorType(object):
         NoType,
         Words,
         Music,
-        WordsAndMusic
+        WordsAndMusic,
+        Translation
     ]
     TranslatedTypes = [
         Types[NoType],
         Types[Words],
         Types[Music],
-        Types[WordsAndMusic]
+        Types[WordsAndMusic],
+        Types[Translation]
     ]
 
     @staticmethod

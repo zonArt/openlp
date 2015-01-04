@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,7 +29,6 @@
 
 import logging
 import os
-from datetime import time
 
 from PyQt4 import QtCore, QtGui
 
@@ -126,18 +125,18 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         Adds buttons to the start of the header bar.
         """
         if 'vlc' in get_media_players()[0]:
-            diable_optical_button_text = False
+            disable_optical_button_text = False
             optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
             optical_button_tooltip = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
         else:
-            diable_optical_button_text = True
+            disable_optical_button_text = True
             optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
             optical_button_tooltip = translate('MediaPlugin.MediaItem',
                                                'Load CD/DVD - only supported when VLC is installed and enabled')
         self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=OPTICAL_ICON, text=optical_button_text,
                                                             tooltip=optical_button_tooltip,
                                                             triggers=self.on_load_optical)
-        if diable_optical_button_text:
+        if disable_optical_button_text:
             self.load_optical.setDisabled(True)
 
     def add_end_header_bar(self):
@@ -282,7 +281,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         Initialize media item.
         """
         self.list_view.clear()
-        self.list_view.setIconSize(QtCore.QSize(88, 50))
         self.service_path = os.path.join(AppLocation.get_section_data_path(self.settings_section), 'thumbnails')
         check_directory_exists(self.service_path)
         self.load_list(Settings().value(self.settings_section + '/media files'))

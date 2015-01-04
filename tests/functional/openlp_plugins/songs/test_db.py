@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -158,9 +158,9 @@ class TestDB(TestCase):
         # THEN: It should return only the name
         self.assertEqual("John Doe", display_name)
 
-    def test_author_get_display_name_with_type(self):
+    def test_author_get_display_name_with_type_words(self):
         """
-        Test that the display name of an author with a type is correct
+        Test that the display name of an author with a type is correct (Words)
         """
         # GIVEN: An author
         author = Author()
@@ -171,6 +171,20 @@ class TestDB(TestCase):
 
         # THEN: It should return the name with the type in brackets
         self.assertEqual("John Doe (Words)", display_name)
+
+    def test_author_get_display_name_with_type_translation(self):
+        """
+        Test that the display name of an author with a type is correct (Translation)
+        """
+        # GIVEN: An author
+        author = Author()
+        author.display_name = "John Doe"
+
+        # WHEN: We call the get_display_name() function
+        display_name = author.get_display_name(AuthorType.Translation)
+
+        # THEN: It should return the name with the type in brackets
+        self.assertEqual("John Doe (Translation)", display_name)
 
     def test_upgrade_old_song_db(self):
         """

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -81,6 +81,19 @@ class TestBibleHTTP(TestCase):
 
         # WHEN: The Books list is called
         results = handler.get_bible_chapter('NIV', 'John', 3)
+
+        # THEN: We should get back a valid service item
+        assert len(results.verse_list) == 36, 'The book of John should not have had any verses added or removed'
+
+    def bible_gateway_extract_verse_nkjv_test(self):
+        """
+        Test the Bible Gateway retrieval of verse list for NKJV bible John 3
+        """
+        # GIVEN: A new Bible Gateway extraction class
+        handler = BGExtract()
+
+        # WHEN: The Books list is called
+        results = handler.get_bible_chapter('NKJV', 'John', 3)
 
         # THEN: We should get back a valid service item
         assert len(results.verse_list) == 36, 'The book of John should not have had any verses added or removed'

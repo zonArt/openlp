@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -265,7 +265,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
                 return False
         return True
 
-    def _validate_tags(self, tags):
+    def _validate_tags(self, tags, first_time=True):
         """
         Validates a list of tags
         Deletes the first affiliated tag pair which is located side by side in the list
@@ -277,6 +277,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         :param tags: A list of tags
         :return: True if the function can't find any mismatched tags. Else False.
         """
+        if first_time:
+            fixed_tags = []
+            for i in range(len(tags)):
+                if tags[i] != '{br}':
+                    fixed_tags.append(tags[i])
+            tags = fixed_tags
         if len(tags) == 0:
             return True
         if len(tags) % 2 != 0:
@@ -284,7 +290,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         for i in range(len(tags)-1):
             if tags[i+1] == "{/" + tags[i][1:]:
                 del tags[i:i+2]
-                return self._validate_tags(tags)
+                return self._validate_tags(tags, False)
         return False
 
     def _process_lyrics(self):
