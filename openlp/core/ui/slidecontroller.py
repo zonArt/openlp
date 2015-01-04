@@ -105,6 +105,35 @@ class DisplayController(QtGui.QWidget):
         Registry().execute('%s' % sender, [controller, args])
 
 
+class InfoLabel(QtGui.QLabel):
+    """
+    InfoLabel is a subclassed QLabel. Created to provide the ablilty to add a ellipsis if the text is cut off. Original
+    source: https://stackoverflow.com/questions/11446478/pyside-pyqt-truncate-text-in-qlabel-based-on-minimumsize
+    """
+
+    def paintEvent(self, event):
+        """
+        Reimplemented to allow the drawing of elided text if the text is longer than the width of the label
+        """
+        painter = QtGui.QPainter(self)
+        metrics = QtGui.QFontMetrics(self.font())
+        elided = metrics.elidedText(self.text(), QtCore.Qt.ElideRight, self.width())
+        # If the text is elided align it left to stop it jittering as the label is resized
+        if elided == self.text():
+            alignment = QtCore.Qt.AlignCenter
+        else:
+            alignment = QtCore.Qt.AlignLeft
+        painter.drawText(self.rect(), alignment, elided)
+
+
+    def setText(self, text):
+        """
+        Reimplemented to set the tool tip text.
+        """
+        self.setToolTip(text)
+        super().setText(text)
+
+
 class SlideController(DisplayController, RegistryProperties):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -159,8 +188,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.type_label.setText(UiStrings().Preview)
         self.panel_layout.addWidget(self.type_label)
         # Info label for the title of the current item, at the top of the slide controller
-        self.info_label = QtGui.QLabel(self.panel)
-        self.info_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.info_label = InfoLabel(self.panel)
+        self.info_label.setSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Preferred)
         self.panel_layout.addWidget(self.info_label)
         # Splitter
         self.splitter = QtGui.QSplitter(self.panel)
@@ -866,7 +895,8 @@ class SlideController(DisplayController, RegistryProperties):
         if service_item.is_media():
             self.on_media_start(service_item)
         self.slide_selected(True)
-        self.preview_widget.setFocus()
+        if service_item.from_service:
+            self.preview_widget.setFocus()
         if old_item:
             # Close the old item after the new one is opened
             # This avoids the service theme/desktop flashing on screen
