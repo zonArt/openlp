@@ -159,7 +159,7 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
         self.button_box.helpRequested.connect(self.help_me)
         self.button_box.rejected.connect(self.cancel_me)
 
-    def exec_(self, projector=None, test=False):
+    def exec_(self, projector=None):
         if projector is None:
             self.projector = Projector()
             self.new_projector = True
@@ -168,8 +168,6 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
             self.new_projector = False
         self.retranslateUi(self)
         reply = QDialog.exec_(self)
-        if not test:
-            self.projector = None
         return reply
 
     @pyqtSlot()
