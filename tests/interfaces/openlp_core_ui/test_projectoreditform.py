@@ -32,6 +32,7 @@ class and methods.
 """
 
 import os
+import tempfile
 from unittest import TestCase
 
 from openlp.core.common import Registry, Settings
@@ -42,7 +43,7 @@ from tests.functional import patch
 from tests.helpers.testmixin import TestMixin
 from tests.resources.projector.data import TEST1_DATA, TEST2_DATA
 
-tmpfile = '/tmp/openlp-test-projectormanager.sql'
+tmpfile = tempfile.mkstemp(prefix='openlp-test-projectormanager', suffix='.sql')[1]
 
 
 class TestProjectorEditForm(TestCase, TestMixin):
@@ -75,6 +76,7 @@ class TestProjectorEditForm(TestCase, TestMixin):
         """
         self.projectordb.session.close()
         del(self.projector_form)
+        os.remove(tmpfile)
         self.destroy_settings()
 
     def edit_form_add_projector_test(self):
