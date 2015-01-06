@@ -582,7 +582,8 @@ class HttpRouter(RegistryProperties):
                 return self.do_http_error()
             self.service_manager.emit(QtCore.SIGNAL(event), data)
         else:
-            Registry().execute(event)
+            # Registry().execute(event)
+            self.service_manager.emit(QtCore.SIGNAL(event))
         self.do_json_header()
         return json.dumps({'results': {'success': True}}).encode()
 
