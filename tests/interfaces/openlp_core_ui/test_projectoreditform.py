@@ -59,13 +59,11 @@ class TestProjectorEditForm(TestCase, TestMixin):
         self.build_settings()
         self.setup_application()
         Registry.create()
-        if not hasattr(self, 'projector_form'):
-            with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-                mocked_init_url.start()
-                mocked_init_url.return_value = 'sqlite:///{}'.format(tmpfile)
-                self.projectordb = ProjectorDB()
-                if not hasattr(self, 'projector_edit_form'):
-                    self.projector_form = ProjectorEditForm(projectordb=self.projectordb)
+        with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
+            mocked_init_url.start()
+            mocked_init_url.return_value = 'sqlite:///{}'.format(tmpfile)
+            self.projectordb = ProjectorDB()
+            self.projector_form = ProjectorEditForm(projectordb=self.projectordb)
 
     def tearDown(self):
         """
