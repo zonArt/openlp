@@ -32,8 +32,9 @@ This module contains tests for the lib submodule of the Remotes plugin.
 import os
 import urllib.request
 from unittest import TestCase
-
+from PyQt4 import QtCore
 from openlp.core.common import Settings, Registry
+from openlp.core.ui import ServiceManager
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
 from urllib.parse import urlparse
 from tests.functional import MagicMock, patch, mock_open
@@ -61,9 +62,12 @@ class TestRouter(TestCase, TestMixin):
         """
         Create the UI
         """
+        Registry.create()
         self.setup_application()
         self.build_settings()
         Settings().extend_default_settings(__default_settings__)
+        self.service_manager = ServiceManager()
+        self.service_manager = Registry().service_list['service_manager'] = self.service_manager
         self.router = HttpRouter()
 
     def tearDown(self):
@@ -299,3 +303,41 @@ class TestRouter(TestCase, TestMixin):
             mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'),
                                                    'slide1.png', None, '120x90')
             mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'), 'slide1.png', '120x90')
+
+    def remote_next_test(self):
+        """
+        Test service manager receives remote next click properly (bug 1407445)
+        """
+        # GIVEN: initial setup and mocks
+        self.router.routes = [(r'^/api/service/(.*)$', {'function': self.router.service, 'secure': False})]
+        self.router.request_data = False
+        mocked_next_item = MagicMock()
+        self.service_manager.next_item = mocked_next_item
+        with patch.object(self.service_manager, 'setup_ui'), \
+                patch.object(self.router, 'do_json_header'):
+            self.service_manager.bootstrap_initialise()
+            self.app.processEvents()
+            # WHEN: Remote next is received
+            self.router.service(action='next')
+            self.app.processEvents()
+            # THEN: service_manager.next_item() should have been called
+            self.assertTrue(mocked_next_item.called, 'next_item() should have been called in service_manager')
+
+    def remote_previous_test(self):
+        """
+        Test service manager receives remote previous click properly (bug 1407445)
+        """
+        # GIVEN: initial setup and mocks
+        self.router.routes = [(r'^/api/service/(.*)$', {'function': self.router.service, 'secure': False})]
+        self.router.request_data = False
+        mocked_previous_item = MagicMock()
+        self.service_manager.previous_item = mocked_previous_item
+        with patch.object(self.service_manager, 'setup_ui'), \
+                patch.object(self.router, 'do_json_header'):
+            self.service_manager.bootstrap_initialise()
+            self.app.processEvents()
+            # WHEN: Remote next is received
+            self.router.service(action='previous')
+            self.app.processEvents()
+            # THEN: service_manager.next_item() should have been called
+            self.assertTrue(mocked_previous_item.called, 'previous_item() should have been called in service_manager')
