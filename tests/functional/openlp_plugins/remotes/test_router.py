@@ -67,7 +67,6 @@ class TestRouter(TestCase, TestMixin):
         self.build_settings()
         Settings().extend_default_settings(__default_settings__)
         self.service_manager = ServiceManager()
-        self.service_manager = Registry().service_list['service_manager'] = self.service_manager
         self.router = HttpRouter()
 
     def tearDown(self):
