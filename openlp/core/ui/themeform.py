@@ -58,6 +58,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         :param parent: The QWidget-derived parent of the wizard.
         """
         super(ThemeForm, self).__init__(parent)
+        self._setup()
+
+    def _setup(self):
+        """
+        Set up the class. This method is mocked out by the tests.
+        """
         self.setupUi(self)
         self.registerFields()
         self.update_theme_allowed = True
@@ -429,10 +435,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         images_filter = get_images_filter()
         images_filter = '%s;;%s (*.*)' % (images_filter, UiStrings().AllFiles)
-        filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.ThemeWizard', 'Select Image'), '',
-                                                     images_filter)
+        filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.ThemeWizard', 'Select Image'),
+                                                     self.image_file_edit.text(), images_filter)
         if filename:
-            self.theme.background_filename = str(filename)
+            self.theme.background_filename = filename
         self.set_background_page_values()
 
     def on_image_file_edit_editing_finished(self):
