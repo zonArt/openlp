@@ -52,11 +52,13 @@ class TestFirstTimeWizard(TestMixin, TestCase):
         # GIVEN: Initial settings and mocks
         with patch.object(urllib.request, 'urlopen') as mocked_urlopen:
             mocked_urlopen.side_effect = ConnectionError
+
             # WHEN: A webpage is requested
             try:
                 get_web_page(url='http://localhost')
             except:
                 pass
+
             # THEN: urlopen should have been called CONNECTION_RETRIES + 1 count
             self.assertEquals(mocked_urlopen.call_count, CONNECTION_RETRIES + 1,
                               'get_web_page() should have tried {} times'.format(CONNECTION_RETRIES))
