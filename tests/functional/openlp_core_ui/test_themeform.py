@@ -63,7 +63,6 @@ class TestThemeManager(TestCase):
             # WHEN: on_image_browse_button is clicked
             instance.on_image_browse_button_clicked()
 
-
             # THEN: The QFileDialog getOpenFileName and set_background_page_values moethods should have been called
             #       with known arguments
             mocked_get_open_file_name.assert_called_once_with(instance, 'Translated String', '/original_path/file.ext',
