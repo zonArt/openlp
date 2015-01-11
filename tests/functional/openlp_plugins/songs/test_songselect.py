@@ -29,16 +29,18 @@
 """
 This module contains tests for the CCLI SongSelect importer.
 """
+import os
+
 from unittest import TestCase
 from urllib.error import URLError
-from openlp.core import Registry
-from openlp.plugins.songs.forms.songselectform import SongSelectForm
-from openlp.plugins.songs.lib import Author, Song
-
-from openlp.plugins.songs.lib.songselect import SongSelectImport, LOGOUT_URL, BASE_URL
-
 from tests.functional import MagicMock, patch, call
 from tests.helpers.testmixin import TestMixin
+
+from openlp.core import Registry
+from openlp.plugins.songs.forms.songselectform import SongSelectForm
+from openlp.plugins.songs.lib import Author, Song, VerseType
+from openlp.plugins.songs.lib.songselect import SongSelectImport, LOGOUT_URL, BASE_URL
+from openlp.plugins.songs.lib.importers.cclifile import CCLIFileImport
 
 
 class TestSongSelectImport(TestCase, TestMixin):
@@ -467,3 +469,79 @@ class TestSongSelectForm(TestCase, TestMixin):
                 mocked_critical.assert_called_with(ssform, 'Error Logging In', 'There was a problem logging in, '
                                                                                'perhaps your username or password is '
                                                                                'incorrect?')
+
+
+class TestSongSelectFileImport(TestCase, TestMixin):
+    """
+    Test SongSelect file import
+    """
+    def setUp(self):
+        """
+        Initial setups
+        :return:
+        """
+        Registry.create()
+        test_song_name = 'TestSong'
+        self.file_name = os.path.join('tests', 'resources', 'songselect', test_song_name)
+        self.title = 'Test Song'
+        self.ccli_number = '0000000'
+        self.authors = ['Author One', 'Author Two']
+        self.topics = ['Adoration', 'Praise']
+
+    def tearDown(self):
+        """
+        Test cleanups
+        :return:
+        """
+        pass
+
+    def songselect_import_usr_file_test(self):
+        """
+        Verify import SongSelect USR file parses file properly
+        :return:
+        """
+        # GIVEN: Text file to import and mocks
+        copyright = '2011 OpenLP Programmer One (Admin. by OpenLP One) | ' \
+                    'Openlp Programmer Two (Admin. by OpenLP Two)'
+        verses = [
+            ['v1', 'Line One Verse One\nLine Two Verse One\nLine Three Verse One\nLine Four Verse One', None],
+            ['v2', 'Line One Verse Two\nLine Two Verse Two\nLine Three Verse Two\nLine Four Verse Two', None]
+        ]
+
+        song_import = CCLIFileImport(manager=None, filename=['{}.bin'.format(self.file_name)], )
+        with patch.object(song_import, 'import_wizard'), patch.object(song_import, 'finish'):
+
+            # WHEN: We call the song importer
+            song_import.do_import()
+            print(song_import.verses)
+            # THEN: Song values should be equal to test values in setUp
+            self.assertEquals(song_import.title, self.title, 'Song title should match')
+            self.assertEquals(song_import.ccli_number, self.ccli_number, 'CCLI Song Number should match')
+            self.assertEquals(song_import.authors, self.authors, 'Author(s) should match')
+            self.assertEquals(song_import.copyright, self.copyright_usr, 'Copyright should match')
+            self.assertEquals(song_import.topics, self.topics, 'Theme(s) should match')
+            self.assertEquals(song_import.verses, self.verses, 'Verses should match with test verses')
+
+    def songselect_import_usr_file_test(self):
+        """
+        Verify import SongSelect USR file parses file properly
+        :return:
+        """
+        # GIVEN: Text file to import and mocks
+        copyright = '© 2011 OpenLP Programmer One (Admin. by OpenLP One)'
+        verses = [
+            ['v1', 'Line One Verse One\r\nLine Two Verse One\r\nLine Three Verse One\r\nLine Four Verse One', None],
+            ['v2', 'Line One Verse Two\r\nLine Two Verse Two\r\nLine Three Verse Two\r\nLine Four Verse Two', None]
+        ]
+        song_import = CCLIFileImport(manager=None, filename=['{}.txt'.format(self.file_name)], )
+        with patch.object(song_import, 'import_wizard'), patch.object(song_import, 'finish'):
+
+            # WHEN: We call the song importer
+            song_import.do_import()
+
+            # THEN: Song values should be equal to test values in setUp
+            self.assertEquals(song_import.title, self.title, 'Song title should match')
+            self.assertEquals(song_import.ccli_number, self.ccli_number, 'CCLI Song Number should match')
+            self.assertEquals(song_import.authors, self.authors, 'Author(s) should match')
+            self.assertEquals(song_import.copyright, copyright, 'Copyright should match')
+            self.assertEquals(song_import.verses, verses, 'Verses should match with test verses')
