@@ -34,7 +34,7 @@ from unittest import TestCase
 
 from openlp.core.ui import ThemeForm
 
-from tests.interfaces import MagicMock, patch
+from tests.functional import MagicMock, patch
 
 
 class TestThemeManager(TestCase):

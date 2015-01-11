@@ -38,19 +38,36 @@ Some of the code for this form is based on the examples at:
 
 import cgi
 import logging
-import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx
-from openlp.core.lib import ServiceItem, ImageSource, build_html, expand_tags, image_to_byte
+from openlp.core.lib import ServiceItem, ImageSource, ScreenList, build_html, expand_tags, image_to_byte
 from openlp.core.lib.theme import BackgroundType
-
-from openlp.core.lib import ScreenList
 from openlp.core.ui import HideMode, AlertLocation
 
 log = logging.getLogger(__name__)
+
+OPAQUE_STYLESHEET = """
+QWidget {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+QGraphicsView {}
+"""
+TRANSPARENT_STYLESHEET = """
+QWidget {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+QGraphicsView {
+    background: transparent;
+    border: 0px;
+}
+"""
 
 
 class Display(QtGui.QGraphicsView):
@@ -135,7 +152,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             self.audio_player = None
         self.first_time = True
         self.web_loaded = True
-        self.setStyleSheet('border: 0px; margin: 0px; padding: 0px;')
+        self.setStyleSheet(OPAQUE_STYLESHEET)
         window_flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | QtCore.Qt.WindowStaysOnTopHint
         if Settings().value('advanced/x11 bypass wm'):
             window_flags |= QtCore.Qt.X11BypassWindowManagerHint
@@ -175,10 +192,10 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         """
         if enabled:
             self.setAutoFillBackground(False)
-            self.setStyleSheet("QGraphicsView {background: transparent; border: 0px;}")
+            self.setStyleSheet(TRANSPARENT_STYLESHEET)
         else:
             self.setAttribute(QtCore.Qt.WA_NoSystemBackground, False)
-            self.setStyleSheet("QGraphicsView {}")
+            self.setStyleSheet(OPAQUE_STYLESHEET)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
         self.repaint()
 

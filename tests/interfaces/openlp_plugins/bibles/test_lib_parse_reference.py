@@ -73,6 +73,7 @@ class TestBibleManager(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
+        del self.manager
         self.destroy_settings()
 
     def parse_reference_one_test(self):

@@ -36,9 +36,10 @@ from unittest import TestCase
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.lib.ui import UiStrings
 from openlp.core.common.registry import Registry
-from tests.utils.constants import TEST_RESOURCES_PATH
-from tests.helpers.testmixin import TestMixin
+
 from tests.functional import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
+from tests.utils.constants import TEST_RESOURCES_PATH
 
 
 class TestMainWindow(TestCase, TestMixin):

@@ -36,8 +36,10 @@ from PyQt4 import QtCore
 from openlp.core.common import Registry
 from openlp.core.lib import ScreenList
 from openlp.core.ui import MainDisplay
+from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
 
-from tests.interfaces import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
+from tests.interfaces import MagicMock
 
 SCREEN = {
     'primary': False,
@@ -46,7 +48,7 @@ SCREEN = {
 }
 
 
-class TestMainDisplay(TestCase):
+class TestMainDisplay(TestCase, TestMixin):
 
     def setUp(self):
         """
@@ -59,6 +61,9 @@ class TestMainDisplay(TestCase):
         self.desktop.screenGeometry.return_value = SCREEN['size']
         self.screens = ScreenList.create(self.desktop)
         Registry.create()
+        self.registry = Registry()
+        self.setup_application()
+        Registry().register('application', self.app)
 
     def tearDown(self):
         """
@@ -80,30 +85,60 @@ class TestMainDisplay(TestCase):
         # THEN: The controller should not be a live controller.
         self.assertEqual(main_display.is_live, True, 'The main display should be a live controller')
 
-    def set_transparency_test(self):
+    def set_transparency_enabled_test(self):
         """
-        Test creating an instance of the MainDisplay class
+        Test setting the display to be transparent
         """
-        # GIVEN: get an instance of MainDisplay
+        # GIVEN: An instance of MainDisplay
         display = MagicMock()
         main_display = MainDisplay(display)
 
-        # WHEN: We enable transparency
+        # WHEN: Transparency is enabled
         main_display.set_transparency(True)
 
-        # THEN: There should be a Stylesheet
-        self.assertEqual('QGraphicsView {background: transparent; border: 0px;}', main_display.styleSheet(),
-                         'MainDisplay instance should be transparent')
+        # THEN: The transparent stylesheet should be used
+        self.assertEqual(TRANSPARENT_STYLESHEET, main_display.styleSheet(),
+                         'The MainDisplay should use the transparent stylesheet')
         self.assertFalse(main_display.autoFillBackground(),
-                         'MainDisplay instance should be without background auto fill')
+                         'The MainDisplay should not have autoFillBackground set')
         self.assertTrue(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
-                        'MainDisplay hasnt translucent background')
+                        'The MainDisplay should have a translucent background')
 
-        # WHEN: We disable transparency
+    def set_transparency_disabled_test(self):
+        """
+        Test setting the display to be opaque
+        """
+        # GIVEN: An instance of MainDisplay
+        display = MagicMock()
+        main_display = MainDisplay(display)
+
+        # WHEN: Transparency is disabled
         main_display.set_transparency(False)
 
-        # THEN: The Stylesheet should be empty
-        self.assertEqual('QGraphicsView {}', main_display.styleSheet(),
-                         'MainDisplay instance should not be transparent')
+        # THEN: The opaque stylesheet should be used
+        self.assertEqual(OPAQUE_STYLESHEET, main_display.styleSheet(),
+                         'The MainDisplay should use the opaque stylesheet')
         self.assertFalse(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
-                         'MainDisplay hasnt translucent background')
+                         'The MainDisplay should not have a translucent background')
+
+    def css_changed_test(self):
+        """
+        Test that when the CSS changes, the plugins are looped over and given an opportunity to update the CSS
+        """
+        # GIVEN: A mocked list of plugins, a mocked display and a MainDisplay
+        mocked_songs_plugin = MagicMock()
+        mocked_bibles_plugin = MagicMock()
+        mocked_plugin_manager = MagicMock()
+        mocked_plugin_manager.plugins = [mocked_songs_plugin, mocked_bibles_plugin]
+        Registry().register('plugin_manager', mocked_plugin_manager)
+        display = MagicMock()
+        main_display = MainDisplay(display)
+        # This is set up dynamically, so we need to mock it out for now
+        main_display.frame = MagicMock()
+
+        # WHEN: The css_changed() method is triggered
+        main_display.css_changed()
+
+        # THEN: The plugins should have each been given an opportunity to add their bit to the CSS
+        mocked_songs_plugin.refresh_css.assert_called_with(main_display.frame)
+        mocked_bibles_plugin.refresh_css.assert_called_with(main_display.frame)

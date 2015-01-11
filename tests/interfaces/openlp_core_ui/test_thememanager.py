@@ -54,8 +54,8 @@ class TestThemeManager(TestCase, TestMixin):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-
         self.destroy_settings()
+        del self.theme_manager
 
     def initialise_test(self):
         """

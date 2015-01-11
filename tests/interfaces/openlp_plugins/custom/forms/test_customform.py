@@ -34,7 +34,7 @@ from unittest import TestCase
 from PyQt4 import QtGui, QtTest, QtCore
 
 from openlp.core.common import Registry
-# Import needed due to import problems.
+# TODO: FIXME: Import needed due to horrible bad imports
 from openlp.plugins.custom.lib.mediaitem import CustomMediaItem
 from openlp.plugins.custom.forms.editcustomform import EditCustomForm
 from tests.interfaces import MagicMock, patch
