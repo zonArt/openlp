@@ -1350,7 +1350,7 @@ You will need to re-import this Bible to use it again.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="87"/>
         <source>Incorrect Bible file type supplied. This looks like a Zefania XML bible, please use the Zefania import option.</source>
-        <translation type="unfinished"/>
+        <translation>Incorrect Bible file type supplied. This looks like a Zefania XML bible, please use the Zefania import option.</translation>
     </message>
 </context>
 <context>
@@ -1358,7 +1358,7 @@ You will need to re-import this Bible to use it again.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/osis.py" line="82"/>
         <source>Removing unused tags (this may take a few minutes)...</source>
-        <translation type="unfinished"/>
+        <translation>Removing unused tags (this may take a few minutes)...</translation>
     </message>
 </context>
 <context>
@@ -1516,7 +1516,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/bibles/lib/zefania.py" line="107"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"/>
+        <translation>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</translation>
     </message>
 </context>
 <context>
@@ -1974,32 +1974,32 @@ Do you want to add the other images anyway?</translation>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="190"/>
         <source>Select Media Clip</source>
-        <translation type="unfinished"/>
+        <translation>Select Media Clip</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="191"/>
         <source>Source</source>
-        <translation type="unfinished"/>
+        <translation>Source</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="192"/>
         <source>Media path:</source>
-        <translation type="unfinished"/>
+        <translation>Media path:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="193"/>
         <source>Select drive from list</source>
-        <translation type="unfinished"/>
+        <translation>Select drive from list</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="195"/>
         <source>Load disc</source>
-        <translation type="unfinished"/>
+        <translation>Load disc</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="196"/>
         <source>Track Details</source>
-        <translation type="unfinished"/>
+        <translation>Track Details</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="197"/>
@@ -2009,27 +2009,27 @@ Do you want to add the other images anyway?</translation>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="198"/>
         <source>Audio track:</source>
-        <translation type="unfinished"/>
+        <translation>Audio track:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="199"/>
         <source>Subtitle track:</source>
-        <translation type="unfinished"/>
+        <translation>Subtitle track:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="207"/>
         <source>HH:mm:ss.z</source>
-        <translation type="unfinished"/>
+        <translation>HH:mm:ss.z</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="201"/>
         <source>Clip Range</source>
-        <translation type="unfinished"/>
+        <translation>Clip Range</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="202"/>
         <source>Start point:</source>
-        <translation type="unfinished"/>
+        <translation>Start point:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="204"/>
