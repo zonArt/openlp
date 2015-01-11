@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -56,7 +56,9 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog, RegistryProperties):
         self.hour_spin_box.setValue(hour)
         self.minute_spin_box.setValue(minutes)
         self.second_spin_box.setValue(seconds)
-        hours, minutes, seconds = self._time_split(self.item['service_item'].media_length)
+        hours, minutes, seconds = self._time_split(self.item['service_item'].end_time)
+        if hours == 0 and minutes == 0 and seconds == 0:
+            hours, minutes, seconds = self._time_split(self.item['service_item'].media_length)
         self.hour_finish_spin_box.setValue(hours)
         self.minute_finish_spin_box.setValue(minutes)
         self.second_finish_spin_box.setValue(seconds)

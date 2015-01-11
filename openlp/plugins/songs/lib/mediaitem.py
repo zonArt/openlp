@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -395,6 +395,18 @@ class SongMediaItem(MediaManagerItem):
             new_song = self.open_lyrics.xml_to_song(song_xml)
             new_song.title = '%s <%s>' % \
                              (new_song.title, translate('SongsPlugin.MediaItem', 'copy', 'For song cloning'))
+            # Copy audio files from the old to the new song
+            if len(old_song.media_files) > 0:
+                save_path = os.path.join(AppLocation.get_section_data_path(self.plugin.name), 'audio', str(new_song.id))
+                check_directory_exists(save_path)
+                for media_file in old_song.media_files:
+                    new_media_file_name = os.path.join(save_path, os.path.basename(media_file.file_name))
+                    shutil.copyfile(media_file.file_name, new_media_file_name)
+                    new_media_file = MediaFile()
+                    new_media_file.file_name = new_media_file_name
+                    new_media_file.type = media_file.type
+                    new_media_file.weight = media_file.weight
+                    new_song.media_files.append(new_media_file)
             self.plugin.manager.save_object(new_song)
         self.on_song_list_load()
 

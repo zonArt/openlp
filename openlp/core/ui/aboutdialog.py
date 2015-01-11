@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -225,10 +225,10 @@ class Ui_AboutDialog(object):
                       '\n'
                       'Built With\n'
                       '    Python: http://www.python.org/\n'
-                      '    Qt4: http://qt.digia.com/\n'
-                      '    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/'
-                      'intro\n'
-                      '    Oxygen Icons: http://oxygen-icons.org/\n'
+                      '    Qt4: http://qt.io\n'
+                      '    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro\n'
+                      '    Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/\n'
+                      '    MuPDF: http://www.mupdf.com/\n'
                       '\n'
                       'Final Credit\n'
                       '    "For God so loved the world that He gave\n'

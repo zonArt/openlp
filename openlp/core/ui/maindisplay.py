@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -173,6 +173,16 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             Registry().register_function('live_display_hide', self.hide_display)
             Registry().register_function('live_display_show', self.show_display)
             Registry().register_function('update_display_css', self.css_changed)
+
+    def close(self):
+        """
+        Remove registered function on close.
+        """
+        if self.is_live:
+            Registry().remove_function('live_display_hide', self.hide_display)
+            Registry().remove_function('live_display_show', self.show_display)
+            Registry().remove_function('update_display_css', self.css_changed)
+        super().close()
 
     def set_transparency(self, enabled):
         """

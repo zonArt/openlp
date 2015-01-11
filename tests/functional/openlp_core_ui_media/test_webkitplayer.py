@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -26,7 +26,46 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Package to test the openlp.core.ui.media.webkitplayer package.
+"""
+from unittest import TestCase
+from tests.functional import patch
 
-hiddenimports = ['openlp.core.ui.media.phononplayer',
-                 'openlp.core.ui.media.vlcplayer',
-                 'openlp.core.ui.media.webkitplayer']
+from openlp.core.ui.media.webkitplayer import WebkitPlayer
+
+
+class TestWebkitPlayer(TestCase):
+    """
+    Test the functions in the :mod:`webkitplayer` module.
+    """
+
+    def check_available_mac_test(self):
+        """
+        Simple test of webkitplayer availability on Mac OS X
+        """
+        # GIVEN: A WebkitPlayer and a mocked is_macosx
+        with patch('openlp.core.ui.media.webkitplayer.is_macosx') as mocked_is_macosx:
+            mocked_is_macosx.return_value = True
+            webkit_player = WebkitPlayer(None)
+
+            # WHEN: An checking if the player is available
+            available = webkit_player.check_available()
+
+            # THEN: The player should not be available on Mac OS X
+            self.assertEqual(False, available, 'The WebkitPlayer should not be available on Mac OS X.')
+
+    def check_available_non_mac_test(self):
+        """
+        Simple test of webkitplayer availability when not on Mac OS X
+        """
+        # GIVEN: A WebkitPlayer and a mocked is_macosx
+        with patch('openlp.core.ui.media.webkitplayer.is_macosx') as mocked_is_macosx:
+            mocked_is_macosx.return_value = False
+            webkit_player = WebkitPlayer(None)
+
+            # WHEN: An checking if the player is available
+            available = webkit_player.check_available()
+
+            # THEN: The player should be available when not on Mac OS X
+            self.assertEqual(True, available, 'The WebkitPlayer should be available when not on Mac OS X.')

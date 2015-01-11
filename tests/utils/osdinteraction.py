@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -42,7 +42,7 @@ def read_service_from_file(file_name):
     @param file_name: File name of an OSD file residing in the tests/resources folder.
     @return: The service contained in the file.
     """
-    service_file = os.path.join(TEST_RESOURCES_PATH, file_name)
+    service_file = os.path.join(TEST_RESOURCES_PATH, 'service', file_name)
     with open(service_file, 'r') as open_file:
         service = json.load(open_file)
     return service

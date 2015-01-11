@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -152,16 +152,19 @@ def set_button_tooltip(bar):
     """
     for button in bar.buttons():
         if bar.standardButton(button) == QDialogButtonBox.Cancel:
-            tip = "Ignoring current changes and return to OpenLP"
+            button.setToolTip(translate('OpenLP.SourceSelectForm',
+                                        'Ignoring current changes and return to OpenLP'))
         elif bar.standardButton(button) == QDialogButtonBox.Reset:
-            tip = "Delete all user-defined text and revert to PJLink default text"
+            button.setToolTip(translate('OpenLP.SourceSelectForm',
+                                        'Delete all user-defined text and revert to PJLink default text'))
         elif bar.standardButton(button) == QDialogButtonBox.Discard:
-            tip = "Discard changes and reset to previous user-defined text"
+            button.setToolTip(translate('OpenLP.SourceSelectForm',
+                                        'Discard changes and reset to previous user-defined text'))
         elif bar.standardButton(button) == QDialogButtonBox.Ok:
-            tip = "Save changes and return to OpenLP"
+            button.setToolTip(translate('OpenLP.SourceSelectForm',
+                                        'Save changes and return to OpenLP'))
         else:
-            tip = ""
-        button.setToolTip(tip)
+            log.debug('No tooltip for button {}'.format(button.text()))
 
 
 class FingerTabBarWidget(QTabBar):
@@ -237,12 +240,13 @@ class SourceSelectTabs(QDialog):
         """
         log.debug('Initializing SourceSelectTabs()')
         super(SourceSelectTabs, self).__init__(parent)
+        self.setMinimumWidth(350)
         self.projectordb = projectordb
         self.edit = edit
         if self.edit:
-            title = translate('OpenLP.SourceSelectForm', 'Select Projector Source')
-        else:
             title = translate('OpenLP.SourceSelectForm', 'Edit Projector Source Text')
+        else:
+            title = translate('OpenLP.SourceSelectForm', 'Select Projector Source')
         self.setWindowTitle(title)
         self.setObjectName('source_select_tabs')
         self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
@@ -286,6 +290,10 @@ class SourceSelectTabs(QDialog):
                 thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
                 if buttonchecked:
                     self.tabwidget.setCurrentIndex(thistab)
+            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
+                                               QtGui.QDialogButtonBox.Discard |
+                                               QtGui.QDialogButtonBox.Ok |
+                                               QtGui.QDialogButtonBox.Cancel)
         else:
             for key in keys:
                 (tab, button_count, buttonchecked) = Build_Tab(group=self.button_group,
@@ -297,10 +305,8 @@ class SourceSelectTabs(QDialog):
                 thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
                 if buttonchecked:
                     self.tabwidget.setCurrentIndex(thistab)
-        self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
-                                           QtGui.QDialogButtonBox.Discard |
-                                           QtGui.QDialogButtonBox.Ok |
-                                           QtGui.QDialogButtonBox.Cancel)
+            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
+                                               QtGui.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         set_button_tooltip(self.button_box)
@@ -321,9 +327,9 @@ class SourceSelectTabs(QDialog):
         if self.button_box.standardButton(button) == self.button_box.Cancel:
             self.done(0)
         elif self.button_box.standardButton(button) == self.button_box.Reset:
-            self.delete_sources()
-        elif self.button_box.standardButton(button) == self.button_box.Discard:
             self.done(100)
+        elif self.button_box.standardButton(button) == self.button_box.Discard:
+            self.delete_sources()
         elif self.button_box.standardButton(button) == self.button_box.Ok:
             return self.accept_me()
         else:
@@ -331,9 +337,11 @@ class SourceSelectTabs(QDialog):
 
     def delete_sources(self):
         msg = QtGui.QMessageBox()
-        msg.setText('Delete entries for this projector')
-        msg.setInformativeText('Are you sure you want to delete ALL user-defined '
-                               'source input text for this projector?')
+        msg.setText(translate('OpenLP.SourceSelectForm', 'Delete entries for this projector'))
+        msg.setInformativeText(translate('OpenLP.SourceSelectForm',
+                                         'Are you sure you want to delete ALL user-defined '),
+                               translate('OpenLP.SourceSelectForm',
+                                         'source input text for this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
         ans = msg.exec_()
@@ -382,7 +390,11 @@ class SourceSelectSingle(QDialog):
         log.debug('Initializing SourceSelectSingle()')
         self.projectordb = projectordb
         super(SourceSelectSingle, self).__init__(parent)
-        self.setWindowTitle(translate('OpenLP.SourceSelectSingle', 'Select Projector Source'))
+        self.edit = edit
+        if self.edit:
+            title = translate('OpenLP.SourceSelectForm', 'Edit Projector Source Text')
+        else:
+            title = translate('OpenLP.SourceSelectForm', 'Select Projector Source')
         self.setObjectName('source_select_single')
         self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
         self.setModal(True)
@@ -418,6 +430,10 @@ class SourceSelectSingle(QDialog):
                     item.setText(source_item.text)
                 self.layout.addRow(PJLINK_DEFAULT_CODES[key], item)
                 self.button_group.append(item)
+            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
+                                               QtGui.QDialogButtonBox.Discard |
+                                               QtGui.QDialogButtonBox.Ok |
+                                               QtGui.QDialogButtonBox.Cancel)
         else:
             for key in keys:
                 source_text = self.projectordb.get_source_by_code(code=key, projector_id=self.projector.db_item.id)
@@ -427,10 +443,8 @@ class SourceSelectSingle(QDialog):
                 self.layout.addWidget(button)
                 self.button_group.addButton(button, int(key))
                 button_list.append(key)
-        self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
-                                           QtGui.QDialogButtonBox.Discard |
-                                           QtGui.QDialogButtonBox.Ok |
-                                           QtGui.QDialogButtonBox.Cancel)
+            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
+                                               QtGui.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         self.setMinimumHeight(key_count*25)
@@ -452,9 +466,9 @@ class SourceSelectSingle(QDialog):
         if self.button_box.standardButton(button) == self.button_box.Cancel:
             self.done(0)
         elif self.button_box.standardButton(button) == self.button_box.Reset:
-            self.delete_sources()
-        elif self.button_box.standardButton(button) == self.button_box.Discard:
             self.done(100)
+        elif self.button_box.standardButton(button) == self.button_box.Discard:
+            self.delete_sources()
         elif self.button_box.standardButton(button) == self.button_box.Ok:
             return self.accept_me()
         else:
@@ -462,9 +476,11 @@ class SourceSelectSingle(QDialog):
 
     def delete_sources(self):
         msg = QtGui.QMessageBox()
-        msg.setText('Delete entries for this projector')
-        msg.setInformativeText('Are you sure you want to delete ALL user-defined '
-                               'source input text for this projector?')
+        msg.setText(translate('OpenLP.SourceSelectForm', 'Delete entries for this projector'))
+        msg.setInformativeText(translate('OpenLP.SourceSelectForm',
+                                         'Are you sure you want to delete ALL user-defined '),
+                               translate('OpenLP.SourceSelectForm',
+                                         'source input text for this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
         ans = msg.exec_()

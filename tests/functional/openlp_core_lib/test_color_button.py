@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -202,5 +202,5 @@ class TestColorDialog(TestCase):
         widget.on_clicked()
 
         # THEN: change_color should have been called and the colorChanged signal should have been emitted
-        self.mocked_change_color.assert_call_once_with('#ffffff')
+        self.mocked_change_color.assert_called_once_with('#ffffff')
         self.mocked_color_changed.emit.assert_called_once_with('#ffffff')

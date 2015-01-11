@@ -5,8 +5,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -132,6 +132,7 @@ class Ui_ProjectorEditForm(object):
         self.location_label.setText(translate('OpenLP.ProjectorEditForm', 'Location'))
         self.location_text.setText(self.projector.location)
         self.notes_label.setText(translate('OpenLP.ProjectorEditForm', 'Notes'))
+        self.notes_text.clear()
         self.notes_text.insertPlainText(self.projector.notes)
 
 
@@ -167,7 +168,6 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
             self.new_projector = False
         self.retranslateUi(self)
         reply = QDialog.exec_(self)
-        self.projector = None
         return reply
 
     @pyqtSlot()

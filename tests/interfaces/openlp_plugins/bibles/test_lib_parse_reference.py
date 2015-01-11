@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -106,3 +106,13 @@ class TestBibleManager(TestCase, TestMixin):
         # THEN a verse array should be returned
         self.assertEqual([(54, 1, 1, -1), (54, 2, 1, 1)], results,
                          "The bible verses should match the expected results")
+
+    def parse_reference_four_test(self):
+        """
+        Test the parse_reference method with non existence book
+        """
+        # GIVEN given a bible in the bible manager
+        # WHEN asking to parse the bible reference
+        results = parse_reference('Raoul 1', self.manager.db_cache['tests'], MagicMock())
+        # THEN a verse array should be returned
+        self.assertEqual(False, results, "The bible Search should return False")

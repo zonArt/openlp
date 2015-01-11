@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -94,11 +94,9 @@ class TestProjectorManager(TestCase, TestMixin):
         self.projector_manager.bootstrap_initialise()
         self.projector_manager.bootstrap_post_set_up()
 
-        # THEN: verify calls to retrieve saved projectors
+        # THEN: verify calls to retrieve saved projectors and edit page initialized
         self.assertEqual(1, self.projector_manager._load_projectors.call_count,
                          'Initialization should have called load_projectors()')
-
-        # THEN: Verify edit page is initialized
         self.assertEqual(type(self.projector_manager.projector_form), ProjectorEditForm,
                          'Initialization should have created a Projector Edit Form')
         self.assertIs(self.projector_manager.projectordb,

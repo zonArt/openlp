@@ -1,8 +1,8 @@
 /******************************************************************************
  * OpenLP - Open Source Lyrics Projection                                      *
  * --------------------------------------------------------------------------- *
- * Copyright (c) 2008-2014 Raoul Snyman                                        *
- * Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      *
+ * Copyright (c) 2008-2015 Raoul Snyman                                        *
+ * Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      *
  * Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      *
  * Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   *
  * Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          *
@@ -67,8 +67,12 @@ window.OpenLP = {
         var ul = $("#service-manager > div[data-role=content] > ul[data-role=listview]");
         ul.html("");
         $.each(data.results.items, function (idx, value) {
+          var text = value["title"];
+          if (value["notes"]) {
+            text += ' - ' + value["notes"];
+          }
           var li = $("<li data-icon=\"false\">").append(
-            $("<a href=\"#\">").attr("value", parseInt(idx, 10)).text(value["title"]));
+            $("<a href=\"#\">").attr("value", parseInt(idx, 10)).text(text));
           li.attr("uuid", value["id"])
           li.children("a").click(OpenLP.setItem);
           ul.append(li);
@@ -98,8 +102,8 @@ window.OpenLP = {
           } else {
             text += slide["text"];
           }
-          if (slide["notes"]) {
-            text += ("<div style='font-size:smaller;font-weight:normal'>" + slide["notes"] + "</div>");
+          if (slide["slide_notes"]) {
+            text += ("<div style='font-size:smaller;font-weight:normal'>" + slide["slide_notes"] + "</div>");
           }
           text = text.replace(/\n/g, '<br />');
           if (slide["img"]) {

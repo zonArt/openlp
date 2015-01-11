@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -306,9 +306,9 @@ class HttpRouter(RegistryProperties):
         Translate various strings in the mobile app.
         """
         self.template_vars = {
-            'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Remote'),
-            'stage_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Stage View'),
-            'live_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Live View'),
+            'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.2 Remote'),
+            'stage_title': translate('RemotePlugin.Mobile', 'OpenLP 2.2 Stage View'),
+            'live_title': translate('RemotePlugin.Mobile', 'OpenLP 2.2 Live View'),
             'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
             'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
@@ -521,7 +521,7 @@ class HttpRouter(RegistryProperties):
                     if current_item.is_capable(ItemCapabilities.HasDisplayTitle):
                         item['title'] = str(frame['display_title'])
                     if current_item.is_capable(ItemCapabilities.HasNotes):
-                        item['notes'] = str(frame['notes'])
+                        item['slide_notes'] = str(frame['notes'])
                     if current_item.is_capable(ItemCapabilities.HasThumbnails) and \
                             Settings().value('remotes/thumbnails'):
                         # If the file is under our app directory tree send the portion after the match
@@ -531,8 +531,6 @@ class HttpRouter(RegistryProperties):
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 item['selected'] = (self.live_controller.selected_row == index)
-                if current_item.notes:
-                    item['notes'] = item.get('notes', '') + '\n' + current_item.notes
                 data.append(item)
         json_data = {'results': {'slides': data}}
         if current_item:

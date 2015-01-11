@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,15 +29,33 @@
 """
 This module contains tests for the db submodule of the Songs plugin.
 """
+import os
+import shutil
 from unittest import TestCase
+from tempfile import mkdtemp
 
 from openlp.plugins.songs.lib.db import Song, Author, AuthorType
+from openlp.plugins.songs.lib import upgrade
+from openlp.core.lib.db import upgrade_db
+from tests.utils.constants import TEST_RESOURCES_PATH
 
 
 class TestDB(TestCase):
     """
     Test the functions in the :mod:`db` module.
     """
+
+    def setUp(self):
+        """
+        Setup for tests
+        """
+        self.tmp_folder = mkdtemp()
+
+    def tearDown(self):
+        """
+        Clean up after tests
+        """
+        shutil.rmtree(self.tmp_folder)
 
     def test_add_author(self):
         """
@@ -140,9 +158,9 @@ class TestDB(TestCase):
         # THEN: It should return only the name
         self.assertEqual("John Doe", display_name)
 
-    def test_author_get_display_name_with_type(self):
+    def test_author_get_display_name_with_type_words(self):
         """
-        Test that the display name of an author with a type is correct
+        Test that the display name of an author with a type is correct (Words)
         """
         # GIVEN: An author
         author = Author()
@@ -153,3 +171,51 @@ class TestDB(TestCase):
 
         # THEN: It should return the name with the type in brackets
         self.assertEqual("John Doe (Words)", display_name)
+
+    def test_author_get_display_name_with_type_translation(self):
+        """
+        Test that the display name of an author with a type is correct (Translation)
+        """
+        # GIVEN: An author
+        author = Author()
+        author.display_name = "John Doe"
+
+        # WHEN: We call the get_display_name() function
+        display_name = author.get_display_name(AuthorType.Translation)
+
+        # THEN: It should return the name with the type in brackets
+        self.assertEqual("John Doe (Translation)", display_name)
+
+    def test_upgrade_old_song_db(self):
+        """
+        Test that we can upgrade an old song db to the current schema
+        """
+        # GIVEN: An old song db
+        old_db_path = os.path.join(TEST_RESOURCES_PATH, "songs", 'songs-1.9.7.sqlite')
+        old_db_tmp_path = os.path.join(self.tmp_folder, 'songs-1.9.7.sqlite')
+        shutil.copyfile(old_db_path, old_db_tmp_path)
+        db_url = 'sqlite:///' + old_db_tmp_path
+
+        # WHEN: upgrading the db
+        updated_to_version, latest_version = upgrade_db(db_url, upgrade)
+
+        # Then the song db should have been upgraded to the latest version
+        self.assertEqual(updated_to_version, latest_version,
+                         'The song DB should have been upgrade to the latest version')
+
+    def test_upgrade_invalid_song_db(self):
+        """
+        Test that we can upgrade an invalid song db to the current schema
+        """
+        # GIVEN: A song db with invalid version
+        invalid_db_path = os.path.join(TEST_RESOURCES_PATH, "songs", 'songs-2.2-invalid.sqlite')
+        invalid_db_tmp_path = os.path.join(self.tmp_folder, 'songs-2.2-invalid.sqlite')
+        shutil.copyfile(invalid_db_path, invalid_db_tmp_path)
+        db_url = 'sqlite:///' + invalid_db_tmp_path
+
+        # WHEN: upgrading the db
+        updated_to_version, latest_version = upgrade_db(db_url, upgrade)
+
+        # Then the song db should have been upgraded to the latest version without errors
+        self.assertEqual(updated_to_version, latest_version,
+                         'The song DB should have been upgrade to the latest version')

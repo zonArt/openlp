@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -335,7 +335,7 @@ class TestUtils(TestCase):
             self.assertEqual(1, mocked_request_object.add_header.call_count,
                              'There should only be 1 call to add_header')
             mock_get_user_agent.assert_called_with()
-            mock_urlopen.assert_called_with(mocked_request_object)
+            mock_urlopen.assert_called_with(mocked_request_object, timeout=30)
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(0, MockRegistry.call_count, 'The Registry() object should have never been called')
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
@@ -365,7 +365,7 @@ class TestUtils(TestCase):
             self.assertEqual(2, mocked_request_object.add_header.call_count,
                              'There should only be 2 calls to add_header')
             mock_get_user_agent.assert_called_with()
-            mock_urlopen.assert_called_with(mocked_request_object)
+            mock_urlopen.assert_called_with(mocked_request_object, timeout=30)
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
 
@@ -382,7 +382,7 @@ class TestUtils(TestCase):
             mocked_page_object = MagicMock()
             mock_urlopen.return_value = mocked_page_object
             fake_url = 'this://is.a.fake/url'
-            user_agent_header = ('User-Agent', 'OpenLP/2.1.0')
+            user_agent_header = ('User-Agent', 'OpenLP/2.2.0')
 
             # WHEN: The get_web_page() method is called
             returned_page = get_web_page(fake_url, header=user_agent_header)
@@ -393,7 +393,7 @@ class TestUtils(TestCase):
             self.assertEqual(1, mocked_request_object.add_header.call_count,
                              'There should only be 1 call to add_header')
             self.assertEqual(0, mock_get_user_agent.call_count, '_get_user_agent should not have been called')
-            mock_urlopen.assert_called_with(mocked_request_object)
+            mock_urlopen.assert_called_with(mocked_request_object, timeout=30)
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
 
@@ -425,7 +425,7 @@ class TestUtils(TestCase):
             mocked_request_object.add_header.assert_called_with('User-Agent', 'user_agent')
             self.assertEqual(1, mocked_request_object.add_header.call_count,
                              'There should only be 1 call to add_header')
-            mock_urlopen.assert_called_with(mocked_request_object)
+            mock_urlopen.assert_called_with(mocked_request_object, timeout=30)
             mocked_page_object.geturl.assert_called_with()
             mocked_registry_object.get.assert_called_with('application')
             mocked_application_object.process_events.assert_called_with()

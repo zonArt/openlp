@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,7 +33,7 @@ from PyQt4 import QtGui
 
 import logging
 
-from openlp.core.common import Settings
+from openlp.core.common import Settings, is_macosx
 from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -231,7 +231,11 @@ class WebkitPlayer(MediaPlayer):
         """
         Check the availability of the media player
         """
-        return True
+        # At the moment we don't have support for webkitplayer on Mac OS X
+        if is_macosx():
+            return False
+        else:
+            return True
 
     def load(self, display):
         """

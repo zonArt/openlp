@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -690,7 +690,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         first_run_wizard = FirstTimeForm(self)
         first_run_wizard.initialize(ScreenList())
         first_run_wizard.exec_()
-        if first_run_wizard.was_download_cancelled:
+        if first_run_wizard.was_cancelled:
             return
         self.application.set_busy_cursor()
         self.first_time()
@@ -706,7 +706,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                     self.active_plugin.toggle_status(PluginStatus.Inactive)
         # Set global theme and
         Registry().execute('theme_update_global')
+        # Load the themes from files
         self.theme_manager_contents.load_first_time_themes()
+        # Update the theme widget
+        self.theme_manager_contents.load_themes()
         # Check if any Bibles downloaded.  If there are, they will be processed.
         Registry().execute('bibles_load_list', True)
         self.application.set_normal_cursor()

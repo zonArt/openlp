@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,6 +33,7 @@ The :mod:`slidecontroller` module contains the most important part of OpenLP - t
 import os
 import copy
 from collections import deque
+from threading import Lock
 
 from PyQt4 import QtCore, QtGui
 
@@ -104,6 +105,35 @@ class DisplayController(QtGui.QWidget):
         Registry().execute('%s' % sender, [controller, args])
 
 
+class InfoLabel(QtGui.QLabel):
+    """
+    InfoLabel is a subclassed QLabel. Created to provide the ablilty to add a ellipsis if the text is cut off. Original
+    source: https://stackoverflow.com/questions/11446478/pyside-pyqt-truncate-text-in-qlabel-based-on-minimumsize
+    """
+
+    def paintEvent(self, event):
+        """
+        Reimplemented to allow the drawing of elided text if the text is longer than the width of the label
+        """
+        painter = QtGui.QPainter(self)
+        metrics = QtGui.QFontMetrics(self.font())
+        elided = metrics.elidedText(self.text(), QtCore.Qt.ElideRight, self.width())
+        # If the text is elided align it left to stop it jittering as the label is resized
+        if elided == self.text():
+            alignment = QtCore.Qt.AlignCenter
+        else:
+            alignment = QtCore.Qt.AlignLeft
+        painter.drawText(self.rect(), alignment, elided)
+
+
+    def setText(self, text):
+        """
+        Reimplemented to set the tool tip text.
+        """
+        self.setToolTip(text)
+        super().setText(text)
+
+
 class SlideController(DisplayController, RegistryProperties):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -131,6 +161,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.ratio = self.screens.current['size'].width() / self.screens.current['size'].height()
         except ZeroDivisionError:
             self.ratio = 1
+        self.process_queue_lock = Lock()
+        self.slide_selected_lock = Lock()
         self.timer_id = 0
         self.song_edit = False
         self.selected_row = 0
@@ -141,6 +173,7 @@ class SlideController(DisplayController, RegistryProperties):
         self.slide_list = {}
         self.slide_count = 0
         self.slide_image = None
+        self.controller_width = -1
         # Layout for holding panel
         self.panel_layout = QtGui.QVBoxLayout(self.panel)
         self.panel_layout.setSpacing(0)
@@ -155,8 +188,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.type_label.setText(UiStrings().Preview)
         self.panel_layout.addWidget(self.type_label)
         # Info label for the title of the current item, at the top of the slide controller
-        self.info_label = QtGui.QLabel(self.panel)
-        self.info_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.info_label = InfoLabel(self.panel)
+        self.info_label.setSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Preferred)
         self.panel_layout.addWidget(self.info_label)
         # Splitter
         self.splitter = QtGui.QSplitter(self.panel)
@@ -331,9 +364,6 @@ class SlideController(DisplayController, RegistryProperties):
         self.slide_layout.setMargin(0)
         self.slide_layout.setObjectName('SlideLayout')
         self.preview_display = Display(self)
-        self.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
-        self.preview_display.screen = {'size': self.preview_display.geometry()}
-        self.preview_display.setup()
         self.slide_layout.insertWidget(0, self.preview_display)
         self.preview_display.hide()
         # Actual preview screen
@@ -382,13 +412,11 @@ class SlideController(DisplayController, RegistryProperties):
             Registry().register_function('slidecontroller_live_spin_delay', self.receive_spin_delay)
             self.toolbar.set_widget_visible(LOOP_LIST, False)
             self.toolbar.set_widget_visible(WIDE_MENU, False)
-        else:
-            self.preview_widget.doubleClicked.connect(self.on_preview_add_to_service)
-            self.toolbar.set_widget_visible(['editSong'], False)
-        if self.is_live:
             self.set_live_hot_keys(self)
             self.__add_actions_to_widget(self.controller)
         else:
+            self.preview_widget.doubleClicked.connect(self.on_preview_add_to_service)
+            self.toolbar.set_widget_visible(['editSong'], False)
             self.controller.addActions([self.next_item, self.previous_item])
         Registry().register_function('slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
         Registry().register_function('slidecontroller_%s_change' % self.type_prefix, self.on_slide_change)
@@ -493,6 +521,11 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.display.setVisible(False)
         self.media_controller.media_stop(self)
+        # Stop looping if active
+        if self.play_slides_loop.isChecked():
+            self.on_play_slides_loop(False)
+        elif self.play_slides_once.isChecked():
+            self.on_play_slides_once(False)
 
     def toggle_display(self, action):
         """
@@ -530,9 +563,9 @@ class SlideController(DisplayController, RegistryProperties):
         Process the service item request queue.  The key presses can arrive
         faster than the processing so implement a FIFO queue.
         """
-        if self.keypress_queue:
-            while len(self.keypress_queue) and not self.keypress_loop:
-                self.keypress_loop = True
+        # Make sure only one thread get in here. Just return if already locked.
+        if self.keypress_queue and self.process_queue_lock.acquire(False):
+            while len(self.keypress_queue):
                 keypress_command = self.keypress_queue.popleft()
                 if keypress_command == ServiceItemAction.Previous:
                     self.service_manager.previous_item()
@@ -541,7 +574,7 @@ class SlideController(DisplayController, RegistryProperties):
                     self.service_manager.previous_item(last_slide=True)
                 else:
                     self.service_manager.next_item()
-            self.keypress_loop = False
+            self.process_queue_lock.release()
 
     def screen_size_changed(self):
         """
@@ -599,7 +632,10 @@ class SlideController(DisplayController, RegistryProperties):
             self.slide_preview.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.screen = {'size': self.preview_display.geometry()}
-        self.on_controller_size_changed(self.controller.width())
+        # Only update controller layout if width has actually changed
+        if self.controller_width != self.controller.width():
+            self.controller_width = self.controller.width()
+            self.on_controller_size_changed(self.controller_width)
 
     def on_controller_size_changed(self, width):
         """
@@ -618,6 +654,10 @@ class SlideController(DisplayController, RegistryProperties):
             elif width < used_space - HIDE_MENU_THRESHOLD and not self.hide_menu.isVisible():
                 self.set_blank_menu(False)
                 self.toolbar.set_widget_visible(NARROW_MENU)
+            # Fallback to the standard blank toolbar if the hide_menu is not visible.
+            elif not self.hide_menu.isVisible():
+                self.toolbar.set_widget_visible(NARROW_MENU, False)
+                self.set_blank_menu()
 
     def set_blank_menu(self, visible=True):
         """
@@ -692,7 +732,9 @@ class SlideController(DisplayController, RegistryProperties):
             self.mediabar.show()
         self.previous_item.setVisible(not item.is_media())
         self.next_item.setVisible(not item.is_media())
-        # The layout of the toolbar is size dependent, so make sure it fits
+        # The layout of the toolbar is size dependent, so make sure it fits. Reset stored controller_width.
+        if self.is_live:
+            self.controller_width = -1
         self.on_controller_size_changed(self.controller.width())
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
@@ -853,7 +895,8 @@ class SlideController(DisplayController, RegistryProperties):
         if service_item.is_media():
             self.on_media_start(service_item)
         self.slide_selected(True)
-        self.preview_widget.setFocus()
+        if service_item.from_service:
+            self.preview_widget.setFocus()
         if old_item:
             # Close the old item after the new one is opened
             # This avoids the service theme/desktop flashing on screen
@@ -1029,6 +1072,10 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param start:
         """
+        # Only one thread should be in here at the time. If already locked just skip, since the update will be
+        # done by the thread holding the lock. If it is a "start" slide, we must wait for the lock.
+        if not self.slide_selected_lock.acquire(start):
+            return
         row = self.preview_widget.current_slide_number()
         self.selected_row = 0
         if -1 < row < self.preview_widget.slide_count():
@@ -1051,6 +1098,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.update_preview()
             self.preview_widget.change_slide(row)
         self.display.setFocus()
+        # Release lock
+        self.slide_selected_lock.release()
 
     def on_slide_change(self, row):
         """
@@ -1395,7 +1444,6 @@ class LiveController(RegistryMixin, OpenLPMixin, SlideController):
         self.split = 1
         self.type_prefix = 'live'
         self.keypress_queue = deque()
-        self.keypress_loop = False
         self.category = UiStrings().LiveToolbar
         ActionList.get_instance().add_category(str(self.category), CategoryOrder.standard_toolbar)
 

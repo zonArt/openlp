@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -747,8 +747,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                                                'File is not a valid service.\n The content encoding is not UTF-8.'))
                     continue
                 os_file = ucs_file.replace('/', os.path.sep)
-                if not os_file.startswith('audio'):
-                    os_file = os.path.split(os_file)[1]
+                os_file = os.path.basename(os_file)
                 self.log_debug('Extract file: %s' % os_file)
                 zip_info.filename = os_file
                 zip_file.extract(zip_info, self.service_path)
@@ -884,7 +883,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             # TODO for future: make group explains itself more visually
         else:
             self.auto_play_slides_menu.menuAction().setVisible(False)
-        if service_item['service_item'].is_capable(ItemCapabilities.HasVariableStartTime):
+        if service_item['service_item'].is_capable(ItemCapabilities.HasVariableStartTime) and \
+                not service_item['service_item'].is_capable(ItemCapabilities.IsOptical):
             self.time_action.setVisible(True)
         if service_item['service_item'].is_capable(ItemCapabilities.CanAutoStartForLive):
             self.auto_start_action.setVisible(True)
@@ -1479,8 +1479,6 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 if self.service_items and item < len(self.service_items) and \
                         self.service_items[item]['service_item'].is_capable(ItemCapabilities.CanPreview):
                     self.preview_controller.add_service_manager_item(self.service_items[item]['service_item'], 0)
-                    next_item = self.service_manager_list.topLevelItem(item)
-                    self.service_manager_list.setCurrentItem(next_item)
                     self.live_controller.preview_widget.setFocus()
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
