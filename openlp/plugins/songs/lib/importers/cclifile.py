@@ -42,7 +42,10 @@ log = logging.getLogger(__name__)
 class CCLIFileImport(SongImport):
     """
     The :class:`CCLIFileImport` class provides OpenLP with the ability to import CCLI SongSelect song files in
-    both .txt and .usr formats. See `<http://www.ccli.com/>`_ for more details.
+    TEXT and USR formats. See `<http://www.ccli.com/>`_ for more details.
+
+    NOTE: Sometime before 2015, CCLI/SongSelect has changed the USR filename to a .bin extension; however,
+     the file format remained the same as the .usr file format.
     """
 
     def __init__(self, manager, **kwargs):
@@ -56,7 +59,7 @@ class CCLIFileImport(SongImport):
 
     def do_import(self):
         """
-        Import either a ``.usr`` or a ``.txt`` SongSelect file.
+        Import either a USR or TEXT SongSelect file.
         """
         log.debug('Starting CCLI File Import')
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
@@ -79,12 +82,12 @@ class CCLIFileImport(SongImport):
                 lines = infile.readlines()
                 infile.close()
                 ext = os.path.splitext(filename)[1]
-                if ext.lower() == '.usr':
-                    log.info('SongSelect .usr format file found: %s', filename)
+                if ext.lower() == '.usr' or ext.lower() == '.bin':
+                    log.info('SongSelect USR format file found: %s', filename)
                     if not self.do_import_usr_file(lines):
                         self.log_error(filename)
                 elif ext.lower() == '.txt':
-                    log.info('SongSelect .txt format file found: %s', filename)
+                    log.info('SongSelect TEXT format file found: %s', filename)
                     if not self.do_import_txt_file(lines):
                         self.log_error(filename)
                 else:
@@ -99,7 +102,7 @@ class CCLIFileImport(SongImport):
         The :func:`doImport_usr_file` method provides OpenLP with the ability
         to import CCLI SongSelect songs in *USR* file format.
 
-        **SongSelect .usr file format**
+        **SongSelect USR file format**
 
         ``[File]``
             USR file format first line

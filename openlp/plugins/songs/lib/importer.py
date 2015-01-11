@@ -216,7 +216,7 @@ class SongFormat(object):
             'class': CCLIFileImport,
             'name': 'CCLI/SongSelect',
             'prefix': 'ccli',
-            'filter': '%s (*.usr *.txt)' % translate('SongsPlugin.ImportWizardForm', 'CCLI SongSelect Files')
+            'filter': '%s (*.usr *.txt *.bin)' % translate('SongsPlugin.ImportWizardForm', 'CCLI SongSelect Files')
         },
         DreamBeam: {
             'class': DreamBeamImport,
