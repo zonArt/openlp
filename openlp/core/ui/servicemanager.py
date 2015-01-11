@@ -338,6 +338,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         self.setup_ui(self)
         # Need to use event as called across threads and UI is updated
         QtCore.QObject.connect(self, QtCore.SIGNAL('servicemanager_set_item'), self.on_set_item)
+        QtCore.QObject.connect(self, QtCore.SIGNAL('servicemanager_next_item'), self.next_item)
+        QtCore.QObject.connect(self, QtCore.SIGNAL('servicemanager_previous_item'), self.previous_item)
 
     def bootstrap_post_set_up(self):
         """
