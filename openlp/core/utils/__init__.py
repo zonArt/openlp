@@ -401,7 +401,7 @@ def get_web_page(url, header=None, update_openlp=False):
         req.add_header(header[0], header[1])
     page = None
     log.debug('Downloading URL = %s' % url)
-    retries = 0
+    retries = 1
     while True:
         try:
             page = urllib.request.urlopen(req, timeout=CONNECTION_TIMEOUT)
@@ -411,6 +411,7 @@ def get_web_page(url, header=None, update_openlp=False):
                 log.exception('The web page could not be downloaded')
                 raise
             else:
+                retries += 1
                 time.sleep(0.1)
                 continue
         break
