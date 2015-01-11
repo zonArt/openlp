@@ -39,7 +39,7 @@ from openlp.core.ui import MainDisplay
 from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
 
 from tests.helpers.testmixin import TestMixin
-from tests.interfaces import MagicMock
+from tests.functional import MagicMock
 
 SCREEN = {
     'primary': False,

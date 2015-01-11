@@ -27,47 +27,28 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The About dialog.
+Package to test the openlp.core.ui.firsttimeform package.
 """
-import webbrowser
+from unittest import TestCase
 
-from PyQt4 import QtGui
+from openlp.core.ui.aboutform import AboutForm
 
-from openlp.core.lib import translate
-from openlp.core.utils import get_application_version
-from .aboutdialog import UiAboutDialog
+from tests.functional import patch
+from tests.helpers.testmixin import TestMixin
 
 
-class AboutForm(QtGui.QDialog, UiAboutDialog):
-    """
-    The About dialog
-    """
+class TestFirstTimeForm(TestCase, TestMixin):
 
-    def __init__(self, parent):
+    def test_on_volunteer_button_clicked(self):
         """
-        Do some initialisation stuff
+        Test that clicking on the "Volunteer" button opens a web page.
         """
-        super(AboutForm, self).__init__(parent)
-        self._setup()
+        # GIVEN: A new About dialog and a mocked out webbrowser module
+        with patch('openlp.core.ui.aboutform.webbrowser') as mocked_webbrowser:
+            about_form = AboutForm(None)
 
-    def _setup(self):
-        """
-        Set up the dialog. This method is mocked out in tests.
-        """
-        self.setup_ui(self)
-        application_version = get_application_version()
-        about_text = self.about_text_edit.toPlainText()
-        about_text = about_text.replace('<version>', application_version['version'])
-        if application_version['build']:
-            build_text = translate('OpenLP.AboutForm', ' build %s') % application_version['build']
-        else:
-            build_text = ''
-        about_text = about_text.replace('<revision>', build_text)
-        self.about_text_edit.setPlainText(about_text)
-        self.volunteer_button.clicked.connect(self.on_volunteer_button_clicked)
+            # WHEN: The "Volunteer" button is "clicked"
+            about_form.on_volunteer_button_clicked()
 
-    def on_volunteer_button_clicked(self):
-        """
-        Launch a web browser and go to the contribute page on the site.
-        """
-        webbrowser.open_new('http://openlp.org/en/contribute')
+            # THEN: A web browser is opened
+            mocked_webbrowser.open_new.assert_called_with('http://openlp.org/en/contribute')

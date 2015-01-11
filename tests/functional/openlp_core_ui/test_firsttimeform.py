@@ -29,7 +29,6 @@
 """
 Package to test the openlp.core.ui.firsttimeform package.
 """
-from configparser import ConfigParser
 import os
 from unittest import TestCase
 

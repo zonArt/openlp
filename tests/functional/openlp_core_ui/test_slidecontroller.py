@@ -37,7 +37,7 @@ from openlp.core.lib import ServiceItemAction
 from openlp.core.ui import SlideController
 from openlp.core.ui.slidecontroller import InfoLabel, WIDE_MENU, NON_TEXT_MENU
 
-from tests.interfaces import MagicMock, patch
+from tests.functional import MagicMock, patch
 
 
 class TestSlideController(TestCase):

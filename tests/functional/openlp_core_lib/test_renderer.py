@@ -36,7 +36,7 @@ from PyQt4 import QtCore
 from openlp.core.common import Registry
 from openlp.core.lib import Renderer, ScreenList, ServiceItem
 
-from tests.interfaces import MagicMock
+from tests.functional import MagicMock
 
 SCREEN = {
     'primary': False,
