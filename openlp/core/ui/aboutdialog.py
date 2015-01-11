@@ -34,14 +34,16 @@ from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button, create_button_box
 
 
-class Ui_AboutDialog(object):
+class UiAboutDialog(object):
     """
     The actual GUI widgets for the About form.
     """
 
-    def setupUi(self, about_dialog):
+    def setup_ui(self, about_dialog):
         """
         Set up the UI for the dialog.
+
+        :param about_dialog: The QDialog object to set up.
         """
         about_dialog.setObjectName('about_dialog')
         about_dialog.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
@@ -84,12 +86,14 @@ class Ui_AboutDialog(object):
         self.volunteer_button = create_button(None, 'volunteer_button', icon=':/system/system_volunteer.png')
         self.button_box = create_button_box(about_dialog, 'button_box', ['close'], [self.volunteer_button])
         self.about_dialog_layout.addWidget(self.button_box)
-        self.retranslateUi(about_dialog)
+        self.retranslate_ui(about_dialog)
         self.about_notebook.setCurrentIndex(0)
 
-    def retranslateUi(self, about_dialog):
+    def retranslate_ui(self, about_dialog):
         """
         Dynamically translate the UI.
+
+        :param about_dialog: The QDialog object to translate
         """
         about_dialog.setWindowTitle('%s OpenLP' % UiStrings().About)
         self.about_text_edit.setPlainText(
@@ -109,30 +113,27 @@ class Ui_AboutDialog(object):
                       'consider volunteering by using the button below.'))
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.about_tab), UiStrings().About)
         lead = 'Raoul "superfly" Snyman'
-        developers = ['Tim "TRB143" Bentley', 'Jonathan "gushie" Corwin',
-                      'Michael "cocooncrash" Gorven',
-                      'Andreas "googol" Preikschat', 'Raoul "superfly" Snyman',
-                      'Martin "mijiti" Thompson', 'Jon "Meths" Tibble']
-        contributors = ['Gerald "jerryb" Britton',
-                        'Samuel "MrGamgee" Findlay', 'Scott "sguerrieri" Guerrieri',
-                        'Matthias "matthub" Hub', 'Meinert "m2j" Jordan',
-                        'Armin "orangeshirt" K\xf6hler', 'Erik "luen" Lundin',
-                        'Edwin "edwinlunando" Lunando', 'Brian "brianmeyer" Meyer',
-                        'Joshua "milleja46" Miller', 'Stevan "ElderP" Pettit',
-                        'Mattias "mahfiaz" P\xf5ldaru', 'Christian "crichter" Richter',
-                        'Philip "Phill" Ridout', 'Simon "samscudder" Scudder',
-                        'Jeffrey "whydoubt" Smith', 'Maikel Stuivenberg',
-                        'Dave "Dave42W" Warnock', 'Frode "frodus" Woldsund',
-                        'Martin "matysek" Zibricky', 'Patrick "mohij" Zimmermann']
+        developers = ['Tim "TRB143" Bentley', 'Tomas "tgc" Groth', 'Samuel "samuel_m" Mehrbrodt',
+                      'Andreas "googol" Preikschat', 'Ken "alisonken1" Roberts', 'Raoul "superfly" Snyman',
+                      'Jonathan "springermac" Springer', 'Philip "Phill" Ridout']
+        contributors = ['Stuart "sibecker" Becker', 'Gerald "jerryb" Britton', 'Jonathan "gushie" Corwin',
+                        'Samuel "MrGamgee" Findlay', 'Michael "cocooncrash" Gorven', 'Scott "sguerrieri" Guerrieri',
+                        'Matthias "matthub" Hub', 'Meinert "m2j" Jordan', 'Armin "orangeshirt" K\xf6hler',
+                        'Rafael "rafaellerm" Lerm', 'Erik "luen" Lundin', 'Edwin "edwinlunando" Lunando',
+                        'Dmitriy Marmyshev', 'Brian "brianmeyer" Meyer', 'Joshua "milleja46" Miller',
+                        'Stevan "ElderP" Pettit', 'Mattias "mahfiaz" P\xf5ldaru', 'Felipe Polo-Wood',
+                        'Christian "crichter" Richter', 'Arjan "arjans" Schrijver', 'Simon "samscudder" Scudder',
+                        'Jeffrey "whydoubt" Smith', 'Stefan Strasser', 'Maikel Stuivenberg', 'Martin "mijiti" Thompson',
+                        'Jon "Meths" Tibble', 'Dave "Dave42W" Warnock', 'Oliver "OliWie" Wieland',
+                        'Frode "frodus" Woldsund', 'Martin "matysek" Zibricky', 'Patrick "mohij" Zimmermann']
         testers = ['Philip "Phill" Ridout', 'Wesley "wrst" Stout',
                    'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
                      'Tim "TRB143" Bentley (Fedora and Android)',
-                     'Matthias "matthub" Hub (Mac OS X)',
                      'Joseph "jdmulloy" Mulloy (openSUSE)',
                      'Stevan "ElderP" Pettit (Windows)',
-                     'Raoul "superfly" Snyman (Debian, Ubuntu)',
-                     'Garrett "floft" Wilson (Arch Linux)']
+                     'Raoul "superfly" Snyman (Mac OS X, Debian, Ubuntu)',
+                     'Wesley "wrst" Stout (Arch Linux)']
         translators = {
             'af': ['Johan "nuvolari" Mynhardt'],
             'cs': ['Martin "matysek" Zibricky'],
@@ -140,7 +141,7 @@ class Ui_AboutDialog(object):
             'de': ['Patrick "madmuffin" Br\xfcckner', 'Meinert "m2j" Jordan', 'Andreas "googol" Preikschat',
                    'Christian "crichter" Richter'],
             'en_GB': ['Tim "TRB143" Bentley', 'Jonathan "gushie" Corwin'],
-            'en_ZA': ['Raoul "superfly" Snyman', 'Johan "nuvolari" Mynhardt'],
+            'en_ZA': ['Raoul "superfly" Snyman'],
             'el': ['Alexander Siozos'],
             'es': ['Josu\xe9 Z\xfa\xf1iga', 'Christian Gonzalez'],
             'et': ['Mattias "mahfiaz" P\xf5ldaru'],
@@ -151,8 +152,9 @@ class Ui_AboutDialog(object):
             'ja': ['Kunio "Kunio" Nakamaru', 'Chris Haris'],
             'nb': ['Atle "pendlaren" Weibell', 'Frode "frodus" Woldsund'],
             'nl': ['Arjen "typovar" van Voorst'],
+            'pl': ['Agata \u017B\u0105d\u0142o', 'Piotr Karze\u0142ek'],
             'pt_BR': ['David Mederiros', 'Rafael "rafaellerm" Lerm', 'Eduardo Levi Chaves',
-                      'Gustavo Bim', 'Rog\xeanio Bel\xe9m', 'Samuel Simon "samscudder" Scudder', 'Van Der Fran'],
+                      'Gustavo Bim', 'Rog\xeanio Bel\xe9m', 'Simon "samscudder" Scudder', 'Van Der Fran'],
             'ru': ['Sergey "ratz" Ratz'],
             'sv': ['Erik "luen" Lundin'],
             'ta_LK': ['"Prasad"'],
@@ -209,6 +211,8 @@ class Ui_AboutDialog(object):
                       '        %s\n'
                       '    Dutch (nl)\n'
                       '        %s\n'
+                      '    Polish (pl)\n'
+                      '        %s\n'
                       '    Portuguese, Brazil (pt_BR)\n'
                       '        %s\n'
                       '    Russian (ru)\n'
@@ -258,6 +262,7 @@ class Ui_AboutDialog(object):
                    '\n        '.join(translators['ja']),
                    '\n        '.join(translators['nb']),
                    '\n        '.join(translators['nl']),
+                   '\n        '.join(translators['pl']),
                    '\n        '.join(translators['pt_BR']),
                    '\n        '.join(translators['ru']),
                    '\n        '.join(translators['sv']),
@@ -267,8 +272,8 @@ class Ui_AboutDialog(object):
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.credits_tab),
                                        translate('OpenLP.AboutForm', 'Credits'))
         copyright_note = translate('OpenLP.AboutForm',
-                                   'Copyright \xa9 2004-2014 %s\n'
-                                   'Portions copyright \xa9 2004-2014 %s') % \
+                                   'Copyright \xa9 2004-2015 %s\n'
+                                   'Portions copyright \xa9 2004-2015 %s') % \
             ('Raoul Snyman',
              'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
              'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '

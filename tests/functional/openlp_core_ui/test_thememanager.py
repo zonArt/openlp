@@ -34,14 +34,14 @@ import os
 import shutil
 
 from unittest import TestCase
-from tests.interfaces import MagicMock
+from tests.functional import MagicMock
 from tempfile import mkdtemp
 
 from openlp.core.ui import ThemeManager
 from openlp.core.common import Registry
 
 from tests.utils.constants import TEST_RESOURCES_PATH
-from tests.interfaces import MagicMock, patch
+from tests.functional import MagicMock, patch
 
 
 class TestThemeManager(TestCase):
