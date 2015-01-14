@@ -34,6 +34,7 @@ from distutils.version import LooseVersion
 import logging
 import locale
 import os
+import platform
 import re
 import time
 from shutil import which
@@ -251,14 +252,15 @@ def check_latest_version(current_version):
                 req = urllib.request.Request('http://www.openlp.org/files/dev_version.txt')
             else:
                 req = urllib.request.Request('http://www.openlp.org/files/version.txt')
-        req.add_header('User-Agent', 'OpenLP/%s' % current_version['full'])
+        req.add_header('User-Agent', 'OpenLP/%s %s/%s; ' % (current_version['full'], platform.system(),
+                                                            platform.release()))
         remote_version = None
         retries = 0
         while True:
             try:
                 remote_version = str(urllib.request.urlopen(req, None,
                                                             timeout=CONNECTION_TIMEOUT).read().decode()).strip()
-            except ConnectionException:
+            except (urllib.error.URLError, ConnectionError):
                 if retries > CONNECTION_RETRIES:
                     log.exception('Failed to download the latest OpenLP version file')
                 else:

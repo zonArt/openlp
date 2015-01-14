@@ -236,6 +236,19 @@ class TestUtils(TestCase):
         # THEN: the resolve method is called with the correct argument
         mock_resolver.resolve.assert_called_with('uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
 
+    def get_uno_instance_socket_test(self):
+        """
+        Test that when the UNO connection type is other than "pipe" the resolver is given the "socket" URI
+        """
+        # GIVEN: A mock resolver object and UNO_CONNECTION_TYPE is "socket"
+        mock_resolver = MagicMock()
+
+        # WHEN: get_uno_instance() is called
+        get_uno_instance(mock_resolver, 'socket')
+
+        # THEN: the resolve method is called with the correct argument
+        mock_resolver.resolve.assert_called_with('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+
     def get_user_agent_linux_test(self):
         """
         Test that getting a user agent on Linux returns a user agent suitable for Linux
