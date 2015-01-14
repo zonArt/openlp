@@ -189,8 +189,8 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             title = translate('OpenLP.FirstTimeWizard', 'Network Error')
             msg.setText('{} {}'.format(title, err.code if hasattr(err, 'code') else ''))
             msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
-                                             'There was a network error attempting to\n'
-                                             'connect to retrieve initial configuration inforamtion'))
+                                             'There was a network error attempting to'
+                                             'connect to retrieve initial configuration information'))
             msg.setStandardButtons(msg.Ok)
             ans = msg.exec_()
             web_config = False
