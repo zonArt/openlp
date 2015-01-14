@@ -429,7 +429,7 @@ def get_uno_command(connection_type='pipe'):
     """
     for command in ['libreoffice', 'soffice']:
         if which(command):
-             break
+            break
     else:
         raise FileNotFoundError('Command not found')
 
