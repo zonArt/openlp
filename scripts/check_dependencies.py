@@ -47,6 +47,7 @@ except ImportError:
     nose = None
 
 IS_WIN = sys.platform.startswith('win')
+IS_LIN = sys.platform.startswith('lin')
 
 
 VERS = {
@@ -66,6 +67,12 @@ WIN32_MODULES = [
     'pyodbc',
     'icu',
 ]
+
+LINUX_MODULES = [
+    # Optical drive detection.
+    'dbus',
+]
+
 
 MODULES = [
     'PyQt4',
@@ -228,6 +235,10 @@ def main():
     if IS_WIN:
         print('Checking for Windows specific modules...')
         for m in WIN32_MODULES:
+            check_module(m)
+    elif IS_LIN:
+        print('Checking for Linux specific modules...')
+        for m in LINUX_MODULES:
             check_module(m)
     verify_versions()
     print_qt_image_formats()
