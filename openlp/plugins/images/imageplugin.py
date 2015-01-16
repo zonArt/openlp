@@ -30,6 +30,7 @@
 from PyQt4 import QtGui
 
 import logging
+import os
 
 from openlp.core.common import Registry, Settings, translate
 from openlp.core.lib import Plugin, StringContent, ImageSource, build_icon
@@ -77,6 +78,13 @@ class ImagePlugin(Plugin):
         # Convert old settings-based image list to the database.
         files_from_config = Settings().get_files_from_config(self)
         if files_from_config:
+            for file in files_from_config:
+                filename = os.path.split(file)[1]
+                thumb = os.path.join(self.media_item.service_path, filename)
+                try:
+                    os.remove(thumb)
+                except:
+                    pass
             log.debug('Importing images list from old config: %s' % files_from_config)
             self.media_item.save_new_images_list(files_from_config)
 
