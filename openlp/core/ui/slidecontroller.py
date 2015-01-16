@@ -125,7 +125,6 @@ class InfoLabel(QtGui.QLabel):
             alignment = QtCore.Qt.AlignLeft
         painter.drawText(self.rect(), alignment, elided)
 
-
     def setText(self, text):
         """
         Reimplemented to set the tool tip text.

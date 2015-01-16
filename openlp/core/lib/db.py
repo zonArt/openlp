@@ -156,7 +156,10 @@ def upgrade_db(url, upgrade):
     except (SQLAlchemyError, DBAPIError):
         version_meta = Metadata.populate(key='version', value=int(upgrade.__version__))
         session.commit()
-    return int(version_meta.value), upgrade.__version__
+    upgrade_version = upgrade.__version__
+    version_meta = int(version_meta.value)
+    session.close()
+    return version_meta, upgrade_version
 
 
 def delete_database(plugin_name, db_file_name=None):

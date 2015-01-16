@@ -155,7 +155,7 @@ class TestRenderer(TestCase):
         expected_words = ['<br>[---]  ']
         service_item = ServiceItem(None)
 
-       # WHEN: Split the line based on word split rules
+        # WHEN: Split the line based on word split rules
         result_words = renderer.format_slide(given_line, service_item)
 
         # THEN: The blanks have been removed.

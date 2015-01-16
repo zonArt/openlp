@@ -83,7 +83,7 @@ class TestInitFunctions(TestMixin, TestCase):
 
             # THEN: The command 'libreoffice' should be called with the appropriate parameters
             self.assertEquals(result, 'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
-                                       ' "--accept=pipe,name=openlp_pipe;urp;"')
+                                      ' "--accept=pipe,name=openlp_pipe;urp;"')
 
     def get_uno_command_only_soffice_command_exists_test(self):
         """
@@ -101,7 +101,7 @@ class TestInitFunctions(TestMixin, TestCase):
 
             # THEN: The command 'soffice' should be called with the appropriate parameters
             self.assertEquals(result, 'soffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
-                                       ' "--accept=pipe,name=openlp_pipe;urp;"')
+                                      ' "--accept=pipe,name=openlp_pipe;urp;"')
 
     def get_uno_command_when_no_command_exists_test(self):
         """

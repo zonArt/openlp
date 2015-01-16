@@ -560,6 +560,7 @@ class TestSlideController(TestCase):
         mocked_preview_widget.change_slide.assert_called_once_with(7)
         mocked_slide_selected.assert_called_once_with()
 
+
 class TestInfoLabel(TestCase):
 
     def paint_event_text_fits_test(self):
@@ -570,7 +571,7 @@ class TestInfoLabel(TestCase):
         metrics = QtGui.QFontMetrics(font)
 
         with patch('openlp.core.ui.slidecontroller.QtGui.QLabel'), \
-            patch('openlp.core.ui.slidecontroller.QtGui.QPainter') as mocked_qpainter:
+                patch('openlp.core.ui.slidecontroller.QtGui.QPainter') as mocked_qpainter:
 
             # GIVEN: An instance of InfoLabel, with mocked text return, width and rect methods
             info_label = InfoLabel()
@@ -598,7 +599,7 @@ class TestInfoLabel(TestCase):
         metrics = QtGui.QFontMetrics(font)
 
         with patch('openlp.core.ui.slidecontroller.QtGui.QLabel'), \
-            patch('openlp.core.ui.slidecontroller.QtGui.QPainter') as mocked_qpainter:
+                patch('openlp.core.ui.slidecontroller.QtGui.QPainter') as mocked_qpainter:
 
             # GIVEN: An instance of InfoLabel, with mocked text return, width and rect methods
             info_label = InfoLabel()
