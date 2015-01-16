@@ -39,7 +39,7 @@ from openlp.core.ui import MainDisplay
 from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
 
 from tests.helpers.testmixin import TestMixin
-from tests.functional import MagicMock
+from tests.functional import MagicMock, patch
 
 SCREEN = {
     'primary': False,
@@ -64,11 +64,14 @@ class TestMainDisplay(TestCase, TestMixin):
         self.registry = Registry()
         self.setup_application()
         Registry().register('application', self.app)
+        self.mocked_audio_player = patch('openlp.core.ui.maindisplay.AudioPlayer')
+        self.mocked_audio_player.start()
 
     def tearDown(self):
         """
         Delete QApplication.
         """
+        self.mocked_audio_player.stop()
         del self.screens
 
     def initial_main_display_test(self):
