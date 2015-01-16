@@ -182,7 +182,18 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         self.config = ConfigParser()
         user_agent = 'OpenLP/' + Registry().get('application').applicationVersion()
         self.application.process_events()
-        web_config = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
+        try:
+            web_config = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
+        except (urllib.error.URLError, ConnectionError) as err:
+            msg = QtGui.QMessageBox()
+            title = translate('OpenLP.FirstTimeWizard', 'Network Error')
+            msg.setText('{} {}'.format(title, err.code if hasattr(err, 'code') else ''))
+            msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
+                                             'There was a network error attempting to'
+                                             'connect to retrieve initial configuration information'))
+            msg.setStandardButtons(msg.Ok)
+            ans = msg.exec_()
+            web_config = False
         if web_config:
             files = web_config.read()
             try:
