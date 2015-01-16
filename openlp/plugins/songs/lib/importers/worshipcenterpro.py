@@ -49,7 +49,7 @@ class WorshipCenterProImport(SongImport):
         """
         Initialise the WorshipCenter Pro importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(WorshipCenterProImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """

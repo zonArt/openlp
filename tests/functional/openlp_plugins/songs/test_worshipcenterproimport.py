@@ -36,9 +36,10 @@ if os.name != 'nt':
     raise SkipTest('Not Windows, skipping test')
 
 import pyodbc
-
-from openlp.plugins.songs.lib.importers.worshipcenterpro import WorshipCenterProImport
 from tests.functional import patch, MagicMock
+
+from openlp.core.common import Registry
+from openlp.plugins.songs.lib.importers.worshipcenterpro import WorshipCenterProImport
 
 
 class TestRecord(object):
@@ -61,7 +62,7 @@ class WorshipCenterProImportLogger(WorshipCenterProImport):
     _title_assignment_list = []
 
     def __init__(self, manager):
-        WorshipCenterProImport.__init__(self, manager)
+        WorshipCenterProImport.__init__(self, manager, filenames=[])
 
     @property
     def title(self):
@@ -136,6 +137,12 @@ class TestWorshipCenterProSongImport(TestCase):
     """
     Test the functions in the :mod:`worshipcenterproimport` module.
     """
+    def setUp(self):
+        """
+        Create the registry
+        """
+        Registry.create()
+
     def create_importer_test(self):
         """
         Test creating an instance of the WorshipCenter Pro file importer
@@ -145,7 +152,7 @@ class TestWorshipCenterProSongImport(TestCase):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
-            importer = WorshipCenterProImport(mocked_manager)
+            importer = WorshipCenterProImport(mocked_manager, filenames=[])
 
             # THEN: The importer object should not be None
             self.assertIsNotNone(importer, 'Import should not be none')
@@ -157,13 +164,12 @@ class TestWorshipCenterProSongImport(TestCase):
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module, a mocked out translate method,
         #       a mocked "manager" and a mocked out log_error method.
         with patch('openlp.plugins.songs.lib.importers.worshipcenterpro.SongImport'), \
-            patch('openlp.plugins.songs.lib.importers.worshipcenterpro.pyodbc.connect') \
-                as mocked_pyodbc_connect, \
+                patch('openlp.plugins.songs.lib.importers.worshipcenterpro.pyodbc.connect') as mocked_pyodbc_connect, \
                 patch('openlp.plugins.songs.lib.importers.worshipcenterpro.translate') as mocked_translate:
             mocked_manager = MagicMock()
             mocked_log_error = MagicMock()
             mocked_translate.return_value = 'Translated Text'
-            importer = WorshipCenterProImport(mocked_manager)
+            importer = WorshipCenterProImport(mocked_manager, filenames=[])
             importer.log_error = mocked_log_error
             importer.import_source = 'import_source'
             pyodbc_errors = [pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError]
@@ -187,7 +193,7 @@ class TestWorshipCenterProSongImport(TestCase):
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module with a simulated recordset, a mocked out
         #       translate method,  a mocked "manager", add_verse method & mocked_finish method.
         with patch('openlp.plugins.songs.lib.importers.worshipcenterpro.SongImport'), \
-            patch('openlp.plugins.songs.lib.importers.worshipcenterpro.pyodbc') as mocked_pyodbc, \
+                patch('openlp.plugins.songs.lib.importers.worshipcenterpro.pyodbc') as mocked_pyodbc, \
                 patch('openlp.plugins.songs.lib.importers.worshipcenterpro.translate') as mocked_translate:
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
