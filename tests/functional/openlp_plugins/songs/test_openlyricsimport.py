@@ -73,6 +73,14 @@ result_tags = [{"temporary": False, "protected": False, "desc": "z", "start tag"
                 "start html": "<span class=\"chord\" style=\"display:none\"><strong>", "end html": "</strong></span>",
                 "protected": False}]
 
+author_xml = '<properties>\
+                  <authors>\
+                      <author type="words">Test Author1</author>\
+                      <author type="music">Test Author1</author>\
+                      <author type="words">Test Author2</author>\
+                  </authors>\
+            </properties>'
+
 
 class TestOpenLyricsImport(TestCase, TestMixin):
     """
@@ -146,3 +154,22 @@ class TestOpenLyricsImport(TestCase, TestMixin):
         self.assertListEqual(json.loads(json.dumps(result_tags)),
                              json.loads(str(Settings().value('formattingTags/html_tags'))),
                              'The formatting tags should contain both the old and the new')
+
+    def process_author_test(self):
+        """
+        Test that _process_authors works
+        """
+        # GIVEN: A OpenLyric XML with authors and a mocked out manager
+        with patch('openlp.plugins.songs.lib.openlyricsxml.Author') as mocked_author:
+            mocked_manager = MagicMock()
+            mocked_manager.get_object_filtered.return_value = None
+            ol = OpenLyrics(mocked_manager)
+            properties_xml = objectify.fromstring(author_xml)
+            mocked_song = MagicMock()
+
+            # WHEN: processing the author xml
+            ol._process_authors(properties_xml, mocked_song)
+
+            # THEN: add_author should have been called twice
+            self.assertEquals(mocked_song.method_calls[0][1][1], 'words+music')
+            self.assertEquals(mocked_song.method_calls[1][1][1], 'words')
