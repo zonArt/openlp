@@ -294,6 +294,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.delay_spin_box.setRange(1, 180)
             self.delay_spin_box.setSuffix(UiStrings().Seconds)
             self.delay_spin_box.setToolTip(translate('OpenLP.SlideController', 'Delay between slides in seconds.'))
+            self.receive_spin_delay()
             self.toolbar.add_toolbar_widget(self.delay_spin_box)
         else:
             self.toolbar.add_toolbar_action('goLive', icon=':/general/general_live.png',
