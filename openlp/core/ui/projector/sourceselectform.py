@@ -339,8 +339,7 @@ class SourceSelectTabs(QDialog):
         msg = QtGui.QMessageBox()
         msg.setText(translate('OpenLP.SourceSelectForm', 'Delete entries for this projector'))
         msg.setInformativeText(translate('OpenLP.SourceSelectForm',
-                                         'Are you sure you want to delete ALL user-defined '),
-                               translate('OpenLP.SourceSelectForm',
+                                         'Are you sure you want to delete ALL user-defined '
                                          'source input text for this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
@@ -478,8 +477,7 @@ class SourceSelectSingle(QDialog):
         msg = QtGui.QMessageBox()
         msg.setText(translate('OpenLP.SourceSelectForm', 'Delete entries for this projector'))
         msg.setInformativeText(translate('OpenLP.SourceSelectForm',
-                                         'Are you sure you want to delete ALL user-defined '),
-                               translate('OpenLP.SourceSelectForm',
+                                         'Are you sure you want to delete ALL user-defined '
                                          'source input text for this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
