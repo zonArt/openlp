@@ -56,7 +56,7 @@ class TestImageMediaItem(TestCase):
         file_list = ['/path1/image1.jpg', '/path2/image2.jpg']
 
         with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_list') as mocked_load_list, \
-            patch('openlp.plugins.images.lib.mediaitem.Settings') as mocked_settings:
+             patch('openlp.plugins.images.lib.mediaitem.Settings') as mocked_settings:
 
             # WHEN: Calling validate_and_load with the list of files
             self.media_item.validate_and_load(file_list)
@@ -74,7 +74,7 @@ class TestImageMediaItem(TestCase):
         file_list = ['/path1/image1.jpg', '/path2/image2.jpg']
 
         with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_list') as mocked_load_list, \
-            patch('openlp.plugins.images.lib.mediaitem.Settings') as mocked_settings:
+             patch('openlp.plugins.images.lib.mediaitem.Settings') as mocked_settings:
 
             # WHEN: Calling validate_and_load with the list of files and a group
             self.media_item.validate_and_load(file_list, 'group')
