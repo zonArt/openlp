@@ -44,7 +44,7 @@ from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
 from openlp.plugins.songs.forms.songexportform import SongExportForm
 from openlp.plugins.songs.lib import VerseType, clean_string, delete_song
-from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile
+from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile, Topic
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics, SongXML
 
@@ -60,7 +60,8 @@ class SongSearch(object):
     Lyrics = 3
     Authors = 4
     Books = 5
-    Themes = 6
+    Topics = 6
+    Themes = 7
 
 
 class SongMediaItem(MediaManagerItem):
@@ -156,6 +157,8 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Search Authors...')),
             (SongSearch.Books, ':/songs/song_book_edit.png', SongStrings.SongBooks,
                 translate('SongsPlugin.MediaItem', 'Search Song Books...')),
+            (SongSearch.Topics, ':/songs/topic_add.png', SongStrings.Topics,
+                translate('SongsPlugin.MediaItem', 'Search Topics...')),
             (SongSearch.Themes, ':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.search_text_edit.set_current_search_type(Settings().value('%s/last search type' % self.settings_section))
@@ -199,6 +202,12 @@ class SongMediaItem(MediaManagerItem):
                                                                      Book.name.like(search_string), Book.name.asc())
                 song_number = re.sub(r'[^0-9]', '', search_keywords[2])
             self.display_results_book(search_results, song_number)
+        elif search_type == SongSearch.Topics:
+            log.debug('Topics Search')
+            search_string = '%' + search_keywords + '%'
+            search_results = self.plugin.manager.get_all_objects(
+                Topic, Topic.name.like(search_string), Topic.name.asc())
+            self.display_results_topic(search_results)
         elif search_type == SongSearch.Themes:
             log.debug('Theme Search')
             search_string = '%' + search_keywords + '%'
@@ -270,6 +279,19 @@ class SongMediaItem(MediaManagerItem):
                 if song_number and song_number not in song.song_number:
                     continue
                 song_detail = '%s - %s (%s)' % (book.name, song.song_number, song.title)
+                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name.setData(QtCore.Qt.UserRole, song.id)
+                self.list_view.addItem(song_name)
+
+    def display_results_topic(self, search_results):
+        log.debug('display results Topic')
+        self.list_view.clear()
+        for topic in search_results:
+            for song in topic.songs:
+                # Do not display temporary songs
+                if song.temporary:
+                    continue
+                song_detail = '%s (%s)' % (topic.name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
