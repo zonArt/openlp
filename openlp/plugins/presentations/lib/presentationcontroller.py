@@ -27,13 +27,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import hashlib
 import logging
 import os
 import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists
+from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, md5_hash
 from openlp.core.lib import create_thumb, validate_thumb
 
 log = logging.getLogger(__name__)
@@ -139,13 +140,21 @@ class PresentationDocument(object):
         """
         The location where thumbnail images will be stored
         """
-        return os.path.join(self.controller.thumbnail_folder, self.get_file_name())
+        if Settings().value('presentations/thumbnail_scheme') == 'md5':
+            folder = md5_hash('', self.file_path)
+        else:
+            folder = self.get_file_name()
+        return os.path.join(self.controller.thumbnail_folder, folder)
 
     def get_temp_folder(self):
         """
         The location where thumbnail images will be stored
         """
-        return os.path.join(self.controller.temp_folder, self.get_file_name())
+        if Settings().value('presentations/thumbnail_scheme') == 'md5':
+            folder = md5_hash('', self.file_path)
+        else:
+            folder = folder = self.get_file_name()
+        return os.path.join(self.controller.temp_folder, folder)
 
     def check_thumbnails(self):
         """

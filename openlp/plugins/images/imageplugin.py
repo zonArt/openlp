@@ -74,6 +74,7 @@ class ImagePlugin(Plugin):
         """
         Perform tasks on application startup.
         """
+        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         Plugin.app_startup(self)
         # Convert old settings-based image list to the database.
         files_from_config = Settings().get_files_from_config(self)
@@ -94,6 +95,7 @@ class ImagePlugin(Plugin):
 
         :param settings: The Settings object containing the old settings.
         """
+        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         files_from_config = settings.get_files_from_config(self)
         if files_from_config:
             log.debug('Importing images list from old config: %s' % files_from_config)

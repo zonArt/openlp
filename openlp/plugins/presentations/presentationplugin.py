@@ -35,7 +35,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.common import AppLocation, translate
+from openlp.core.common import AppLocation, Settings, translate
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 
@@ -50,7 +50,8 @@ __default_settings__ = {'presentations/override app': QtCore.Qt.Unchecked,
                         'presentations/Powerpoint': QtCore.Qt.Checked,
                         'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
                         'presentations/Pdf': QtCore.Qt.Checked,
-                        'presentations/presentations files': []
+                        'presentations/presentations files': [],
+                        'presentations/thumbnail_scheme': ''
                         }
 
 
@@ -140,6 +141,19 @@ class PresentationPlugin(Plugin):
             controller = controller_class(self)
             self.register_controllers(controller)
         return bool(self.controllers)
+
+    def app_startup(self):
+        """
+        Perform tasks on application startup.
+        """
+        super().app_startup()
+        files_from_config = Settings().value('presentations/presentations files')
+        for file in files_from_config:
+            self.media_item.delete_presentation(file)
+        #Settings().setValue('presentations/presentations files', [])
+        self.media_item.list_view.clear()
+        Settings().setValue('presentations/thumbnail_scheme', 'md5')
+        self.media_item.validate_and_load(files_from_config)
 
     def about(self):
         """
