@@ -602,7 +602,7 @@ class BibleImportForm(OpenLPWizard):
             if bible_type == BibleFormat.WebDownload:
                 self.progress_label.setText(
                     translate('BiblesPlugin.ImportWizardForm', 'Registered Bible. Please note, that verses will be '
-                              'downloaded on\ndemand and thus an internet connection is required.'))
+                              'downloaded on demand and thus an internet connection is required.'))
             else:
                 self.progress_label.setText(WizardStrings.FinishedImport)
         else:

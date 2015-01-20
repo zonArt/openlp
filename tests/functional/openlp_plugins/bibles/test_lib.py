@@ -24,13 +24,39 @@ This module contains tests for the lib submodule of the Bibles plugin.
 """
 from unittest import TestCase
 
+from openlp.plugins.bibles import lib
 from openlp.plugins.bibles.lib import SearchResults
+from tests.functional import MagicMock, patch
 
 
 class TestLib(TestCase):
     """
     Test the functions in the :mod:`lib` module.
     """
+    def get_reference_separator_test(self):
+        """
+        Test the get_reference_separator method
+        """
+        # GIVEN: A list of expected separators
+        separators = {'sep_r': '\\s*(?:e)\\s*', 'sep_e_default': 'end', 'sep_v_display': 'w', 'sep_l_display': 'r',
+              'sep_v_default': ':|v|V|verse|verses', 'sep_l': '\\s*(?:r)\\s*', 'sep_l_default': ',|and',
+              'sep_e': '\\s*(?:t)\\s*', 'sep_v': '\\s*(?:w)\\s*', 'sep_r_display': 'e',
+              'sep_r_default': '-|to'}
+
+        def side_effect():
+            lib.REFERENCE_SEPARATORS = separators
+
+        with patch('openlp.plugins.bibles.lib.update_reference_separators',
+                   **{'side_effect': side_effect}) as mocked_update_reference_separators:
+
+            # WHEN: Calling get_reference_separator
+            for key, value in separators.items():
+                ret = lib.get_reference_separator(key)
+
+                # THEN: get_reference_separator should return the correct separator
+                self.assertEqual(separators[key], value)
+            mocked_update_reference_separators.assert_called_once_with()
+
     def search_results_creation_test(self):
         """
         Test the creation and construction of the SearchResults class

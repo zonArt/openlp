@@ -175,10 +175,32 @@ def update_reference_separators():
     """
     Updates separators and matches for parsing and formating scripture references.
     """
-    default_separators = \
-        translate('BiblesPlugin',
-                  ':|v|V|verse|verses;;-|to;;,|and;;end Double-semicolon delimited separators for parsing references. '
-                  'Consult the developers for further information.').split(';;')
+    default_separators = ['|'.join([translate('BiblesPlugin', ':',
+                                              'Verse identifier e.g. Genisis 1 : 1 = Genisis Chapter 1 Verse 1'),
+                                    translate('BiblesPlugin', 'v',
+                                              'Verse identifier e.g. Genisis 1 v 1 = Genisis Chapter 1 Verse 1'),
+                                    translate('BiblesPlugin', 'V',
+                                              'Verse identifier e.g. Genisis 1 V 1 = Genisis Chapter 1 Verse 1'),
+                                    translate('BiblesPlugin', 'verse',
+                                              'Verse identifier e.g. Genisis 1 verse 1 = Genisis Chapter 1 Verse 1'),
+                                    translate('BiblesPlugin', 'verses',
+                                              'Verse identifier e.g. Genisis 1 verses 1 - 2 = '
+                                              'Genisis Chapter 1 Verses 1 to 2')]),
+                          '|'.join([translate('BiblesPlugin', '-',
+                                              'range identifier e.g. Genisis 1 verse 1 - 2 = '
+                                              'Genisis Chapter 1 Verses 1 To 2'),
+                                    translate('BiblesPlugin', 'to',
+                                              'range identifier e.g. Genisis 1 verse 1 - 2 = '
+                                              'Genisis Chapter 1 Verses 1 To 2')]),
+                          '|'.join([translate('BiblesPlugin', ',',
+                                              'connecting identifier e.g. Genisis 1 verse 1 - 2, 4 - 5 = '
+                                              'Genisis Chapter 1 Verses 1 To 2 And Verses 4 To 5'),
+                                    translate('BiblesPlugin', 'and',
+                                              'connecting identifier e.g. Genisis 1 verse 1 - 2 and 4 - 5 = '
+                                              'Genisis Chapter 1 Verses 1 To 2 And Verses 4 To 5')]),
+                          '|'.join([translate('BiblesPlugin', 'end',
+                                              'ending identifier e.g. Genisis 1 verse 1 - end = '
+                                              'Genisis Chapter 1 Verses 1 To The Last Verse')])]
     settings = Settings()
     settings.beginGroup('bibles')
     custom_separators = [
