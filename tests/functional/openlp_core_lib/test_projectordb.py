@@ -165,19 +165,17 @@ class TestProjectorDB(TestCase):
 
     def source_add_test(self):
         """
-        Test saved source text matches projector
+        Test source entry for projector item
         """
         # GIVEN: Record entries in database
-        item = self.projector.get_projector_by_ip(TEST1_DATA.ip)
-        if item is None:
-            self.projector.add_projector(TEST1_DATA)
-            item = self.projector.get_projector_by_id(TEST1_DATA.id)
+        self.projector.add_projector(TEST1_DATA)
+        item = self.projector.get_projector_by_id(TEST1_DATA.id)
         item_id = item.id
+
+        # WHEN: A source entry is saved for item
         source = ProjectorSource(projector_id=item_id, code='11', text='First RGB source')
         self.projector.add_source(source)
 
-        # WHEN: Retrieve the projector item
-        item = self.projector.get_projector_by_id(item_id)
-
         # THEN: Projector should have the same source entry
+        item = self.projector.get_projector_by_id(item_id)
         self.assertTrue(compare_source(item.source_list[0], source))
