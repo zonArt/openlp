@@ -39,9 +39,8 @@ class TestLib(TestCase):
         """
         # GIVEN: A list of expected separators
         separators = {'sep_r': '\\s*(?:e)\\s*', 'sep_e_default': 'end', 'sep_v_display': 'w', 'sep_l_display': 'r',
-              'sep_v_default': ':|v|V|verse|verses', 'sep_l': '\\s*(?:r)\\s*', 'sep_l_default': ',|and',
-              'sep_e': '\\s*(?:t)\\s*', 'sep_v': '\\s*(?:w)\\s*', 'sep_r_display': 'e',
-              'sep_r_default': '-|to'}
+                      'sep_v_default': ':|v|V|verse|verses', 'sep_l': '\\s*(?:r)\\s*', 'sep_l_default': ',|and',
+                      'sep_e': '\\s*(?:t)\\s*', 'sep_v': '\\s*(?:w)\\s*', 'sep_r_display': 'e', 'sep_r_default': '-|to'}
 
         def side_effect():
             lib.REFERENCE_SEPARATORS = separators
