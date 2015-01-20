@@ -150,7 +150,7 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Search Authors...')),
             (SongSearch.Books, ':/songs/song_book_edit.png', SongStrings.SongBooks,
                 translate('SongsPlugin.MediaItem', 'Search Song Books...')),
-            (SongSearch.Topics, ':/songs/topic_add.png', SongStrings.Topics,
+            (SongSearch.Topics, ':/songs/song_search_topic.png', SongStrings.Topics,
                 translate('SongsPlugin.MediaItem', 'Search Topics...')),
             (SongSearch.Themes, ':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
