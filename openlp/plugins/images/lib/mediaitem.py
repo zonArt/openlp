@@ -371,7 +371,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         self.application.set_normal_cursor()
         self.load_list(files, target_group)
-        last_dir = os.path.split(str(files[0]))[0]
+        last_dir = os.path.split(files[0])[0]
         Settings().setValue(self.settings_section + '/last directory', last_dir)
 
     def load_list(self, images, target_group=None, initial_load=False):
@@ -535,7 +535,7 @@ class ImageMediaItem(MediaManagerItem):
             if not items:
                 return False
         # Determine service item title
-        if isinstance(items[0].data(0, QtCore.Qt.UserRole), ImageGroups):
+        if isinstance(items[0].data(0, QtCore.Qt.UserRole), ImageGroups) or len(items) == 1:
             service_item.title = items[0].text(0)
         else:
             service_item.title = str(self.plugin.name_strings['plural'])

@@ -35,9 +35,9 @@ import sys
 from PyQt4 import QtGui
 
 if sys.version_info[1] >= 3:
-    from unittest.mock import MagicMock, patch, mock_open, call
+    from unittest.mock import ANY, MagicMock, patch, mock_open, call
 else:
-    from mock import MagicMock, patch, mock_open, call
+    from mock import ANY, MagicMock, patch, mock_open, call
 
 # Only one QApplication can be created. Use QtGui.QApplication.instance() when you need to "create" a  QApplication.
 application = QtGui.QApplication([])
