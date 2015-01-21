@@ -29,7 +29,7 @@ PREREQUISITE: add_record() and get_all() functions validated.
 from unittest import TestCase
 from tests.functional import MagicMock, patch
 
-from openlp.core.lib.projector.db import Projector, ProjectorDB
+from openlp.core.lib.projector.db import Projector, ProjectorDB, ProjectorSource
 
 from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
 
@@ -47,6 +47,17 @@ def compare_data(one, two):
         one.name == two.name and \
         one.location == two.location and \
         one.notes == two.notes
+
+
+def compare_source(one, two):
+    """
+    Verify two ProjectorSource instances contain the same data
+    """
+    return one is not None and \
+        two is not None and \
+        one.projector_id == two.projector_id and \
+        one.code == two.code and \
+        one.text == two.text
 
 
 def add_records(self, test):
@@ -151,3 +162,20 @@ class TestProjectorDB(TestCase):
         # THEN: Record ID should remain the same, but data should be changed
         self.assertEqual(record_id, record.id, 'Edited record should have the same ID')
         self.assertTrue(compare_data(TEST3_DATA, record), 'Edited record should have new data')
+
+    def source_add_test(self):
+        """
+        Test source entry for projector item
+        """
+        # GIVEN: Record entries in database
+        self.projector.add_projector(TEST1_DATA)
+        item = self.projector.get_projector_by_id(TEST1_DATA.id)
+        item_id = item.id
+
+        # WHEN: A source entry is saved for item
+        source = ProjectorSource(projector_id=item_id, code='11', text='First RGB source')
+        self.projector.add_source(source)
+
+        # THEN: Projector should have the same source entry
+        item = self.projector.get_projector_by_id(item_id)
+        self.assertTrue(compare_source(item.source_list[0], source))
