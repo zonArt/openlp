@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
@@ -5,13 +6,6 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2015 OpenLP Developers                                   #
-# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
-# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
