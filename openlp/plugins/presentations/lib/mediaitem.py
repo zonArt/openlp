@@ -229,7 +229,7 @@ class PresentationMediaItem(MediaManagerItem):
             for row in row_list:
                 self.list_view.takeItem(row)
             Settings().setValue(self.settings_section + '/presentations files', self.get_file_list())
-            
+
     def clean_up_thumbnails(self, filepath):
         """
         Clean up the files created such as thumbnails
