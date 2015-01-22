@@ -27,7 +27,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import hashlib
 import logging
 import os
 import shutil
@@ -140,6 +139,7 @@ class PresentationDocument(object):
         """
         The location where thumbnail images will be stored
         """
+        # TODO: If statment can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         if Settings().value('presentations/thumbnail_scheme') == 'md5':
             folder = md5_hash('', self.file_path)
         else:
@@ -150,6 +150,7 @@ class PresentationDocument(object):
         """
         The location where thumbnail images will be stored
         """
+        # TODO: If statment can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         if Settings().value('presentations/thumbnail_scheme') == 'md5':
             folder = md5_hash('', self.file_path)
         else:
