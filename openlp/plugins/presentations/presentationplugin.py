@@ -146,6 +146,7 @@ class PresentationPlugin(Plugin):
         """
         Perform tasks on application startup.
         """
+        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         super().app_startup()
         files_from_config = Settings().value('presentations/presentations files')
         for file in files_from_config:
