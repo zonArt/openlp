@@ -270,8 +270,6 @@ def parse_options(args):
     :param args: list of command line arguments
     :return: a tuple of parsed options of type optparse.Value and a list of remaining argsZ
     """
-    print(args)
-    print(sys.argv)
     # Set up command line options.
     usage = 'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
