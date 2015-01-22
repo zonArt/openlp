@@ -4,14 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
-# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Copyright (c) 2008-2015 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -39,7 +32,7 @@ from openlp.core.ui import MainDisplay
 from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
 
 from tests.helpers.testmixin import TestMixin
-from tests.functional import MagicMock
+from tests.functional import MagicMock, patch
 
 SCREEN = {
     'primary': False,
@@ -64,11 +57,14 @@ class TestMainDisplay(TestCase, TestMixin):
         self.registry = Registry()
         self.setup_application()
         Registry().register('application', self.app)
+        self.mocked_audio_player = patch('openlp.core.ui.maindisplay.AudioPlayer')
+        self.mocked_audio_player.start()
 
     def tearDown(self):
         """
         Delete QApplication.
         """
+        self.mocked_audio_player.stop()
         del self.screens
 
     def initial_main_display_test(self):

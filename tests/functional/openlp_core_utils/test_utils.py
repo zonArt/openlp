@@ -4,14 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
-# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Copyright (c) 2008-2015 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -235,6 +228,19 @@ class TestUtils(TestCase):
 
         # THEN: the resolve method is called with the correct argument
         mock_resolver.resolve.assert_called_with('uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
+
+    def get_uno_instance_socket_test(self):
+        """
+        Test that when the UNO connection type is other than "pipe" the resolver is given the "socket" URI
+        """
+        # GIVEN: A mock resolver object and UNO_CONNECTION_TYPE is "socket"
+        mock_resolver = MagicMock()
+
+        # WHEN: get_uno_instance() is called
+        get_uno_instance(mock_resolver, 'socket')
+
+        # THEN: the resolve method is called with the correct argument
+        mock_resolver.resolve.assert_called_with('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
 
     def get_user_agent_linux_test(self):
         """

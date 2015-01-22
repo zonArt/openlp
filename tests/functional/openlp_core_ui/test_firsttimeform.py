@@ -4,14 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
-# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Copyright (c) 2008-2015 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,6 +23,7 @@
 Package to test the openlp.core.ui.firsttimeform package.
 """
 import os
+import urllib
 from unittest import TestCase
 
 from openlp.core.common import Registry
@@ -214,3 +208,24 @@ class TestFirstTimeForm(TestCase, TestMixin):
 
             # THEN: The First Time Form should not have web access
             self.assertFalse(first_time_form.web_access, 'There should not be web access with an invalid config file')
+
+    @patch('openlp.core.ui.firsttimeform.get_web_page')
+    @patch('openlp.core.ui.firsttimeform.QtGui.QMessageBox')
+    def network_error_test(self, mocked_message_box, mocked_get_web_page):
+        """
+        Test we catch a network error in First Time Wizard - bug 1409627
+        """
+        # GIVEN: Initial setup and mocks
+        first_time_form = FirstTimeForm(None)
+        first_time_form.initialize(MagicMock())
+        mocked_get_web_page.side_effect = urllib.error.HTTPError(url='http//localhost',
+                                                                 code=407,
+                                                                 msg='Network proxy error',
+                                                                 hdrs=None,
+                                                                 fp=None)
+        # WHEN: the First Time Wizard calls to get the initial configuration
+        first_time_form._download_index()
+
+        # THEN: the critical_error_message_box should have been called
+        self.assertEquals(mocked_message_box.mock_calls[1][1][0], 'Network Error 407',
+                          'first_time_form should have caught Network Error')

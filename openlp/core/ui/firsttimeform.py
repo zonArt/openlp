@@ -4,14 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
-# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Copyright (c) 2008-2015 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -182,7 +175,18 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         self.config = ConfigParser()
         user_agent = 'OpenLP/' + Registry().get('application').applicationVersion()
         self.application.process_events()
-        web_config = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
+        try:
+            web_config = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
+        except (urllib.error.URLError, ConnectionError) as err:
+            msg = QtGui.QMessageBox()
+            title = translate('OpenLP.FirstTimeWizard', 'Network Error')
+            msg.setText('{} {}'.format(title, err.code if hasattr(err, 'code') else ''))
+            msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
+                                             'There was a network error attempting to'
+                                             'connect to retrieve initial configuration information'))
+            msg.setStandardButtons(msg.Ok)
+            ans = msg.exec_()
+            web_config = False
         if web_config:
             files = web_config.read()
             try:

@@ -4,14 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
-# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Copyright (c) 2008-2015 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -48,13 +41,12 @@ class TestThemeManager(TestCase):
         # GIVEN: An instance of Theme Form and mocked QFileDialog which returns an empty string (similating a user
         #       pressing cancel)
         with patch('openlp.core.ui.ThemeForm._setup'),\
-            patch('openlp.core.ui.themeform.get_images_filter',
-                  **{'return_value': 'Image Files (*.bmp; *.gif)(*.bmp *.gif)'}),\
-            patch('openlp.core.ui.themeform.QtGui.QFileDialog.getOpenFileName',
-                  **{'return_value': ''}) as mocked_get_open_file_name,\
-            patch('openlp.core.ui.themeform.translate', **{'return_value': 'Translated String'}),\
-            patch('openlp.core.ui.ThemeForm.set_background_page_values') as mocked_set_background_page_values:
-
+                patch('openlp.core.ui.themeform.get_images_filter',
+                      **{'return_value': 'Image Files (*.bmp; *.gif)(*.bmp *.gif)'}),\
+                patch('openlp.core.ui.themeform.QtGui.QFileDialog.getOpenFileName',
+                      **{'return_value': ''}) as mocked_get_open_file_name,\
+                patch('openlp.core.ui.themeform.translate', **{'return_value': 'Translated String'}),\
+                patch('openlp.core.ui.ThemeForm.set_background_page_values') as mocked_set_background_page_values:
             instance = ThemeForm(None)
             mocked_image_file_edit = MagicMock()
             mocked_image_file_edit.text.return_value = '/original_path/file.ext'
@@ -66,8 +58,8 @@ class TestThemeManager(TestCase):
             # THEN: The QFileDialog getOpenFileName and set_background_page_values moethods should have been called
             #       with known arguments
             mocked_get_open_file_name.assert_called_once_with(instance, 'Translated String', '/original_path/file.ext',
-                                                              'Image Files (*.bmp; *.gif)(*.bmp *.gif);;All Files (*.*)'
-            )
+                                                              'Image Files (*.bmp; *.gif)(*.bmp *.gif);;'
+                                                              'All Files (*.*)')
             mocked_set_background_page_values.assert_called_once_with()
 
     def select_image_file_dialog_new_file_test(self):
@@ -76,13 +68,12 @@ class TestThemeManager(TestCase):
         """
         # GIVEN: An instance of Theme Form and mocked QFileDialog which returns a file path
         with patch('openlp.core.ui.ThemeForm._setup'),\
-            patch('openlp.core.ui.themeform.get_images_filter',
-                  **{'return_value': 'Image Files (*.bmp; *.gif)(*.bmp *.gif)'}),\
-            patch('openlp.core.ui.themeform.QtGui.QFileDialog.getOpenFileName',
-                  **{'return_value': '/new_path/file.ext'}) as mocked_get_open_file_name,\
-            patch('openlp.core.ui.themeform.translate', **{'return_value': 'Translated String'}),\
-            patch('openlp.core.ui.ThemeForm.set_background_page_values') as mocked_background_page_values:
-
+                patch('openlp.core.ui.themeform.get_images_filter',
+                      **{'return_value': 'Image Files (*.bmp; *.gif)(*.bmp *.gif)'}),\
+                patch('openlp.core.ui.themeform.QtGui.QFileDialog.getOpenFileName',
+                      **{'return_value': '/new_path/file.ext'}) as mocked_get_open_file_name,\
+                patch('openlp.core.ui.themeform.translate', **{'return_value': 'Translated String'}),\
+                patch('openlp.core.ui.ThemeForm.set_background_page_values') as mocked_background_page_values:
             instance = ThemeForm(None)
             mocked_image_file_edit = MagicMock()
             mocked_image_file_edit.text.return_value = '/original_path/file.ext'
@@ -95,8 +86,8 @@ class TestThemeManager(TestCase):
             # THEN: The QFileDialog getOpenFileName and set_background_page_values moethods should have been called
             #       with known arguments and theme.background_filename should be set
             mocked_get_open_file_name.assert_called_once_with(instance, 'Translated String', '/original_path/file.ext',
-                                                              'Image Files (*.bmp; *.gif)(*.bmp *.gif);;All Files (*.*)'
-            )
+                                                              'Image Files (*.bmp; *.gif)(*.bmp *.gif);;'
+                                                              'All Files (*.*)')
             self.assertEqual(instance.theme.background_filename, '/new_path/file.ext',
                              'theme.background_filename should be set to the path that the file dialog returns')
             mocked_background_page_values.assert_called_once_with()

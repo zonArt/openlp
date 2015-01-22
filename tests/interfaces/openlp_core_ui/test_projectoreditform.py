@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 Raoul Snyman                                        #
+# Copyright (c) 2008-2015 OpenLP Developers                                   #
 # Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
@@ -31,8 +31,6 @@ Interface tests to test the openlp.core.ui.projector.editform.ProjectorEditForm(
 class and methods.
 """
 
-import os
-import tempfile
 from unittest import TestCase
 
 from openlp.core.common import Registry, Settings
@@ -42,8 +40,6 @@ from openlp.core.ui import ProjectorEditForm
 from tests.functional import patch
 from tests.helpers.testmixin import TestMixin
 from tests.resources.projector.data import TEST1_DATA, TEST2_DATA
-
-tmpfile = tempfile.mkstemp(prefix='openlp-test-projectormanager', suffix='.sql')[1]
 
 
 class TestProjectorEditForm(TestCase, TestMixin):
@@ -60,8 +56,7 @@ class TestProjectorEditForm(TestCase, TestMixin):
         self.setup_application()
         Registry.create()
         with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-            mocked_init_url.start()
-            mocked_init_url.return_value = 'sqlite:///{}'.format(tmpfile)
+            mocked_init_url.return_value = 'sqlite://'
             self.projectordb = ProjectorDB()
             self.projector_form = ProjectorEditForm(projectordb=self.projectordb)
 
@@ -74,7 +69,6 @@ class TestProjectorEditForm(TestCase, TestMixin):
         """
         self.projectordb.session.close()
         del(self.projector_form)
-        os.remove(tmpfile)
         self.destroy_settings()
 
     def edit_form_add_projector_test(self):

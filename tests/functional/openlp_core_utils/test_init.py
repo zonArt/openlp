@@ -4,14 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2015 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
-# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Copyright (c) 2008-2015 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -83,7 +76,7 @@ class TestInitFunctions(TestMixin, TestCase):
 
             # THEN: The command 'libreoffice' should be called with the appropriate parameters
             self.assertEquals(result, 'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
-                                       ' "--accept=pipe,name=openlp_pipe;urp;"')
+                                      ' "--accept=pipe,name=openlp_pipe;urp;"')
 
     def get_uno_command_only_soffice_command_exists_test(self):
         """
@@ -101,7 +94,7 @@ class TestInitFunctions(TestMixin, TestCase):
 
             # THEN: The command 'soffice' should be called with the appropriate parameters
             self.assertEquals(result, 'soffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
-                                       ' "--accept=pipe,name=openlp_pipe;urp;"')
+                                      ' "--accept=pipe,name=openlp_pipe;urp;"')
 
     def get_uno_command_when_no_command_exists_test(self):
         """

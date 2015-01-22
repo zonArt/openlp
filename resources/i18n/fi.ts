@@ -2419,7 +2419,85 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"/>
+        <translation>Projektin johtaminen
+%s
+ 
+Kehittäjät
+%s
+ 
+Lahjoittajat
+%s
+ 
+Testaajat
+%s
+ 
+Paketoijat
+%s
+ 
+Kääntäjät
+Afrikaans (af)
+%s
+Czeck (cs)
+%s
+Danish (da)
+%s
+German (de)
+%s
+Greek (el)
+%s
+English, United Kingdom (en_GB)
+%s
+English, South Africa (en_ZA)
+%s
+Spanish (es)
+%s
+Estonian (et)
+%s
+Finnish (fi)
+%s
+French (fr)
+%s
+Hungarian (hu)
+%s
+Indonesian (id)
+%s
+Japanese (ja)
+%s
+Norwegian Bokmål (nb)
+%s
+Dutch (nl)
+%s
+Portuguese, Brazil (pt_BR)
+%s
+Russian (ru)
+%s
+Swedish (sv)
+%s
+Tamil(Sri-Lanka) (ta_LK)
+%s
+Chinese(China) (zh_CN)
+%s
+
+Dokumentointi
+%s
+ 
+Käännös
+Python: http://www.python.org/
+Qt4: http://qt.digia.com/
+PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro
+Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/
+MuPDF: http://www.mupdf.com/
+ 
+Suurin kiitos
+&quot;Sillä niin on Jumala maailmaa rakastanut,
+että hän antoi ainokaisen Poikansa, ettei yksikään, 
+joka häneen uskoo, hukkuisi,
+vaan hänellä olisi iankaikkinen elämä&quot; -- Joh. 3:16
+  
+Ja viimeisenä, mutta ei vähäisimpänä, kiitos kuuluu Jumalalle 
+meidän Isällemme, joka lähetti Poikansa kuolemaan ristillä puolestamme
+ja pesi meidät puhtaaksi synnistä. Tahdomme antaa tämän ohjelmiston 
+ilmaiseksi sen tähden, mitä hän on tehnyt meidän edestämme samoin ilmaiseksi.</translation>
     </message>
 </context>
 <context>
@@ -3323,27 +3401,27 @@ Suorittaaksesi ohjatun toiminnon uudelleen myöhemmin, tarkista internetyhteys j
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="436"/>
         <source>There was a connection problem during download, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
-        <translation type="unfinished"/>
+        <translation>Oli yhteysongelmia lataamisen aikana, minkä tähden seuraavat lataukset jätetään välistä. Yritä ajaa uudelleen Ensimmäisen käynnistyksen avustaja myöhemmin.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="467"/>
         <source>Download complete. Click the %s button to return to OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation>Lataus on valmis. Paina %s painiketta palataksesi OpenLP-ohjelmaan.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="471"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation>Lataus valmis. Paina %s painiketta käynnistääksesi OpenLP:n.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="476"/>
         <source>Click the %s button to return to OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation>Paina  %s painiketta palataksesi OpenLP:hen.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="480"/>
         <source>Click the %s button to start OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation>Paina %s painiketta käynnistääksesi OpenLP:n.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="506"/>
