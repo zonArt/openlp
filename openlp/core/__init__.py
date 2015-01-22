@@ -262,6 +262,7 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
         else:
             return QtGui.QApplication.event(self, event)
 
+
 def parse_options(args):
     """
     Parse the command line arguments
@@ -285,6 +286,7 @@ def parse_options(args):
     parser.add_option('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
     # Parse command line options and deal with them. Use args supplied pragmatically if possible.
     return parser.parse_args(args) if args else parser.parse_args()
+
 
 def set_up_logging(log_path):
     """

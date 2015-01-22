@@ -126,4 +126,4 @@ class TestInit(TestCase, TestMixin):
 
         # THEN: A tuple should be returned with the parsed options and left over args
         self.assertEqual(resluts, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
-                                           'style': 'style', 'loglevel': 'debug'}),['extra', 'qt', 'args']))
+                                           'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))
