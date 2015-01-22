@@ -175,32 +175,26 @@ def update_reference_separators():
     """
     Updates separators and matches for parsing and formating scripture references.
     """
-    default_separators = ['|'.join([translate('BiblesPlugin', ':',
-                                              'Verse identifier e.g. Genesis 1 : 1 = Genesis Chapter 1 Verse 1'),
-                                    translate('BiblesPlugin', 'v',
-                                              'Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1'),
-                                    translate('BiblesPlugin', 'V',
-                                              'Verse identifier e.g. Genesis 1 V 1 = Genesis Chapter 1 Verse 1'),
-                                    translate('BiblesPlugin', 'verse',
-                                              'Verse identifier e.g. Genesis 1 verse 1 = Genesis Chapter 1 Verse 1'),
-                                    translate('BiblesPlugin', 'verses',
-                                              'Verse identifier e.g. Genesis 1 verses 1 - 2 = '
-                                              'Genesis Chapter 1 Verses 1 to 2')]),
-                          '|'.join([translate('BiblesPlugin', '-',
-                                              'range identifier e.g. Genesis 1 verse 1 - 2 = '
-                                              'Genesis Chapter 1 Verses 1 To 2'),
-                                    translate('BiblesPlugin', 'to',
-                                              'range identifier e.g. Genesis 1 verse 1 - 2 = '
-                                              'Genesis Chapter 1 Verses 1 To 2')]),
-                          '|'.join([translate('BiblesPlugin', ',',
-                                              'connecting identifier e.g. Genesis 1 verse 1 - 2, 4 - 5 = '
-                                              'Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5'),
-                                    translate('BiblesPlugin', 'and',
-                                              'connecting identifier e.g. Genesis 1 verse 1 - 2 and 4 - 5 = '
-                                              'Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5')]),
-                          '|'.join([translate('BiblesPlugin', 'end',
-                                              'ending identifier e.g. Genesis 1 verse 1 - end = '
-                                              'Genesis Chapter 1 Verses 1 To The Last Verse')])]
+    default_separators = [
+        '|'.join([
+            translate('BiblesPlugin', ':', 'Verse identifier e.g. Genesis 1 : 1 = Genesis Chapter 1 Verse 1'),
+            translate('BiblesPlugin', 'v','Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1'),
+            translate('BiblesPlugin', 'V', 'Verse identifier e.g. Genesis 1 V 1 = Genesis Chapter 1 Verse 1'),
+            translate('BiblesPlugin', 'verse', 'Verse identifier e.g. Genesis 1 verse 1 = Genesis Chapter 1 Verse 1'),
+            translate('BiblesPlugin', 'verses',
+                      'Verse identifier e.g. Genesis 1 verses 1 - 2 = Genesis Chapter 1 Verses 1 to 2')]),
+        '|'.join([
+            translate('BiblesPlugin', '-',
+                      'range identifier e.g. Genesis 1 verse 1 - 2 = Genesis Chapter 1 Verses 1 To 2'),
+            translate('BiblesPlugin', 'to',
+                      'range identifier e.g. Genesis 1 verse 1 - 2 = Genesis Chapter 1 Verses 1 To 2')]),
+        '|'.join([
+            translate('BiblesPlugin', ',', 'connecting identifier e.g. Genesis 1 verse 1 - 2, 4 - 5 = '
+                                           'Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5'),
+            translate('BiblesPlugin', 'and', 'connecting identifier e.g. Genesis 1 verse 1 - 2 and 4 - 5 = '
+                                             'Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5')]),
+        '|'.join([translate('BiblesPlugin', 'end', 'ending identifier e.g. Genesis 1 verse 1 - end = '
+                                                   'Genesis Chapter 1 Verses 1 To The Last Verse')])]
     settings = Settings()
     settings.beginGroup('bibles')
     custom_separators = [
