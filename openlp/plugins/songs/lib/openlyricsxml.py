@@ -504,8 +504,19 @@ class OpenLyrics(object):
             for author in properties.authors.author:
                 display_name = self._text(author)
                 author_type = author.get('type', '')
+                # As of 0.8 OpenLyrics supports these 3 author types
+                if author_type not in ('words', 'music', 'translation'):
+                    author_type = ''
                 if display_name:
-                    authors.append((display_name, author_type))
+                    # Check if an author is listed for both music and words. In that case we use a special type
+                    if author_type == 'words' and (display_name, 'music') in authors:
+                        authors.remove((display_name, 'music'))
+                        authors.append((display_name, 'words+music'))
+                    elif author_type == 'music' and (display_name, 'words') in authors:
+                        authors.remove((display_name, 'words'))
+                        authors.append((display_name, 'words+music'))
+                    else:
+                        authors.append((display_name, author_type))
         for (display_name, author_type) in authors:
             author = self.manager.get_object_filtered(Author, Author.display_name == display_name)
             if author is None:

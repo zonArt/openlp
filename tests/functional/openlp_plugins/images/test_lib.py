@@ -27,7 +27,7 @@ from unittest import TestCase
 from openlp.core.common import Registry
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 from openlp.plugins.images.lib.mediaitem import ImageMediaItem
-from tests.functional import MagicMock, patch
+from tests.functional import ANY, MagicMock, patch
 
 
 class TestImageMediaItem(TestCase):
@@ -38,6 +38,7 @@ class TestImageMediaItem(TestCase):
     def setUp(self):
         self.mocked_main_window = MagicMock()
         Registry.create()
+        Registry().register('application', MagicMock())
         Registry().register('service_list', MagicMock())
         Registry().register('main_window', self.mocked_main_window)
         Registry().register('live_controller', MagicMock())
@@ -45,6 +46,43 @@ class TestImageMediaItem(TestCase):
         with patch('openlp.plugins.images.lib.mediaitem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.setup_item'):
             self.media_item = ImageMediaItem(None, mocked_plugin)
+            self.media_item.settings_section = 'images'
+
+    def validate_and_load_test(self):
+        """
+        Test that the validate_and_load_test() method when called without a group
+        """
+        # GIVEN: A list of files
+        file_list = ['/path1/image1.jpg', '/path2/image2.jpg']
+
+        with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_list') as mocked_load_list, \
+                patch('openlp.plugins.images.lib.mediaitem.Settings') as mocked_settings:
+
+            # WHEN: Calling validate_and_load with the list of files
+            self.media_item.validate_and_load(file_list)
+
+            # THEN: load_list should have been called with the file list and None,
+            #       the directory should have been saved to the settings
+            mocked_load_list.assert_called_once_with(file_list, None)
+            mocked_settings().setValue.assert_called_once_with(ANY, '/path1')
+
+    def validate_and_load_group_test(self):
+        """
+        Test that the validate_and_load_test() method when called with a group
+        """
+        # GIVEN: A list of files
+        file_list = ['/path1/image1.jpg', '/path2/image2.jpg']
+
+        with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_list') as mocked_load_list, \
+                patch('openlp.plugins.images.lib.mediaitem.Settings') as mocked_settings:
+
+            # WHEN: Calling validate_and_load with the list of files and a group
+            self.media_item.validate_and_load(file_list, 'group')
+
+            # THEN: load_list should have been called with the file list and the group name,
+            #       the directory should have been saved to the settings
+            mocked_load_list.assert_called_once_with(file_list, 'group')
+            mocked_settings().setValue.assert_called_once_with(ANY, '/path1')
 
     def save_new_images_list_empty_list_test(self):
         """

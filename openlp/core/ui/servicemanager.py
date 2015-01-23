@@ -1389,7 +1389,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         if expand is None:
             expand = Settings().value('advanced/expand service item')
         item.from_service = True
-        self.drop_position = position
+        if position != -1:
+            self.drop_position = position
         if replace:
             s_item, child = self.find_service_item()
             item.merge(self.service_items[s_item]['service_item'])
