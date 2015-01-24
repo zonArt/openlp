@@ -45,6 +45,7 @@ TAGS = [
     ['2.0', '2118'],
     ['2.1.0', '2119'],
     ['2.1.1', '2438']
+    ['2.1.2', '2487']
 ]
 # Depending on the repository, we sometimes have the 2.0.x tags in the repo too. They come up with a revision number of
 # "?", which I suspect is due to the fact that we're using shared repositories. This regular expression matches all
