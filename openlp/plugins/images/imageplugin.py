@@ -23,6 +23,7 @@
 from PyQt4 import QtGui
 
 import logging
+import os
 
 from openlp.core.common import Registry, Settings, translate
 from openlp.core.lib import Plugin, StringContent, ImageSource, build_icon
@@ -66,10 +67,18 @@ class ImagePlugin(Plugin):
         """
         Perform tasks on application startup.
         """
+        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         Plugin.app_startup(self)
         # Convert old settings-based image list to the database.
         files_from_config = Settings().get_files_from_config(self)
         if files_from_config:
+            for file in files_from_config:
+                filename = os.path.split(file)[1]
+                thumb = os.path.join(self.media_item.service_path, filename)
+                try:
+                    os.remove(thumb)
+                except:
+                    pass
             log.debug('Importing images list from old config: %s' % files_from_config)
             self.media_item.save_new_images_list(files_from_config)
 
@@ -79,6 +88,7 @@ class ImagePlugin(Plugin):
 
         :param settings: The Settings object containing the old settings.
         """
+        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         files_from_config = settings.get_files_from_config(self)
         if files_from_config:
             log.debug('Importing images list from old config: %s' % files_from_config)

@@ -366,8 +366,7 @@ s
         duplicates_found = False
         files_added = False
         for file_path in files:
-            filename = os.path.split(str(file_path))[1]
-            if filename in names:
+            if file_path in full_list:
                 duplicates_found = True
             else:
                 files_added = True
