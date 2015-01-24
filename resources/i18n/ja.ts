@@ -658,7 +658,62 @@ Please type in some text before clicking New.</source>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
-        <source>:|v|V|verse|verses;;-|to;;,|and;;end Double-semicolon delimited separators for parsing references. Consult the developers for further information.</source>
+        <source>:</source>
+        <comment>Verse identifier e.g. Genesis 1 : 1 = Genesis Chapter 1 Verse 1</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
+        <source>v</source>
+        <comment>Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
+        <source>V</source>
+        <comment>Verse identifier e.g. Genesis 1 V 1 = Genesis Chapter 1 Verse 1</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
+        <source>verse</source>
+        <comment>Verse identifier e.g. Genesis 1 verse 1 = Genesis Chapter 1 Verse 1</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
+        <source>verses</source>
+        <comment>Verse identifier e.g. Genesis 1 verses 1 - 2 = Genesis Chapter 1 Verses 1 to 2</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="186"/>
+        <source>-</source>
+        <comment>range identifier e.g. Genesis 1 verse 1 - 2 = Genesis Chapter 1 Verses 1 To 2</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="186"/>
+        <source>to</source>
+        <comment>range identifier e.g. Genesis 1 verse 1 - 2 = Genesis Chapter 1 Verses 1 To 2</comment>
+        <translation type="unfinished">から</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
+        <source>,</source>
+        <comment>connecting identifier e.g. Genesis 1 verse 1 - 2, 4 - 5 = Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
+        <source>and</source>
+        <comment>connecting identifier e.g. Genesis 1 verse 1 - 2 and 4 - 5 = Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="196"/>
+        <source>end</source>
+        <comment>ending identifier e.g. Genesis 1 verse 1 - end = Genesis Chapter 1 Verses 1 To The Last Verse</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1028,7 +1083,7 @@ It is not possible to customize the Book Names.</source>
         <location filename="openlp/plugins/bibles/lib/http.py" line="503"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
-        <translation>%s をインポート中...</translation>
+        <translation>%sをインポート中...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="647"/>
@@ -1210,9 +1265,8 @@ It is not possible to customize the Book Names.</source>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="603"/>
-        <source>Registered Bible. Please note, that verses will be downloaded on
-demand and thus an internet connection is required.</source>
-        <translation>聖書を登録しました。本文は使用時にダウンロードされるため、インターネット接続が必要なことに注意してください。</translation>
+        <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2276,7 +2330,7 @@ Should OpenLP upgrade now?</source>
         <translation>%sにバックアップが作成されました</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="659"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Open</source>
         <translation>開く</translation>
     </message>
@@ -2410,13 +2464,96 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"></translation>
+        <translation>代表
+    %s
+
+開発者
+    %s
+
+貢献者
+    %s
+
+テスター
+    %s
+
+パッケージャー
+    %s
+
+翻訳者
+    アフリカーンス語 (af)
+        %s
+    チェコ語 (cs)
+        %s
+    デンマーク語 (da)
+        %s
+    ドイツ語 (de)
+        %s
+    ギリシャ語 (el)
+        %s
+    イギリス英語 (en_GB)
+        %s
+    南アフリカ英語 (en_ZA)
+        %s
+    スペイン語 (es)
+        %s
+    エストニア語 (et)
+        %s
+    フィンランド語 (fi)
+        %s
+    フランス語 (fr)
+        %s
+    ハンガリー語 (hu)
+        %s
+    インドネシア語 (id)
+        %s
+    日本語 (ja)
+        %s
+    ノルウェー語 (nb)
+        %s
+    オランダ語 (nl)
+        %s
+    ポーランド語 (pl)
+        %s
+    ブラジルポルトガル語 (pt_BR)
+        %s
+    ロシア語 (ru)
+        %s
+    スウェーデン語 (sv)
+        %s
+    タミル語 (スリランカ) (ta_LK)
+        %s
+    中国語 (中国) (zh_CN)
+        %s
+
+ドキュメント
+    %s
+
+ビルト
+    Python: http://www.python.org/
+    Qt4: http://qt.io
+    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro
+    Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/
+    MuPDF: http://www.mupdf.com/
+
+謝辞
+    「神は、その独り子をお与えになったほ
+    どに、世を愛された。独り子を信じる者
+    が一人も滅びないで、永遠の命を得るた
+    めである。」 -- ヨハネによる福音書 3:16
+
+    そして最後に、父なる神様、独り子を世
+    に遣わし十字架の死によってわたしたち
+    の罪を贖ってくださった神様に感謝しま
+    す。神様がわたしたちを罪から自由にし
+    てくださった故に、このソフトを自由に
+    (フリーで、無償で) 配布します。</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="270"/>
         <source>Copyright &#xa9; 2004-2015 %s
 Portions copyright &#xa9; 2004-2015 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>著作権 © 2004-2015 %s
+追加の著作権 © 2004-2015 %s</translation>
     </message>
 </context>
 <context>
@@ -2756,254 +2893,254 @@ appears to contain OpenLP data files. Do you wish to replace these files with th
 <context>
     <name>OpenLP.DB</name>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="309"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="302"/>
         <source>RGB</source>
         <translation>RGB</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="310"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="303"/>
         <source>Video</source>
         <translation>ビデオ</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="311"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="304"/>
         <source>Digital</source>
         <translation>ディジタル</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="312"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="305"/>
         <source>Storage</source>
         <translation>ストレージ</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="313"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="306"/>
         <source>Network</source>
         <translation>ネットワーク</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="315"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="308"/>
         <source>RGB 1</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 1</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/projector/constants.py" line="309"/>
+        <source>RGB 2</source>
+        <translation>RGB 2</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/projector/constants.py" line="310"/>
+        <source>RGB 3</source>
+        <translation>RGB 3</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/projector/constants.py" line="311"/>
+        <source>RGB 4</source>
+        <translation>RGB 4</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/projector/constants.py" line="312"/>
+        <source>RGB 5</source>
+        <translation>RGB 5</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/projector/constants.py" line="313"/>
+        <source>RGB 6</source>
+        <translation>RGB 6</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/projector/constants.py" line="314"/>
+        <source>RGB 7</source>
+        <translation>RGB 7</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/projector/constants.py" line="315"/>
+        <source>RGB 8</source>
+        <translation>RGB 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="316"/>
-        <source>RGB 2</source>
-        <translation type="unfinished"></translation>
+        <source>RGB 9</source>
+        <translation>RGB 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="317"/>
-        <source>RGB 3</source>
-        <translation type="unfinished"></translation>
+        <source>Video 1</source>
+        <translation>ビデオ 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="318"/>
-        <source>RGB 4</source>
-        <translation type="unfinished"></translation>
+        <source>Video 2</source>
+        <translation>ビデオ 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="319"/>
-        <source>RGB 5</source>
-        <translation type="unfinished"></translation>
+        <source>Video 3</source>
+        <translation>ビデオ 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="320"/>
-        <source>RGB 6</source>
-        <translation type="unfinished"></translation>
+        <source>Video 4</source>
+        <translation>ビデオ 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="321"/>
-        <source>RGB 7</source>
-        <translation type="unfinished"></translation>
+        <source>Video 5</source>
+        <translation>ビデオ 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="322"/>
-        <source>RGB 8</source>
-        <translation type="unfinished"></translation>
+        <source>Video 6</source>
+        <translation>ビデオ 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="323"/>
-        <source>RGB 9</source>
-        <translation type="unfinished"></translation>
+        <source>Video 7</source>
+        <translation>ビデオ 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="324"/>
-        <source>Video 1</source>
-        <translation type="unfinished"></translation>
+        <source>Video 8</source>
+        <translation>ビデオ 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="325"/>
-        <source>Video 2</source>
-        <translation type="unfinished"></translation>
+        <source>Video 9</source>
+        <translation>ビデオ 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="326"/>
-        <source>Video 3</source>
-        <translation type="unfinished"></translation>
+        <source>Digital 1</source>
+        <translation>ディジタル 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="327"/>
-        <source>Video 4</source>
-        <translation type="unfinished"></translation>
+        <source>Digital 2</source>
+        <translation>ディジタル </translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="328"/>
-        <source>Video 5</source>
-        <translation type="unfinished"></translation>
+        <source>Digital 3</source>
+        <translation>ディジタル 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="329"/>
-        <source>Video 6</source>
-        <translation type="unfinished"></translation>
+        <source>Digital 4</source>
+        <translation>ディジタル </translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="330"/>
-        <source>Video 7</source>
-        <translation type="unfinished"></translation>
+        <source>Digital 5</source>
+        <translation>ディジタル </translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="331"/>
-        <source>Video 8</source>
-        <translation type="unfinished"></translation>
+        <source>Digital 6</source>
+        <translation>ディジタル 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="332"/>
-        <source>Video 9</source>
-        <translation type="unfinished"></translation>
+        <source>Digital 7</source>
+        <translation>ディジタル 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="333"/>
-        <source>Digital 1</source>
-        <translation type="unfinished"></translation>
+        <source>Digital 8</source>
+        <translation>ディジタル 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="334"/>
-        <source>Digital 2</source>
-        <translation type="unfinished"></translation>
+        <source>Digital 9</source>
+        <translation>ディジタル 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="335"/>
-        <source>Digital 3</source>
-        <translation type="unfinished"></translation>
+        <source>Storage 1</source>
+        <translation>ストレージ 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="336"/>
-        <source>Digital 4</source>
-        <translation type="unfinished"></translation>
+        <source>Storage 2</source>
+        <translation>ストレージ 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="337"/>
-        <source>Digital 5</source>
-        <translation type="unfinished"></translation>
+        <source>Storage 3</source>
+        <translation>ストレージ 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="338"/>
-        <source>Digital 6</source>
-        <translation type="unfinished"></translation>
+        <source>Storage 4</source>
+        <translation>ストレージ 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="339"/>
-        <source>Digital 7</source>
-        <translation type="unfinished"></translation>
+        <source>Storage 5</source>
+        <translation>ストレージ 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="340"/>
-        <source>Digital 8</source>
-        <translation type="unfinished"></translation>
+        <source>Storage 6</source>
+        <translation>ストレージ 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="341"/>
-        <source>Digital 9</source>
-        <translation type="unfinished"></translation>
+        <source>Storage 7</source>
+        <translation>ストレージ 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="342"/>
-        <source>Storage 1</source>
-        <translation type="unfinished"></translation>
+        <source>Storage 8</source>
+        <translation>ストレージ 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="343"/>
-        <source>Storage 2</source>
-        <translation type="unfinished"></translation>
+        <source>Storage 9</source>
+        <translation>ストレージ 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="344"/>
-        <source>Storage 3</source>
-        <translation type="unfinished"></translation>
+        <source>Network 1</source>
+        <translation>ネットワーク 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="345"/>
-        <source>Storage 4</source>
-        <translation type="unfinished"></translation>
+        <source>Network 2</source>
+        <translation>ネットワーク </translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="346"/>
-        <source>Storage 5</source>
-        <translation type="unfinished"></translation>
+        <source>Network 3</source>
+        <translation>ネットワーク </translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="347"/>
-        <source>Storage 6</source>
-        <translation type="unfinished"></translation>
+        <source>Network 4</source>
+        <translation>ネットワーク </translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="348"/>
-        <source>Storage 7</source>
-        <translation type="unfinished"></translation>
+        <source>Network 5</source>
+        <translation>ネットワーク 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="349"/>
-        <source>Storage 8</source>
-        <translation type="unfinished"></translation>
+        <source>Network 6</source>
+        <translation>ネットワーク 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="350"/>
-        <source>Storage 9</source>
-        <translation type="unfinished"></translation>
+        <source>Network 7</source>
+        <translation>ネットワーク 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="351"/>
-        <source>Network 1</source>
-        <translation type="unfinished"></translation>
+        <source>Network 8</source>
+        <translation>ネットワーク 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="352"/>
-        <source>Network 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="353"/>
-        <source>Network 3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="354"/>
-        <source>Network 4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="355"/>
-        <source>Network 5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="356"/>
-        <source>Network 6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="357"/>
-        <source>Network 7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="358"/>
-        <source>Network 8</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="359"/>
         <source>Network 9</source>
-        <translation type="unfinished"></translation>
+        <translation>ネットワーク 9</translation>
     </message>
 </context>
 <context>
@@ -3390,36 +3527,36 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="228"/>
         <source>Downloading Resource Index</source>
-        <translation type="unfinished"></translation>
+        <translation>リソース一覧をダウンロード中</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="229"/>
         <source>Please wait while the resource index is downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>リソース一覧のダウンロードが完了するまでお待ちください。</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="231"/>
         <source>Please wait while OpenLP downloads the resource index file...</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLPがリソース一覧をダウンロードしています。しばらくお待ちください...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="269"/>
         <source>Downloading and Configuring</source>
-        <translation type="unfinished"></translation>
+        <translation>ダウンロードと構成</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="270"/>
         <source>Please wait while resources are downloaded and OpenLP is configured.</source>
-        <translation type="unfinished"></translation>
+        <translation>リソースのダウンロードと構成を行なっています。しばらくお待ちください。</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="183"/>
         <source>Network Error</source>
-        <translation type="unfinished"></translation>
+        <translation>ネットワークエラー</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="185"/>
-        <source>There was a network error attempting toconnect to retrieve initial configuration information</source>
+        <source>There was a network error attempting to connect to retrieve initial configuration information</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4404,12 +4541,12 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.OpenLyricsImportError</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="701"/>
+        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="713"/>
         <source>&lt;lyrics&gt; tag is missing.</source>
         <translation>&lt;lyrics&gt;タグが見つかりません。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="706"/>
+        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="718"/>
         <source>&lt;verse&gt; tag is missing.</source>
         <translation>&lt;verse&gt;タグが見つかりません。</translation>
     </message>
@@ -4417,22 +4554,22 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.PJLink1</name>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="261"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="254"/>
         <source>Unknown status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="271"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="264"/>
         <source>No message</source>
         <translation>メッセージなし</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="528"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="521"/>
         <source>Error while sending data to projector</source>
         <translation>データをプロジェクタに送信中にエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="552"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="545"/>
         <source>Undefined command:</source>
         <translation>定義されていないコマンド:</translation>
     </message>
@@ -4440,27 +4577,27 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.PlayerTab</name>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="62"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="55"/>
         <source>Players</source>
         <translation>再生ソフト</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="133"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="124"/>
         <source>Available Media Players</source>
         <translation>利用可能な再生ソフト</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="134"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="125"/>
         <source>Player Search Order</source>
         <translation>再生ソフトの順序</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="137"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="128"/>
         <source>Visible background for videos with aspect ratio different to screen.</source>
         <translation>アスペクト比がスクリーンと異なるビデオが背景として表示されます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="262"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="253"/>
         <source>%s (unavailable)</source>
         <translation>%s (利用不可能)</translation>
     </message>
@@ -4602,257 +4739,257 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ProjectorConstants</name>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="218"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="211"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="219"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="212"/>
         <source>General projector error</source>
         <translation>一般的なプロジェクタエラー</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="220"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="213"/>
         <source>Not connected error</source>
         <translation>未接続エラー</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="221"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="214"/>
         <source>Lamp error</source>
         <translation>ランプエラー</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="222"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="215"/>
         <source>Fan error</source>
         <translation>ファンエラー</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="223"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="216"/>
         <source>High temperature detected</source>
         <translation>温度が高すぎます</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="224"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="217"/>
         <source>Cover open detected</source>
         <translation>カバーが開いています</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="225"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="218"/>
         <source>Check filter</source>
         <translation>フィルターを確認</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="226"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="219"/>
         <source>Authentication Error</source>
         <translation>認証エラー</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="227"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="220"/>
         <source>Undefined Command</source>
         <translation>定義されていないコマンド</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="228"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="221"/>
         <source>Invalid Parameter</source>
         <translation>無効なパラメータ</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="229"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="222"/>
         <source>Projector Busy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="230"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="223"/>
         <source>Projector/Display Error</source>
         <translation>プロジェクタ/ディスプレイエラー</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="231"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="224"/>
         <source>Invalid packet received</source>
         <translation>無効なパケットを受信しました</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="232"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="225"/>
         <source>Warning condition detected</source>
         <translation>警告があります</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="233"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="226"/>
         <source>Error condition detected</source>
         <translation>エラーがあります</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="234"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="227"/>
         <source>PJLink class not supported</source>
         <translation>PJLinkクラスがサポートされていません</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="235"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="228"/>
         <source>Invalid prefix character</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="236"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="229"/>
         <source>The connection was refused by the peer (or timed out)</source>
         <translation>接続が拒否されたかタイムアウトが発生しました</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="238"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="231"/>
         <source>The remote host closed the connection</source>
         <translation>リモートホストが接続を切断しました</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="240"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="233"/>
         <source>The host address was not found</source>
         <translation>ホストアドレスが見つかりません</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="241"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="234"/>
         <source>The socket operation failed because the application lacked the required privileges</source>
         <translation>必要な権限が不足しているためソケット処理に失敗しました</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="244"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="237"/>
         <source>The local system ran out of resources (e.g., too many sockets)</source>
         <translation>ローカルシステムのリソースが不足しています (ソケットの使いすぎなど)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="246"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="239"/>
         <source>The socket operation timed out</source>
         <translation>ソケット処理がタイムアウトしました</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="248"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="241"/>
         <source>The datagram was larger than the operating system&apos;s limit</source>
         <translation>データの大きさがOSの制限を超えています</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="250"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="243"/>
         <source>An error occurred with the network (Possibly someone pulled the plug?)</source>
         <translation>ネットワークに関するエラーが発生しました (プラグが抜けていませんか?)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="252"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="245"/>
         <source>The address specified with socket.bind() is already in use and was set to be exclusive</source>
         <translation>socket.bind()で指定されたアドレスは既に使用されており、排他に設定されています。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="255"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="248"/>
         <source>The address specified to socket.bind() does not belong to the host</source>
         <translation>socket.bind()で指定されたアドレスはホストに属していません。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="258"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="251"/>
         <source>The requested socket operation is not supported by the local operating system (e.g., lack of IPv6 support)</source>
         <translation>要求されたソケット処理はローカルOSではサポートされていません。(IPv6の不足など)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="261"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="254"/>
         <source>The socket is using a proxy, and the proxy requires authentication</source>
         <translation>プロキシが使用されており、認証が必要です。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="264"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="257"/>
         <source>The SSL/TLS handshake failed</source>
         <translation>SSL/TLSハンドシェイクに失敗しました</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="266"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="259"/>
         <source>The last operation attempted has not finished yet (still in progress in the background)</source>
         <translation>最後の操作は終了していません (バックグラウンドで実行中です)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="269"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="262"/>
         <source>Could not contact the proxy server because the connection to that server was denied</source>
         <translation>接続が拒否されたためプロキシサーバに接続できませんでした</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="272"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="265"/>
         <source>The connection to the proxy server was closed unexpectedly (before the connection to the final peer was established)</source>
         <translation>プロキシサーバへの接続が切断されました。(最終点へ接続できる前に)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="275"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="268"/>
         <source>The connection to the proxy server timed out or the proxy server stopped responding in the authentication phase.</source>
         <translation>プロキシサーバへの接続がタイムアウトしたか、認証の段階で応答がありません。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="278"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="271"/>
         <source>The proxy address set with setProxy() was not found</source>
         <translation>setProxy()で設定されたプロキシアドレスが見つかりません</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="280"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="273"/>
         <source>The connection negotiation with the proxy server because the response from the proxy server could not be understood</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="283"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="276"/>
         <source>An unidentified error occurred</source>
         <translation>不明なエラーが発生</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="284"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="277"/>
         <source>Not connected</source>
         <translation>未接続</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="285"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="278"/>
         <source>Connecting</source>
         <translation>接続中</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="286"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="279"/>
         <source>Connected</source>
         <translation>接続済</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="287"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="280"/>
         <source>Getting status</source>
         <translation>状態を取得中</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="288"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="281"/>
         <source>Off</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="289"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="282"/>
         <source>Initialize in progress</source>
         <translation>初期化中</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="290"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="283"/>
         <source>Power in standby</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="291"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="284"/>
         <source>Warmup in progress</source>
         <translation>準備中</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="292"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="285"/>
         <source>Power is on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="293"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="286"/>
         <source>Cooldown in progress</source>
         <translation>冷却中</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="294"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="287"/>
         <source>Projector Information available</source>
         <translation>プロジェクタ情報があります</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="295"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="288"/>
         <source>Sending data</source>
         <translation>データを送信中</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="296"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="289"/>
         <source>Received data</source>
         <translation>受信データ</translation>
     </message>
@@ -4860,17 +4997,17 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ProjectorEdit</name>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="179"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="172"/>
         <source>Name Not Set</source>
         <translation>名前が未設定</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="179"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="172"/>
         <source>You must enter a name for this entry.&lt;br /&gt;Please enter a new name for this entry.</source>
-        <translation type="unfinished"></translation>
+        <translation>この項目に名前を入力してください。&lt;br /&gt;この項目に新しい名前を入力してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="189"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="182"/>
         <source>Duplicate Name</source>
         <translation>名前が重複します</translation>
     </message>
@@ -4878,52 +5015,52 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ProjectorEditForm</name>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="117"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="110"/>
         <source>Add New Projector</source>
         <translation>新しいプロジェクタを追加</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="120"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="113"/>
         <source>Edit Projector</source>
         <translation>プロジェクタを編集</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="122"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="115"/>
         <source>IP Address</source>
         <translation>IPアドレス</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="125"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="118"/>
         <source>Port Number</source>
         <translation>ポート番号</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="127"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="120"/>
         <source>PIN</source>
         <translation>PIN</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="129"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="122"/>
         <source>Name</source>
         <translation>名前</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="131"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="124"/>
         <source>Location</source>
         <translation>場所</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="133"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="126"/>
         <source>Notes</source>
         <translation>メモ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="243"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="236"/>
         <source>Database Error</source>
         <translation>データベースエラー</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="243"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="236"/>
         <source>There was an error saving projector information. See the log for the error</source>
         <translation>プロジェクタ情報を保存中にエラーが発生しました。ログを確認してください。</translation>
     </message>
@@ -4931,262 +5068,262 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ProjectorManager</name>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="90"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="83"/>
         <source>Add Projector</source>
         <translation>プロジェクタを追加</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="90"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="83"/>
         <source>Add a new projector</source>
         <translation>新しいプロジェクタを追加します</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="96"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="89"/>
         <source>Edit Projector</source>
         <translation>プロジェクタを編集</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="96"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="89"/>
         <source>Edit selected projector</source>
         <translation>選択したプロジェクタを編集します</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="101"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="94"/>
         <source>Delete Projector</source>
         <translation>プロジェクタを削除</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="101"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="94"/>
         <source>Delete selected projector</source>
         <translation>選択したプロジェクタを削除します</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="107"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="100"/>
         <source>Select Input Source</source>
         <translation>入力ソースを選択</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="107"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="100"/>
         <source>Choose input source on selected projector</source>
         <translation>選択したプロジェクタの入力ソースを選択します</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="113"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="106"/>
         <source>View Projector</source>
         <translation>プロジェクタを表示</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="113"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="106"/>
         <source>View selected projector information</source>
         <translation>選択したプロジェクタの情報を表示します</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="127"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="120"/>
         <source>Connect to selected projector</source>
         <translation>選択したプロジェクタに接続</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="127"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="120"/>
         <source>Connect to selected projectors</source>
         <translation>選択したプロジェクタに接続</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="134"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="127"/>
         <source>Disconnect from selected projectors</source>
         <translation>選択したプロジェクタから切断</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="141"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="134"/>
         <source>Disconnect from selected projector</source>
         <translation>選択したプロジェクタから切断</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="156"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="149"/>
         <source>Power on selected projector</source>
         <translation>選択したプロジェクタの電源投入</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="169"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="162"/>
         <source>Standby selected projector</source>
         <translation>選択したプロジェクタをスタンバイ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="169"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="162"/>
         <source>Put selected projector in standby</source>
         <translation>選択したプロジェクタをスタンバイ状態にします</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="183"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="176"/>
         <source>Blank selected projector screen</source>
         <translation>選択したプロジェクタをブランクにします</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="197"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="190"/>
         <source>Show selected projector screen</source>
         <translation>選択したプロジェクタのブランクを解除します</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="219"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="212"/>
         <source>&amp;View Projector Information</source>
         <translation>プロジェクタ情報の表示 (&amp;V)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="224"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="217"/>
         <source>&amp;Edit Projector</source>
         <translation>プロジェクタを編集 (&amp;E)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="230"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="223"/>
         <source>&amp;Connect Projector</source>
         <translation>プロジェクタに接続 (&amp;C)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="235"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="228"/>
         <source>D&amp;isconnect Projector</source>
         <translation>プロジェクタから切断 (&amp;D)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="241"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="234"/>
         <source>Power &amp;On Projector</source>
         <translation>プロジェクタの電源投入 (&amp;O)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="246"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="239"/>
         <source>Power O&amp;ff Projector</source>
         <translation>プロジェクタの電源切断 (&amp;F)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="252"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="245"/>
         <source>Select &amp;Input</source>
         <translation>入力を選択 (&amp;I)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="257"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="250"/>
         <source>Edit Input Source</source>
         <translation>入力ソースを編集</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="262"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="255"/>
         <source>&amp;Blank Projector Screen</source>
         <translation>プロジェクタをブランクにする (&amp;B)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="267"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="260"/>
         <source>&amp;Show Projector Screen</source>
         <translation>プロジェクタのブランクを解除 (&amp;S)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="273"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="266"/>
         <source>&amp;Delete Projector</source>
         <translation>プロジェクタを削除 (&amp;D)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="636"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="629"/>
         <source>Name</source>
         <translation>名前</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="638"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="631"/>
         <source>IP</source>
         <translation>IP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="640"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="633"/>
         <source>Port</source>
         <translation>ポート</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="642"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="635"/>
         <source>Notes</source>
         <translation>メモ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="646"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="639"/>
         <source>Projector information not available at this time.</source>
         <translation>プロジェクタの情報を取得できませんでした。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="649"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="642"/>
         <source>Projector Name</source>
         <translation>プロジェクタ名</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="651"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="644"/>
         <source>Manufacturer</source>
         <translation>製造元</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="653"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="646"/>
         <source>Model</source>
         <translation>型番</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="655"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="648"/>
         <source>Other info</source>
         <translation>その他</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="657"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="650"/>
         <source>Power status</source>
         <translation>電源</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="659"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Shutter is</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="659"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="662"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="655"/>
         <source>Current source input is</source>
         <translation>現在の入力ソースは</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="667"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>Lamp</source>
         <translation>ランプ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="667"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>On</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="667"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>Off</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="667"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>Hours</source>
         <translation>時間</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="678"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="671"/>
         <source>No current errors or warnings</source>
         <translation>エラーや警告はありません</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="680"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="673"/>
         <source>Current errors/warnings</source>
         <translation>現在のエラー/警告</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="683"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="676"/>
         <source>Projector Information</source>
         <translation>プロジェクタ情報</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="815"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="808"/>
         <source>No message</source>
         <translation>メッセージなし</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="978"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="971"/>
         <source>Not Implemented Yet</source>
         <translation>未実装</translation>
     </message>
@@ -5194,32 +5331,32 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ProjectorPJLink</name>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="752"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="745"/>
         <source>Fan</source>
         <translation>ファン</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="756"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="749"/>
         <source>Lamp</source>
         <translation>ランプ</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="760"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="753"/>
         <source>Temperature</source>
         <translation>温度</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="764"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="757"/>
         <source>Cover</source>
         <translation>カバー</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="768"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="761"/>
         <source>Filter</source>
         <translation>フィルター</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="772"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="765"/>
         <source>Other</source>
         <translation>その他</translation>
     </message>
@@ -5227,37 +5364,37 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ProjectorTab</name>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="57"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="50"/>
         <source>Projector</source>
         <translation>プロジェクタ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="106"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="99"/>
         <source>Communication Options</source>
         <translation>通信オプション</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="108"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="101"/>
         <source>Connect to projectors on startup</source>
         <translation>起動時にプロジェクタへ接続する</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="110"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="103"/>
         <source>Socket timeout (seconds)</source>
         <translation>ソケットタイムアウト (秒)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="112"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="105"/>
         <source>Poll time (seconds)</source>
         <translation>ポール時間 (秒)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="116"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="109"/>
         <source>Tabbed dialog box</source>
         <translation>タブ付ダイアログ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="118"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="111"/>
         <source>Single dialog box</source>
         <translation>シングルダイアログ</translation>
     </message>
@@ -5265,17 +5402,17 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ProjectorWizard</name>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="205"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="198"/>
         <source>Duplicate IP Address</source>
         <translation>重複するIPアドレス</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="213"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="206"/>
         <source>Invalid IP Address</source>
         <translation>無効なIPアドレス</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="222"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="215"/>
         <source>Invalid Port Number</source>
         <translation>無効なポート番号</translation>
     </message>
@@ -5407,17 +5544,17 @@ Suffix not supported</source>
         <translation>礼拝プログラムファイルが有効でありません。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1481"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1482"/>
         <source>Missing Display Handler</source>
         <translation>ディスプレイハンドラが見つかりません</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1437"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1438"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation>ディスプレイハンドラが見つからないため項目を表示する事ができません</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1481"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1482"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
         <translation>必要なプラグインが見つからないか無効なため、項目を表示する事ができません</translation>
     </message>
@@ -5676,12 +5813,12 @@ These files will be removed if you continue to save.</source>
         <translation>スライドの再生時間を秒で指定する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1509"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1510"/>
         <source>Rename item title</source>
         <translation>タイトルを編集</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1509"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1510"/>
         <source>Title:</source>
         <translation>タイトル:</translation>
     </message>
@@ -5778,7 +5915,7 @@ These files will be removed if you continue to save.</source>
         <translation>隠す</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="312"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="313"/>
         <source>Go To</source>
         <translation>送る</translation>
     </message>
@@ -5798,17 +5935,17 @@ These files will be removed if you continue to save.</source>
         <translation>デスクトップを表示</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="498"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="499"/>
         <source>Previous Service</source>
         <translation>前の礼拝プログラム</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="503"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="504"/>
         <source>Next Service</source>
         <translation>次の礼拝プログラム</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="508"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="509"/>
         <source>Escape Item</source>
         <translation>項目をエスケープ</translation>
     </message>
@@ -5833,17 +5970,17 @@ These files will be removed if you continue to save.</source>
         <translation>スライドの再生時間を秒で指定する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="292"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="293"/>
         <source>Move to live.</source>
         <translation>ライブへ移動する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="295"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="296"/>
         <source>Add to Service.</source>
         <translation>礼拝プログラムへ追加する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="299"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="300"/>
         <source>Edit and reload song preview.</source>
         <translation>編集しプレビューを再読み込みする。</translation>
     </message>
@@ -5853,7 +5990,7 @@ These files will be removed if you continue to save.</source>
         <translation>メディアの再生を開始する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="316"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="317"/>
         <source>Pause audio.</source>
         <translation>音声を一時停止します。</translation>
     </message>
@@ -5878,37 +6015,37 @@ These files will be removed if you continue to save.</source>
         <translation>ボリューム。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="382"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="383"/>
         <source>Go to &quot;Verse&quot;</source>
         <translation>&quot;バース&quot;へ移動</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="383"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="384"/>
         <source>Go to &quot;Chorus&quot;</source>
         <translation>&quot;コーラス&quot;へ移動</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="384"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="385"/>
         <source>Go to &quot;Bridge&quot;</source>
         <translation>&quot;ブリッジ&quot;へ移動</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="386"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="387"/>
         <source>Go to &quot;Pre-Chorus&quot;</source>
         <translation>&quot;間奏&quot;へ移動</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="387"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="388"/>
         <source>Go to &quot;Intro&quot;</source>
         <translation>&quot;序奏&quot;へ移動</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="388"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="389"/>
         <source>Go to &quot;Ending&quot;</source>
         <translation>&quot;エンディング&quot;へ移動</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="389"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="390"/>
         <source>Go to &quot;Other&quot;</source>
         <translation>&quot;その他&quot;へ移動</translation>
     </message>
@@ -5923,22 +6060,22 @@ These files will be removed if you continue to save.</source>
         <translation>次のスライド</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="316"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="317"/>
         <source>Pause Audio</source>
         <translation>音声の一時停止</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="322"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="323"/>
         <source>Background Audio</source>
         <translation>バックグラウンド音声</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="326"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="327"/>
         <source>Go to next audio track.</source>
         <translation>次の音声トラックへ進みます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="334"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="335"/>
         <source>Tracks</source>
         <translation>トラック</translation>
     </message>
@@ -5946,47 +6083,47 @@ These files will be removed if you continue to save.</source>
 <context>
     <name>OpenLP.SourceSelectForm</name>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="397"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="390"/>
         <source>Select Projector Source</source>
         <translation>プロジェクタのソースを選択</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="395"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="388"/>
         <source>Edit Projector Source Text</source>
         <translation>プロジェクタのソーステキストを編集</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="155"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="148"/>
         <source>Ignoring current changes and return to OpenLP</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の変更を破棄しOpenLPに戻ります</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="158"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="151"/>
         <source>Delete all user-defined text and revert to PJLink default text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="161"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="154"/>
         <source>Discard changes and reset to previous user-defined text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="164"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="157"/>
         <source>Save changes and return to OpenLP</source>
-        <translation type="unfinished"></translation>
+        <translation>変更を保存しOpenLPに戻ります</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="479"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
         <source>Delete entries for this projector</source>
-        <translation type="unfinished"></translation>
+        <translation>このプロジェクタを一覧から削除します</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="480"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="473"/>
         <source>Are you sure you want to delete ALL user-defined </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="480"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="473"/>
         <source>source input text for this projector?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6838,12 +6975,12 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="504"/>
         <source>Written by</source>
-        <translation type="unfinished"></translation>
+        <translation>著者</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="36"/>
         <source>Author Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>不明</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="52"/>
@@ -7333,12 +7470,12 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="63"/>
         <source>CCLI song number:</source>
-        <translation type="unfinished"></translation>
+        <translation>CCLI song番号:</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="112"/>
         <source>OpenLP 2.2</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.2</translation>
     </message>
 </context>
 <context>
@@ -7347,31 +7484,31 @@ Please try selecting it individually.</source>
         <location filename="openlp/core/lib/__init__.py" line="305"/>
         <source>%s and %s</source>
         <comment>Locale list separator: 2 items</comment>
-        <translation type="unfinished"></translation>
+        <translation>%sと%s</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/__init__.py" line="308"/>
         <source>%s, and %s</source>
         <comment>Locale list separator: end</comment>
-        <translation type="unfinished"></translation>
+        <translation>%s、%s</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/__init__.py" line="311"/>
         <source>%s, %s</source>
         <comment>Locale list separator: middle</comment>
-        <translation type="unfinished"></translation>
+        <translation>%s、%s</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/__init__.py" line="312"/>
         <source>%s, %s</source>
         <comment>Locale list separator: start</comment>
-        <translation type="unfinished"></translation>
+        <translation>%sと%s</translation>
     </message>
 </context>
 <context>
     <name>Openlp.ProjectorTab</name>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="114"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="107"/>
         <source>Source select dialog interface</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7677,17 +7814,17 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="302"/>
         <source>OpenLP 2.2 Remote</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.2 遠隔操作</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="303"/>
         <source>OpenLP 2.2 Stage View</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.2 ステージビュー</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="304"/>
         <source>OpenLP 2.2 Live View</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.2 ライブビュー</translation>
     </message>
 </context>
 <context>
@@ -8133,7 +8270,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="125"/>
         <source>Import songs from CCLI&apos;s SongSelect service.</source>
-        <translation type="unfinished"></translation>
+        <translation>CCLIのSongSelectサービスから賛美をインポートします。</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="160"/>
@@ -8264,7 +8401,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="203"/>
         <source>Could not find the &quot;Songs.MB&quot; file. It must be in the same folder as the &quot;Songs.DB&quot; file.</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル「Songs.MB」が見つかりません。Songs.DBと同じフォルダに保存されている必要があります。</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="219"/>
@@ -8491,13 +8628,15 @@ The encoding is responsible for the correct character representation.</source>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="181"/>
         <source>There are no verses corresponding to &quot;%(invalid)s&quot;.Valid entries are %(valid)s.
 Please enter the verses separated by spaces.</source>
-        <translation type="unfinished"></translation>
+        <translation>「%(invalid)s」に対応する節がありません。有効な節は以下の通りです。スペース区切りで節を入力してください。
+%(valid)s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="185"/>
         <source>There is no verse corresponding to &quot;%(invalid)s&quot;.Valid entries are %(valid)s.
 Please enter the verses separated by spaces.</source>
-        <translation type="unfinished"></translation>
+        <translation>「%(invalid)s」に対応する節がありません。有効な節は以下の通りです。スペース区切りで節を入力してください。
+%(valid)s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="188"/>
@@ -8623,7 +8762,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="148"/>
         <source>This wizard will help to export your songs to the open and free &lt;strong&gt;OpenLyrics &lt;/strong&gt; worship song format.</source>
-        <translation type="unfinished"></translation>
+        <translation>このウィザードで、オープンで無償な&lt;strong&gt;OpenLyrics&lt;/strong&gt; worship song形式として賛美をエキスポートできます。</translation>
     </message>
 </context>
 <context>
@@ -8784,8 +8923,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="253"/>
         <source>The MediaShout importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation>MediaShoutのインポートはWindowsのみで利用可能です。この機能を使用するためには、Pythonの&quot;pyodbc&quot;モジュールを
-インストールしてください。</translation>
+        <translation>MediaShoutのインポートはWindowsのみで利用可能です。この機能を使用するためには、Pythonの&quot;pyodbc&quot;モジュールをインストールしてください。</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="301"/>
@@ -8815,7 +8953,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="349"/>
         <source>The WorshipCenter Pro importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation type="unfinished"></translation>
+        <translation>WorshipCenter ProのインポートはWindowsのみで利用可能です。この機能を使用するためには、Pythonの&quot;pyodbc&quot;モジュールをインストールしてください。</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="268"/>
@@ -9174,7 +9312,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="226"/>
         <source>&lt;strong&gt;Note:&lt;/strong&gt; An Internet connection is required in order to import songs from CCLI SongSelect.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;注意:&lt;/strong&gt; CCLI SongSelectからインポートするには、インターネット接続が必要です。</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="230"/>
@@ -9279,7 +9417,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="224"/>
         <source>WARNING: Saving your username and password is INSECURE, your password is stored in PLAIN TEXT. Click Yes to save your password or No to cancel this.</source>
-        <translation type="unfinished"></translation>
+        <translation>警告: ユーザ名とパスワードの保存は安全ではありません。パスワードは平文で保存されます。はいをクリックするとパスワードを保存し、いいえをクリックするとキャンセルします。</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="248"/>
