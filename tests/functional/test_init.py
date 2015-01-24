@@ -119,7 +119,7 @@ class TestInit(TestCase, TestMixin):
         Test that parse_options parses short options correctly
         """
         # GIVEN: A list of vaild short options
-        options = ['-e', 'extra', '-l', 'debug', 'qt', '-pd', 'args', '-s', 'style']
+        options = ['-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
 
         # WHEN: Calling parse_options
         resluts = parse_options(options)
