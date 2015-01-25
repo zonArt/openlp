@@ -22,11 +22,11 @@
 """
 The :mod:`~openlp.core.ui.media.webkit` module contains our WebKit video player
 """
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtWebKit
 
 import logging
 
-from openlp.core.common import Settings, is_macosx
+from openlp.core.common import Settings
 from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -224,11 +224,9 @@ class WebkitPlayer(MediaPlayer):
         """
         Check the availability of the media player
         """
-        # At the moment we don't have support for webkitplayer on Mac OS X
-        if is_macosx():
-            return False
-        else:
-            return True
+        web = QtWebKit.QWebPage()
+        return web.mainFrame().evaluateJavaScript(
+            "Object.prototype.toString.call(document.createElement('video'));") == '[object HTMLVideoElement]'
 
     def load(self, display):
         """
