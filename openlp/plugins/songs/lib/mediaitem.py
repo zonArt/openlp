@@ -301,7 +301,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug('display results Topic')
         self.list_view.clear()
         for topic in search_results:
-            for song in topic.songs:
+            songs = sorted(topic.songs, key=lambda song: song.sort_key)
+            for song in songs:
                 # Do not display temporary songs
                 if song.temporary:
                     continue
