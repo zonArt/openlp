@@ -134,7 +134,7 @@ class TestInit(TestCase, TestMixin):
         Test that parse_options parses valid short options correctly when passed through sys.argv
         """
         # GIVEN: A list of valid options
-        options = ['-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
+        options = ['openlp.py', '-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
 
         # WHEN: Passing in the options through sys.argv and calling parse_args with None
         with patch.object(sys, 'argv', options):

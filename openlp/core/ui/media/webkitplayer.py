@@ -222,9 +222,15 @@ class WebkitPlayer(MediaPlayer):
 
     def check_available(self):
         """
-        Check the availability of the media player
+        Check the availability of the media player.
+
+        :return: boolean. True if available
         """
         web = QtWebKit.QWebPage()
+        # This script should return '[object HTMLVideoElement]' if the html5 video is available in webkit. Otherwise it
+        # should return '[object HTMLUnknownElement]'
+        mf = web.mainFrame()
+
         return web.mainFrame().evaluateJavaScript(
             "Object.prototype.toString.call(document.createElement('video'));") == '[object HTMLVideoElement]'
 
