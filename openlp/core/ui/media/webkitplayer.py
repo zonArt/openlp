@@ -229,8 +229,6 @@ class WebkitPlayer(MediaPlayer):
         web = QtWebKit.QWebPage()
         # This script should return '[object HTMLVideoElement]' if the html5 video is available in webkit. Otherwise it
         # should return '[object HTMLUnknownElement]'
-        mf = web.mainFrame()
-
         return web.mainFrame().evaluateJavaScript(
             "Object.prototype.toString.call(document.createElement('video'));") == '[object HTMLVideoElement]'
 
