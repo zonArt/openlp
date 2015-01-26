@@ -22,13 +22,14 @@
 """
 Package to test the openlp.core.__init__ package.
 """
+from optparse import Values
 import os
 
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from PyQt4 import QtCore, QtGui
 
-from openlp.core import OpenLP
+from openlp.core import OpenLP, parse_options
 from openlp.core.common import Settings
 from tests.helpers.testmixin import TestMixin
 
@@ -112,3 +113,17 @@ class TestInit(TestCase, TestMixin):
             # THEN: It should ask if we want to create a backup
             self.assertEqual(Settings().value('core/application version'), '2.2.0', 'Version should be upgraded!')
             self.assertEqual(mocked_question.call_count, 1, 'A question should have been asked!')
+
+    def parse_options_short_options_test(self):
+        """
+        Test that parse_options parses short options correctly
+        """
+        # GIVEN: A list of vaild short options
+        options = ['-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
+
+        # WHEN: Calling parse_options
+        resluts = parse_options(options)
+
+        # THEN: A tuple should be returned with the parsed options and left over args
+        self.assertEqual(resluts, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
+                                           'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))

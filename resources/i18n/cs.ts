@@ -658,8 +658,63 @@ Před klepnutím na Nový prosím zadejte nějaký text.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
-        <source>:|v|V|verse|verses;;-|to;;,|and;;end Double-semicolon delimited separators for parsing references. Consult the developers for further information.</source>
-        <translation>:|v|V|verš|veršů;;-|do;;,|a;;konec</translation>
+        <source>:</source>
+        <comment>Verse identifier e.g. Genesis 1 : 1 = Genesis Chapter 1 Verse 1</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
+        <source>v</source>
+        <comment>Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
+        <source>V</source>
+        <comment>Verse identifier e.g. Genesis 1 V 1 = Genesis Chapter 1 Verse 1</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
+        <source>verse</source>
+        <comment>Verse identifier e.g. Genesis 1 verse 1 = Genesis Chapter 1 Verse 1</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
+        <source>verses</source>
+        <comment>Verse identifier e.g. Genesis 1 verses 1 - 2 = Genesis Chapter 1 Verses 1 to 2</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="186"/>
+        <source>-</source>
+        <comment>range identifier e.g. Genesis 1 verse 1 - 2 = Genesis Chapter 1 Verses 1 To 2</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="186"/>
+        <source>to</source>
+        <comment>range identifier e.g. Genesis 1 verse 1 - 2 = Genesis Chapter 1 Verses 1 To 2</comment>
+        <translation type="unfinished">do</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
+        <source>,</source>
+        <comment>connecting identifier e.g. Genesis 1 verse 1 - 2, 4 - 5 = Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
+        <source>and</source>
+        <comment>connecting identifier e.g. Genesis 1 verse 1 - 2 and 4 - 5 = Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/__init__.py" line="196"/>
+        <source>end</source>
+        <comment>ending identifier e.g. Genesis 1 verse 1 - end = Genesis Chapter 1 Verses 1 To The Last Verse</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1212,9 +1267,8 @@ Není možné přizpůsobit si názvy knih.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="603"/>
-        <source>Registered Bible. Please note, that verses will be downloaded on
-demand and thus an internet connection is required.</source>
-        <translation>Bible registrovaná. Upozornění: Verše budou stahovány na vyžádání a proto je vyžadováno internetové připojení.</translation>
+        <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2279,7 +2333,7 @@ Má se aktualizace provét teď?</translation>
         <translation>Záloha datové složky byla vytvořena v %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="659"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
@@ -2847,252 +2901,252 @@ už obsahuje datové soubory OpenLP. Přejete si nahradit tyto soubory současn�
 <context>
     <name>OpenLP.DB</name>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="309"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="302"/>
         <source>RGB</source>
         <translation>RGB</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="310"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="303"/>
         <source>Video</source>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="311"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="304"/>
         <source>Digital</source>
         <translation>Digitální</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="312"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="305"/>
         <source>Storage</source>
         <translation>Úložiště</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="313"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="306"/>
         <source>Network</source>
         <translation>Síť</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="315"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="308"/>
         <source>RGB 1</source>
         <translation>RGB 1</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="316"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="309"/>
         <source>RGB 2</source>
         <translation>RGB 2</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="317"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="310"/>
         <source>RGB 3</source>
         <translation>RGB 3</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="318"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="311"/>
         <source>RGB 4</source>
         <translation>RGB 4</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="319"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="312"/>
         <source>RGB 5</source>
         <translation>RGB 5</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="320"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="313"/>
         <source>RGB 6</source>
         <translation>RGB 6</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="321"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="314"/>
         <source>RGB 7</source>
         <translation>RGB 7</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="322"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="315"/>
         <source>RGB 8</source>
         <translation>RGB 8</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="323"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="316"/>
         <source>RGB 9</source>
         <translation>RGB 9</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="324"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="317"/>
         <source>Video 1</source>
         <translation>Video 1</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="325"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="318"/>
         <source>Video 2</source>
         <translation>Video 2</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="326"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="319"/>
         <source>Video 3</source>
         <translation>Video 3</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="327"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="320"/>
         <source>Video 4</source>
         <translation>Video 4</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="328"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="321"/>
         <source>Video 5</source>
         <translation>Video 5</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="329"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="322"/>
         <source>Video 6</source>
         <translation>Video 6</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="330"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="323"/>
         <source>Video 7</source>
         <translation>Video 7</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="331"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="324"/>
         <source>Video 8</source>
         <translation>Video 8</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="332"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="325"/>
         <source>Video 9</source>
         <translation>Video 9</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="333"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="326"/>
         <source>Digital 1</source>
         <translation>Digitální 1</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="334"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="327"/>
         <source>Digital 2</source>
         <translation>Digitální 2</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="335"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="328"/>
         <source>Digital 3</source>
         <translation>Digitální 3</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="336"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="329"/>
         <source>Digital 4</source>
         <translation>Digitální 4</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="337"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="330"/>
         <source>Digital 5</source>
         <translation>Digitální 5</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="338"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="331"/>
         <source>Digital 6</source>
         <translation>Digitální 6</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="339"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="332"/>
         <source>Digital 7</source>
         <translation>Digitální 7</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="340"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="333"/>
         <source>Digital 8</source>
         <translation>Digitální 8</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="341"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="334"/>
         <source>Digital 9</source>
         <translation>Digitální 9</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="342"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="335"/>
         <source>Storage 1</source>
         <translation>Úložiště 1</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="343"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="336"/>
         <source>Storage 2</source>
         <translation>Úložiště 2</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="344"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="337"/>
         <source>Storage 3</source>
         <translation>Úložiště 3</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="345"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="338"/>
         <source>Storage 4</source>
         <translation>Úložiště 4</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="346"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="339"/>
         <source>Storage 5</source>
         <translation>Úložiště 5</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="347"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="340"/>
         <source>Storage 6</source>
         <translation>Úložiště 6</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="348"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="341"/>
         <source>Storage 7</source>
         <translation>Úložiště 7</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="349"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="342"/>
         <source>Storage 8</source>
         <translation>Úložiště 8</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="350"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="343"/>
         <source>Storage 9</source>
         <translation>Úložiště 9</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="351"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="344"/>
         <source>Network 1</source>
         <translation>Síť 1</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="352"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="345"/>
         <source>Network 2</source>
         <translation>Síť 2</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="353"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="346"/>
         <source>Network 3</source>
         <translation>Síť 3</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="354"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="347"/>
         <source>Network 4</source>
         <translation>Síť 4</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="355"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="348"/>
         <source>Network 5</source>
         <translation>Síť 5</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="356"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="349"/>
         <source>Network 6</source>
         <translation>Síť 6</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="357"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="350"/>
         <source>Network 7</source>
         <translation>Síť 7</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="358"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="351"/>
         <source>Network 8</source>
         <translation>Síť 8</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="359"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="352"/>
         <source>Network 9</source>
         <translation>Síť 9</translation>
     </message>
@@ -3504,11 +3558,11 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="183"/>
         <source>Network Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba sítě</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="185"/>
-        <source>There was a network error attempting toconnect to retrieve initial configuration information</source>
+        <source>There was a network error attempting to connect to retrieve initial configuration information</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4493,12 +4547,12 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.OpenLyricsImportError</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="701"/>
+        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="713"/>
         <source>&lt;lyrics&gt; tag is missing.</source>
         <translation>Chybějící značka &lt;lyrics&gt;.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="706"/>
+        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="718"/>
         <source>&lt;verse&gt; tag is missing.</source>
         <translation>Chybějící značka &lt;verse&gt;.</translation>
     </message>
@@ -4506,22 +4560,22 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.PJLink1</name>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="261"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="254"/>
         <source>Unknown status</source>
         <translation>Neznámý stav</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="271"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="264"/>
         <source>No message</source>
         <translation>Žádná zpráva</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="528"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="521"/>
         <source>Error while sending data to projector</source>
         <translation>Chyba při posílání dat projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="552"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="545"/>
         <source>Undefined command:</source>
         <translation>Nedefinovaný příkaz:</translation>
     </message>
@@ -4529,27 +4583,27 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.PlayerTab</name>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="62"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="55"/>
         <source>Players</source>
         <translation>Přehrávače</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="133"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="124"/>
         <source>Available Media Players</source>
         <translation>Dostupné přehrávače médií</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="134"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="125"/>
         <source>Player Search Order</source>
         <translation>Pořadí použití přehrávačů</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="137"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="128"/>
         <source>Visible background for videos with aspect ratio different to screen.</source>
         <translation>Viditelné pozadí pro videa s jiným poměrem stran než má obrazovka.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="262"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="253"/>
         <source>%s (unavailable)</source>
         <translation>%s (nedostupný)</translation>
     </message>
@@ -4691,257 +4745,257 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.ProjectorConstants</name>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="218"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="211"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="219"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="212"/>
         <source>General projector error</source>
         <translation>Obecná chyba projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="220"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="213"/>
         <source>Not connected error</source>
         <translation>Chyba nepřipojení</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="221"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="214"/>
         <source>Lamp error</source>
         <translation>Chyba lampy</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="222"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="215"/>
         <source>Fan error</source>
         <translation>Chyba ventilátoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="223"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="216"/>
         <source>High temperature detected</source>
         <translation>Zjištěna vysoká teplota</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="224"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="217"/>
         <source>Cover open detected</source>
         <translation>Zjištěn otevřený kryt</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="225"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="218"/>
         <source>Check filter</source>
         <translation>Prověřit filtr</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="226"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="219"/>
         <source>Authentication Error</source>
         <translation>Chyba ověření</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="227"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="220"/>
         <source>Undefined Command</source>
         <translation>Nedefinovaný příkaz</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="228"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="221"/>
         <source>Invalid Parameter</source>
         <translation>Neplatný parametr</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="229"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="222"/>
         <source>Projector Busy</source>
         <translation>Projektor zaneprázdněn</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="230"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="223"/>
         <source>Projector/Display Error</source>
         <translation>Chyba projektoru/zobrazení</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="231"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="224"/>
         <source>Invalid packet received</source>
         <translation>Přijat neplatný paket</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="232"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="225"/>
         <source>Warning condition detected</source>
         <translation>Zjištěn varovný stav</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="233"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="226"/>
         <source>Error condition detected</source>
         <translation>Zjištěn chybový stav</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="234"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="227"/>
         <source>PJLink class not supported</source>
         <translation>PJLink třída není podporovaná</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="235"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="228"/>
         <source>Invalid prefix character</source>
         <translation>Neplatný znak přípony</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="236"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="229"/>
         <source>The connection was refused by the peer (or timed out)</source>
         <translation>Spojení odmítnuto druhou stranou (nebo vypršel čas)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="238"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="231"/>
         <source>The remote host closed the connection</source>
         <translation>Vzdálený stroj zavřel spojení</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="240"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="233"/>
         <source>The host address was not found</source>
         <translation>Adresa stroje nebyla nalezena</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="241"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="234"/>
         <source>The socket operation failed because the application lacked the required privileges</source>
         <translation>Operace soketu selhala protože aplikace nemá požadovaná oprávněni</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="244"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="237"/>
         <source>The local system ran out of resources (e.g., too many sockets)</source>
         <translation>Váš operační systém nemá dostatek prostředků (např. příliš mnoho soketů)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="246"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="239"/>
         <source>The socket operation timed out</source>
         <translation>Operace soketu vypršela</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="248"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="241"/>
         <source>The datagram was larger than the operating system&apos;s limit</source>
         <translation>Datagram byl větší než omezení operačního systému</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="250"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="243"/>
         <source>An error occurred with the network (Possibly someone pulled the plug?)</source>
         <translation>Vznikla chyba v síti. An error occurred with the network (Možná někdo vypojil zástrčku?)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="252"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="245"/>
         <source>The address specified with socket.bind() is already in use and was set to be exclusive</source>
         <translation>Adresa specifikovaná pro socket.bind() se již používá a byla nastavena na výhradní režim</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="255"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="248"/>
         <source>The address specified to socket.bind() does not belong to the host</source>
         <translation>Adresa specifikovaná pro socket.bind() stroji nepatří</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="258"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="251"/>
         <source>The requested socket operation is not supported by the local operating system (e.g., lack of IPv6 support)</source>
         <translation>Požadovaná operace soketu není podporovaná Vaším operačním systémem (např. chybějící podpora IPv6)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="261"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="254"/>
         <source>The socket is using a proxy, and the proxy requires authentication</source>
         <translation>Soket používá proxy server a ten vyžaduje ověření</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="264"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="257"/>
         <source>The SSL/TLS handshake failed</source>
         <translation>Selhal SSL/TLS handshake</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="266"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="259"/>
         <source>The last operation attempted has not finished yet (still in progress in the background)</source>
         <translation>Poslední pokus operace ještě neskončil (stále probíhá na pozadí)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="269"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="262"/>
         <source>Could not contact the proxy server because the connection to that server was denied</source>
         <translation>Nemohu se spojit s proxy serverem protože spojení k tomuto serveru bylo odmítnuto</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="272"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="265"/>
         <source>The connection to the proxy server was closed unexpectedly (before the connection to the final peer was established)</source>
         <translation>Spojení s proxy serverem bylo nečekaně uzavřeno (dříve, než bylo vytvořeno spojení s druhou stranou)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="275"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="268"/>
         <source>The connection to the proxy server timed out or the proxy server stopped responding in the authentication phase.</source>
         <translation>Vypršel čas spojení s proxy serverem nebo proxy server přestal odpovídat během ověřívací fáze.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="278"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="271"/>
         <source>The proxy address set with setProxy() was not found</source>
         <translation>Adresa proxy serveru nastavená v setProxy() nebyla nalezena</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="280"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="273"/>
         <source>The connection negotiation with the proxy server because the response from the proxy server could not be understood</source>
         <translation>Vyjednávání spolení s proxy serverem selhalo protože se nepodařilo porozumět odpovědi od proxy serveru</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="283"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="276"/>
         <source>An unidentified error occurred</source>
         <translation>Vznikla neidentifikovatelná chyba</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="284"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="277"/>
         <source>Not connected</source>
         <translation>Nepřipojen</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="285"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="278"/>
         <source>Connecting</source>
         <translation>Připojuji se</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="286"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="279"/>
         <source>Connected</source>
         <translation>Připojen</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="287"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="280"/>
         <source>Getting status</source>
         <translation>Získávám stav</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="288"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="281"/>
         <source>Off</source>
         <translation>Vypnuto</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="289"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="282"/>
         <source>Initialize in progress</source>
         <translation>Probíhá inicializace</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="290"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="283"/>
         <source>Power in standby</source>
         <translation>Úsporný režim</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="291"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="284"/>
         <source>Warmup in progress</source>
         <translation>Probíhá zahřívání</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="292"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="285"/>
         <source>Power is on</source>
         <translation>Zapnuto</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="293"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="286"/>
         <source>Cooldown in progress</source>
         <translation>Probíhá chlazení</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="294"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="287"/>
         <source>Projector Information available</source>
         <translation>Informace k projektoru dostupné</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="295"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="288"/>
         <source>Sending data</source>
         <translation>Posílám data</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="296"/>
+        <location filename="openlp/core/lib/projector/constants.py" line="289"/>
         <source>Received data</source>
         <translation>Přijímám data</translation>
     </message>
@@ -4949,17 +5003,17 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.ProjectorEdit</name>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="179"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="172"/>
         <source>Name Not Set</source>
         <translation>Název nenastaven</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="179"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="172"/>
         <source>You must enter a name for this entry.&lt;br /&gt;Please enter a new name for this entry.</source>
         <translation>Pro tuto položku je třeba zadat název.&lt;br /&gt;Zadejte prosím název pro tuto položku.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="189"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="182"/>
         <source>Duplicate Name</source>
         <translation>Duplicitní název</translation>
     </message>
@@ -4967,52 +5021,52 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.ProjectorEditForm</name>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="117"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="110"/>
         <source>Add New Projector</source>
         <translation>Přidat nový projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="120"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="113"/>
         <source>Edit Projector</source>
         <translation>Upravit projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="122"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="115"/>
         <source>IP Address</source>
         <translation>IP adresa</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="125"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="118"/>
         <source>Port Number</source>
         <translation>Číslo portu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="127"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="120"/>
         <source>PIN</source>
         <translation>PIN</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="129"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="122"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="131"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="124"/>
         <source>Location</source>
         <translation>Umístění</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="133"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="126"/>
         <source>Notes</source>
         <translation>Poznámky </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="243"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="236"/>
         <source>Database Error</source>
         <translation>Chyba databáze</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="243"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="236"/>
         <source>There was an error saving projector information. See the log for the error</source>
         <translation>Vznikla chyba během ukládání informací o projektoru. Pro informace o chybě viz log.</translation>
     </message>
@@ -5020,262 +5074,262 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.ProjectorManager</name>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="90"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="83"/>
         <source>Add Projector</source>
         <translation>Přidat projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="90"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="83"/>
         <source>Add a new projector</source>
         <translation>Přidat nový projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="96"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="89"/>
         <source>Edit Projector</source>
         <translation>Upravit projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="96"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="89"/>
         <source>Edit selected projector</source>
         <translation>Upravit vybraný projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="101"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="94"/>
         <source>Delete Projector</source>
         <translation>Smazat projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="101"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="94"/>
         <source>Delete selected projector</source>
         <translation>Smazat vybraný projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="107"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="100"/>
         <source>Select Input Source</source>
         <translation>Vybrat zdroj vstupu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="107"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="100"/>
         <source>Choose input source on selected projector</source>
         <translation>Vybrat zdroj vstupu u vybraného projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="113"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="106"/>
         <source>View Projector</source>
         <translation>Zobrazit projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="113"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="106"/>
         <source>View selected projector information</source>
         <translation>Zobrazit informace k vybranému projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="127"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="120"/>
         <source>Connect to selected projector</source>
         <translation>Připojit se k vybranému projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="127"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="120"/>
         <source>Connect to selected projectors</source>
         <translation>Připojit se k vybraným projektorům</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="134"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="127"/>
         <source>Disconnect from selected projectors</source>
         <translation>Odpojit se od vybraných projektorů</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="141"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="134"/>
         <source>Disconnect from selected projector</source>
         <translation>Odpojit se od vybraného projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="156"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="149"/>
         <source>Power on selected projector</source>
         <translation>Zapnout vybraný projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="169"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="162"/>
         <source>Standby selected projector</source>
         <translation>Úsporný režim pro vybraný projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="169"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="162"/>
         <source>Put selected projector in standby</source>
         <translation>Přepne vybraný projektor do úsporného režimu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="183"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="176"/>
         <source>Blank selected projector screen</source>
         <translation>Prázdná obrazovka na vybraném projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="197"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="190"/>
         <source>Show selected projector screen</source>
         <translation>Zobrazit vybranou obrazovku projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="219"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="212"/>
         <source>&amp;View Projector Information</source>
         <translation>&amp;Zobrazit informace o projectoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="224"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="217"/>
         <source>&amp;Edit Projector</source>
         <translation>&amp;Upravit projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="230"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="223"/>
         <source>&amp;Connect Projector</source>
         <translation>&amp;Připojit projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="235"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="228"/>
         <source>D&amp;isconnect Projector</source>
         <translation>&amp;Odpojit projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="241"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="234"/>
         <source>Power &amp;On Projector</source>
         <translation>Z&amp;apnout projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="246"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="239"/>
         <source>Power O&amp;ff Projector</source>
         <translation>&amp;Vypnout projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="252"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="245"/>
         <source>Select &amp;Input</source>
         <translation>Vybrat &amp;vstup</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="257"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="250"/>
         <source>Edit Input Source</source>
         <translation>Upravit zdroj vstupu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="262"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="255"/>
         <source>&amp;Blank Projector Screen</source>
         <translation>&amp;Prázdná obrazovka na projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="267"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="260"/>
         <source>&amp;Show Projector Screen</source>
         <translation>&amp;Zobrazit obrazovku projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="273"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="266"/>
         <source>&amp;Delete Projector</source>
         <translation>&amp;Smazat projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="636"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="629"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="638"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="631"/>
         <source>IP</source>
         <translation>IP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="640"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="633"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="642"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="635"/>
         <source>Notes</source>
         <translation>Poznámky </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="646"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="639"/>
         <source>Projector information not available at this time.</source>
         <translation>Informace o projektoru teď nejsou dostupné.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="649"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="642"/>
         <source>Projector Name</source>
         <translation>Název projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="651"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="644"/>
         <source>Manufacturer</source>
         <translation>Výrobce</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="653"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="646"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="655"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="648"/>
         <source>Other info</source>
         <translation>Ostatní informace</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="657"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="650"/>
         <source>Power status</source>
         <translation>Stav napájení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="659"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Shutter is</source>
         <translation>Clona je</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="659"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Closed</source>
         <translation>Zavřeno</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="662"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="655"/>
         <source>Current source input is</source>
         <translation>Současným zdroje vstupu je</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="667"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>Lamp</source>
         <translation>Lampa</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="667"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>On</source>
         <translation>Zapnuto</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="667"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>Off</source>
         <translation>Vypnuto</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="667"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
         <source>Hours</source>
         <translation>Hodin</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="678"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="671"/>
         <source>No current errors or warnings</source>
         <translation>Žádné současné chyby nebo varování</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="680"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="673"/>
         <source>Current errors/warnings</source>
         <translation>Současné chyby/varování</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="683"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="676"/>
         <source>Projector Information</source>
         <translation>Informace k projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="815"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="808"/>
         <source>No message</source>
         <translation>Žádná zpráva</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="978"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="971"/>
         <source>Not Implemented Yet</source>
         <translation>Není ještě implementováno</translation>
     </message>
@@ -5283,32 +5337,32 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.ProjectorPJLink</name>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="752"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="745"/>
         <source>Fan</source>
         <translation>Ventilátor</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="756"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="749"/>
         <source>Lamp</source>
         <translation>Lampa</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="760"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="753"/>
         <source>Temperature</source>
         <translation>Teplota</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="764"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="757"/>
         <source>Cover</source>
         <translation>Kryt</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="768"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="761"/>
         <source>Filter</source>
         <translation>Filtr</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="772"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="765"/>
         <source>Other</source>
         <translation>Ostatní</translation>
     </message>
@@ -5316,37 +5370,37 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.ProjectorTab</name>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="57"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="50"/>
         <source>Projector</source>
         <translation>Projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="106"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="99"/>
         <source>Communication Options</source>
         <translation>Možnosti komunikace</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="108"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="101"/>
         <source>Connect to projectors on startup</source>
         <translation>Připojit se k projektorům při spuštění</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="110"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="103"/>
         <source>Socket timeout (seconds)</source>
         <translation>Časový limit socketu (sekundy)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="112"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="105"/>
         <source>Poll time (seconds)</source>
         <translation>Čas průzkumu (sekundy)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="116"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="109"/>
         <source>Tabbed dialog box</source>
         <translation>Dialogové okno s panely</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="118"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="111"/>
         <source>Single dialog box</source>
         <translation>Samostatné dialogové okno</translation>
     </message>
@@ -5354,17 +5408,17 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.ProjectorWizard</name>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="205"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="198"/>
         <source>Duplicate IP Address</source>
         <translation>Duplicitní IP adresa</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="213"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="206"/>
         <source>Invalid IP Address</source>
         <translation>Neplatná IP adresa</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="222"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="215"/>
         <source>Invalid Port Number</source>
         <translation>Neplatné číslo portu</translation>
     </message>
@@ -5496,17 +5550,17 @@ Přípona není podporovaná</translation>
         <translation>Soubor není ve formátu služby.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1481"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1482"/>
         <source>Missing Display Handler</source>
         <translation>Chybějící obsluha zobrazení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1437"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1438"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation>Položku není možno zobrazit, protože chybí obsluha pro její zobrazení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1481"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1482"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
         <translation>Položku není možno zobrazit, protože modul potřebný pro zobrazení položky chybí nebo je neaktivní</translation>
     </message>
@@ -5765,12 +5819,12 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Zpoždění mezi s nímky v sekundách.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1509"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1510"/>
         <source>Rename item title</source>
         <translation>Přejmenovat nadpis položky</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1509"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1510"/>
         <source>Title:</source>
         <translation>Nadpis:</translation>
     </message>
@@ -5867,7 +5921,7 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Skrýt</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="312"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="313"/>
         <source>Go To</source>
         <translation>Přejít na</translation>
     </message>
@@ -5887,17 +5941,17 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Zobrazit plochu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="498"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="499"/>
         <source>Previous Service</source>
         <translation>Předchozí služba</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="503"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="504"/>
         <source>Next Service</source>
         <translation>Další služba</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="508"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="509"/>
         <source>Escape Item</source>
         <translation>Zrušit položku</translation>
     </message>
@@ -5922,17 +5976,17 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Zpoždění mezi s nímky v sekundách.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="292"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="293"/>
         <source>Move to live.</source>
         <translation>Přesun naživo.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="295"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="296"/>
         <source>Add to Service.</source>
         <translation>Přidat ke službě.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="299"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="300"/>
         <source>Edit and reload song preview.</source>
         <translation>Upravit a znovu načíst náhled písně.</translation>
     </message>
@@ -5942,7 +5996,7 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Spustit přehrávání média.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="316"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="317"/>
         <source>Pause audio.</source>
         <translation>Pozastavit zvuk.</translation>
     </message>
@@ -5967,37 +6021,37 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Hlasitost zvuku.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="382"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="383"/>
         <source>Go to &quot;Verse&quot;</source>
         <translation>Přejít na &quot;Sloka&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="383"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="384"/>
         <source>Go to &quot;Chorus&quot;</source>
         <translation>Přejít na &quot;Refrén&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="384"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="385"/>
         <source>Go to &quot;Bridge&quot;</source>
         <translation>Přejít na &quot;Přechod&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="386"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="387"/>
         <source>Go to &quot;Pre-Chorus&quot;</source>
         <translation>Přejít na &quot;Předrefrén&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="387"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="388"/>
         <source>Go to &quot;Intro&quot;</source>
         <translation>Přejít na &quot;Úvod&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="388"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="389"/>
         <source>Go to &quot;Ending&quot;</source>
         <translation>Přejít na &quot;Zakončení&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="389"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="390"/>
         <source>Go to &quot;Other&quot;</source>
         <translation>Přejít na &quot;Ostatní&quot;</translation>
     </message>
@@ -6012,22 +6066,22 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Další snímek</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="316"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="317"/>
         <source>Pause Audio</source>
         <translation>Pozastavit zvuk</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="322"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="323"/>
         <source>Background Audio</source>
         <translation>Zvuk na pozadí</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="326"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="327"/>
         <source>Go to next audio track.</source>
         <translation>Přejít na další zvukovou stopu.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="334"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="335"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
@@ -6035,47 +6089,47 @@ Obsah souboru není v kódování UTF-8.</translation>
 <context>
     <name>OpenLP.SourceSelectForm</name>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="397"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="390"/>
         <source>Select Projector Source</source>
         <translation>Vybrat zdroj projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="395"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="388"/>
         <source>Edit Projector Source Text</source>
         <translation>Upravit text zdroje projektoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="155"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="148"/>
         <source>Ignoring current changes and return to OpenLP</source>
         <translation>Ignorovat současné změny a vrátit se do aplikace OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="158"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="151"/>
         <source>Delete all user-defined text and revert to PJLink default text</source>
         <translation>Smazat všechen uživatelem definovaný text a vrátit se k výchozímu text PJLink.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="161"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="154"/>
         <source>Discard changes and reset to previous user-defined text</source>
         <translation>Zahodit změny a vrátit se k předchozímu uživatelem definovanému textu.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="164"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="157"/>
         <source>Save changes and return to OpenLP</source>
         <translation>Uložit změny a vrátit se do aplikace OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="479"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
         <source>Delete entries for this projector</source>
         <translation>Smazat údaje pro tento projektor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="480"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="473"/>
         <source>Are you sure you want to delete ALL user-defined </source>
         <translation>Jste si jist, že chcete smazat VŠECHNY uživatelem definované</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="480"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="473"/>
         <source>source input text for this projector?</source>
         <translation>zdroj vstupního textu pro tento projektor?</translation>
     </message>
@@ -7460,7 +7514,7 @@ Prosím zkuste ho vybrat jednotlivě.</translation>
 <context>
     <name>Openlp.ProjectorTab</name>
     <message>
-        <location filename="openlp/core/ui/projector/tab.py" line="114"/>
+        <location filename="openlp/core/ui/projector/tab.py" line="107"/>
         <source>Source select dialog interface</source>
         <translation>Rozhraní výběru zdroje</translation>
     </message>

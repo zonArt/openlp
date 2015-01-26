@@ -338,7 +338,8 @@ class ImageMediaItem(MediaManagerItem):
         for imageFile in images:
             log.debug('Loading image: %s', imageFile.filename)
             filename = os.path.split(imageFile.filename)[1]
-            thumb = os.path.join(self.service_path, filename)
+            ext = os.path.splitext(imageFile.filename)[1].lower()
+            thumb = os.path.join(self.service_path, "%s%s" % (str(imageFile.id), ext))
             if not os.path.exists(imageFile.filename):
                 icon = build_icon(':/general/general_delete.png')
             else:

@@ -36,7 +36,8 @@ from tests.utils.constants import TEST_RESOURCES_PATH
 from tests.helpers.testmixin import TestMixin
 
 __default_settings__ = {
-    'presentations/enable_pdf_program': False
+    'presentations/enable_pdf_program': False,
+    'presentations/thumbnail_scheme': ''
 }
 
 SCREEN = {
