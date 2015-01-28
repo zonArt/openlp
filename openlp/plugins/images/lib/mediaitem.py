@@ -314,6 +314,16 @@ class ImageMediaItem(MediaManagerItem):
                 return True
         return return_value
 
+    def generate_thumbnail_path(self, image):
+        """
+        Generate a path to the thumbnail
+
+        :param imageFile: An instance of fImageFileNames
+        :return: A path to the thumbnail of type str
+        """
+        ext = os.path.splitext(image.filename)[1].lower()
+        return os.path.join(self.service_path, '{}{}'.format(str(image.id), ext))
+
     def load_full_list(self, images, initial_load=False, open_group=None):
         """
         Replace the list of images and groups in the interface.
@@ -338,8 +348,7 @@ class ImageMediaItem(MediaManagerItem):
         for imageFile in images:
             log.debug('Loading image: %s', imageFile.filename)
             filename = os.path.split(imageFile.filename)[1]
-            ext = os.path.splitext(imageFile.filename)[1].lower()
-            thumb = os.path.join(self.service_path, "%s%s" % (str(imageFile.id), ext))
+            thumb = self.generate_thumbnail_path(imageFile)
             if not os.path.exists(imageFile.filename):
                 icon = build_icon(':/general/general_delete.png')
             else:
@@ -549,24 +558,24 @@ class ImageMediaItem(MediaManagerItem):
         # force a nonexistent theme
         service_item.theme = -1
         missing_items_file_names = []
-        images_file_names = []
+        images = []
         # Expand groups to images
         for bitem in items:
             if isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageGroups) or bitem.data(0, QtCore.Qt.UserRole) is None:
                 for index in range(0, bitem.childCount()):
                     if isinstance(bitem.child(index).data(0, QtCore.Qt.UserRole), ImageFilenames):
-                        images_file_names.append(bitem.child(index).data(0, QtCore.Qt.UserRole).filename)
+                        images.append(bitem.child(index).data(0, QtCore.Qt.UserRole))
             elif isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageFilenames):
-                images_file_names.append(bitem.data(0, QtCore.Qt.UserRole).filename)
+                images.append(bitem.data(0, QtCore.Qt.UserRole))
         # Don't try to display empty groups
-        if not images_file_names:
+        if not images:
             return False
         # Find missing files
-        for filename in images_file_names:
-            if not os.path.exists(filename):
-                missing_items_file_names.append(filename)
+        for image in images:
+            if not os.path.exists(image.filename):
+                missing_items_file_names.append(image.filename)
         # We cannot continue, as all images do not exist.
-        if not images_file_names:
+        if not images:
             if not remote:
                 critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
@@ -582,9 +591,10 @@ class ImageMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.No:
             return False
         # Continue with the existing images.
-        for filename in images_file_names:
-            name = os.path.split(filename)[1]
-            service_item.add_from_image(filename, name, background, os.path.join(self.service_path, name))
+        for image in images:
+            name = os.path.split(image.filename)[1]
+            thumbnail = self.generate_thumbnail_path(image)
+            service_item.add_from_image(image.filename, name, background, thumbnail)
         return True
 
     def check_group_exists(self, new_group):
