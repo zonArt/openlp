@@ -48,7 +48,7 @@ class PresentationManagerImport(SongImport):
             except etree.XMLSyntaxError:
                 # Try to detect encoding and use it
                 file = open(file_path, mode='rb')
-                encoding = chardet.detect(file)['encoding']
+                encoding = chardet.detect(file.read())['encoding']
                 tree = etree.parse(file_path, parser=etree.XMLParser(recover=True, encoding=encoding))
             root = objectify.fromstring(etree.tostring(tree))
             self.process_song(root)
