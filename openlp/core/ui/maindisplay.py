@@ -39,7 +39,6 @@ try:
     from PyQt4.phonon import Phonon
 except ImportError:
     PHONON_AVAILABLE = False
-PHONON_AVAILABLE = False
 
 from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx
 from openlp.core.lib import ServiceItem, ImageSource, ScreenList, build_html, expand_tags, image_to_byte
