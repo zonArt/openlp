@@ -33,7 +33,13 @@ import cgi
 import logging
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
-from PyQt4.phonon import Phonon
+
+PHONON_AVAILABLE = True
+try:
+    from PyQt4.phonon import Phonon
+except ImportError:
+    PHONON_AVAILABLE = False
+PHONON_AVAILABLE = False
 
 from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx
 from openlp.core.lib import ServiceItem, ImageSource, ScreenList, build_html, expand_tags, image_to_byte
@@ -139,7 +145,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         self.override = {}
         self.retranslateUi()
         self.media_object = None
-        if self.is_live:
+        if self.is_live and PHONON_AVAILABLE:
             self.audio_player = AudioPlayer(self)
         else:
             self.audio_player = None

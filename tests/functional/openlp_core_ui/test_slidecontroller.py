@@ -479,6 +479,34 @@ class TestSlideController(TestCase):
         mocked_preview_widget.current_slide_number.assert_called_with()
         mocked_process_item.assert_called_once_with(mocked_item, 7)
 
+    def on_slide_blank_test(self):
+        """
+        Test on_slide_blank
+        """
+        # GIVEN: An instance of SlideController and a mocked on_blank_display
+        slide_controller = SlideController(None)
+        slide_controller.on_blank_display = MagicMock()
+
+        # WHEN: Calling on_slide_blank
+        slide_controller.on_slide_blank()
+
+        # THEN: on_blank_display should have been called with True
+        slide_controller.on_blank_display.assert_called_once_with(True)
+
+    def on_slide_unblank_test(self):
+        """
+        Test on_slide_unblank
+        """
+        # GIVEN: An instance of SlideController and a mocked on_blank_display
+        slide_controller = SlideController(None)
+        slide_controller.on_blank_display = MagicMock()
+
+        # WHEN: Calling on_slide_unblank
+        slide_controller.on_slide_unblank()
+
+        # THEN: on_blank_display should have been called with False
+        slide_controller.on_blank_display.assert_called_once_with(False)
+
     def on_slide_selected_index_no_service_item_test(self):
         """
         Test that when there is no service item, the on_slide_selected_index() method returns immediately
