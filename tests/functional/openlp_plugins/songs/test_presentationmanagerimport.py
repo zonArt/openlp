@@ -42,9 +42,9 @@ class TestPresentationManagerFileImport(SongImportTestHelper):
         """
         Test that loading a PresentationManager file works correctly
         """
-        #self.file_import([os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.sng')],
-        #                 self.load_external_result_data(os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.json')))
-        #self.file_import([os.path.join(TEST_PATH, 'Agnus Dei.sng')],
-        #                 self.load_external_result_data(os.path.join(TEST_PATH, 'Agnus Dei.json')))
+        self.file_import([os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.sng')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Great Is Thy Faithfulness.json')))
+        self.file_import([os.path.join(TEST_PATH, 'Agnus Dei.sng')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Agnus Dei.json')))
         self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.sng')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
