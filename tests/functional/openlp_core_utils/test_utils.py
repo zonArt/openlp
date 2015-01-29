@@ -200,7 +200,7 @@ class TestUtils(TestCase):
         Test the delete_file function when it successfully deletes a file
         """
         # GIVEN: A mocked os which returns True when os.path.exists is called
-        with patch('openlp.core.utils.os', **{'path.exists.return_value': False}) as mocked_os:
+        with patch('openlp.core.utils.os', **{'path.exists.return_value': False}):
 
             # WHEN: Calling delete_file with a file path
             result = delete_file('path/file.ext')
@@ -213,7 +213,7 @@ class TestUtils(TestCase):
         Test the delete_file function when the file to remove does not exist
         """
         # GIVEN: A mocked os which returns False when os.path.exists is called
-        with patch('openlp.core.utils.os', **{'path.exists.return_value': False}) as mocked_os:
+        with patch('openlp.core.utils.os', **{'path.exists.return_value': False}):
 
             # WHEN: Calling delete_file with a file path
             result = delete_file('path/file.ext')
@@ -227,8 +227,7 @@ class TestUtils(TestCase):
         """
         # GIVEN: A mocked os which returns True when os.path.exists is called and raises an OSError when os.remove is
         #       called.
-        with patch('openlp.core.utils.os', **{'path.exists.return_value': True,
-                                              'path.exists.side_effect': OSError}) as mocked_os, \
+        with patch('openlp.core.utils.os', **{'path.exists.return_value': True, 'path.exists.side_effect': OSError}), \
                 patch('openlp.core.utils.log') as mocked_log:
 
             # WHEN: Calling delete_file with a file path
