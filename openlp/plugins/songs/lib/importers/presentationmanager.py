@@ -25,7 +25,7 @@ Presentationmanager song files into the current database.
 """
 
 import os
-from lxml import objectify
+from lxml import objectify, etree
 
 from openlp.core.ui.wizard import WizardStrings
 from .songimport import SongImport
@@ -42,7 +42,8 @@ class PresentationManagerImport(SongImport):
             if self.stop_import_flag:
                 return
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
-            root = objectify.parse(open(file_path, 'rb')).getroot()
+            tree = etree.parse(file_path, parser=etree.XMLParser(recover=True))
+            root = objectify.fromstring(etree.tostring(tree))
             self.process_song(root)
 
     def process_song(self, root):
