@@ -318,7 +318,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         Generate a path to the thumbnail
 
-        :param imageFile: An instance of fImageFileNames
+        :param image: An instance of ImageFileNames
         :return: A path to the thumbnail of type str
         """
         ext = os.path.splitext(image.filename)[1].lower()
@@ -345,26 +345,26 @@ class ImageMediaItem(MediaManagerItem):
         # Sort the images by its filename considering language specific.
         # characters.
         images.sort(key=lambda image_object: get_locale_key(os.path.split(str(image_object.filename))[1]))
-        for imageFile in images:
-            log.debug('Loading image: %s', imageFile.filename)
-            filename = os.path.split(imageFile.filename)[1]
-            thumb = self.generate_thumbnail_path(imageFile)
-            if not os.path.exists(imageFile.filename):
+        for image_file in images:
+            log.debug('Loading image: %s', image_file.filename)
+            filename = os.path.split(image_file.filename)[1]
+            thumb = self.generate_thumbnail_path(image_file)
+            if not os.path.exists(image_file.filename):
                 icon = build_icon(':/general/general_delete.png')
             else:
-                if validate_thumb(imageFile.filename, thumb):
+                if validate_thumb(image_file.filename, thumb):
                     icon = build_icon(thumb)
                 else:
-                    icon = create_thumb(imageFile.filename, thumb)
+                    icon = create_thumb(image_file.filename, thumb)
             item_name = QtGui.QTreeWidgetItem([filename])
             item_name.setText(0, filename)
             item_name.setIcon(0, icon)
-            item_name.setToolTip(0, imageFile.filename)
-            item_name.setData(0, QtCore.Qt.UserRole, imageFile)
-            if imageFile.group_id == 0:
+            item_name.setToolTip(0, image_file.filename)
+            item_name.setData(0, QtCore.Qt.UserRole, image_file)
+            if image_file.group_id == 0:
                 self.list_view.addTopLevelItem(item_name)
             else:
-                group_items[imageFile.group_id].addChild(item_name)
+                group_items[image_file.group_id].addChild(item_name)
             if not initial_load:
                 self.main_window.increment_progress_bar()
         if not initial_load:
