@@ -178,7 +178,7 @@ def update_reference_separators():
     default_separators = [
         '|'.join([
             translate('BiblesPlugin', ':', 'Verse identifier e.g. Genesis 1 : 1 = Genesis Chapter 1 Verse 1'),
-            translate('BiblesPlugin', 'v','Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1'),
+            translate('BiblesPlugin', 'v', 'Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1'),
             translate('BiblesPlugin', 'V', 'Verse identifier e.g. Genesis 1 V 1 = Genesis Chapter 1 Verse 1'),
             translate('BiblesPlugin', 'verse', 'Verse identifier e.g. Genesis 1 verse 1 = Genesis Chapter 1 Verse 1'),
             translate('BiblesPlugin', 'verses',

@@ -25,6 +25,7 @@ Presentationmanager song files into the current database.
 """
 
 import os
+import re
 import chardet
 from lxml import objectify, etree
 
@@ -49,7 +50,11 @@ class PresentationManagerImport(SongImport):
                 # Try to detect encoding and use it
                 file = open(file_path, mode='rb')
                 encoding = chardet.detect(file.read())['encoding']
-                tree = etree.parse(file_path, parser=etree.XMLParser(recover=True, encoding=encoding))
+                file.close()
+                # Open file with detected encoding and remove encoding declaration
+                text = open(file_path, mode='r', encoding=encoding).read()
+                text = re.sub('.+\?>\n', '', text)
+                tree = etree.fromstring(text, parser=etree.XMLParser(recover=True))
             root = objectify.fromstring(etree.tostring(tree))
             self.process_song(root)
 
