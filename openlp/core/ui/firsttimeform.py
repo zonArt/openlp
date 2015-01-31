@@ -22,6 +22,7 @@
 """
 This module contains the first time wizard.
 """
+import hashlib
 import logging
 import os
 import time
@@ -221,8 +222,9 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.application.process_events()
                 title = self.config.get('songs_%s' % song, 'title')
                 filename = self.config.get('songs_%s' % song, 'filename')
+                sha256 = self.config.get('songs_%s' % song, 'sha256', fallback=None)
                 item = QtGui.QListWidgetItem(title, self.songs_list_widget)
-                item.setData(QtCore.Qt.UserRole, filename)
+                item.setData(QtCore.Qt.UserRole, (filename, sha256))
                 item.setCheckState(QtCore.Qt.Unchecked)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             bible_languages = self.config.get('bibles', 'languages')
@@ -372,7 +374,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         Settings().setValue('core/has run wizard', True)
         self.close()
 
-    def url_get_file(self, url, f_path):
+    def url_get_file(self, url, f_path, sha256=None):
         """"
         Download a file given a URL.  The file is retrieved in chunks, giving the ability to cancel the download at any
         point. Returns False on download error.
@@ -396,7 +398,11 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     block_count += 1
                     self._download_progress(block_count, block_size)
                 filename.close()
-            except ConnectionError:
+                if sha256 and hashlib.sha256(open(f_path, 'rb').read()).hexdigest() != sha256:
+                    log.error('sha256 sums did not match for file: {}'.format(f_path))
+                    os.remove(f_path)
+                    return False
+            except urllib.error.URLError:
                 trace_error_handler(log)
                 filename.close()
                 os.remove(f_path)
@@ -436,7 +442,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 site = urllib.request.urlopen(url, timeout=CONNECTION_TIMEOUT)
                 meta = site.info()
                 return int(meta.get("Content-Length"))
-            except ConnectionException:
+            except urllib.error.URLError:
                 if retries > CONNECTION_RETRIES:
                     raise
                 else:
@@ -478,7 +484,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.application.process_events()
                 item = self.songs_list_widget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
-                    filename = item.data(QtCore.Qt.UserRole)
+                    filename, _ = item.data(QtCore.Qt.UserRole)
                     size = self._get_file_size('%s%s' % (self.songs_url, filename))
                     self.max_progress += size
             # Loop through the Bibles list and increase for each selected item
@@ -499,7 +505,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     filename = item.data(QtCore.Qt.UserRole)
                     size = self._get_file_size('%s%s' % (self.themes_url, filename))
                     self.max_progress += size
-        except ConnectionError:
+        except urllib.error.URLError:
             trace_error_handler(log)
             critical_error_message_box(translate('OpenLP.FirstTimeWizard', 'Download Error'),
                                        translate('OpenLP.FirstTimeWizard', 'There was a connection problem during '
@@ -595,11 +601,11 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         for i in range(self.songs_list_widget.count()):
             item = self.songs_list_widget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
-                filename = item.data(QtCore.Qt.UserRole)
+                filename, sha256 = item.data(QtCore.Qt.UserRole)
                 self._increment_progress_bar(self.downloading % filename, 0)
                 self.previous_size = 0
                 destination = os.path.join(songs_destination, str(filename))
-                if not self.url_get_file('%s%s' % (self.songs_url, filename), destination):
+                if not self.url_get_file('%s%s' % (self.songs_url, filename), destination, sha256):
                     return False
         # Download Bibles
         bibles_iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
