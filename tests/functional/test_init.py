@@ -24,6 +24,7 @@ Package to test the openlp.core.__init__ package.
 """
 from optparse import Values
 import os
+import sys
 
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
@@ -118,12 +119,27 @@ class TestInit(TestCase, TestMixin):
         """
         Test that parse_options parses short options correctly
         """
-        # GIVEN: A list of vaild short options
+        # GIVEN: A list of valid short options
         options = ['-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
 
         # WHEN: Calling parse_options
-        resluts = parse_options(options)
+        results = parse_options(options)
 
         # THEN: A tuple should be returned with the parsed options and left over args
-        self.assertEqual(resluts, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
+        self.assertEqual(results, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
+                                           'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))
+
+    def parse_options_valid_argv_short_options_test(self):
+        """
+        Test that parse_options parses valid short options correctly when passed through sys.argv
+        """
+        # GIVEN: A list of valid options
+        options = ['openlp.py', '-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
+
+        # WHEN: Passing in the options through sys.argv and calling parse_args with None
+        with patch.object(sys, 'argv', options):
+            results = parse_options(None)
+
+        # THEN: parse_args should return a tuple of valid options and of left over options that OpenLP does not use
+        self.assertEqual(results, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
                                            'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))

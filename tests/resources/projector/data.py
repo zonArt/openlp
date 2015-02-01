@@ -23,9 +23,12 @@
 The :mod:`tests.resources.projector.data file contains test data
 """
 
+import os
 from openlp.core.lib.projector.db import Projector
 
 # Test data
+TEST_DB = os.path.join('tmp', 'openlp-test-projectordb.sql')
+
 TEST1_DATA = Projector(ip='111.111.111.111',
                        port='1111',
                        pin='1111',
