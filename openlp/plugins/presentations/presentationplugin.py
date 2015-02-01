@@ -143,7 +143,10 @@ class PresentationPlugin(Plugin):
         super().app_startup()
         files_from_config = Settings().value('presentations/presentations files')
         for file in files_from_config:
-            self.media_item.clean_up_thumbnails(file)
+            try:
+                self.media_item.clean_up_thumbnails(file)
+            except AttributeError:
+                pass
         self.media_item.list_view.clear()
         Settings().setValue('presentations/thumbnail_scheme', 'md5')
         self.media_item.validate_and_load(files_from_config)
