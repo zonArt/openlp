@@ -23,9 +23,16 @@
 Package to test the openlp.core.ui.projector.networkutils package.
 """
 
+import os
+
 from unittest import TestCase
 
-from openlp.core.common import verify_ip_address, md5_hash, qmd5_hash
+from openlp.core.common import verify_ip_address, md5_hash, qmd5_hash, md5_filecheck
+
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                         '..', '..', 'resources', 'projector'))
+TEST_FILENAME = 'Wheat.otz'
+TEST_FILE_HASH = '2d7daae6f8ce6dc0963ea8c0fa4d67aa'
 
 salt = '498e4a67'
 pin = 'JBMIAProjectorLink'
@@ -120,7 +127,7 @@ class testProjectorUtilities(TestCase):
         Test MD5 hash from salt+data pass (python)
         """
         # WHEN: Given a known salt+data
-        hash_ = md5_hash(salt=salt, data=pin)
+        hash_ = md5_hash(salt=salt.encode('ascii'), data=pin.encode('ascii'))
 
         # THEN: Validate return has is same
         self.assertEquals(hash_, test_hash, 'MD5 should have returned a good hash')
@@ -130,7 +137,7 @@ class testProjectorUtilities(TestCase):
         Test MD5 hash from salt+data fail (python)
         """
         # WHEN: Given a different salt+hash
-        hash_ = md5_hash(salt=pin, data=salt)
+        hash_ = md5_hash(salt=pin.encode('ascii'), data=salt.encode('ascii'))
 
         # THEN: return data is different
         self.assertNotEquals(hash_, test_hash, 'MD5 should have returned a bad hash')
@@ -143,7 +150,7 @@ class testProjectorUtilities(TestCase):
         hash_ = qmd5_hash(salt=salt, data=pin)
 
         # THEN: Validate return has is same
-        self.assertEquals(hash_, test_hash, 'Qt-MD5 should have returned a good hash')
+        self.assertEquals(hash_.decode('ascii'), test_hash, 'Qt-MD5 should have returned a good hash')
 
     def test_qmd5_hash_bad(self):
         """
@@ -153,4 +160,17 @@ class testProjectorUtilities(TestCase):
         hash_ = qmd5_hash(salt=pin, data=salt)
 
         # THEN: return data is different
-        self.assertNotEquals(hash_, test_hash, 'Qt-MD5 should have returned a bad hash')
+        self.assertNotEquals(hash_.decode('ascii'), test_hash, 'Qt-MD5 should have returned a bad hash')
+
+    def md5sum_filecheck_test(self):
+        """
+        Test file MD5SUM check
+        """
+        # GIVEN: Test file to verify
+        test_file = os.path.join(TEST_PATH, TEST_FILENAME)
+
+        # WHEN: md5_filecheck is called
+        valid = md5_filecheck(test_file, TEST_FILE_HASH)
+
+        # THEN: Check should pass
+        self.assertEqual(valid, True, 'Test file MD5 should match test MD5')

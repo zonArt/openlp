@@ -190,31 +190,58 @@ def verify_ip_address(addr):
     return True if verify_ipv4(addr) else verify_ipv6(addr)
 
 
-def md5_hash(salt, data):
+def md5_filecheck(input_file, check):
+    """
+    Validate a downloaded file has the same MD5 as recorded.
+
+    :param input_file: File to test
+    :param check: MD5Sum to validate
+    :return: File MD5 == check
+    """
+    log.debug('md5_filecheck(file="{}", check="{}"'.format(input_file, check))
+    try:
+        file_ = open(input_file, 'rb')
+    except OSError as err:
+        log.error('Unable to check "{}"'.format(input_file))
+        log.error('Error code: {}'.format(err.errno))
+        log.error('Error msg:  {}'.format(err.strerror))
+        return False
+    hash_obj = hashlib.new('md5')
+    while True:
+        data = file_.read(1024)
+        if not data:
+            break
+        hash_obj.update(data)
+    log.debug('md5_filecheck validating "{}"'.format(hash_obj.hexdigest()))
+    return hash_obj.hexdigest() == check
+
+
+def md5_hash(salt, data=None):
     """
     Returns the hashed output of md5sum on salt,data
     using Python3 hashlib
 
     :param salt: Initial salt
-    :param data: Data to hash
+    :param data: OPTIONAL Data to hash
     :returns: str
     """
     log.debug('md5_hash(salt="%s")' % salt)
     hash_obj = hashlib.new('md5')
-    hash_obj.update(salt.encode('ascii'))
-    hash_obj.update(data.encode('ascii'))
+    hash_obj.update(salt)
+    if data:
+        hash_obj.update(data)
     hash_value = hash_obj.hexdigest()
     log.debug('md5_hash() returning "%s"' % hash_value)
     return hash_value
 
 
-def qmd5_hash(salt, data):
+def qmd5_hash(salt, data=None):
     """
     Returns the hashed output of MD5Sum on salt, data
     using PyQt4.QCryptographicHash.
 
     :param salt: Initial salt
-    :param data: Data to hash
+    :param data: OPTIONAL Data to hash
     :returns: str
     """
     log.debug('qmd5_hash(salt="%s"' % salt)
@@ -223,7 +250,7 @@ def qmd5_hash(salt, data):
     hash_obj.addData(data)
     hash_value = hash_obj.result().toHex()
     log.debug('qmd5_hash() returning "%s"' % hash_value)
-    return decode(hash_value.data(), 'ascii')
+    return hash_value.data()
 
 
 def clean_button_text(button_text):
