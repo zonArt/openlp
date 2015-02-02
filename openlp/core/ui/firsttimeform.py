@@ -48,7 +48,7 @@ class ThemeScreenshotWorker(QtCore.QObject):
     """
     This thread downloads a theme's screenshot
     """
-    screenshot_downloaded = QtCore.pyqtSignal(str, str)
+    screenshot_downloaded = QtCore.pyqtSignal(str, str, str)
     finished = QtCore.pyqtSignal()
 
     def __init__(self, themes_url, title, filename, sha256, screenshot):
@@ -190,9 +190,9 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             ans = msg.exec_()
             web_config = False
         if web_config:
-            files = open('/home/phill/Downloads/download.cfg').read()#web_config.read()
+            files = web_config.read()
             try:
-                self.config.read_string(files)#.decode())
+                self.config.read_string(files.decode())
                 self.web = self.config.get('general', 'base url')
                 self.songs_url = self.web + self.config.get('songs', 'directory') + '/'
                 self.bibles_url = self.web + self.config.get('bibles', 'directory') + '/'
@@ -223,7 +223,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.application.process_events()
                 title = self.config.get('songs_%s' % song, 'title')
                 filename = self.config.get('songs_%s' % song, 'filename')
-                sha256 = self.config.get('songs_%s' % song, 'sha256', fallback=None)
+                sha256 = self.config.get('songs_%s' % song, 'sha256', fallback='')
                 item = QtGui.QListWidgetItem(title, self.songs_list_widget)
                 item.setData(QtCore.Qt.UserRole, (filename, sha256))
                 item.setCheckState(QtCore.Qt.Unchecked)
@@ -240,7 +240,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     self.application.process_events()
                     title = self.config.get('bible_%s' % bible, 'title')
                     filename = self.config.get('bible_%s' % bible, 'filename')
-                    sha256 = self.config.get('bible_%s' % song, 'sha256', fallback=None)
+                    sha256 = self.config.get('bible_%s' % bible, 'sha256', fallback='')
                     item = QtGui.QTreeWidgetItem(lang_item, [title])
                     item.setData(0, QtCore.Qt.UserRole, (filename, sha256))
                     item.setCheckState(0, QtCore.Qt.Unchecked)
@@ -253,7 +253,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.application.process_events()
                 title = self.config.get('theme_%s' % theme, 'title')
                 filename = self.config.get('theme_%s' % theme, 'filename')
-                sha256 = self.config.get('theme_%s' % song, 'sha256', fallback=None)
+                sha256 = self.config.get('theme_%s' % theme, 'sha256', fallback='')
                 screenshot = self.config.get('theme_%s' % theme, 'screenshot')
                 worker = ThemeScreenshotWorker(self.themes_url, title, filename, sha256, screenshot)
                 self.theme_screenshot_workers.append(worker)
