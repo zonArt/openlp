@@ -27,12 +27,13 @@ import os
 
 from unittest import TestCase
 
-from openlp.core.common import verify_ip_address, md5_hash, qmd5_hash, md5_filecheck
+from openlp.core.common import verify_ip_address, md5_hash, qmd5_hash, md5_filecheck, sha1_filecheck
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', 'resources', 'projector'))
 TEST_FILENAME = 'Wheat.otz'
 TEST_FILE_HASH = '2d7daae6f8ce6dc0963ea8c0fa4d67aa'
+TEST_FILE_SHA1 = '20a2ca97a479d166ac9f59147054b58304b4d264'
 
 salt = '498e4a67'
 pin = 'JBMIAProjectorLink'
@@ -174,3 +175,16 @@ class testProjectorUtilities(TestCase):
 
         # THEN: Check should pass
         self.assertEqual(valid, True, 'Test file MD5 should match test MD5')
+
+    def sa1sum_filecheck_test(self):
+        """
+        Test file SHA1SUM check
+        """
+        # GIVEN: Test file to verify
+        test_file = os.path.join(TEST_PATH, TEST_FILENAME)
+
+        # WHEN: md5_filecheck is called
+        valid = sha1_filecheck(test_file, TEST_FILE_SHA1)
+
+        # THEN: Check should pass
+        self.assertEqual(valid, True, 'Test file SHA1 should match test SHA1')
