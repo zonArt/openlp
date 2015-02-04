@@ -190,58 +190,6 @@ def verify_ip_address(addr):
     return True if verify_ipv4(addr) else verify_ipv6(addr)
 
 
-def sha1_filecheck(input_file, check):
-    """
-    Validate a downloaded file has the same SHA1 as recorded.
-
-    :param input_file: File to test
-    :param check: MD5Sum to validate
-    :return: File MD5 == check
-    """
-    log.debug('sha1_filecheck(file="{}", check="{}"'.format(input_file, check))
-    try:
-        file_ = open(input_file, 'rb')
-    except OSError as err:
-        log.error('Unable to check "{}"'.format(input_file))
-        log.error('Error code: {}'.format(err.errno))
-        log.error('Error msg:  {}'.format(err.strerror))
-        return False
-    hash_obj = hashlib.new('sha1')
-    while True:
-        data = file_.read(1024)
-        if not data:
-            break
-        hash_obj.update(data)
-    log.debug('sha1_filecheck validating "{}"'.format(hash_obj.hexdigest()))
-    return hash_obj.hexdigest() == check
-
-
-def md5_filecheck(input_file, check):
-    """
-    Validate a downloaded file has the same MD5 as recorded.
-
-    :param input_file: File to test
-    :param check: MD5Sum to validate
-    :return: File MD5 == check
-    """
-    log.debug('md5_filecheck(file="{}", check="{}"'.format(input_file, check))
-    try:
-        file_ = open(input_file, 'rb')
-    except OSError as err:
-        log.error('Unable to check "{}"'.format(input_file))
-        log.error('Error code: {}'.format(err.errno))
-        log.error('Error msg:  {}'.format(err.strerror))
-        return False
-    hash_obj = hashlib.new('md5')
-    while True:
-        data = file_.read(1024)
-        if not data:
-            break
-        hash_obj.update(data)
-    log.debug('md5_filecheck validating "{}"'.format(hash_obj.hexdigest()))
-    return hash_obj.hexdigest() == check
-
-
 def md5_hash(salt, data=None):
     """
     Returns the hashed output of md5sum on salt,data

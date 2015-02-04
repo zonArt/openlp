@@ -27,17 +27,13 @@ import os
 
 from unittest import TestCase
 
-from openlp.core.common import verify_ip_address, md5_hash, qmd5_hash, md5_filecheck, sha1_filecheck
-
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                         '..', '..', 'resources', 'projector'))
-TEST_FILENAME = 'Wheat.otz'
-TEST_FILE_HASH = '2d7daae6f8ce6dc0963ea8c0fa4d67aa'
-TEST_FILE_SHA1 = '20a2ca97a479d166ac9f59147054b58304b4d264'
+from openlp.core.common import verify_ip_address, md5_hash, qmd5_hash
 
 salt = '498e4a67'
 pin = 'JBMIAProjectorLink'
 test_hash = '5d8409bc1c3fa39749434aa3a5c38682'
+test_non_ascii_string = '이것은 한국어 시험 문자열'
+test_non_ascii_hash = 'fc00c7912976f6e9c19099b514ced201'
 
 ip4_loopback = '127.0.0.1'
 ip4_local = '192.168.1.1'
@@ -148,7 +144,7 @@ class testProjectorUtilities(TestCase):
         Test MD5 hash from salt+data pass (Qt)
         """
         # WHEN: Given a known salt+data
-        hash_ = qmd5_hash(salt=salt, data=pin)
+        hash_ = qmd5_hash(salt=salt.encode('ascii'), data=pin.encode('ascii'))
 
         # THEN: Validate return has is same
         self.assertEquals(hash_.decode('ascii'), test_hash, 'Qt-MD5 should have returned a good hash')
@@ -158,33 +154,27 @@ class testProjectorUtilities(TestCase):
         Test MD5 hash from salt+hash fail (Qt)
         """
         # WHEN: Given a different salt+hash
-        hash_ = qmd5_hash(salt=pin, data=salt)
+        hash_ = qmd5_hash(salt=pin.encode('ascii'), data=salt.encode('ascii'))
 
         # THEN: return data is different
         self.assertNotEquals(hash_.decode('ascii'), test_hash, 'Qt-MD5 should have returned a bad hash')
 
-    def md5sum_filecheck_test(self):
+    def test_md5_non_ascii_string(self):
         """
-        Test file MD5SUM check
+        Test MD5 hash with non-ascii string - bug 1417809
         """
-        # GIVEN: Test file to verify
-        test_file = os.path.join(TEST_PATH, TEST_FILENAME)
+        # WHEN: Non-ascii string is hashed
+        hash_ = md5_hash(salt=test_non_ascii_string.encode('utf-8'), data=None)
 
-        # WHEN: md5_filecheck is called
-        valid = md5_filecheck(test_file, TEST_FILE_HASH)
+        # THEN: Valid MD5 hash should be returned
+        self.assertEqual(hash_, test_non_ascii_hash, 'MD5 should have returned a valid hash')
 
-        # THEN: Check should pass
-        self.assertEqual(valid, True, 'Test file MD5 should match test MD5')
-
-    def sa1sum_filecheck_test(self):
+    def test_qmd5_non_ascii_string(self):
         """
-        Test file SHA1SUM check
+        Test MD5 hash with non-ascii string - bug 1417809
         """
-        # GIVEN: Test file to verify
-        test_file = os.path.join(TEST_PATH, TEST_FILENAME)
+        # WHEN: Non-ascii string is hashed
+        hash_ = md5_hash(salt=test_non_ascii_string.encode('utf-8'), data=None)
 
-        # WHEN: md5_filecheck is called
-        valid = sha1_filecheck(test_file, TEST_FILE_SHA1)
-
-        # THEN: Check should pass
-        self.assertEqual(valid, True, 'Test file SHA1 should match test SHA1')
+        # THEN: Valid MD5 hash should be returned
+        self.assertEqual(hash_, test_non_ascii_hash, 'Qt-MD5 should have returned a valid hash')
