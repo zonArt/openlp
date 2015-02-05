@@ -125,7 +125,7 @@ class TestInit(TestCase, TestMixin):
         # WHEN: Calling parse_options
         results = parse_options(options)
 
-        # THEN: A tuple should be returned with the parsed options and left over args
+        # THEN: A tuple should be returned with the parsed options and left over options
         self.assertEqual(results, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
                                            'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))
 
@@ -136,10 +136,51 @@ class TestInit(TestCase, TestMixin):
         # GIVEN: A list of valid options
         options = ['openlp.py', '-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
 
-        # WHEN: Passing in the options through sys.argv and calling parse_args with None
+        # WHEN: Passing in the options through sys.argv and calling parse_options with None
         with patch.object(sys, 'argv', options):
             results = parse_options(None)
 
-        # THEN: parse_args should return a tuple of valid options and of left over options that OpenLP does not use
+        # THEN: parse_options should return a tuple of valid options and of left over options that OpenLP does not use
         self.assertEqual(results, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
                                            'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))
+
+    def test_parse_options_valid_long_options(self):
+        """
+        Test that parse_options parses valid long options correctly
+        """
+        # GIVEN: A list of valid options
+        options = ['--no-error-form', 'extra', '--log-level', 'debug', 'qt', '--portable', '--dev-version', 'args',
+                   '--style=style']
+
+        # WHEN: Calling parse_options
+        results = parse_options(options)
+
+        # THEN: parse_options should return a tuple of valid options and of left over options that OpenLP does not use
+        self.assertEqual(results, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
+                                           'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))
+
+    def test_parse_options_help_option(self):
+        """
+        Test that parse_options raises an SystemExit exception when called with invalid options
+        """
+        # GIVEN: The --help option
+        options = ['--help']
+
+        # WHEN: Calling parse_options
+        # THEN: parse_options should raise an SystemExit exception with exception code 0
+        with self.assertRaises(SystemExit) as raised_exception:
+            parse_options(options)
+        self.assertEqual(raised_exception.exception.code, 0)
+
+    def test_parse_options_invalid_option(self):
+        """
+        Test that parse_options raises an SystemExit exception when called with invalid options
+        """
+        # GIVEN: A list including invalid options
+        options = ['-t']
+
+        # WHEN: Calling parse_options
+        # THEN: parse_options should raise an SystemExit exception with exception code 2
+        with self.assertRaises(SystemExit) as raised_exception:
+            parse_options(options)
+        self.assertEqual(raised_exception.exception.code, 2)
