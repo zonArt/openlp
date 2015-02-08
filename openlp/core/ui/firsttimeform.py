@@ -491,7 +491,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.application.process_events()
                 item = self.songs_list_widget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
-                    filename, _ = item.data(QtCore.Qt.UserRole)
+                    filename, sha256 = item.data(QtCore.Qt.UserRole)
                     size = self._get_file_size('%s%s' % (self.songs_url, filename))
                     self.max_progress += size
             # Loop through the Bibles list and increase for each selected item
@@ -500,7 +500,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.application.process_events()
                 item = iterator.value()
                 if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                    filename, _ = item.data(0, QtCore.Qt.UserRole)
+                    filename, sha256 = item.data(0, QtCore.Qt.UserRole)
                     size = self._get_file_size('%s%s' % (self.bibles_url, filename))
                     self.max_progress += size
                 iterator += 1
@@ -509,7 +509,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.application.process_events()
                 item = self.themes_list_widget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
-                    filename, _ = item.data(QtCore.Qt.UserRole)
+                    filename, sha256 = item.data(QtCore.Qt.UserRole)
                     size = self._get_file_size('%s%s' % (self.themes_url, filename))
                     self.max_progress += size
         except urllib.error.URLError:
