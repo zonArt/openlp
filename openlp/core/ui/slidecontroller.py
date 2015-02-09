@@ -1418,7 +1418,7 @@ class PreviewController(RegistryMixin, OpenLPMixin, SlideController):
         super(PreviewController, self).__init__(parent)
         self.split = 0
         self.type_prefix = 'preview'
-        self.category = None
+        self.category = 'Preview Toolbar'
 
     def bootstrap_post_set_up(self):
         """

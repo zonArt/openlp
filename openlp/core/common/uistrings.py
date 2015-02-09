@@ -115,6 +115,7 @@ class UiStrings(object):
         self.PlaySlidesInLoop = translate('OpenLP.Ui', 'Play Slides in Loop')
         self.PlaySlidesToEnd = translate('OpenLP.Ui', 'Play Slides to End')
         self.Preview = translate('OpenLP.Ui', 'Preview')
+        self.PreviewToolbar = translate('OpenLP.Ui', 'Preview Toolbar')
         self.PrintService = translate('OpenLP.Ui', 'Print Service')
         self.Projector = translate('OpenLP.Ui', 'Projector', 'Singular')
         self.Projectors = translate('OpenLP.Ui', 'Projectors', 'Plural')
