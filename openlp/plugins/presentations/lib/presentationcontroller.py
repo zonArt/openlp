@@ -134,7 +134,7 @@ class PresentationDocument(object):
         """
         # TODO: If statment can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         if Settings().value('presentations/thumbnail_scheme') == 'md5':
-            folder = md5_hash(self.file_path)
+            folder = md5_hash(self.file_path.encode('utf-8'))
         else:
             folder = self.get_file_name()
         return os.path.join(self.controller.thumbnail_folder, folder)
@@ -145,7 +145,7 @@ class PresentationDocument(object):
         """
         # TODO: If statment can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         if Settings().value('presentations/thumbnail_scheme') == 'md5':
-            folder = md5_hash(self.file_path)
+            folder = md5_hash(self.file_path.encode('utf-8'))
         else:
             folder = folder = self.get_file_name()
         return os.path.join(self.controller.temp_folder, folder)
