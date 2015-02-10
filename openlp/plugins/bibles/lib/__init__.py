@@ -371,7 +371,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                 from_chapter = from_verse
                 from_verse = None
             if to_chapter:
-                if to_chapter < from_chapter:
+                if from_chapter and to_chapter < from_chapter:
                     continue
                 else:
                     chapter = to_chapter
@@ -387,7 +387,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                     from_verse = 1
                 if not to_verse:
                     to_verse = -1
-                if to_chapter > from_chapter:
+                if to_chapter and to_chapter > from_chapter:
                     ref_list.append((book_ref_id, from_chapter, from_verse, -1))
                     for i in range(from_chapter + 1, to_chapter):
                         ref_list.append((book_ref_id, i, 1, -1))
