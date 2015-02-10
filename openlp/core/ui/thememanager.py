@@ -403,8 +403,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         except OSError as ose:
             self.log_exception('Export Theme Failed')
             critical_error_message_box(translate('OpenLP.ThemeManager', 'Theme Export Failed'),
-                                       translate('OpenLP.ThemeManager',
-                                                 'Your theme could not be exported due to this error:\n%s' % str(ose)))
+                                       translate('OpenLP.ThemeManager', 'The theme export failed because this error '
+                                                                        'occurred: %s') % ose.strerror)
             if theme_zip:
                 theme_zip.close()
                 shutil.rmtree(theme_path, True)

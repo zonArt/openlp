@@ -252,8 +252,8 @@ class SongExportForm(OpenLPWizard):
             else:
                 self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed.'))
         except OSError as ose:
-            self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed due to this '
-                                                  'error:\n%s') % str(ose))
+            self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed because this '
+                                                  'error occurred: %s') % ose.strerror)
 
     def _find_list_widget_items(self, list_widget, text=''):
         """

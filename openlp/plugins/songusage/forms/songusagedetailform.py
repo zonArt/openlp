@@ -109,7 +109,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryPrope
             log.exception('Failed to write out song usage records')
             critical_error_message_box(translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation Failed'),
                                        translate('SongUsagePlugin.SongUsageDetailForm',
-                                                 'The report could not be created due to this error:\n%s' % str(ose)))
+                                                 'An error occurred while creating the report: %s') % ose.strerror)
         finally:
             if file_handle:
                 file_handle.close()

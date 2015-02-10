@@ -1001,8 +1001,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             os.remove(temp_file)
         except OSError as ose:
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
-                                           translate('OpenLP.MainWindow', 'While writing the export file this error '
-                                                     'occurred:\n%s') % str(ose),
+                                           translate('OpenLP.MainWindow', 'An error occurred while exporting the '
+                                                                          'settings: %s') % ose.strerror,
                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def on_mode_default_item_clicked(self):
