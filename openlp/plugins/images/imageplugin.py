@@ -35,6 +35,10 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
     'images/db type': 'sqlite',
+    'imaegs/db username': '',
+    'images/db password': '',
+    'images/db hostname': '',
+    'images/db database': '',
     'images/background color': '#000000',
 }
 

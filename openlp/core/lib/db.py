@@ -81,9 +81,6 @@ def init_url(plugin_name, db_file_name=None):
                                        urlquote(settings.value('db password')),
                                        urlquote(settings.value('db hostname')),
                                        urlquote(settings.value('db database')))
-        if db_type == 'mysql':
-            db_encoding = settings.value('db encoding')
-            db_url += '?charset=%s' % urlquote(db_encoding)
     settings.endGroup()
     return db_url
 

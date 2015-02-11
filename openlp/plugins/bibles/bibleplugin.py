@@ -37,6 +37,10 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
     'bibles/db type': 'sqlite',
+    'bibles/db username': '',
+    'bibles/db password': '',
+    'bibles/db hostname': '',
+    'bibles/db database': '',
     'bibles/last search type': BibleSearch.Reference,
     'bibles/verse layout style': LayoutStyle.VersePerSlide,
     'bibles/book name language': LanguageSelection.Bible,
