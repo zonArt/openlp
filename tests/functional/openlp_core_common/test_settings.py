@@ -25,6 +25,7 @@ Package to test the openlp.core.lib.settings package.
 from unittest import TestCase
 
 from openlp.core.common import Settings
+from tests.functional import patch
 from tests.helpers.testmixin import TestMixin
 
 
@@ -120,3 +121,11 @@ class TestSettings(TestCase, TestMixin):
 
         # THEN: An exception with the non-existing key should be thrown
         self.assertEqual(str(cm.exception), "'core/does not exists'", 'We should get an exception')
+
+    def extend_default_settings_test(self):
+        with patch.dict(Settings() .__default_settings__, {1: 2, 3: 4}, clear=True):
+            Settings().extend_default_settings({'a': 'b', 'c': 'd'})
+
+            ds = Settings().__default_settings__
+
+            self.assertDictEqual(ds, {1: 2, 3: 4, 'a': 'b', 'c': 'd'})

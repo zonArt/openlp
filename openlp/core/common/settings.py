@@ -45,6 +45,13 @@ if is_linux():
         X11_BYPASS_DEFAULT = False
 
 
+def recent_files_conv(value):
+    if isinstance(value, list):
+        return value
+    elif isinstance(value, str):
+        return [value]
+
+
 class Settings(QtCore.QSettings):
     """
     Class to wrap QSettings.
@@ -328,7 +335,7 @@ class Settings(QtCore.QSettings):
         ('general/language', 'core/language', []),
         ('general/last version test', 'core/last version test', []),
         ('general/loop delay', 'core/loop delay', []),
-        ('general/recent files', 'core/recent files', []),
+        ('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
         ('general/save prompt', 'core/save prompt', []),
         ('general/screen blank', 'core/screen blank', []),
         ('general/show splash', 'core/show splash', []),
@@ -410,7 +417,9 @@ class Settings(QtCore.QSettings):
                     for new, old in rules:
                         # If the value matches with the condition (rule), then use the provided value. This is used to
                         # convert values. E. g. an old value 1 results in True, and 0 in False.
-                        if old == old_value:
+                        if callable(new):
+                            old_value = new(old_value)
+                        elif old == old_value:
                             old_value = new
                             break
                     self.setValue(new_key, old_value)
