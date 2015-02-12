@@ -109,3 +109,13 @@ class TestBibleManager(TestCase, TestMixin):
         results = parse_reference('Raoul 1', self.manager.db_cache['tests'], MagicMock())
         # THEN a verse array should be returned
         self.assertEqual(False, results, "The bible Search should return False")
+
+    def parse_reference_five_test(self):
+        """
+        Test the parse_reference method with 1 Timothy 1:3-end
+        """
+        # GIVEN given a bible in the bible manager
+        # WHEN asking to parse the bible reference
+        results = parse_reference('1 Timothy 1:3-end', self.manager.db_cache['tests'], MagicMock(), 54)
+        # THEN a verse array should be returned
+        self.assertEqual([(54, 1, 3, -1)], results, "The bible verses should matches the expected results")
