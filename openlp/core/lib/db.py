@@ -384,8 +384,6 @@ class Manager(object):
         :param object_class: The type of objects to return.
         :param filter_clause: The filter governing selection of objects to return. Defaults to None.
         """
-        if not self.session:
-            return
         query = self.session.query(object_class)
         if filter_clause is not None:
             query = query.filter(filter_clause)

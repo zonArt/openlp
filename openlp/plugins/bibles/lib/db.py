@@ -145,8 +145,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         if 'file' in kwargs:
             self.file = kwargs['file']
         Manager.__init__(self, 'bibles', init_schema, self.file, upgrade)
-        if self.session:
-            if 'file' in kwargs:
+        if self.session and 'file' in kwargs:
                 self.get_name()
         if 'path' in kwargs:
             self.path = kwargs['path']
