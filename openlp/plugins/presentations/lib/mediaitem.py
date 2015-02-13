@@ -225,10 +225,10 @@ class PresentationMediaItem(MediaManagerItem):
                 self.clean_up_thumbnails(filepath)
                 self.main_window.increment_progress_bar()
             self.main_window.finished_progress_bar()
-            self.application.set_busy_cursor()
             for row in row_list:
                 self.list_view.takeItem(row)
             Settings().setValue(self.settings_section + '/presentations files', self.get_file_list())
+            self.application.set_normal_cursor()
 
     def clean_up_thumbnails(self, filepath):
         """
