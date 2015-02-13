@@ -166,7 +166,6 @@ class TestThemeManager(TestCase):
             mocked_getroot.return_value = MagicMock(**{'get.return_value': None})
             theme_manager = ThemeManager(None)
 
-
             # WHEN: unzip_theme is called
             theme_manager.unzip_theme('theme.file', 'folder')
 

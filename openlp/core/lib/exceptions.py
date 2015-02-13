@@ -23,6 +23,7 @@
 The :mod:`~openlp.core.lib.exceptions` module contains custom exceptions
 """
 
+
 class ValidationError(Exception):
     """
     The :class:`~openlp.core.lib.exceptions.ValidationError` exception provides a custom exception for validating
