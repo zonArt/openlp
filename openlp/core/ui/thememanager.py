@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, OpenLPMixin, RegistryMixin, \
     check_directory_exists, UiStrings, translate, is_win
-from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, get_text_file_string, build_icon, \
+from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, ValidationError, get_text_file_string, build_icon, \
     check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
@@ -414,13 +414,13 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
     def on_import_theme(self, field=None):
         """
         Opens a file dialog to select the theme file(s) to import before attempting to extract OpenLP themes from
-        those files. This process will load both OpenLP version 1 and version 2 themes.
+        those files. This process will only load version 2 themes.
         :param field:
         """
         files = FileDialog.getOpenFileNames(self,
                                             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
                                             Settings().value(self.settings_section + '/last directory import'),
-                                            translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))
+                                            translate('OpenLP.ThemeManager', 'OpenLP Themes (*.otz)'))
         self.log_info('New Themes %s' % str(files))
         if not files:
             return
@@ -545,8 +545,12 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             xml_file = [name for name in theme_zip.namelist() if os.path.splitext(name)[1].lower() == '.xml']
             if len(xml_file) != 1:
                 self.log_error('Theme contains "%s" XML files' % len(xml_file))
-                raise Exception('validation')
+                raise ValidationError
             xml_tree = ElementTree(element=XML(theme_zip.read(xml_file[0]))).getroot()
+            theme_version = xml_tree.get('version', default=None)
+            if not theme_version or float(theme_version) < 2.0:
+                self.log_error('Theme version is less than 2.0')
+                raise ValidationError
             theme_name = xml_tree.find('name').text.strip()
             theme_folder = os.path.join(directory, theme_name)
             theme_exists = os.path.exists(theme_folder)
@@ -573,13 +577,10 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 out_file.close()
         except (IOError, zipfile.BadZipfile):
             self.log_exception('Importing theme from zip failed %s' % file_name)
-            raise Exception('validation')
-        except Exception as info:
-            if str(info) == 'validation':
-                critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
-                                           translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
-            else:
-                raise
+            raise ValidationError
+        except ValidationError:
+            critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
+                                       translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
         finally:
             # Close the files, to be able to continue creating the theme.
             if theme_zip:
