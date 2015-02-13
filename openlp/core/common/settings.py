@@ -73,10 +73,9 @@ class Settings(QtCore.QSettings):
         The first entry is the *old key*; it will be removed.
 
         The second entry is the *new key*; we will add it to the config. If this is just an empty string, we just remove
-        the old key.
-
-        The last entry is a list containing two-pair tuples. If the list is empty, no conversion is made. Otherwise each
-        pair describes how to convert the old setting's value::
+        the old key. The last entry is a list containing two-pair tuples. If the list is empty, no conversion is made.
+        If the first value is callable i.e. a function, the function will be called with the old setting's value.
+        Otherwise each pair describes how to convert the old setting's value::
 
             (SlideLimits.Wrap, True)
 
