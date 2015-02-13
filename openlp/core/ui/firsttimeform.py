@@ -436,7 +436,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 site = urllib.request.urlopen(url, timeout=CONNECTION_TIMEOUT)
                 meta = site.info()
                 return int(meta.get("Content-Length"))
-            except ConnectionException:
+            except ConnectionError:
                 if retries > CONNECTION_RETRIES:
                     raise
                 else:
