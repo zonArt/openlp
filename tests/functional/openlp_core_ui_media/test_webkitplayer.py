@@ -23,7 +23,7 @@
 Package to test the openlp.core.ui.media.webkitplayer package.
 """
 from unittest import TestCase
-from tests.functional import patch
+from tests.functional import MagicMock, patch
 
 from openlp.core.ui.media.webkitplayer import WebkitPlayer
 
@@ -33,32 +33,36 @@ class TestWebkitPlayer(TestCase):
     Test the functions in the :mod:`webkitplayer` module.
     """
 
-    def check_available_mac_test(self):
+    def check_available_video_disabled_test(self):
         """
-        Simple test of webkitplayer availability on Mac OS X
+        Test of webkit video unavailability
         """
-        # GIVEN: A WebkitPlayer and a mocked is_macosx
-        with patch('openlp.core.ui.media.webkitplayer.is_macosx') as mocked_is_macosx:
-            mocked_is_macosx.return_value = True
+        # GIVEN: A WebkitPlayer instance and a mocked QWebPage
+        mocked_qwebpage = MagicMock()
+        mocked_qwebpage.mainFrame().evaluateJavaScript.return_value = '[object HTMLUnknownElement]'
+        with patch('openlp.core.ui.media.webkitplayer.QtWebKit.QWebPage', **{'return_value': mocked_qwebpage}):
             webkit_player = WebkitPlayer(None)
 
             # WHEN: An checking if the player is available
             available = webkit_player.check_available()
 
-            # THEN: The player should not be available on Mac OS X
-            self.assertEqual(False, available, 'The WebkitPlayer should not be available on Mac OS X.')
+            # THEN: The player should not be available when '[object HTMLUnknownElement]' is returned
+            self.assertEqual(False, available,
+                             'The WebkitPlayer should not be available when video feature detection fails')
 
-    def check_available_non_mac_test(self):
+    def check_available_video_enabled_test(self):
         """
-        Simple test of webkitplayer availability when not on Mac OS X
+        Test of webkit video availability
         """
-        # GIVEN: A WebkitPlayer and a mocked is_macosx
-        with patch('openlp.core.ui.media.webkitplayer.is_macosx') as mocked_is_macosx:
-            mocked_is_macosx.return_value = False
+        # GIVEN: A WebkitPlayer instance and a mocked QWebPage
+        mocked_qwebpage = MagicMock()
+        mocked_qwebpage.mainFrame().evaluateJavaScript.return_value = '[object HTMLVideoElement]'
+        with patch('openlp.core.ui.media.webkitplayer.QtWebKit.QWebPage', **{'return_value': mocked_qwebpage}):
             webkit_player = WebkitPlayer(None)
 
             # WHEN: An checking if the player is available
             available = webkit_player.check_available()
 
-            # THEN: The player should be available when not on Mac OS X
-            self.assertEqual(True, available, 'The WebkitPlayer should be available when not on Mac OS X.')
+            # THEN: The player should be available when '[object HTMLVideoElement]' is returned
+            self.assertEqual(True, available,
+                             'The WebkitPlayer should be available when video feature detection passes')

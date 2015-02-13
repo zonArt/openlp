@@ -580,6 +580,7 @@ class SlideController(DisplayController, RegistryProperties):
         self.display.setup()
         if self.is_live:
             self.__add_actions_to_widget(self.display)
+        if self.display.audio_player:
             self.display.audio_player.connectSlot(QtCore.SIGNAL('tick(qint64)'), self.on_audio_time_remaining)
         # The SlidePreview's ratio.
         try:
@@ -834,26 +835,28 @@ class SlideController(DisplayController, RegistryProperties):
         self.slide_list = {}
         if self.is_live:
             self.song_menu.menu().clear()
-            self.display.audio_player.reset()
-            self.set_audio_items_visibility(False)
-            self.audio_pause_item.setChecked(False)
-            # If the current item has background audio
-            if self.service_item.is_capable(ItemCapabilities.HasBackgroundAudio):
-                self.log_debug('Starting to play...')
-                self.display.audio_player.add_to_playlist(self.service_item.background_audio)
-                self.track_menu.clear()
-                for counter in range(len(self.service_item.background_audio)):
-                    action = self.track_menu.addAction(os.path.basename(self.service_item.background_audio[counter]))
-                    action.setData(counter)
-                    action.triggered.connect(self.on_track_triggered)
-                self.display.audio_player.repeat = \
-                    Settings().value(self.main_window.general_settings_section + '/audio repeat list')
-                if Settings().value(self.main_window.general_settings_section + '/audio start paused'):
-                    self.audio_pause_item.setChecked(True)
-                    self.display.audio_player.pause()
-                else:
-                    self.display.audio_player.play()
-                self.set_audio_items_visibility(True)
+            if self.display.audio_player:
+                self.display.audio_player.reset()
+                self.set_audio_items_visibility(False)
+                self.audio_pause_item.setChecked(False)
+                # If the current item has background audio
+                if self.service_item.is_capable(ItemCapabilities.HasBackgroundAudio):
+                    self.log_debug('Starting to play...')
+                    self.display.audio_player.add_to_playlist(self.service_item.background_audio)
+                    self.track_menu.clear()
+                    for counter in range(len(self.service_item.background_audio)):
+                        action = self.track_menu.addAction(
+                            os.path.basename(self.service_item.background_audio[counter]))
+                        action.setData(counter)
+                        action.triggered.connect(self.on_track_triggered)
+                    self.display.audio_player.repeat = \
+                        Settings().value(self.main_window.general_settings_section + '/audio repeat list')
+                    if Settings().value(self.main_window.general_settings_section + '/audio start paused'):
+                        self.audio_pause_item.setChecked(True)
+                        self.display.audio_player.pause()
+                    else:
+                        self.display.audio_player.play()
+                    self.set_audio_items_visibility(True)
         row = 0
         width = self.main_window.control_splitter.sizes()[self.split]
         for frame_number, frame in enumerate(self.service_item.get_frames()):

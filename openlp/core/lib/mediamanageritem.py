@@ -213,13 +213,6 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
                                  icon=':/general/general_edit.png',
                                  triggers=self.on_edit_click)
             create_widget_action(self.list_view, separator=True)
-        if self.has_delete_icon:
-            create_widget_action(self.list_view,
-                                 'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
-                                 text=self.plugin.get_string(StringContent.Delete)['title'],
-                                 icon=':/general/general_delete.png',
-                                 can_shortcuts=True, triggers=self.on_delete_click)
-            create_widget_action(self.list_view, separator=True)
         create_widget_action(self.list_view,
                              'listView%s%sItem' % (self.plugin.name.title(), StringContent.Preview.title()),
                              text=self.plugin.get_string(StringContent.Preview)['title'],
@@ -238,6 +231,13 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
                              text=self.plugin.get_string(StringContent.Service)['title'],
                              icon=':/general/general_add.png',
                              triggers=self.on_add_click)
+        if self.has_delete_icon:
+            create_widget_action(self.list_view, separator=True)
+            create_widget_action(self.list_view,
+                                 'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
+                                 text=self.plugin.get_string(StringContent.Delete)['title'],
+                                 icon=':/general/general_delete.png',
+                                 can_shortcuts=True, triggers=self.on_delete_click)
         if self.add_to_service_item:
             create_widget_action(self.list_view, separator=True)
             create_widget_action(self.list_view,
