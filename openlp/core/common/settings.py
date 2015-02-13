@@ -360,7 +360,7 @@ class Settings(QtCore.QSettings):
 
         :param default_values: A dict with setting keys and their default values.
         """
-        Settings.__default_settings__ = dict(list(default_values.items()) + list(Settings.__default_settings__.items()))
+        Settings.__default_settings__.update(default_values)
 
     @staticmethod
     def set_filename(ini_file):

@@ -123,9 +123,17 @@ class TestSettings(TestCase, TestMixin):
         self.assertEqual(str(cm.exception), "'core/does not exists'", 'We should get an exception')
 
     def extend_default_settings_test(self):
-        with patch.dict(Settings() .__default_settings__, {1: 2, 3: 4}, clear=True):
-            Settings().extend_default_settings({'a': 'b', 'c': 'd'})
+        """
+        Test that the extend_default_settings method extends the default settings
+        """
+        # GIVEN: A patched __default_settings__ dictionary
+        with patch.dict(Settings.__default_settings__,
+                   {'test/setting 1': 1, 'test/setting 2': 2, 'test/setting 3': 3}, True):
 
-            ds = Settings().__default_settings__
+            # WHEN: Calling extend_default_settings
+            Settings.extend_default_settings({'test/setting 3': 4, 'test/extended 1': 1, 'test/extended 2': 2})
 
-            self.assertDictEqual(ds, {1: 2, 3: 4, 'a': 'b', 'c': 'd'})
+            # THEN: The _default_settings__ dictionary_ should have the new keys
+            self.assertEqual(
+                Settings.__default_settings__, {'test/setting 1': 1, 'test/setting 2': 2, 'test/setting 3': 4,
+                                                'test/extended 1': 1, 'test/extended 2': 2})
