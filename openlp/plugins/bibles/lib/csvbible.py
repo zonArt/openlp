@@ -98,15 +98,15 @@ class CSVBible(BibleDB):
             for line in books_reader:
                 if self.stop_import_flag:
                     break
-                self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing books... %s') 
-                                                                                      % line[2])
+                self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing books... %s')
+                                                   % line[2])
                 book_ref_id = self.get_book_ref_id_by_name(line[2], 67, language_id)
                 if not book_ref_id:
                     log.error('Importing books from "%s" failed' % self.books_file)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 self.create_book(line[2], book_ref_id, book_details['testament_id'])
-                book_list[int(line[0])] = line[2]
+                book_list.update({int(line[0]): line[2]})
             self.application.process_events()
         except (IOError, IndexError):
             log.exception('Loading books from file failed')
