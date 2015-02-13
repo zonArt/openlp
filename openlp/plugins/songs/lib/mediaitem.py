@@ -225,7 +225,7 @@ class SongMediaItem(MediaManagerItem):
             log.debug('CCLI number Search')
             search_string = '%' + search_keywords + '%'
             search_results = self.plugin.manager.get_all_objects(
-                Song, and_(Song.ccli_number.like(search_string), Song.ccli_number != ''), Song.ccli_number.asc())
+                Song, and_(Song.ccli_number.like(search_string), Song.ccli_number != ''))
             self.display_results_cclinumber(search_results)
         self.check_search_result()
 
@@ -326,6 +326,7 @@ class SongMediaItem(MediaManagerItem):
     def display_results_cclinumber(self, search_results):
         log.debug('display results CCLI number')
         self.list_view.clear()
+        search_results.sort(key=lambda song: int(song.ccli_number))
         for song in search_results:
             # Do not display temporary songs
             if song.temporary:
