@@ -535,7 +535,6 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         :param directory:
         """
         self.log_debug('Unzipping theme %s' % file_name)
-        file_name = str(file_name)
         theme_zip = None
         out_file = None
         file_xml = None
