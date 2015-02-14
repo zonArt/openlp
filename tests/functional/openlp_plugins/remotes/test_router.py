@@ -25,7 +25,6 @@ This module contains tests for the lib submodule of the Remotes plugin.
 import os
 import urllib.request
 from unittest import TestCase
-from PyQt4 import QtCore
 from openlp.core.common import Settings, Registry
 from openlp.core.ui import ServiceManager
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
@@ -128,7 +127,7 @@ class TestRouter(TestCase, TestMixin):
 
         # THEN: the function should have been called only once
         self.router.send_response.assert_called_once_with(401)
-        self.assertEqual(self.router.send_header.call_count, 2, 'The header should have been called twice.')
+        self.assertEqual(self.router.send_header.call_count, 5, 'The header should have been called five times.')
 
     def get_content_type_test(self):
         """
@@ -187,7 +186,6 @@ class TestRouter(TestCase, TestMixin):
 
         # THEN: it should return a 404
         self.router.send_response.assert_called_once_with(404)
-        self.router.send_header.assert_called_once_with('Content-type', 'text/html')
         self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
 
     def serve_file_with_valid_params_test(self):
@@ -217,11 +215,16 @@ class TestRouter(TestCase, TestMixin):
         """
         Test the serve_thumbnail routine without params
         """
+        # GIVEN: mocked environment
         self.router.send_response = MagicMock()
         self.router.send_header = MagicMock()
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
+
+        # WHEN: I request a thumbnail
         self.router.serve_thumbnail()
+
+        # THEN: The headers should be set correctly
         self.router.send_response.assert_called_once_with(404)
         self.assertEqual(self.router.send_response.call_count, 1, 'Send response called once')
         self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
@@ -240,7 +243,7 @@ class TestRouter(TestCase, TestMixin):
         self.router.serve_thumbnail('badcontroller', 'tecnologia 1.pptx/slide1.png')
 
         # THEN: a 404 should be returned
-        self.assertEqual(len(self.router.send_header.mock_calls), 1, 'One header')
+        self.assertEqual(len(self.router.send_header.mock_calls), 4, 'One header')
         self.assertEqual(len(self.router.send_response.mock_calls), 1, 'One response')
         self.assertEqual(len(self.router.wfile.mock_calls), 1, 'Once call to write to the socket')
         self.router.send_response.assert_called_once_with(404)
@@ -284,7 +287,7 @@ class TestRouter(TestCase, TestMixin):
             mocked_location.get_section_data_path.return_value = ''
 
             # WHEN: pass good controller and filename
-            result = self.router.serve_thumbnail('presentations', '{0}x{1}'.format(width, height), file_name)
+            self.router.serve_thumbnail('presentations', '{0}x{1}'.format(width, height), file_name)
 
             # THEN: a file should be returned
             self.assertEqual(self.router.send_header.call_count, 1, 'One header')
