@@ -215,6 +215,7 @@ class RemoteTab(SettingsTab):
         ip_address == 0.0.0.0: return the IP address of the first valid interface
         else: return ip_address
         """
+        ip_address = ZERO_URL
         if ip_address == ZERO_URL:
             interfaces = QtNetwork.QNetworkInterface.allInterfaces()
             for interface in interfaces:
