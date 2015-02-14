@@ -506,7 +506,6 @@ class TestSongSelectFileImport(TestCase, TestMixin):
 
             # WHEN: We call the song importer
             song_import.do_import()
-            print(song_import.verses)
             # THEN: Song values should be equal to test values in setUp
             self.assertEquals(song_import.title, self.title, 'Song title should match')
             self.assertEquals(song_import.ccli_number, self.ccli_number, 'CCLI Song Number should match')

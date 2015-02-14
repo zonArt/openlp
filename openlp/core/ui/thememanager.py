@@ -377,17 +377,11 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         self.application.set_busy_cursor()
         if path:
             Settings().setValue(self.settings_section + '/last directory export', path)
-            try:
-                self._export_theme(path, theme)
+            if self._export_theme(path, theme):
                 QtGui.QMessageBox.information(self,
                                               translate('OpenLP.ThemeManager', 'Theme Exported'),
                                               translate('OpenLP.ThemeManager',
                                                         'Your theme has been successfully exported.'))
-            except (IOError, OSError):
-                self.log_exception('Export Theme Failed')
-                critical_error_message_box(translate('OpenLP.ThemeManager', 'Theme Export Failed'),
-                                           translate('OpenLP.ThemeManager',
-                                                     'Your theme could not be exported due to an error.'))
         self.application.set_normal_cursor()
 
     def _export_theme(self, path, theme):
@@ -397,19 +391,24 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         :param theme: The name of the theme to be exported
         """
         theme_path = os.path.join(path, theme + '.otz')
+        theme_zip = None
         try:
             theme_zip = zipfile.ZipFile(theme_path, 'w')
             source = os.path.join(self.path, theme)
             for files in os.walk(source):
                 for name in files[2]:
                     theme_zip.write(os.path.join(source, name), os.path.join(theme, name))
-        except (IOError, OSError):
+            theme_zip.close()
+            return True
+        except OSError as ose:
+            self.log_exception('Export Theme Failed')
+            critical_error_message_box(translate('OpenLP.ThemeManager', 'Theme Export Failed'),
+                                       translate('OpenLP.ThemeManager', 'The theme export failed because this error '
+                                                                        'occurred: %s') % ose.strerror)
             if theme_zip:
                 theme_zip.close()
                 shutil.rmtree(theme_path, True)
-            raise
-        else:
-            theme_zip.close()
+            return False
 
     def on_import_theme(self, field=None):
         """
