@@ -250,6 +250,12 @@ class SongMediaItem(MediaManagerItem):
         log.debug('on_song_list_load - finished')
 
     def display_results_song(self, search_results):
+        """
+        Display the song search results in the media manager list
+
+        :param search_results: A list of db Song objects
+        :return: None
+        """
         log.debug('display results Song')
         self.save_auto_select_id()
         self.list_view.clear()
@@ -269,6 +275,12 @@ class SongMediaItem(MediaManagerItem):
         self.auto_select_id = -1
 
     def display_results_author(self, search_results):
+        """
+        Display the song search results in the media manager list, grouped by author
+
+        :param search_results: A list of db Author objects
+        :return: None
+        """
         log.debug('display results Author')
         self.list_view.clear()
         for author in search_results:
@@ -282,6 +294,12 @@ class SongMediaItem(MediaManagerItem):
                 self.list_view.addItem(song_name)
 
     def display_results_book(self, search_results, song_number=False):
+        """
+        Display the song search results in the media manager list, grouped by book
+
+        :param search_results: A list of db Book objects
+        :return: None
+        """
         log.debug('display results Book')
         self.list_view.clear()
         for book in search_results:
@@ -298,6 +316,12 @@ class SongMediaItem(MediaManagerItem):
                 self.list_view.addItem(song_name)
 
     def display_results_topic(self, search_results):
+        """
+        Display the song search results in the media manager list, grouped by topic
+
+        :param search_results: A list of db Topic objects
+        :return: None
+        """
         log.debug('display results Topic')
         self.list_view.clear()
         for topic in search_results:
@@ -312,6 +336,12 @@ class SongMediaItem(MediaManagerItem):
                 self.list_view.addItem(song_name)
 
     def display_results_themes(self, search_results):
+        """
+        Display the song search results in the media manager list, sorted by theme
+
+        :param search_results: A list of db Song objects
+        :return: None
+        """
         log.debug('display results Themes')
         self.list_view.clear()
         for song in search_results:
@@ -324,10 +354,16 @@ class SongMediaItem(MediaManagerItem):
             self.list_view.addItem(song_name)
 
     def display_results_cclinumber(self, search_results):
+        """
+        Display the song search results in the media manager list, sorted by CCLI number
+
+        :param search_results: A list of db Song objects
+        :return: None
+        """
         log.debug('display results CCLI number')
         self.list_view.clear()
-        search_results.sort(key=lambda song: int(song.ccli_number))
-        for song in search_results:
+        songs = sorted(search_results, key=lambda song: self._natural_sort_key(song.ccli_number))
+        for song in songs:
             # Do not display temporary songs
             if song.temporary:
                 continue
@@ -651,6 +687,24 @@ class SongMediaItem(MediaManagerItem):
                 return False
         # List must be empty at the end
         return not author_list
+
+    def _try_int(self, s):
+        """
+        Convert string s to an integer if possible. Fail silently and return
+        the string as-is if it isn't an integer.
+        :param s: The string to try to convert.
+        """
+        try:
+            return int(s)
+        except (TypeError, ValueError):
+            return s
+
+    def _natural_sort_key(self, s):
+        """
+        Return a tuple by which s is sorted.
+        :param s: A string value from the list we want to sort.
+        """
+        return list(map(self._try_int, re.findall(r'(\d+|\D+)', s)))
 
     def search(self, string, show_error):
         """
