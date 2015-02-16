@@ -3568,7 +3568,7 @@ För att avbryta Kom igång-guiden helt (och inte starta OpenLP), klicka på kna
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
 </context>
 <context>
@@ -4214,7 +4214,7 @@ Du kan ladda ner den senaste versionen från http://openlp.org/.</translation>
         <location filename="openlp/core/utils/languagemanager.py" line="83"/>
         <source>English</source>
         <comment>Please add the name of your language here</comment>
-        <translation>Engelska</translation>
+        <translation>Swedish</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="417"/>
@@ -4450,7 +4450,7 @@ Processen har avbrutits och inga ändringar gjordes.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
         <source>An error occurred while exporting the settings: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett fel inträffade när inställningarna exporterades: %s</translation>
     </message>
 </context>
 <context>
@@ -5007,7 +5007,7 @@ Filändelsen stöds ej</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="273"/>
         <source>The connection negotiation with the proxy server failed because the response from the proxy server could not be understood</source>
-        <translation type="unfinished"></translation>
+        <translation>Anslutning till proxyservern misslyckades eftersom svaret från proxyservern inte gick att tolka</translation>
     </message>
 </context>
 <context>
@@ -5840,7 +5840,7 @@ Spara om den med OpenLP 2.0.2 eller nyare.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett fel inträffade när körschemafilen skrevs: %s</translation>
     </message>
 </context>
 <context>
@@ -6140,7 +6140,7 @@ Spara om den med OpenLP 2.0.2 eller nyare.</translation>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
         <source>Are you sure you want to delete ALL user-defined source input text for this projector?</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker på att du vill ta bort ALL användarinställd text för bildkälla för den här projektorn?</translation>
     </message>
 </context>
 <context>
@@ -6436,7 +6436,7 @@ Spara om den med OpenLP 2.0.2 eller nyare.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="405"/>
         <source>The theme export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Temaexporten misslyckades med följande fel: %s</translation>
     </message>
 </context>
 <context>
@@ -8102,12 +8102,12 @@ Välj en sökväg till en befintlig mapp på din dator.</translation>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>Report Creation Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Rapportskapande misslyckades</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>An error occurred while creating the report: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett fel inträffade när rapporten skapades: %s</translation>
     </message>
 </context>
 <context>
@@ -9197,7 +9197,7 @@ Ange verserna separerade med blanksteg.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="255"/>
         <source>Your song export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Sångexporten misslyckades med följande fel: %s</translation>
     </message>
 </context>
 <context>

@@ -3157,7 +3157,7 @@ lijkt al OpenLP data bestanden te bevatten.  Wilt u de oude bestanden vervangen 
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="91"/>
         <source>Error Occurred</source>
-        <translation>Er gaat iets fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="95"/>
@@ -3570,7 +3570,7 @@ Om de Eerste Keer Assistent te annuleren (zonder OpenLP te starten), klik op %s.
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleer</translation>
+        <translation>Annuleer</translation>
     </message>
 </context>
 <context>
@@ -4216,7 +4216,7 @@ U kunt de laatste versie op http://openlp.org/ downloaden.</translation>
         <location filename="openlp/core/utils/languagemanager.py" line="83"/>
         <source>English</source>
         <comment>Please add the name of your language here</comment>
-        <translation>Engels</translation>
+        <translation>Dutch</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="417"/>
@@ -4452,7 +4452,7 @@ Verwerking is gestopt en er is niets veranderd.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
         <source>An error occurred while exporting the settings: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is een fout opgetreden tijdens het exporteren van de instellingen: %s</translation>
     </message>
 </context>
 <context>
@@ -4939,7 +4939,7 @@ Extensie niet ondersteund</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="276"/>
         <source>An unidentified error occurred</source>
-        <translation>Een onbekende fout is opgetreden</translation>
+        <translation>Er is een onbekende fout opgetreden</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="277"/>
@@ -5009,7 +5009,7 @@ Extensie niet ondersteund</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="273"/>
         <source>The connection negotiation with the proxy server failed because the response from the proxy server could not be understood</source>
-        <translation type="unfinished"></translation>
+        <translation>De verbinding met de proxyserver is mislukt doordat de antwoorden van de proxyserver niet herkend worden</translation>
     </message>
 </context>
 <context>
@@ -5844,7 +5844,7 @@ Slaat u het nogmaals op met OpenLP 2.0.2 of hoger.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is een fout opgetreden tijdens het opslaan van het liturgiebestand: %s</translation>
     </message>
 </context>
 <context>
@@ -6144,7 +6144,7 @@ Slaat u het nogmaals op met OpenLP 2.0.2 of hoger.</translation>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
         <source>Are you sure you want to delete ALL user-defined source input text for this projector?</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet u zeker dat u ALLE ingevoerde bronteksten van deze projector wilt verwijderen?</translation>
     </message>
 </context>
 <context>
@@ -6440,7 +6440,7 @@ Slaat u het nogmaals op met OpenLP 2.0.2 of hoger.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="405"/>
         <source>The theme export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is een fout opgetreden bij het exporteren van het thema: %s</translation>
     </message>
 </context>
 <context>
@@ -8105,12 +8105,12 @@ Please select an existing path on your computer.</source>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>Report Creation Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Overzicht maken mislukt</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>An error occurred while creating the report: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is een fout opgetreden bij het maken van het overzicht: %s</translation>
     </message>
 </context>
 <context>
@@ -9201,7 +9201,7 @@ Geef de verzen op gescheiden door spaties.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="255"/>
         <source>Your song export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is een fout opgetreden bij het exporteren van het lied: %s</translation>
     </message>
 </context>
 <context>

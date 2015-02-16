@@ -3552,7 +3552,7 @@ Ak chcete úplne zrušiť sprievodcu prvým spustením (a nespustiť OpenLP), kl
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušiť</translation>
+        <translation>Zrušiť</translation>
     </message>
 </context>
 <context>

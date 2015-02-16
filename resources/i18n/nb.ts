@@ -3567,7 +3567,7 @@ For å avbryte &quot;Førstegangs veiviser&quot; helt (og ikke starte OpenLP), T
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
 </context>
 <context>
@@ -4450,7 +4450,7 @@ Behandlingen er avsluttet og ingen endringer er gjort.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
         <source>An error occurred while exporting the settings: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Det oppstod en feil under eksport av innstillingene: %s</translation>
     </message>
 </context>
 <context>
@@ -4867,7 +4867,7 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="237"/>
         <source>The local system ran out of resources (e.g., too many sockets)</source>
-        <translation type="unfinished"></translation>
+        <translation>Det lokale systemet gikk tom for ressurser (for eksempel for mange &quot;sockets&quot;)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="239"/>
@@ -4877,67 +4877,67 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="241"/>
         <source>The datagram was larger than the operating system&apos;s limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Datagramet var større enn operativsystemets kapasitet</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="243"/>
         <source>An error occurred with the network (Possibly someone pulled the plug?)</source>
-        <translation type="unfinished"></translation>
+        <translation>Det oppstod en feil med nettverket (Kanskje var det noen som trakk ut pluggen?)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="245"/>
         <source>The address specified with socket.bind() is already in use and was set to be exclusive</source>
-        <translation type="unfinished"></translation>
+        <translation>Adressen spesifisert med socket.bind() er allerede i bruk, og ble satt til å være eksklusiv</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="248"/>
         <source>The address specified to socket.bind() does not belong to the host</source>
-        <translation type="unfinished"></translation>
+        <translation>Adressen spesifisert til socket.bind() hører ikke til verten</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="251"/>
         <source>The requested socket operation is not supported by the local operating system (e.g., lack of IPv6 support)</source>
-        <translation type="unfinished"></translation>
+        <translation>Den forespurte socketoperasjonen er ikke støttet av det lokale operativsystemet (for eksempel mangel på IPv6-støtte)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="254"/>
         <source>The socket is using a proxy, and the proxy requires authentication</source>
-        <translation type="unfinished"></translation>
+        <translation>Socketen bruker en proxy, og proxyen krever godkjenning</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="257"/>
         <source>The SSL/TLS handshake failed</source>
-        <translation type="unfinished"></translation>
+        <translation>SSL/TLS handshake mislyktes</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="259"/>
         <source>The last operation attempted has not finished yet (still in progress in the background)</source>
-        <translation type="unfinished"></translation>
+        <translation>Siste forsøk er ennå ikke ferdig (det pågår fortsatt i bakgrunnen)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="262"/>
         <source>Could not contact the proxy server because the connection to that server was denied</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke kontakte proxy-serveren fordi tilkoblingen til serveren det gjelder ble avvist</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="265"/>
         <source>The connection to the proxy server was closed unexpectedly (before the connection to the final peer was established)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilkoblingen til proxy-serveren ble stengt uventet (før tilkoblingen til den endelige node ble etablert)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="268"/>
         <source>The connection to the proxy server timed out or the proxy server stopped responding in the authentication phase.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilkoblingen til proxy-serveren ble tidsavbrutt eller proxy-serveren sluttet å svare i godkjenningsfasen.</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="271"/>
         <source>The proxy address set with setProxy() was not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy-adresse angitt med setProxy() ble ikke funnet</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="276"/>
         <source>An unidentified error occurred</source>
-        <translation type="unfinished"></translation>
+        <translation>En ukjent feil oppstod</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="277"/>
@@ -4967,12 +4967,12 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="282"/>
         <source>Initialize in progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Initialisering pågår</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="283"/>
         <source>Power in standby</source>
-        <translation type="unfinished"></translation>
+        <translation>Strøm i standby</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="284"/>
@@ -5007,7 +5007,7 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="273"/>
         <source>The connection negotiation with the proxy server failed because the response from the proxy server could not be understood</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilkoblings forhandlingene med proxy-serveren mislyktes fordi responsen fra proxy-serveren kunne ikke forstås</translation>
     </message>
 </context>
 <context>
@@ -5211,12 +5211,12 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="245"/>
         <source>Select &amp;Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg &amp;Inndata</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="250"/>
         <source>Edit Input Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Rediger inngangskilkde</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="255"/>
@@ -5241,7 +5241,7 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="631"/>
         <source>IP</source>
-        <translation type="unfinished"></translation>
+        <translation>IP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="633"/>
@@ -5266,37 +5266,37 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="644"/>
         <source>Manufacturer</source>
-        <translation type="unfinished"></translation>
+        <translation>Produsent</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="646"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Modell</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="648"/>
         <source>Other info</source>
-        <translation type="unfinished"></translation>
+        <translation>Annen informasjon</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="650"/>
         <source>Power status</source>
-        <translation type="unfinished"></translation>
+        <translation>Strømstaus</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Shutter is</source>
-        <translation type="unfinished"></translation>
+        <translation>Lukkeren er</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Closed</source>
-        <translation type="unfinished"></translation>
+        <translation>Lukket</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="655"/>
         <source>Current source input is</source>
-        <translation type="unfinished"></translation>
+        <translation>Gjeldende kilde-inngang er</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="660"/>
@@ -5321,12 +5321,12 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="671"/>
         <source>No current errors or warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen aktuelle feil eller advarsler</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="673"/>
         <source>Current errors/warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuelle feil/advarsler</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="676"/>
@@ -5341,7 +5341,7 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="971"/>
         <source>Not Implemented Yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikke implementert ennå</translation>
     </message>
 </context>
 <context>
@@ -5397,22 +5397,22 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="103"/>
         <source>Socket timeout (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Socket tidsavbrudd i (sekunder)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="105"/>
         <source>Poll time (seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontroll tid (sekunder)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="109"/>
         <source>Tabbed dialog box</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogboks med kategorier</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="111"/>
         <source>Single dialog box</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel dialogboks</translation>
     </message>
 </context>
 <context>
@@ -5420,17 +5420,17 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="198"/>
         <source>Duplicate IP Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Gjenntatt IP-adresse</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="206"/>
         <source>Invalid IP Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig IP-adresse</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="215"/>
         <source>Invalid Port Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig portnummer</translation>
     </message>
 </context>
 <context>
@@ -5461,7 +5461,7 @@ Fil-endelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/serviceitem.py" line="334"/>
         <source>[slide %d]</source>
-        <translation type="unfinished"></translation>
+        <translation>[slide %d]</translation>
     </message>
 </context>
 <context>
@@ -5783,29 +5783,31 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="699"/>
         <source>OpenLP Service Files (*.osz);; OpenLP Service Files - lite (*.oszl)</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP Møteprogramfiler (*.osz);; OpenLP Møteprogramfiler - lett (*.oszl)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="704"/>
         <source>OpenLP Service Files (*.osz);;</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP Møteprogramfiler (*.osz);;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="749"/>
         <source>File is not a valid service.
  The content encoding is not UTF-8.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen er ikke et gyldig møteprogram
+Innholdet er ikke i UTF-8 koding</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="764"/>
         <source>The service file you are trying to open is in an old format.
  Please save it using OpenLP 2.0.2 or greater.</source>
-        <translation type="unfinished"></translation>
+        <translation>Møteprogramfilen du prøver å åpne er i et gammelt format.
+Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="793"/>
         <source>This file is either corrupt or it is not an OpenLP 2 service file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Denne filen er enten skadet eller så er det ikke en OpenLP 2 møteprogramfil.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="895"/>
@@ -5815,12 +5817,12 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="897"/>
         <source>&amp;Auto Start - active</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Autostart - aktiv</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="984"/>
         <source>Input delay</source>
-        <translation type="unfinished"></translation>
+        <translation>Inngangs forsinkelse</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="984"/>
@@ -7210,7 +7212,7 @@ Vennligst prøv å velge den individuelt.</translation>
         <location filename="openlp/core/common/uistrings.py" line="96"/>
         <source>Manufacturer</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Produsent</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="97"/>
@@ -7222,7 +7224,7 @@ Vennligst prøv å velge den individuelt.</translation>
         <location filename="openlp/core/common/uistrings.py" line="98"/>
         <source>Model</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Modell</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="99"/>
@@ -7294,7 +7296,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="111"/>
         <source>OpenLP 2</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="113"/>
@@ -7490,7 +7492,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="112"/>
         <source>OpenLP 2.2</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.2</translation>
     </message>
 </context>
 <context>
@@ -7834,7 +7836,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="303"/>
         <source>OpenLP 2.2 Stage View</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.2 scenevisning</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="304"/>

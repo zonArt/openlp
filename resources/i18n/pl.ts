@@ -3483,7 +3483,7 @@ By anulować kreatora pierwszego uruchomienia całkowicie (i nie uruchamiać Ope
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Anuluj</translation>
+        <translation>Anuluj</translation>
     </message>
 </context>
 <context>
@@ -4129,7 +4129,7 @@ Możesz pobrać najnowszą wersję z http://openlp.org/.</translation>
         <location filename="openlp/core/utils/languagemanager.py" line="83"/>
         <source>English</source>
         <comment>Please add the name of your language here</comment>
-        <translation>Angielski</translation>
+        <translation>Polish</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="417"/>

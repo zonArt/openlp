@@ -3541,7 +3541,7 @@ Keskeyttääksesi ensiasennuksen ohjatun toiminnon kokonaan (ei käynnistetä Op
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Peruuta</translation>
+        <translation>Peruuta</translation>
     </message>
 </context>
 <context>
@@ -4187,7 +4187,7 @@ Voit ladata viimeisimmän version osoittesta http://openlp.org/.</translation>
         <location filename="openlp/core/utils/languagemanager.py" line="83"/>
         <source>English</source>
         <comment>Please add the name of your language here</comment>
-        <translation>Englanti</translation>
+        <translation>Finish</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="417"/>

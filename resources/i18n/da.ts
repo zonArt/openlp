@@ -3570,7 +3570,7 @@ For at annullere velkomstguiden fuldstændigt (uden at starte OpenLP), så klik 
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annullér</translation>
+        <translation>Annullér</translation>
     </message>
 </context>
 <context>

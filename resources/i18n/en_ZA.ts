@@ -3568,7 +3568,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancel</translation>
+        <translation>Cancel</translation>
     </message>
 </context>
 <context>
@@ -4214,7 +4214,7 @@ You can download the latest version from http://openlp.org/.</translation>
         <location filename="openlp/core/utils/languagemanager.py" line="83"/>
         <source>English</source>
         <comment>Please add the name of your language here</comment>
-        <translation>English</translation>
+        <translation>South African</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="417"/>
@@ -4450,7 +4450,7 @@ Processing has terminated and no changes have been made.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
         <source>An error occurred while exporting the settings: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>An error occurred while exporting the settings: %s</translation>
     </message>
 </context>
 <context>
@@ -5007,7 +5007,7 @@ Suffix not supported</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="273"/>
         <source>The connection negotiation with the proxy server failed because the response from the proxy server could not be understood</source>
-        <translation type="unfinished"></translation>
+        <translation>The connection negotiation with the proxy server failed because the response from the proxy server could not be understood</translation>
     </message>
 </context>
 <context>
@@ -5842,7 +5842,7 @@ Please save it using OpenLP 2.0.2 or greater.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>An error occurred while writing the service file: %s</translation>
     </message>
 </context>
 <context>
@@ -6142,7 +6142,7 @@ Please save it using OpenLP 2.0.2 or greater.</translation>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
         <source>Are you sure you want to delete ALL user-defined source input text for this projector?</source>
-        <translation type="unfinished"></translation>
+        <translation>Are you sure you want to delete ALL user-defined source input text for this projector?</translation>
     </message>
 </context>
 <context>
@@ -6438,7 +6438,7 @@ Please save it using OpenLP 2.0.2 or greater.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="405"/>
         <source>The theme export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>The theme export failed because this error occurred: %s</translation>
     </message>
 </context>
 <context>
@@ -8104,12 +8104,12 @@ Please select an existing path on your computer.</translation>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>Report Creation Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Report Creation Failed</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>An error occurred while creating the report: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>An error occurred while creating the report: %s</translation>
     </message>
 </context>
 <context>
@@ -9200,7 +9200,7 @@ Please enter the verses separated by spaces.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="255"/>
         <source>Your song export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Your song export failed because this error occurred: %s</translation>
     </message>
 </context>
 <context>

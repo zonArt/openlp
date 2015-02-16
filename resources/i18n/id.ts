@@ -1389,7 +1389,7 @@ Tidak mungkin untuk mengubahsuaikan Nama Kitab.</translation>
         <source>Are you sure you want to completely delete &quot;%s&quot; Bible from OpenLP?
 
 You will need to re-import this Bible to use it again.</source>
-        <translation>Apakah Anda yakin ingin menghapus keseluruhan Alkitab &quot;%s&quot; dari OpenLP?
+        <translation>Anda yakin ingin menghapus keseluruhan Alkitab &quot;%s&quot; dari OpenLP?
 
 Anda harus mengimpor ulang Alkitab ini untuk menggunakannya kembali.</translation>
     </message>
@@ -3568,7 +3568,7 @@ Untuk membatalkan sepenuhnya Wisaya Kali Pertama (dan tidak memulai OpenLP), kli
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Batal</translation>
+        <translation>Batal</translation>
     </message>
 </context>
 <context>
@@ -4407,7 +4407,7 @@ Menjalankan lagi wisaya ini mungkin akan mengubah konfigurasi OpenLP saat ini da
  Importing settings will make permanent changes to your current OpenLP configuration.
 
  Importing incorrect settings may cause erratic behaviour or OpenLP to terminate abnormally.</source>
-        <translation>Apakah Anda yakin ingin meng-impor setelan?
+        <translation>Anda yakin ingin meng-impor setelan?
 
  Mengimpor setelan akan membuat perubahan permanen pada konfigurasi OpenLP Anda saat ini.
 
@@ -4450,7 +4450,7 @@ Proses telah dihentikan dan tidak ada perubahan yang telah dibuat.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
         <source>An error occurred while exporting the settings: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan saat mengekspor setelan: %s</translation>
     </message>
 </context>
 <context>
@@ -5007,7 +5007,7 @@ Tidak ada dukungan untuk akhiran ini</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="273"/>
         <source>The connection negotiation with the proxy server failed because the response from the proxy server could not be understood</source>
-        <translation type="unfinished"></translation>
+        <translation>Negosiasi sambungan dengan server proxy gagal karena respon dari server proxy tidak dapat dipahami</translation>
     </message>
 </context>
 <context>
@@ -5795,7 +5795,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
         <source>File is not a valid service.
  The content encoding is not UTF-8.</source>
         <translation>Berkas bukanlah Layanan yang valid.
- Pengodean konten bukanlah UTF-8.</translation>
+ Pengodean kontennya bukan UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="764"/>
@@ -5807,7 +5807,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="793"/>
         <source>This file is either corrupt or it is not an OpenLP 2 service file.</source>
-        <translation>Berkas ini rusak atau bukanlah berkas layanan OpenLP 2.</translation>
+        <translation>Berkas ini rusak atau bukan suatu berkas layanan OpenLP 2.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="895"/>
@@ -5842,7 +5842,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan saat menulis berkas layanan: %s</translation>
     </message>
 </context>
 <context>
@@ -6142,7 +6142,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
         <source>Are you sure you want to delete ALL user-defined source input text for this projector?</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda yakin ingin menghapus SEMUA teks sumber masukan yang-ditetapkan-pengguna untuk proyektor ini?</translation>
     </message>
 </context>
 <context>
@@ -6438,7 +6438,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="405"/>
         <source>The theme export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor tema gagal karena terjadi kesalahan berikut: %s</translation>
     </message>
 </context>
 <context>
@@ -8104,12 +8104,12 @@ Silakan pilih suatu jalur yang ada di komputer Anda.</translation>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>Report Creation Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Pembuatan Laporan Gagal</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>An error occurred while creating the report: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan saat membuat laporan: %s</translation>
     </message>
 </context>
 <context>
@@ -9199,7 +9199,7 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="255"/>
         <source>Your song export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor lagu gagal karena terjadi kesalahan berikut: %s</translation>
     </message>
 </context>
 <context>

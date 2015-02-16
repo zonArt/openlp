@@ -3569,7 +3569,7 @@ A tündér teljes leállításához (és az OpenLP bezárásához) kattints az a
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
 </context>
 <context>
