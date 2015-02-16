@@ -57,7 +57,7 @@ class ZefaniaBible(BibleDB):
             # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
             # detection, and the two mechanisms together interfere with each other.
             import_file = open(self.filename, 'rb')
-            zefania_bible_tree = etree.parse(import_file)
+            zefania_bible_tree = etree.parse(import_file, parser=etree.XMLParser(recover=True))
             # Find bible language
             language_id = None
             language = zefania_bible_tree.xpath("/XMLBIBLE/INFORMATION/language/text()")
@@ -76,9 +76,19 @@ class ZefaniaBible(BibleDB):
             etree.strip_elements(zefania_bible_tree, ('PROLOG', 'REMARK', 'CAPTION', 'MEDIA'), with_tail=False)
             xmlbible = zefania_bible_tree.getroot()
             for BIBLEBOOK in xmlbible:
-                book_ref_id = self.get_book_ref_id_by_name(str(BIBLEBOOK.get('bname')), num_books)
-                if not book_ref_id:
-                    book_ref_id = self.get_book_ref_id_by_localised_name(str(BIBLEBOOK.get('bname')))
+                if self.stop_import_flag:
+                    break
+                bname = BIBLEBOOK.get('bname')
+                bnumber = BIBLEBOOK.get('bnumber')
+                if not bname and not bnumber:
+                    continue
+                if bname:
+                    book_ref_id = self.get_book_ref_id_by_name(bname, num_books)
+                    if not book_ref_id:
+                        book_ref_id = self.get_book_ref_id_by_localised_name(bname)
+                else:
+                    log.debug('Could not find a name, will use number, basically a guess.')
+                    book_ref_id = int(bnumber)
                 if not book_ref_id:
                     log.error('Importing books from "%s" failed' % self.filename)
                     return False
@@ -94,7 +104,7 @@ class ZefaniaBible(BibleDB):
                     self.wizard.increment_progress_bar(
                         translate('BiblesPlugin.Zefnia', 'Importing %(bookname)s %(chapter)s...' %
                                   {'bookname': db_book.name, 'chapter': chapter_number}))
-                self.session.commit()
+            self.session.commit()
             self.application.process_events()
         except Exception as e:
             critical_error_message_box(

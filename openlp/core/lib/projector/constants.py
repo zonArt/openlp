@@ -271,8 +271,8 @@ ERROR_MSG = {E_OK: translate('OpenLP.ProjectorConstants', 'OK'),  # E_OK | S_OK
              E_PROXY_NOT_FOUND: translate('OpenLP.ProjectorConstants',
                                           'The proxy address set with setProxy() was not found'),
              E_PROXY_PROTOCOL: translate('OpenLP.ProjectorConstants',
-                                         'The connection negotiation with the proxy server because the response '
-                                         'from the proxy server could not be understood'),
+                                         'The connection negotiation with the proxy server failed because the '
+                                         'response from the proxy server could not be understood'),
              E_UNKNOWN_SOCKET_ERROR: translate('OpenLP.ProjectorConstants', 'An unidentified error occurred'),
              S_NOT_CONNECTED: translate('OpenLP.ProjectorConstants', 'Not connected'),
              S_CONNECTING: translate('OpenLP.ProjectorConstants', 'Connecting'),

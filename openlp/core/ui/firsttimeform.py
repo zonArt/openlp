@@ -268,9 +268,11 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         self.web = 'http://openlp.org/files/frw/'
         self.cancel_button.clicked.connect(self.on_cancel_button_clicked)
         self.no_internet_finish_button.clicked.connect(self.on_no_internet_finish_button_clicked)
+        self.no_internet_cancel_button.clicked.connect(self.on_no_internet_cancel_button_clicked)
         self.currentIdChanged.connect(self.on_current_id_changed)
         Registry().register_function('config_screen_changed', self.update_screen_list_combo)
         self.no_internet_finish_button.setVisible(False)
+        self.no_internet_cancel_button.setVisible(False)
         # Check if this is a re-run of the wizard.
         self.has_run_wizard = Settings().value('core/has run wizard')
         check_directory_exists(os.path.join(gettempdir(), 'openlp'))
@@ -327,6 +329,10 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             self.next_button.setVisible(False)
             self.cancel_button.setVisible(False)
             self.no_internet_finish_button.setVisible(True)
+            if self.has_run_wizard:
+                self.no_internet_cancel_button.setVisible(False)
+            else:
+                self.no_internet_cancel_button.setVisible(True)
         elif page_id == FirstTimePage.Plugins:
             self.back_button.setVisible(False)
         elif page_id == FirstTimePage.Progress:
@@ -370,6 +376,13 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         self._perform_wizard()
         self.application.set_normal_cursor()
         Settings().setValue('core/has run wizard', True)
+        self.close()
+
+    def on_no_internet_cancel_button_clicked(self):
+        """
+        Process the triggering of the "Cancel" button on the No Internet page.
+        """
+        self.was_cancelled = True
         self.close()
 
     def url_get_file(self, url, f_path):
