@@ -226,8 +226,8 @@ class TestRouter(TestCase, TestMixin):
 
         # THEN: The headers should be set correctly
         self.router.send_response.assert_called_once_with(404)
-        self.assertEqual(self.router.send_response.call_count, 1, 'Send response called once')
-        self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
+        self.assertEqual(self.router.send_response.call_count, 1, 'Send response should be called once')
+        self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers should be called once')
 
     def serve_thumbnail_with_invalid_params_test(self):
         """
@@ -243,7 +243,7 @@ class TestRouter(TestCase, TestMixin):
         self.router.serve_thumbnail('badcontroller', 'tecnologia 1.pptx/slide1.png')
 
         # THEN: a 404 should be returned
-        self.assertEqual(len(self.router.send_header.mock_calls), 4, 'One header')
+        self.assertEqual(len(self.router.send_header.mock_calls), 4, 'header should be called 4 times')
         self.assertEqual(len(self.router.send_response.mock_calls), 1, 'One response')
         self.assertEqual(len(self.router.wfile.mock_calls), 1, 'Once call to write to the socket')
         self.router.send_response.assert_called_once_with(404)
