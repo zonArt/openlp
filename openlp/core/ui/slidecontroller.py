@@ -408,7 +408,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.set_live_hot_keys(self)
             self.__add_actions_to_widget(self.controller)
         else:
-            self.preview_widget.doubleClicked.connect(self.on_preview_add_to_service)
+            self.preview_widget.doubleClicked.connect(self.on_preview_double_click)
             self.toolbar.set_widget_visible(['editSong'], False)
             self.controller.addActions([self.next_item, self.previous_item])
         Registry().register_function('slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
@@ -1309,18 +1309,21 @@ class SlideController(DisplayController, RegistryProperties):
         if self.service_item:
             self.service_manager.add_service_item(self.service_item)
 
-    def on_go_live_click(self, field=None):
+    def on_preview_double_click(self, field=None):
         """
-        triggered by clicking the Preview slide items
+        Triggered when a preview slide item is doubleclicked
         """
-        if Settings().value('advanced/double click live'):
-            # Live and Preview have issues if we have video or presentations
-            # playing in both at the same time.
-            if self.service_item.is_command():
-                Registry().execute('%s_stop' % self.service_item.name.lower(), [self.service_item, self.is_live])
-            if self.service_item.is_media():
-                self.on_media_close()
-            self.on_go_live()
+        if self.service_item:
+            if Settings().value('advanced/double click live'):
+                # Live and Preview have issues if we have video or presentations
+                # playing in both at the same time.
+                if self.service_item.is_command():
+                    Registry().execute('%s_stop' % self.service_item.name.lower(), [self.service_item, self.is_live])
+                if self.service_item.is_media():
+                    self.on_media_close()
+                self.on_go_live()
+            else:
+                self.on_preview_add_to_service()
 
     def on_go_live(self, field=None):
         """
