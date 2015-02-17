@@ -83,7 +83,7 @@ MODULES = [
 
 
 OPTIONAL_MODULES = [
-    ('MySQLdb', '(MySQL support)', True),
+    ('mysql.connector', '(MySQL support)', True),
     ('psycopg2', '(PostgreSQL support)', True),
     ('nose', '(testing framework)', True),
     ('mock',  '(testing module)', sys.version_info[1] < 3),
