@@ -25,7 +25,7 @@
 from unittest import TestCase
 
 from openlp.core.common import Registry
-from openlp.plugins.bibles.lib.http import BGExtract, CWExtract
+from openlp.plugins.bibles.lib.http import BGExtract, CWExtract, BSExtract
 from tests.interfaces import MagicMock
 
 
@@ -116,3 +116,33 @@ class TestBibleHTTP(TestCase):
 
         # THEN: We should get back a valid service item
         assert len(results.verse_list) == 36, 'The book of John should not have had any verses added or removed'
+
+    def bibleserver_get_bibles_test(self):
+        """
+        Test getting list of bibles from BibelServer.com
+        """
+        # GIVEN: A new Bible Server extraction class
+        handler = BSExtract()
+
+        handler.get_bibles_from_http()
+        self.assertTrue(False)
+
+    def biblegateway_get_bibles_test(self):
+        """
+        Test getting list of bibles from BibelGateway.com
+        """
+        # GIVEN: A new Bible Gateway extraction class
+        handler = BGExtract()
+
+        handler.get_bibles_from_http()
+        self.assertTrue(False)
+
+    def crosswalk_get_bibles_test(self):
+        """
+        Test getting list of bibles from Crosswalk.com
+        """
+        # GIVEN: A new Crosswalk extraction class
+        handler = CWExtract()
+
+        handler.get_bibles_from_http()
+        self.assertTrue(False)

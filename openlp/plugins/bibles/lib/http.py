@@ -50,6 +50,29 @@ UGLY_CHARS = {
 }
 VERSE_NUMBER_REGEX = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
 
+BIBLESERVER_LANGUAGE_CODE = {
+    'fl_1': 'de',
+    'fl_2': 'en',
+    'fl_3': 'fr',
+    'fl_4': 'it',
+    'fl_5': 'es',
+    'fl_6': 'pt',
+    'fl_7': 'ru',
+    'fl_8': 'sv',
+    'fl_9': 'no',
+    'fl_10': 'nl',
+    'fl_11': 'cs',
+    'fl_12': 'sk',
+    'fl_13': 'ro',
+    'fl_14': 'hr',
+    'fl_15': 'hu',
+    'fl_16': 'bg',
+    'fl_17': 'ar',
+    'fl_18': 'tr',
+    'fl_19': 'pl',
+    'fl_20': 'da',
+    'fl_21': 'zh'
+}
 
 log = logging.getLogger(__name__)
 
@@ -278,6 +301,32 @@ class BGExtract(RegistryProperties):
                 books.append(book.contents[0])
         return books
 
+    def get_bibles_from_http(self):
+        """
+        Load a list of bibles from BibleGateway website.
+        """
+        log.debug('BGExtract.get_bibles_from_http')
+        bible_url = 'https://legacy.biblegateway.com/versions/'
+        soup = get_soup_for_bible_ref(bible_url)
+        if not soup:
+            return None
+        bible_select = soup.find('select', {'class': 'translation-dropdown'})
+        option_tags = bible_select.find_all('option')
+        current_lang = ''
+        for ot in option_tags:
+            tag_class = ''
+            try:
+                tag_class = ot['class'][0]
+            except KeyError:
+                tag_class = ''
+            tag_text = ot.get_text()
+            if tag_class == 'lang':
+                current_lang = tag_text[tag_text.find('(') + 1:tag_text.find(')') + 1].lower()
+            elif tag_class == 'spacer':
+                continue
+            else:
+                print('biblename: %s, bible_key: %s, class: %s' % (tag_text, ot['value'], current_lang))
+
 
 class BSExtract(RegistryProperties):
     """
@@ -337,6 +386,33 @@ class BSExtract(RegistryProperties):
             return None
         content = content.find_all('li')
         return [book.contents[0].contents[0] for book in content if len(book.contents[0].contents)]
+
+    def get_bibles_from_http(self):
+        """
+        Load a list of bibles from Bibleserver website.
+        """
+        log.debug('BSExtract.get_bibles_from_http')
+        bible_url = 'http://www.bibleserver.com/index.php?language=2'
+        soup = get_soup_for_bible_ref(bible_url)
+        if not soup:
+            return None
+        bible_links = soup.find_all('a', {'class': 'trlCell'})
+        for link in bible_links:
+            bible_name = link.get_text()
+            # Skip any audio
+            if 'audio' in bible_name.lower():
+                continue
+            bible_link = link['href']
+            bible_key = bible_link[bible_link.rfind('/') + 1:]
+            css_classes = link['class']
+            language_code = ''
+            for css_class in css_classes:
+                if css_class.startswith('fl_'):
+                    try:
+                        language_code = BIBLESERVER_LANGUAGE_CODE[css_class]
+                    except KeyError:
+                        language_code = ''
+            print('biblename: %s, bible_key: %s, class: %s' % (bible_name, bible_key, language_code))
 
 
 class CWExtract(RegistryProperties):
@@ -407,6 +483,32 @@ class CWExtract(RegistryProperties):
         for book in content:
             books.append(book.contents[0])
         return books
+
+    def get_bibles_from_http(self):
+        """
+        Load a list of bibles from Crosswalk website.
+        """
+        log.debug('CWExtract.get_bibles_from_http')
+        bible_url = 'http://www.biblestudytools.com/search/bible-search.part/'
+        soup = get_soup_for_bible_ref(bible_url)
+        if not soup:
+            return None
+        bible_select = soup.find('select')
+        option_tags = bible_select.find_all('option')
+        for ot in option_tags:
+            tag_text = ot.get_text()
+            tag_value = ot['value']
+            if not tag_value:
+                continue
+            # The names of non-english bibles has their language in parentheses at the end
+            if tag_text.endswith(')'):
+                language_code = ''
+            # ... except for the latin vulgate
+            elif 'latin' in tag_text.lower():
+                language_code = 'la'
+            else:
+                language_code = 'en'
+            print('biblename: %s, bible_key: %s, class: %s' % (tag_text, tag_value, language_code))
 
 
 class HTTPBible(BibleDB, RegistryProperties):
