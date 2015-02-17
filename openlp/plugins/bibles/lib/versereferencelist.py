@@ -82,9 +82,11 @@ class VerseReferenceList(object):
                 if result[-1] not in [';', ',', '.']:
                     result += ';'
                 result += ' '
-            result = '%s%s, %s' % (result, version['version'], version['copyright'])
+            result += version['version']
+            if version['copyright'].strip():
+                result += ', ' + version['copyright']
             if version['permission'].strip():
-                result = result + ', ' + version['permission']
+                result += ', ' + version['permission']
         result = result.rstrip()
         if result.endswith(','):
             return result[:len(result) - 1]
