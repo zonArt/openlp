@@ -25,6 +25,7 @@ This module contains the first time wizard.
 import hashlib
 import logging
 import os
+import socket
 import time
 import urllib.request
 import urllib.parse
@@ -403,8 +404,8 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         retries = 0
         while True:
             try:
-                url_file = urllib.request.urlopen(url, timeout=CONNECTION_TIMEOUT)
                 filename = open(f_path, "wb")
+                url_file = urllib.request.urlopen(url, timeout=CONNECTION_TIMEOUT)
                 if sha256:
                     hasher = hashlib.sha256()
                 # Download until finished or canceled.
@@ -422,7 +423,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     log.error('sha256 sums did not match for file: {}'.format(f_path))
                     os.remove(f_path)
                     return False
-            except urllib.error.URLError:
+            except (urllib.error.URLError, socket.timeout) as err:
                 trace_error_handler(log)
                 filename.close()
                 os.remove(f_path)
@@ -617,6 +618,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         songs_destination = os.path.join(gettempdir(), 'openlp')
         bibles_destination = AppLocation.get_section_data_path('bibles')
         themes_destination = AppLocation.get_section_data_path('themes')
+        missed_files = []
         # Download songs
         for i in range(self.songs_list_widget.count()):
             item = self.songs_list_widget.item(i)
@@ -626,7 +628,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.previous_size = 0
                 destination = os.path.join(songs_destination, str(filename))
                 if not self.url_get_file('%s%s' % (self.songs_url, filename), destination, sha256):
-                    return False
+                    missed_files.append('Song: {}'.format(filename))
         # Download Bibles
         bibles_iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
         while bibles_iterator.value():
@@ -637,7 +639,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.previous_size = 0
                 if not self.url_get_file('%s%s' % (self.bibles_url, bible), os.path.join(bibles_destination, bible),
                                          sha256):
-                    return False
+                    missed_files.append('Bible: {}'.format(bible))
             bibles_iterator += 1
         # Download themes
         for i in range(self.themes_list_widget.count()):
@@ -648,7 +650,20 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.previous_size = 0
                 if not self.url_get_file('%s%s' % (self.themes_url, theme), os.path.join(themes_destination, theme),
                                          sha256):
-                    return False
+                    missed_files.append('Theme: {}'.format(theme))
+        if missed_files:
+            file_list = ''
+            for entry in missed_files:
+                file_list += '{}<br \>'.format(entry)
+            msg = QtGui.QMessageBox()
+            msg.setIcon(QtGui.QMessageBox.Warning)
+            msg.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'Network Error'))
+            msg.setText(translate('OpenLP.FirstTimeWizard', 'Unable to download some files'))
+            msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
+                                             'The following files were not able to be '
+                                             'downloaded:<br \>{}'.format(file_list)))
+            msg.setStandardButtons(msg.Ok)
+            ans = msg.exec_()
         return True
 
     def _set_plugin_status(self, field, tag):
