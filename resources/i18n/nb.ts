@@ -99,14 +99,14 @@ Vil du fortsette?</translation>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
         <source>The alert text does not contain &apos;&lt;&gt;&apos;.
 Do you want to continue anyway?</source>
-        <translation>Varselteksten inneholder ikke &apos;&lt;&gt;&apos;.
+        <translation>Meldingsteksten inneholder ikke &apos;&lt;&gt;&apos;.
 Vil du fortsette likevel?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="107"/>
         <source>You haven&apos;t specified any text for your alert. 
 Please type in some text before clicking New.</source>
-        <translation>Du har ikke spesifisert noen tekst for varselet.
+        <translation>Du har ikke spesifisert noen tekst for meldingen.
 Vennligst skriv inn tekst før du klikker Ny.</translation>
     </message>
 </context>
@@ -115,7 +115,7 @@ Vennligst skriv inn tekst før du klikker Ny.</translation>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertsmanager.py" line="63"/>
         <source>Alert message created and displayed.</source>
-        <translation>Varselmeldingen er laget og vist.</translation>
+        <translation>Meldingen er laget og vist.</translation>
     </message>
 </context>
 <context>
@@ -148,7 +148,7 @@ Vennligst skriv inn tekst før du klikker Ny.</translation>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="104"/>
         <source>Alert timeout:</source>
-        <translation>Varselvarighet:</translation>
+        <translation>Meldingsvarighet:</translation>
     </message>
 </context>
 <context>
@@ -4409,7 +4409,7 @@ Dersom du kjører veiviseren på nytt vil det sannsynlig føre til forandringer 
  Importing incorrect settings may cause erratic behaviour or OpenLP to terminate abnormally.</source>
         <translation>Er du sikker på at du vil importere instillinger?
 
-Å iportere innstillinger vil gjøre permanente forandringer i din nåværende OpenLP konfigurasjon.
+Å importere innstillinger vil gjøre permanente forandringer i din nåværende OpenLP konfigurasjon.
 
 Dersom du importerer feil instillinger kan føre til uberegnelig opptreden eller OpenLP avsluttes unormalt.</translation>
     </message>
@@ -4440,7 +4440,7 @@ Behandlingen er avsluttet og ingen endringer er gjort.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
         <source>Export setting error</source>
-        <translation>Eksport innstillingene er feil</translation>
+        <translation>Eksportinnstillingene er feil</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="981"/>
@@ -5832,7 +5832,7 @@ Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="1516"/>
         <source>Rename item title</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre navn på møteprogrampost </translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="1516"/>
@@ -5842,7 +5842,7 @@ Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Det oppstod en feil under skriving av møteprogramfilen:  %s</translation>
     </message>
 </context>
 <context>
@@ -6117,22 +6117,22 @@ Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="148"/>
         <source>Ignoring current changes and return to OpenLP</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorerer de aktuelle endringene og gå tilbake til OpenLP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="151"/>
         <source>Delete all user-defined text and revert to PJLink default text</source>
-        <translation type="unfinished"></translation>
+        <translation>Slett alle brukerdefinert tekst og gå tilbake til PJLink standardtekst</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="154"/>
         <source>Discard changes and reset to previous user-defined text</source>
-        <translation type="unfinished"></translation>
+        <translation>Forkast endringene og tilbakestill til forrige brukerdefinerte tekst</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="157"/>
         <source>Save changes and return to OpenLP</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre endringer og gå tilbake til OpenLP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="471"/>
@@ -6142,7 +6142,7 @@ Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
         <source>Are you sure you want to delete ALL user-defined source input text for this projector?</source>
-        <translation type="unfinished"></translation>
+        <translation>Er du sikker på at du vil slette alle brukerdefinerte inn data tekst for denne projektoren?</translation>
     </message>
 </context>
 <context>
@@ -6438,7 +6438,7 @@ Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="405"/>
         <source>The theme export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport av tema mislyktes fordi denne feilen oppstod: %s</translation>
     </message>
 </context>
 <context>
@@ -6591,7 +6591,7 @@ Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="461"/>
         <source>Output Area Locations</source>
-        <translation>Plassering av visningsområda</translation>
+        <translation>Plassering av tekst</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="464"/>
@@ -6741,7 +6741,7 @@ Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="462"/>
         <source>Allows you to change and move the Main and Footer areas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Her kan du endre og flytte tekst- og bunntekst områdene.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="181"/>
@@ -6799,12 +6799,12 @@ Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="116"/>
         <source>Universal Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Universelle Innstillinger</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="117"/>
         <source>&amp;Wrap footer text</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ram inn bunnteksten</translation>
     </message>
 </context>
 <context>
@@ -6987,7 +6987,7 @@ Vennligst lagre den med OpenLP 2.0.2 eller nyere.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="133"/>
         <source>Welcome to the Duplicate Song Removal Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Velkommen til veiviseren for fjerning sangdublikater</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="504"/>
@@ -7218,7 +7218,7 @@ Vennligst prøv å velge den individuelt.</translation>
         <location filename="openlp/core/common/uistrings.py" line="97"/>
         <source>Manufacturers</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Produsenter</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="98"/>
@@ -7230,7 +7230,7 @@ Vennligst prøv å velge den individuelt.</translation>
         <location filename="openlp/core/common/uistrings.py" line="99"/>
         <source>Models</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Modeller</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="100"/>
@@ -7487,7 +7487,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="63"/>
         <source>CCLI song number:</source>
-        <translation type="unfinished"></translation>
+        <translation>CCLI sang nummer:</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="112"/>
@@ -7527,7 +7527,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="107"/>
         <source>Source select dialog interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Velge kilde grensesnitt</translation>
     </message>
 </context>
 <context>
@@ -7639,7 +7639,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="418"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Det oppstod en feil i Powerpoint integrasjonen og presentasjonen vil bli stoppet. Start presentasjonen på nytt hvis du ønsker å fortsette.</translation>
     </message>
 </context>
 <context>
@@ -7667,17 +7667,17 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bruk fullstendig bane for mudraw eller ghost binary:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="196"/>
         <source>Select mudraw or ghostscript binary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg mudraw eller ghost binary.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="202"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Programmet er ikke ghostscript eller mudraw som er nødvendig.</translation>
     </message>
 </context>
 <context>
@@ -7708,12 +7708,12 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="120"/>
         <source>Server Config Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre serverinstillingene</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="120"/>
         <source>Server configuration changes will require a restart to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Endring av serverinstillingene krever omstart for å tre i kraft.</translation>
     </message>
 </context>
 <context>
@@ -7731,7 +7731,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="307"/>
         <source>Alerts</source>
-        <translation>Varsel</translation>
+        <translation>Meldinger</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="308"/>
@@ -7786,7 +7786,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="318"/>
         <source>Show Alert</source>
-        <translation>Vis varselmelding</translation>
+        <translation>Vis melding</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="319"/>
@@ -7831,7 +7831,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="302"/>
         <source>OpenLP 2.2 Remote</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.2 Fjernstyring</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="303"/>
@@ -7841,7 +7841,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="304"/>
         <source>OpenLP 2.2 Live View</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.2 Skjermvisning</translation>
     </message>
 </context>
 <context>
@@ -7874,7 +7874,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="175"/>
         <source>Display stage time in 12h format</source>
-        <translation>Vis sene-tiden i 12-timersformat </translation>
+        <translation>Vis scene-tiden i 12-timersformat </translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="178"/>
@@ -7889,22 +7889,22 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="174"/>
         <source>Live view URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjermvisning URL:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="182"/>
         <source>HTTPS Server</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTPS Server</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="183"/>
         <source>Could not find an SSL certificate. The HTTPS server will not be available unless an SSL certificate is found. Please see the manual for more information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke finne et SSL-sertifikat. HTTPS-serveren vil ikke være tilgjengelig med mindre et SSL-sertifikat er funnet. Se i bruksanvisningen for mer informasjon.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="190"/>
         <source>User Authentication</source>
-        <translation type="unfinished"></translation>
+        <translation>Brukergodkjenning</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="191"/>
@@ -7919,7 +7919,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="176"/>
         <source>Show thumbnails of non-text slides in remote and stage view.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis miniatyrbilder av ikke-tekst slides i fjernstyrins- og scenevisning.</translation>
     </message>
 </context>
 <context>
@@ -8034,12 +8034,13 @@ Vennligst prøv å velge den individuelt.</translation>
         <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="67"/>
         <source>Select the date up to which the song usage data should be deleted. 
 All data recorded before this date will be permanently deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg en dato som sangbruks-data skal slettes fram til. 
+Alle data som er registrert før denne datoen vil bli varig slettet.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="59"/>
         <source>All requested data has been deleted successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sletting av alle valgte data var vellykket.</translation>
     </message>
 </context>
 <context>
@@ -8097,17 +8098,18 @@ er opprettet uten problem.</translation>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="77"/>
         <source>You have not set a valid output location for your song usage report. 
 Please select an existing path on your computer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du må velge en gyldig mål-mappe for sangbrukrapporten.
+Velg en eksisterende sti på harddisken. </translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>Report Creation Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Raportopprettelsen mislyktes</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>An error occurred while creating the report: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Det oppstod en feil ved oppretting av rapporten: %s</translation>
     </message>
 </context>
 <context>
@@ -8303,12 +8305,12 @@ Innstillingen er avgjørende for riktige tegn.</translation>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="160"/>
         <source>Find &amp;Duplicate Songs</source>
-        <translation type="unfinished"></translation>
+        <translation>Finn sang&amp;duplikater</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="160"/>
         <source>Find and remove duplicate songs in the song database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Finne og fjern sangduplikater fra sangdatabasen.</translation>
     </message>
 </context>
 <context>
@@ -8389,7 +8391,7 @@ Innstillingen er avgjørende for riktige tegn.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/dreambeam.py" line="100"/>
         <source>Invalid DreamBeam song file. Missing DreamSong tag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig DreamBeam sang fil. Mangler DreamSong tag.</translation>
     </message>
 </context>
 <context>
@@ -8402,12 +8404,12 @@ Innstillingen er avgjørende for riktige tegn.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="323"/>
         <source>&quot;%s&quot; could not be imported. %s</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%s&quot; kunne ikke importeres. %s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="357"/>
         <source>Unexpected data formatting.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uventet dataformatering.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="362"/>
@@ -8418,17 +8420,18 @@ Innstillingen er avgjørende for riktige tegn.</translation>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="399"/>
         <source>
 [above are Song Tags with notes imported from EasyWorship]</source>
-        <translation type="unfinished"></translation>
+        <translation>
+[ovenfor er sang-tillegg med notater importert fra EasyWorship]</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="199"/>
         <source>This file does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Denne filen eksisterer ikke.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="203"/>
         <source>Could not find the &quot;Songs.MB&quot; file. It must be in the same folder as the &quot;Songs.DB&quot; file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke finne &quot;Songs.MB&quot; filen. Det må være i samme mappe som &quot;Songs.DB&quot; filen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="219"/>
@@ -8438,7 +8441,7 @@ Innstillingen er avgjørende for riktige tegn.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="248"/>
         <source>Could not retrieve encoding.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke hente koding.</translation>
     </message>
 </context>
 <context>
@@ -8655,13 +8658,15 @@ Innstillingen er avgjørende for riktige tegn.</translation>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="181"/>
         <source>There are no verses corresponding to &quot;%(invalid)s&quot;.Valid entries are %(valid)s.
 Please enter the verses separated by spaces.</source>
-        <translation type="unfinished"></translation>
+        <translation>Det er ingen vers tilsvarende &quot;%(invalid)s&quot;. Gyldig oppføring er %(valid)s.
+Fyll inn versene adskilt med mellomrom.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="185"/>
         <source>There is no verse corresponding to &quot;%(invalid)s&quot;.Valid entries are %(valid)s.
 Please enter the verses separated by spaces.</source>
-        <translation type="unfinished"></translation>
+        <translation>Det er ingen vers tilsvarende &quot;%(invalid)s&quot;. Gyldige oppføring er %(valid)s.
+Fyll inn versene adskilt med mellomrom.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="188"/>
@@ -9049,9 +9054,9 @@ Please enter the verses separated by spaces.</source>
     <message numerus="yes">
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="361"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Er du sikker du vil slette den %n valgte sangen?</numerusform>
+            <numerusform>Er du sikker på at du vil slette de %n valgte sangene?</numerusform>
         </translation>
     </message>
     <message>
@@ -9194,7 +9199,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="255"/>
         <source>Your song export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport av sangen mislyktes fordi denne feilen oppstod: %s</translation>
     </message>
 </context>
 <context>
@@ -9657,12 +9662,12 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="135"/>
         <source>This wizard will help you to remove duplicate songs from the song database. You will have a chance to review every potential duplicate song before it is deleted. So no songs will be deleted without your explicit approval.</source>
-        <translation>Denne veiviseren vil hjelpe deg å fjerne dupliserte sanger fra sang databasen. Du får sjanse til å vurdere alle potensielle dupliserte sanger før de slettes. Så ingen sanger vil bli slettet uten din  godkjenning.</translation>
+        <translation>Denne veiviseren vil hjelpe deg å fjerne sangduplikater fra sangdatabasen. Du får sjanse til å vurdere alle potensielle duplikater før de slettes. Så ingen sanger vil bli slettet uten din  godkjenning.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="140"/>
         <source>Searching for duplicate songs.</source>
-        <translation>Søker etter dupliserte sanger.</translation>
+        <translation>Søker etter sangduplikater.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="141"/>
@@ -9677,7 +9682,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="150"/>
         <source>Review duplicate songs (%s/%s)</source>
-        <translation>Gjennomgår dupliserte sanger (% s /% s)</translation>
+        <translation>Gjennomgår sangduplikater (%s/%s)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="216"/>
@@ -9687,7 +9692,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="216"/>
         <source>No duplicate songs have been found in the database.</source>
-        <translation>Ingen dupliserte sanger er blitt funnet i databasen.</translation>
+        <translation>Ingen sangduplikater er blitt funnet i databasen.</translation>
     </message>
 </context>
 </TS>
