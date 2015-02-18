@@ -45,6 +45,7 @@ def upgrade_1(session, metadata):
             metadata_table.c.key == 'Version'
         ).as_scalar()
     ))
+    session.execute(delete(metadata_table).where(metadata_table.c.key == 'Version'))
     # Copy "Copyright" to "copyright"
     session.execute(insert(metadata_table).values(
         key='copyright',
@@ -53,6 +54,7 @@ def upgrade_1(session, metadata):
             metadata_table.c.key == 'Copyright'
         ).as_scalar()
     ))
+    session.execute(delete(metadata_table).where(metadata_table.c.key == 'Copyright'))
     # Copy "Permissions" to "permissions"
     session.execute(insert(metadata_table).values(
         key='permissions',
@@ -61,6 +63,7 @@ def upgrade_1(session, metadata):
             metadata_table.c.key == 'Permissions'
         ).as_scalar()
     ))
+    session.execute(delete(metadata_table).where(metadata_table.c.key == 'Permissions'))
     # Copy "Bookname language" to "book_name_language"
     value_count = session.execute(
         select(
@@ -76,6 +79,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'Bookname language'
             ).as_scalar()
         ))
+        session.execute(delete(metadata_table).where(metadata_table.c.key == 'Bookname language'))
     # Copy "download source" to "download_source"
     value_count = session.execute(
         select(
@@ -92,6 +96,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'download source'
             ).as_scalar()
         ))
+        session.execute(delete(metadata_table).where(metadata_table.c.key == 'download source'))
     # Copy "download name" to "download_name"
     value_count = session.execute(
         select(
@@ -108,6 +113,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'download name'
             ).as_scalar()
         ))
+        session.execute(delete(metadata_table).where(metadata_table.c.key == 'download name'))
     # Copy "proxy server" to "proxy_server"
     value_count = session.execute(
         select(
@@ -124,6 +130,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'proxy server'
             ).as_scalar()
         ))
+        session.execute(delete(metadata_table).where(metadata_table.c.key == 'proxy server'))
     # Copy "proxy username" to "proxy_username"
     value_count = session.execute(
         select(
@@ -140,6 +147,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'proxy username'
             ).as_scalar()
         ))
+        session.execute(delete(metadata_table).where(metadata_table.c.key == 'proxy username'))
     # Copy "proxy password" to "proxy_password"
     value_count = session.execute(
         select(
@@ -156,6 +164,6 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'proxy password'
             ).as_scalar()
         ))
-    session.execute(delete(metadata_table)\
-        .where(metadata_table.c.key == 'dbversion'))
+        session.execute(delete(metadata_table).where(metadata_table.c.key == 'proxy password'))
+    session.execute(delete(metadata_table).where(metadata_table.c.key == 'dbversion'))
     session.commit()
