@@ -517,6 +517,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         used_players = get_media_players()[0]
         if service_item.processor != UiStrings().Automatic:
             used_players = [service_item.processor.lower()]
+        # If no player, we can't play
+        if not used_players:
+            return False
         if controller.media_info.file_info.isFile():
             suffix = '*.%s' % controller.media_info.file_info.suffix().lower()
             for title in used_players:
