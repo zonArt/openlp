@@ -29,6 +29,7 @@ import locale
 import os
 import platform
 import re
+import socket
 import time
 from shutil import which
 from subprocess import Popen, PIPE
@@ -394,26 +395,33 @@ def get_web_page(url, header=None, update_openlp=False):
         req.add_header('User-Agent', user_agent)
     if header:
         req.add_header(header[0], header[1])
-    page = None
     log.debug('Downloading URL = %s' % url)
-    retries = 1
-    while True:
+    retries = 0
+    while retries <= CONNECTION_RETRIES:
+        retries += 1
+        time.sleep(0.1)
         try:
             page = urllib.request.urlopen(req, timeout=CONNECTION_TIMEOUT)
-            log.debug('Downloaded URL = %s' % page.geturl())
-        except (urllib.error.URLError, ConnectionError):
-            if retries > CONNECTION_RETRIES:
-                log.exception('The web page could not be downloaded')
-                raise
-            else:
-                retries += 1
-                time.sleep(0.1)
-                continue
-        break
-    if not page:
-        return None
+            log.debug('Downloaded page {}'.format(page.geturl()))
+        except urllib.error.URLError as err:
+            log.exception('URLError on {}'.format(url))
+            log.exception('URLError: {}'.format(err.reason))
+            page = None
+        except socket.timeout:
+            log.exception('Socket timeout: {}'.format(url))
+            page = None
+        except ConnectionRefusedError:
+            log.exception('ConnectionRefused: {}'.format(url))
+            page = None
+            break
+        except ConnectionError:
+            log.exception('Connection error: {}'.format(url))
+            page = None
     if update_openlp:
         Registry().get('application').process_events()
+    if not page:
+        log.exception('{} could not be downloaded'.format(url))
+        return None
     log.debug(page)
     return page
 
