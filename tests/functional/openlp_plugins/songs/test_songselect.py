@@ -471,7 +471,6 @@ class TestSongSelectFileImport(TestCase, TestMixin):
     def setUp(self):
         """
         Initial setups
-        :return:
         """
         Registry.create()
         test_song_name = 'TestSong'
@@ -484,7 +483,6 @@ class TestSongSelectFileImport(TestCase, TestMixin):
     def tearDown(self):
         """
         Test cleanups
-        :return:
         """
         pass
 
@@ -513,7 +511,7 @@ class TestSongSelectFileImport(TestCase, TestMixin):
             self.assertEquals(song_import.topics, self.topics, 'Theme(s) should match')
             self.assertEquals(song_import.verses, verses, 'Verses should match with test verses')
 
-    def songselect_import_usr_file_2_test(self):
+    def songselect_import_text_file_test(self):
         """
         Verify import SongSelect TEXT file parses file properly
         """
