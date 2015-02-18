@@ -417,6 +417,9 @@ def get_web_page(url, header=None, update_openlp=False):
         except ConnectionError:
             log.exception('Connection error: {}'.format(url))
             page = None
+        except:
+            # Don't know what's happening, so reraise the original
+            raise
     if update_openlp:
         Registry().get('application').process_events()
     if not page:
