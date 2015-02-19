@@ -407,16 +407,24 @@ def get_web_page(url, header=None, update_openlp=False):
             log.exception('URLError on {}'.format(url))
             log.exception('URLError: {}'.format(err.reason))
             page = None
+            if retries > CONNECTION_RETRIES:
+                raise
         except socket.timeout:
             log.exception('Socket timeout: {}'.format(url))
             page = None
+            if retries > CONNECTION_RETRIES:
+                raise
         except ConnectionRefusedError:
             log.exception('ConnectionRefused: {}'.format(url))
             page = None
+            if retries > CONNECTION_RETRIES:
+                raise
             break
         except ConnectionError:
             log.exception('Connection error: {}'.format(url))
             page = None
+            if retries > CONNECTION_RETRIES:
+                raise
         except:
             # Don't know what's happening, so reraise the original
             raise
