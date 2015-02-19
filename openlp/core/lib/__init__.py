@@ -312,6 +312,7 @@ def create_separated_list(string_list):
 
 
 from .colorbutton import ColorButton
+from .exceptions import ValidationError
 from .filedialog import FileDialog
 from .screen import ScreenList
 from .listwidgetwithdnd import ListWidgetWithDnD

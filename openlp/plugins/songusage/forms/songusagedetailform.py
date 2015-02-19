@@ -27,6 +27,7 @@ from PyQt4 import QtGui
 from sqlalchemy.sql import and_
 
 from openlp.core.common import RegistryProperties, Settings, check_directory_exists, translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from .songusagedetaildialog import Ui_SongUsageDetailDialog
 
@@ -104,8 +105,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryPrope
                 translate('SongUsagePlugin.SongUsageDetailForm',
                           'Report \n%s \nhas been successfully created. ') % report_file_name
             )
-        except IOError:
+        except OSError as ose:
             log.exception('Failed to write out song usage records')
+            critical_error_message_box(translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation Failed'),
+                                       translate('SongUsagePlugin.SongUsageDetailForm',
+                                                 'An error occurred while creating the report: %s') % ose.strerror)
         finally:
             if file_handle:
                 file_handle.close()

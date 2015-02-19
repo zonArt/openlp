@@ -50,6 +50,10 @@ from openlp.plugins.songs.lib.songstab import SongsTab
 log = logging.getLogger(__name__)
 __default_settings__ = {
     'songs/db type': 'sqlite',
+    'songs/db username': '',
+    'songs/db password': '',
+    'songs/db hostname': '',
+    'songs/db database': '',
     'songs/last search type': SongSearch.Entire,
     'songs/last import type': SongFormat.OpenLyrics,
     'songs/update service on edit': False,

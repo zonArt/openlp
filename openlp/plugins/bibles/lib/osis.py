@@ -58,7 +58,7 @@ class OSISBible(BibleDB):
             # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
             # detection, and the two mechanisms together interfere with each other.
             import_file = open(self.filename, 'rb')
-            osis_bible_tree = etree.parse(import_file)
+            osis_bible_tree = etree.parse(import_file, parser=etree.XMLParser(recover=True))
             namespace = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
             # Find bible language
             language_id = None

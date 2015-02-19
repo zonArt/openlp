@@ -177,12 +177,12 @@ Enne nupu Uus vajutamist sisesta mingi tekst.</translation>
         <translation>Piiblid</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="543"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
         <source>No Book Found</source>
         <translation>Ühtegi raamatut ei leitud</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="543"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
         <translation>Sellest Piiblist ei leitud vastavat raamatut. Kontrolli, kas sa sisestasid raamatu nime õigesti.</translation>
     </message>
@@ -696,7 +696,7 @@ Enne nupu Uus vajutamist sisesta mingi tekst.</translation>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="186"/>
         <source>to</source>
         <comment>range identifier e.g. Genesis 1 verse 1 - 2 = Genesis Chapter 1 Verses 1 To 2</comment>
-        <translation type="unfinished">kuni</translation>
+        <translation>kuni</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
@@ -1071,38 +1071,38 @@ Veebipiibli raamatute nimesid pole võimalik muuta.</translation>
 <context>
     <name>BiblesPlugin.HTTPBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="466"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="451"/>
         <source>Registering Bible and loading books...</source>
         <translation>Piibli registreerimine ja raamatute laadimine...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="490"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="475"/>
         <source>Registering Language...</source>
         <translation>Keele registreerimine...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="503"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="488"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
         <translation>Raamatu %s importimine...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="647"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
         <source>Download Error</source>
         <translation>Tõrge allalaadimisel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="647"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Valitud salmide allalaadimisel esines viga. Kontrolli oma internetiühendust ning kui see viga kordub, teata sellest veast.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="653"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
         <source>Parse Error</source>
         <translation>Parsimise viga</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="653"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Sinu salmide vahemiku analüüsimisel esines viga. Kui see viga kordub, siis palun teata sellest veast.</translation>
     </message>
@@ -1567,7 +1567,7 @@ Pane tähele, et veebipiiblite salmid laaditakse internetist vajadusel, seega on
 <context>
     <name>BiblesPlugin.ZefaniaImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/zefania.py" line="100"/>
+        <location filename="openlp/plugins/bibles/lib/zefania.py" line="110"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1741,60 +1741,60 @@ Pane tähele, et veebipiiblite salmid laaditakse internetist vajadusel, seega on
 <context>
     <name>ImagePlugin</name>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="52"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="53"/>
         <source>&lt;strong&gt;Image Plugin&lt;/strong&gt;&lt;br /&gt;The image plugin provides displaying of images.&lt;br /&gt;One of the distinguishing features of this plugin is the ability to group a number of images together in the service manager, making the displaying of multiple images easier. This plugin can also make use of OpenLP&apos;s &quot;timed looping&quot; feature to create a slide show that runs automatically. In addition to this, images from the plugin can be used to override the current theme&apos;s background, which renders text-based items like songs with the selected image as a background instead of the background provided by the theme.</source>
         <translation>&lt;strong&gt;Pildiplugin&lt;/strong&gt;&lt;br /&gt;Pildiplugin võimaldab piltide kuvamise.&lt;br /&gt;Üks selle plugina tähtsamaid võimalusi on piltide grupeerimine teenistuse halduris, muutes paljude piltide koos kuvamise lihtsamaks. See plugin võib kasutada ka ajastatud slaidivahetust automaatse slaidiesitluse tegemiseks. Lisaks sellele võib plugina pilte kasutada aktiivse kujunduse tausta asendamiseks.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="93"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="103"/>
         <source>Image</source>
         <comment>name singular</comment>
         <translation>Pilt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="94"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="104"/>
         <source>Images</source>
         <comment>name plural</comment>
         <translation>Pildid</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="97"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="107"/>
         <source>Images</source>
         <comment>container title</comment>
         <translation>Pildid</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="100"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="110"/>
         <source>Load a new image.</source>
         <translation>Uue pildi laadimine.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="102"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="112"/>
         <source>Add a new image.</source>
         <translation>Uue pildi lisamine.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="103"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="113"/>
         <source>Edit the selected image.</source>
         <translation>Valitud pildi muutmine.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="104"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="114"/>
         <source>Delete the selected image.</source>
         <translation>Valitud pildi kustutamine.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="105"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="115"/>
         <source>Preview the selected image.</source>
         <translation>Valitud pildi eelvaatlus.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="106"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="116"/>
         <source>Send the selected image live.</source>
         <translation>Valitud pildi saatmine ekraanile.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="107"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="117"/>
         <source>Add the selected image to the service.</source>
         <translation>Valitud pildi lisamine teenistusele.</translation>
     </message>
@@ -1822,12 +1822,12 @@ Pane tähele, et veebipiiblite salmid laaditakse internetist vajadusel, seega on
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="628"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="639"/>
         <source>Could not add the new group.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="631"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="642"/>
         <source>This group already exists.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1876,34 +1876,34 @@ Pane tähele, et veebipiiblite salmid laaditakse internetist vajadusel, seega on
         <translation>Piltide valimine</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="650"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="661"/>
         <source>You must select an image to replace the background with.</source>
         <translation>Pead enne valima pildi, millega tausta asendada.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="576"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="586"/>
         <source>Missing Image(s)</source>
         <translation>Puuduvad pildid</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="570"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="580"/>
         <source>The following image(s) no longer exist: %s</source>
         <translation>Järgnevaid pilte enam pole: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="576"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="586"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>Järgnevaid pilte enam pole: %s
 Kas tahad teised pildid sellest hoolimata lisada?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="667"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="678"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>Tausta asendamisel esines viga, pildifaili &quot;%s&quot; enam pole.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="663"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="674"/>
         <source>There was no display item to amend.</source>
         <translation>Polnud ühtegi kuvatavat elementi, mida täiendada.</translation>
     </message>
@@ -1944,12 +1944,12 @@ Kas tahad teised pildid sellest hoolimata lisada?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/webkitplayer.py" line="390"/>
+        <location filename="openlp/core/ui/media/webkitplayer.py" line="392"/>
         <source>Audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/webkitplayer.py" line="391"/>
+        <location filename="openlp/core/ui/media/webkitplayer.py" line="393"/>
         <source>Video</source>
         <translation>Video</translation>
     </message>
@@ -1959,7 +1959,7 @@ Kas tahad teised pildid sellest hoolimata lisada?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/webkitplayer.py" line="388"/>
+        <location filename="openlp/core/ui/media/webkitplayer.py" line="390"/>
         <source>Webkit is a media player which runs inside a web browser. This player allows text over video to be rendered.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3224,67 +3224,67 @@ Kui võimalik, kirjuta palun vearaport inglise keeles.
 <context>
     <name>OpenLP.FirstTimeWizard</name>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="235"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="237"/>
         <source>Songs</source>
         <translation>Laulud</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
         <source>First Time Wizard</source>
         <translation>Esmakäivituse nõustaja</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="222"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="224"/>
         <source>Welcome to the First Time Wizard</source>
         <translation>Tere tulemast esmakäivituse nõustajasse</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="233"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="235"/>
         <source>Activate required Plugins</source>
         <translation>Vajalike pluginate sisselülitamine</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="234"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="236"/>
         <source>Select the Plugins you wish to use. </source>
         <translation>Vali pluginad, mida tahad kasutada.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="237"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="239"/>
         <source>Bible</source>
         <translation>Piibel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
         <source>Images</source>
         <translation>Pildid</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="239"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="241"/>
         <source>Presentations</source>
         <translation>Esitlused</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
         <source>Media (Audio and Video)</source>
         <translation>Meedia (audio ja video)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="241"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="243"/>
         <source>Allow remote access</source>
         <translation>Kaugligipääs</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
         <source>Monitor Song Usage</source>
         <translation>Laulukasutuse monitooring</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="243"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
         <source>Allow Alerts</source>
         <translation>Teadaanded</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="264"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="266"/>
         <source>Default Settings</source>
         <translation>Vaikimisi sätted</translation>
     </message>
@@ -3294,97 +3294,97 @@ Kui võimalik, kirjuta palun vearaport inglise keeles.
         <translation>%s allalaadimine...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="563"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="576"/>
         <source>Enabling selected plugins...</source>
         <translation>Valitud pluginate sisselülitamine...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
         <source>No Internet Connection</source>
         <translation>Internetiühendust pole</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="247"/>
         <source>Unable to detect an Internet connection.</source>
         <translation>Internetiühendust ei leitud.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
         <source>Sample Songs</source>
         <translation>Näidislaulud</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="259"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="261"/>
         <source>Select and download public domain songs.</source>
         <translation>Vali ja laadi alla avalikku omandisse kuuluvaid laule.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="262"/>
         <source>Sample Bibles</source>
         <translation>Näidispiiblid</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="261"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="263"/>
         <source>Select and download free Bibles.</source>
         <translation>Vabade Piiblite valimine ja allalaadimine.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="262"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="264"/>
         <source>Sample Themes</source>
         <translation>Näidiskujundused</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="263"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="265"/>
         <source>Select and download sample themes.</source>
         <translation>Näidiskujunduste valimine ja allalaadimine.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="265"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="267"/>
         <source>Set up default settings to be used by OpenLP.</source>
         <translation>OpenLP jaoks vaikimisi sätete määramine.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="267"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="269"/>
         <source>Default output display:</source>
         <translation>Vaikimisi ekraani kuva:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="268"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="270"/>
         <source>Select default theme:</source>
         <translation>Vali vaikimisi kujundus:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="272"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="274"/>
         <source>Starting configuration process...</source>
         <translation>Seadistamise alustamine...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="517"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="530"/>
         <source>Setting Up And Downloading</source>
         <translation>Seadistamine ja allalaadimine</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="518"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="531"/>
         <source>Please wait while OpenLP is set up and your data is downloaded.</source>
         <translation>Palun oota, kuni OpenLP-d seadistatakse ja andmeid allalaaditakse.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="522"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="535"/>
         <source>Setting Up</source>
         <translation>Seadistamine</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="236"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
         <source>Custom Slides</source>
         <translation>Kohandatud slaidid</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="273"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="275"/>
         <source>Finish</source>
         <translation>Lõpp</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="247"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="249"/>
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.  Click the Finish button now to start OpenLP with initial settings and no sample data.
 
 To re-run the First Time Wizard and import this sample data at a later time, check your Internet connection and re-run this wizard by selecting &quot;Tools/Re-run First Time Wizard&quot; from OpenLP.</source>
@@ -3393,74 +3393,74 @@ To re-run the First Time Wizard and import this sample data at a later time, che
 Esmakäivituse nõustaja hiljem uuesti käivitamiseks kontrolli oma internetiühendust ja käivita see nõustaja uuesti OpenLP menüüst &quot;Tööriistad/Esmakäivituse nõustaja&quot;.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="575"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="588"/>
         <source>Download Error</source>
         <translation>Tõrge allalaadimisel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="505"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="518"/>
         <source>There was a connection problem during download, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="536"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="549"/>
         <source>Download complete. Click the %s button to return to OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="540"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="553"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="545"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="558"/>
         <source>Click the %s button to return to OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="549"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="562"/>
         <source>Click the %s button to start OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="575"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="588"/>
         <source>There was a connection problem while downloading, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="224"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
         <source>This wizard will help you to configure OpenLP for initial use. Click the %s button below to start.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
         <source>
 
 To cancel the First Time Wizard completely (and not start OpenLP), click the %s button now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="228"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="230"/>
         <source>Downloading Resource Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="229"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="231"/>
         <source>Please wait while the resource index is downloaded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="231"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="233"/>
         <source>Please wait while OpenLP downloads the resource index file...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="269"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="271"/>
         <source>Downloading and Configuring</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="270"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="272"/>
         <source>Please wait while resources are downloaded and OpenLP is configured.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3473,6 +3473,11 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
         <location filename="openlp/core/ui/firsttimeform.py" line="185"/>
         <source>There was a network error attempting to connect to retrieve initial configuration information</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
+        <source>Cancel</source>
+        <translation>Loobu</translation>
     </message>
 </context>
 <context>
@@ -3803,7 +3808,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
 <context>
     <name>OpenLP.MainDisplay</name>
     <message>
-        <location filename="openlp/core/ui/maindisplay.py" line="206"/>
+        <location filename="openlp/core/ui/maindisplay.py" line="211"/>
         <source>OpenLP Display</source>
         <translation>OpenLP kuva</translation>
     </message>
@@ -4110,7 +4115,7 @@ Sa võid viimase versiooni alla laadida aadressilt http://openlp.org/.</translat
         <translation>Peakuva on tühi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1146"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1152"/>
         <source>Default Theme: %s</source>
         <translation>Vaikimisi kujundus: %s</translation>
     </message>
@@ -4118,7 +4123,7 @@ Sa võid viimase versiooni alla laadida aadressilt http://openlp.org/.</translat
         <location filename="openlp/core/utils/languagemanager.py" line="83"/>
         <source>English</source>
         <comment>Please add the name of your language here</comment>
-        <translation>Inglise</translation>
+        <translation>Estonian</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="417"/>
@@ -4126,12 +4131,12 @@ Sa võid viimase versiooni alla laadida aadressilt http://openlp.org/.</translat
         <translation>&amp;Kiirklahvide seadistamine...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1077"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
         <source>Close OpenLP</source>
         <translation>OpenLP sulgemine</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1077"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>Kas oled kindel, et tahad OpenLP sulgeda?</translation>
     </message>
@@ -4205,13 +4210,13 @@ Re-running this wizard may make changes to your current OpenLP configuration and
 Selle nõustaja taaskäivitamine muudab sinu praegust OpenLP seadistust ja võib lisada laule olemasolevate laulude loetelusse ning muuta vaikimisi kujundust.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1286"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation>Tühjenda loend</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1286"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
         <source>Clear the list of recent files.</source>
         <translation>Hiljutiste failide nimekirja tühjendamine.</translation>
     </message>
@@ -4271,17 +4276,17 @@ Selle nõustaja taaskäivitamine muudab sinu praegust OpenLP seadistust ja võib
         <translation>OpenLP eksporditud sätete fail (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
         <source>New Data Directory Error</source>
         <translation>Uue andmekausta viga</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1379"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1385"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>OpenLP andmete kopeerimine uude andmekataloogi - %s - palun oota, kuni kopeerimine lõpeb...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4336,13 +4341,18 @@ Processing has terminated and no changes have been made.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="981"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
         <source>Export setting error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="981"/>
         <source>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
+        <source>An error occurred while exporting the settings: %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4385,42 +4395,42 @@ Andmebaas: %s</translation>
         <translation>&amp;Lisa valitud teenistuse elemendile</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="482"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="481"/>
         <source>You must select one or more items to preview.</source>
         <translation>Sa pead valima vähemalt ühe kirje, mida eelvaadelda.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="499"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="498"/>
         <source>You must select one or more items to send live.</source>
         <translation>Sa pead valima vähemalt ühe kirje, mida tahad ekraanil näidata.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="592"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="591"/>
         <source>You must select one or more items.</source>
         <translation>Pead valima vähemalt ühe elemendi.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="598"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="597"/>
         <source>You must select an existing service item to add to.</source>
         <translation>Pead valima olemasoleva teenistuse, millele lisada.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
         <source>Invalid Service Item</source>
         <translation>Vigane teenistuse element</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
         <source>You must select a %s service item.</source>
         <translation>Pead valima teenistuse elemendi %s.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="548"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="547"/>
         <source>You must select one or more items to add.</source>
         <translation>Pead valima vähemalt ühe kirje, mida tahad lisada.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="640"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="639"/>
         <source>No Search Results</source>
         <translation>Otsing ei andnud tulemusi</translation>
     </message>
@@ -4442,7 +4452,7 @@ Selle lõpuga fail ei ole toetatud</translation>
         <translation>&amp;Klooni</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="383"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="382"/>
         <source>Duplicate files were found on import and were ignored.</source>
         <translation>Importimisel tuvastati duplikaatfailid ning neid eirati.</translation>
     </message>
@@ -4828,11 +4838,6 @@ Selle lõpuga fail ei ole toetatud</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/constants.py" line="273"/>
-        <source>The connection negotiation with the proxy server because the response from the proxy server could not be understood</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/core/lib/projector/constants.py" line="276"/>
         <source>An unidentified error occurred</source>
         <translation type="unfinished"></translation>
@@ -4900,6 +4905,11 @@ Selle lõpuga fail ei ole toetatud</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="289"/>
         <source>Received data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/projector/constants.py" line="273"/>
+        <source>The connection negotiation with the proxy server failed because the response from the proxy server could not be understood</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5448,22 +5458,22 @@ Selle lõpuga fail ei ole toetatud</translation>
         <translation>&amp;Muuda elemendi kujundust</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="773"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="779"/>
         <source>File is not a valid service.</source>
         <translation>Fail pole sobiv teenistus.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1482"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1488"/>
         <source>Missing Display Handler</source>
         <translation>Puudub kuvakäsitleja</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1438"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1444"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation>Seda elementi pole võimalik näidata ekraanil, kuna puudub seda käsitsev programm</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1482"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1488"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
         <translation>Seda elementi pole võimalik näidata, kuna vajalik plugin on puudu või pole aktiivne</translation>
     </message>
@@ -5558,22 +5568,22 @@ Selle lõpuga fail ei ole toetatud</translation>
         <translation>Pealkirjata teenistus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="777"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="783"/>
         <source>File could not be opened because it is corrupt.</source>
         <translation>Faili pole võimalik avada, kuna see on rikutud.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="782"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="788"/>
         <source>Empty File</source>
         <translation>Tühi fail</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="782"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="788"/>
         <source>This service file does not contain any data.</source>
         <translation>Selles teenistuse failis pole andmeid.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="787"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="793"/>
         <source>Corrupt File</source>
         <translation>Rikutud fail</translation>
     </message>
@@ -5593,32 +5603,32 @@ Selle lõpuga fail ei ole toetatud</translation>
         <translation>Teenistuse jaoks kujunduse valimine.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1268"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1274"/>
         <source>Slide theme</source>
         <translation>Slaidi kujundus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1271"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1277"/>
         <source>Notes</source>
         <translation>Märkmed</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1265"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1271"/>
         <source>Edit</source>
         <translation>Muuda</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1265"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1271"/>
         <source>Service copy only</source>
         <translation>Ainult teenistuse koopia</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="647"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="653"/>
         <source>Error Saving File</source>
         <translation>Viga faili salvestamisel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="647"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="653"/>
         <source>There was an error saving your file.</source>
         <translation>Sinu faili salvestamisel esines tõrge.</translation>
     </message>
@@ -5664,7 +5674,7 @@ Need failid eemaldatakse, kui sa otsustad siiski salvestada.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="878"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="884"/>
         <source>&amp;Delay between slides</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5674,61 +5684,66 @@ Need failid eemaldatakse, kui sa otsustad siiski salvestada.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="693"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="699"/>
         <source>OpenLP Service Files (*.osz);; OpenLP Service Files - lite (*.oszl)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="698"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="704"/>
         <source>OpenLP Service Files (*.osz);;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="743"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="749"/>
         <source>File is not a valid service.
  The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="758"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="764"/>
         <source>The service file you are trying to open is in an old format.
  Please save it using OpenLP 2.0.2 or greater.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="787"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="793"/>
         <source>This file is either corrupt or it is not an OpenLP 2 service file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="889"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="895"/>
         <source>&amp;Auto Start - inactive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="891"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="897"/>
         <source>&amp;Auto Start - active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="978"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="984"/>
         <source>Input delay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="978"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="984"/>
         <source>Delay between slides in seconds.</source>
         <translation>Viivitus slaidide vahel sekundites.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1510"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1516"/>
         <source>Rename item title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1510"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1516"/>
         <source>Title:</source>
         <translation>Pealkiri:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="606"/>
+        <source>An error occurred while writing the service file: %s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5991,12 +6006,12 @@ Need failid eemaldatakse, kui sa otsustad siiski salvestada.</translation>
 <context>
     <name>OpenLP.SourceSelectForm</name>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="390"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="389"/>
         <source>Select Projector Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="388"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="387"/>
         <source>Edit Projector Source Text</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6021,18 +6036,13 @@ Need failid eemaldatakse, kui sa otsustad siiski salvestada.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="471"/>
         <source>Delete entries for this projector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="473"/>
-        <source>Are you sure you want to delete ALL user-defined </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="473"/>
-        <source>source input text for this projector?</source>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
+        <source>Are you sure you want to delete ALL user-defined source input text for this projector?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6196,7 +6206,7 @@ Need failid eemaldatakse, kui sa otsustad siiski salvestada.</translation>
         <translation>Määra &amp;globaalseks vaikeväärtuseks</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="471"/>
+        <location filename="openlp/core/ui/thememanager.py" line="470"/>
         <source>%s (default)</source>
         <translation>%s (vaikimisi)</translation>
     </message>
@@ -6206,12 +6216,12 @@ Need failid eemaldatakse, kui sa otsustad siiski salvestada.</translation>
         <translation>Pead valima kujunduse, mida muuta.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="750"/>
+        <location filename="openlp/core/ui/thememanager.py" line="749"/>
         <source>You are unable to delete the default theme.</source>
         <translation>Vaikimisi kujundust pole võimalik kustutada.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="757"/>
+        <location filename="openlp/core/ui/thememanager.py" line="756"/>
         <source>Theme %s is used in the %s plugin.</source>
         <translation>Kujundust %s kasutatakse pluginas %s.</translation>
     </message>
@@ -6226,32 +6236,27 @@ Need failid eemaldatakse, kui sa otsustad siiski salvestada.</translation>
         <translation>Salvesta kujundus - (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="382"/>
+        <location filename="openlp/core/ui/thememanager.py" line="381"/>
         <source>Theme Exported</source>
         <translation>Kujundus eksporditud</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="382"/>
+        <location filename="openlp/core/ui/thememanager.py" line="381"/>
         <source>Your theme has been successfully exported.</source>
         <translation>Sinu kujundus on edukalt eksporditud.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="388"/>
+        <location filename="openlp/core/ui/thememanager.py" line="405"/>
         <source>Theme Export Failed</source>
         <translation>Kujunduse eksportimine nurjus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="388"/>
-        <source>Your theme could not be exported due to an error.</source>
-        <translation>Sinu kujundust polnud võimalik eksportida, kuna esines viga.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="420"/>
+        <location filename="openlp/core/ui/thememanager.py" line="419"/>
         <source>Select Theme Import File</source>
         <translation>Importimiseks kujunduse faili valimine</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="597"/>
+        <location filename="openlp/core/ui/thememanager.py" line="596"/>
         <source>File is not a valid theme.</source>
         <translation>See fail ei ole sobilik kujundus.</translation>
     </message>
@@ -6301,17 +6306,17 @@ Need failid eemaldatakse, kui sa otsustad siiski salvestada.</translation>
         <translation>Kas kustutada kujundus %s?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="757"/>
+        <location filename="openlp/core/ui/thememanager.py" line="756"/>
         <source>Validation Error</source>
         <translation>Valideerimise viga</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="611"/>
+        <location filename="openlp/core/ui/thememanager.py" line="610"/>
         <source>A theme with this name already exists.</source>
         <translation>Sellenimeline teema on juba olemas.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="420"/>
+        <location filename="openlp/core/ui/thememanager.py" line="419"/>
         <source>OpenLP Themes (*.theme *.otz)</source>
         <translation>OpenLP kujundused (*.theme *.otz)</translation>
     </message>
@@ -6322,14 +6327,19 @@ Need failid eemaldatakse, kui sa otsustad siiski salvestada.</translation>
         <translation>%s (koopia)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="521"/>
+        <location filename="openlp/core/ui/thememanager.py" line="520"/>
         <source>Theme Already Exists</source>
         <translation>Kujundus on juba olemas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="521"/>
+        <location filename="openlp/core/ui/thememanager.py" line="520"/>
         <source>Theme %s already exists. Do you want to replace it?</source>
         <translation>Kujundus %s on juba olemas. Kas tahad selle asendada?</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="405"/>
+        <source>The theme export failed because this error occurred: %s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7424,50 +7434,50 @@ Palun vali see eraldi.</translation>
 <context>
     <name>PresentationPlugin</name>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="141"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="159"/>
         <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
         <translation>&lt;strong&gt;Esitluse plugin&lt;/strong&gt;&lt;br /&gt;Esitluse plugin võimaldab näidata esitlusi erinevate programmidega. Saadaolevate esitlusprogrammide valik on saadaval valikukastis.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="154"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="172"/>
         <source>Presentation</source>
         <comment>name singular</comment>
         <translation>Esitlus</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="155"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
         <source>Presentations</source>
         <comment>name plural</comment>
         <translation>Esitlused</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="159"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="177"/>
         <source>Presentations</source>
         <comment>container title</comment>
         <translation>Esitlused</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="163"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="181"/>
         <source>Load a new presentation.</source>
         <translation>Uue esitluse laadimine.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="167"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="185"/>
         <source>Delete the selected presentation.</source>
         <translation>Valitud esitluse kustutamine.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="168"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
         <source>Preview the selected presentation.</source>
         <translation>Valitud esitluse eelvaade.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="169"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
         <source>Send the selected presentation live.</source>
         <translation>Valitud esitluse saatmine ekraanile.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="170"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
         <source>Add the selected presentation to the service.</source>
         <translation>Valitud esitluse lisamine teenistusele.</translation>
     </message>
@@ -7510,17 +7520,17 @@ Palun vali see eraldi.</translation>
         <translation>Esitlused (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="354"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
         <source>Missing Presentation</source>
         <translation>Puuduv esitlus</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="345"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="354"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Esitlus %s pole täielik, palun laadi uuesti.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="354"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Esitlust %s pole enam olemas.</translation>
     </message>
@@ -7956,22 +7966,22 @@ All data recorded before this date will be permanently deleted.</source>
         <translation>Raporti asukoht</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="62"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="63"/>
         <source>Output File Location</source>
         <translation>Väljundfaili asukoht</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="84"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="85"/>
         <source>usage_detail_%s_%s.txt</source>
         <translation>laulukasutuse_andmed_%s_%s.txt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="102"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="103"/>
         <source>Report Creation</source>
         <translation>Raporti koostamine</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="102"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="103"/>
         <source>Report 
 %s 
 has been successfully created. </source>
@@ -7980,14 +7990,24 @@ has been successfully created. </source>
 on edukalt loodud.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="76"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="77"/>
         <source>Output Path Not Selected</source>
         <translation>Sihtkohta pole valitud</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="76"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="77"/>
         <source>You have not set a valid output location for your song usage report. 
 Please select an existing path on your computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
+        <source>Report Creation Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
+        <source>An error occurred while creating the report: %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8656,7 +8676,7 @@ Please enter the verses separated by spaces.</source>
         <translation>Pead määrama kataloogi.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="313"/>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="317"/>
         <source>Select Destination Folder</source>
         <translation>Sihtkausta valimine</translation>
     </message>
@@ -9063,14 +9083,19 @@ Please enter the verses separated by spaces.</source>
 <context>
     <name>SongsPlugin.SongExportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="252"/>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="253"/>
         <source>Your song export failed.</source>
         <translation>Laulude eksportimine nurjus.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="249"/>
         <source>Finished export. To import these files use the &lt;strong&gt;OpenLyrics&lt;/strong&gt; importer.</source>
         <translation>Eksportimine lõpetati. Nende failide importimiseks kasuta &lt;strong&gt;OpenLyrics&lt;/strong&gt; importijat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="255"/>
+        <source>Your song export failed because this error occurred: %s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

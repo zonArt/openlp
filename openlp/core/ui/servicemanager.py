@@ -601,6 +601,12 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 shutil.copy(temp_file_name, path_file_name)
             except shutil.Error:
                 return self.save_file_as()
+            except OSError as ose:
+                QtGui.QMessageBox.critical(self, translate('OpenLP.ServiceManager', 'Error Saving File'),
+                                           translate('OpenLP.ServiceManager', 'An error occurred while writing the '
+                                                     'service file: %s') % ose.strerror,
+                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                success = False
             self.main_window.add_recent_file(path_file_name)
             self.set_modified(False)
         delete_file(temp_file_name)

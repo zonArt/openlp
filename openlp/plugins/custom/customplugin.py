@@ -36,6 +36,10 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
     'custom/db type': 'sqlite',
+    'custom/db username': '',
+    'custom/db password': '',
+    'custom/db hostname': '',
+    'custom/db database': '',
     'custom/last search type': CustomSearch.Titles,
     'custom/display footer': True,
     'custom/add custom from service': True

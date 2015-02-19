@@ -27,14 +27,13 @@ import os
 import shutil
 
 from unittest import TestCase
-from tests.functional import MagicMock
 from tempfile import mkdtemp
 
 from openlp.core.ui import ThemeManager
 from openlp.core.common import Registry
 
 from tests.utils.constants import TEST_RESOURCES_PATH
-from tests.functional import MagicMock, patch
+from tests.functional import ANY, MagicMock, patch
 
 
 class TestThemeManager(TestCase):
@@ -152,3 +151,23 @@ class TestThemeManager(TestCase):
             self.assertTrue(os.path.exists(os.path.join(folder, 'Moss on tree', 'Moss on tree.xml')))
             self.assertEqual(mocked_critical_error_message_box.call_count, 0, 'No errors should have happened')
             shutil.rmtree(folder)
+
+    def unzip_theme_invalid_version_test(self):
+        """
+        Test that themes with invalid (< 2.0) or with no version attributes are rejected
+        """
+        # GIVEN: An instance of ThemeManager whilst mocking a theme that returns a theme with no version attribute
+        with patch('openlp.core.ui.thememanager.zipfile.ZipFile') as mocked_zip_file,\
+                patch('openlp.core.ui.thememanager.ElementTree.getroot') as mocked_getroot,\
+                patch('openlp.core.ui.thememanager.XML'),\
+                patch('openlp.core.ui.thememanager.critical_error_message_box') as mocked_critical_error_message_box:
+
+            mocked_zip_file.return_value = MagicMock(**{'namelist.return_value': [os.path.join('theme', 'theme.xml')]})
+            mocked_getroot.return_value = MagicMock(**{'get.return_value': None})
+            theme_manager = ThemeManager(None)
+
+            # WHEN: unzip_theme is called
+            theme_manager.unzip_theme('theme.file', 'folder')
+
+            # THEN: The critical_error_message_box should have been called
+            mocked_critical_error_message_box.assert_called_once(ANY, ANY)

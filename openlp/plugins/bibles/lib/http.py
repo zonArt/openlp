@@ -365,31 +365,20 @@ class CWExtract(RegistryProperties):
         if not soup:
             return None
         self.application.process_events()
-        html_verses = soup.find_all('span', 'versetext')
-        if not html_verses:
+        verses_div = soup.find_all('div', 'verse')
+        if not verses_div:
             log.error('No verses found in the CrossWalk response.')
             send_error_message('parse')
             return None
         verses = {}
-        for verse in html_verses:
+        for verse in verses_div:
             self.application.process_events()
-            verse_number = int(verse.contents[0].contents[0])
-            verse_text = ''
-            for part in verse.contents:
-                self.application.process_events()
-                if isinstance(part, NavigableString):
-                    verse_text += part
-                elif part and part.attrMap and \
-                        (part.attrMap['class'] == 'WordsOfChrist' or part.attrMap['class'] == 'strongs'):
-                    for subpart in part.contents:
-                        self.application.process_events()
-                        if isinstance(subpart, NavigableString):
-                            verse_text += subpart
-                        elif subpart and subpart.attrMap and subpart.attrMap['class'] == 'strongs':
-                            for subsub in subpart.contents:
-                                self.application.process_events()
-                                if isinstance(subsub, NavigableString):
-                                    verse_text += subsub
+            verse_number = int(verse.find('strong').contents[0])
+            verse_span = verse.find('span')
+            tags_to_remove = verse_span.find_all(['a', 'sup'])
+            for tag in tags_to_remove:
+                tag.decompose()
+            verse_text = verse_span.get_text()
             self.application.process_events()
             # Fix up leading and trailing spaces, multiple spaces, and spaces between text and , and .
             verse_text = verse_text.strip('\n\r\t ')
@@ -409,16 +398,13 @@ class CWExtract(RegistryProperties):
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
-        content = soup.find('div', {'class': 'Body'})
-        content = content.find('ul', {'class': 'parent'})
+        content = soup.find_all(('h4', {'class': 'small-header'}))
         if not content:
             log.error('No books found in the Crosswalk response.')
             send_error_message('parse')
             return None
-        content = content.find_all('li')
         books = []
         for book in content:
-            book = book.find('a')
             books.append(book.contents[0])
         return books
 

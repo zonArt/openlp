@@ -121,6 +121,8 @@ class BibleManager(RegistryProperties):
         self.old_bible_databases = []
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
+            if not bible.session:
+                continue
             name = bible.get_name()
             # Remove corrupted files.
             if name is None:

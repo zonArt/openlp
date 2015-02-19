@@ -244,12 +244,16 @@ class SongExportForm(OpenLPWizard):
             for song in self._find_list_widget_items(self.selected_list_widget)
         ]
         exporter = OpenLyricsExport(self, songs, self.directory_line_edit.text())
-        if exporter.do_export():
-            self.progress_label.setText(
-                translate('SongsPlugin.SongExportForm',
-                          'Finished export. To import these files use the <strong>OpenLyrics</strong> importer.'))
-        else:
-            self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed.'))
+        try:
+            if exporter.do_export():
+                self.progress_label.setText(
+                    translate('SongsPlugin.SongExportForm',
+                              'Finished export. To import these files use the <strong>OpenLyrics</strong> importer.'))
+            else:
+                self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed.'))
+        except OSError as ose:
+            self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed because this '
+                                                  'error occurred: %s') % ose.strerror)
 
     def _find_list_widget_items(self, list_widget, text=''):
         """

@@ -117,7 +117,7 @@ from urllib.parse import urlparse, parse_qs
 from mako.template import Template
 from PyQt4 import QtCore
 
-from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, translate
+from openlp.core.common import RegistryProperties, AppLocation, Settings, translate, UiStrings
 from openlp.core.lib import PluginStatus, StringContent, image_to_byte, ItemCapabilities, create_thumb
 
 log = logging.getLogger(__name__)
@@ -232,12 +232,18 @@ class HttpRouter(RegistryProperties):
                 return func, args
         return None, None
 
+    def set_cache_headers(self):
+        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
+
     def do_http_success(self):
         """
         Create a success http header.
         """
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
+        self.set_cache_headers()
         self.end_headers()
 
     def do_json_header(self):
@@ -246,6 +252,7 @@ class HttpRouter(RegistryProperties):
         """
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
+        self.set_cache_headers()
         self.end_headers()
 
     def do_http_error(self):
@@ -254,6 +261,7 @@ class HttpRouter(RegistryProperties):
         """
         self.send_response(404)
         self.send_header('Content-type', 'text/html')
+        self.set_cache_headers()
         self.end_headers()
 
     def do_authorisation(self):
@@ -261,8 +269,10 @@ class HttpRouter(RegistryProperties):
         Create a needs authorisation http header.
         """
         self.send_response(401)
-        self.send_header('WWW-Authenticate', 'Basic realm=\"Test\"')
+        header = 'Basic realm=\"{}\"'.format(UiStrings().OLPV2)
+        self.send_header('WWW-Authenticate', header)
         self.send_header('Content-type', 'text/html')
+        self.set_cache_headers()
         self.end_headers()
 
     def do_not_found(self):
@@ -271,6 +281,7 @@ class HttpRouter(RegistryProperties):
         """
         self.send_response(404)
         self.send_header('Content-type', 'text/html')
+        self.set_cache_headers()
         self.end_headers()
         self.wfile.write(bytes('<html><body>Sorry, an error occurred </body></html>', 'UTF-8'))
 
