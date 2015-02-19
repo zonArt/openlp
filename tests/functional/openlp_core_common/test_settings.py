@@ -128,7 +128,7 @@ class TestSettings(TestCase, TestMixin):
         """
         # GIVEN: A patched __default_settings__ dictionary
         with patch.dict(Settings.__default_settings__,
-                   {'test/setting 1': 1, 'test/setting 2': 2, 'test/setting 3': 3}, True):
+                        {'test/setting 1': 1, 'test/setting 2': 2, 'test/setting 3': 3}, True):
 
             # WHEN: Calling extend_default_settings
             Settings.extend_default_settings({'test/setting 3': 4, 'test/extended 1': 1, 'test/extended 2': 2})
