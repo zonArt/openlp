@@ -28,9 +28,9 @@ from PyQt4 import QtCore, QtGui
 
 class HistoryComboBox(QtGui.QComboBox):
     """
-    The :class:`~openlp.core.common.historycombobox.HistoryComboBox` widget emulates the QLineEdit ``returnPressed`` signal
-    for when the :kbd:`Enter` or :kbd:`Return` keys are pressed, and saves anything that is typed into the edit box into
-    its list.
+    The :class:`~openlp.core.common.historycombobox.HistoryComboBox` widget emulates the QLineEdit ``returnPressed``
+    signal for when the :kbd:`Enter` or :kbd:`Return` keys are pressed, and saves anything that is typed into the edit
+    box into its list.
     """
     returnPressed = QtCore.pyqtSignal()
 
