@@ -62,6 +62,7 @@ class ThemeScreenshotWorker(QtCore.QObject):
         self.filename = filename
         self.sha256 = sha256
         self.screenshot = screenshot
+        socket.setdefaulttimeout(CONNECTION_TIMEOUT)
         super(ThemeScreenshotWorker, self).__init__()
 
     def run(self):
@@ -251,7 +252,6 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             # Download the theme screenshots
             themes = self.config.get('themes', 'files').split(',')
             for theme in themes:
-                self.application.process_events()
                 title = self.config.get('theme_%s' % theme, 'title')
                 filename = self.config.get('theme_%s' % theme, 'filename')
                 sha256 = self.config.get('theme_%s' % theme, 'sha256', fallback='')
@@ -265,6 +265,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 worker.finished.connect(thread.quit)
                 worker.moveToThread(thread)
                 thread.start()
+            self.application.process_events()
 
     def set_defaults(self):
         """
@@ -448,8 +449,8 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         for index, theme in enumerate(themes):
             screenshot = self.config.get('theme_%s' % theme, 'screenshot')
             item = self.themes_list_widget.item(index)
-            # if item:
-            item.setIcon(build_icon(os.path.join(gettempdir(), 'openlp', screenshot)))
+            if item:
+                item.setIcon(build_icon(os.path.join(gettempdir(), 'openlp', screenshot)))
 
     def _get_file_size(self, url):
         """
