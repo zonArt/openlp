@@ -25,7 +25,6 @@ This class contains the core default settings.
 import datetime
 import logging
 import os
-import sys
 
 from PyQt4 import QtCore, QtGui
 
@@ -46,10 +45,17 @@ if is_linux():
 
 
 def recent_files_conv(value):
+    """
+    If the value is not a list convert it yo a list
+    :param value: Value to convert
+    :return:value as a List
+    """
     if isinstance(value, list):
         return value
     elif isinstance(value, str):
         return [value]
+    elif isinstance(value, bytes):
+        return [value.decode()]
 
 
 class Settings(QtCore.QSettings):
