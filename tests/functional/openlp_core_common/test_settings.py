@@ -25,6 +25,7 @@ Package to test the openlp.core.lib.settings package.
 from unittest import TestCase
 
 from openlp.core.common import Settings
+from openlp.core.common.settings import recent_files_conv
 from tests.functional import patch
 from tests.helpers.testmixin import TestMixin
 
@@ -45,6 +46,25 @@ class TestSettings(TestCase, TestMixin):
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         self.destroy_settings()
+
+    def recent_files_conv_test(self):
+        """
+        Test that recent_files_conv, converts various possible types of values correctly.
+        """
+        # GIVEN: A list of possible value types and the expected results
+        possible_values = [(['multiple', 'values'], ['multiple', 'values']),
+                           (['single value'], ['single value']),
+                           ('string value', ['string value']),
+                           (b'bytes value', ['bytes value']),
+                           ([], []),
+                           (None, [])]
+
+        # WHEN: Calling recent_files_conv with the possible values
+        for value, expected_result in possible_values:
+            actual_result = recent_files_conv(value)
+
+            # THEN: The actual result should be the same as the expected result
+            self.assertEqual(actual_result, expected_result)
 
     def settings_basic_test(self):
         """

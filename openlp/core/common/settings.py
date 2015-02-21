@@ -46,9 +46,9 @@ if is_linux():
 
 def recent_files_conv(value):
     """
-    If the value is not a list convert it yo a list
+    If the value is not a list convert it to a list
     :param value: Value to convert
-    :return:value as a List
+    :return: value as a List
     """
     if isinstance(value, list):
         return value
@@ -56,6 +56,7 @@ def recent_files_conv(value):
         return [value]
     elif isinstance(value, bytes):
         return [value.decode()]
+    return []
 
 
 class Settings(QtCore.QSettings):
