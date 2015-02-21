@@ -1317,6 +1317,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 filename = filename[0].upper() + filename[1:]
             if filename in self.recent_files:
                 self.recent_files.remove(filename)
+            if not isinstance(self.recent_files, list):
+                self.recent_files = [self.recent_files]
             self.recent_files.insert(0, filename)
             while len(self.recent_files) > max_recent_files:
                 self.recent_files.pop()
