@@ -35,6 +35,7 @@ log = logging.getLogger(__name__)
 __version__ = 4
 
 
+# TODO: When removing an upgrade path the ftw-data needs updating to the minimum supported version
 def upgrade_1(session, metadata):
     """
     Version 1 upgrade.
