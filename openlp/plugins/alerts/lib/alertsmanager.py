@@ -26,7 +26,7 @@ displaying of alerts.
 
 from PyQt4 import QtCore
 
-from openlp.core.common import OpenLPMixin, RegistryMixin, Registry, RegistryProperties, translate
+from openlp.core.common import OpenLPMixin, RegistryMixin, Registry, RegistryProperties, Settings, translate
 
 
 class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperties):
@@ -70,7 +70,8 @@ class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperti
         """
         Format and request the Alert and start the timer.
         """
-        if not self.alert_list:
+        if not self.alert_list or (self.live_controller.display.screens.display_count == 1 
+                                   and not Settings().value('core/display on monitor')):
             return
         text = self.alert_list.pop(0)
         alert_tab = self.parent().settings_tab
