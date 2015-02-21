@@ -187,6 +187,14 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         self.application.process_events()
         # Get the full song
         song = self.song_select_importer.get_song(song, self._update_song_progress)
+        if not song:
+            QtGui.QMessageBox.critical(
+                self, translate('SongsPlugin.SongSelectForm', 'Incomplete song'),
+                translate('SongsPlugin.SongSelectForm', 'This song is missing some information, like the lyrics, '
+                                                        'and cannot be imported.'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok), QtGui.QMessageBox.OK)
+            self.stacked_widget.setCurrentIndex(1)
+            return
         # Update the UI
         self.title_edit.setText(song['title'])
         self.copyright_edit.setText(song['copyright'])
