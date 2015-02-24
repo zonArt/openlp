@@ -24,6 +24,7 @@ The bible import functions for OpenLP
 """
 import logging
 import os
+import urllib.error
 
 from PyQt4 import QtGui
 
@@ -91,7 +92,6 @@ class BibleImportForm(OpenLPWizard):
         Perform any custom initialisation for bible importing.
         """
         self.manager.set_process_dialog(self)
-        self.load_Web_Bibles()
         self.restart()
         self.select_stack.setCurrentIndex(0)
 
@@ -99,7 +99,7 @@ class BibleImportForm(OpenLPWizard):
         """
         Set up the signals used in the bible importer.
         """
-        self.web_language_combo_box.currentIndexChanged.connect(self.on_web_language_combo_box_index_changed)
+        self.web_source_combo_box.currentIndexChanged.connect(self.on_web_source_combo_box_index_changed)
         self.osis_browse_button.clicked.connect(self.on_osis_browse_button_clicked)
         self.csv_books_button.clicked.connect(self.on_csv_books_browse_button_clicked)
         self.csv_verses_button.clicked.connect(self.on_csv_verses_browse_button_clicked)
@@ -204,28 +204,33 @@ class BibleImportForm(OpenLPWizard):
         self.web_bible_tab.setObjectName('WebBibleTab')
         self.web_bible_layout = QtGui.QFormLayout(self.web_bible_tab)
         self.web_bible_layout.setObjectName('WebBibleLayout')
-
         self.web_update_label = QtGui.QLabel(self.web_bible_tab)
         self.web_update_label.setObjectName('WebUpdateLabel')
         self.web_bible_layout.setWidget(0, QtGui.QFormLayout.LabelRole, self.web_update_label)
         self.web_update_button = QtGui.QPushButton(self.web_bible_tab)
-        self.web_update_button.setObjectName('WebUpdateLabel')
+        self.web_update_button.setObjectName('WebUpdateButton')
         self.web_bible_layout.setWidget(0, QtGui.QFormLayout.FieldRole, self.web_update_button)
-
         self.web_source_label = QtGui.QLabel(self.web_bible_tab)
         self.web_source_label.setObjectName('WebSourceLabel')
         self.web_bible_layout.setWidget(1, QtGui.QFormLayout.LabelRole, self.web_source_label)
-        self.web_language_combo_box = QtGui.QComboBox(self.web_bible_tab)
-        self.web_language_combo_box.setObjectName('WebSourceComboBox')
-        self.web_language_combo_box.addItems(['', '', ''])
-        self.web_bible_layout.setWidget(1, QtGui.QFormLayout.FieldRole, self.web_language_combo_box)
+        self.web_source_combo_box = QtGui.QComboBox(self.web_bible_tab)
+        self.web_source_combo_box.setObjectName('WebSourceComboBox')
+        self.web_source_combo_box.addItems(['', '', ''])
+        self.web_source_combo_box.setEnabled(False)
+        self.web_bible_layout.setWidget(1, QtGui.QFormLayout.FieldRole, self.web_source_combo_box)
         self.web_translation_label = QtGui.QLabel(self.web_bible_tab)
         self.web_translation_label.setObjectName('web_translation_label')
         self.web_bible_layout.setWidget(2, QtGui.QFormLayout.LabelRole, self.web_translation_label)
         self.web_translation_combo_box = QtGui.QComboBox(self.web_bible_tab)
         self.web_translation_combo_box.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.web_translation_combo_box.setObjectName('WebTranslationComboBox')
+        self.web_translation_combo_box.setEnabled(False)
         self.web_bible_layout.setWidget(2, QtGui.QFormLayout.FieldRole, self.web_translation_combo_box)
+        self.web_progress_bar = QtGui.QProgressBar(self)
+        self.web_progress_bar.setRange(0, 3)
+        self.web_progress_bar.setObjectName('WebTranslationProgressBar')
+        self.web_progress_bar.setVisible(False)
+        self.web_bible_layout.setWidget(3, QtGui.QFormLayout.SpanningRole, self.web_progress_bar)
         self.web_tab_widget.addTab(self.web_bible_tab, '')
         self.web_proxy_tab = QtGui.QWidget()
         self.web_proxy_tab.setObjectName('WebProxyTab')
@@ -326,7 +331,12 @@ class BibleImportForm(OpenLPWizard):
         self.zefania_file_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.web_update_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Click to fetch bible list'))
         self.web_update_button.setText(translate('BiblesPlugin.ImportWizardForm', 'Fetch list'))
-        #self.web_language_combo_box.setItemText(0, translate('BiblesPlugin.ImportWizardForm', 'Choose a language'))
+        self.web_source_combo_box.setItemText(WebDownload.Crosswalk, translate('BiblesPlugin.ImportWizardForm',
+                                                                               'Crosswalk'))
+        self.web_source_combo_box.setItemText(WebDownload.BibleGateway, translate('BiblesPlugin.ImportWizardForm',
+                                                                                  'BibleGateway'))
+        self.web_source_combo_box.setItemText(WebDownload.Bibleserver, translate('BiblesPlugin.ImportWizardForm',
+                                                                                 'Bibleserver'))
         self.web_translation_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Bible:'))
         self.web_tab_widget.setTabText(self.web_tab_widget.indexOf(self.web_bible_tab),
                                        translate('BiblesPlugin.ImportWizardForm', 'Download Options'))
@@ -395,8 +405,11 @@ class BibleImportForm(OpenLPWizard):
                     self.zefania_file_edit.setFocus()
                     return False
             elif self.field('source_format') == BibleFormat.WebDownload:
-                self.version_name_edit.setText(self.web_translation_combo_box.currentText())
-                return True
+                # If count is 0 the bible list has not yet been downloaded
+                if self.web_translation_combo_box.count() == 0:
+                    return False
+                else:
+                    self.version_name_edit.setText(self.web_translation_combo_box.currentText())
             return True
         elif self.currentPage() == self.license_details_page:
             license_version = self.field('license_version')
@@ -434,16 +447,17 @@ class BibleImportForm(OpenLPWizard):
         if self.currentPage() == self.progress_page:
             return True
 
-    def on_web_language_combo_box_index_changed(self, index):
+    def on_web_source_combo_box_index_changed(self, index):
         """
         Setup the list of Bibles when you select a different source on the web download page.
 
         :param index: The index of the combo box.
         """
         self.web_translation_combo_box.clear()
-        bibles = list(self.web_bible_list[index].keys())
-        bibles.sort(key=get_locale_key)
-        self.web_translation_combo_box.addItems(bibles)
+        if self.web_bible_list:
+            bibles = list(self.web_bible_list[index].keys())
+            bibles.sort(key=get_locale_key)
+            self.web_translation_combo_box.addItems(bibles)
 
     def on_osis_browse_button_clicked(self):
         """
@@ -484,29 +498,34 @@ class BibleImportForm(OpenLPWizard):
 
     def on_web_update_button_clicked(self):
         """
-        Download list of bibles from Crosswalk, BibleServer and BibleGateway, and fill data in comboboxes
+        Download list of bibles from Crosswalk, BibleServer and BibleGateway.
         """
         # Download from Crosswalk, BiblesGateway, BibleServer
         self.web_bible_list = {}
-        for (source, extractor) in ((WebDownload.Crosswalk, CWExtract()), (WebDownload.BibleGateway, BGExtract()),
-                                    (WebDownload.Bibleserver, BSExtract())):
-            bibles = extractor.get_bibles_from_http()
+        self.web_source_combo_box.setEnabled(False)
+        self.web_translation_combo_box.setEnabled(False)
+        self.web_progress_bar.setVisible(True)
+        self.web_progress_bar.setValue(0)
+        proxy_server = self.field('proxy_server')
+        for (download_type, extractor) in ((WebDownload.Crosswalk, CWExtract(proxy_server)),
+                                           (WebDownload.BibleGateway, BGExtract(proxy_server)),
+                                           (WebDownload.Bibleserver, BSExtract(proxy_server))):
+            try:
+                bibles = extractor.get_bibles_from_http()
+            except (urllib.error.URLError, ConnectionError) as err:
+                critical_error_message_box(translate('BiblesPlugin.ImportWizardForm', 'Error during download'),
+                                           translate('BiblesPlugin.ImportWizardForm',
+                                                     'An error occurred while downloading the list of bibles from %s.'))
+            self.web_bible_list[download_type] = {}
             for (bible_name, bible_key, language_code) in bibles:
-                if not language_code in  self.web_bible_list:
-                    self.web_bible_list[language_code] = {}
-                    self.web_bible_list[language_code]['translations'] = []
-                    bible_language = BiblesResourcesDB.get_language(language_code)
-                    if bible_language:
-                        self.web_bible_list[language_code]['name'] = bible_language['name']
-                        self.web_bible_list[language_code]['native_name'] = bible_language['native_name']
-                    else:
-                        self.web_bible_list[language_code]['name'] = language_code
-                        self.web_bible_list[language_code]['native_name'] = language_code
-                self.web_bible_list[language_code]['translations'].append((source, bible_name, bible_key))
-        # Update combo box
-        for key in self.web_bible_list.keys():
-            self.web_language_combo_box.addItem(self.web_bible_list[key]['native_name'] + ' (' +
-                                                self.web_bible_list[key]['name'] + ')', userData=key)
+                self.web_bible_list[download_type][bible_name] = bible_key
+            self.web_progress_bar.setValue(download_type + 1)
+        # Update combo box if something got into the list
+        if self.web_bible_list:
+            self.on_web_source_combo_box_index_changed(0)
+            self.web_source_combo_box.setEnabled(True)
+            self.web_translation_combo_box.setEnabled(True)
+            self.web_progress_bar.setVisible(False)
 
     def register_fields(self):
         """
@@ -518,7 +537,7 @@ class BibleImportForm(OpenLPWizard):
         self.select_page.registerField('csv_versefile', self.csv_verses_edit)
         self.select_page.registerField('opensong_file', self.open_song_file_edit)
         self.select_page.registerField('zefania_file', self.zefania_file_edit)
-        self.select_page.registerField('web_language', self.web_language_combo_box)
+        self.select_page.registerField('web_location', self.web_source_combo_box)
         self.select_page.registerField('web_biblename', self.web_translation_combo_box)
         self.select_page.registerField('proxy_server', self.web_server_edit)
         self.select_page.registerField('proxy_username', self.web_user_edit)
@@ -542,7 +561,7 @@ class BibleImportForm(OpenLPWizard):
         self.setField('csv_versefile', '')
         self.setField('opensong_file', '')
         self.setField('zefania_file', '')
-        self.setField('web_language', 0)
+        self.setField('web_location', WebDownload.Crosswalk)
         self.setField('web_biblename', self.web_translation_combo_box.currentIndex())
         self.setField('proxy_server', settings.value('proxy address'))
         self.setField('proxy_username', settings.value('proxy username'))
@@ -550,32 +569,8 @@ class BibleImportForm(OpenLPWizard):
         self.setField('license_version', self.version_name_edit.text())
         self.setField('license_copyright', self.copyright_edit.text())
         self.setField('license_permissions', self.permissions_edit.text())
-        #self.on_web_language_combo_box_index_changed(WebDownload.Crosswalk)
+        self.on_web_source_combo_box_index_changed(WebDownload.Crosswalk)
         settings.endGroup()
-
-    def load_Web_Bibles(self):
-        """
-        Load the lists of Crosswalk, BibleGateway and Bibleserver bibles.
-        """
-        # Load Crosswalk Bibles.
-        self.load_Bible_Resource(WebDownload.Crosswalk)
-        # Load BibleGateway Bibles.
-        self.load_Bible_Resource(WebDownload.BibleGateway)
-        # Load and Bibleserver Bibles.
-        self.load_Bible_Resource(WebDownload.Bibleserver)
-
-    def load_Bible_Resource(self, download_type):
-        """
-        Loads a web bible from bible_resources.sqlite.
-
-        :param download_type: The WebDownload type e.g. bibleserver.
-        """
-        self.web_bible_list[download_type] = {}
-        bibles = BiblesResourcesDB.get_webbibles(WebDownload.Names[download_type])
-        for bible in bibles:
-            version = bible['name']
-            name = bible['abbreviation']
-            self.web_bible_list[download_type][version] = name.strip()
 
     def pre_wizard(self):
         """
