@@ -79,7 +79,7 @@ CROSSWALK_LANGUAGES = {
     'German': 'de',
     'Italian': 'it',
     'Español': 'es',
-    'French' : 'fr',
+    'French': 'fr',
     'Dutch': 'nl'
 }
 
@@ -621,7 +621,6 @@ class HTTPBible(BibleDB, RegistryProperties):
             return False
         self.wizard.progress_bar.setMaximum(len(books) + 2)
         self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible', 'Registering Language...'))
-        bible = None #BiblesResourcesDB.get_webbible(self.download_name, self.download_source.lower())
         if self.language_id:
             self.save_meta('language_id', self.language_id)
         else:
