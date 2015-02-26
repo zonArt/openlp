@@ -791,13 +791,12 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         if not isinstance(name, str):
             name = str(name)
         language = BiblesResourcesDB.run_sql(
-            'SELECT id, name, code, native_name FROM language WHERE name = ? OR code = ?', (name, name.lower()))
+            'SELECT id, name, code FROM language WHERE name = ? OR code = ?', (name, name.lower()))
         if language:
             return {
                 'id': language[0][0],
                 'name': str(language[0][1]),
-                'code': str(language[0][2]),
-                'native_name': str(language[0][3])
+                'code': str(language[0][2])
             }
         else:
             return None

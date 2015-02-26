@@ -329,8 +329,8 @@ class BibleImportForm(OpenLPWizard):
         self.open_song_file_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.web_source_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Location:'))
         self.zefania_file_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
-        self.web_update_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Click to fetch bible list'))
-        self.web_update_button.setText(translate('BiblesPlugin.ImportWizardForm', 'Fetch list'))
+        self.web_update_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Click to download bible list'))
+        self.web_update_button.setText(translate('BiblesPlugin.ImportWizardForm', 'Download bible list'))
         self.web_source_combo_box.setItemText(WebDownload.Crosswalk, translate('BiblesPlugin.ImportWizardForm',
                                                                                'Crosswalk'))
         self.web_source_combo_box.setItemText(WebDownload.BibleGateway, translate('BiblesPlugin.ImportWizardForm',
@@ -504,6 +504,7 @@ class BibleImportForm(OpenLPWizard):
         self.web_bible_list = {}
         self.web_source_combo_box.setEnabled(False)
         self.web_translation_combo_box.setEnabled(False)
+        self.web_update_button.setEnabled(False)
         self.web_progress_bar.setVisible(True)
         self.web_progress_bar.setValue(0)
         proxy_server = self.field('proxy_server')
@@ -518,13 +519,14 @@ class BibleImportForm(OpenLPWizard):
                                                      'An error occurred while downloading the list of bibles from %s.'))
             self.web_bible_list[download_type] = {}
             for (bible_name, bible_key, language_code) in bibles:
-                self.web_bible_list[download_type][bible_name] = bible_key
+                self.web_bible_list[download_type][bible_name] = (bible_key, language_code)
             self.web_progress_bar.setValue(download_type + 1)
         # Update combo box if something got into the list
         if self.web_bible_list:
             self.on_web_source_combo_box_index_changed(0)
             self.web_source_combo_box.setEnabled(True)
             self.web_translation_combo_box.setEnabled(True)
+            self.web_update_button.setEnabled(True)
             self.web_progress_bar.setVisible(False)
 
     def register_fields(self):
@@ -611,14 +613,15 @@ class BibleImportForm(OpenLPWizard):
             self.progress_bar.setMaximum(1)
             download_location = self.field('web_location')
             bible_version = self.web_translation_combo_box.currentText()
-            bible = self.web_bible_list[download_location][bible_version]
+            (bible, language_id) = self.web_bible_list[download_location][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload, name=license_version,
                 download_source=WebDownload.Names[download_location],
                 download_name=bible,
                 proxy_server=self.field('proxy_server'),
                 proxy_username=self.field('proxy_username'),
-                proxy_password=self.field('proxy_password')
+                proxy_password=self.field('proxy_password'),
+                language_id=language_id
             )
         elif bible_type == BibleFormat.Zefania:
             # Import an Zefania bible.

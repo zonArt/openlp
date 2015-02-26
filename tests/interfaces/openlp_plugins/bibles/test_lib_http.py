@@ -124,8 +124,13 @@ class TestBibleHTTP(TestCase):
         # GIVEN: A new Bible Server extraction class
         handler = BSExtract()
 
-        handler.get_bibles_from_http()
-        self.assertTrue(False)
+        # WHEN: downloading bible list from bibleserver
+        bibles = handler.get_bibles_from_http()
+
+        # THEN: The list should not be None, and some known bibles should be there
+        self.assertIsNotNone(bibles)
+        self.assertIn(('New Int. Readers Version', 'NIRV', 'en'), bibles)
+        self.assertIn(('Българската Библия', 'BLG', 'bg'), bibles)
 
     def biblegateway_get_bibles_test(self):
         """
@@ -134,8 +139,12 @@ class TestBibleHTTP(TestCase):
         # GIVEN: A new Bible Gateway extraction class
         handler = BGExtract()
 
-        handler.get_bibles_from_http()
-        self.assertTrue(False)
+        # WHEN: downloading bible list from Crosswalk
+        bibles = handler.get_bibles_from_http()
+
+        # THEN: The list should not be None, and some known bibles should be there
+        self.assertIsNotNone(bibles)
+        self.assertIn(('Holman Christian Standard Bible', 'HCSB', 'en'), bibles)
 
     def crosswalk_get_bibles_test(self):
         """
@@ -144,5 +153,9 @@ class TestBibleHTTP(TestCase):
         # GIVEN: A new Crosswalk extraction class
         handler = CWExtract()
 
-        handler.get_bibles_from_http()
-        self.assertTrue(False)
+        # WHEN: downloading bible list from Crosswalk
+        bibles = handler.get_bibles_from_http()
+
+        # THEN: The list should not be None, and some known bibles should be there
+        self.assertIsNotNone(bibles)
+        self.assertIn(('Giovanni Diodati 1649 (Italian)', 'gdb', 'it'), bibles)

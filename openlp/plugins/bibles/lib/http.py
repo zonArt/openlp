@@ -254,6 +254,8 @@ class BGExtract(RegistryProperties):
         if not soup:
             return None
         div = soup.find('div', 'result-text-style-normal')
+        if not div:
+            return None
         self._clean_soup(div)
         span_list = div.find_all('span', 'text')
         log.debug('Span list: %s', span_list)
@@ -322,7 +324,13 @@ class BGExtract(RegistryProperties):
         if not soup:
             return None
         bible_select = soup.find('select', {'class': 'translation-dropdown'})
+        if not bible_select:
+            log.debug('No select tags found - did site change?')
+            return None
         option_tags = bible_select.find_all('option')
+        if not option_tags:
+            log.debug('No option tags found - did site change?')
+            return None
         current_lang = ''
         bibles = []
         for ot in option_tags:
@@ -412,15 +420,21 @@ class BSExtract(RegistryProperties):
         if not soup:
             return None
         bible_links = soup.find_all('a', {'class': 'trlCell'})
+        if not bible_links:
+            log.debug('No a tags found - did site change?')
+            return None
         bibles = []
         for link in bible_links:
             bible_name = link.get_text()
             # Skip any audio
             if 'audio' in bible_name.lower():
                 continue
-            bible_link = link['href']
-            bible_key = bible_link[bible_link.rfind('/') + 1:]
-            css_classes = link['class']
+            try:
+                bible_link = link['href']
+                bible_key = bible_link[bible_link.rfind('/') + 1:]
+                css_classes = link['class']
+            except KeyError:
+                log.debug('No href/class attribute found - did site change?')
             language_code = ''
             for css_class in css_classes:
                 if css_class.startswith('fl_'):
@@ -512,11 +526,21 @@ class CWExtract(RegistryProperties):
         if not soup:
             return None
         bible_select = soup.find('select')
+        if not bible_select:
+            log.debug('No select tags found - did site change?')
+            return None
         option_tags = bible_select.find_all('option')
+        if not option_tags:
+            log.debug('No option tags found - did site change?')
+            return None
         bibles = []
         for ot in option_tags:
             tag_text = ot.get_text().strip()
-            tag_value = ot['value']
+            try:
+                tag_value = ot['value']
+            except KeyError:
+                log.exception('No value attribute found - did site change?')
+                return None
             if not tag_value:
                 continue
             # The names of non-english bibles has their language in parentheses at the end
@@ -524,7 +548,6 @@ class CWExtract(RegistryProperties):
                 language = tag_text[tag_text.rfind('(') + 1:-1]
                 if language in CROSSWALK_LANGUAGES:
                     language_code = CROSSWALK_LANGUAGES[language]
-                    tag_text = tag_text[:tag_text.rfind('(')]
                 else:
                     language_code = ''
             # ... except for the latin vulgate
@@ -555,6 +578,7 @@ class HTTPBible(BibleDB, RegistryProperties):
         self.proxy_server = None
         self.proxy_username = None
         self.proxy_password = None
+        self.language_id = None
         if 'path' in kwargs:
             self.path = kwargs['path']
         if 'proxy_server' in kwargs:
@@ -563,6 +587,8 @@ class HTTPBible(BibleDB, RegistryProperties):
             self.proxy_username = kwargs['proxy_username']
         if 'proxy_password' in kwargs:
             self.proxy_password = kwargs['proxy_password']
+        if 'language_id' in kwargs:
+            self.language_id = kwargs['language_id']
 
     def do_import(self, bible_name=None):
         """
@@ -595,13 +621,12 @@ class HTTPBible(BibleDB, RegistryProperties):
             return False
         self.wizard.progress_bar.setMaximum(len(books) + 2)
         self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible', 'Registering Language...'))
-        bible = BiblesResourcesDB.get_webbible(self.download_name, self.download_source.lower())
-        if bible['language_id']:
-            language_id = bible['language_id']
-            self.save_meta('language_id', language_id)
+        bible = None #BiblesResourcesDB.get_webbible(self.download_name, self.download_source.lower())
+        if self.language_id:
+            self.save_meta('language_id', self.language_id)
         else:
-            language_id = self.get_language(bible_name)
-        if not language_id:
+            self.language_id = self.get_language(bible_name)
+        if not self.language_id:
             log.error('Importing books from %s failed' % self.filename)
             return False
         for book in books:
@@ -609,7 +634,7 @@ class HTTPBible(BibleDB, RegistryProperties):
                 break
             self.wizard.increment_progress_bar(translate(
                 'BiblesPlugin.HTTPBible', 'Importing %s...', 'Importing <book name>...') % book)
-            book_ref_id = self.get_book_ref_id_by_name(book, len(books), language_id)
+            book_ref_id = self.get_book_ref_id_by_name(book, len(books), self.language_id)
             if not book_ref_id:
                 log.error('Importing books from %s - download name: "%s" failed' %
                           (self.download_source, self.download_name))
