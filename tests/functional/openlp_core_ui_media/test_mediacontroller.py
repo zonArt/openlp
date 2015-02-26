@@ -28,7 +28,7 @@ from openlp.core.ui.media.mediacontroller import MediaController
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.common import Registry
 
-from tests.functional import MagicMock
+from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 
 
@@ -58,3 +58,26 @@ class TestMediaController(TestCase, TestMixin):
                              'Video extensions should be the same')
         self.assertListEqual(media_player.audio_extensions_list, media_controller.audio_extensions_list,
                              'Audio extensions should be the same')
+
+    def check_file_type_no_players_test(self):
+        """
+        Test that we don't try to play media when no players available
+        """
+        # GIVEN: A mocked UiStrings, get_media_players, controller, display and service_item
+        with patch('openlp.core.ui.media.mediacontroller.get_media_players') as mocked_get_media_players,\
+                patch('openlp.core.ui.media.mediacontroller.UiStrings') as mocked_uistrings:
+            mocked_get_media_players.return_value = ([], '')
+            mocked_ret_uistrings = MagicMock()
+            mocked_ret_uistrings.Automatic = 1
+            mocked_uistrings.return_value = mocked_ret_uistrings
+            media_controller = MediaController()
+            mocked_controller = MagicMock()
+            mocked_display = MagicMock()
+            mocked_service_item = MagicMock()
+            mocked_service_item.processor = 1
+
+            # WHEN: calling _check_file_type when no players exists
+            ret = media_controller._check_file_type(mocked_controller, mocked_display, mocked_service_item)
+
+            # THEN: it should return False
+            self.assertFalse(ret, '_check_file_type should return False when no mediaplayers are available.')

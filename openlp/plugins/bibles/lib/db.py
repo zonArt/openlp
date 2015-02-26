@@ -164,9 +164,6 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         Returns the version name of the Bible.
         """
         version_name = self.get_object(BibleMeta, 'name')
-        # Fallback to old way of naming
-        if not version_name:
-            version_name = self.get_object(BibleMeta, 'Version')
         self.name = version_name.value if version_name else None
         return self.name
 

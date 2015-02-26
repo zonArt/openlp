@@ -471,7 +471,6 @@ class TestSongSelectFileImport(TestCase, TestMixin):
     def setUp(self):
         """
         Initial setups
-        :return:
         """
         Registry.create()
         test_song_name = 'TestSong'
@@ -484,14 +483,12 @@ class TestSongSelectFileImport(TestCase, TestMixin):
     def tearDown(self):
         """
         Test cleanups
-        :return:
         """
         pass
 
     def songselect_import_usr_file_test(self):
         """
         Verify import SongSelect USR file parses file properly
-        :return:
         """
         # GIVEN: Text file to import and mocks
         copyright = '2011 OpenLP Programmer One (Admin. by OpenLP One) | ' \
@@ -510,14 +507,13 @@ class TestSongSelectFileImport(TestCase, TestMixin):
             self.assertEquals(song_import.title, self.title, 'Song title should match')
             self.assertEquals(song_import.ccli_number, self.ccli_number, 'CCLI Song Number should match')
             self.assertEquals(song_import.authors, self.authors, 'Author(s) should match')
-            self.assertEquals(song_import.copyright, self.copyright_usr, 'Copyright should match')
+            self.assertEquals(song_import.copyright, copyright, 'Copyright should match')
             self.assertEquals(song_import.topics, self.topics, 'Theme(s) should match')
-            self.assertEquals(song_import.verses, self.verses, 'Verses should match with test verses')
+            self.assertEquals(song_import.verses, verses, 'Verses should match with test verses')
 
-    def songselect_import_usr_file_test(self):
+    def songselect_import_text_file_test(self):
         """
-        Verify import SongSelect USR file parses file properly
-        :return:
+        Verify import SongSelect TEXT file parses file properly
         """
         # GIVEN: Text file to import and mocks
         copyright = '© 2011 OpenLP Programmer One (Admin. by OpenLP One)'

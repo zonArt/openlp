@@ -23,6 +23,8 @@
 Package to test the openlp.core.ui.firsttimeform package.
 """
 import os
+import socket
+import tempfile
 import urllib
 from unittest import TestCase
 
@@ -70,6 +72,11 @@ class TestFirstTimeForm(TestCase, TestMixin):
         self.app.process_events = lambda: None
         Registry.create()
         Registry().register('application', self.app)
+        self.tempfile = os.path.join(tempfile.gettempdir(), 'testfile')
+
+    def tearDown(self):
+        if os.path.isfile(self.tempfile):
+            os.remove(self.tempfile)
 
     def initialise_test(self):
         """
@@ -229,3 +236,20 @@ class TestFirstTimeForm(TestCase, TestMixin):
         # THEN: the critical_error_message_box should have been called
         self.assertEquals(mocked_message_box.mock_calls[1][1][0], 'Network Error 407',
                           'first_time_form should have caught Network Error')
+
+    @patch('openlp.core.ui.firsttimeform.urllib.request.urlopen')
+    def socket_timeout_test(self, mocked_urlopen):
+        """
+        Test socket timeout gets caught
+        """
+        # GIVEN: Mocked urlopen to fake a network disconnect in the middle of a download
+        first_time_form = FirstTimeForm(None)
+        first_time_form.initialize(MagicMock())
+        mocked_urlopen.side_effect = socket.timeout()
+
+        # WHEN: Attempt to retrieve a file
+        first_time_form.url_get_file(url='http://localhost/test', f_path=self.tempfile)
+
+        # THEN: socket.timeout should have been caught
+        # NOTE: Test is if $tmpdir/tempfile is still there, then test fails since ftw deletes bad downloaded files
+        self.assertFalse(os.path.exists(self.tempfile), 'FTW url_get_file should have caught socket.timeout')
