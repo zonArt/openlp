@@ -648,7 +648,7 @@ class TestSongSelectFileImport(TestCase, TestMixin):
         """
         # GIVEN: Text file to import and mocks
         copyright_bin = '2011 OpenLP Programmer One (Admin. by OpenLP One) | ' \
-                    'Openlp Programmer Two (Admin. by OpenLP Two)'
+                        'Openlp Programmer Two (Admin. by OpenLP Two)'
         verses_bin = [
             ['v1', 'Line One Verse One\nLine Two Verse One\nLine Three Verse One\nLine Four Verse One', None],
             ['v2', 'Line One Verse Two\nLine Two Verse Two\nLine Three Verse Two\nLine Four Verse Two', None]
