@@ -145,9 +145,13 @@ def upgrade_db(url, upgrade):
     version_meta = session.query(Metadata).get('version')
     if version_meta is None:
         # Tables have just been created - fill the version field with the most recent version
-        version = upgrade.__version__
+        if session.query(Metadata).get('dbversion'):
+            version = 0
+        else:
+            version = upgrade.__version__
         version_meta = Metadata.populate(key='version', value=version)
         session.add(version_meta)
+        session.commit()
     else:
         version = int(version_meta.value)
     if version > upgrade.__version__:

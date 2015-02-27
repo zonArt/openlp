@@ -633,7 +633,6 @@ class TestSongSelectFileImport(TestCase, TestMixin):
     def setUp(self):
         """
         Initial setups
-        :return:
         """
         Registry.create()
         test_song_name = 'TestSong'
@@ -646,7 +645,6 @@ class TestSongSelectFileImport(TestCase, TestMixin):
     def songselect_import_bin_file_test(self):
         """
         Verify import SongSelect BIN file parses file properly
-        :return:
         """
         # GIVEN: Text file to import and mocks
         copyright_bin = '2011 OpenLP Programmer One (Admin. by OpenLP One) | ' \
@@ -668,10 +666,9 @@ class TestSongSelectFileImport(TestCase, TestMixin):
             self.assertEquals(song_import.topics, self.topics, 'Theme(s) should match')
             self.assertEquals(song_import.verses, verses_bin, 'Verses should match with test verses')
 
-    def songselect_import_txt_file_test(self):
+    def songselect_import_text_file_test(self):
         """
-        Verify import SongSelect TXT file parses file properly
-        :return:
+        Verify import SongSelect TEXT file parses file properly
         """
         # GIVEN: Text file to import and mocks
         copyright_txt = '© 2011 OpenLP Programmer One (Admin. by OpenLP One)'

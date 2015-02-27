@@ -22,12 +22,13 @@
 """
 Package to test the openlp.core.ui.thememanager package.
 """
-import zipfile
 import os
 import shutil
 
 from unittest import TestCase
 from tempfile import mkdtemp
+
+from PyQt4 import QtGui
 
 from openlp.core.ui import ThemeManager
 from openlp.core.common import Registry
@@ -129,6 +130,46 @@ class TestThemeManager(TestCase):
 
             # THEN: The mocked_copyfile should not have been called
             self.assertTrue(mocked_copyfile.called, 'shutil.copyfile should be called')
+
+    def over_write_message_box_yes_test(self):
+        """
+        Test that theme_manager.over_write_message_box returns True when the user clicks yes.
+        """
+        # GIVEN: A patched QMessageBox.question and an instance of ThemeManager
+        with patch('openlp.core.ui.thememanager.QtGui.QMessageBox.question', return_value=QtGui.QMessageBox.Yes)\
+                as mocked_qmessagebox_question,\
+                patch('openlp.core.ui.thememanager.translate') as mocked_translate:
+            mocked_translate.side_effect = lambda context, text: text
+            theme_manager = ThemeManager(None)
+
+            # WHEN: Calling over_write_message_box with 'Theme Name'
+            result = theme_manager.over_write_message_box('Theme Name')
+
+            # THEN: over_write_message_box should return True and the message box should contain the theme name
+            self.assertTrue(result)
+            mocked_qmessagebox_question.assert_called_once_with(
+                theme_manager, 'Theme Already Exists', 'Theme Theme Name already exists. Do you want to replace it?',
+                ANY, ANY)
+
+    def over_write_message_box_no_test(self):
+        """
+        Test that theme_manager.over_write_message_box returns False when the user clicks no.
+        """
+        # GIVEN: A patched QMessageBox.question and an instance of ThemeManager
+        with patch('openlp.core.ui.thememanager.QtGui.QMessageBox.question', return_value=QtGui.QMessageBox.No)\
+                as mocked_qmessagebox_question,\
+                patch('openlp.core.ui.thememanager.translate') as mocked_translate:
+            mocked_translate.side_effect = lambda context, text: text
+            theme_manager = ThemeManager(None)
+
+            # WHEN: Calling over_write_message_box with 'Theme Name'
+            result = theme_manager.over_write_message_box('Theme Name')
+
+            # THEN: over_write_message_box should return False and the message box should contain the theme name
+            self.assertFalse(result)
+            mocked_qmessagebox_question.assert_called_once_with(
+                theme_manager, 'Theme Already Exists', 'Theme Theme Name already exists. Do you want to replace it?',
+                ANY, ANY)
 
     def unzip_theme_test(self):
         """
