@@ -34,8 +34,7 @@ class TestEditVerseForm(TestCase, TestMixin):
 
     def update_suggested_verse_number_test(self):
         """
-        Test if the update_suggested_verse_number method changes the value of
-        the verse number if has_single_verse is True
+        Test that update_suggested_verse_number() has no effect when editing a single verse
         """
         # GIVEN some input values
         self.edit_verse_form.has_single_verse = True
@@ -43,7 +42,6 @@ class TestEditVerseForm(TestCase, TestMixin):
         self.edit_verse_form.verse_text_edit.toPlainText = MagicMock(return_value = 'Text')
         self.edit_verse_form.verse_number_box.setValue(3)
         
-
         # WHEN the method is called
         self.edit_verse_form.update_suggested_verse_number()
         
