@@ -70,7 +70,7 @@ class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperti
         """
         Format and request the Alert and start the timer.
         """
-        if not self.alert_list or (self.live_controller.display.screens.display_count == 1 
+        if not self.alert_list or (self.live_controller.display.screens.display_count == 1
                                    and not Settings().value('core/display on monitor')):
             return
         text = self.alert_list.pop(0)
