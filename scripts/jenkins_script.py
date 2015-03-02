@@ -42,7 +42,7 @@ import time
 from jenkins import Jenkins
 
 
-JENKINS_URL = 'http://ci.openlp.org/'
+JENKINS_URL = 'https://ci.openlp.io/'
 REPO_REGEX = r'(.*/+)(~.*)'
 # Allows us to black list token. So when we change the token, we can display a proper message to the user.
 OLD_TOKENS = []
@@ -75,15 +75,19 @@ class Colour(object):
 
 
 class JenkinsTrigger(object):
+    """
+    A class to trigger builds on Jenkins and print the results.
+
+    :param token: The token we need to trigger the build. If you do not have this token, ask in IRC.
+    """
+
     def __init__(self, token):
         """
         Create the JenkinsTrigger instance.
-
-        :param token: The token we need to trigger the build. If you do not have this token, ask in IRC.
         """
         self.token = token
         self.repo_name = get_repo_name()
-        self.jenkins_instance = Jenkins(JENKINS_URL)
+        self.jenkins_instance = Jenkins(JENKINS_URL, verify=False)
 
     def trigger_build(self):
         """
