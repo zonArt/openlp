@@ -32,13 +32,14 @@ You probably want to create an alias. Add this to your ~/.bashrc file and then l
 You can look up the token in the Branch-01-Pull job configuration or ask in IRC.
 """
 
-from optparse import OptionParser
 import re
-from requests.exceptions import HTTPError
-from subprocess import Popen, PIPE
 import sys
 import time
+from optparse import OptionParser
+from subprocess import Popen, PIPE
+import warnings
 
+from requests.exceptions import HTTPError
 from jenkins import Jenkins
 
 
@@ -46,6 +47,9 @@ JENKINS_URL = 'https://ci.openlp.io/'
 REPO_REGEX = r'(.*/+)(~.*)'
 # Allows us to black list token. So when we change the token, we can display a proper message to the user.
 OLD_TOKENS = []
+
+# Disable the InsecureRequestWarning we get from urllib3, because we're not verifying our own self-signed certificate
+warnings.simplefilter('ignore')
 
 
 class OpenLPJobs(object):
@@ -98,8 +102,8 @@ class JenkinsTrigger(object):
         # We just want the name (not the email).
         name = ' '.join(raw_output.decode().split()[:-1])
         cause = 'Build triggered by %s (%s)' % (name, self.repo_name)
-        self.jenkins_instance.job(OpenLPJobs.Branch_Pull).build(
-            {'BRANCH_NAME': self.repo_name, 'cause': cause}, token=self.token)
+        self.jenkins_instance.job(OpenLPJobs.Branch_Pull).build({'BRANCH_NAME': self.repo_name, 'cause': cause},
+                                                                token=self.token)
 
     def print_output(self):
         """
