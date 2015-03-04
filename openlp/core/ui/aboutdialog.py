@@ -144,7 +144,7 @@ class UiAboutDialog(object):
             'id': ['Mico "bangmico" Siahaan', ' ign_christian'],
             'ja': ['Kunio "Kunio" Nakamaru', 'Chris Haris'],
             'nb': ['Atle "pendlaren" Weibell', 'Frode "frodus" Woldsund'],
-            'nl': ['Arjen "typovar" van Voorst'],
+            'nl': ['Arjan Schrijver', 'Arjen "typovar" van Voorst'],
             'pl': ['Agata \u017B\u0105d\u0142o', 'Piotr Karze\u0142ek'],
             'pt_BR': ['David Mederiros', 'Rafael "rafaellerm" Lerm', 'Eduardo Levi Chaves',
                       'Gustavo Bim', 'Rog\xeanio Bel\xe9m', 'Simon "samscudder" Scudder', 'Van Der Fran'],
