@@ -306,7 +306,7 @@ class PresentationDocument(object):
         titles_file = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
         if os.path.exists(titles_file):
             try:
-                with open(titles_file) as fi:
+                with open(titles_file, encoding='utf-8') as fi:
                     titles = fi.read().splitlines()
             except:
                 log.exception('Failed to open/read existing titles file')
@@ -316,7 +316,7 @@ class PresentationDocument(object):
             note = ''
             if os.path.exists(notes_file):
                 try:
-                    with open(notes_file) as fn:
+                    with open(notes_file, encoding='utf-8') as fn:
                         note = fn.read()
                 except:
                     log.exception('Failed to open/read notes file')
