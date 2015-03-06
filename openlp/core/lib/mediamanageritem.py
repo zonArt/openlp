@@ -345,7 +345,7 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
     def dnd_move_internal(self, target):
         """
         Handle internal moving of media manager items
-s
+
         :param target: The target of the DnD action
         """
         pass
@@ -460,7 +460,8 @@ s
         """
         if Settings().value('advanced/double click live'):
             self.on_live_click()
-        else:
+        elif not Settings().value('advanced/single click preview'):
+            # NOTE: The above check is necessary to prevent bug #1419300
             self.on_preview_click()
 
     def on_selection_change(self):
