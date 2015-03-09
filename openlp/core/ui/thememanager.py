@@ -358,7 +358,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError as os_error:
             shutil.Error = os_error
-            self.log_exception('Error deleting theme %s', theme)
+            self.log_exception('Error deleting theme %s' % theme)
 
     def on_export_theme(self, field=None):
         """

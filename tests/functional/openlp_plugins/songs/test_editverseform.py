@@ -20,40 +20,51 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The file rename dialog.
+This module contains tests for the editverseform of the Songs plugin.
 """
+from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
-from .filerenamedialog import Ui_FileRenameDialog
+from openlp.core.common import Registry, Settings
+from openlp.core.lib import ServiceItem
+from openlp.plugins.songs.forms.editverseform import EditVerseForm
+from openlp.plugins.songs.lib.db import AuthorType
+from tests.functional import patch, MagicMock
+from tests.helpers.testmixin import TestMixin
 
-from openlp.core.common import Registry, RegistryProperties, translate
 
-
-class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog, RegistryProperties):
+class TestEditVerseForm(TestCase, TestMixin):
     """
-    The file rename dialog
+    Test the functions in the :mod:`lib` module.
     """
-    def __init__(self):
+    def setUp(self):
         """
-        Constructor
+        Set up the components need for all tests.
         """
-        super(FileRenameForm, self).__init__(Registry().get('main_window'))
-        self._setup()
+        self.edit_verse_form = EditVerseForm(None)
+        self.setup_application()
+        self.build_settings()
+        QtCore.QLocale.setDefault(QtCore.QLocale('en_GB'))
 
-    def _setup(self):
+    def tearDown(self):
         """
-        Set up the class. This method is mocked out by the tests.
+        Delete all the C++ objects at the end so that we don't have a segfault
         """
-        self.setupUi(self)
+        self.destroy_settings()
 
-    def exec_(self, copy=False):
+    def update_suggested_verse_number_test(self):
         """
-        Run the Dialog with correct heading.
+        Test that update_suggested_verse_number() has no effect when editing a single verse
         """
-        if copy:
-            self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Copy'))
-        else:
-            self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Rename'))
-        self.file_name_edit.setFocus()
-        return QtGui.QDialog.exec_(self)
+        # GIVEN some input values
+        self.edit_verse_form.has_single_verse = True
+        self.edit_verse_form.verse_type_combo_box.currentIndex = MagicMock(return_value=0)
+        self.edit_verse_form.verse_text_edit.toPlainText = MagicMock(return_value='Text')
+        self.edit_verse_form.verse_number_box.setValue(3)
+
+        # WHEN the method is called
+        self.edit_verse_form.update_suggested_verse_number()
+
+        # THEN the verse number must not be changed
+        self.assertEqual(3, self.edit_verse_form.verse_number_box.value(), 'The verse number should be 3')

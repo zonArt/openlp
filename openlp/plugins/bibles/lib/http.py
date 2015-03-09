@@ -50,6 +50,38 @@ UGLY_CHARS = {
 }
 VERSE_NUMBER_REGEX = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
 
+BIBLESERVER_LANGUAGE_CODE = {
+    'fl_1': 'de',
+    'fl_2': 'en',
+    'fl_3': 'fr',
+    'fl_4': 'it',
+    'fl_5': 'es',
+    'fl_6': 'pt',
+    'fl_7': 'ru',
+    'fl_8': 'sv',
+    'fl_9': 'no',
+    'fl_10': 'nl',
+    'fl_11': 'cs',
+    'fl_12': 'sk',
+    'fl_13': 'ro',
+    'fl_14': 'hr',
+    'fl_15': 'hu',
+    'fl_16': 'bg',
+    'fl_17': 'ar',
+    'fl_18': 'tr',
+    'fl_19': 'pl',
+    'fl_20': 'da',
+    'fl_21': 'zh'
+}
+
+CROSSWALK_LANGUAGES = {
+    'Portuguese': 'pt',
+    'German': 'de',
+    'Italian': 'it',
+    'Español': 'es',
+    'French': 'fr',
+    'Dutch': 'nl'
+}
 
 log = logging.getLogger(__name__)
 
@@ -222,6 +254,8 @@ class BGExtract(RegistryProperties):
         if not soup:
             return None
         div = soup.find('div', 'result-text-style-normal')
+        if not div:
+            return None
         self._clean_soup(div)
         span_list = div.find_all('span', 'text')
         log.debug('Span list: %s', span_list)
@@ -277,6 +311,42 @@ class BGExtract(RegistryProperties):
             if book:
                 books.append(book.contents[0])
         return books
+
+    def get_bibles_from_http(self):
+        """
+        Load a list of bibles from BibleGateway website.
+
+        returns a list in the form [(biblename, biblekey, language_code)]
+        """
+        log.debug('BGExtract.get_bibles_from_http')
+        bible_url = 'https://legacy.biblegateway.com/versions/'
+        soup = get_soup_for_bible_ref(bible_url)
+        if not soup:
+            return None
+        bible_select = soup.find('select', {'class': 'translation-dropdown'})
+        if not bible_select:
+            log.debug('No select tags found - did site change?')
+            return None
+        option_tags = bible_select.find_all('option')
+        if not option_tags:
+            log.debug('No option tags found - did site change?')
+            return None
+        current_lang = ''
+        bibles = []
+        for ot in option_tags:
+            tag_class = ''
+            try:
+                tag_class = ot['class'][0]
+            except KeyError:
+                tag_class = ''
+            tag_text = ot.get_text()
+            if tag_class == 'lang':
+                current_lang = tag_text[tag_text.find('(') + 1:tag_text.find(')')].lower()
+            elif tag_class == 'spacer':
+                continue
+            else:
+                bibles.append((tag_text, ot['value'], current_lang))
+        return bibles
 
 
 class BSExtract(RegistryProperties):
@@ -337,6 +407,43 @@ class BSExtract(RegistryProperties):
             return None
         content = content.find_all('li')
         return [book.contents[0].contents[0] for book in content if len(book.contents[0].contents)]
+
+    def get_bibles_from_http(self):
+        """
+        Load a list of bibles from Bibleserver website.
+
+        returns a list in the form [(biblename, biblekey, language_code)]
+        """
+        log.debug('BSExtract.get_bibles_from_http')
+        bible_url = 'http://www.bibleserver.com/index.php?language=2'
+        soup = get_soup_for_bible_ref(bible_url)
+        if not soup:
+            return None
+        bible_links = soup.find_all('a', {'class': 'trlCell'})
+        if not bible_links:
+            log.debug('No a tags found - did site change?')
+            return None
+        bibles = []
+        for link in bible_links:
+            bible_name = link.get_text()
+            # Skip any audio
+            if 'audio' in bible_name.lower():
+                continue
+            try:
+                bible_link = link['href']
+                bible_key = bible_link[bible_link.rfind('/') + 1:]
+                css_classes = link['class']
+            except KeyError:
+                log.debug('No href/class attribute found - did site change?')
+            language_code = ''
+            for css_class in css_classes:
+                if css_class.startswith('fl_'):
+                    try:
+                        language_code = BIBLESERVER_LANGUAGE_CODE[css_class]
+                    except KeyError:
+                        language_code = ''
+            bibles.append((bible_name, bible_key, language_code))
+        return bibles
 
 
 class CWExtract(RegistryProperties):
@@ -408,6 +515,49 @@ class CWExtract(RegistryProperties):
             books.append(book.contents[0])
         return books
 
+    def get_bibles_from_http(self):
+        """
+        Load a list of bibles from Crosswalk website.
+        returns a list in the form [(biblename, biblekey, language_code)]
+        """
+        log.debug('CWExtract.get_bibles_from_http')
+        bible_url = 'http://www.biblestudytools.com/search/bible-search.part/'
+        soup = get_soup_for_bible_ref(bible_url)
+        if not soup:
+            return None
+        bible_select = soup.find('select')
+        if not bible_select:
+            log.debug('No select tags found - did site change?')
+            return None
+        option_tags = bible_select.find_all('option')
+        if not option_tags:
+            log.debug('No option tags found - did site change?')
+            return None
+        bibles = []
+        for ot in option_tags:
+            tag_text = ot.get_text().strip()
+            try:
+                tag_value = ot['value']
+            except KeyError:
+                log.exception('No value attribute found - did site change?')
+                return None
+            if not tag_value:
+                continue
+            # The names of non-english bibles has their language in parentheses at the end
+            if tag_text.endswith(')'):
+                language = tag_text[tag_text.rfind('(') + 1:-1]
+                if language in CROSSWALK_LANGUAGES:
+                    language_code = CROSSWALK_LANGUAGES[language]
+                else:
+                    language_code = ''
+            # ... except for the latin vulgate
+            elif 'latin' in tag_text.lower():
+                language_code = 'la'
+            else:
+                language_code = 'en'
+            bibles.append((tag_text, tag_value, language_code))
+        return bibles
+
 
 class HTTPBible(BibleDB, RegistryProperties):
     log.info('%s HTTPBible loaded', __name__)
@@ -428,6 +578,7 @@ class HTTPBible(BibleDB, RegistryProperties):
         self.proxy_server = None
         self.proxy_username = None
         self.proxy_password = None
+        self.language_id = None
         if 'path' in kwargs:
             self.path = kwargs['path']
         if 'proxy_server' in kwargs:
@@ -436,6 +587,8 @@ class HTTPBible(BibleDB, RegistryProperties):
             self.proxy_username = kwargs['proxy_username']
         if 'proxy_password' in kwargs:
             self.proxy_password = kwargs['proxy_password']
+        if 'language_id' in kwargs:
+            self.language_id = kwargs['language_id']
 
     def do_import(self, bible_name=None):
         """
@@ -468,13 +621,11 @@ class HTTPBible(BibleDB, RegistryProperties):
             return False
         self.wizard.progress_bar.setMaximum(len(books) + 2)
         self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible', 'Registering Language...'))
-        bible = BiblesResourcesDB.get_webbible(self.download_name, self.download_source.lower())
-        if bible['language_id']:
-            language_id = bible['language_id']
-            self.save_meta('language_id', language_id)
+        if self.language_id:
+            self.save_meta('language_id', self.language_id)
         else:
-            language_id = self.get_language(bible_name)
-        if not language_id:
+            self.language_id = self.get_language(bible_name)
+        if not self.language_id:
             log.error('Importing books from %s failed' % self.filename)
             return False
         for book in books:
@@ -482,7 +633,7 @@ class HTTPBible(BibleDB, RegistryProperties):
                 break
             self.wizard.increment_progress_bar(translate(
                 'BiblesPlugin.HTTPBible', 'Importing %s...', 'Importing <book name>...') % book)
-            book_ref_id = self.get_book_ref_id_by_name(book, len(books), language_id)
+            book_ref_id = self.get_book_ref_id_by_name(book, len(books), self.language_id)
             if not book_ref_id:
                 log.error('Importing books from %s - download name: "%s" failed' %
                           (self.download_source, self.download_name))

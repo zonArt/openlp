@@ -39,12 +39,6 @@ class TestServiceManager(TestCase):
         """
         Registry.create()
 
-    def tearDown(self):
-        """
-        Delete all the C++ objects at the end so that we don't have a segfault
-        """
-        pass
-
     def initial_service_manager_test(self):
         """
         Test the initial of service manager.

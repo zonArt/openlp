@@ -98,6 +98,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         Adjusts the verse number SpinBox in regard to the selected verse type and the cursor's position.
         """
+        if self.has_single_verse:
+            return
         position = self.verse_text_edit.textCursor().position()
         text = self.verse_text_edit.toPlainText()
         verse_name = VerseType.translated_names[
