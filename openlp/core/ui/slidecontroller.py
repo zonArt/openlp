@@ -717,8 +717,8 @@ class SlideController(DisplayController, RegistryProperties):
         self.play_slides_loop.setChecked(False)
         self.play_slides_loop.setIcon(build_icon(':/media/media_time.png'))
         if item.is_text():
-            if (Settings().value(self.main_window.songs_settings_section + '/display songbar')
-                    and not self.song_menu.menu().isEmpty()):
+            if (Settings().value(self.main_window.songs_settings_section + '/display songbar') and
+                    not self.song_menu.menu().isEmpty()):
                 self.toolbar.set_widget_visible(['song_menu'], True)
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
             self.toolbar.set_widget_visible(LOOP_LIST)

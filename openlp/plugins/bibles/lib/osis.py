@@ -156,7 +156,7 @@ class OSISBible(BibleDB):
                                 self.create_verse(db_book.id, chapter_number, verse_number, verse.text.strip())
                         self.wizard.increment_progress_bar(
                             translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
-                                      {'bookname': db_book.name, 'chapter': chapter_number})
+                            {'bookname': db_book.name, 'chapter': chapter_number})
                 else:
                     # The chapter tags is used as milestones. For now we assume verses is also milestones
                     chapter_number = 0
@@ -166,7 +166,7 @@ class OSISBible(BibleDB):
                             chapter_number = element.get("osisID").split('.')[1]
                             self.wizard.increment_progress_bar(
                                 translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
-                                          {'bookname': db_book.name, 'chapter': chapter_number})
+                                {'bookname': db_book.name, 'chapter': chapter_number})
                         elif element.tag == '{http://www.bibletechnologies.net/2003/OSIS/namespace}verse' \
                                 and element.get('sID'):
                             # If this tag marks the start of a verse, the verse text is between this tag and

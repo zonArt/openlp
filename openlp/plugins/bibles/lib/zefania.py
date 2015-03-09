@@ -104,7 +104,7 @@ class ZefaniaBible(BibleDB):
                         self.create_verse(db_book.id, chapter_number, verse_number, VERS.text.replace('<BR/>', '\n'))
                     self.wizard.increment_progress_bar(
                         translate('BiblesPlugin.Zefnia', 'Importing %(bookname)s %(chapter)s...') %
-                                  {'bookname': db_book.name, 'chapter': chapter_number})
+                        {'bookname': db_book.name, 'chapter': chapter_number})
             self.session.commit()
             self.application.process_events()
         except Exception as e:
