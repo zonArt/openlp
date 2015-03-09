@@ -132,7 +132,7 @@ class PresentationDocument(object):
         """
         The location where thumbnail images will be stored
         """
-        # TODO: If statment can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
+        # TODO: If statement can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         if Settings().value('presentations/thumbnail_scheme') == 'md5':
             folder = md5_hash(self.file_path.encode('utf-8'))
         else:
@@ -143,7 +143,7 @@ class PresentationDocument(object):
         """
         The location where thumbnail images will be stored
         """
-        # TODO: If statment can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
+        # TODO: If statement can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         if Settings().value('presentations/thumbnail_scheme') == 'md5':
             folder = md5_hash(self.file_path.encode('utf-8'))
         else:
