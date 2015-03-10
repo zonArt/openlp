@@ -144,7 +144,7 @@ class PresentationPlugin(Plugin):
         files_from_config = Settings().value('presentations/presentations files')
         for file in files_from_config:
             try:
-                self.media_item.clean_up_thumbnails(file)
+                self.media_item.clean_up_thumbnails(file, True)
             except AttributeError:
                 pass
         self.media_item.list_view.clear()
