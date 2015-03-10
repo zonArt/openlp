@@ -340,6 +340,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         media.sort(key=lambda file_name: get_locale_key(os.path.split(str(file_name))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)
+            item_name = None
             if track.startswith('optical:'):
                 # Handle optical based item
                 (file_name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(track)
@@ -364,7 +365,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                     item_name.setIcon(VIDEO_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
                 item_name.setToolTip(track)
-            self.list_view.addItem(item_name)
+            if item_name:
+                self.list_view.addItem(item_name)
 
     def get_list(self, type=MediaType.Audio):
         """
