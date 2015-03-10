@@ -300,7 +300,7 @@ def check_format_strings():
     This method runs through the ts-files and looks for mismatches between format strings in the original text
     and in the translations.
     """
-    path = os.path.join(os.path.abspath('..'), 'resources', 'i18n', 'da.ts')
+    path = os.path.join(os.path.abspath('..'), 'resources', 'i18n', '*.ts')
     file_list = glob.glob(path)
     for filename in file_list:
         print_quiet('Checking %s' % filename)
@@ -312,21 +312,19 @@ def check_format_strings():
             line = tag.location.get('line')
             org_text = tag.source.text
             translation = tag.translation.text
-            #org_text = "".join([x for x in tag.source.xpath('text()')]) #tag.source.text
-            #translation = "".join([x for x in tag.translation.xpath('text()')]) # tag.translation.text
             if not translation:
                 for num in tag.iter('numerusform'):
                     print_verbose('parsed numerusform: location: %s, source: %s, translation: %s' % (
-                    location, org_text, num.text))
+                                  location, org_text, num.text))
                     if org_text.count('%') != num.text.count('%'):
                         print_quiet(
                             'ERROR: Translation from %s at line %s has a mismatch of format input:\n%s\n%s\n' % (
-                            location, line, org_text, num.text))
+                                location, line, org_text, num.text))
             else:
                 print_verbose('parsed: location: %s, source: %s, translation: %s' % (location, org_text, translation))
                 if org_text.count('%') != translation.count('%'):
                     print_quiet('ERROR: Translation from %s at line %s has a mismatch of format input:\n%s\n%s\n' % (
-                    location, line, org_text, translation))
+                                location, line, org_text, translation))
 
 
 def process_stack(command_stack):
