@@ -154,85 +154,85 @@ Silakan masukkan teks sebelum memilih Baru.</translation>
 <context>
     <name>BiblesPlugin</name>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="134"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="136"/>
         <source>&amp;Bible</source>
         <translation>&amp;Alkitab</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="198"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="206"/>
         <source>Bible</source>
         <comment>name singular</comment>
         <translation>Alkitab</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="199"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="207"/>
         <source>Bibles</source>
         <comment>name plural</comment>
         <translation>Alkitab</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="203"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="211"/>
         <source>Bibles</source>
         <comment>container title</comment>
         <translation>Alkitab</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
         <source>No Book Found</source>
         <translation>Kitab Tidak Ditemukan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
         <translation>Kitab tidak ditemukan dalam Alkitab ini. Periksa apakah Anda telah mengeja nama kitab dengan benar.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="208"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="216"/>
         <source>Import a Bible.</source>
         <translation>Impor Alkitab.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="209"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="217"/>
         <source>Add a new Bible.</source>
         <translation>Tambahkan Alkitab baru.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="210"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="218"/>
         <source>Edit the selected Bible.</source>
         <translation>Sunting Alkitab terpilih.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="211"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="219"/>
         <source>Delete the selected Bible.</source>
         <translation>Hapus Alkitab terpilih.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="212"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="220"/>
         <source>Preview the selected Bible.</source>
         <translation>Pratinjau Alkitab terpilih.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="213"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="221"/>
         <source>Send the selected Bible live.</source>
         <translation>Tayangkan Alkitab terpilih.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="214"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="222"/>
         <source>Add the selected Bible to the service.</source>
         <translation>Tambahkan Alkitab terpilih ke Layanan.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="167"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="175"/>
         <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
         <translation>&lt;strong&gt;Plugin Alkitab&lt;/strong&gt;&lt;br /&gt;Plugin Alkitab menyediakan kemampuan untuk menampilkan ayat Alkitab dari sumber yang berbeda selama Layanan dijalankan.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>&amp;Upgrade older Bibles</source>
         <translation>&amp;Mutakhirkan Alkitab lama</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>Upgrade the Bible databases to the latest format.</source>
         <translation>Mutakhirkan basis-data Alkitab ke format terakhir.</translation>
     </message>
@@ -1072,38 +1072,38 @@ Tidak mungkin untuk mengubahsuaikan Nama Kitab.</translation>
 <context>
     <name>BiblesPlugin.HTTPBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="451"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="610"/>
         <source>Registering Bible and loading books...</source>
         <translation>Mendaftarkan Alkitab dan memuat kitab...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="475"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="634"/>
         <source>Registering Language...</source>
         <translation>Mendaftarkan bahasa...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="488"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="645"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
         <translation>Mengimpor %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
         <source>Download Error</source>
         <translation>Kesalahan Unduhan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Ada masalah dalam mengunduh ayat yang terpilih. Silakan periksa sambungan internet Anda dan jika kesalahan ini berlanjut, pertimbangkan untuk melaporkan hal ini sebagai bug.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
         <source>Parse Error</source>
         <translation>Kesalahan Penguraian</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Ada masalah dalam mengekstrak ayat yang terpilih. Jika kesalahan ini berlanjut, silakan pertimbangkan untuk melaporkan hal ini sebagai bug.</translation>
     </message>
@@ -1111,164 +1111,184 @@ Tidak mungkin untuk mengubahsuaikan Nama Kitab.</translation>
 <context>
     <name>BiblesPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="294"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="309"/>
         <source>Bible Import Wizard</source>
         <translation>Wisaya Impor Alkitab</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="297"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
         <source>This wizard will help you to import Bibles from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
         <translation>Wisaya ini akan membantu Anda mengimpor Alkitab dari berbagai format. Klik tombol Selanjutnya di bawah untuk memulai proses dengan memilih format untuk diimpor.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="308"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="323"/>
         <source>Web Download</source>
         <translation>Unduhan dari Web</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="315"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="330"/>
         <source>Location:</source>
         <translation>Lokasi:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="317"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="334"/>
         <source>Crosswalk</source>
         <translation>Crosswalk</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="319"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="336"/>
         <source>BibleGateway</source>
         <translation>BibleGateway</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="323"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="340"/>
         <source>Bible:</source>
         <translation>Alkitab:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="324"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="341"/>
         <source>Download Options</source>
         <translation>Opsi Unduhan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="326"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="343"/>
         <source>Server:</source>
         <translation>Server:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="327"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="344"/>
         <source>Username:</source>
         <translation>Nama Pengguna:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="328"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="345"/>
         <source>Password:</source>
         <translation>Kata sandi:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="329"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="346"/>
         <source>Proxy Server (Optional)</source>
         <translation>Server Proxy (Opsional)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="349"/>
         <source>License Details</source>
         <translation>Rincian Lisensi</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="334"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="351"/>
         <source>Set up the Bible&apos;s license details.</source>
         <translation>Siapkan rincian lisensi Alkitab.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="336"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="353"/>
         <source>Version name:</source>
         <translation>Nama versi:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="337"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="354"/>
         <source>Copyright:</source>
         <translation>Hak Cipta:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="340"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="357"/>
         <source>Please wait while your Bible is imported.</source>
         <translation>Silakan tunggu selama Alkitab diimpor.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="367"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="384"/>
         <source>You need to specify a file with books of the Bible to use in the import.</source>
         <translation>Anda harus menentukan suatu berkas yang berisi kitab-kitab Alkitab untuk digunakan dalam impor.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="374"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="391"/>
         <source>You need to specify a file of Bible verses to import.</source>
         <translation>Anda harus menentukan suatu berkas ayat Alkitab untuk diimpor.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="399"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="419"/>
         <source>You need to specify a version name for your Bible.</source>
         <translation>Anda harus menentukan suatu nama versi untuk Alkitab.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="405"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="425"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
         <translation>Anda harus menetapkan hak cipta untuk Alkitab Anda. Alkitab di Domain Publik harus ditandai seperti itu.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="420"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="440"/>
         <source>Bible Exists</source>
         <translation>Alkitab Sudah Ada</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="420"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="440"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
         <translation>Alkitab sudah ada. Silakan impor Alkitab lain atau hapus dahulu yang sudah ada.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="609"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="640"/>
         <source>Your Bible import failed.</source>
         <translation>Impor Alkitab gagal.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="460"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="481"/>
         <source>CSV File</source>
         <translation>Berkas CSV</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="321"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="338"/>
         <source>Bibleserver</source>
         <translation>Bibleserver</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="338"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="355"/>
         <source>Permissions:</source>
         <translation>Izin:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="316"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="331"/>
         <source>Bible file:</source>
         <translation>Berkas Alkitab:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="327"/>
         <source>Books file:</source>
         <translation>Berkas kitab:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="313"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="328"/>
         <source>Verses file:</source>
         <translation>Berkas ayat:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="554"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="584"/>
         <source>Registering Bible...</source>
         <translation>Mendaftarkan Alkitab...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="603"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="634"/>
         <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
         <translation>Alkitab telah terdaftar. Perlu diketahui bahwa ayat-ayat akan diunduh sesuai permintaan dan membutuhkan sambungan internet.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
+        <source>Click to download bible list</source>
+        <translation>Klik untuk mengunduh daftar Alkitab</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="333"/>
+        <source>Download bible list</source>
+        <translation>Pengunduhan daftar Alkitab</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
+        <source>Error during download</source>
+        <translation>Terjadi kesalahan saat pengunduhan</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
+        <source>An error occurred while downloading the list of bibles from %s.</source>
+        <translation>Terjadi kesalahan saat mengunduh daftar Alkitab dari %s.</translation>
     </message>
 </context>
 <context>
@@ -1408,11 +1428,24 @@ Anda harus mengimpor ulang Alkitab ini untuk menggunakannya kembali.</translatio
     </message>
 </context>
 <context>
+    <name>BiblesPlugin.Opensong</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/opensong.py" line="126"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BiblesPlugin.OsisImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="75"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="76"/>
         <source>Removing unused tags (this may take a few minutes)...</source>
         <translation>Menghapus label yang tidak digunakan ( mungkin butuh waktu beberapa menit)...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1568,9 +1601,17 @@ Perlu diketahui bahwa ayat dari Alkitab Web akan diunduh sesuai permintaan dan s
 <context>
     <name>BiblesPlugin.ZefaniaImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/zefania.py" line="110"/>
+        <location filename="openlp/plugins/bibles/lib/zefania.py" line="111"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
         <translation>Jenis berkas Alkitab tidak benar. Alkitab Zefania mungkin dikompresi. Anda harus lakukan dekompresi sebelum mengimpor. </translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.Zefnia</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/zefania.py" line="105"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1967,60 +2008,60 @@ Anda tetap ingin menambah gambar lain?</translation>
 <context>
     <name>MediaPlugin</name>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="61"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="91"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
         <translation>&lt;strong&gt;Plugin Media&lt;/strong&gt;&lt;br /&gt;Plugin Media mampu memainkan audio dan video.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="71"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="101"/>
         <source>Media</source>
         <comment>name singular</comment>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="72"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="102"/>
         <source>Media</source>
         <comment>name plural</comment>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="76"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="106"/>
         <source>Media</source>
         <comment>container title</comment>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="80"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="110"/>
         <source>Load new media.</source>
         <translation>Muat media baru.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="82"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="112"/>
         <source>Add new media.</source>
         <translation>Tambahkan media baru.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="83"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="113"/>
         <source>Edit the selected media.</source>
         <translation>Sunting media terpilih.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="84"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="114"/>
         <source>Delete the selected media.</source>
         <translation>Hapus media terpilih.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="85"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="115"/>
         <source>Preview the selected media.</source>
         <translation>Pratinjau media terpilih.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="86"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="116"/>
         <source>Send the selected media live.</source>
         <translation>Tayangkan media terpilih.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="87"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="117"/>
         <source>Add the selected media to the service.</source>
         <translation>Tambahkan media terpilih ke Layanan.</translation>
     </message>
@@ -2259,12 +2300,12 @@ Anda tetap ingin menambah gambar lain?</translation>
         <translation>Disk optik %s tidak lagi tersedia.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="425"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
         <source>Mediaclip already saved</source>
         <translation>Klip media telah tersimpan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="425"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
         <source>This mediaclip has already been saved</source>
         <translation>Klip media ini telah tersimpan sebelumnya</translation>
     </message>
@@ -2293,7 +2334,7 @@ Anda tetap ingin menambah gambar lain?</translation>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="304"/>
+        <location filename="openlp/core/utils/__init__.py" line="305"/>
         <source>Image Files</source>
         <translation>Berkas Gambar</translation>
     </message>
@@ -3277,7 +3318,7 @@ Versi: %s
 <context>
     <name>OpenLP.FileRenameForm</name>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="51"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="57"/>
         <source>File Rename</source>
         <translation>Penamaan-ulang Berkas</translation>
     </message>
@@ -3287,7 +3328,7 @@ Versi: %s
         <translation>Nama Berkas Baru:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="49"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="55"/>
         <source>File Copy</source>
         <translation>Salin Berkas</translation>
     </message>
@@ -3378,12 +3419,12 @@ Versi: %s
         <translation>Setelan Bawaan</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="207"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="209"/>
         <source>Downloading %s...</source>
         <translation>Mengunduh %s...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="589"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="591"/>
         <source>Enabling selected plugins...</source>
         <translation>Mengaktifkan plugin terpilih...</translation>
     </message>
@@ -3448,17 +3489,17 @@ Versi: %s
         <translation>Memulai proses konfigurasi...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="543"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="545"/>
         <source>Setting Up And Downloading</source>
         <translation>Persiapan dan Pengunduhan</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="544"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="546"/>
         <source>Please wait while OpenLP is set up and your data is downloaded.</source>
         <translation>Silakan tunggu selama OpenLP dipersiapkan dan data Anda diunduh.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="548"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="550"/>
         <source>Setting Up</source>
         <translation>Persiapan</translation>
     </message>
@@ -3482,37 +3523,37 @@ To re-run the First Time Wizard and import this sample data at a later time, che
 Untuk menjalankan lagi Wisaya Kali Pertama dan mengimpor data contoh di lain waktu, periksa sambungan Internet Anda dan jalankan lagi wisaya ini dengan memilih &quot;Alat / Jalankan lagi Wisaya Kali Pertama&quot; pada OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="601"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>Download Error</source>
         <translation>Kesalahan Unduhan</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="531"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="533"/>
         <source>There was a connection problem during download, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation>Ada masalah sambungan saat pengunduhan, jadi unduhan berikutnya akan dilewatkan. Cobalah untuk menjalankan Wisaya Kali Pertama beberapa saat lagi.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="562"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="564"/>
         <source>Download complete. Click the %s button to return to OpenLP.</source>
         <translation>Pengunduhan selesai. Klik tombol %s untuk kembali ke OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="566"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="568"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
         <translation>Pengunduhan selesai. Klik tombol %s untuk memulai OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="571"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="573"/>
         <source>Click the %s button to return to OpenLP.</source>
         <translation>Klik tombol %s untuk kembali ke OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="575"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="577"/>
         <source>Click the %s button to start OpenLP.</source>
         <translation>Klik tombol %s untuk memulai OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="601"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>There was a connection problem while downloading, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation>Ada masalah sambungan saat mengunduh, jadi unduhan berikutnya akan dilewatkan. Cobalah untuk menjalankan Wisaya Kali Pertama beberapa saat lagi.</translation>
     </message>
@@ -3556,12 +3597,12 @@ Untuk membatalkan sepenuhnya Wisaya Kali Pertama (dan tidak memulai OpenLP), kli
         <translation>Silakan tunggu selama sumber-sumber diunduh dan OpenLP dikonfigurasikan.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="185"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="663"/>
         <source>Network Error</source>
         <translation>Kesalahan Jaringan</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="187"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="189"/>
         <source>There was a network error attempting to connect to retrieve initial configuration information</source>
         <translation>Ada kesalahan jaringan saat mencoba menyambungkan untuk mengambil informasi konfigurasi awal</translation>
     </message>
@@ -3569,6 +3610,11 @@ Untuk membatalkan sepenuhnya Wisaya Kali Pertama (dan tidak memulai OpenLP), kli
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
         <translation>Batal</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="664"/>
+        <source>Unable to download some files</source>
+        <translation>Tidak dapat mengunduh beberapa berkas</translation>
     </message>
 </context>
 <context>
@@ -3640,6 +3686,16 @@ Untuk membatalkan sepenuhnya Wisaya Kali Pertama (dan tidak memulai OpenLP), kli
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="82"/>
         <source>Description %s already defined.</source>
         <translation>Deskripsi %s sudah pernah ditetapkan.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagcontroller.py" line="149"/>
+        <source>Start tag %s is not valid HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagcontroller.py" line="169"/>
+        <source>End tag %s does not match end tag for start tag %s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4367,17 +4423,17 @@ Menjalankan lagi wisaya ini mungkin akan mengubah konfigurasi OpenLP saat ini da
         <translation>Berkas Ekspor Setelan OpenLP (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
         <source>New Data Directory Error</source>
         <translation>Kesalahan Direktori Data Baru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1385"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>Sedang menyalin data OpenLP ke lokasi direktori data baru - %s - Silakan tunggu penyalinan selesai</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4456,12 +4512,12 @@ Proses telah dihentikan dan tidak ada perubahan yang telah dibuat.</translation>
 <context>
     <name>OpenLP.Manager</name>
     <message>
-        <location filename="openlp/core/lib/db.py" line="240"/>
+        <location filename="openlp/core/lib/db.py" line="244"/>
         <source>Database Error</source>
         <translation>Kesalahan Basis-Data</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="240"/>
+        <location filename="openlp/core/lib/db.py" line="244"/>
         <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
 
 Database: %s</source>
@@ -4492,42 +4548,42 @@ Basis-Data : %s</translation>
         <translation>&amp;Tambahkan ke Butir Layanan terpilih</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="481"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="482"/>
         <source>You must select one or more items to preview.</source>
         <translation>Anda harus memilih satu atau beberapa butir untuk dipratinjau.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="498"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="499"/>
         <source>You must select one or more items to send live.</source>
         <translation>Anda harus memilih satu atau beberapa butir untuk ditayangkan.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="591"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="592"/>
         <source>You must select one or more items.</source>
         <translation>Anda harus memilih satu atau beberapa butir.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="597"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="598"/>
         <source>You must select an existing service item to add to.</source>
         <translation>Anda harus memilih sebuah Butir Layanan yang ada untuk ditambahkan.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
         <source>Invalid Service Item</source>
         <translation>Butir Layanan Tidak Valid</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
         <source>You must select a %s service item.</source>
         <translation>Anda harus memilih sebuah butir Layanan %s.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="547"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="548"/>
         <source>You must select one or more items to add.</source>
         <translation>Anda harus memilih satu atau lebih butir untuk menambahkan.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="639"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="640"/>
         <source>No Search Results</source>
         <translation>Tidak Ada Hasil Penelusuran</translation>
     </message>
@@ -5735,17 +5791,6 @@ Tidak ada dukungan untuk akhiran ini</translation>
         <translation>(Beberapa) Berkas Layanan Hilang</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="536"/>
-        <source>The following file(s) in the service are missing:
-<byte value="x9"/>%s
-
-These files will be removed if you continue to save.</source>
-        <translation>(Beberapa) berkas berikut dalam Layanan hilang:
-&lt;byte value=&quot;x9&quot;/&gt;%s
-
-Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="230"/>
         <source>&amp;Rename...</source>
         <translation>&amp;Namai-ulang...</translation>
@@ -5843,6 +5888,13 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
         <translation>Terjadi kesalahan saat menulis berkas layanan: %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="536"/>
+        <source>The following file(s) in the service are missing: %s
+
+These files will be removed if you continue to save.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6438,7 +6490,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="419"/>
         <source>OpenLP Themes (*.otz)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema OpenLP (*.otz)</translation>
     </message>
 </context>
 <context>
@@ -6886,7 +6938,7 @@ Berkas ini akan dihapus jika adalah lanjutkan menyimpan.</translation>
         <translation>Anda harus menentukan setidaknya satu berkas %s untuk diimpor.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="295"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="310"/>
         <source>Welcome to the Bible Import Wizard</source>
         <translation>Selamat Datang di Wisaya Impor Alkitab</translation>
     </message>
@@ -7497,7 +7549,7 @@ Silakan coba memilih secara individu.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="118"/>
         <source>Preview Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilah Alat Pratinjau</translation>
     </message>
 </context>
 <context>
@@ -7624,17 +7676,17 @@ Silakan coba memilih secara individu.</translation>
         <translation>Presentasi (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
         <source>Missing Presentation</source>
         <translation>Presentasi Hilang</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="354"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Presentasi %s tidak lengkap, silakan muat-ulang.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Presentasi %s tidak ada lagi.</translation>
     </message>
@@ -9386,7 +9438,7 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
         <translation>Penelusuran</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="316"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="324"/>
         <source>Found %s song(s)</source>
         <translation>%s lagu (- lagu) ditemukan</translation>
     </message>
@@ -9451,44 +9503,44 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
         <translation>Menuju keluar...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>Save Username and Password</source>
         <translation>Simpan Nama Pengguna dan Kata Sandi</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>WARNING: Saving your username and password is INSECURE, your password is stored in PLAIN TEXT. Click Yes to save your password or No to cancel this.</source>
         <translation>PERINGATAN: Menyimpan nama pengguna dan kata sandi Anda TIDAKLAH AMAN, kata sandi Anda akan tersimpan dalam TEKS BIASA. Klik Ya untuk menyimpannya atau Tidak untuk membatalkannya.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>Error Logging In</source>
         <translation>Kesalahan Saat Hendak Masuk</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>There was a problem logging in, perhaps your username or password is incorrect?</source>
         <translation>Terjadi kesalahan saat hendak masuk, mungkin nama pengguna atau kata sandi Anda salah?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="363"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
         <source>Song Imported</source>
         <translation>Lagu Telah Diimpor</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="364"/>
-        <source>Your song has been imported, would you like to exit now, or import more songs?</source>
-        <translation>Lagu Anda telah diimpor. Apakah Anda ingin keluar sekarang, atau impor lagu lagi?</translation>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <source>Incomplete song</source>
+        <translation>Lagu yang tidak lengkap</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="366"/>
-        <source>Import More Songs</source>
-        <translation>Impor Lagu Lagi</translation>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <source>This song is missing some information, like the lyrics, and cannot be imported.</source>
+        <translation>Lagu ini kehilangan beberapa informasi, kemungkinan liriknya, dan tidak dapat diimpor.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="368"/>
-        <source>Exit Now</source>
-        <translation>Keluar Sekarang</translation>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <source>Your song has been imported, would you like to import more songs?</source>
+        <translation>Lagu Anda telah diimpor, Anda ingin mengimpor lagu-lagu lain?</translation>
     </message>
 </context>
 <context>

@@ -152,85 +152,85 @@ Please type in some text before clicking New.</source>
 <context>
     <name>BiblesPlugin</name>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="134"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="136"/>
         <source>&amp;Bible</source>
         <translation>圣经(B)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="198"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="206"/>
         <source>Bible</source>
         <comment>name singular</comment>
         <translation>圣经</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="199"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="207"/>
         <source>Bibles</source>
         <comment>name plural</comment>
         <translation>圣经</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="203"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="211"/>
         <source>Bibles</source>
         <comment>container title</comment>
         <translation>圣经</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
         <source>No Book Found</source>
         <translation>未找到任何书卷</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
         <translation>在这本圣经中未发现任何匹配的书卷，请检查您输入的书名是否正确。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="208"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="216"/>
         <source>Import a Bible.</source>
         <translation>导入一本圣经</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="209"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="217"/>
         <source>Add a new Bible.</source>
         <translation>新增一本圣经</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="210"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="218"/>
         <source>Edit the selected Bible.</source>
         <translation>编辑选中的圣经</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="211"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="219"/>
         <source>Delete the selected Bible.</source>
         <translation>删除选中的圣经</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="212"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="220"/>
         <source>Preview the selected Bible.</source>
         <translation>预览选中的圣经</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="213"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="221"/>
         <source>Send the selected Bible live.</source>
         <translation>将选中的圣经发送到现场</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="214"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="222"/>
         <source>Add the selected Bible to the service.</source>
         <translation>将选中的圣经增加到聚会</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="167"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="175"/>
         <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
         <translation>&lt;strong&gt;圣经插件&lt;/strong&gt;&lt;br /&gt;在敬拜时圣经插件提供从不同来源显示圣经经节的功能</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>&amp;Upgrade older Bibles</source>
         <translation>升级旧版本的圣经(U)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>Upgrade the Bible databases to the latest format.</source>
         <translation>升级圣经数据库到最新的格式</translation>
     </message>
@@ -1068,38 +1068,38 @@ It is not possible to customize the Book Names.</source>
 <context>
     <name>BiblesPlugin.HTTPBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="451"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="610"/>
         <source>Registering Bible and loading books...</source>
         <translation>正在注册圣经并载入书卷...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="475"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="634"/>
         <source>Registering Language...</source>
         <translation>正在注册语言...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="488"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="645"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
         <translation>正在导入 %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
         <source>Download Error</source>
         <translation>下载时出现错误</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>在下载您选择的经节时出现一个问题。请检查您的网络连接，如果此错误继续出现请考虑报告软件缺陷。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
         <source>Parse Error</source>
         <translation>解析错误</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>在解包您选择的经节时出现问题。如果此错误继续出现请考虑报告软件缺陷。</translation>
     </message>
@@ -1107,163 +1107,183 @@ It is not possible to customize the Book Names.</source>
 <context>
     <name>BiblesPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="294"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="309"/>
         <source>Bible Import Wizard</source>
         <translation>圣经导入向导</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="297"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
         <source>This wizard will help you to import Bibles from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
         <translation>该向导将帮助您导入各种不同格式的圣经。点击下面的下一步选择导入的格式来启动导入过程。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="308"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="323"/>
         <source>Web Download</source>
         <translation>网络下载</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="315"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="330"/>
         <source>Location:</source>
         <translation>位置：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="317"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="334"/>
         <source>Crosswalk</source>
         <translation>Crosswalk</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="319"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="336"/>
         <source>BibleGateway</source>
         <translation>BibleGateway</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="323"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="340"/>
         <source>Bible:</source>
         <translation>圣经：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="324"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="341"/>
         <source>Download Options</source>
         <translation>下载选项</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="326"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="343"/>
         <source>Server:</source>
         <translation>服务器：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="327"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="344"/>
         <source>Username:</source>
         <translation>用户名：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="328"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="345"/>
         <source>Password:</source>
         <translation>密码：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="329"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="346"/>
         <source>Proxy Server (Optional)</source>
         <translation>代理服务器(可选)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="349"/>
         <source>License Details</source>
         <translation>许可证细节</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="334"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="351"/>
         <source>Set up the Bible&apos;s license details.</source>
         <translation>设置圣经的许可证细节</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="336"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="353"/>
         <source>Version name:</source>
         <translation>版本名称：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="337"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="354"/>
         <source>Copyright:</source>
         <translation>版权：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="340"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="357"/>
         <source>Please wait while your Bible is imported.</source>
         <translation>请稍等，正在导入您的圣经。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="367"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="384"/>
         <source>You need to specify a file with books of the Bible to use in the import.</source>
         <translation>您需要指定包含圣经书卷的文件来使用导入。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="374"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="391"/>
         <source>You need to specify a file of Bible verses to import.</source>
         <translation>您需要指定包含圣经经节的文件来使用导入。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="399"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="419"/>
         <source>You need to specify a version name for your Bible.</source>
         <translation>您需要为您的圣经指定一个版本名称。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="405"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="425"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
         <translation>您需要为您的圣经设置版权。在公有领域的圣经需要被标注出来。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="420"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="440"/>
         <source>Bible Exists</source>
         <translation>圣经版本存在</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="420"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="440"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
         <translation>该版本圣经已存在。请导入一个不同版本的圣经或是先删除已存在的那个。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="609"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="640"/>
         <source>Your Bible import failed.</source>
         <translation>你的圣经导入失败</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="460"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="481"/>
         <source>CSV File</source>
         <translation>CSV文件</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="321"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="338"/>
         <source>Bibleserver</source>
         <translation>圣经服务器</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="338"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="355"/>
         <source>Permissions:</source>
         <translation>权限：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="316"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="331"/>
         <source>Bible file:</source>
         <translation>圣经文件：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="327"/>
         <source>Books file:</source>
         <translation>书卷文件：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="313"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="328"/>
         <source>Verses file:</source>
         <translation>经节文件：</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="554"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="584"/>
         <source>Registering Bible...</source>
         <translation>正在注册圣经...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="603"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="634"/>
         <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
+        <source>Click to download bible list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="333"/>
+        <source>Download bible list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
+        <source>Error during download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
+        <source>An error occurred while downloading the list of bibles from %s.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1404,10 +1424,23 @@ You will need to re-import this Bible to use it again.</source>
     </message>
 </context>
 <context>
+    <name>BiblesPlugin.Opensong</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/opensong.py" line="126"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BiblesPlugin.OsisImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="75"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="76"/>
         <source>Removing unused tags (this may take a few minutes)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1564,8 +1597,16 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
 <context>
     <name>BiblesPlugin.ZefaniaImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/zefania.py" line="110"/>
+        <location filename="openlp/plugins/bibles/lib/zefania.py" line="111"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.Zefnia</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/zefania.py" line="105"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1963,60 +2004,60 @@ Do you want to add the other images anyway?</source>
 <context>
     <name>MediaPlugin</name>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="61"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="91"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
         <translation>&lt;strong&gt;媒体插件&lt;/strong&gt;&lt;br /&gt;媒体插件提供音频和视频的回放。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="71"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="101"/>
         <source>Media</source>
         <comment>name singular</comment>
         <translation>媒体</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="72"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="102"/>
         <source>Media</source>
         <comment>name plural</comment>
         <translation>媒体</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="76"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="106"/>
         <source>Media</source>
         <comment>container title</comment>
         <translation>媒体</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="80"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="110"/>
         <source>Load new media.</source>
         <translation>载入新媒体</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="82"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="112"/>
         <source>Add new media.</source>
         <translation>新增媒体</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="83"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="113"/>
         <source>Edit the selected media.</source>
         <translation>编辑选中的媒体</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="84"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="114"/>
         <source>Delete the selected media.</source>
         <translation>删除选中的媒体</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="85"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="115"/>
         <source>Preview the selected media.</source>
         <translation>预览选中的媒体</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="86"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="116"/>
         <source>Send the selected media live.</source>
         <translation>将选中的媒体发送到现场</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="87"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="117"/>
         <source>Add the selected media to the service.</source>
         <translation>将选中的媒体添加到敬拜仪式</translation>
     </message>
@@ -2255,12 +2296,12 @@ Do you want to add the other images anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="425"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
         <source>Mediaclip already saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="425"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
         <source>This mediaclip has already been saved</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2289,7 +2330,7 @@ Do you want to add the other images anyway?</source>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="304"/>
+        <location filename="openlp/core/utils/__init__.py" line="305"/>
         <source>Image Files</source>
         <translation>图片文件</translation>
     </message>
@@ -3184,7 +3225,7 @@ Version: %s
 <context>
     <name>OpenLP.FileRenameForm</name>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="51"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="57"/>
         <source>File Rename</source>
         <translation>重命名文件</translation>
     </message>
@@ -3194,7 +3235,7 @@ Version: %s
         <translation>新建文件名：</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="49"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="55"/>
         <source>File Copy</source>
         <translation>复制文件</translation>
     </message>
@@ -3285,12 +3326,12 @@ Version: %s
         <translation>默认设置</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="207"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="209"/>
         <source>Downloading %s...</source>
         <translation>正在下载 %s...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="589"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="591"/>
         <source>Enabling selected plugins...</source>
         <translation>正在启用选中的插件...</translation>
     </message>
@@ -3355,17 +3396,17 @@ Version: %s
         <translation>正在启动配置进程...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="543"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="545"/>
         <source>Setting Up And Downloading</source>
         <translation>正在设置并下载</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="544"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="546"/>
         <source>Please wait while OpenLP is set up and your data is downloaded.</source>
         <translation>请稍等，OpenLP正在进行设置并下载您的数据。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="548"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="550"/>
         <source>Setting Up</source>
         <translation>正在设置</translation>
     </message>
@@ -3389,37 +3430,37 @@ To re-run the First Time Wizard and import this sample data at a later time, che
 要在以后重新运行首次运行向导并导入这些样本数据，检查您的网络连接并在OpenLP里选择&quot;工具/重新运行首次运行向导&quot;。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="601"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>Download Error</source>
         <translation>下载时出现错误</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="531"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="533"/>
         <source>There was a connection problem during download, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="562"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="564"/>
         <source>Download complete. Click the %s button to return to OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="566"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="568"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="571"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="573"/>
         <source>Click the %s button to return to OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="575"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="577"/>
         <source>Click the %s button to start OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="601"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>There was a connection problem while downloading, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3461,12 +3502,12 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="185"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="663"/>
         <source>Network Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="187"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="189"/>
         <source>There was a network error attempting to connect to retrieve initial configuration information</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3474,6 +3515,11 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
         <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="664"/>
+        <source>Unable to download some files</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3544,6 +3590,16 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="82"/>
         <source>Description %s already defined.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagcontroller.py" line="149"/>
+        <source>Start tag %s is not valid HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagcontroller.py" line="169"/>
+        <source>End tag %s does not match end tag for start tag %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4272,17 +4328,17 @@ Re-running this wizard may make changes to your current OpenLP configuration and
         <translation>OpenLP导出设定文件(*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
         <source>New Data Directory Error</source>
         <translation>新数据目录错误</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1385"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>正在复制OpenLP数据到新的数据目录位置 - %s - 请等待复制完成。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4355,12 +4411,12 @@ Processing has terminated and no changes have been made.</source>
 <context>
     <name>OpenLP.Manager</name>
     <message>
-        <location filename="openlp/core/lib/db.py" line="240"/>
+        <location filename="openlp/core/lib/db.py" line="244"/>
         <source>Database Error</source>
         <translation>数据库错误</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="240"/>
+        <location filename="openlp/core/lib/db.py" line="244"/>
         <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
 
 Database: %s</source>
@@ -4389,42 +4445,42 @@ Database: %s</source>
         <translation>添加到选中的敬拜仪式项目(A)</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="481"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="482"/>
         <source>You must select one or more items to preview.</source>
         <translation>您必须选择一个或多个项目来预览。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="498"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="499"/>
         <source>You must select one or more items to send live.</source>
         <translation>您必须选择一个或多个项目来发送到现场</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="591"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="592"/>
         <source>You must select one or more items.</source>
         <translation>您必须选择一个或多个项目。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="597"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="598"/>
         <source>You must select an existing service item to add to.</source>
         <translation>您必须选择一个已存在的敬拜仪式项目来被添加</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
         <source>Invalid Service Item</source>
         <translation>无效的敬拜仪式项目</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
         <source>You must select a %s service item.</source>
         <translation>您必须选择一个%s敬拜仪式项目。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="547"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="548"/>
         <source>You must select one or more items to add.</source>
         <translation>您必须选择一个或多个项目来添加。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="639"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="640"/>
         <source>No Search Results</source>
         <translation>无搜索结果</translation>
     </message>
@@ -5632,17 +5688,6 @@ Suffix not supported</source>
         <translation>敬拜仪式文件丢失</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="536"/>
-        <source>The following file(s) in the service are missing:
-<byte value="x9"/>%s
-
-These files will be removed if you continue to save.</source>
-        <translation>以下敬拜仪式中的文件已丢失：
-&lt;byte value=&quot;x9&quot;/&gt;%s
-
-如果您想继续保存的话这些文件将被移除。</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="230"/>
         <source>&amp;Rename...</source>
         <translation type="unfinished"></translation>
@@ -5737,6 +5782,13 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="536"/>
+        <source>The following file(s) in the service are missing: %s
+
+These files will be removed if you continue to save.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6781,7 +6833,7 @@ These files will be removed if you continue to save.</source>
         <translation>您需要指定至少一个 %s 文件来导入。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="295"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="310"/>
         <source>Welcome to the Bible Import Wizard</source>
         <translation>欢迎来到圣经导入向导</translation>
     </message>
@@ -7518,17 +7570,17 @@ Please try selecting it individually.</source>
         <translation>演示 (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
         <source>Missing Presentation</source>
         <translation>丢失演示文件</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="354"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>演示文件%s不完整，请重新载入。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
         <source>The presentation %s no longer exists.</source>
         <translation>演示文件%s已不存在。</translation>
     </message>
@@ -9275,7 +9327,7 @@ Please enter the verses separated by spaces.</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="316"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="324"/>
         <source>Found %s song(s)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9340,43 +9392,43 @@ Please enter the verses separated by spaces.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>Save Username and Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>WARNING: Saving your username and password is INSECURE, your password is stored in PLAIN TEXT. Click Yes to save your password or No to cancel this.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>Error Logging In</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>There was a problem logging in, perhaps your username or password is incorrect?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="363"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
         <source>Song Imported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="364"/>
-        <source>Your song has been imported, would you like to exit now, or import more songs?</source>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <source>Incomplete song</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="366"/>
-        <source>Import More Songs</source>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <source>This song is missing some information, like the lyrics, and cannot be imported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="368"/>
-        <source>Exit Now</source>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <source>Your song has been imported, would you like to import more songs?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

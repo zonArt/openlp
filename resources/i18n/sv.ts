@@ -154,85 +154,85 @@ Skriv in din text innan du klickar på Nytt.</translation>
 <context>
     <name>BiblesPlugin</name>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="134"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="136"/>
         <source>&amp;Bible</source>
         <translation>&amp;Bibel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="198"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="206"/>
         <source>Bible</source>
         <comment>name singular</comment>
         <translation>Bibel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="199"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="207"/>
         <source>Bibles</source>
         <comment>name plural</comment>
         <translation>Biblar</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="203"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="211"/>
         <source>Bibles</source>
         <comment>container title</comment>
         <translation>Biblar</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
         <source>No Book Found</source>
         <translation>Bok saknas</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
         <translation>Ingen bok hittades i vald bibel. Kontrollera stavningen av bokens namn.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="208"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="216"/>
         <source>Import a Bible.</source>
         <translation>Importera en bibelöversättning.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="209"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="217"/>
         <source>Add a new Bible.</source>
         <translation>Lägg till en ny bibel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="210"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="218"/>
         <source>Edit the selected Bible.</source>
         <translation>Redigera vald bibel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="211"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="219"/>
         <source>Delete the selected Bible.</source>
         <translation>Ta bort vald bibel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="212"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="220"/>
         <source>Preview the selected Bible.</source>
         <translation>Förhandsgranska bibeltexten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="213"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="221"/>
         <source>Send the selected Bible live.</source>
         <translation>Visa bibeltexten live.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="214"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="222"/>
         <source>Add the selected Bible to the service.</source>
         <translation>Lägg till bibeltexten i körschemat.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="167"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="175"/>
         <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
         <translation>&lt;strong&gt;Bibelmodul&lt;/strong&gt;&lt;br /&gt;Bibelmodulen gör det möjligt att visa bibelverser från olika översättningar under gudstjänsten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>&amp;Upgrade older Bibles</source>
         <translation>&amp;Uppgradera äldre biblar</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>Upgrade the Bible databases to the latest format.</source>
         <translation>Uppgradera bibeldatabasen till det senaste formatet.</translation>
     </message>
@@ -1072,38 +1072,38 @@ Det går inte att anpassa boknamnen.</translation>
 <context>
     <name>BiblesPlugin.HTTPBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="451"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="610"/>
         <source>Registering Bible and loading books...</source>
         <translation>Registrerar bibel och laddar böcker...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="475"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="634"/>
         <source>Registering Language...</source>
         <translation>Registrerar språk...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="488"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="645"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
         <translation>Importerar %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
         <source>Download Error</source>
         <translation>Fel vid nedladdning</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Det uppstod problem vid nedladdningen av versurvalet. Kontrollera Internetanslutningen och om problemet återkommer, överväg att rapportera det som en bugg.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
         <source>Parse Error</source>
         <translation>Fel vid tolkning</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Det uppstod problem vid extraherande av vers-urvalet. Om problemet uppstår igen, överväg att rapportera det som en bugg.</translation>
     </message>
@@ -1111,164 +1111,184 @@ Det går inte att anpassa boknamnen.</translation>
 <context>
     <name>BiblesPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="294"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="309"/>
         <source>Bible Import Wizard</source>
         <translation>Guiden för bibelimport</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="297"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
         <source>This wizard will help you to import Bibles from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
         <translation>Den här guiden hjälper dig importera biblar från en mängd olika format. Klicka på Nästa för att fortsätta med importen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="308"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="323"/>
         <source>Web Download</source>
         <translation>Nedladdning från Internet</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="315"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="330"/>
         <source>Location:</source>
         <translation>Källa:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="317"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="334"/>
         <source>Crosswalk</source>
         <translation>Crosswalk</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="319"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="336"/>
         <source>BibleGateway</source>
         <translation>BibleGateway</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="323"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="340"/>
         <source>Bible:</source>
         <translation>Bibel:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="324"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="341"/>
         <source>Download Options</source>
         <translation>Alternativ för nedladdning</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="326"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="343"/>
         <source>Server:</source>
         <translation>Server:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="327"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="344"/>
         <source>Username:</source>
         <translation>Användarnamn:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="328"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="345"/>
         <source>Password:</source>
         <translation>Lösenord:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="329"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="346"/>
         <source>Proxy Server (Optional)</source>
         <translation>Proxyserver (frivilligt)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="349"/>
         <source>License Details</source>
         <translation>Licensdetaljer</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="334"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="351"/>
         <source>Set up the Bible&apos;s license details.</source>
         <translation>Skriv in bibelns licensuppgifter.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="336"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="353"/>
         <source>Version name:</source>
         <translation>Namn på översättningen:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="337"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="354"/>
         <source>Copyright:</source>
         <translation>Copyright:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="340"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="357"/>
         <source>Please wait while your Bible is imported.</source>
         <translation>Vänta medan bibeln importeras.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="367"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="384"/>
         <source>You need to specify a file with books of the Bible to use in the import.</source>
         <translation>Du måste välja en fil med bibelböcker att använda i importen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="374"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="391"/>
         <source>You need to specify a file of Bible verses to import.</source>
         <translation>Du måste välja en fil med bibelverser att importera.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="399"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="419"/>
         <source>You need to specify a version name for your Bible.</source>
         <translation>Du måste ange ett namn på bibelöversättningen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="405"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="425"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
         <translation>Du måste ange copyright för bibeln. Biblar i public domain måste markeras som sådana.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="420"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="440"/>
         <source>Bible Exists</source>
         <translation>Bibeln finns redan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="420"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="440"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
         <translation>Bibeln finns redan. Importera en annan bibel eller ta först bort den existerande.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="609"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="640"/>
         <source>Your Bible import failed.</source>
         <translation>Bibelimporten misslyckades.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="460"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="481"/>
         <source>CSV File</source>
         <translation>CSV-fil</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="321"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="338"/>
         <source>Bibleserver</source>
         <translation>Bibelserver</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="338"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="355"/>
         <source>Permissions:</source>
         <translation>Tillstånd:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="316"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="331"/>
         <source>Bible file:</source>
         <translation>Bibelfil:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="327"/>
         <source>Books file:</source>
         <translation>Bokfil:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="313"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="328"/>
         <source>Verses file:</source>
         <translation>Versfil:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="554"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="584"/>
         <source>Registering Bible...</source>
         <translation>Registrerar bibel...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="603"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="634"/>
         <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
         <translation>Bibel registrerad. Observera att verserna kommer att laddas ner vid behov och därför behövs en internetanslutning.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
+        <source>Click to download bible list</source>
+        <translation>Klicka för att ladda ner bibellista</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="333"/>
+        <source>Download bible list</source>
+        <translation>Ladda ner bibellista</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
+        <source>Error during download</source>
+        <translation>Fel vid nedladdning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
+        <source>An error occurred while downloading the list of bibles from %s.</source>
+        <translation>Ett fel uppstod vid nerladdning av listan med biblar från %s.</translation>
     </message>
 </context>
 <context>
@@ -1408,11 +1428,24 @@ För att bibeln ska gå att använda igen måste den importeras på nytt.</trans
     </message>
 </context>
 <context>
+    <name>BiblesPlugin.Opensong</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/opensong.py" line="126"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BiblesPlugin.OsisImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="75"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="76"/>
         <source>Removing unused tags (this may take a few minutes)...</source>
         <translation>Tar bort oanvända taggar (det här kan ta några minuter)...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1568,9 +1601,17 @@ Observera att verser från webb-biblar kommer att laddas ner vid behov, och där
 <context>
     <name>BiblesPlugin.ZefaniaImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/zefania.py" line="110"/>
+        <location filename="openlp/plugins/bibles/lib/zefania.py" line="111"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
         <translation>Ogiltig filtyp på den valda bibeln. Zefania-biblar kan vara komprimerade. Du måste packa upp dem före import.</translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.Zefnia</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/zefania.py" line="105"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1968,60 +2009,60 @@ Vill du lägga till dom andra bilderna ändå?</translation>
 <context>
     <name>MediaPlugin</name>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="61"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="91"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
         <translation>&lt;strong&gt;Mediamodul&lt;/strong&gt;&lt;br /&gt;Mediamodulen gör det möjligt att spela upp ljud och video.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="71"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="101"/>
         <source>Media</source>
         <comment>name singular</comment>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="72"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="102"/>
         <source>Media</source>
         <comment>name plural</comment>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="76"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="106"/>
         <source>Media</source>
         <comment>container title</comment>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="80"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="110"/>
         <source>Load new media.</source>
         <translation>Ladda en ny mediafil.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="82"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="112"/>
         <source>Add new media.</source>
         <translation>Lägg till media.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="83"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="113"/>
         <source>Edit the selected media.</source>
         <translation>Redigera den valda mediaposten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="84"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="114"/>
         <source>Delete the selected media.</source>
         <translation>Ta bort den valda mediaposten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="85"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="115"/>
         <source>Preview the selected media.</source>
         <translation>Förhandsgranska den valda mediaposten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="86"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="116"/>
         <source>Send the selected media live.</source>
         <translation>Visa den valda mediaposten live.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="87"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="117"/>
         <source>Add the selected media to the service.</source>
         <translation>Lägg till den valda mediaposten i körschemat.</translation>
     </message>
@@ -2260,12 +2301,12 @@ Vill du lägga till dom andra bilderna ändå?</translation>
         <translation>Den optiska disken %s är inte längre tillgänglig.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="425"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
         <source>Mediaclip already saved</source>
         <translation>Mediaklippet redan sparat</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="425"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
         <source>This mediaclip has already been saved</source>
         <translation>Det här mediaklippet har redan sparats</translation>
     </message>
@@ -2294,7 +2335,7 @@ Vill du lägga till dom andra bilderna ändå?</translation>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="304"/>
+        <location filename="openlp/core/utils/__init__.py" line="305"/>
         <source>Image Files</source>
         <translation>Bildfiler</translation>
     </message>
@@ -3277,7 +3318,7 @@ Version: %s
 <context>
     <name>OpenLP.FileRenameForm</name>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="51"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="57"/>
         <source>File Rename</source>
         <translation>Byt namn på fil</translation>
     </message>
@@ -3287,7 +3328,7 @@ Version: %s
         <translation>Nytt filnamn:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="49"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="55"/>
         <source>File Copy</source>
         <translation>Kopiera fil</translation>
     </message>
@@ -3378,12 +3419,12 @@ Version: %s
         <translation>Standardinställningar</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="207"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="209"/>
         <source>Downloading %s...</source>
         <translation>Hämtar %s...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="589"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="591"/>
         <source>Enabling selected plugins...</source>
         <translation>Aktivera valda moduler...</translation>
     </message>
@@ -3448,17 +3489,17 @@ Version: %s
         <translation>Startar konfigurationsprocess...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="543"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="545"/>
         <source>Setting Up And Downloading</source>
         <translation>Ställer in och laddar ner</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="544"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="546"/>
         <source>Please wait while OpenLP is set up and your data is downloaded.</source>
         <translation>Vänta medan OpenLP ställs in och din data laddas ner.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="548"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="550"/>
         <source>Setting Up</source>
         <translation>Ställer in</translation>
     </message>
@@ -3482,37 +3523,37 @@ To re-run the First Time Wizard and import this sample data at a later time, che
 För att köra Kom igång-guiden igen och importera exempeldatan senare, kontrollera din Internetanslutning och starta om den här guiden genom att välja &quot;Verktyg/Kör Kom igång-guiden&quot; från OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="601"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>Download Error</source>
         <translation>Fel vid nedladdning</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="531"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="533"/>
         <source>There was a connection problem during download, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation>Problem med anslutningen uppstod vid nedladdningen, så resten av nedladdningarna kommer att hoppas över. Försök att köra Kom igång-guiden senare.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="562"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="564"/>
         <source>Download complete. Click the %s button to return to OpenLP.</source>
         <translation>Nedladdningen färdig. Klicka på knappen %s för att återgå till OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="566"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="568"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
         <translation>Nedladdningen färdig. Klicka på knappen %s för att starta OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="571"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="573"/>
         <source>Click the %s button to return to OpenLP.</source>
         <translation>Klicka på knappen %s för att återgå till OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="575"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="577"/>
         <source>Click the %s button to start OpenLP.</source>
         <translation>Klicka på knappen %s för att starta OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="601"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>There was a connection problem while downloading, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation>Problem med anslutningen uppstod vid nedladdningen, så resten av nedladdningarna kommer att hoppas över. Försök att köra Kom igång-guiden senare.</translation>
     </message>
@@ -3556,12 +3597,12 @@ För att avbryta Kom igång-guiden helt (och inte starta OpenLP), klicka på kna
         <translation>Vänta medan resurser laddas ner och OpenLP konfigureras.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="185"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="663"/>
         <source>Network Error</source>
         <translation>Nätverksfel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="187"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="189"/>
         <source>There was a network error attempting to connect to retrieve initial configuration information</source>
         <translation>Det uppstod ett nätverksfel när anslutning för hämtning av grundläggande inställningar skulle göras</translation>
     </message>
@@ -3569,6 +3610,11 @@ För att avbryta Kom igång-guiden helt (och inte starta OpenLP), klicka på kna
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
         <translation>Avbryt</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="664"/>
+        <source>Unable to download some files</source>
+        <translation>Kunde inte ladda ner vissa filer</translation>
     </message>
 </context>
 <context>
@@ -3640,6 +3686,16 @@ För att avbryta Kom igång-guiden helt (och inte starta OpenLP), klicka på kna
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="82"/>
         <source>Description %s already defined.</source>
         <translation>Beskrivningen %s är redan definierad.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagcontroller.py" line="149"/>
+        <source>Start tag %s is not valid HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagcontroller.py" line="169"/>
+        <source>End tag %s does not match end tag for start tag %s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4367,17 +4423,17 @@ Om du kör den här guiden kan din nuvarande konfiguration av OpenLP komma att �
         <translation>OpenLP-inställningsfiler (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
         <source>New Data Directory Error</source>
         <translation>Ny datakatalog-fel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1385"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>Kopierar OpenLP-data till ny plats för datakatalogen - %s - Vänta tills kopieringen är avslutad</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4456,12 +4512,12 @@ Processen har avbrutits och inga ändringar gjordes.</translation>
 <context>
     <name>OpenLP.Manager</name>
     <message>
-        <location filename="openlp/core/lib/db.py" line="240"/>
+        <location filename="openlp/core/lib/db.py" line="244"/>
         <source>Database Error</source>
         <translation>Databasfel</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="240"/>
+        <location filename="openlp/core/lib/db.py" line="244"/>
         <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
 
 Database: %s</source>
@@ -4492,42 +4548,42 @@ Databas: %s</translation>
         <translation>&amp;Lägg till i vald post i körschemat</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="481"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="482"/>
         <source>You must select one or more items to preview.</source>
         <translation>Du måste välja en eller flera poster att förhandsgranska.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="498"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="499"/>
         <source>You must select one or more items to send live.</source>
         <translation>Du måste välja en eller flera poster att visa live.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="591"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="592"/>
         <source>You must select one or more items.</source>
         <translation>Du måste välja en eller flera poster.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="597"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="598"/>
         <source>You must select an existing service item to add to.</source>
         <translation>Du måste välja en befintlig post i körschemat att lägga till i.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
         <source>Invalid Service Item</source>
         <translation>Ogiltig körschemapost</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
         <source>You must select a %s service item.</source>
         <translation>Du måste välja en post av typen %s i körschemat.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="547"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="548"/>
         <source>You must select one or more items to add.</source>
         <translation>Du måste välja en eller flera poster att lägga till.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="639"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="640"/>
         <source>No Search Results</source>
         <translation>Inga sökresultat</translation>
     </message>
@@ -5735,15 +5791,6 @@ Filändelsen stöds ej</translation>
         <translation>Fil(er) i körschemat saknas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="536"/>
-        <source>The following file(s) in the service are missing:
-<byte value="x9"/>%s
-
-These files will be removed if you continue to save.</source>
-        <translation>Följande fil(er) i körschemat saknas:⏎ &lt;byte value=&quot;x9&quot;/&gt;%s⏎ ⏎
-Filerna kommer att tas bort om du fortsätter att spara.</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="230"/>
         <source>&amp;Rename...</source>
         <translation>&amp;Byt namn...</translation>
@@ -5841,6 +5888,13 @@ Spara om den med OpenLP 2.0.2 eller nyare.</translation>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
         <translation>Ett fel inträffade när körschemafilen skrevs: %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="536"/>
+        <source>The following file(s) in the service are missing: %s
+
+These files will be removed if you continue to save.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6436,7 +6490,7 @@ Spara om den med OpenLP 2.0.2 eller nyare.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="419"/>
         <source>OpenLP Themes (*.otz)</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP-teman (*.otz)</translation>
     </message>
 </context>
 <context>
@@ -6884,7 +6938,7 @@ Spara om den med OpenLP 2.0.2 eller nyare.</translation>
         <translation>Du måste ange åtminstone en %s-fil att importera från.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="295"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="310"/>
         <source>Welcome to the Bible Import Wizard</source>
         <translation>Välkommen till bibelimportguiden</translation>
     </message>
@@ -7495,7 +7549,7 @@ Försök att välja den separat.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="118"/>
         <source>Preview Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Förhandsgranskningsverktygsrad</translation>
     </message>
 </context>
 <context>
@@ -7622,17 +7676,17 @@ Försök att välja den separat.</translation>
         <translation>Presentationer (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
         <source>Missing Presentation</source>
         <translation>Presentation saknas</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="354"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Presentationen %s är inte komplett. Försök att ladda om den.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Presentationen %s finns inte längre.</translation>
     </message>
@@ -9384,7 +9438,7 @@ Ange verserna separerade med blanksteg.</translation>
         <translation>Sök</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="316"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="324"/>
         <source>Found %s song(s)</source>
         <translation>Hittade %s sång(er)</translation>
     </message>
@@ -9449,44 +9503,44 @@ Ange verserna separerade med blanksteg.</translation>
         <translation>Loggar ut...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>Save Username and Password</source>
         <translation>Spara användarnamn och lösenord</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>WARNING: Saving your username and password is INSECURE, your password is stored in PLAIN TEXT. Click Yes to save your password or No to cancel this.</source>
         <translation>VARNING: Att spara användarnamn och lösenord är OSÄKERT eftersom ditt lösenord sparas i KLARTEXT. Klicka Ja för att spara ditt lösenord eller Nej för att avbryta.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>Error Logging In</source>
         <translation>Fel vid inloggning</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>There was a problem logging in, perhaps your username or password is incorrect?</source>
         <translation>Det uppstod ett problem vid inloggningen. Kanske är ditt användarnamn eller lösenord felaktigt?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="363"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
         <source>Song Imported</source>
         <translation>Sång importerad</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="364"/>
-        <source>Your song has been imported, would you like to exit now, or import more songs?</source>
-        <translation>Din sång har importerats. Vill du avsluta nu eller importera fler sånger?</translation>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <source>Incomplete song</source>
+        <translation>Ofullständig sång</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="366"/>
-        <source>Import More Songs</source>
-        <translation>Importera fler sånger</translation>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <source>This song is missing some information, like the lyrics, and cannot be imported.</source>
+        <translation>Den här sången saknar viss information, som t.ex. texten, och kan inte importeras.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="368"/>
-        <source>Exit Now</source>
-        <translation>Avsluta nu</translation>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <source>Your song has been imported, would you like to import more songs?</source>
+        <translation>Sången har importerats. Vill du importera fler sånger?</translation>
     </message>
 </context>
 <context>

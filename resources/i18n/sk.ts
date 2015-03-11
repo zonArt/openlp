@@ -154,85 +154,85 @@ Pred kliknutím na Nový prosím zadajte nejaký text.</translation>
 <context>
     <name>BiblesPlugin</name>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="134"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="136"/>
         <source>&amp;Bible</source>
         <translation>&amp;Biblia</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="198"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="206"/>
         <source>Bible</source>
         <comment>name singular</comment>
         <translation>Biblia</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="199"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="207"/>
         <source>Bibles</source>
         <comment>name plural</comment>
         <translation>Biblie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="203"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="211"/>
         <source>Bibles</source>
         <comment>container title</comment>
         <translation>Biblie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
         <source>No Book Found</source>
         <translation>Kniha sa nenašla</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="528"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
         <translation>V Bibli sa nenašla hľadaná kniha. Uistite sa, že názov knihy bol zadaný správne.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="208"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="216"/>
         <source>Import a Bible.</source>
         <translation>Import Biblie.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="209"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="217"/>
         <source>Add a new Bible.</source>
         <translation>Pridať novú Bibliu.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="210"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="218"/>
         <source>Edit the selected Bible.</source>
         <translation>Upraviť označenú Bibliu.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="211"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="219"/>
         <source>Delete the selected Bible.</source>
         <translation>Zmazať označenú Bibliu.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="212"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="220"/>
         <source>Preview the selected Bible.</source>
         <translation>Náhľad označenej Biblie.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="213"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="221"/>
         <source>Send the selected Bible live.</source>
         <translation>Zobraziť označenú Bibliu naživo.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="214"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="222"/>
         <source>Add the selected Bible to the service.</source>
         <translation>Pridať označenú Bibliu do služby.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="167"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="175"/>
         <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
         <translation>&lt;strong&gt;Modul Biblia&lt;/strong&gt;&lt;br /&gt;Modul Biblia umožňuje počay služby zobrazovať verše z rôznych zdrojov.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>&amp;Upgrade older Bibles</source>
         <translation>&amp;Aktualizovať staršie Biblie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>Upgrade the Bible databases to the latest format.</source>
         <translation>Aktualizovať databázu Biblie na najnovší formát.</translation>
     </message>
@@ -1071,38 +1071,38 @@ Nie je možné prispôsobiť názvy kníh.</translation>
 <context>
     <name>BiblesPlugin.HTTPBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="451"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="610"/>
         <source>Registering Bible and loading books...</source>
         <translation>Registrujem Bibliu a sťahujem knihy...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="475"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="634"/>
         <source>Registering Language...</source>
         <translation>Registrujem jazyk...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="488"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="645"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
         <translation>Importujem %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
         <source>Download Error</source>
         <translation>Chyba pri sťahovaní</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="632"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Pri sťahovaní výberu veršov sa vyskytol problém. Prosím preverte svoje internetové pripojenie. Pokiaľ sa táto chyba stále objavuje, zvážte prosím nahlásenie chyby.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
         <source>Parse Error</source>
         <translation>Chyba pri spracovaní</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="638"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Pri rozbalovaní výberu veršov sa vyskytol problém. Pokiaľ sa táto chyba stále objavuje, zvážte prosím nahlásenie chyby.</translation>
     </message>
@@ -1110,164 +1110,184 @@ Nie je možné prispôsobiť názvy kníh.</translation>
 <context>
     <name>BiblesPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="294"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="309"/>
         <source>Bible Import Wizard</source>
         <translation>Sprievodca importom Biblie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="297"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
         <source>This wizard will help you to import Bibles from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
         <translation>Tento sprievodca uľahčí import Biblií z rôzných formátov. Proces importu sa spustí klepnutím nižšie na tlačítko ďalší. Potom vyberte formát, z ktorého sa bude Biblia importovať.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="308"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="323"/>
         <source>Web Download</source>
         <translation>Stiahnutie z webu</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="315"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="330"/>
         <source>Location:</source>
         <translation>Umiestnenie:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="317"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="334"/>
         <source>Crosswalk</source>
         <translation>Crosswalk</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="319"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="336"/>
         <source>BibleGateway</source>
         <translation>BibleGateway</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="323"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="340"/>
         <source>Bible:</source>
         <translation>Biblia:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="324"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="341"/>
         <source>Download Options</source>
         <translation>Voľby sťahovania</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="326"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="343"/>
         <source>Server:</source>
         <translation>Server:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="327"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="344"/>
         <source>Username:</source>
         <translation>Používateľské meno:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="328"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="345"/>
         <source>Password:</source>
         <translation>Heslo:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="329"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="346"/>
         <source>Proxy Server (Optional)</source>
         <translation>Proxy Server (Voliteľné)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="349"/>
         <source>License Details</source>
         <translation>Podrobnosti k licencii</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="334"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="351"/>
         <source>Set up the Bible&apos;s license details.</source>
         <translation>Nastaviť podrobnosti k licencii Biblie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="336"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="353"/>
         <source>Version name:</source>
         <translation>Názov verzie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="337"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="354"/>
         <source>Copyright:</source>
         <translation>Autorské práva:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="340"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="357"/>
         <source>Please wait while your Bible is imported.</source>
         <translation>Prosím počkajte, kým sa Biblia importuje.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="367"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="384"/>
         <source>You need to specify a file with books of the Bible to use in the import.</source>
         <translation>Je potrebné určiť súbor s knihami Biblie. Tento súbor sa použije pri importe.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="374"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="391"/>
         <source>You need to specify a file of Bible verses to import.</source>
         <translation>Pre import je potrebné určiť súbor s veršami Biblie.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="399"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="419"/>
         <source>You need to specify a version name for your Bible.</source>
         <translation>Je nutné uviesť názov verzie Biblie.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="405"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="425"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
         <translation>K Biblii je potrebné nastaviť autorské práva. Biblie v Public Domain je nutné takto označiť.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="420"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="440"/>
         <source>Bible Exists</source>
         <translation>Biblia existuje</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="420"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="440"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
         <translation>Táto Biblia už existuje. Importujte prosím inú Bibliu alebo najskôr zmažte tú existujúcu.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="609"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="640"/>
         <source>Your Bible import failed.</source>
         <translation>Import Biblie sa nepodaril.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="460"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="481"/>
         <source>CSV File</source>
         <translation>CSV súbor</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="321"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="338"/>
         <source>Bibleserver</source>
         <translation>Bibleserver</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="338"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="355"/>
         <source>Permissions:</source>
         <translation>Povolenia:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="316"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="331"/>
         <source>Bible file:</source>
         <translation>Súbor s Bibliou:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="327"/>
         <source>Books file:</source>
         <translation>Súbor s knihami:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="313"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="328"/>
         <source>Verses file:</source>
         <translation>Súbor s veršami:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="554"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="584"/>
         <source>Registering Bible...</source>
         <translation>Registrujem Bibliu...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="603"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="634"/>
         <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
         <translation>Registrovaná Biblia. Vezmite prosím na vedomie, že verše budú sťahované na vyžiadanie, preto je potrebné internetové pripojenie.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
+        <source>Click to download bible list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="333"/>
+        <source>Download bible list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
+        <source>Error during download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
+        <source>An error occurred while downloading the list of bibles from %s.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1405,11 +1425,24 @@ You will need to re-import this Bible to use it again.</source>
     </message>
 </context>
 <context>
+    <name>BiblesPlugin.Opensong</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/opensong.py" line="126"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BiblesPlugin.OsisImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="75"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="76"/>
         <source>Removing unused tags (this may take a few minutes)...</source>
         <translation>Odstraňujem nepoužívané značky (bude to chvíľu trvať) ...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1560,9 +1593,17 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
 <context>
     <name>BiblesPlugin.ZefaniaImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/zefania.py" line="110"/>
+        <location filename="openlp/plugins/bibles/lib/zefania.py" line="111"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
         <translation>Bol zadaný nesprávny typ súboru Biblie. Zefania Biblie môžu byť komprimované. Pred importom je nutné ich rozbaliť.</translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.Zefnia</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/zefania.py" line="105"/>
+        <source>Importing %(bookname)s %(chapter)s...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1961,60 +2002,60 @@ Chcete pridať ďaľšie obrázky?</translation>
 <context>
     <name>MediaPlugin</name>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="61"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="91"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
         <translation>&lt;strong&gt;Modul média&lt;/strong&gt;&lt;br /&gt;Modul média umožňuje prehrávať audio a video.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="71"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="101"/>
         <source>Media</source>
         <comment>name singular</comment>
         <translation>Média</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="72"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="102"/>
         <source>Media</source>
         <comment>name plural</comment>
         <translation>Média</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="76"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="106"/>
         <source>Media</source>
         <comment>container title</comment>
         <translation>Média</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="80"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="110"/>
         <source>Load new media.</source>
         <translation>Načítať nové médium.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="82"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="112"/>
         <source>Add new media.</source>
         <translation>Pridať nové médium.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="83"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="113"/>
         <source>Edit the selected media.</source>
         <translation>Upraviť vybrané médium.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="84"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="114"/>
         <source>Delete the selected media.</source>
         <translation>Zmazať vybrané médium.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="85"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="115"/>
         <source>Preview the selected media.</source>
         <translation>Náhľad vybraného média.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="86"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="116"/>
         <source>Send the selected media live.</source>
         <translation>Zobraziť vybrané médium naživo.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="87"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="117"/>
         <source>Add the selected media to the service.</source>
         <translation>Pridať vybrané médium do služby.</translation>
     </message>
@@ -2253,12 +2294,12 @@ Chcete pridať ďaľšie obrázky?</translation>
         <translation>Optický disk %s už nie je k dispozícii.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="425"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
         <source>Mediaclip already saved</source>
         <translation>Klip už uložený</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="425"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
         <source>This mediaclip has already been saved</source>
         <translation>Klip už bol uložený</translation>
     </message>
@@ -2287,7 +2328,7 @@ Chcete pridať ďaľšie obrázky?</translation>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="304"/>
+        <location filename="openlp/core/utils/__init__.py" line="305"/>
         <source>Image Files</source>
         <translation>Súbory obrázkov</translation>
     </message>
@@ -3261,7 +3302,7 @@ Version: %s
 <context>
     <name>OpenLP.FileRenameForm</name>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="51"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="57"/>
         <source>File Rename</source>
         <translation>Premenovať súboru</translation>
     </message>
@@ -3271,7 +3312,7 @@ Version: %s
         <translation>Nový názov súboru:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="49"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="55"/>
         <source>File Copy</source>
         <translation>Kopírovať súbor</translation>
     </message>
@@ -3362,12 +3403,12 @@ Version: %s
         <translation>Pôvodné nastavenia.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="207"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="209"/>
         <source>Downloading %s...</source>
         <translation>Sťahovanie %s...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="589"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="591"/>
         <source>Enabling selected plugins...</source>
         <translation>Povoľujem vybraté pluginy...</translation>
     </message>
@@ -3432,17 +3473,17 @@ Version: %s
         <translation>Štartovanie konfiguračného procesu...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="543"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="545"/>
         <source>Setting Up And Downloading</source>
         <translation>Nastavovanie a sťahovanie</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="544"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="546"/>
         <source>Please wait while OpenLP is set up and your data is downloaded.</source>
         <translation>Čakajte prosím, pokiaľ bude aplikácia OpenLP nastavená a dáta stiahnuté.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="548"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="550"/>
         <source>Setting Up</source>
         <translation>Nastavovanie</translation>
     </message>
@@ -3466,37 +3507,37 @@ To re-run the First Time Wizard and import this sample data at a later time, che
 Ak chcete znovu spustiť sprievodcu a importovať tieto vzorové dáta na neskoršiu dobru, skontrolujte svoje internetové pripojenie a znovu spustite tohto sprievodcu výberom &quot;Nastavenia/ Znovu spustiť sprievodcu prvým spustením&quot; z OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="601"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>Download Error</source>
         <translation>Chyba pri sťahovaní</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="531"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="533"/>
         <source>There was a connection problem during download, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation>Vyskytol sa problém s pripojením počas sťahovania, ďalšie sťahovanie bude preskočené. Pokúste sa znovu sputiť Sprievodcu po prvom spustení.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="562"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="564"/>
         <source>Download complete. Click the %s button to return to OpenLP.</source>
         <translation>Sťahovanie dokončené. Kliknutím na tlačítko %s sa vrátite do aplikácie OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="566"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="568"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
         <translation>Sťahovanie dokončené. Kliknutím na tlačítko %s spustíte aplikáciu OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="571"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="573"/>
         <source>Click the %s button to return to OpenLP.</source>
         <translation>Kliknutím na tlačítko %s sa vrátite do aplikácie OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="575"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="577"/>
         <source>Click the %s button to start OpenLP.</source>
         <translation>Kliknutím na tlačítko %s spustíte aplikáciu OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="601"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>There was a connection problem while downloading, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
         <translation>Vyskytol sa problém s pripojením počas sťahovania, ďalšie sťahovanie bude preskočené. Pokúste sa znovu sputiť Sprievodcu po prvom spustení.</translation>
     </message>
@@ -3540,12 +3581,12 @@ Ak chcete úplne zrušiť sprievodcu prvým spustením (a nespustiť OpenLP), kl
         <translation>Počkajte prosím až budú stiahnuté všetky zdroje a aplikácia OpenLP bude nakonfigurovaná.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="185"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="663"/>
         <source>Network Error</source>
         <translation>Chyba siete</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="187"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="189"/>
         <source>There was a network error attempting to connect to retrieve initial configuration information</source>
         <translation>Pri pokuse o získanie počiatočného nastavenia vznikla chyba siete</translation>
     </message>
@@ -3553,6 +3594,11 @@ Ak chcete úplne zrušiť sprievodcu prvým spustením (a nespustiť OpenLP), kl
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
         <source>Cancel</source>
         <translation>Zrušiť</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="664"/>
+        <source>Unable to download some files</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3624,6 +3670,16 @@ Ak chcete úplne zrušiť sprievodcu prvým spustením (a nespustiť OpenLP), kl
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="82"/>
         <source>Description %s already defined.</source>
         <translation>Popis %s je už definovaný.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagcontroller.py" line="149"/>
+        <source>Start tag %s is not valid HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagcontroller.py" line="169"/>
+        <source>End tag %s does not match end tag for start tag %s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4351,17 +4407,17 @@ Znovu spustením tohto sprievodcu môže dojsť k zmenám aktuálneho nastavenia
         <translation>Súbor exportovaného nastavenia OpenLP (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
         <source>New Data Directory Error</source>
         <translation>Chyba nového dátového priečinka</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1385"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>Kopírovanie OpenLP dát do nového umiestnenia dátového priečinka - %s - Počkajte prosím na dokokončenie kopírovania.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4438,12 +4494,12 @@ Proces bude ukončený a žiadne zmeny sa neuložia.</translation>
 <context>
     <name>OpenLP.Manager</name>
     <message>
-        <location filename="openlp/core/lib/db.py" line="240"/>
+        <location filename="openlp/core/lib/db.py" line="244"/>
         <source>Database Error</source>
         <translation>Chyba databázy</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="240"/>
+        <location filename="openlp/core/lib/db.py" line="244"/>
         <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
 
 Database: %s</source>
@@ -4474,42 +4530,42 @@ Databáza: %s</translation>
         <translation>&amp;Pridať k vybranej položke služby</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="481"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="482"/>
         <source>You must select one or more items to preview.</source>
         <translation>K náhľadu je potrebné vybrať jednu alebo viac položiek.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="498"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="499"/>
         <source>You must select one or more items to send live.</source>
         <translation>Pre zobrazenie naživo je potrebné vybrať jednu alebo viac položiek.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="591"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="592"/>
         <source>You must select one or more items.</source>
         <translation>Je potrebné vybrať jednu alebo viac položiek.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="597"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="598"/>
         <source>You must select an existing service item to add to.</source>
         <translation>K pridaniu je potrebné vybrať existujúcu položku služby.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
         <source>Invalid Service Item</source>
         <translation>Neplatná položka služby</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
         <source>You must select a %s service item.</source>
         <translation>Je potrebné vybrať %s položku služby.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="547"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="548"/>
         <source>You must select one or more items to add.</source>
         <translation>Pre pridanie je potrebné vybrať jednu alebo viac položiek.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="639"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="640"/>
         <source>No Search Results</source>
         <translation>Žiadne výsledky vyhľadávania.</translation>
     </message>
@@ -5717,17 +5773,6 @@ Prípona nie je podporovaná</translation>
         <translation>Chýbajúci súbor(y) služby</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="536"/>
-        <source>The following file(s) in the service are missing:
-<byte value="x9"/>%s
-
-These files will be removed if you continue to save.</source>
-        <translation>Nasledujúci súbor (y) v službe chýba:
-&lt;byte value=&quot;x9&quot;/&gt;%s.
-
-Tieto súbory budú vymazané, ak službu uložíte.</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="230"/>
         <source>&amp;Rename...</source>
         <translation>&amp;Premenovať...</translation>
@@ -5825,6 +5870,13 @@ Prosím uložte to v OpenLP 2.0.2 alebo vyššej verzii.</translation>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
         <translation>Vyskytla sa chyba pri zápise súboru služby: %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="536"/>
+        <source>The following file(s) in the service are missing: %s
+
+These files will be removed if you continue to save.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6868,7 +6920,7 @@ Prosím uložte to v OpenLP 2.0.2 alebo vyššej verzii.</translation>
         <translation>Je potrebné špecifikovať aspon jeden %s súbor, z ktorého sa bude importovať.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="295"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="310"/>
         <source>Welcome to the Bible Import Wizard</source>
         <translation>Vitajte v sprievodcovi importu Biblie</translation>
     </message>
@@ -7606,17 +7658,17 @@ Skúste to prosím výberom individuálne.</translation>
         <translation>Prezentácie (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
         <source>Missing Presentation</source>
         <translation>Chýbajúca prezentácia</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="354"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Prezentácia %s nie je kompletná, opäť ju načítajte.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Prezentácia %s už neexistuje.</translation>
     </message>
@@ -9364,7 +9416,7 @@ Prosím vložte verše oddelené medzerou.</translation>
         <translation>Hľadať</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="316"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="324"/>
         <source>Found %s song(s)</source>
         <translation>Najdené %s piesní</translation>
     </message>
@@ -9429,44 +9481,44 @@ Prosím vložte verše oddelené medzerou.</translation>
         <translation>Odhlasovanie...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>Save Username and Password</source>
         <translation>Uložiť prihlasovacie meno a heslo</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>WARNING: Saving your username and password is INSECURE, your password is stored in PLAIN TEXT. Click Yes to save your password or No to cancel this.</source>
         <translation>VAROVANIE: Uloženie mena a hesla nie je BEZPEČNÉ, heslo bude uložené ako ČITATEĽNÝ TEXT. Pre uloženie hesla klinite Áno alebo kliknite Nie pre zrušenie bez uloženia.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>Error Logging In</source>
         <translation>Chyba prihlasovania</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>There was a problem logging in, perhaps your username or password is incorrect?</source>
         <translation>Nastal problém s prihlásením. Možno ste zadali nesprávne meno alebo heslo.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="363"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
         <source>Song Imported</source>
         <translation>Pieseň naimportovaná</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="364"/>
-        <source>Your song has been imported, would you like to exit now, or import more songs?</source>
-        <translation>Pieseň bola naimportovaná, chcete ukončiť alebo importovať ďalšie pesničky?</translation>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <source>Incomplete song</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="366"/>
-        <source>Import More Songs</source>
-        <translation>Import viacerých piesní</translation>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <source>This song is missing some information, like the lyrics, and cannot be imported.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="368"/>
-        <source>Exit Now</source>
-        <translation>Ukonči teraz</translation>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <source>Your song has been imported, would you like to import more songs?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
