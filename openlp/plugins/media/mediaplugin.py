@@ -19,12 +19,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The Media plugin
+"""
 
 import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.common import translate
+from openlp.core.common import Settings, translate
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
@@ -40,6 +43,9 @@ __default_settings__ = {
 
 
 class MediaPlugin(Plugin):
+    """
+    The media plugin adds the ability to playback audio and video content.
+    """
     log.info('%s MediaPlugin loaded', __name__)
 
     def __init__(self):
@@ -50,14 +56,38 @@ class MediaPlugin(Plugin):
         # passed with drag and drop messages
         self.dnd_id = 'Media'
 
+    def initialise(self):
+        """
+        Override the inherited initialise() method in order to upgrade the media before trying to load it
+        """
+        # FIXME: Remove after 2.2 release.
+        # This is needed to load the list of media from the config saved before the settings rewrite.
+        if self.media_item_class is not None:
+            loaded_list = Settings().get_files_from_config(self)
+            # Now save the list to the config using our Settings class.
+            if loaded_list:
+                Settings().setValue('%s/%s files' % (self.settings_section, self.name), loaded_list)
+        super().initialise()
+
+    def app_startup(self):
+        """
+        Override app_startup() in order to do nothing
+        """
+        pass
+
     def create_settings_tab(self, parent):
         """
         Create the settings Tab
+
+        :param parent:
         """
         visible_name = self.get_string(StringContent.VisibleName)
         self.settings_tab = MediaTab(parent, self.name, visible_name['title'], self.icon_path)
 
     def about(self):
+        """
+        Return the about text for the plugin manager
+        """
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
                                '<br />The media plugin provides playback of audio and video.')
         return about_text

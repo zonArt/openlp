@@ -113,12 +113,13 @@ class BiblePlugin(Plugin):
                                         'existing Bibles.\nShould OpenLP upgrade now?'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \
                     QtGui.QMessageBox.Yes:
-                self.on_tools_upgrade_Item_triggered()
+                self.on_tools_upgrade_item_triggered()
 
     def add_import_menu_item(self, import_menu):
         """
+        Add an import menu item
 
-        :param import_menu:
+        :param import_menu: The menu to insert the menu item into.
         """
         self.import_bible_item = create_action(import_menu, 'importBibleItem',
                                                text=translate('BiblesPlugin', '&Bible'), visible=False,
@@ -127,8 +128,9 @@ class BiblePlugin(Plugin):
 
     def add_export_menu_item(self, export_menu):
         """
+        Add an export menu item
 
-        :param export_menu:
+        :param export_menu: The menu to insert the menu item into.
         """
         self.export_bible_item = create_action(export_menu, 'exportBibleItem',
                                                text=translate('BiblesPlugin', '&Bible'), visible=False)
@@ -145,10 +147,10 @@ class BiblePlugin(Plugin):
             tools_menu, 'toolsUpgradeItem',
             text=translate('BiblesPlugin', '&Upgrade older Bibles'),
             statustip=translate('BiblesPlugin', 'Upgrade the Bible databases to the latest format.'),
-            visible=False, triggers=self.on_tools_upgrade_Item_triggered)
+            visible=False, triggers=self.on_tools_upgrade_item_triggered)
         tools_menu.addAction(self.tools_upgrade_item)
 
-    def on_tools_upgrade_Item_triggered(self):
+    def on_tools_upgrade_item_triggered(self):
         """
         Upgrade older bible databases.
         """
@@ -159,10 +161,16 @@ class BiblePlugin(Plugin):
             self.media_item.reload_bibles()
 
     def on_bible_import_click(self):
+        """
+        Show the Bible Import wizard
+        """
         if self.media_item:
             self.media_item.on_import_click()
 
     def about(self):
+        """
+        Return the about text for the plugin manager
+        """
         about_text = translate('BiblesPlugin', '<strong>Bible Plugin</strong>'
                                '<br />The Bible plugin provides the ability to display Bible '
                                'verses from different sources during the service.')
