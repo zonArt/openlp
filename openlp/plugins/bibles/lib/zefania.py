@@ -69,6 +69,7 @@ class ZefaniaBible(BibleDB):
             if not language_id:
                 log.error('Importing books from "%s" failed' % self.filename)
                 return False
+            self.save_meta('language_id', language_id)
             num_books = int(zefania_bible_tree.xpath("count(//BIBLEBOOK)"))
             # Strip tags we don't use - keep content
             etree.strip_tags(zefania_bible_tree, ('STYLE', 'GRAM', 'NOTE', 'SUP', 'XREF'))
@@ -83,7 +84,7 @@ class ZefaniaBible(BibleDB):
                 if not bname and not bnumber:
                     continue
                 if bname:
-                    book_ref_id = self.get_book_ref_id_by_name(bname, num_books)
+                    book_ref_id = self.get_book_ref_id_by_name(bname, num_books, language_id)
                     if not book_ref_id:
                         book_ref_id = self.get_book_ref_id_by_localised_name(bname)
                 else:
@@ -102,8 +103,8 @@ class ZefaniaBible(BibleDB):
                         verse_number = VERS.get("vnumber")
                         self.create_verse(db_book.id, chapter_number, verse_number, VERS.text.replace('<BR/>', '\n'))
                     self.wizard.increment_progress_bar(
-                        translate('BiblesPlugin.Zefnia', 'Importing %(bookname)s %(chapter)s...' %
-                                  {'bookname': db_book.name, 'chapter': chapter_number}))
+                        translate('BiblesPlugin.Zefnia', 'Importing %(bookname)s %(chapter)s...') %
+                        {'bookname': db_book.name, 'chapter': chapter_number})
             self.session.commit()
             self.application.process_events()
         except Exception as e:

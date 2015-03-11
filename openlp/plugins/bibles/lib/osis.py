@@ -71,6 +71,7 @@ class OSISBible(BibleDB):
             if not language_id:
                 log.error('Importing books from "%s" failed' % self.filename)
                 return False
+            self.save_meta('language_id', language_id)
             num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=namespace))
             self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
                                                          'Removing unused tags (this may take a few minutes)...'))
@@ -124,7 +125,7 @@ class OSISBible(BibleDB):
                     break
                 # Remove div-tags in the book
                 etree.strip_tags(book, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}div'))
-                book_ref_id = self.get_book_ref_id_by_name(book.get('osisID'), num_books)
+                book_ref_id = self.get_book_ref_id_by_name(book.get('osisID'), num_books, language_id)
                 if not book_ref_id:
                     book_ref_id = self.get_book_ref_id_by_localised_name(book.get('osisID'))
                 if not book_ref_id:
@@ -154,8 +155,8 @@ class OSISBible(BibleDB):
                                 verse_number = verse.get("osisID").split('.')[2]
                                 self.create_verse(db_book.id, chapter_number, verse_number, verse.text.strip())
                         self.wizard.increment_progress_bar(
-                            translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...' %
-                                      {'bookname': db_book.name, 'chapter': chapter_number}))
+                            translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
+                            {'bookname': db_book.name, 'chapter': chapter_number})
                 else:
                     # The chapter tags is used as milestones. For now we assume verses is also milestones
                     chapter_number = 0
@@ -164,8 +165,8 @@ class OSISBible(BibleDB):
                                 and element.get('sID'):
                             chapter_number = element.get("osisID").split('.')[1]
                             self.wizard.increment_progress_bar(
-                                translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...' %
-                                          {'bookname': db_book.name, 'chapter': chapter_number}))
+                                translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
+                                {'bookname': db_book.name, 'chapter': chapter_number})
                         elif element.tag == '{http://www.bibletechnologies.net/2003/OSIS/namespace}verse' \
                                 and element.get('sID'):
                             # If this tag marks the start of a verse, the verse text is between this tag and

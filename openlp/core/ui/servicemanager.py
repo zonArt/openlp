@@ -533,7 +533,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             self.application.set_normal_cursor()
             title = translate('OpenLP.ServiceManager', 'Service File(s) Missing')
             message = translate('OpenLP.ServiceManager',
-                                'The following file(s) in the service are missing:\n\t%s\n\n'
+                                'The following file(s) in the service are missing: %s\n\n'
                                 'These files will be removed if you continue to save.') % "\n\t".join(missing_list)
             answer = QtGui.QMessageBox.critical(self, title, message,
                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
