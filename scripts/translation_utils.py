@@ -316,7 +316,7 @@ def check_format_strings():
                 for num in tag.iter('numerusform'):
                     print_verbose('parsed numerusform: location: %s, source: %s, translation: %s' % (
                                   location, org_text, num.text))
-                    if org_text.count('%') != num.text.count('%'):
+                    if num and org_text.count('%') != num.text.count('%'):
                         print_quiet(
                             'ERROR: Translation from %s at line %s has a mismatch of format input:\n%s\n%s\n' % (
                                 location, line, org_text, num.text))
