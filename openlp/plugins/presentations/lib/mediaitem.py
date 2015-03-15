@@ -245,7 +245,8 @@ class PresentationMediaItem(MediaManagerItem):
                 doc = self.controllers[cidx].add_document(filepath)
                 if clean_for_update:
                     thumb_path = doc.get_thumbnail_path(1, True)
-                    if not thumb_path or os.path.getmtime(thumb_path) < os.path.getmtime(filepath):
+                    if not thumb_path or (os.path.exists(filepath)
+                                          and os.path.getmtime(thumb_path) < os.path.getmtime(filepath)):
                         doc.presentation_deleted()
                 else:
                     doc.presentation_deleted()
