@@ -30,7 +30,7 @@ import threading
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Settings, is_win, is_macosx
+from openlp.core.common import Settings, is_win, is_macosx, is_linux
 from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState, MediaType
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -62,6 +62,13 @@ if VLC_AVAILABLE:
     if LooseVersion(VERSION.split()[0]) < LooseVersion('1.1.0'):
         VLC_AVAILABLE = False
         log.debug('VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
+    if is_linux():
+        import ctypes
+        try:
+            x11 = ctypes.cdll.LoadLibrary('libX11.so')
+            x11.XInitThreads()
+        except:
+            log.exception('Failed to XInitThreads(), VLC might not work properly!')
 
 AUDIO_EXT = ['*.mp3', '*.wav', '*.wma', '*.ogg']
 
