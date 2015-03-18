@@ -27,6 +27,7 @@ from distutils.version import LooseVersion
 import logging
 import os
 import threading
+import sys
 
 from PyQt4 import QtGui
 
@@ -62,7 +63,8 @@ if VLC_AVAILABLE:
     if LooseVersion(VERSION.split()[0]) < LooseVersion('1.1.0'):
         VLC_AVAILABLE = False
         log.debug('VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
-    if VLC_AVAILABLE and is_linux():
+    # On linux we need to initialise X threads, but not when running tests.
+    if VLC_AVAILABLE and is_linux() and 'nose' not in sys.argv[0]:
         import ctypes
         try:
             x11 = ctypes.cdll.LoadLibrary('libX11.so')

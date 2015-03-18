@@ -87,7 +87,7 @@ class TestMediaItem(TestCase, TestMixin):
 
     def clean_up_thumbnails_test(self):
         """
-        Test that the clean_up_thumbnails method works as expected.
+        Test that the clean_up_thumbnails method works as expected when files exists.
         """
         # GIVEN: A mocked controller, and mocked os.path.getmtime
         mocked_controller = MagicMock()
@@ -98,12 +98,36 @@ class TestMediaItem(TestCase, TestMixin):
             'Mocked': mocked_controller
         }
         presentation_file = 'file.tmp'
-        with patch('openlp.plugins.presentations.lib.mediaitem.os.path.getmtime') as mocked_getmtime:
+        with patch('openlp.plugins.presentations.lib.mediaitem.os.path.getmtime') as mocked_getmtime, \
+                patch('openlp.plugins.presentations.lib.mediaitem.os.path.exists') as mocked_exists:
             mocked_getmtime.side_effect = [100, 200]
+            mocked_exists.return_value = True
 
             # WHEN: calling clean_up_thumbnails
             self.media_item.clean_up_thumbnails(presentation_file, True)
 
         # THEN: doc.presentation_deleted should have been called since the thumbnails mtime will be greater than
         #       the presentation_file's mtime.
+        mocked_doc.assert_has_calls([call.get_thumbnail_path(1, True), call.presentation_deleted()], True)
+
+    def clean_up_thumbnails_missing_file_test(self):
+        """
+        Test that the clean_up_thumbnails method works as expected when file is missing.
+        """
+        # GIVEN: A mocked controller, and mocked os.path.exists
+        mocked_controller = MagicMock()
+        mocked_doc = MagicMock()
+        mocked_controller.add_document.return_value = mocked_doc
+        mocked_controller.supports = ['tmp']
+        self.media_item.controllers = {
+            'Mocked': mocked_controller
+        }
+        presentation_file = 'file.tmp'
+        with patch('openlp.plugins.presentations.lib.mediaitem.os.path.exists') as mocked_exists:
+            mocked_exists.return_value = False
+
+            # WHEN: calling clean_up_thumbnails
+            self.media_item.clean_up_thumbnails(presentation_file, True)
+
+        # THEN: doc.presentation_deleted should have been called since the presentation file did not exists.
         mocked_doc.assert_has_calls([call.get_thumbnail_path(1, True), call.presentation_deleted()], True)
