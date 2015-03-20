@@ -523,6 +523,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         if controller.media_info.file_info.isFile():
             suffix = '*.%s' % controller.media_info.file_info.suffix().lower()
             for title in used_players:
+                if not title:
+                    continue
                 player = self.media_players[title]
                 if suffix in player.video_extensions_list:
                     if not controller.media_info.is_background or controller.media_info.is_background and \
