@@ -589,7 +589,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             else:
                 controller.mediabar.actions['playbackPlay'].setVisible(False)
                 controller.mediabar.actions['playbackPause'].setVisible(True)
-            controller.mediabar.actions['playbackStop'].setVisible(True)
+            controller.mediabar.actions['playbackStop'].setDisabled(False)
             if controller.is_live:
                 if controller.hide_menu.defaultAction().isChecked() and not controller.media_info.is_background:
                     controller.hide_menu.defaultAction().trigger()
@@ -619,7 +619,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         display = self._define_display(controller)
         self.current_media_players[controller.controller_type].pause(display)
         controller.mediabar.actions['playbackPlay'].setVisible(True)
-        controller.mediabar.actions['playbackStop'].setVisible(True)
+        controller.mediabar.actions['playbackStop'].setDisabled(False)
         controller.mediabar.actions['playbackPause'].setVisible(False)
 
     def media_stop_msg(self, msg):
@@ -645,7 +645,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             self.current_media_players[controller.controller_type].set_visible(display, False)
             controller.seek_slider.setSliderPosition(0)
             controller.mediabar.actions['playbackPlay'].setVisible(True)
-            controller.mediabar.actions['playbackStop'].setVisible(False)
+            controller.mediabar.actions['playbackStop'].setDisabled(True)
             controller.mediabar.actions['playbackPause'].setVisible(False)
 
     def media_volume_msg(self, msg):
