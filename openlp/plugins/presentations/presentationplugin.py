@@ -44,7 +44,8 @@ __default_settings__ = {'presentations/override app': QtCore.Qt.Unchecked,
                         'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
                         'presentations/Pdf': QtCore.Qt.Checked,
                         'presentations/presentations files': [],
-                        'presentations/thumbnail_scheme': ''
+                        'presentations/thumbnail_scheme': '',
+                        'presentations/powerpoint slide click advance': QtCore.Qt.Unchecked
                         }
 
 
