@@ -126,6 +126,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
                 instance = PowerpointDocument(self.mock_controller, self.mock_presentation)
                 instance.presentation = MagicMock()
                 instance.presentation.SlideShowWindow.View.GotoSlide = MagicMock(side_effect=pywintypes.com_error('1'))
+                instance.index_map[42] = 42
 
                 # WHEN: Calling goto_slide which will throw an exception
                 instance.goto_slide(42)
