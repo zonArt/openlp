@@ -489,6 +489,7 @@ class TestSongSelectForm(TestCase, TestMixin):
                                            'Your song has been imported, would you like to import more songs?',
                                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
         mocked_on_back_button_clicked.assert_called_with()
+        self.assertIsNone(ssform.song)
 
     @patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.question')
     @patch('openlp.plugins.songs.forms.songselectform.translate')
@@ -514,6 +515,7 @@ class TestSongSelectForm(TestCase, TestMixin):
                                            'Your song has been imported, would you like to import more songs?',
                                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
         mocked_done.assert_called_with(QtGui.QDialog.Accepted)
+        self.assertIsNone(ssform.song)
 
     def on_back_button_clicked_test(self):
         """

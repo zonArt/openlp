@@ -22,17 +22,16 @@
 """
 Package to test the openlp.core.__init__ package.
 """
-from optparse import Values
 import os
-import sys
-
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core import OpenLP, parse_options
 from openlp.core.common import Settings
+
 from tests.helpers.testmixin import TestMixin
+from tests.functional import MagicMock, patch, call
 
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
@@ -115,72 +114,59 @@ class TestInit(TestCase, TestMixin):
             self.assertEqual(Settings().value('core/application version'), '2.2.0', 'Version should be upgraded!')
             self.assertEqual(mocked_question.call_count, 1, 'A question should have been asked!')
 
-    def parse_options_short_options_test(self):
+    @patch(u'openlp.core.OptionParser')
+    def parse_options_test(self, MockedOptionParser):
         """
-        Test that parse_options parses short options correctly
+        Test that parse_options sets up OptionParser correctly and parses the options given
         """
-        # GIVEN: A list of valid short options
+        # GIVEN: A list of valid options and a mocked out OptionParser object
         options = ['-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
+        mocked_parser = MagicMock()
+        MockedOptionParser.return_value = mocked_parser
+        expected_calls = [
+            call('-e', '--no-error-form', dest='no_error_form', action='store_true',
+                 help='Disable the error notification form.'),
+            call('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
+                 help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".'),
+            call('-p', '--portable', dest='portable', action='store_true',
+                 help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).'),
+            call('-d', '--dev-version', dest='dev_version', action='store_true',
+                 help='Ignore the version file and pull the version directly from Bazaar'),
+            call('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
+        ]
 
         # WHEN: Calling parse_options
-        results = parse_options(options)
+        parse_options(options)
 
         # THEN: A tuple should be returned with the parsed options and left over options
-        self.assertEqual(results, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
-                                           'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))
+        MockedOptionParser.assert_called_with(usage='Usage: %prog [options] [qt-options]')
+        self.assertEquals(expected_calls, mocked_parser.add_option.call_args_list)
+        mocked_parser.parse_args.assert_called_with(options)
 
-    def parse_options_valid_argv_short_options_test(self):
+    @patch(u'openlp.core.OptionParser')
+    def parse_options_from_sys_argv_test(self, MockedOptionParser):
         """
-        Test that parse_options parses valid short options correctly when passed through sys.argv
+        Test that parse_options sets up OptionParser correctly and parses sys.argv
         """
-        # GIVEN: A list of valid options
-        options = ['openlp.py', '-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
-
-        # WHEN: Passing in the options through sys.argv and calling parse_options with None
-        with patch.object(sys, 'argv', options):
-            results = parse_options(None)
-
-        # THEN: parse_options should return a tuple of valid options and of left over options that OpenLP does not use
-        self.assertEqual(results, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
-                                           'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))
-
-    def test_parse_options_valid_long_options(self):
-        """
-        Test that parse_options parses valid long options correctly
-        """
-        # GIVEN: A list of valid options
-        options = ['--no-error-form', 'extra', '--log-level', 'debug', 'qt', '--portable', '--dev-version', 'args',
-                   '--style=style']
+        # GIVEN: A list of valid options and a mocked out OptionParser object
+        mocked_parser = MagicMock()
+        MockedOptionParser.return_value = mocked_parser
+        expected_calls = [
+            call('-e', '--no-error-form', dest='no_error_form', action='store_true',
+                 help='Disable the error notification form.'),
+            call('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
+                 help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".'),
+            call('-p', '--portable', dest='portable', action='store_true',
+                 help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).'),
+            call('-d', '--dev-version', dest='dev_version', action='store_true',
+                 help='Ignore the version file and pull the version directly from Bazaar'),
+            call('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
+        ]
 
         # WHEN: Calling parse_options
-        results = parse_options(options)
+        parse_options([])
 
-        # THEN: parse_options should return a tuple of valid options and of left over options that OpenLP does not use
-        self.assertEqual(results, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
-                                           'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))
-
-    def test_parse_options_help_option(self):
-        """
-        Test that parse_options raises an SystemExit exception when called with invalid options
-        """
-        # GIVEN: The --help option
-        options = ['--help']
-
-        # WHEN: Calling parse_options
-        # THEN: parse_options should raise an SystemExit exception with exception code 0
-        with self.assertRaises(SystemExit) as raised_exception:
-            parse_options(options)
-        self.assertEqual(raised_exception.exception.code, 0)
-
-    def test_parse_options_invalid_option(self):
-        """
-        Test that parse_options raises an SystemExit exception when called with invalid options
-        """
-        # GIVEN: A list including invalid options
-        options = ['-t']
-
-        # WHEN: Calling parse_options
-        # THEN: parse_options should raise an SystemExit exception with exception code 2
-        with self.assertRaises(SystemExit) as raised_exception:
-            parse_options(options)
-        self.assertEqual(raised_exception.exception.code, 2)
+        # THEN: A tuple should be returned with the parsed options and left over options
+        MockedOptionParser.assert_called_with(usage='Usage: %prog [options] [qt-options]')
+        self.assertEquals(expected_calls, mocked_parser.add_option.call_args_list)
+        mocked_parser.parse_args.assert_called_with()
