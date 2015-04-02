@@ -145,7 +145,8 @@ class PresentationTab(SettingsTab):
                 powerpoint_available = True
         self.override_app_check_box.setChecked(Settings().value(self.settings_section + '/override app'))
         # Load Powerpoint settings
-        self.ppt_slide_click_check_box.setChecked(Settings().value(self.settings_section + '/powerpoint slide click advance'))
+        self.ppt_slide_click_check_box.setChecked(Settings().value(self.settings_section +
+                                                                   '/powerpoint slide click advance'))
         self.ppt_slide_click_check_box.setEnabled(powerpoint_available)
         # load pdf-program settings
         enable_pdf_program = Settings().value(self.settings_section + '/enable_pdf_program')

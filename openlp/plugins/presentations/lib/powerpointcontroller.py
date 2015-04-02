@@ -39,9 +39,8 @@ if is_win():
     import pywintypes
 
 from openlp.core.lib import ScreenList
-from openlp.core.common import Registry
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, translate
-from openlp.core.common import trace_error_handler
+from openlp.core.common import trace_error_handler, Registry
 from .presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
@@ -375,15 +374,6 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('get_slide_count')
         return self.slide_count
-        ret = 0
-        try:
-            ret = self.presentation.Slides.Count
-        except (AttributeError, pywintypes.com_error) as e:
-            log.exception('Caught exception while in get_slide_count')
-            log.exception(e)
-            trace_error_handler(log)
-            self.show_error_msg()
-        return ret
 
     def goto_slide(self, slide_no):
         """
@@ -393,10 +383,12 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('goto_slide')
         try:
-            if Settings().value('presentations/powerpoint slide click advance') and self.get_slide_number() == self.index_map[slide_no]:
+            if Settings().value('presentations/powerpoint slide click advance') \
+                    and self.get_slide_number() == self.index_map[slide_no]:
                 click_index = self.presentation.SlideShowWindow.View.GetClickIndex()
                 click_count = self.presentation.SlideShowWindow.View.GetClickCount()
-                log.debug('We are already on this slide - go to next effect if any left, idx: %d, count: %d' % (click_index, click_count))
+                log.debug('We are already on this slide - go to next effect if any left, idx: %d, count: %d'
+                          % (click_index, click_count))
                 if click_index < click_count:
                     self.next_step()
             else:
