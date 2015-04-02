@@ -66,8 +66,11 @@ def check_directory_exists(directory, do_not_log=False):
     try:
         if not os.path.exists(directory):
             os.makedirs(directory)
-    except IOError:
-        pass
+    except IOError as e:
+        if not do_not_log:
+            log.exception('failed yo check/create if directury exists')
+            log.exception(e)
+        #pass
 
 
 def get_frozen_path(frozen_option, non_frozen_option):
