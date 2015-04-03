@@ -29,6 +29,7 @@ from unittest import TestCase
 from tempfile import mkdtemp
 
 from PyQt4 import QtGui
+from tempfile import mkdtemp
 
 from openlp.core.ui import ThemeManager
 from openlp.core.common import Registry
@@ -44,6 +45,13 @@ class TestThemeManager(TestCase):
         Set up the tests
         """
         Registry.create()
+        self.temp_folder = mkdtemp()
+
+    def tearDown(self):
+        """
+        Clean up
+        """
+        shutil.rmtree(self.temp_folder)
 
     def export_theme_test(self):
         """
@@ -130,6 +138,27 @@ class TestThemeManager(TestCase):
 
             # THEN: The mocked_copyfile should not have been called
             self.assertTrue(mocked_copyfile.called, 'shutil.copyfile should be called')
+
+    def write_theme_special_char_name_test(self):
+        """
+        Test that we can save themes with special characters in the name
+        """
+        # GIVEN: A new theme manager instance, with mocked theme and thememanager-attributes.
+        theme_manager = ThemeManager(None)
+        theme_manager.old_background_image = None
+        theme_manager.generate_and_save_image = MagicMock()
+        theme_manager.path = self.temp_folder
+        mocked_theme = MagicMock()
+        mocked_theme.theme_name = 'theme 愛 name'
+        mocked_theme.extract_formatted_xml = MagicMock()
+        mocked_theme.extract_formatted_xml.return_value = 'fake theme 愛 XML'.encode()
+
+        # WHEN: Calling _write_theme with a theme with a name with special characters in it
+        theme_manager._write_theme(mocked_theme, None, None)
+
+        # THEN: It should have been created
+        self.assertTrue(os.path.exists(os.path.join(self.temp_folder, 'theme 愛 name', 'theme 愛 name.xml')),
+                        'Theme with special characters should have been created!')
 
     def over_write_message_box_yes_test(self):
         """

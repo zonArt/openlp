@@ -55,7 +55,7 @@ The XML of an `OpenLyrics <http://openlyrics.info/>`_  song looks like this::
         </lyrics>
     </song>
 """
-import cgi
+import html
 import logging
 import re
 
@@ -318,7 +318,7 @@ class OpenLyrics(object):
             if 'lang' in verse[0]:
                 verse_element.set('lang', verse[0]['lang'])
             # Create a list with all "optional" verses.
-            optional_verses = cgi.escape(verse[1])
+            optional_verses = html.escape(verse[1])
             optional_verses = optional_verses.split('\n[---]\n')
             start_tags = ''
             end_tags = ''

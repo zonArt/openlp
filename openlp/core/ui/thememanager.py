@@ -354,8 +354,12 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         delete_file(os.path.join(self.path, thumb))
         delete_file(os.path.join(self.thumb_path, thumb))
         try:
-            encoding = get_filesystem_encoding()
-            shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
+            # Windows is always unicode, so no need to encode filenames
+            if is_win():
+                shutil.rmtree(os.path.join(self.path, theme))
+            else:
+                encoding = get_filesystem_encoding()
+                shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError as os_error:
             shutil.Error = os_error
             self.log_exception('Error deleting theme %s' % theme)
@@ -567,7 +571,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 check_directory_exists(os.path.dirname(full_name))
                 if os.path.splitext(name)[1].lower() == '.xml':
                     file_xml = str(theme_zip.read(name), 'utf-8')
-                    out_file = open(full_name, 'w')
+                    out_file = open(full_name, 'w', encoding='utf-8')
                     out_file.write(file_xml)
                 else:
                     out_file = open(full_name, 'wb')
@@ -645,8 +649,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             delete_file(self.old_background_image)
         out_file = None
         try:
-            out_file = open(theme_file, 'w')
-            out_file.write(theme_pretty_xml.decode('UTF-8'))
+            out_file = open(theme_file, 'w', encoding='utf-8')
+            out_file.write(theme_pretty_xml.decode('utf-8'))
         except IOError:
             self.log_exception('Saving theme to file failed')
         finally:
