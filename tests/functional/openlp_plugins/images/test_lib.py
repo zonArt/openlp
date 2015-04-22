@@ -97,8 +97,8 @@ class TestImageMediaItem(TestCase):
             self.media_item.save_new_images_list(image_list)
 
             # THEN: The save_object() method should not have been called
-            assert self.media_item.manager.save_object.call_count == 0, \
-                'The save_object() method should not have been called'
+            self.assertEquals(self.media_item.manager.save_object.call_count, 0,
+                              'The save_object() method should not have been called')
 
     def save_new_images_list_single_image_with_reload_test(self):
         """
@@ -114,7 +114,7 @@ class TestImageMediaItem(TestCase):
             self.media_item.save_new_images_list(image_list, reload_list=True)
 
             # THEN: load_full_list() should have been called
-            assert mocked_load_full_list.call_count == 1, 'load_full_list() should have been called'
+            self.assertEquals(mocked_load_full_list.call_count, 1, 'load_full_list() should have been called')
 
             # CLEANUP: Remove added attribute from ImageFilenames
             delattr(ImageFilenames, 'filename')
@@ -132,7 +132,7 @@ class TestImageMediaItem(TestCase):
             self.media_item.save_new_images_list(image_list, reload_list=False)
 
             # THEN: load_full_list() should not have been called
-            assert mocked_load_full_list.call_count == 0, 'load_full_list() should not have been called'
+            self.assertEquals(mocked_load_full_list.call_count, 0, 'load_full_list() should not have been called')
 
     def save_new_images_list_multiple_images_test(self):
         """
@@ -147,8 +147,8 @@ class TestImageMediaItem(TestCase):
             self.media_item.save_new_images_list(image_list, reload_list=False)
 
             # THEN: load_full_list() should not have been called
-            assert self.media_item.manager.save_object.call_count == 3, \
-                'load_full_list() should have been called three times'
+            self.assertEquals(self.media_item.manager.save_object.call_count, 3,
+                              'load_full_list() should have been called three times')
 
     def save_new_images_list_other_objects_in_list_test(self):
         """
@@ -163,8 +163,8 @@ class TestImageMediaItem(TestCase):
             self.media_item.save_new_images_list(image_list, reload_list=False)
 
             # THEN: load_full_list() should not have been called
-            assert self.media_item.manager.save_object.call_count == 2, \
-                'load_full_list() should have been called only once'
+            self.assertEquals(self.media_item.manager.save_object.call_count, 2,
+                              'load_full_list() should have been called only once')
 
     def on_reset_click_test(self):
         """
@@ -185,22 +185,22 @@ class TestImageMediaItem(TestCase):
         Test that recursively_delete_group() works
         """
         # GIVEN: An ImageGroups object and mocked functions
-        with patch('openlp.core.utils.delete_file') as mocked_delete_file:
+        with patch('openlp.plugins.images.lib.mediaitem.delete_file') as mocked_delete_file:
             ImageFilenames.group_id = 1
             ImageGroups.parent_id = 1
             self.media_item.manager = MagicMock()
             self.media_item.manager.get_all_objects.side_effect = self._recursively_delete_group_side_effect
-            self.media_item.service_path = ""
+            self.media_item.service_path = ''
             test_group = ImageGroups()
             test_group.id = 1
 
             # WHEN: recursively_delete_group() is called
             self.media_item.recursively_delete_group(test_group)
 
-            # THEN:
-            assert mocked_delete_file.call_count == 0, 'delete_file() should not be called'
-            assert self.media_item.manager.delete_object.call_count == 7, \
-                'manager.delete_object() should be called exactly 7 times'
+            # THEN: delete_file() should have been called 12 times and manager.delete_object() 7 times.
+            self.assertEquals(mocked_delete_file.call_count, 12, 'delete_file() should have been called 12 times')
+            self.assertEquals(self.media_item.manager.delete_object.call_count, 7,
+                              'manager.delete_object() should be called exactly 7 times')
 
             # CLEANUP: Remove added attribute from Image Filenames and ImageGroups
             delattr(ImageFilenames, 'group_id')
@@ -230,3 +230,28 @@ class TestImageMediaItem(TestCase):
             returned_object1.id = 1
             return [returned_object1]
         return []
+
+    def on_delete_click_test(self):
+        """
+        Test that on_delete_click() works
+        """
+        # GIVEN: An ImageGroups object and mocked functions
+        with patch('openlp.plugins.images.lib.mediaitem.delete_file') as mocked_delete_file, \
+                patch('openlp.plugins.images.lib.mediaitem.check_item_selected') as mocked_check_item_selected:
+            mocked_check_item_selected.return_value = True
+            test_image = ImageFilenames()
+            test_image.id = 1
+            test_image.group_id = 1
+            test_image.filename = 'imagefile.png'
+            self.media_item.manager = MagicMock()
+            self.media_item.service_path = ''
+            self.media_item.list_view = MagicMock()
+            mocked_row_item = MagicMock()
+            mocked_row_item.data.return_value = test_image
+            self.media_item.list_view.selectedItems.return_value = [mocked_row_item]
+
+            # WHEN: Calling on_delete_click
+            self.media_item.on_delete_click()
+
+            # THEN: delete_file should have been called twice
+            self.assertEquals(mocked_delete_file.call_count, 2, 'delete_file() should have been called twice')
