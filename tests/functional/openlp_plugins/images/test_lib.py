@@ -248,6 +248,7 @@ class TestImageMediaItem(TestCase):
             self.media_item.list_view = MagicMock()
             mocked_row_item = MagicMock()
             mocked_row_item.data.return_value = test_image
+            mocked_row_item.text.return_value = ''
             self.media_item.list_view.selectedItems.return_value = [mocked_row_item]
 
             # WHEN: Calling on_delete_click
