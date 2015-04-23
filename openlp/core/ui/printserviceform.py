@@ -193,13 +193,15 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties)
             # Add the text of the service item.
             if item.is_text():
                 verse_def = None
+                verse_html = None
                 for slide in item.get_frames():
-                    if not verse_def or verse_def != slide['verseTag']:
+                    if not verse_def or verse_def != slide['verseTag'] or verse_html == slide['html']:
                         text_div = self._add_element('div', parent=div, classId='itemText')
                     else:
                         self._add_element('br', parent=text_div)
                     self._add_element('span', slide['html'], text_div)
                     verse_def = slide['verseTag']
+                    verse_html = slide['html']
                 # Break the page before the div element.
                 if index != 0 and self.page_break_after_text.isChecked():
                     div.set('class', 'item newPage')

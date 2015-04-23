@@ -91,7 +91,10 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         self.on_new_prompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.replace_action.setText(UiStrings().ReplaceBG)
-        self.replace_action.setToolTip(UiStrings().ReplaceLiveBG)
+        if 'webkit' in get_media_players()[0]:
+            self.replace_action.setToolTip(UiStrings().ReplaceLiveBG)
+        else:
+            self.replace_action.setToolTip(UiStrings().ReplaceLiveBGDisabled)
         self.reset_action.setText(UiStrings().ResetBG)
         self.reset_action.setToolTip(UiStrings().ResetLiveBG)
         self.automatic = UiStrings().Automatic
@@ -139,6 +142,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         # Replace backgrounds do not work at present so remove functionality.
         self.replace_action = self.toolbar.add_toolbar_action('replace_action', icon=':/slides/slide_blank.png',
                                                               triggers=self.on_replace_click)
+        if 'webkit' not in get_media_players()[0]:
+            self.replace_action.setDisabled(True)
         self.reset_action = self.toolbar.add_toolbar_action('reset_action', icon=':/system/system_close.png',
                                                             visible=False, triggers=self.on_reset_click)
         self.media_widget = QtGui.QWidget(self)
