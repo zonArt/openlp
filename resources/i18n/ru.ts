@@ -33,7 +33,7 @@
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="199"/>
         <source>&lt;strong&gt;Alerts Plugin&lt;/strong&gt;&lt;br /&gt;The alert plugin controls the displaying of alerts on the display screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Alerts Plugin&lt;/strong&gt;&lt;br /&gt;Плагин оповещений управляет выводом на экран оповещений.</translation>
     </message>
 </context>
 <context>
@@ -87,8 +87,8 @@
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="178"/>
         <source>You have not entered a parameter to be replaced.
 Do you want to continue anyway?</source>
-        <translation>Следующих изображений больше не существуют: %s
-Добавить остальные изображения?</translation>
+        <translation>Вы не указали параметры для замены.
+Все равно продолжить?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
@@ -106,7 +106,8 @@ Do you want to continue anyway?</source>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="107"/>
         <source>You haven&apos;t specified any text for your alert. 
 Please type in some text before clicking New.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы не указали текста для вашего оповещения. 
+Пожалуйста введите текст перед добавлением.</translation>
     </message>
 </context>
 <context>
@@ -659,37 +660,37 @@ Please type in some text before clicking New.</source>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>:</source>
         <comment>Verse identifier e.g. Genesis 1 : 1 = Genesis Chapter 1 Verse 1</comment>
-        <translation type="unfinished"></translation>
+        <translation>:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>v</source>
         <comment>Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1</comment>
-        <translation type="unfinished"></translation>
+        <translation>с</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>V</source>
         <comment>Verse identifier e.g. Genesis 1 V 1 = Genesis Chapter 1 Verse 1</comment>
-        <translation type="unfinished"></translation>
+        <translation>С</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>verse</source>
         <comment>Verse identifier e.g. Genesis 1 verse 1 = Genesis Chapter 1 Verse 1</comment>
-        <translation type="unfinished"></translation>
+        <translation>Стих</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>verses</source>
         <comment>Verse identifier e.g. Genesis 1 verses 1 - 2 = Genesis Chapter 1 Verses 1 to 2</comment>
-        <translation type="unfinished"></translation>
+        <translation>Стихи</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="186"/>
         <source>-</source>
         <comment>range identifier e.g. Genesis 1 verse 1 - 2 = Genesis Chapter 1 Verses 1 To 2</comment>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="186"/>
@@ -701,19 +702,19 @@ Please type in some text before clicking New.</source>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
         <source>,</source>
         <comment>connecting identifier e.g. Genesis 1 verse 1 - 2, 4 - 5 = Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5</comment>
-        <translation type="unfinished"></translation>
+        <translation>,</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
         <source>and</source>
         <comment>connecting identifier e.g. Genesis 1 verse 1 - 2 and 4 - 5 = Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5</comment>
-        <translation type="unfinished"></translation>
+        <translation>и</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="196"/>
         <source>end</source>
         <comment>ending identifier e.g. Genesis 1 verse 1 - end = Genesis Chapter 1 Verses 1 To The Last Verse</comment>
-        <translation type="unfinished"></translation>
+        <translation>окончание</translation>
     </message>
 </context>
 <context>
@@ -919,7 +920,7 @@ search results and on display:</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="157"/>
         <source>Show verse numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать номера стихов</translation>
     </message>
 </context>
 <context>
@@ -1254,27 +1255,28 @@ It is not possible to customize the Book Names.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="634"/>
         <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Регистрация Библии. Пожалуйста, помните о том, что стихи 
+будут загружены по требованию и необходимо наличие доступа в сеть.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
         <source>Click to download bible list</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите чтобы загрузить список Библий</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="333"/>
         <source>Download bible list</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка списка Библий</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
         <source>Error during download</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибки в процессе загрузки</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
         <source>An error occurred while downloading the list of bibles from %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Произошла ошибка при загрузке списка библии из %s.</translation>
     </message>
 </context>
 <context>
@@ -1408,7 +1410,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="80"/>
         <source>Incorrect Bible file type supplied. This looks like a Zefania XML bible, please use the Zefania import option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправильный тип файла Библии. Он выглядит как Zefania XML Библия, пожалуйста, используйте вариант импорта Zefania.</translation>
     </message>
 </context>
 <context>
@@ -1587,7 +1589,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/bibles/lib/zefania.py" line="111"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправильный тип файла Библии. Zefania Библии могут быть сжаты. Вы должны распаковать их перед импортом.</translation>
     </message>
 </context>
 <context>
@@ -1604,64 +1606,64 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <location filename="openlp/plugins/custom/customplugin.py" line="99"/>
         <source>Custom Slide</source>
         <comment>name singular</comment>
-        <translation>Специальный слайд</translation>
+        <translation>Произвольный слайд</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="100"/>
         <source>Custom Slides</source>
         <comment>name plural</comment>
-        <translation>Слайды</translation>
+        <translation>Произвольные Слайды</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="104"/>
         <source>Custom Slides</source>
         <comment>container title</comment>
-        <translation>Слайды</translation>
+        <translation>Произвольные Слайды</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="108"/>
         <source>Load a new custom slide.</source>
-        <translation>Загрузить новый специальный слайд.</translation>
+        <translation>Загрузить новый произвольный слайд.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="109"/>
         <source>Import a custom slide.</source>
-        <translation>Импортировать специальный слайд.</translation>
+        <translation>Импортировать произвольный слайд.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="110"/>
         <source>Add a new custom slide.</source>
-        <translation>Добавить новый специальный слайд.</translation>
+        <translation>Добавить новый произвольный слайд.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="111"/>
         <source>Edit the selected custom slide.</source>
-        <translation>Изменить выбранный специальный слайд.</translation>
+        <translation>Изменить выбранный произвольный слайд.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="112"/>
         <source>Delete the selected custom slide.</source>
-        <translation>Удалить выбранный специальный слайд.</translation>
+        <translation>Удалить выбранный произвольный слайд.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="113"/>
         <source>Preview the selected custom slide.</source>
-        <translation>Просмотреть выбранный специальный слайд.</translation>
+        <translation>Просмотреть выбранный произвольный слайд.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="114"/>
         <source>Send the selected custom slide live.</source>
-        <translation>Показать выбранный специальный слайд на экран.</translation>
+        <translation>Показать выбранный произвольный слайд на экран.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="115"/>
         <source>Add the selected custom slide to the service.</source>
-        <translation>Добавить выбранный специальный слайд к порядку служения.</translation>
+        <translation>Добавить выбранный произвольный слайд в служение.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="66"/>
         <source>&lt;strong&gt;Custom Slide Plugin &lt;/strong&gt;&lt;br /&gt;The custom slide plugin provides the ability to set up custom text slides that can be displayed on the screen the same way songs are. This plugin provides greater freedom over the songs plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Плагин произвольных слайдов&lt;/strong&gt;&lt;br /&gt;Плагин произвольных слайдов дает возможность создания произвольных текстовых слайдов, который могут быть показаны подобно слайдам песен. Этот плагин дает больше свободы по сравнению с плагином песен.</translation>
     </message>
 </context>
 <context>
@@ -1679,7 +1681,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/custom/lib/customtab.py" line="62"/>
         <source>Import missing custom slides from service files</source>
-        <translation>Импортировать не найденные слайды из файла служения</translation>
+        <translation>Импортировать не найденные произвольные слайды из файла служения</translation>
     </message>
 </context>
 <context>
@@ -1687,7 +1689,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="105"/>
         <source>Edit Custom Slides</source>
-        <translation>Редактор специальных слайдов</translation>
+        <translation>Редактор произвольных слайдов</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="106"/>
@@ -1756,12 +1758,12 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
 <context>
     <name>CustomPlugin.MediaItem</name>
     <message numerus="yes">
-        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="182"/>
+        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="186"/>
         <source>Are you sure you want to delete the %n selected custom slide(s)?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Вы уверены что хотите удалить %n выбранный произвольный слайд?</numerusform>
+            <numerusform>Вы уверены что хотите удалить %n выбранных произвольных слайдов?</numerusform>
+            <numerusform>Вы уверены что хотите удалить %n выбранных произвольных слайдов?</numerusform>
         </translation>
     </message>
 </context>
@@ -1836,7 +1838,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/images/forms/addgroupdialog.py" line="56"/>
         <source>Parent group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Родительская группа:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/addgroupdialog.py" line="57"/>
@@ -1849,12 +1851,12 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation>Вы должны ввести название группы</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="639"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="641"/>
         <source>Could not add the new group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не возможно добавить новую группу.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="642"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="644"/>
         <source>This group already exists.</source>
         <translation>Эта группа уже существует.</translation>
     </message>
@@ -1864,17 +1866,17 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/images/forms/choosegroupdialog.py" line="81"/>
         <source>Select Image Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите группу изображений</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/choosegroupdialog.py" line="82"/>
         <source>Add images to group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить изображения в группу:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/choosegroupdialog.py" line="83"/>
         <source>No group</source>
-        <translation type="unfinished"></translation>
+        <translation>Без группы</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/choosegroupdialog.py" line="84"/>
@@ -1903,34 +1905,34 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation>Выбрать Изображение(я)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="661"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="663"/>
         <source>You must select an image to replace the background with.</source>
         <translation>Вы должны выбрать изображение, которым следует заменить фон.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="586"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
         <source>Missing Image(s)</source>
         <translation>Отсутствует изображение(я)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="580"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="582"/>
         <source>The following image(s) no longer exist: %s</source>
         <translation>Следующие изображения больше не существуют: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="586"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>Следующих изображений больше не существуют: %s
 Добавить остальные изображения?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="678"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="680"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>Возникла проблема при замене Фона проектора, файл &quot;%s&quot; больше не существует.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="674"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="676"/>
         <source>There was no display item to amend.</source>
         <translation>Отсутствует объект для изменений.</translation>
     </message>
@@ -1940,19 +1942,19 @@ Do you want to add the other images anyway?</source>
         <translation>-- Группа верхнего уровня --</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="220"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="221"/>
         <source>You must select an image or group to delete.</source>
         <translation>Вы должны выбрать изображение или группу для удаления.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="236"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
         <source>Remove group</source>
         <translation>Удалить группу</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="236"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
         <source>Are you sure you want to remove &quot;%s&quot; and everything in it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить &quot;%s&quot; и все в нем?</translation>
     </message>
 </context>
 <context>
@@ -1968,12 +1970,12 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/core/ui/media/phononplayer.py" line="258"/>
         <source>Phonon is a media player which interacts with the operating system to provide media capabilities.</source>
-        <translation type="unfinished"></translation>
+        <translation>Phonon это медиа плеер, который взаимодействует с операционной системой, чтобы предоставить возможности медиа.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/webkitplayer.py" line="392"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудио</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/webkitplayer.py" line="393"/>
@@ -1981,14 +1983,14 @@ Do you want to add the other images anyway?</source>
         <translation>Видео</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="333"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="328"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>VLC - это внешний плеер, который поддерживает множество различных форматов.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/webkitplayer.py" line="390"/>
         <source>Webkit is a media player which runs inside a web browser. This player allows text over video to be rendered.</source>
-        <translation type="unfinished"></translation>
+        <translation>Webkit является медиа-плеером, который работает в веб-браузере. Этот плеер позволяет выводить текст поверх видео на экране.</translation>
     </message>
 </context>
 <context>
@@ -2057,32 +2059,32 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="183"/>
         <source>Select Media Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите Медиа клип</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="184"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Источник</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="185"/>
         <source>Media path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Путь к Медиа:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="186"/>
         <source>Select drive from list</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите диск из списка</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="188"/>
         <source>Load disc</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузить диск</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="189"/>
         <source>Track Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Описание Трека</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="190"/>
@@ -2092,52 +2094,52 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="191"/>
         <source>Audio track:</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудио трек</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="192"/>
         <source>Subtitle track:</source>
-        <translation type="unfinished"></translation>
+        <translation>Трек субтитров</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="200"/>
         <source>HH:mm:ss.z</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧЧ:мм:сс.м</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="194"/>
         <source>Clip Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Диапазон клипа</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="195"/>
         <source>Start point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="197"/>
         <source>Set start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Укажите Старт</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="198"/>
         <source>Jump to start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти к старту</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="199"/>
         <source>End point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Окончание:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="201"/>
         <source>Set end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Установите Окончание</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="202"/>
         <source>Jump to end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти к Окончанию</translation>
     </message>
 </context>
 <context>
@@ -2145,67 +2147,67 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="202"/>
         <source>No path was given</source>
-        <translation type="unfinished"></translation>
+        <translation>Не указан путь</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="208"/>
         <source>Given path does not exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Указанный путь не существует</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="225"/>
         <source>An error happened during initialization of VLC player</source>
-        <translation type="unfinished"></translation>
+        <translation>Произошла ошибка при инициализации VLC плеера</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="246"/>
         <source>VLC player failed playing the media</source>
-        <translation type="unfinished"></translation>
+        <translation>VLC плеер не смог воспроизвести медиа</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="571"/>
         <source>CD not loaded correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>CD не загружен корректно</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="571"/>
         <source>The CD was not loaded correctly, please re-load and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>CD не был загружен корректно, пожалуйста, перезагрузите его и попытайтесь снова.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="582"/>
         <source>DVD not loaded correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>DVD не загружен корректно</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="582"/>
         <source>The DVD was not loaded correctly, please re-load and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>DVD не был загружен корректно, пожалуйста, перезагрузите его и попытайтесь снова.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="589"/>
         <source>Set name of mediaclip</source>
-        <translation type="unfinished"></translation>
+        <translation>Укажите имя медиаклипа</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="589"/>
         <source>Name of mediaclip:</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя медиаклипа:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="599"/>
         <source>Enter a valid name or cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите правильное имя или отмените</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="605"/>
         <source>Invalid character</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный символ</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="605"/>
         <source>The name of the mediaclip must not contain the character &quot;:&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Название медиа-клипа не должны содержать символ &quot;:&quot;</translation>
     </message>
 </context>
 <context>
@@ -2216,37 +2218,37 @@ Do you want to add the other images anyway?</source>
         <translation>Выбрать объект мультимедиа.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="326"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="331"/>
         <source>You must select a media file to delete.</source>
         <translation>Вы должны выбрать медиа-файл для удаления.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="189"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="194"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>Для замены фона вы должны выбрать мультимедиа объект.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="207"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="212"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Возникла проблема замены фона, поскольку файл &quot;%s&quot; не найден.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="251"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
         <source>Missing Media File</source>
         <translation>Отсутствует медиа-файл</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="251"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
         <source>The file %s no longer exists.</source>
         <translation>Файл %s не существует.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="288"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="293"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Videos (%s);;Audio (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="203"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="208"/>
         <source>There was no display item to amend.</source>
         <translation>Отсутствует объект для изменений.</translation>
     </message>
@@ -2256,42 +2258,42 @@ Do you want to add the other images anyway?</source>
         <translation>Не поддерживаемый файл</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="99"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="102"/>
         <source>Use Player:</source>
         <translation>Использовать плеер:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="500"/>
         <source>VLC player required</source>
-        <translation type="unfinished"></translation>
+        <translation>Необходим VLC плеер</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="500"/>
         <source>VLC player required for playback of optical devices</source>
-        <translation type="unfinished"></translation>
+        <translation>VLC плеер необходим для проигрывания оптических устройств</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="127"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="130"/>
         <source>Load CD/DVD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="128"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="234"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="239"/>
         <source>The optical disc %s is no longer available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Оптический диск %s больше не доступен.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
         <source>Mediaclip already saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
         <source>This mediaclip has already been saved</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2314,7 +2316,7 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="427"/>
         <source>&amp;Projector Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Управление проектором</translation>
     </message>
 </context>
 <context>
@@ -2356,12 +2358,12 @@ Should OpenLP upgrade now?</source>
     <message>
         <location filename="openlp/core/__init__.py" line="226"/>
         <source>A backup of the data folder has been created at %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Резервная копия папки с данными была создана в %s</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть</translation>
     </message>
 </context>
 <context>
@@ -2491,13 +2493,95 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"></translation>
+        <translation>Руководство проекта
+    %s
+
+Разработчики
+    %s
+
+Соучастники
+    %s
+
+Тестировщики
+    %s
+
+Packagers
+    %s
+
+Переводчики
+    Африкански (af)
+        %s
+    Чешский (cs)
+        %s
+    Датский (da)
+        %s
+    Немецкий (de)
+        %s
+    Греческий (el)
+        %s
+    Английский, United Kingdom (en_GB)
+        %s
+    Английский, South Africa (en_ZA)
+        %s
+    Испанский (es)
+        %s
+    Эстонский (et)
+        %s
+    Финский (fi)
+        %s
+    Французский (fr)
+        %s
+    Венгерский (hu)
+        %s
+    Индонезийский (id)
+        %s
+    Японский (ja)
+        %s
+    Norwegian Bokmål (nb)
+        %s
+    Голландский (nl)
+        %s
+    Польский (pl)
+        %s
+    Португальский, Brazil (pt_BR)
+        %s
+    Русский (ru)
+        %s
+    Швецкий (sv)
+        %s
+    Тамильский (Sri-Lanka) (ta_LK)
+        %s
+    Китайский (China) (zh_CN)
+        %s
+
+Документация
+    %s
+
+Построен с
+    Python: http://www.python.org/
+    Qt4: http://qt.io
+    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro
+    Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/
+    MuPDF: http://www.mupdf.com/
+
+Последняя признательность
+    Ибо так возлюбил Бог мир, что отдал
+    Сына Своего Единородного, дабы всякий
+    верующий в Него, не погиб, но имел
+    жизнь вечную.&quot; -- Иоанна 3:16
+
+    И последняя, но не менее важная признательность
+    Богу Отцу, который послал Своего Сына на смерть на
+    кресте, чтобы освободить нас от греха. Мы предоставляем
+    Вам эту программу без платы потому, что Он освободил
+    нас, не требуя платы.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="270"/>
         <source>Copyright &#xa9; 2004-2015 %s
 Portions copyright &#xa9; 2004-2015 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Авторские права © 2004-2015 %s
+Частичные авторские права © 2004-2015 %s</translation>
     </message>
 </context>
 <context>
@@ -2795,7 +2879,13 @@ The location you have selected
 %s
 
 appears to contain OpenLP data files. Do you wish to replace these files with the current data files?</source>
-        <translation type="unfinished"></translation>
+        <translation>ПРЕДУПРЕЖДЕНИЕ:
+
+Место, которые вы выбрали
+
+%s
+
+по-видимому, содержат файлы данных OpenLP. Вы хотите заменить эти файлы текущими файлами данных?</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="638"/>
@@ -2821,7 +2911,7 @@ appears to contain OpenLP data files. Do you wish to replace these files with th
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="302"/>
         <source>RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="303"/>
@@ -2831,152 +2921,152 @@ appears to contain OpenLP data files. Do you wish to replace these files with th
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="304"/>
         <source>Digital</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="305"/>
         <source>Storage</source>
-        <translation type="unfinished"></translation>
+        <translation>Storage</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="306"/>
         <source>Network</source>
-        <translation type="unfinished"></translation>
+        <translation>Network</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="308"/>
         <source>RGB 1</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="309"/>
         <source>RGB 2</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="310"/>
         <source>RGB 3</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="311"/>
         <source>RGB 4</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="312"/>
         <source>RGB 5</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="313"/>
         <source>RGB 6</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="314"/>
         <source>RGB 7</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="315"/>
         <source>RGB 8</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="316"/>
         <source>RGB 9</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="317"/>
         <source>Video 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="318"/>
         <source>Video 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="319"/>
         <source>Video 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="320"/>
         <source>Video 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="321"/>
         <source>Video 5</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="322"/>
         <source>Video 6</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="323"/>
         <source>Video 7</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="324"/>
         <source>Video 8</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="325"/>
         <source>Video 9</source>
-        <translation type="unfinished"></translation>
+        <translation>Video 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="326"/>
         <source>Digital 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 1</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="327"/>
         <source>Digital 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 2</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="328"/>
         <source>Digital 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 3</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="329"/>
         <source>Digital 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 4</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="330"/>
         <source>Digital 5</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 5</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="331"/>
         <source>Digital 6</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 6</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="332"/>
         <source>Digital 7</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 7</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="333"/>
         <source>Digital 8</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 8</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="334"/>
         <source>Digital 9</source>
-        <translation type="unfinished"></translation>
+        <translation>Digital 9</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="335"/>
@@ -3144,8 +3234,8 @@ Version: %s
 --- Library Versions ---
 %s
 </source>
-        <translation>**Сообщение об ошибке OpenLP**
-Версия: %s
+        <translation>**OpenLP Bug Report**
+Version: %s
 
 --- Details of the Exception. ---
 
@@ -3176,7 +3266,7 @@ Version: %s
 %s
 </source>
         <comment>Please add the information that bug reports are favoured written in English.</comment>
-        <translation>*Сообщение об ошибке OpenLP*
+        <translation>*OpenLP Bug Report*
 Version: %s
 
 --- Details of the Exception. ---
@@ -3383,7 +3473,7 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
         <source>Custom Slides</source>
-        <translation>Слайды</translation>
+        <translation> Произвольные Слайды</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="275"/>
@@ -3410,22 +3500,22 @@ To re-run the First Time Wizard and import this sample data at a later time, che
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="564"/>
         <source>Download complete. Click the %s button to return to OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка завершена. Нажмите кнопку %s, чтобы вернуться в OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="568"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка завершена. Нажмите кнопку %s для запуска OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="573"/>
         <source>Click the %s button to return to OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите кнопку %s для возврата в OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="577"/>
         <source>Click the %s button to start OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите кнопку %s чтобы запустить OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
@@ -3435,14 +3525,16 @@ To re-run the First Time Wizard and import this sample data at a later time, che
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
         <source>This wizard will help you to configure OpenLP for initial use. Click the %s button below to start.</source>
-        <translation type="unfinished"></translation>
+        <translation>Этот мастер поможет вам настроить OpenLP для первоначального использования. Нажмите кнопку %s ниже, чтобы начать.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
         <source>
 
 To cancel the First Time Wizard completely (and not start OpenLP), click the %s button now.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Чтобы полностью отменить Мастер Начального использования (и не запускать OpenLP), нажмите кнопку %s сейчас.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="230"/>
@@ -3462,17 +3554,17 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="271"/>
         <source>Downloading and Configuring</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка и Настройка</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="272"/>
         <source>Please wait while resources are downloaded and OpenLP is configured.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, подождите пока ресурсы загрузятся и OpenLP будет настроен.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="663"/>
         <source>Network Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка сети</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="189"/>
@@ -3558,17 +3650,17 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="82"/>
         <source>Description %s already defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Описание %s уже определено.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="149"/>
         <source>Start tag %s is not valid HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальный тег %s не правильные в HTML</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="169"/>
         <source>End tag %s does not match end tag for start tag %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Завершающий тег %s не совпадает с завершающим тегом для начального тега %s</translation>
     </message>
 </context>
 <context>
@@ -4320,12 +4412,12 @@ Re-running this wizard may make changes to your current OpenLP configuration and
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="392"/>
         <source>Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Библиотека</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="460"/>
         <source>Jump to the search box of the current active plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейдите в поле поиска текущего активного плагина.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="830"/>
@@ -4346,7 +4438,7 @@ Processing has terminated and no changes have been made.</source>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="395"/>
         <source>Projector Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Управление проектором</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="428"/>
@@ -4356,7 +4448,7 @@ Processing has terminated and no changes have been made.</source>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="429"/>
         <source>Toggle the visibility of the Projector Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключите видимость Управления проектором</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
@@ -4366,12 +4458,12 @@ Processing has terminated and no changes have been made.</source>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="981"/>
         <source>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ключ &quot;%s&quot; не имеет значения по умолчанию, поэтому будет пропущен в этом экспорте.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
         <source>An error occurred while exporting the settings: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Произошла ошибка во время экспорта настроек: %s</translation>
     </message>
 </context>
 <context>
@@ -4489,12 +4581,12 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="254"/>
         <source>Unknown status</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестный статус</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="264"/>
         <source>No message</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет сообщения</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="521"/>
@@ -4512,7 +4604,7 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/media/playertab.py" line="55"/>
         <source>Players</source>
-        <translation type="unfinished"></translation>
+        <translation>Плееры</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/playertab.py" line="124"/>
@@ -4674,7 +4766,7 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="211"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ОК</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="212"/>
@@ -5183,12 +5275,12 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="644"/>
         <source>Manufacturer</source>
-        <translation type="unfinished"></translation>
+        <translation>Производитель</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="646"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Модель</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="648"/>
@@ -5253,7 +5345,7 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="808"/>
         <source>No message</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет сообщения</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="971"/>
@@ -5299,7 +5391,7 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="50"/>
         <source>Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Проектор</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="99"/>
@@ -5567,12 +5659,12 @@ Suffix not supported</source>
         <translation>Заметки к служению:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/printserviceform.py" line="221"/>
+        <location filename="openlp/core/ui/printserviceform.py" line="223"/>
         <source>Notes: </source>
         <translation>Заметки:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/printserviceform.py" line="229"/>
+        <location filename="openlp/core/ui/printserviceform.py" line="231"/>
         <source>Playing time: </source>
         <translation>Время игры:</translation>
     </message>
@@ -5659,7 +5751,7 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="246"/>
         <source>Create New &amp;Custom Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новый &amp;произвольный слайд</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="253"/>
@@ -5706,27 +5798,28 @@ Suffix not supported</source>
         <location filename="openlp/core/ui/servicemanager.py" line="764"/>
         <source>The service file you are trying to open is in an old format.
  Please save it using OpenLP 2.0.2 or greater.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл служения, который вы пытаетесь открыть, в старом формате.
+Пожалуйста, сохраните его, используя OpenLP 2.0.2 или выше.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="793"/>
         <source>This file is either corrupt or it is not an OpenLP 2 service file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Этот файл либо поврежден или это не файл служения OpenLP 2.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="895"/>
         <source>&amp;Auto Start - inactive</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Автозапуск - неактивно</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="897"/>
         <source>&amp;Auto Start - active</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Автозапуск - активно</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="984"/>
         <source>Input delay</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите задержку</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="984"/>
@@ -5746,14 +5839,16 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Произошла ошибка в процессе записи файла служения: %s</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="536"/>
         <source>The following file(s) in the service are missing: %s
 
 These files will be removed if you continue to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующие файл(ы) в служении не найдены: %s
+
+Эти файлы будут удалены, если вы продолжите сохранять.</translation>
     </message>
 </context>
 <context>
@@ -6018,7 +6113,7 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="389"/>
         <source>Select Projector Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите источник проектора</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="387"/>
@@ -6216,7 +6311,7 @@ These files will be removed if you continue to save.</source>
         <translation>Установить &amp;по умолчания для всех</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="470"/>
+        <location filename="openlp/core/ui/thememanager.py" line="474"/>
         <source>%s (default)</source>
         <translation>%s (по-умолчанию)</translation>
     </message>
@@ -6226,47 +6321,47 @@ These files will be removed if you continue to save.</source>
         <translation>Вы должны выбрать тему для редактирования.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="749"/>
+        <location filename="openlp/core/ui/thememanager.py" line="753"/>
         <source>You are unable to delete the default theme.</source>
         <translation>Вы не можете удалить тему назначенную по умолчанию.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
+        <location filename="openlp/core/ui/thememanager.py" line="760"/>
         <source>Theme %s is used in the %s plugin.</source>
         <translation>Тема %s используется в плагине %s.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="370"/>
+        <location filename="openlp/core/ui/thememanager.py" line="374"/>
         <source>You have not selected a theme.</source>
         <translation>Вы не выбрали тему.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="373"/>
+        <location filename="openlp/core/ui/thememanager.py" line="377"/>
         <source>Save Theme - (%s)</source>
         <translation>Сохранить Тему - (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="381"/>
+        <location filename="openlp/core/ui/thememanager.py" line="385"/>
         <source>Theme Exported</source>
         <translation>Тема экспортирована.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="381"/>
+        <location filename="openlp/core/ui/thememanager.py" line="385"/>
         <source>Your theme has been successfully exported.</source>
         <translation>Ваша тема была успешна экспортирована.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="405"/>
+        <location filename="openlp/core/ui/thememanager.py" line="409"/>
         <source>Theme Export Failed</source>
         <translation>Экспорт темы провалился.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <location filename="openlp/core/ui/thememanager.py" line="423"/>
         <source>Select Theme Import File</source>
         <translation>Выберите файл темы для импорта</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="596"/>
+        <location filename="openlp/core/ui/thememanager.py" line="600"/>
         <source>File is not a valid theme.</source>
         <translation>Файл не является темой.</translation>
     </message>
@@ -6316,12 +6411,12 @@ These files will be removed if you continue to save.</source>
         <translation>Удалить тему %s?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
+        <location filename="openlp/core/ui/thememanager.py" line="760"/>
         <source>Validation Error</source>
         <translation>Ошибка Проверки</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="610"/>
+        <location filename="openlp/core/ui/thememanager.py" line="614"/>
         <source>A theme with this name already exists.</source>
         <translation>Тема с подобным именем уже существует.</translation>
     </message>
@@ -6332,24 +6427,24 @@ These files will be removed if you continue to save.</source>
         <translation>Копия %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="520"/>
+        <location filename="openlp/core/ui/thememanager.py" line="524"/>
         <source>Theme Already Exists</source>
         <translation>Тема уже существует</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="520"/>
+        <location filename="openlp/core/ui/thememanager.py" line="524"/>
         <source>Theme %s already exists. Do you want to replace it?</source>
         <translation>Тема %s уже существует. Хотите ее заменить?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="405"/>
+        <location filename="openlp/core/ui/thememanager.py" line="409"/>
         <source>The theme export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт Темы не удался из-за возникшей ошибки: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <location filename="openlp/core/ui/thememanager.py" line="423"/>
         <source>OpenLP Themes (*.otz)</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP Темы (*.otz)</translation>
     </message>
 </context>
 <context>
@@ -6642,17 +6737,17 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="405"/>
         <source>Solid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Сплошная заливка</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="449"/>
         <source>color:</source>
-        <translation type="unfinished"></translation>
+        <translation>цвет:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="462"/>
         <source>Allows you to change and move the Main and Footer areas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Позволяет изменять и перемещать основную область и область подвала.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="181"/>
@@ -6710,7 +6805,7 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="116"/>
         <source>Universal Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Универсальные Настройки</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="117"/>
@@ -6898,17 +6993,17 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="133"/>
         <source>Welcome to the Duplicate Song Removal Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Добро пожаловать в Мастер Удаления дублей песен</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="504"/>
         <source>Written by</source>
-        <translation type="unfinished"></translation>
+        <translation>Написана</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="36"/>
         <source>Author Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Автор неизвестен</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="52"/>
@@ -7040,13 +7135,14 @@ See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for 
     <message>
         <location filename="openlp/core/common/uistrings.py" line="81"/>
         <source>File Not Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не найден</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="82"/>
         <source>File %s not found.
 Please try selecting it individually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл %s не найден.
+Пожалуйста, попробуйте выбрать его индивидуально.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="83"/>
@@ -7122,25 +7218,25 @@ Please try selecting it individually.</source>
         <location filename="openlp/core/common/uistrings.py" line="96"/>
         <source>Manufacturer</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Производитель</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="97"/>
         <source>Manufacturers</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Производители</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="98"/>
         <source>Model</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Модель</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="99"/>
         <source>Models</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Модели</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="100"/>
@@ -7206,7 +7302,7 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="111"/>
         <source>OpenLP 2</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="113"/>
@@ -7242,13 +7338,13 @@ Please try selecting it individually.</source>
         <location filename="openlp/core/common/uistrings.py" line="120"/>
         <source>Projector</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Проектор</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="121"/>
         <source>Projectors</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Проекторы</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="122"/>
@@ -7261,152 +7357,157 @@ Please try selecting it individually.</source>
         <translation>Заменить фон показа.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="124"/>
+        <location filename="openlp/core/common/uistrings.py" line="126"/>
         <source>Reset Background</source>
         <translation>Сбросить Фон</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="125"/>
+        <location filename="openlp/core/common/uistrings.py" line="127"/>
         <source>Reset live background.</source>
         <translation>Сбросить фон показа.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="126"/>
+        <location filename="openlp/core/common/uistrings.py" line="128"/>
         <source>s</source>
         <comment>The abbreviated unit for seconds</comment>
         <translation>сек</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="127"/>
+        <location filename="openlp/core/common/uistrings.py" line="129"/>
         <source>Save &amp;&amp; Preview</source>
         <translation>Сохранить и просмотреть</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="128"/>
+        <location filename="openlp/core/common/uistrings.py" line="130"/>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="129"/>
+        <location filename="openlp/core/common/uistrings.py" line="131"/>
         <source>Search Themes...</source>
         <comment>Search bar place holder text </comment>
         <translation>Поиск Тем...</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="130"/>
+        <location filename="openlp/core/common/uistrings.py" line="132"/>
         <source>You must select an item to delete.</source>
         <translation>Вы должны выбрать объект для удаления.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="131"/>
+        <location filename="openlp/core/common/uistrings.py" line="133"/>
         <source>You must select an item to edit.</source>
         <translation>Вы должны выбрать объект для изменения.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="132"/>
+        <location filename="openlp/core/common/uistrings.py" line="134"/>
         <source>Settings</source>
         <translation>Параметры</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="133"/>
+        <location filename="openlp/core/common/uistrings.py" line="135"/>
         <source>Save Service</source>
         <translation>Сохранить порядок служения</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="134"/>
+        <location filename="openlp/core/common/uistrings.py" line="136"/>
         <source>Service</source>
         <translation>Служение</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="135"/>
+        <location filename="openlp/core/common/uistrings.py" line="137"/>
         <source>Optional &amp;Split</source>
         <translation>Дополнительно &amp;Разделить</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="136"/>
+        <location filename="openlp/core/common/uistrings.py" line="138"/>
         <source>Split a slide into two only if it does not fit on the screen as one slide.</source>
         <translation>Разделить слайд на два если он не помещается как один слайд.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="138"/>
+        <location filename="openlp/core/common/uistrings.py" line="140"/>
         <source>Start %s</source>
         <translation>Начало %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="139"/>
+        <location filename="openlp/core/common/uistrings.py" line="141"/>
         <source>Stop Play Slides in Loop</source>
         <translation>Проиграть слайды по кругу</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="140"/>
+        <location filename="openlp/core/common/uistrings.py" line="142"/>
         <source>Stop Play Slides to End</source>
         <translation>Остановить проигрывание слайдов до конца</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="141"/>
+        <location filename="openlp/core/common/uistrings.py" line="143"/>
         <source>Theme</source>
         <comment>Singular</comment>
         <translation>Тема</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="142"/>
+        <location filename="openlp/core/common/uistrings.py" line="144"/>
         <source>Themes</source>
         <comment>Plural</comment>
         <translation>Темы</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="143"/>
+        <location filename="openlp/core/common/uistrings.py" line="145"/>
         <source>Tools</source>
         <translation>Инструменты</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="144"/>
+        <location filename="openlp/core/common/uistrings.py" line="146"/>
         <source>Top</source>
         <translation>Вверх</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="145"/>
+        <location filename="openlp/core/common/uistrings.py" line="147"/>
         <source>Unsupported File</source>
         <translation>Не поддерживаемый файл</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="146"/>
+        <location filename="openlp/core/common/uistrings.py" line="148"/>
         <source>Verse Per Slide</source>
         <translation>Стих на слайд</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="147"/>
+        <location filename="openlp/core/common/uistrings.py" line="149"/>
         <source>Verse Per Line</source>
         <translation>Стих на абзац</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="148"/>
+        <location filename="openlp/core/common/uistrings.py" line="150"/>
         <source>Version</source>
         <translation>Версия</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="149"/>
+        <location filename="openlp/core/common/uistrings.py" line="151"/>
         <source>View</source>
         <translation>Просмотр</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="150"/>
+        <location filename="openlp/core/common/uistrings.py" line="152"/>
         <source>View Mode</source>
         <translation>Режим отображения</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="63"/>
         <source>CCLI song number:</source>
-        <translation type="unfinished"></translation>
+        <translation>CCLI номер песни:</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="112"/>
         <source>OpenLP 2.2</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.2</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="118"/>
         <source>Preview Toolbar</source>
+        <translation>Панель просмотра</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/common/uistrings.py" line="124"/>
+        <source>Replace live background is not available on this platform in this version of OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7416,25 +7517,25 @@ Please try selecting it individually.</source>
         <location filename="openlp/core/lib/__init__.py" line="305"/>
         <source>%s and %s</source>
         <comment>Locale list separator: 2 items</comment>
-        <translation type="unfinished"></translation>
+        <translation>%s и %s</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/__init__.py" line="308"/>
         <source>%s, and %s</source>
         <comment>Locale list separator: end</comment>
-        <translation type="unfinished"></translation>
+        <translation>%s, и %s</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/__init__.py" line="311"/>
         <source>%s, %s</source>
         <comment>Locale list separator: middle</comment>
-        <translation type="unfinished"></translation>
+        <translation>%s, %s</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/__init__.py" line="312"/>
         <source>%s, %s</source>
         <comment>Locale list separator: start</comment>
-        <translation type="unfinished"></translation>
+        <translation>%s, %s</translation>
     </message>
 </context>
 <context>
@@ -7534,17 +7635,17 @@ Please try selecting it individually.</source>
         <translation>Презентации (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
         <source>Missing Presentation</source>
         <translation>Не найдена презентация</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="364"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Презентация %s не закончена, пожалуйста обновите.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Презентация %s больше не существует.</translation>
     </message>
@@ -7552,7 +7653,7 @@ Please try selecting it individually.</source>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="418"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="481"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7560,38 +7661,48 @@ Please try selecting it individually.</source>
 <context>
     <name>PresentationPlugin.PresentationTab</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="104"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
         <source>Available Controllers</source>
         <translation>Доступные контроллеры</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>%s (unavailable)</source>
         <translation>%s (недоступно)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="111"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="121"/>
         <source>Allow presentation application to be overridden</source>
         <translation>Разрешить программе презентаций быть переопределенной</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="110"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="119"/>
         <source>PDF options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опции PDF</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать указанный полный путь к mudraw или Ghostscript исполняемым файлам:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="196"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="221"/>
         <source>Select mudraw or ghostscript binary.</source>
+        <translation>Выберите mudraw или ghostscript исполняемый файл.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="227"/>
+        <source>The program is not ghostscript or mudraw which is required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="202"/>
-        <source>The program is not ghostscript or mudraw which is required.</source>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <source>PowerPoint options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
+        <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8020,7 +8131,7 @@ Please select an existing path on your computer.</source>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>An error occurred while creating the report: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Произошла ошибка в процессе создания отчета: %s</translation>
     </message>
 </context>
 <context>
@@ -8213,17 +8324,17 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="129"/>
         <source>Import songs from CCLI&apos;s SongSelect service.</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт песен из служения CCLI SongSelect.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
         <source>Find &amp;Duplicate Songs</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти &amp;Дубликаты Песен</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
         <source>Find and remove duplicate songs in the song database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти и удалить дубликаты песен в базе данных песен.</translation>
     </message>
 </context>
 <context>
@@ -8232,25 +8343,25 @@ The encoding is responsible for the correct character representation.</source>
         <location filename="openlp/plugins/songs/lib/db.py" line="71"/>
         <source>Words</source>
         <comment>Author who wrote the lyrics of a song</comment>
-        <translation type="unfinished"></translation>
+        <translation>Слова</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/db.py" line="72"/>
         <source>Music</source>
         <comment>Author who wrote the music of a song</comment>
-        <translation type="unfinished"></translation>
+        <translation>Музыка</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/db.py" line="73"/>
         <source>Words and Music</source>
         <comment>Author who wrote both lyrics and music of a song</comment>
-        <translation type="unfinished"></translation>
+        <translation>Слова и Музыка</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/db.py" line="75"/>
         <source>Translation</source>
         <comment>Author who translated the song</comment>
-        <translation type="unfinished"></translation>
+        <translation>Перевод</translation>
     </message>
 </context>
 <context>
@@ -8304,7 +8415,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/dreambeam.py" line="100"/>
         <source>Invalid DreamBeam song file. Missing DreamSong tag.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не верный файл песен DreamBeam. Пропущен DreamSong тэг.</translation>
     </message>
 </context>
 <context>
@@ -8317,7 +8428,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="323"/>
         <source>&quot;%s&quot; could not be imported. %s</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%s&quot; не может быть импортирована. %s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="357"/>
@@ -8338,7 +8449,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="199"/>
         <source>This file does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Этот файл не существует.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="203"/>
@@ -8348,7 +8459,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="219"/>
         <source>This file is not a valid EasyWorship database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не является правильной базой данных EasyWorship.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="248"/>
@@ -9111,7 +9222,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="255"/>
         <source>Your song export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт вашей песни не удался из-за возникшей ошибки: %s</translation>
     </message>
 </context>
 <context>
@@ -9255,12 +9366,12 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="225"/>
         <source>CCLI SongSelect Importer</source>
-        <translation type="unfinished"></translation>
+        <translation>CCLI SongSelect Импорт</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="226"/>
         <source>&lt;strong&gt;Note:&lt;/strong&gt; An Internet connection is required in order to import songs from CCLI SongSelect.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Примечание:&lt;/strong&gt; Подключение к Интернету требуется для того, чтобы импортировать песни из CCLI SongSelect.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="230"/>
@@ -9275,17 +9386,17 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="232"/>
         <source>Save username and password</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранение имени пользователя и пароля</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="233"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation>Вход</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="234"/>
         <source>Search Text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск в тексте:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="235"/>
@@ -9295,12 +9406,12 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="324"/>
         <source>Found %s song(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Найдена %s песня(и)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="237"/>
         <source>Logout</source>
-        <translation type="unfinished"></translation>
+        <translation>Выход</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="238"/>
@@ -9315,7 +9426,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="240"/>
         <source>Author(s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Автор(ы):</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="241"/>
@@ -9325,17 +9436,17 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="242"/>
         <source>CCLI Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер CCLI:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="243"/>
         <source>Lyrics:</source>
-        <translation type="unfinished"></translation>
+        <translation>Слова:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="245"/>
@@ -9345,7 +9456,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="61"/>
         <source>More than 1000 results</source>
-        <translation type="unfinished"></translation>
+        <translation>Более чем 1000 совпадений</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="61"/>
@@ -9355,47 +9466,47 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="140"/>
         <source>Logging out...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выход</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>Save Username and Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранение имени пользователя и пароля</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
         <source>WARNING: Saving your username and password is INSECURE, your password is stored in PLAIN TEXT. Click Yes to save your password or No to cancel this.</source>
-        <translation type="unfinished"></translation>
+        <translation>ВНИМАНИЕ: Сохранение ваше имя пользователя и пароль небезопасно, пароль хранится в виде обычного текста. Нажмите Да, чтобы сохранить свой пароль или Нет, чтобы отменить это.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>Error Logging In</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка авторизации</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
         <source>There was a problem logging in, perhaps your username or password is incorrect?</source>
-        <translation type="unfinished"></translation>
+        <translation>Был проблема входа в систему, может быть, ваше имя пользователя или пароль неверен?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="371"/>
         <source>Song Imported</source>
-        <translation type="unfinished"></translation>
+        <translation>Песня импортирована</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
         <source>Incomplete song</source>
-        <translation type="unfinished"></translation>
+        <translation>Неполная песня</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
         <source>This song is missing some information, like the lyrics, and cannot be imported.</source>
-        <translation type="unfinished"></translation>
+        <translation>В этой песне не хватает такой информации, такой стихи, и она не может быть импортирована.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="371"/>
         <source>Your song has been imported, would you like to import more songs?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ваша песня была импортирована, вы хотели бы еще импортировать песни?</translation>
     </message>
 </context>
 <context>
@@ -9428,7 +9539,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/songstab.py" line="80"/>
         <source>Display songbook in footer</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать сборник песен в подвале</translation>
     </message>
 </context>
 <context>
@@ -9569,32 +9680,32 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="132"/>
         <source>Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Мастер</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="135"/>
         <source>This wizard will help you to remove duplicate songs from the song database. You will have a chance to review every potential duplicate song before it is deleted. So no songs will be deleted without your explicit approval.</source>
-        <translation type="unfinished"></translation>
+        <translation>Этот мастер поможет вам удалить дубликаты песен из базы данных песни. Вы будете иметь возможность просмотреть все потенциальные дубликаты песни, прежде чем они будут удалены. Итак, песни не будут удаляться без вашего явного одобрения.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="140"/>
         <source>Searching for duplicate songs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск дубликатов песен.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="141"/>
         <source>Please wait while your songs database is analyzed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, подождите, пока Ваша база данных песни анализируется.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="143"/>
         <source>Here you can decide which songs to remove and which ones to keep.</source>
-        <translation type="unfinished"></translation>
+        <translation>Здесь вы можете решить, какие песни удалить, а какие оставить.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="150"/>
         <source>Review duplicate songs (%s/%s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Обзор дублирующих песен (%s/%s)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="216"/>
@@ -9604,7 +9715,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="216"/>
         <source>No duplicate songs have been found in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Дубликаты песен не были найдены в базе.</translation>
     </message>
 </context>
 </TS>

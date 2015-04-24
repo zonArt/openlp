@@ -1432,7 +1432,7 @@ Anda harus mengimpor ulang Alkitab ini untuk menggunakannya kembali.</translatio
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="126"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengimpor %(bookname)s %(chapter)s...</translation>
     </message>
 </context>
 <context>
@@ -1445,7 +1445,7 @@ Anda harus mengimpor ulang Alkitab ini untuk menggunakannya kembali.</translatio
     <message>
         <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengimpor %(bookname)s %(chapter)s...</translation>
     </message>
 </context>
 <context>
@@ -1611,7 +1611,7 @@ Perlu diketahui bahwa ayat dari Alkitab Web akan diunduh sesuai permintaan dan s
     <message>
         <location filename="openlp/plugins/bibles/lib/zefania.py" line="105"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengimpor %(bookname)s %(chapter)s...</translation>
     </message>
 </context>
 <context>
@@ -1772,7 +1772,7 @@ Perlu diketahui bahwa ayat dari Alkitab Web akan diunduh sesuai permintaan dan s
 <context>
     <name>CustomPlugin.MediaItem</name>
     <message numerus="yes">
-        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="182"/>
+        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="186"/>
         <source>Are you sure you want to delete the %n selected custom slide(s)?</source>
         <translation>
             <numerusform>Anda yakin ingin menghapus %n salindia (- salindia) kustom terpilih ini?</numerusform>
@@ -1863,12 +1863,12 @@ Perlu diketahui bahwa ayat dari Alkitab Web akan diunduh sesuai permintaan dan s
         <translation>Anda harus mengetikkan nama grup.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="639"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="641"/>
         <source>Could not add the new group.</source>
         <translation>Tidak dapat menambahkan grup tersebut.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="642"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="644"/>
         <source>This group already exists.</source>
         <translation>Grup ini sudah ada.</translation>
     </message>
@@ -1917,34 +1917,34 @@ Perlu diketahui bahwa ayat dari Alkitab Web akan diunduh sesuai permintaan dan s
         <translation>Pilih (beberapa) Gambar</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="661"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="663"/>
         <source>You must select an image to replace the background with.</source>
         <translation>Anda harus memilih suatu gambar untuk menggantikan latar.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="586"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
         <source>Missing Image(s)</source>
         <translation>(Beberapa) Gambar Hilang</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="580"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="582"/>
         <source>The following image(s) no longer exist: %s</source>
         <translation>(Beberapa) Gambar berikut tidak ada lagi: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="586"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>(Beberapa) Gambar berikut tidak ada lagi: %s
 Anda tetap ingin menambah gambar lain?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="678"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="680"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>Ada masalah dalam mengganti latar, berkas gambar &quot;%s&quot; tidak ada lagi.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="674"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="676"/>
         <source>There was no display item to amend.</source>
         <translation>Tidak ada butir tampilan untuk diubah.</translation>
     </message>
@@ -1954,17 +1954,17 @@ Anda tetap ingin menambah gambar lain?</translation>
         <translation>-- Grup tingkatan-atas --</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="220"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="221"/>
         <source>You must select an image or group to delete.</source>
         <translation>Anda harus memilih suatu gambar atau grup untuk menghapusnya.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="236"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
         <source>Remove group</source>
         <translation>Hapus grup</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="236"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
         <source>Are you sure you want to remove &quot;%s&quot; and everything in it?</source>
         <translation>Anda yakin ingin menghapus &quot;%s&quot; and semua isinya?</translation>
     </message>
@@ -1995,7 +1995,7 @@ Anda tetap ingin menambah gambar lain?</translation>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="333"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="328"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>VLC adalah suatu pemutar eksternal yang mendukung sejumlah format yang berbeda.</translation>
     </message>
@@ -2230,37 +2230,37 @@ Anda tetap ingin menambah gambar lain?</translation>
         <translation>Pilih Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="326"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="331"/>
         <source>You must select a media file to delete.</source>
         <translation>Anda harus memilih sebuah berkas media untuk dihapus.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="189"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="194"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>Anda harus memilih sebuah media untuk menggantikan latar.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="207"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="212"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Ada masalah dalam mengganti latar, berkas media &quot;%s&quot; tidak ada lagi.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="251"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
         <source>Missing Media File</source>
         <translation>Berkas Media Hilang</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="251"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
         <source>The file %s no longer exists.</source>
         <translation>Berkas %s tidak ada lagi.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="288"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="293"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Video (%s);;Audio (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="203"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="208"/>
         <source>There was no display item to amend.</source>
         <translation>Tidak ada butir tampilan untuk diubah.</translation>
     </message>
@@ -2270,7 +2270,7 @@ Anda tetap ingin menambah gambar lain?</translation>
         <translation>Tidak Ada Dukungan untuk Berkas</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="99"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="102"/>
         <source>Use Player:</source>
         <translation>Gunakan Pemutar:</translation>
     </message>
@@ -2285,27 +2285,27 @@ Anda tetap ingin menambah gambar lain?</translation>
         <translation>Butuh pemutar VLC untuk pemutaran perangkat optik</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="127"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="130"/>
         <source>Load CD/DVD</source>
         <translation>Muat CD/DVD</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="128"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
         <translation>Muat CD/DVD - hanya didukung jika VLC terpasang dan diaktifkan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="234"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="239"/>
         <source>The optical disc %s is no longer available.</source>
         <translation>Disk optik %s tidak lagi tersedia.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
         <source>Mediaclip already saved</source>
         <translation>Klip media telah tersimpan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
         <source>This mediaclip has already been saved</source>
         <translation>Klip media ini telah tersimpan sebelumnya</translation>
     </message>
@@ -3690,12 +3690,12 @@ Untuk membatalkan sepenuhnya Wisaya Kali Pertama (dan tidak memulai OpenLP), kli
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="149"/>
         <source>Start tag %s is not valid HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Label mulai %s bukanlah HTML yang valid</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="169"/>
         <source>End tag %s does not match end tag for start tag %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Label akhir %s tidak cocok dengan label akhir untuk label mulai %s</translation>
     </message>
 </context>
 <context>
@@ -5706,12 +5706,12 @@ Tidak ada dukungan untuk akhiran ini</translation>
         <translation>Catatan Layanan Kustom:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/printserviceform.py" line="221"/>
+        <location filename="openlp/core/ui/printserviceform.py" line="223"/>
         <source>Notes: </source>
         <translation>Catatan :</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/printserviceform.py" line="229"/>
+        <location filename="openlp/core/ui/printserviceform.py" line="231"/>
         <source>Playing time: </source>
         <translation>Waktu permainan:</translation>
     </message>
@@ -5894,7 +5894,9 @@ Tidak ada dukungan untuk akhiran ini</translation>
         <source>The following file(s) in the service are missing: %s
 
 These files will be removed if you continue to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>(Beberapa) berkas berikut dalam Layanan telah hilang: %s
+
+Berkas-berkas ini akan dihapus apabila Anda lanjutkan menyimpan.</translation>
     </message>
 </context>
 <context>
@@ -6357,7 +6359,7 @@ These files will be removed if you continue to save.</source>
         <translation>Setel Sebagai &amp;Bawaan Global</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="470"/>
+        <location filename="openlp/core/ui/thememanager.py" line="474"/>
         <source>%s (default)</source>
         <translation>%s (bawaan)</translation>
     </message>
@@ -6367,47 +6369,47 @@ These files will be removed if you continue to save.</source>
         <translation>Anda harus memilih suatu tema untuk disunting.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="749"/>
+        <location filename="openlp/core/ui/thememanager.py" line="753"/>
         <source>You are unable to delete the default theme.</source>
         <translation>Anda tidak dapat menghapus tema bawaan.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
+        <location filename="openlp/core/ui/thememanager.py" line="760"/>
         <source>Theme %s is used in the %s plugin.</source>
         <translation>Tema %s digunakan dalam plugin %s.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="370"/>
+        <location filename="openlp/core/ui/thememanager.py" line="374"/>
         <source>You have not selected a theme.</source>
         <translation>Anda belum memilih suatu tema.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="373"/>
+        <location filename="openlp/core/ui/thememanager.py" line="377"/>
         <source>Save Theme - (%s)</source>
         <translation>Simpan Tema - (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="381"/>
+        <location filename="openlp/core/ui/thememanager.py" line="385"/>
         <source>Theme Exported</source>
         <translation>Tema Telah Diekspor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="381"/>
+        <location filename="openlp/core/ui/thememanager.py" line="385"/>
         <source>Your theme has been successfully exported.</source>
         <translation>Tema pilihan Anda berhasil diekspor.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="405"/>
+        <location filename="openlp/core/ui/thememanager.py" line="409"/>
         <source>Theme Export Failed</source>
         <translation>Ekspor Tema Gagal</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <location filename="openlp/core/ui/thememanager.py" line="423"/>
         <source>Select Theme Import File</source>
         <translation>Pilih Berkas Tema Untuk Diimpor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="596"/>
+        <location filename="openlp/core/ui/thememanager.py" line="600"/>
         <source>File is not a valid theme.</source>
         <translation>Berkas bukan suatu tema yang valid.</translation>
     </message>
@@ -6457,12 +6459,12 @@ These files will be removed if you continue to save.</source>
         <translation>Hapus tema %s?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
+        <location filename="openlp/core/ui/thememanager.py" line="760"/>
         <source>Validation Error</source>
         <translation>Kesalahan Validasi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="610"/>
+        <location filename="openlp/core/ui/thememanager.py" line="614"/>
         <source>A theme with this name already exists.</source>
         <translation>Suatu tema dengan nama ini sudah ada.</translation>
     </message>
@@ -6473,22 +6475,22 @@ These files will be removed if you continue to save.</source>
         <translation>Salinan %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="520"/>
+        <location filename="openlp/core/ui/thememanager.py" line="524"/>
         <source>Theme Already Exists</source>
         <translation>Tema Sudah Ada</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="520"/>
+        <location filename="openlp/core/ui/thememanager.py" line="524"/>
         <source>Theme %s already exists. Do you want to replace it?</source>
         <translation>Tema %s sudah ada. Anda ingin menggantinya?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="405"/>
+        <location filename="openlp/core/ui/thememanager.py" line="409"/>
         <source>The theme export failed because this error occurred: %s</source>
         <translation>Ekspor tema gagal karena terjadi kesalahan berikut: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <location filename="openlp/core/ui/thememanager.py" line="423"/>
         <source>OpenLP Themes (*.otz)</source>
         <translation>Tema OpenLP (*.otz)</translation>
     </message>
@@ -7403,136 +7405,136 @@ Silakan coba memilih secara individu.</translation>
         <translation>Ganti Latar Tayang.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="124"/>
+        <location filename="openlp/core/common/uistrings.py" line="126"/>
         <source>Reset Background</source>
         <translation>Setel-Ulang Latar</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="125"/>
+        <location filename="openlp/core/common/uistrings.py" line="127"/>
         <source>Reset live background.</source>
         <translation>Setel-Ulang latar Tayang.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="126"/>
+        <location filename="openlp/core/common/uistrings.py" line="128"/>
         <source>s</source>
         <comment>The abbreviated unit for seconds</comment>
         <translation> dtk</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="127"/>
+        <location filename="openlp/core/common/uistrings.py" line="129"/>
         <source>Save &amp;&amp; Preview</source>
         <translation>Simpan &amp;&amp; Pratinjau</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="128"/>
+        <location filename="openlp/core/common/uistrings.py" line="130"/>
         <source>Search</source>
         <translation>Penelusuran</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="129"/>
+        <location filename="openlp/core/common/uistrings.py" line="131"/>
         <source>Search Themes...</source>
         <comment>Search bar place holder text </comment>
         <translation>Telusuri Tema...</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="130"/>
+        <location filename="openlp/core/common/uistrings.py" line="132"/>
         <source>You must select an item to delete.</source>
         <translation>Anda harus memilih suatu butir untuk dihapus.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="131"/>
+        <location filename="openlp/core/common/uistrings.py" line="133"/>
         <source>You must select an item to edit.</source>
         <translation>Anda harus memilih suatu butir untuk disunting.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="132"/>
+        <location filename="openlp/core/common/uistrings.py" line="134"/>
         <source>Settings</source>
         <translation>Setelan</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="133"/>
+        <location filename="openlp/core/common/uistrings.py" line="135"/>
         <source>Save Service</source>
         <translation>Simpan Layanan</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="134"/>
+        <location filename="openlp/core/common/uistrings.py" line="136"/>
         <source>Service</source>
         <translation>Layanan</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="135"/>
+        <location filename="openlp/core/common/uistrings.py" line="137"/>
         <source>Optional &amp;Split</source>
         <translation>Pisah &amp;Opsional</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="136"/>
+        <location filename="openlp/core/common/uistrings.py" line="138"/>
         <source>Split a slide into two only if it does not fit on the screen as one slide.</source>
         <translation>Pisah salindia menjadi dua jika tidak muat pada layar sebagai satu salindia.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="138"/>
+        <location filename="openlp/core/common/uistrings.py" line="140"/>
         <source>Start %s</source>
         <translation>Mulai %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="139"/>
+        <location filename="openlp/core/common/uistrings.py" line="141"/>
         <source>Stop Play Slides in Loop</source>
         <translation>Stop Mainkan Semua Salindia Berulang-ulang</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="140"/>
+        <location filename="openlp/core/common/uistrings.py" line="142"/>
         <source>Stop Play Slides to End</source>
         <translation>Stop Mainkan Semua Salindia sampai Akhir</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="141"/>
+        <location filename="openlp/core/common/uistrings.py" line="143"/>
         <source>Theme</source>
         <comment>Singular</comment>
         <translation>Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="142"/>
+        <location filename="openlp/core/common/uistrings.py" line="144"/>
         <source>Themes</source>
         <comment>Plural</comment>
         <translation>Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="143"/>
+        <location filename="openlp/core/common/uistrings.py" line="145"/>
         <source>Tools</source>
         <translation>Alat</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="144"/>
+        <location filename="openlp/core/common/uistrings.py" line="146"/>
         <source>Top</source>
         <translation>Puncak</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="145"/>
+        <location filename="openlp/core/common/uistrings.py" line="147"/>
         <source>Unsupported File</source>
         <translation>Tidak Ada Dukungan untuk Berkas</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="146"/>
+        <location filename="openlp/core/common/uistrings.py" line="148"/>
         <source>Verse Per Slide</source>
         <translation>Ayat per Salindia</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="147"/>
+        <location filename="openlp/core/common/uistrings.py" line="149"/>
         <source>Verse Per Line</source>
         <translation>Ayat per Baris</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="148"/>
+        <location filename="openlp/core/common/uistrings.py" line="150"/>
         <source>Version</source>
         <translation>Versi</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="149"/>
+        <location filename="openlp/core/common/uistrings.py" line="151"/>
         <source>View</source>
         <translation>Tinjau</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="150"/>
+        <location filename="openlp/core/common/uistrings.py" line="152"/>
         <source>View Mode</source>
         <translation>Mode Tinjauan</translation>
     </message>
@@ -7550,6 +7552,11 @@ Silakan coba memilih secara individu.</translation>
         <location filename="openlp/core/common/uistrings.py" line="118"/>
         <source>Preview Toolbar</source>
         <translation>Bilah Alat Pratinjau</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/common/uistrings.py" line="124"/>
+        <source>Replace live background is not available on this platform in this version of OpenLP.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7676,17 +7683,17 @@ Silakan coba memilih secara individu.</translation>
         <translation>Presentasi (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
         <source>Missing Presentation</source>
         <translation>Presentasi Hilang</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="364"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Presentasi %s tidak lengkap, silakan muat-ulang.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Presentasi %s tidak ada lagi.</translation>
     </message>
@@ -7694,7 +7701,7 @@ Silakan coba memilih secara individu.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="418"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="481"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation>Terjadi kesalahan dalam integrasi PowerPoint dan presentasi akan dihentikan. Silakan mulai-ulang presentasi jika Anda ingin menampilkannya.</translation>
     </message>
@@ -7702,39 +7709,49 @@ Silakan coba memilih secara individu.</translation>
 <context>
     <name>PresentationPlugin.PresentationTab</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="104"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
         <source>Available Controllers</source>
         <translation>Pengontrol yang Tersedia</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>%s (unavailable)</source>
         <translation>%s (tidak tersedia)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="111"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="121"/>
         <source>Allow presentation application to be overridden</source>
         <translation>Izinkan aplikasi presentasi untuk digantikan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="110"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="119"/>
         <source>PDF options</source>
         <translation>Opsi PDF</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation>Gunakan sepenuhnya jalur yang diberikan untuk biner mudraw atau ghostscript:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="196"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="221"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation>Pilih biner mudraw atau ghostscript.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="202"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="227"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation>Program tersebut bukanlah ghostscript ataupun mudraw yang dibutuhkan.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <source>PowerPoint options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
+        <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9523,7 +9540,7 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
         <translation>Terjadi kesalahan saat hendak masuk, mungkin nama pengguna atau kata sandi Anda salah?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="371"/>
         <source>Song Imported</source>
         <translation>Lagu Telah Diimpor</translation>
     </message>
@@ -9538,7 +9555,7 @@ Silakan masukan bait-bait tersebut dan pisahkan dengan spasi.</translation>
         <translation>Lagu ini kehilangan beberapa informasi, kemungkinan liriknya, dan tidak dapat diimpor.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="371"/>
         <source>Your song has been imported, would you like to import more songs?</source>
         <translation>Lagu Anda telah diimpor, Anda ingin mengimpor lagu-lagu lain?</translation>
     </message>

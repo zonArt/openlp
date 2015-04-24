@@ -707,7 +707,7 @@ Please type in some text before clicking New.</source>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
         <source>and</source>
         <comment>connecting identifier e.g. Genesis 1 verse 1 - 2 and 4 - 5 = Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5</comment>
-        <translation type="unfinished"></translation>
+        <translation>e</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="196"/>
@@ -1770,7 +1770,7 @@ Por favor, observe que versículos das Bíblias da Internet serão transferidos 
 <context>
     <name>CustomPlugin.MediaItem</name>
     <message numerus="yes">
-        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="182"/>
+        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="186"/>
         <source>Are you sure you want to delete the %n selected custom slide(s)?</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1862,12 +1862,12 @@ Por favor, observe que versículos das Bíblias da Internet serão transferidos 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="639"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="641"/>
         <source>Could not add the new group.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="642"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="644"/>
         <source>This group already exists.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1916,34 +1916,34 @@ Por favor, observe que versículos das Bíblias da Internet serão transferidos 
         <translation>Selecionar Imagem(ns)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="661"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="663"/>
         <source>You must select an image to replace the background with.</source>
         <translation>Você precisa selecionar uma imagem para definir como plano de fundo.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="586"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
         <source>Missing Image(s)</source>
         <translation>Imagem(ns) não encontrada(s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="580"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="582"/>
         <source>The following image(s) no longer exist: %s</source>
         <translation>A(s) seguinte(s) imagem(ns) não existe(m) mais: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="586"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>A(s) seguinte(s) imagem(ns) não existe(m) mais: %s
 Deseja continuar adicionando as outras imagens mesmo assim?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="678"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="680"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>Ocorreu um erro ao substituir o plano de fundo, o arquivo de imagem &quot;%s&quot; não existe.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="674"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="676"/>
         <source>There was no display item to amend.</source>
         <translation>Não há nenhum item de exibição para corrigir.</translation>
     </message>
@@ -1953,17 +1953,17 @@ Deseja continuar adicionando as outras imagens mesmo assim?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="220"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="221"/>
         <source>You must select an image or group to delete.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="236"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
         <source>Remove group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="236"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
         <source>Are you sure you want to remove &quot;%s&quot; and everything in it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1994,7 +1994,7 @@ Deseja continuar adicionando as outras imagens mesmo assim?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="333"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="328"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2229,37 +2229,37 @@ Deseja continuar adicionando as outras imagens mesmo assim?</translation>
         <translation>Selecionar Mídia</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="326"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="331"/>
         <source>You must select a media file to delete.</source>
         <translation>Você deve selecionar um arquivo de mídia para apagar.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="189"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="194"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>Você precisa selecionar um arquivo de mídia para substituir o plano de fundo.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="207"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="212"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Ocorreu um erro ao substituir o plano de fundo. O arquivo de mídia &quot;%s&quot; não existe.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="251"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
         <source>Missing Media File</source>
         <translation>Arquivo de Mídia não encontrado</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="251"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
         <source>The file %s no longer exists.</source>
         <translation>O arquivo %s não existe.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="288"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="293"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Vídeos (%s);;Áudio (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="203"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="208"/>
         <source>There was no display item to amend.</source>
         <translation>Não há nenhum item de exibição para corrigir.</translation>
     </message>
@@ -2269,7 +2269,7 @@ Deseja continuar adicionando as outras imagens mesmo assim?</translation>
         <translation>Arquivo não suportado</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="99"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="102"/>
         <source>Use Player:</source>
         <translation>Usar Reprodutor:</translation>
     </message>
@@ -2284,27 +2284,27 @@ Deseja continuar adicionando as outras imagens mesmo assim?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="127"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="130"/>
         <source>Load CD/DVD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="128"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="234"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="239"/>
         <source>The optical disc %s is no longer available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
         <source>Mediaclip already saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="427"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
         <source>This mediaclip has already been saved</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5609,12 +5609,12 @@ Sufixo não suportado</translation>
         <translation>Anotações de Culto Personalizados: </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/printserviceform.py" line="221"/>
+        <location filename="openlp/core/ui/printserviceform.py" line="223"/>
         <source>Notes: </source>
         <translation>Observações: </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/printserviceform.py" line="229"/>
+        <location filename="openlp/core/ui/printserviceform.py" line="231"/>
         <source>Playing time: </source>
         <translation>Duração: </translation>
     </message>
@@ -6258,7 +6258,7 @@ These files will be removed if you continue to save.</source>
         <translation>Definir como Padrão &amp;Global</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="470"/>
+        <location filename="openlp/core/ui/thememanager.py" line="474"/>
         <source>%s (default)</source>
         <translation>%s (padrão)</translation>
     </message>
@@ -6268,47 +6268,47 @@ These files will be removed if you continue to save.</source>
         <translation>Você precisa selecionar um tema para editar.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="749"/>
+        <location filename="openlp/core/ui/thememanager.py" line="753"/>
         <source>You are unable to delete the default theme.</source>
         <translation>Você não pode apagar o tema padrão.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
+        <location filename="openlp/core/ui/thememanager.py" line="760"/>
         <source>Theme %s is used in the %s plugin.</source>
         <translation>O tema %s é usado no plugin %s.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="370"/>
+        <location filename="openlp/core/ui/thememanager.py" line="374"/>
         <source>You have not selected a theme.</source>
         <translation>Você não selecionou um tema.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="373"/>
+        <location filename="openlp/core/ui/thememanager.py" line="377"/>
         <source>Save Theme - (%s)</source>
         <translation>Salvar Tema - (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="381"/>
+        <location filename="openlp/core/ui/thememanager.py" line="385"/>
         <source>Theme Exported</source>
         <translation>Tema Exportado</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="381"/>
+        <location filename="openlp/core/ui/thememanager.py" line="385"/>
         <source>Your theme has been successfully exported.</source>
         <translation>Seu tema foi exportado com sucesso.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="405"/>
+        <location filename="openlp/core/ui/thememanager.py" line="409"/>
         <source>Theme Export Failed</source>
         <translation>Falha ao Exportar Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <location filename="openlp/core/ui/thememanager.py" line="423"/>
         <source>Select Theme Import File</source>
         <translation>Selecionar Arquivo de Importação de Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="596"/>
+        <location filename="openlp/core/ui/thememanager.py" line="600"/>
         <source>File is not a valid theme.</source>
         <translation>O arquivo não é um tema válido.</translation>
     </message>
@@ -6358,12 +6358,12 @@ These files will be removed if you continue to save.</source>
         <translation>Apagar o tema %s?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
+        <location filename="openlp/core/ui/thememanager.py" line="760"/>
         <source>Validation Error</source>
         <translation>Erro de Validação</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="610"/>
+        <location filename="openlp/core/ui/thememanager.py" line="614"/>
         <source>A theme with this name already exists.</source>
         <translation>Já existe um tema com este nome.</translation>
     </message>
@@ -6374,22 +6374,22 @@ These files will be removed if you continue to save.</source>
         <translation>Cópia do %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="520"/>
+        <location filename="openlp/core/ui/thememanager.py" line="524"/>
         <source>Theme Already Exists</source>
         <translation>Tema Já Existe</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="520"/>
+        <location filename="openlp/core/ui/thememanager.py" line="524"/>
         <source>Theme %s already exists. Do you want to replace it?</source>
         <translation>O Tema %s já existe. Deseja substituí-lo?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="405"/>
+        <location filename="openlp/core/ui/thememanager.py" line="409"/>
         <source>The theme export failed because this error occurred: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <location filename="openlp/core/ui/thememanager.py" line="423"/>
         <source>OpenLP Themes (*.otz)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7304,136 +7304,136 @@ Por favor, tente selecionar individualmente.</translation>
         <translation>Trocar fundo da projeção.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="124"/>
+        <location filename="openlp/core/common/uistrings.py" line="126"/>
         <source>Reset Background</source>
         <translation>Restabelecer o Plano de Fundo</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="125"/>
+        <location filename="openlp/core/common/uistrings.py" line="127"/>
         <source>Reset live background.</source>
         <translation>Reverter fundo da projeção.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="126"/>
+        <location filename="openlp/core/common/uistrings.py" line="128"/>
         <source>s</source>
         <comment>The abbreviated unit for seconds</comment>
         <translation>s</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="127"/>
+        <location filename="openlp/core/common/uistrings.py" line="129"/>
         <source>Save &amp;&amp; Preview</source>
         <translation>Salvar &amp;&amp; Pré-Visualizar</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="128"/>
+        <location filename="openlp/core/common/uistrings.py" line="130"/>
         <source>Search</source>
         <translation>Busca</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="129"/>
+        <location filename="openlp/core/common/uistrings.py" line="131"/>
         <source>Search Themes...</source>
         <comment>Search bar place holder text </comment>
         <translation>Pesquisar temas...</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="130"/>
+        <location filename="openlp/core/common/uistrings.py" line="132"/>
         <source>You must select an item to delete.</source>
         <translation>Você precisa selecionar um item para excluir.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="131"/>
+        <location filename="openlp/core/common/uistrings.py" line="133"/>
         <source>You must select an item to edit.</source>
         <translation>Você precisa selecionar um item para editar.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="132"/>
+        <location filename="openlp/core/common/uistrings.py" line="134"/>
         <source>Settings</source>
         <translation>Configurações</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="133"/>
+        <location filename="openlp/core/common/uistrings.py" line="135"/>
         <source>Save Service</source>
         <translation>Salvar Culto</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="134"/>
+        <location filename="openlp/core/common/uistrings.py" line="136"/>
         <source>Service</source>
         <translation>Culto</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="135"/>
+        <location filename="openlp/core/common/uistrings.py" line="137"/>
         <source>Optional &amp;Split</source>
         <translation>Divisão Opcional</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="136"/>
+        <location filename="openlp/core/common/uistrings.py" line="138"/>
         <source>Split a slide into two only if it does not fit on the screen as one slide.</source>
         <translation>Dividir um slide em dois somente se não couber na tela em um único slide.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="138"/>
+        <location filename="openlp/core/common/uistrings.py" line="140"/>
         <source>Start %s</source>
         <translation>Início %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="139"/>
+        <location filename="openlp/core/common/uistrings.py" line="141"/>
         <source>Stop Play Slides in Loop</source>
         <translation>Parar Slides com Repetição</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="140"/>
+        <location filename="openlp/core/common/uistrings.py" line="142"/>
         <source>Stop Play Slides to End</source>
         <translation>Parar Slides até o Final</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="141"/>
+        <location filename="openlp/core/common/uistrings.py" line="143"/>
         <source>Theme</source>
         <comment>Singular</comment>
         <translation>Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="142"/>
+        <location filename="openlp/core/common/uistrings.py" line="144"/>
         <source>Themes</source>
         <comment>Plural</comment>
         <translation>Temas</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="143"/>
+        <location filename="openlp/core/common/uistrings.py" line="145"/>
         <source>Tools</source>
         <translation>Ferramentas</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="144"/>
+        <location filename="openlp/core/common/uistrings.py" line="146"/>
         <source>Top</source>
         <translation>Topo</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="145"/>
+        <location filename="openlp/core/common/uistrings.py" line="147"/>
         <source>Unsupported File</source>
         <translation>Arquivo não suportado</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="146"/>
+        <location filename="openlp/core/common/uistrings.py" line="148"/>
         <source>Verse Per Slide</source>
         <translation>Versículos por Slide</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="147"/>
+        <location filename="openlp/core/common/uistrings.py" line="149"/>
         <source>Verse Per Line</source>
         <translation>Versículos por Linha</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="148"/>
+        <location filename="openlp/core/common/uistrings.py" line="150"/>
         <source>Version</source>
         <translation>Versão</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="149"/>
+        <location filename="openlp/core/common/uistrings.py" line="151"/>
         <source>View</source>
         <translation>Visualizar</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="150"/>
+        <location filename="openlp/core/common/uistrings.py" line="152"/>
         <source>View Mode</source>
         <translation>Modo de Visualização</translation>
     </message>
@@ -7450,6 +7450,11 @@ Por favor, tente selecionar individualmente.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="118"/>
         <source>Preview Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/common/uistrings.py" line="124"/>
+        <source>Replace live background is not available on this platform in this version of OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7577,17 +7582,17 @@ Por favor, tente selecionar individualmente.</translation>
         <translation>Apresentações (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
         <source>Missing Presentation</source>
         <translation>Apresentação Não Encontrada</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="364"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>A apresentação %s está incompleta, por favor recarregue.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="372"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
         <source>The presentation %s no longer exists.</source>
         <translation>A apresentação %s já não existe mais.</translation>
     </message>
@@ -7595,7 +7600,7 @@ Por favor, tente selecionar individualmente.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="418"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="481"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7603,38 +7608,48 @@ Por favor, tente selecionar individualmente.</translation>
 <context>
     <name>PresentationPlugin.PresentationTab</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="104"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
         <source>Available Controllers</source>
         <translation>Controladores Disponíveis</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>%s (unavailable)</source>
         <translation>%s (indisponível)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="111"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="121"/>
         <source>Allow presentation application to be overridden</source>
         <translation>Permitir que o aplicativo de apresentações seja alterado</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="110"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="119"/>
         <source>PDF options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="196"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="221"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="202"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="227"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <source>PowerPoint options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
+        <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9420,7 +9435,7 @@ Please enter the verses separated by spaces.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="371"/>
         <source>Song Imported</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9435,7 +9450,7 @@ Please enter the verses separated by spaces.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="370"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="371"/>
         <source>Your song has been imported, would you like to import more songs?</source>
         <translation type="unfinished"></translation>
     </message>
