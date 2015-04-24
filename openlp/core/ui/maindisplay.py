@@ -29,7 +29,7 @@ Some of the code for this form is based on the examples at:
 
 """
 
-import cgi
+import html
 import logging
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
@@ -273,7 +273,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         """
         # First we convert <>& marks to html variants, then apply
         # formattingtags, finally we double all backslashes for JavaScript.
-        text_prepared = expand_tags(cgi.escape(text)).replace('\\', '\\\\').replace('\"', '\\\"')
+        text_prepared = expand_tags(html.escape(text)).replace('\\', '\\\\').replace('\"', '\\\"')
         if self.height() != self.screen['size'].height() or not self.isVisible():
             shrink = True
             js = 'show_alert("%s", "%s")' % (text_prepared, 'top')

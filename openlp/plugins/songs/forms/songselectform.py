@@ -367,6 +367,7 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         Import a song from SongSelect.
         """
         self.song_select_importer.save_song(self.song)
+        self.song = None
         if QtGui.QMessageBox.question(self, translate('SongsPlugin.SongSelectForm', 'Song Imported'),
                                       translate('SongsPlugin.SongSelectForm', 'Your song has been imported, would you '
                                                                               'like to import more songs?'),

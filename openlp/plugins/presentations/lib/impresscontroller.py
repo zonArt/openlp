@@ -428,7 +428,7 @@ class ImpressDocument(PresentationDocument):
         """
         Triggers the previous slide on the running presentation.
         """
-        self.control.gotoPreviousSlide()
+        self.control.gotoPreviousEffect()
 
     def get_slide_text(self, slide_no):
         """

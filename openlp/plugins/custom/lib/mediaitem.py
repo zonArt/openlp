@@ -158,6 +158,10 @@ class CustomMediaItem(MediaManagerItem):
                 self.remote_triggered = None
                 self.remote_custom = 1
                 if item:
+                    if preview:
+                        # A custom slide can only be edited if it comes from plugin,
+                        # so we set it again for the new item.
+                        item.from_plugin = True
                     return item
         return None
 
