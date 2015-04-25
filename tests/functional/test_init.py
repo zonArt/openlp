@@ -66,6 +66,22 @@ class TestInit(TestCase, TestMixin):
         mocked_file_method.assert_called_once_with()
         self.assertEqual(self.openlp.args[0], file_path, "The path should be in args.")
 
+    def application_activate_event_test(self):
+        """
+        Test that clicking on the dock icon on Mac OS X restores the main window if it is minimized
+        """
+        # GIVEN:
+        with patch('openlp.core.is_macosx') as mocked_is_macosx:
+            mocked_is_macosx.return_value = True
+            event = QtCore.QEvent(QtCore.QEvent.ApplicationActivate)
+
+            # WHEN:
+            result = self.openlp.event(event)
+
+            # THEN:
+            self.assertTrue(result, "The method should have returned True.")
+            self.assertFalse(self.openlp.main_window.isMinimized())
+
     def backup_on_upgrade_first_install_test(self):
         """
         Test that we don't try to backup on a new install
