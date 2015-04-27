@@ -83,9 +83,6 @@ class PowerpointController(PresentationController):
             log.debug('start_process')
             if not self.process:
                 self.process = Dispatch('PowerPoint.Application')
-            #self.process.Visible = True
-            # ppWindowMinimized = 2
-            #self.process.WindowState = 2
 
         def kill(self):
             """
@@ -311,7 +308,7 @@ class PowerpointDocument(PresentationDocument):
             try:
                 ppt_window = self.presentation.SlideShowSettings.Run()
             except (AttributeError, pywintypes.com_error) as e:
-               log.exception('Caught exception while in get_slide_number')
+                log.exception('Caught exception while in get_slide_number')
                 log.exception(e)
                 trace_error_handler(log)
                 self.show_error_msg()
