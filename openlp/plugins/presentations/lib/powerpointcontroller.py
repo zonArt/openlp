@@ -83,9 +83,9 @@ class PowerpointController(PresentationController):
             log.debug('start_process')
             if not self.process:
                 self.process = Dispatch('PowerPoint.Application')
-            self.process.Visible = True
+            #self.process.Visible = True
             # ppWindowMinimized = 2
-            self.process.WindowState = 2
+            #self.process.WindowState = 2
 
         def kill(self):
             """
@@ -132,21 +132,12 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('load_presentation')
         try:
-            if not self.controller.process or not self.controller.process.Visible:
+            if not self.controller.process:
                 self.controller.start_process()
-            self.controller.process.Presentations.Open(self.file_path, False, False, True)
+            self.controller.process.Presentations.Open(os.path.normpath(self.file_path), False, False, False)
             self.presentation = self.controller.process.Presentations(self.controller.process.Presentations.Count)
             self.create_thumbnails()
             self.create_titles_and_notes()
-            # Powerpoint 2010 and 2013 pops up when loading a file, so we minimize it again
-            if float(self.presentation.Application.Version) >= 14.0:
-                try:
-                    # ppWindowMinimized = 2
-                    self.presentation.Application.WindowState = 2
-                except (AttributeError, pywintypes.com_error) as e:
-                    log.exception('Failed to minimize main powerpoint window')
-                    log.exception(e)
-                    trace_error_handler(log)
             # Make sure powerpoint doesn't steal focus
             Registry().get('main_window').activateWindow()
             return True
@@ -203,10 +194,6 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('is_loaded')
         try:
-            if not self.controller.process.Visible:
-                return False
-            if self.controller.process.Windows.Count == 0:
-                return False
             if self.controller.process.Presentations.Count == 0:
                 return False
         except (AttributeError, pywintypes.com_error) as e:
@@ -321,7 +308,13 @@ class PowerpointDocument(PresentationDocument):
                 except win32ui.error:
                     dpi = 96
             size = ScreenList().current['size']
-            ppt_window = self.presentation.SlideShowSettings.Run()
+            try:
+                ppt_window = self.presentation.SlideShowSettings.Run()
+            except (AttributeError, pywintypes.com_error) as e:
+               log.exception('Caught exception while in get_slide_number')
+                log.exception(e)
+                trace_error_handler(log)
+                self.show_error_msg()
             if not ppt_window:
                 return
             try:
@@ -332,15 +325,6 @@ class PowerpointDocument(PresentationDocument):
             except AttributeError as e:
                 log.exception('AttributeError while in start_presentation')
                 log.exception(e)
-            # Powerpoint 2010 and 2013 pops up when starting a file, so we minimize it again
-            if float(self.presentation.Application.Version) >= 14.0:
-                try:
-                    # ppWindowMinimized = 2
-                    self.presentation.Application.WindowState = 2
-                except (AttributeError, pywintypes.com_error) as e:
-                    log.exception('Failed to minimize main powerpoint window')
-                    log.exception(e)
-                    trace_error_handler(log)
             # Make sure powerpoint doesn't steal focus
             Registry().get('main_window').activateWindow()
 
