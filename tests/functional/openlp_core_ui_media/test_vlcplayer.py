@@ -28,13 +28,30 @@ import sys
 from unittest import TestCase
 from tests.functional import patch
 
-from openlp.core.ui.media.vlcplayer import get_vlc
+from openlp.core.ui.media.vlcplayer import AUDIO_EXT, VIDEO_EXT, VlcPlayer, get_vlc
 
 
 class TestVLCPlayer(TestCase):
     """
     Test the functions in the :mod:`vlcplayer` module.
     """
+    def init_test(self):
+        """
+        Test that the VLC player class initialises correctly
+        """
+        # GIVEN: A mocked out list of extensions
+        # TODO: figure out how to mock out the lists of extensions
+
+        # WHEN: The VlcPlayer class is instantiated
+        vlc_player = VlcPlayer(None)
+
+        # THEN: The correct variables are set
+        self.assertEqual('VLC', vlc_player.original_name)
+        self.assertEqual('&VLC', vlc_player.display_name)
+        self.assertIsNone(vlc_player.parent)
+        self.assertTrue(vlc_player.can_folder)
+        self.assertListEqual(AUDIO_EXT, vlc_player.audio_extensions_list)
+        self.assertListEqual(VIDEO_EXT, vlc_player.video_extensions_list)
 
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     def fix_vlc_22_plugin_path_test(self, mocked_is_macosx):
@@ -75,3 +92,4 @@ class TestVLCPlayer(TestCase):
         # THEN: The extra environment variable should NOT be there
         self.assertNotIn('VLC_PLUGIN_PATH', os.environ,
                          'The plugin path should NOT be in the environment variables')
+
