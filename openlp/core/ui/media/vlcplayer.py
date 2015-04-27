@@ -62,6 +62,10 @@ def get_vlc():
 
     :return: The "vlc" module, or None
     """
+    if 'openlp.core.ui.media.vendor.vlc' in sys.modules:
+        # If VLC has already been imported, no need to do all the stuff below again
+        return sys.modules['openlp.core.ui.media.vendor.vlc']
+
     is_vlc_available = False
     try:
         if is_macosx():
