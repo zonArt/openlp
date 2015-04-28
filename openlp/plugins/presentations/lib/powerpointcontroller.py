@@ -121,8 +121,6 @@ class PowerpointDocument(PresentationDocument):
         self.presentation = None
         self.index_map = {}
         self.slide_count = 0
-        self.blank_slide = None
-        self.blank_click = None
 
     def load_presentation(self):
         """
@@ -231,13 +229,6 @@ class PowerpointDocument(PresentationDocument):
             # ppSlideShowRunning = 1
             self.presentation.SlideShowWindow.View.State = 1
             self.presentation.SlideShowWindow.Activate()
-            # Unblanking is broken it seems, can't return to the right slide
-            if self.blank_slide:
-                self.presentation.SlideShowWindow.View.GotoSlide(self.blank_slide, False)
-                if self.blank_click:
-                    self.presentation.SlideShowWindow.View.GotoClick(self.blank_click)
-                self.blank_slide = None
-                self.blank_click = None
         except (AttributeError, pywintypes.com_error) as e:
             log.exception('Caught exception while in unblank_screen')
             log.exception(e)
@@ -252,9 +243,6 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('blank_screen')
         try:
-            # Unblanking is broken it seems, can't return to the right slide, need to save info for later
-            self.blank_slide = self.get_slide_number()
-            self.blank_click = self.presentation.SlideShowWindow.View.GetClickIndex()
             # ppSlideShowBlackScreen = 3
             self.presentation.SlideShowWindow.View.State = 3
         except (AttributeError, pywintypes.com_error) as e:

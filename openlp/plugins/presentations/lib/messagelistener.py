@@ -243,6 +243,8 @@ class Controller(object):
         Instruct the controller to stop and hide the presentation.
         """
         log.debug('Live = %s, stop' % self.is_live)
+        # Save the current slide number to be able to return to this slide if the presentation is activated again.
+        self.doc.slidenumber = self.doc.get_slide_number()
         self.hide_mode = HideMode.Screen
         if not self.doc:
             return
@@ -266,8 +268,6 @@ class Controller(object):
             return
         if not self.activate():
             return
-        if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
-            self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
         Registry().execute('live_display_hide', HideMode.Screen)
 
