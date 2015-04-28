@@ -42,4 +42,4 @@ else:
 # Only one QApplication can be created. Use QtGui.QApplication.instance() when you need to "create" a  QApplication.
 application = QtGui.QApplication([])
 
-__all__ = ['MagicMock', 'patch', 'mock_open', 'call', 'application']
+__all__ = ['ANY', 'MagicMock', 'patch', 'mock_open', 'call', 'application']

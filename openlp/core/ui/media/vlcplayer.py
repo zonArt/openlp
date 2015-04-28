@@ -159,7 +159,7 @@ class VlcPlayer(MediaPlayer):
             # framework and not the old Carbon.
             display.vlc_media_player.set_nsobject(win_id)
         else:
-            # for Linux using the X Server
+            # for Linux/*BSD using the X Server
             display.vlc_media_player.set_xwindow(win_id)
         self.has_own_widget = True
 
