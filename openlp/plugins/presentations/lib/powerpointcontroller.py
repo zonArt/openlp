@@ -231,8 +231,8 @@ class PowerpointDocument(PresentationDocument):
             # ppSlideShowRunning = 1
             self.presentation.SlideShowWindow.View.State = 1
             self.presentation.SlideShowWindow.Activate()
-            # Unblanking is broken in PowerPoint 2010 and 2013, need to redisplay
-            if float(self.presentation.Application.Version) >= 14.0 and self.blank_slide:
+            # Unblanking is broken it seems, can't return to the right slide
+            if self.blank_slide:
                 self.presentation.SlideShowWindow.View.GotoSlide(self.blank_slide, False)
                 if self.blank_click:
                     self.presentation.SlideShowWindow.View.GotoClick(self.blank_click)
@@ -252,10 +252,9 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('blank_screen')
         try:
-            # Unblanking is broken in PowerPoint 2010 and 2013, need to save info for later
-            if float(self.presentation.Application.Version) >= 14.0:
-                self.blank_slide = self.get_slide_number()
-                self.blank_click = self.presentation.SlideShowWindow.View.GetClickIndex()
+            # Unblanking is broken it seems, can't return to the right slide, need to save info for later
+            self.blank_slide = self.get_slide_number()
+            self.blank_click = self.presentation.SlideShowWindow.View.GetClickIndex()
             # ppSlideShowBlackScreen = 3
             self.presentation.SlideShowWindow.View.State = 3
         except (AttributeError, pywintypes.com_error) as e:
