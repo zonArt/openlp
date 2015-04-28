@@ -24,9 +24,9 @@ Package to test the openlp.core.ui.media.vlcplayer package.
 """
 import os
 import sys
-
 from unittest import TestCase
 
+from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.vlcplayer import AUDIO_EXT, VIDEO_EXT, VlcPlayer, get_vlc
 
 from tests.functional import MagicMock, patch
@@ -260,6 +260,103 @@ class TestVLCPlayer(TestCase):
 
         # THEN: set_nsobject should be called
         mocked_media_player_new.set_nsobject.assert_called_with(2)
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def check_available_test(self, mocked_get_vlc):
+        """
+        Check that when the "vlc" module is available, then VLC is set as available
+        """
+        # GIVEN: A mocked out get_vlc() method and a VlcPlayer instance
+        mocked_get_vlc.return_value = MagicMock()
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: vlc
+        is_available = vlc_player.check_available()
+
+        # THEN: VLC should be available
+        self.assertTrue(is_available)
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def check_not_available_test(self, mocked_get_vlc):
+        """
+        Check that when the "vlc" module is not available, then VLC is set as unavailable
+        """
+        # GIVEN: A mocked out get_vlc() method and a VlcPlayer instance
+        mocked_get_vlc.return_value = None
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: vlc
+        is_available = vlc_player.check_available()
+
+        # THEN: VLC should NOT be available
+        self.assertFalse(is_available)
+
+    def resize_test(self):
+        """
+        Test resizing the player
+        """
+        # GIVEN: A display object and a VlcPlayer instance
+        display = MagicMock()
+        display.size.return_value = (10, 10)
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: resize is called
+        vlc_player.resize(display)
+
+        # THEN: The right methods should have been called
+        display.size.assert_called_with()
+        display.vlc_widget.resize.assert_called_with((10, 10))
+
+    @patch('openlp.core.ui.media.vlcplayer.threading')
+    def stop_test(self, mocked_threading):
+        """
+        Test stopping the current item
+        """
+        # GIVEN: A display object and a VlcPlayer instance and some mocked threads
+        mocked_thread = MagicMock()
+        mocked_threading.Thread.return_value = mocked_thread
+        mocked_stop = MagicMock()
+        display = MagicMock()
+        display.vlc_media_player.stop = mocked_stop
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: stop is called
+        vlc_player.stop(display)
+
+        # THEN: A thread should have been started to stop VLC
+        mocked_threading.Thread.assert_called_with(target=mocked_stop)
+        mocked_thread.start.assert_called_with()
+        self.assertEqual(MediaState.Stopped, vlc_player.state)
+
+    def volume_test(self):
+        """
+        Test setting the volume
+        """
+        # GIVEN: A display object and a VlcPlayer instance
+        display = MagicMock()
+        display.has_audio = True
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: The volume is set
+        vlc_player.volume(display, 10)
+
+        # THEN: The volume should have been set
+        display.vlc_media_player.audio_set_volume.assert_called_with(10)
+
+    def volume_no_audio_test(self):
+        """
+        Test setting the volume when there's no audio
+        """
+        # GIVEN: A display object and a VlcPlayer instance
+        display = MagicMock()
+        display.has_audio = False
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: The volume is set
+        vlc_player.volume(display, 10)
+
+        # THEN: The volume should NOT have been set
+        self.assertEqual(0, display.vlc_media_player.audio_set_volume.call_count)
 
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     def fix_vlc_22_plugin_path_test(self, mocked_is_macosx):
