@@ -121,6 +121,8 @@ class PowerpointDocument(PresentationDocument):
         self.presentation = None
         self.index_map = {}
         self.slide_count = 0
+        self.blank_slide = None
+        self.blank_click = None
 
     def load_presentation(self):
         """
@@ -230,10 +232,12 @@ class PowerpointDocument(PresentationDocument):
             self.presentation.SlideShowWindow.View.State = 1
             self.presentation.SlideShowWindow.Activate()
             # Unblanking is broken in PowerPoint 2010 and 2013, need to redisplay
-            if float(self.presentation.Application.Version) >= 14.0:
+            if float(self.presentation.Application.Version) >= 14.0 and self.blank_slide:
                 self.presentation.SlideShowWindow.View.GotoSlide(self.blank_slide, False)
                 if self.blank_click:
                     self.presentation.SlideShowWindow.View.GotoClick(self.blank_click)
+                self.blank_slide = None
+                self.blank_click = None
         except (AttributeError, pywintypes.com_error) as e:
             log.exception('Caught exception while in unblank_screen')
             log.exception(e)
@@ -279,7 +283,7 @@ class PowerpointDocument(PresentationDocument):
 
     def stop_presentation(self):
         """
-        Stops the current presentation and hides the output.
+        Stops the current presentation and hides the output. Used when blanking to desktop.
         """
         log.debug('stop_presentation')
         try:
@@ -305,10 +309,11 @@ class PowerpointDocument(PresentationDocument):
                 except win32ui.error:
                     dpi = 96
             size = ScreenList().current['size']
+            ppt_window = None
             try:
                 ppt_window = self.presentation.SlideShowSettings.Run()
             except (AttributeError, pywintypes.com_error) as e:
-                log.exception('Caught exception while in get_slide_number')
+                log.exception('Caught exception while in start_presentation')
                 log.exception(e)
                 trace_error_handler(log)
                 self.show_error_msg()
