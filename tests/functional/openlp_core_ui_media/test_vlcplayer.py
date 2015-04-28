@@ -147,20 +147,8 @@ class TestVLCPlayer(TestCase):
         # WHEN: setup() is run
         vlc_player.setup(mocked_display)
 
-        # THEN: The VLC widget should be set up correctly
-        self.assertEqual(mocked_display.vlc_widget, mocked_qframe)
-        mocked_qframe.setFrameStyle.assert_called_with(1)
-        mocked_settings.value.assert_called_with('advanced/hide mouse')
+        # THEN: The VLC instance should be created with the correct options
         mocked_vlc.Instance.assert_called_with('--no-video-title-show --mouse-hide-timeout=0')
-        self.assertEqual(mocked_display.vlc_instance, mocked_instance)
-        mocked_instance.media_player_new.assert_called_with()
-        self.assertEqual(mocked_display.vlc_media_player, mocked_media_player_new)
-        mocked_display.size.assert_called_with()
-        mocked_qframe.resize.assert_called_with((10, 10))
-        mocked_qframe.raise_.assert_called_with()
-        mocked_qframe.hide.assert_called_with()
-        mocked_media_player_new.set_xwindow.assert_called_with(2)
-        self.assertTrue(vlc_player.has_own_widget)
 
     @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
@@ -196,20 +184,8 @@ class TestVLCPlayer(TestCase):
         # WHEN: setup() is run
         vlc_player.setup(mocked_display)
 
-        # THEN: The VLC widget should be set up correctly
-        self.assertEqual(mocked_display.vlc_widget, mocked_qframe)
-        mocked_qframe.setFrameStyle.assert_called_with(1)
-        mocked_settings.value.assert_called_with('advanced/hide mouse')
+        # THEN: The VLC instance should be created with the correct options
         mocked_vlc.Instance.assert_called_with('--no-video-title-show --no-audio --no-video-title-show')
-        self.assertEqual(mocked_display.vlc_instance, mocked_instance)
-        mocked_instance.media_player_new.assert_called_with()
-        self.assertEqual(mocked_display.vlc_media_player, mocked_media_player_new)
-        mocked_display.size.assert_called_with()
-        mocked_qframe.resize.assert_called_with((10, 10))
-        mocked_qframe.raise_.assert_called_with()
-        mocked_qframe.hide.assert_called_with()
-        mocked_media_player_new.set_xwindow.assert_called_with(2)
-        self.assertTrue(vlc_player.has_own_widget)
 
     @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
@@ -245,20 +221,8 @@ class TestVLCPlayer(TestCase):
         # WHEN: setup() is run
         vlc_player.setup(mocked_display)
 
-        # THEN: The VLC widget should be set up correctly
-        self.assertEqual(mocked_display.vlc_widget, mocked_qframe)
-        mocked_qframe.setFrameStyle.assert_called_with(1)
-        mocked_settings.value.assert_called_with('advanced/hide mouse')
-        mocked_vlc.Instance.assert_called_with('--no-video-title-show --no-audio --no-video-title-show')
-        self.assertEqual(mocked_display.vlc_instance, mocked_instance)
-        mocked_instance.media_player_new.assert_called_with()
-        self.assertEqual(mocked_display.vlc_media_player, mocked_media_player_new)
-        mocked_display.size.assert_called_with()
-        mocked_qframe.resize.assert_called_with((10, 10))
-        mocked_qframe.raise_.assert_called_with()
-        mocked_qframe.hide.assert_called_with()
+        # THEN: set_hwnd should be called
         mocked_media_player_new.set_hwnd.assert_called_with(2)
-        self.assertTrue(vlc_player.has_own_widget)
 
     @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
@@ -294,20 +258,8 @@ class TestVLCPlayer(TestCase):
         # WHEN: setup() is run
         vlc_player.setup(mocked_display)
 
-        # THEN: The VLC widget should be set up correctly
-        self.assertEqual(mocked_display.vlc_widget, mocked_qframe)
-        mocked_qframe.setFrameStyle.assert_called_with(1)
-        mocked_settings.value.assert_called_with('advanced/hide mouse')
-        mocked_vlc.Instance.assert_called_with('--no-video-title-show --no-audio --no-video-title-show')
-        self.assertEqual(mocked_display.vlc_instance, mocked_instance)
-        mocked_instance.media_player_new.assert_called_with()
-        self.assertEqual(mocked_display.vlc_media_player, mocked_media_player_new)
-        mocked_display.size.assert_called_with()
-        mocked_qframe.resize.assert_called_with((10, 10))
-        mocked_qframe.raise_.assert_called_with()
-        mocked_qframe.hide.assert_called_with()
+        # THEN: set_nsobject should be called
         mocked_media_player_new.set_nsobject.assert_called_with(2)
-        self.assertTrue(vlc_player.has_own_widget)
 
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     def fix_vlc_22_plugin_path_test(self, mocked_is_macosx):
