@@ -37,8 +37,7 @@ if is_win():
     import winreg
     import win32ui
     import pywintypes
-    import win32con
-    import win32api
+
 
 from openlp.core.lib import ScreenList
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, translate
@@ -123,6 +122,8 @@ class PowerpointDocument(PresentationDocument):
         self.presentation = None
         self.index_map = {}
         self.slide_count = 0
+        self.blank_slide = 1
+        self.blank_click = None
 
     def load_presentation(self):
         """
@@ -227,24 +228,13 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('unblank_screen')
         try:
-            # Powerpoint 2010 (14.0) has a bug that prevents unblanking from working,
-            # so we have to works around it by sending a keystroke to Powerpoint.
-            # The keystroke 'U' should not have any bindings in Powerpoint so we use that
-            if float(self.presentation.Application.Version) == 14.0:
-                loops = 0
-                while self.presentation.SlideShowWindow.View.State == 3:
-                    if loops >= 10:
-                        log.warning('Tried to unblank 10 times, break to avoid hang, leaving presentation blanked.')
-                        break
-                    log.debug('Unblanking by sending "U"')
-                    self.presentation.SlideShowWindow.Activate()
-                    win32api.keybd_event(ord('U'), 0, 0, 0)
-                    time.sleep(0.01)
-                    win32api.keybd_event(ord('U'), 0, win32con.KEYEVENTF_KEYUP, 0)
-                    loops += 1
-            else:
-                # ppSlideShowRunning = 1
-                self.presentation.SlideShowWindow.View.State = 1
+            self.presentation.SlideShowWindow.Activate()
+            self.presentation.SlideShowWindow.View.State = 1
+            # Unblanking is broken in PowerPoint 2010 (14.0), need to redisplay
+            if 15.0 > float(self.presentation.Application.Version) >= 14.0:
+                self.presentation.SlideShowWindow.View.GotoSlide(self.index_map[self.blank_slide], False)
+                if self.blank_click:
+                    self.presentation.SlideShowWindow.View.GotoClick(self.blank_click)
         except (AttributeError, pywintypes.com_error) as e:
             log.exception('Caught exception while in unblank_screen')
             log.exception(e)
@@ -259,6 +249,10 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('blank_screen')
         try:
+            # Unblanking is broken in PowerPoint 2010 (14.0), need to save info for later
+            if 15.0 > float(self.presentation.Application.Version) >= 14.0:
+                self.blank_slide = self.get_slide_number()
+                self.blank_click = self.presentation.SlideShowWindow.View.GetClickIndex()
             # ppSlideShowBlackScreen = 3
             self.presentation.SlideShowWindow.View.State = 3
         except (AttributeError, pywintypes.com_error) as e:
