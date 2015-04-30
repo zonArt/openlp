@@ -24,15 +24,38 @@ Package to test the openlp.core.ui.media.vlcplayer package.
 """
 import os
 import sys
+from datetime import datetime, timedelta
 from unittest import TestCase
 
+from openlp.core.common import Registry
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.vlcplayer import AUDIO_EXT, VIDEO_EXT, VlcPlayer, get_vlc
 
 from tests.functional import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
 
 
-class TestVLCPlayer(TestCase):
+class MockDateTime(object):
+    _return_values = [datetime(2015, 4, 15, 18, 35, 21, 0)]
+    _counter = 0 
+    
+    @classmethod
+    def _revert(cls):
+        cls._return_values = [datetime(2015, 4, 15, 18, 35, 21, 0)]
+        cls._counter = 0 
+    
+    @classmethod
+    def now(cls):
+        print('%s, %s' % (len(cls._return_values), cls._counter))
+        if len(cls._return_values) > cls._counter:
+            mocked_datetime = cls._return_values[cls._counter]
+        else:
+            mocked_datetime = cls._return_values[-1]
+        cls._counter += 1
+        return mocked_datetime
+
+
+class TestVLCPlayer(TestCase, TestMixin):
     """
     Test the functions in the :mod:`vlcplayer` module.
     """
@@ -44,6 +67,7 @@ class TestVLCPlayer(TestCase):
             del os.environ['VLC_PLUGIN_PATH']
         if 'openlp.core.ui.media.vendor.vlc' in sys.modules:
             del sys.modules['openlp.core.ui.media.vendor.vlc']
+        MockDateTime._revert()
 
     def init_test(self):
         """
@@ -291,21 +315,92 @@ class TestVLCPlayer(TestCase):
         # THEN: VLC should NOT be available
         self.assertFalse(is_available)
 
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    @patch('openlp.core.ui.media.vlcplayer.datetime', MockDateTime)
+    def media_state_wait_test(self, mocked_get_vlc):
+        """
+        Check that waiting for a state change works
+        """
+        # GIVEN: A mocked out get_vlc method
+        mocked_vlc = MagicMock()
+        mocked_vlc.State.Error = 1
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_display = MagicMock()
+        mocked_display.vlc_media.get_state.return_value = 2
+        Registry.create()
+        mocked_application = MagicMock()
+        Registry().register('application', mocked_application)
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: media_state_wait() is called
+        result = vlc_player.media_state_wait(mocked_display, 2)
+
+        # THEN: The results should be True
+        self.assertTrue(result)
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    @patch('openlp.core.ui.media.vlcplayer.datetime', MockDateTime)
+    def media_state_wait_error_test(self, mocked_get_vlc):
+        """
+        Check that getting an error when waiting for a state change returns False
+        """
+        # GIVEN: A mocked out get_vlc method
+        mocked_vlc = MagicMock()
+        mocked_vlc.State.Error = 1
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_display = MagicMock()
+        mocked_display.vlc_media.get_state.return_value = 1
+        Registry.create()
+        mocked_application = MagicMock()
+        Registry().register('application', mocked_application)
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: media_state_wait() is called
+        result = vlc_player.media_state_wait(mocked_display, 2)
+
+        # THEN: The results should be True
+        self.assertFalse(result)
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    @patch('openlp.core.ui.media.vlcplayer.datetime', MockDateTime)
+    def media_state_wait_times_out_test(self, mocked_get_vlc):
+        """
+        Check that waiting for a state returns False when it times out after 60 seconds
+        """
+        # GIVEN: A mocked out get_vlc method
+        timeout = MockDateTime._return_values[0] + timedelta(seconds=61) 
+        MockDateTime._return_values.append(timeout)
+        mocked_vlc = MagicMock()
+        mocked_vlc.State.Error = 1
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_display = MagicMock()
+        mocked_display.vlc_media.get_state.return_value = 2
+        Registry.create()
+        mocked_application = MagicMock()
+        Registry().register('application', mocked_application)
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: media_state_wait() is called
+        result = vlc_player.media_state_wait(mocked_display, 3)
+
+        # THEN: The results should be True
+        self.assertFalse(result)
+
     def resize_test(self):
         """
         Test resizing the player
         """
         # GIVEN: A display object and a VlcPlayer instance
-        display = MagicMock()
-        display.size.return_value = (10, 10)
+        mocked_display = MagicMock()
+        mocked_display.size.return_value = (10, 10)
         vlc_player = VlcPlayer(None)
 
         # WHEN: resize is called
-        vlc_player.resize(display)
+        vlc_player.resize(mocked_display)
 
         # THEN: The right methods should have been called
-        display.size.assert_called_with()
-        display.vlc_widget.resize.assert_called_with((10, 10))
+        mocked_display.size.assert_called_with()
+        mocked_display.vlc_widget.resize.assert_called_with((10, 10))
 
     @patch('openlp.core.ui.media.vlcplayer.threading')
     def stop_test(self, mocked_threading):
@@ -316,12 +411,12 @@ class TestVLCPlayer(TestCase):
         mocked_thread = MagicMock()
         mocked_threading.Thread.return_value = mocked_thread
         mocked_stop = MagicMock()
-        display = MagicMock()
-        display.vlc_media_player.stop = mocked_stop
+        mocked_display = MagicMock()
+        mocked_display.vlc_media_player.stop = mocked_stop
         vlc_player = VlcPlayer(None)
 
         # WHEN: stop is called
-        vlc_player.stop(display)
+        vlc_player.stop(mocked_display)
 
         # THEN: A thread should have been started to stop VLC
         mocked_threading.Thread.assert_called_with(target=mocked_stop)
@@ -333,30 +428,30 @@ class TestVLCPlayer(TestCase):
         Test setting the volume
         """
         # GIVEN: A display object and a VlcPlayer instance
-        display = MagicMock()
-        display.has_audio = True
+        mocked_display = MagicMock()
+        mocked_display.has_audio = True
         vlc_player = VlcPlayer(None)
 
         # WHEN: The volume is set
-        vlc_player.volume(display, 10)
+        vlc_player.volume(mocked_display, 10)
 
         # THEN: The volume should have been set
-        display.vlc_media_player.audio_set_volume.assert_called_with(10)
+        mocked_display.vlc_media_player.audio_set_volume.assert_called_with(10)
 
     def volume_no_audio_test(self):
         """
         Test setting the volume when there's no audio
         """
         # GIVEN: A display object and a VlcPlayer instance
-        display = MagicMock()
-        display.has_audio = False
+        mocked_display = MagicMock()
+        mocked_display.has_audio = False
         vlc_player = VlcPlayer(None)
 
         # WHEN: The volume is set
-        vlc_player.volume(display, 10)
+        vlc_player.volume(mocked_display, 10)
 
         # THEN: The volume should NOT have been set
-        self.assertEqual(0, display.vlc_media_player.audio_set_volume.call_count)
+        self.assertEqual(0, mocked_display.vlc_media_player.audio_set_volume.call_count)
 
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     def fix_vlc_22_plugin_path_test(self, mocked_is_macosx):
