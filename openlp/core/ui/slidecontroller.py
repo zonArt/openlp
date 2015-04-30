@@ -827,7 +827,7 @@ class SlideController(DisplayController, RegistryProperties):
         # take a copy not a link to the servicemanager copy.
         self.service_item = copy.copy(service_item)
         # Reset blanking if needed
-        if old_item and self.is_live and (old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay) or \
+        if old_item and self.is_live and (old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay) or
                                           self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay)):
             self._reset_blank(self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay))
         if service_item.is_command():

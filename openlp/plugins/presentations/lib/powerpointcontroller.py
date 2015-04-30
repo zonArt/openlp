@@ -227,7 +227,7 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('unblank_screen')
         try:
-            # Powerpoint 2010 (14.0) has a bug that prevents unblanking from working, 
+            # Powerpoint 2010 (14.0) has a bug that prevents unblanking from working,
             # so we have to works around it by sending a keystroke to Powerpoint.
             # The keystroke 'U' should not have any bindings in Powerpoint so we use that
             if float(self.presentation.Application.Version) == 14.0:
