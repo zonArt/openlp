@@ -244,7 +244,8 @@ class Controller(object):
         """
         log.debug('Live = %s, stop' % self.is_live)
         # Save the current slide number to be able to return to this slide if the presentation is activated again.
-        self.doc.slidenumber = self.doc.get_slide_number()
+        if self.doc.is_active():
+            self.doc.slidenumber = self.doc.get_slide_number()
         self.hide_mode = HideMode.Screen
         if not self.doc:
             return
