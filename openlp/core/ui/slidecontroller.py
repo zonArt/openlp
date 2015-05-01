@@ -1119,8 +1119,7 @@ class SlideController(DisplayController, RegistryProperties):
         This updates the preview frame, for example after changing a slide or using *Blank to Theme*.
         """
         self.log_debug('update_preview %s ' % self.screens.current['primary'])
-        if not self.screens.current['primary'] and self.service_item and \
-                self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
+        if self.service_item and self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change is slow
             QtCore.QTimer.singleShot(0.5, self.grab_maindisplay)
             QtCore.QTimer.singleShot(2.5, self.grab_maindisplay)

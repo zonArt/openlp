@@ -138,8 +138,9 @@ class PowerpointDocument(PresentationDocument):
             self.presentation = self.controller.process.Presentations(self.controller.process.Presentations.Count)
             self.create_thumbnails()
             self.create_titles_and_notes()
-            # Make sure powerpoint doesn't steal focus
-            Registry().get('main_window').activateWindow()
+            # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
+            if len(ScreenList().screen_list) > 1:
+                Registry().get('main_window').activateWindow()
             return True
         except (AttributeError, pywintypes.com_error) as e:
             log.exception('Exception caught while loading Powerpoint presentation')
@@ -185,8 +186,9 @@ class PowerpointDocument(PresentationDocument):
                 trace_error_handler(log)
         self.presentation = None
         self.controller.remove_doc(self)
-        # Make sure powerpoint doesn't steal focus
-        Registry().get('main_window').activateWindow()
+        # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
+        if len(ScreenList().screen_list) > 1:
+            Registry().get('main_window').activateWindow()
 
     def is_loaded(self):
         """
@@ -240,8 +242,9 @@ class PowerpointDocument(PresentationDocument):
             log.exception(e)
             trace_error_handler(log)
             self.show_error_msg()
-        # Make sure powerpoint doesn't steal focus
-        Registry().get('main_window').activateWindow()
+        # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
+        if len(ScreenList().screen_list) > 1:
+            Registry().get('main_window').activateWindow()
 
     def blank_screen(self):
         """
@@ -324,8 +327,9 @@ class PowerpointDocument(PresentationDocument):
             except AttributeError as e:
                 log.exception('AttributeError while in start_presentation')
                 log.exception(e)
-            # Make sure powerpoint doesn't steal focus
-            Registry().get('main_window').activateWindow()
+            # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
+            if len(ScreenList().screen_list) > 1:
+                Registry().get('main_window').activateWindow()
 
     def get_slide_number(self):
         """
