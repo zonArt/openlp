@@ -607,3 +607,33 @@ class TestVLCPlayer(TestCase, TestMixin):
         mocked_display.vlc_media_player.stop.assert_called_with()
         mocked_display.vlc_widget.setVisible.assert_called_with(False)
         self.assertEqual(MediaState.Off, vlc_player.state)
+
+    def set_visible_has_own_widget_test(self):
+        """
+        Test the set_visible() method when the player has its own widget
+        """
+        # GIVEN: Some mocked out stuff
+        mocked_display = MagicMock()
+        vlc_player = VlcPlayer(None)
+        vlc_player.has_own_widget = True
+
+        # WHEN: reset() is called
+        vlc_player.set_visible(mocked_display, True)
+
+        # THEN: The media should be stopped and invsibile
+        mocked_display.vlc_widget.setVisible.assert_called_with(True)
+
+    def set_visible_no_widget_test(self):
+        """
+        Test the set_visible() method when the player doesn't have a widget
+        """
+        # GIVEN: Some mocked out stuff
+        mocked_display = MagicMock()
+        vlc_player = VlcPlayer(None)
+        vlc_player.has_own_widget = False
+
+        # WHEN: reset() is called
+        vlc_player.set_visible(mocked_display, True)
+
+        # THEN: The media should be stopped and invsibile
+        self.assertEqual(0, mocked_display.vlc_widget.setVisible.call_count)
