@@ -540,17 +540,6 @@ class TestVLCPlayer(TestCase, TestMixin):
         # THEN: The volume should NOT have been set
         self.assertEqual(0, mocked_display.vlc_media_player.audio_set_volume.call_count)
 
-    '''
-    def seek(self, display, seek_value):
-        """
-        Go to a particular position
-        """
-        if display.controller.media_info.media_type == MediaType.CD \
-                or display.controller.media_info.media_type == MediaType.DVD:
-            seek_value += int(display.controller.media_info.start_time * 1000)
-        if display.vlc_media_player.is_seekable():
-            display.vlc_media_player.set_time(seek_value)
-    '''
     def seek_unseekable_media_test(self):
         """
         Test seeking something that can't be seeked
@@ -602,3 +591,19 @@ class TestVLCPlayer(TestCase, TestMixin):
         # THEN: nothing should happen
         mocked_display.vlc_media_player.is_seekable.assert_called_with()
         mocked_display.vlc_media_player.set_time.assert_called_with(5000)
+
+    def reset_test(self):
+        """
+        Test the reset() method
+        """
+        # GIVEN: Some mocked out stuff
+        mocked_display = MagicMock()
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: reset() is called
+        vlc_player.reset(mocked_display)
+
+        # THEN: The media should be stopped and invsibile
+        mocked_display.vlc_media_player.stop.assert_called_with()
+        mocked_display.vlc_widget.setVisible.assert_called_with(False)
+        self.assertEqual(MediaState.Off, vlc_player.state)
