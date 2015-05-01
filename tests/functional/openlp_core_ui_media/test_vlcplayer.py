@@ -37,13 +37,13 @@ from tests.helpers.testmixin import TestMixin
 
 class MockDateTime(object):
     _return_values = [datetime(2015, 4, 15, 18, 35, 21, 0)]
-    _counter = 0 
-    
+    _counter = 0
+
     @classmethod
     def _revert(cls):
         cls._return_values = [datetime(2015, 4, 15, 18, 35, 21, 0)]
-        cls._counter = 0 
-    
+        cls._counter = 0
+
     @classmethod
     def now(cls):
         print('%s, %s' % (len(cls._return_values), cls._counter))
@@ -368,7 +368,7 @@ class TestVLCPlayer(TestCase, TestMixin):
         Check that waiting for a state returns False when it times out after 60 seconds
         """
         # GIVEN: A mocked out get_vlc method
-        timeout = MockDateTime._return_values[0] + timedelta(seconds=61) 
+        timeout = MockDateTime._return_values[0] + timedelta(seconds=61)
         MockDateTime._return_values.append(timeout)
         mocked_vlc = MagicMock()
         mocked_vlc.State.Error = 1
@@ -401,6 +401,76 @@ class TestVLCPlayer(TestCase, TestMixin):
         # THEN: The right methods should have been called
         mocked_display.size.assert_called_with()
         mocked_display.vlc_widget.resize.assert_called_with((10, 10))
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def pause_test(self, mocked_get_vlc):
+        """
+        Test that the pause method works correctly
+        """
+        # GIVEN: A mocked out get_vlc method
+        mocked_vlc = MagicMock()
+        mocked_vlc.State.Playing = 1
+        mocked_vlc.State.Paused = 2
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_display = MagicMock()
+        mocked_display.vlc_media.get_state.return_value = 1
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: The media is paused
+        with patch.object(vlc_player, 'media_state_wait') as mocked_media_state_wait:
+            mocked_media_state_wait.return_value = True
+            vlc_player.pause(mocked_display)
+
+        # THEN: The pause method should exit early
+        mocked_display.vlc_media.get_state.assert_called_with()
+        mocked_display.vlc_media_player.pause.assert_called_with()
+        mocked_media_state_wait.assert_called_with(mocked_display, 2)
+        self.assertEqual(MediaState.Paused, vlc_player.state)
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def pause_not_playing_test(self, mocked_get_vlc):
+        """
+        Test the pause method when the player is not playing
+        """
+        # GIVEN: A mocked out get_vlc method
+        mocked_vlc = MagicMock()
+        mocked_vlc.State.Playing = 1
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_display = MagicMock()
+        mocked_display.vlc_media.get_state.return_value = 2
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: The media is paused
+        vlc_player.pause(mocked_display)
+
+        # THEN: The pause method should exit early
+        mocked_display.vlc_media.get_state.assert_called_with()
+        self.assertEqual(0, mocked_display.vlc_media_player.pause.call_count)
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def pause_fail_test(self, mocked_get_vlc):
+        """
+        Test the pause method when the player fails to pause the media
+        """
+        # GIVEN: A mocked out get_vlc method
+        mocked_vlc = MagicMock()
+        mocked_vlc.State.Playing = 1
+        mocked_vlc.State.Paused = 2
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_display = MagicMock()
+        mocked_display.vlc_media.get_state.return_value = 1
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: The media is paused
+        with patch.object(vlc_player, 'media_state_wait') as mocked_media_state_wait:
+            mocked_media_state_wait.return_value = False
+            vlc_player.pause(mocked_display)
+
+        # THEN: The pause method should exit early
+        mocked_display.vlc_media.get_state.assert_called_with()
+        mocked_display.vlc_media_player.pause.assert_called_with()
+        mocked_media_state_wait.assert_called_with(mocked_display, 2)
+        self.assertNotEqual(MediaState.Paused, vlc_player.state)
 
     @patch('openlp.core.ui.media.vlcplayer.threading')
     def stop_test(self, mocked_threading):
