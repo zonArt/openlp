@@ -28,31 +28,12 @@ from datetime import datetime, timedelta
 from unittest import TestCase
 
 from openlp.core.common import Registry
-from openlp.core.ui.media import MediaState
+from openlp.core.ui.media import MediaState, MediaType
 from openlp.core.ui.media.vlcplayer import AUDIO_EXT, VIDEO_EXT, VlcPlayer, get_vlc
 
 from tests.functional import MagicMock, patch
+from tests.helpers import MockDateTime
 from tests.helpers.testmixin import TestMixin
-
-
-class MockDateTime(object):
-    _return_values = [datetime(2015, 4, 15, 18, 35, 21, 0)]
-    _counter = 0
-
-    @classmethod
-    def _revert(cls):
-        cls._return_values = [datetime(2015, 4, 15, 18, 35, 21, 0)]
-        cls._counter = 0
-
-    @classmethod
-    def now(cls):
-        print('%s, %s' % (len(cls._return_values), cls._counter))
-        if len(cls._return_values) > cls._counter:
-            mocked_datetime = cls._return_values[cls._counter]
-        else:
-            mocked_datetime = cls._return_values[-1]
-        cls._counter += 1
-        return mocked_datetime
 
 
 class TestVLCPlayer(TestCase, TestMixin):
@@ -67,7 +48,43 @@ class TestVLCPlayer(TestCase, TestMixin):
             del os.environ['VLC_PLUGIN_PATH']
         if 'openlp.core.ui.media.vendor.vlc' in sys.modules:
             del sys.modules['openlp.core.ui.media.vendor.vlc']
-        MockDateTime._revert()
+        MockDateTime.revert()
+
+    @patch('openlp.core.ui.media.vlcplayer.is_macosx')
+    def fix_vlc_22_plugin_path_test(self, mocked_is_macosx):
+        """
+        Test that on OS X we set the VLC plugin path to fix a bug in the VLC module
+        """
+        # GIVEN: We're on OS X and we don't have the VLC plugin path set
+        mocked_is_macosx.return_value = True
+
+        # WHEN: An checking if the player is available
+        get_vlc()
+
+        # THEN: The extra environment variable should be there
+        self.assertIn('VLC_PLUGIN_PATH', os.environ,
+                      'The plugin path should be in the environment variables')
+        self.assertEqual('/Applications/VLC.app/Contents/MacOS/plugins', os.environ['VLC_PLUGIN_PATH'])
+
+    @patch.dict(os.environ)
+    @patch('openlp.core.ui.media.vlcplayer.is_macosx')
+    def not_osx_fix_vlc_22_plugin_path_test(self, mocked_is_macosx):
+        """
+        Test that on Linux or some other non-OS X we do not set the VLC plugin path
+        """
+        # GIVEN: We're not on OS X and we don't have the VLC plugin path set
+        mocked_is_macosx.return_value = False
+        if 'VLC_PLUGIN_PATH' in os.environ:
+            del os.environ['VLC_PLUGIN_PATH']
+        if 'openlp.core.ui.media.vendor.vlc' in sys.modules:
+            del sys.modules['openlp.core.ui.media.vendor.vlc']
+
+        # WHEN: An checking if the player is available
+        get_vlc()
+
+        # THEN: The extra environment variable should NOT be there
+        self.assertNotIn('VLC_PLUGIN_PATH', os.environ,
+                         'The plugin path should NOT be in the environment variables')
 
     def init_test(self):
         """
@@ -368,8 +385,8 @@ class TestVLCPlayer(TestCase, TestMixin):
         Check that waiting for a state returns False when it times out after 60 seconds
         """
         # GIVEN: A mocked out get_vlc method
-        timeout = MockDateTime._return_values[0] + timedelta(seconds=61)
-        MockDateTime._return_values.append(timeout)
+        timeout = MockDateTime.return_values[0] + timedelta(seconds=61)
+        MockDateTime.return_values.append(timeout)
         mocked_vlc = MagicMock()
         mocked_vlc.State.Error = 1
         mocked_get_vlc.return_value = mocked_vlc
@@ -523,39 +540,65 @@ class TestVLCPlayer(TestCase, TestMixin):
         # THEN: The volume should NOT have been set
         self.assertEqual(0, mocked_display.vlc_media_player.audio_set_volume.call_count)
 
-    @patch('openlp.core.ui.media.vlcplayer.is_macosx')
-    def fix_vlc_22_plugin_path_test(self, mocked_is_macosx):
+    '''
+    def seek(self, display, seek_value):
         """
-        Test that on OS X we set the VLC plugin path to fix a bug in the VLC module
+        Go to a particular position
         """
-        # GIVEN: We're on OS X and we don't have the VLC plugin path set
-        mocked_is_macosx.return_value = True
-
-        # WHEN: An checking if the player is available
-        get_vlc()
-
-        # THEN: The extra environment variable should be there
-        self.assertIn('VLC_PLUGIN_PATH', os.environ,
-                      'The plugin path should be in the environment variables')
-        self.assertEqual('/Applications/VLC.app/Contents/MacOS/plugins', os.environ['VLC_PLUGIN_PATH'])
-
-    @patch.dict(os.environ)
-    @patch('openlp.core.ui.media.vlcplayer.is_macosx')
-    def not_osx_fix_vlc_22_plugin_path_test(self, mocked_is_macosx):
+        if display.controller.media_info.media_type == MediaType.CD \
+                or display.controller.media_info.media_type == MediaType.DVD:
+            seek_value += int(display.controller.media_info.start_time * 1000)
+        if display.vlc_media_player.is_seekable():
+            display.vlc_media_player.set_time(seek_value)
+    '''
+    def seek_unseekable_media_test(self):
         """
-        Test that on Linux or some other non-OS X we do not set the VLC plugin path
+        Test seeking something that can't be seeked
         """
-        # GIVEN: We're not on OS X and we don't have the VLC plugin path set
-        mocked_is_macosx.return_value = False
-        if 'VLC_PLUGIN_PATH' in os.environ:
-            del os.environ['VLC_PLUGIN_PATH']
-        if 'openlp.core.ui.media.vendor.vlc' in sys.modules:
-            del sys.modules['openlp.core.ui.media.vendor.vlc']
+        # GIVEN: Unseekable media
+        mocked_display = MagicMock()
+        mocked_display.controller.media_info.media_type = MediaType.Audio
+        mocked_display.vlc_media_player.is_seekable.return_value = False
+        vlc_player = VlcPlayer(None)
 
-        # WHEN: An checking if the player is available
-        get_vlc()
+        # WHEN: seek() is called
+        vlc_player.seek(mocked_display, 100)
 
-        # THEN: The extra environment variable should NOT be there
-        self.assertNotIn('VLC_PLUGIN_PATH', os.environ,
-                         'The plugin path should NOT be in the environment variables')
+        # THEN: nothing should happen
+        mocked_display.vlc_media_player.is_seekable.assert_called_with()
+        self.assertEqual(0, mocked_display.vlc_media_player.set_time.call_count)
 
+    def seek_seekable_media_test(self):
+        """
+        Test seeking something that is seekable, but not a DVD
+        """
+        # GIVEN: Unseekable media
+        mocked_display = MagicMock()
+        mocked_display.controller.media_info.media_type = MediaType.Audio
+        mocked_display.vlc_media_player.is_seekable.return_value = True
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: seek() is called
+        vlc_player.seek(mocked_display, 100)
+
+        # THEN: nothing should happen
+        mocked_display.vlc_media_player.is_seekable.assert_called_with()
+        mocked_display.vlc_media_player.set_time.assert_called_with(100)
+
+    def seek_dvd_test(self):
+        """
+        Test seeking a DVD
+        """
+        # GIVEN: Unseekable media
+        mocked_display = MagicMock()
+        mocked_display.controller.media_info.media_type = MediaType.DVD
+        mocked_display.vlc_media_player.is_seekable.return_value = True
+        mocked_display.controller.media_info.start_time = 3
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: seek() is called
+        vlc_player.seek(mocked_display, 2000)
+
+        # THEN: nothing should happen
+        mocked_display.vlc_media_player.is_seekable.assert_called_with()
+        mocked_display.vlc_media_player.set_time.assert_called_with(5000)
