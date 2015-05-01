@@ -1080,6 +1080,7 @@ class SlideController(DisplayController, RegistryProperties):
                                % timeout)
             return
         row = self.preview_widget.current_slide_number()
+        old_selected_row = self.selected_row
         self.selected_row = 0
         if -1 < row < self.preview_widget.slide_count():
             if self.service_item.is_command():
@@ -1089,7 +1090,7 @@ class SlideController(DisplayController, RegistryProperties):
             else:
                 to_display = self.service_item.get_rendered_frame(row)
                 if self.service_item.is_text():
-                    self.display.text(to_display)
+                    self.display.text(to_display, row != old_selected_row)
                 else:
                     if start:
                         self.display.build_html(self.service_item, to_display)
