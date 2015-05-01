@@ -253,3 +253,54 @@ class TestPowerpointDocument(TestCase, TestMixin):
 
         # THEN: next_step() should be call to try to advance to the next effect.
         self.assertTrue(doc.next_step.called, 'next_step() should have been called!')
+
+    def blank_screen_test(self):
+        """
+        Test that blank_screen works as expected
+        """
+        # GIVEN: A Document with mocked controller, presentation, and mocked function get_slide_number
+        doc = PowerpointDocument(self.mock_controller, self.mock_presentation)
+        doc.presentation = MagicMock()
+        doc.presentation.SlideShowWindow.View.GetClickIndex.return_value = 3
+        doc.presentation.Application.Version = 14.0
+        doc.get_slide_number = MagicMock()
+        doc.get_slide_number.return_value = 2
+
+        # WHEN: Calling goto_slide
+        doc.blank_screen()
+
+        # THEN: The view state, doc.blank_slide and doc.blank_click should have new values
+        self.assertEquals(doc.presentation.SlideShowWindow.View.State, 3, 'The View State should be 3')
+        self.assertEquals(doc.blank_slide, 2, 'doc.blank_slide should be 2 because of the PowerPoint version')
+        self.assertEquals(doc.blank_click, 3, 'doc.blank_click should be 3 because of the PowerPoint version')
+
+    def unblank_screen_test(self):
+        """
+        Test that unblank_screen works as expected
+        """
+        # GIVEN: A Document with mocked controller, presentation, ScreenList, and mocked function get_slide_number
+        with patch('openlp.plugins.presentations.lib.powerpointcontroller.ScreenList') as mocked_screen_list:
+            mocked_screen_list_ret = MagicMock()
+            mocked_screen_list_ret.screen_list = [1]
+            mocked_screen_list.return_value = mocked_screen_list_ret
+            doc = PowerpointDocument(self.mock_controller, self.mock_presentation)
+            doc.presentation = MagicMock()
+            doc.presentation.SlideShowWindow.View.GetClickIndex.return_value = 3
+            doc.presentation.Application.Version = 14.0
+            doc.get_slide_number = MagicMock()
+            doc.get_slide_number.return_value = 2
+            doc.index_map[1] = 1
+            doc.blank_slide = 1
+            doc.blank_click = 1
+
+            # WHEN: Calling goto_slide
+            doc.unblank_screen()
+
+            # THEN: The view state have new value, and several function should have been called
+            self.assertEquals(doc.presentation.SlideShowWindow.View.State, 1, 'The View State should be 1')
+            self.assertEquals(doc.presentation.SlideShowWindow.Activate.called, True,
+                              'SlideShowWindow.Activate should have been called')
+            self.assertEquals(doc.presentation.SlideShowWindow.View.GotoSlide.called, True,
+                              'View.GotoSlide should have been called because of the PowerPoint version')
+            self.assertEquals(doc.presentation.SlideShowWindow.View.GotoClick.called, True,
+                              'View.GotoClick should have been called because of the PowerPoint version')
