@@ -637,3 +637,20 @@ class TestVLCPlayer(TestCase, TestMixin):
 
         # THEN: The media should be stopped and invsibile
         self.assertEqual(0, mocked_display.vlc_widget.setVisible.call_count)
+
+    @patch('openlp.core.ui.media.vlcplayer.translate')
+    def get_info_test(self, mocked_translate):
+        """
+        Test that get_info() returns some information about the VLC player
+        """
+        # GIVEN: A VlcPlayer
+        mocked_translate.side_effect = lambda *x: x[1]
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: get_info() is run
+        info = vlc_player.get_info()
+
+        # THEN: The information should be correct
+        self.assertEqual('VLC is an external player which supports a number of different formats.<br/> '
+                         '<strong>Audio</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>Video</strong><br/>' +
+                         str(VIDEO_EXT) + '<br/>', info)
