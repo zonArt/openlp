@@ -31,7 +31,7 @@ from openlp.core.common import Registry
 from openlp.core.ui.media import MediaState, MediaType
 from openlp.core.ui.media.vlcplayer import AUDIO_EXT, VIDEO_EXT, VlcPlayer, get_vlc
 
-from tests.functional import MagicMock, patch
+from tests.functional import MagicMock, patch, call
 from tests.helpers import MockDateTime
 from tests.helpers.testmixin import TestMixin
 
@@ -808,6 +808,72 @@ class TestVLCPlayer(TestCase, TestMixin):
 
         # THEN: The media should be stopped and invsibile
         self.assertEqual(0, mocked_display.vlc_widget.setVisible.call_count)
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def update_ui_test(self, mocked_get_vlc):
+        """
+        Test updating the UI
+        """
+        # GIVEN: A whole bunch of mocks
+        mocked_vlc = MagicMock()
+        mocked_vlc.State.Ended = 1
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_controller = MagicMock()
+        mocked_controller.media_info.end_time = 300
+        mocked_controller.seek_slider.isSliderDown.return_value = False
+        mocked_display = MagicMock()
+        mocked_display.controller = mocked_controller
+        mocked_display.vlc_media.get_state.return_value = 1
+        mocked_display.vlc_media_player.get_time.return_value = 400000
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: update_ui() is called
+        with patch.object(vlc_player, 'stop') as mocked_stop, \
+                patch.object(vlc_player, 'set_visible') as mocked_set_visible:
+            vlc_player.update_ui(mocked_display)
+
+        # THEN: Certain methods should be called
+        mocked_stop.assert_called_with(mocked_display)
+        self.assertEqual(2, mocked_stop.call_count)
+        mocked_display.vlc_media_player.get_time.assert_called_with()
+        mocked_set_visible.assert_called_with(mocked_display, False)
+        mocked_controller.seek_slider.setSliderPosition.assert_called_with(400000)
+        expected_calls = [call(True), call(False)]
+        self.assertEqual(expected_calls, mocked_controller.seek_slider.blockSignals.call_args_list)
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def update_ui_dvd_test(self, mocked_get_vlc):
+        """
+        Test updating the UI for a CD or DVD
+        """
+        # GIVEN: A whole bunch of mocks
+        mocked_vlc = MagicMock()
+        mocked_vlc.State.Ended = 1
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_controller = MagicMock()
+        mocked_controller.media_info.start_time = 100
+        mocked_controller.media_info.end_time = 300
+        mocked_controller.seek_slider.isSliderDown.return_value = False
+        mocked_display = MagicMock()
+        mocked_display.controller = mocked_controller
+        mocked_display.vlc_media.get_state.return_value = 1
+        mocked_display.vlc_media_player.get_time.return_value = 400000
+        mocked_display.controller.media_info.media_type = MediaType.DVD
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: update_ui() is called
+        with patch.object(vlc_player, 'stop') as mocked_stop, \
+                patch.object(vlc_player, 'set_visible') as mocked_set_visible:
+            vlc_player.update_ui(mocked_display)
+
+        # THEN: Certain methods should be called
+        mocked_stop.assert_called_with(mocked_display)
+        self.assertEqual(2, mocked_stop.call_count)
+        mocked_display.vlc_media_player.get_time.assert_called_with()
+        mocked_set_visible.assert_called_with(mocked_display, False)
+        mocked_controller.seek_slider.setSliderPosition.assert_called_with(300000)
+        expected_calls = [call(True), call(False)]
+        self.assertEqual(expected_calls, mocked_controller.seek_slider.blockSignals.call_args_list)
 
     @patch('openlp.core.ui.media.vlcplayer.translate')
     def get_info_test(self, mocked_translate):
