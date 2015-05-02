@@ -368,6 +368,7 @@ class TestVLCPlayer(TestCase, TestMixin):
         mocked_vlc_media.parse.assert_called_with()
         mocked_volume.assert_called_with(mocked_display, 100)
         self.assertEqual(10, mocked_controller.media_info.length)
+        self.assertTrue(result)
 
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
     @patch('openlp.core.ui.media.vlcplayer.os.path.normcase')
@@ -395,21 +396,112 @@ class TestVLCPlayer(TestCase, TestMixin):
         mocked_subitems = MagicMock()
         mocked_subitems.count.return_value = 1
         mocked_subitems.item_at_index.return_value = mocked_vlc_media
-        mocked_display.vlc_media.subitems.return_value = mocked_subitems
+        mocked_vlc_media.subitems.return_value = mocked_subitems
         vlc_player = VlcPlayer(None)
 
-        # WHEN: A video is loaded into VLC
-        with patch.object(vlc_player, 'volume') as mocked_volume:
+        # WHEN: An audio CD is loaded into VLC
+        with patch.object(vlc_player, 'volume') as mocked_volume, \
+                patch.object(vlc_player, 'media_state_wait') as mocked_media_state_wait:
             result = vlc_player.load(mocked_display)
 
         # THEN: The video should be loaded
         mocked_normcase.assert_called_with(media_path)
-        mocked_display.vlc_instance.media_new_path.assert_called_with(media_path)
+        mocked_display.vlc_instance.media_new_location.assert_called_with('cdda://' + media_path)
         self.assertEqual(mocked_vlc_media, mocked_display.vlc_media)
         mocked_display.vlc_media_player.set_media.assert_called_with(mocked_vlc_media)
         mocked_vlc_media.parse.assert_called_with()
         mocked_volume.assert_called_with(mocked_display, 100)
         self.assertEqual(10, mocked_controller.media_info.length)
+        self.assertTrue(result)
+
+    @patch('openlp.core.ui.media.vlcplayer.is_win')
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    @patch('openlp.core.ui.media.vlcplayer.os.path.normcase')
+    def load_audio_cd_on_windows_test(self, mocked_normcase, mocked_get_vlc, mocked_is_win):
+        """
+        Test loading an audio CD into VLC on Windows
+        """
+        # GIVEN: A mocked out get_vlc() method
+        mocked_is_win.return_value = True
+        media_path = '/dev/sr0'
+        mocked_normcase.side_effect = lambda x: x
+        mocked_vlc = MagicMock()
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_controller = MagicMock()
+        mocked_controller.media_info.volume = 100
+        mocked_controller.media_info.media_type = MediaType.CD
+        mocked_controller.media_info.file_info.absoluteFilePath.return_value = media_path
+        mocked_controller.media_info.title_track = 1
+        mocked_vlc_media = MagicMock()
+        mocked_media = MagicMock()
+        mocked_media.get_duration.return_value = 10000
+        mocked_display = MagicMock()
+        mocked_display.controller = mocked_controller
+        mocked_display.vlc_instance.media_new_location.return_value = mocked_vlc_media
+        mocked_display.vlc_media_player.get_media.return_value = mocked_media
+        mocked_subitems = MagicMock()
+        mocked_subitems.count.return_value = 1
+        mocked_subitems.item_at_index.return_value = mocked_vlc_media
+        mocked_vlc_media.subitems.return_value = mocked_subitems
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: An audio CD is loaded into VLC
+        with patch.object(vlc_player, 'volume') as mocked_volume, \
+                patch.object(vlc_player, 'media_state_wait') as mocked_media_state_wait:
+            result = vlc_player.load(mocked_display)
+
+        # THEN: The video should be loaded
+        mocked_normcase.assert_called_with(media_path)
+        mocked_display.vlc_instance.media_new_location.assert_called_with('cdda:///' + media_path)
+        self.assertEqual(mocked_vlc_media, mocked_display.vlc_media)
+        mocked_display.vlc_media_player.set_media.assert_called_with(mocked_vlc_media)
+        mocked_vlc_media.parse.assert_called_with()
+        mocked_volume.assert_called_with(mocked_display, 100)
+        self.assertEqual(10, mocked_controller.media_info.length)
+        self.assertTrue(result)
+
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    @patch('openlp.core.ui.media.vlcplayer.os.path.normcase')
+    def load_audio_cd_no_tracks_test(self, mocked_normcase, mocked_get_vlc):
+        """
+        Test loading an audio CD that has no tracks into VLC
+        """
+        # GIVEN: A mocked out get_vlc() method
+        media_path = '/dev/sr0'
+        mocked_normcase.side_effect = lambda x: x
+        mocked_vlc = MagicMock()
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_controller = MagicMock()
+        mocked_controller.media_info.volume = 100
+        mocked_controller.media_info.media_type = MediaType.CD
+        mocked_controller.media_info.file_info.absoluteFilePath.return_value = media_path
+        mocked_controller.media_info.title_track = 1
+        mocked_vlc_media = MagicMock()
+        mocked_media = MagicMock()
+        mocked_media.get_duration.return_value = 10000
+        mocked_display = MagicMock()
+        mocked_display.controller = mocked_controller
+        mocked_display.vlc_instance.media_new_location.return_value = mocked_vlc_media
+        mocked_display.vlc_media_player.get_media.return_value = mocked_media
+        mocked_subitems = MagicMock()
+        mocked_subitems.count.return_value = 0
+        mocked_subitems.item_at_index.return_value = mocked_vlc_media
+        mocked_vlc_media.subitems.return_value = mocked_subitems
+        vlc_player = VlcPlayer(None)
+
+        # WHEN: An audio CD is loaded into VLC
+        with patch.object(vlc_player, 'volume') as mocked_volume, \
+                patch.object(vlc_player, 'media_state_wait') as mocked_media_state_wait:
+            result = vlc_player.load(mocked_display)
+
+        # THEN: The video should be loaded
+        mocked_normcase.assert_called_with(media_path)
+        mocked_display.vlc_instance.media_new_location.assert_called_with('cdda://' + media_path)
+        self.assertEqual(mocked_vlc_media, mocked_display.vlc_media)
+        self.assertEqual(0, mocked_subitems.item_at_index.call_count)
+        mocked_display.vlc_media_player.set_media.assert_called_with(mocked_vlc_media)
+        self.assertEqual(0, mocked_vlc_media.parse.call_count)
+        self.assertFalse(result)
 
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
     @patch('openlp.core.ui.media.vlcplayer.datetime', MockDateTime)
