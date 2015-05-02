@@ -590,6 +590,30 @@ class TestVLCPlayer(TestCase, TestMixin):
         mocked_display.size.assert_called_with()
         mocked_display.vlc_widget.resize.assert_called_with((10, 10))
 
+    @patch('openlp.core.ui.media.vlcplayer.threading')
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def play_test(self, mocked_get_vlc, mocked_threading):
+        """
+        Test the play() method
+        """
+        # GIVEN: A bunch of mocked out things
+        mocked_thread = MagicMock()
+        mocked_threading.Thread.return_value = mocked_thread
+        mocked_vlc = MagicMock()
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_controller = MagicMock()
+        mocked_controller.media_info.start_time = 0
+        mocked_display = MagicMock()
+        mocked_dispaly.controller = mocked_controller
+        vlc_player = VlcPlayer(None)
+        vlc_player.state = MediaState.Paused
+
+        # WHEN: play() is called
+        vlc_player.play(mocked_display)
+
+        # THEN: A bunch of things should happen to play the media
+        
+
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
     def pause_test(self, mocked_get_vlc):
         """
