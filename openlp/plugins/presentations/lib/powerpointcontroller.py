@@ -317,16 +317,15 @@ class PowerpointDocument(PresentationDocument):
                 log.exception(e)
                 trace_error_handler(log)
                 self.show_error_msg()
-            if not ppt_window:
-                return
-            try:
-                ppt_window.Top = size.y() * 72 / dpi
-                ppt_window.Height = size.height() * 72 / dpi
-                ppt_window.Left = size.x() * 72 / dpi
-                ppt_window.Width = size.width() * 72 / dpi
-            except AttributeError as e:
-                log.exception('AttributeError while in start_presentation')
-                log.exception(e)
+            if ppt_window and not Settings().value('presentations/powerpoint control window'):
+                try:
+                    ppt_window.Top = size.y() * 72 / dpi
+                    ppt_window.Height = size.height() * 72 / dpi
+                    ppt_window.Left = size.x() * 72 / dpi
+                    ppt_window.Width = size.width() * 72 / dpi
+                except AttributeError as e:
+                    log.exception('AttributeError while in start_presentation')
+                    log.exception(e)
             # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
             if len(ScreenList().screen_list) > 1:
                 Registry().get('main_window').activateWindow()

@@ -74,8 +74,11 @@ class PresentationTab(SettingsTab):
         self.powerpoint_layout = QtGui.QVBoxLayout(self.powerpoint_group_box)
         self.powerpoint_layout.setObjectName('powerpoint_layout')
         self.ppt_slide_click_check_box = QtGui.QCheckBox(self.powerpoint_group_box)
-        self.powerpoint_group_box.setObjectName('ppt_slide_click_check_box')
+        self.ppt_slide_click_check_box.setObjectName('ppt_slide_click_check_box')
         self.powerpoint_layout.addWidget(self.ppt_slide_click_check_box)
+        self.ppt_window_check_box = QtGui.QCheckBox(self.powerpoint_group_box)
+        self.ppt_window_check_box.setObjectName('ppt_window_check_box')
+        self.powerpoint_layout.addWidget(self.ppt_window_check_box)
         self.left_layout.addWidget(self.powerpoint_group_box)
         # Pdf options
         self.pdf_group_box = QtGui.QGroupBox(self.left_column)
@@ -123,6 +126,9 @@ class PresentationTab(SettingsTab):
         self.ppt_slide_click_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
                       'Clicking on a selected slide in the slidecontroller advances to next effect.'))
+        self.ppt_window_check_box.setText(
+            translate('PresentationPlugin.PresentationTab',
+                      'Let PowerPoint control the size and position of the presentation window.'))
         self.pdf_program_check_box.setText(
             translate('PresentationPlugin.PresentationTab', 'Use given full path for mudraw or ghostscript binary:'))
 
@@ -148,6 +154,8 @@ class PresentationTab(SettingsTab):
         self.ppt_slide_click_check_box.setChecked(Settings().value(self.settings_section +
                                                                    '/powerpoint slide click advance'))
         self.ppt_slide_click_check_box.setEnabled(powerpoint_available)
+        self.ppt_window_check_box.setChecked(Settings().value(self.settings_section +'/powerpoint control window'))
+        self.ppt_window_check_box.setEnabled(powerpoint_available)
         # load pdf-program settings
         enable_pdf_program = Settings().value(self.settings_section + '/enable_pdf_program')
         self.pdf_program_check_box.setChecked(enable_pdf_program)
@@ -185,6 +193,10 @@ class PresentationTab(SettingsTab):
         setting_key = self.settings_section + '/powerpoint slide click advance'
         if Settings().value(setting_key) != self.ppt_slide_click_check_box.checkState():
             Settings().setValue(setting_key, self.ppt_slide_click_check_box.checkState())
+            changed = True
+        setting_key = self.settings_section + '/powerpoint control window'
+        if Settings().value(setting_key) != self.ppt_window_check_box.checkState():
+            Settings().setValue(setting_key, self.ppt_window_check_box.checkState())
             changed = True
         # Save pdf-settings
         pdf_program = self.pdf_program_path.text()
