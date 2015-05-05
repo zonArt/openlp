@@ -154,7 +154,7 @@ class PresentationTab(SettingsTab):
         self.ppt_slide_click_check_box.setChecked(Settings().value(self.settings_section +
                                                                    '/powerpoint slide click advance'))
         self.ppt_slide_click_check_box.setEnabled(powerpoint_available)
-        self.ppt_window_check_box.setChecked(Settings().value(self.settings_section +'/powerpoint control window'))
+        self.ppt_window_check_box.setChecked(Settings().value(self.settings_section + '/powerpoint control window'))
         self.ppt_window_check_box.setEnabled(powerpoint_available)
         # load pdf-program settings
         enable_pdf_program = Settings().value(self.settings_section + '/enable_pdf_program')

@@ -87,7 +87,8 @@ class PowerpointController(PresentationController):
                 """
                 def OnSlideShowNextClick(self, slideshow_window, effect):
                     """
-                    Occurs on the next click of the slide. If the main OpenLP is not in focus force update of the slidecontroller.
+                    Occurs on the next click of the slide.
+                    If the main OpenLP window is not in focus force update of the slidecontroller.
                     """
                     if not Registry().get('main_window').isActiveWindow():
                         log.debug('main window is not in focus - should update slidecontroller')
