@@ -164,45 +164,42 @@ class TestPowerpointDocument(TestCase, TestMixin):
         """
         Test creating the titles from PowerPoint
         """
-        if is_win() and self.real_controller.check_available():
-            # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
-            self.doc = PowerpointDocument(self.real_controller, self.file_name)
-            self.doc.save_titles_and_notes = MagicMock()
-            self.doc._PowerpointDocument__get_text_from_shapes = MagicMock()
-            slide = MagicMock()
-            slide.Shapes.Title.TextFrame.TextRange.Text = 'SlideText'
-            pres = MagicMock()
-            pres.Slides = [slide, slide]
-            self.doc.presentation = pres
+        # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
+        self.doc = PowerpointDocument(self.mock_controller, self.file_name)
+        self.doc.get_slide_count = MagicMock()
+        self.doc.get_slide_count.return_value = 2
+        self.doc.index_map = {1: 1, 2: 2}
+        self.doc.save_titles_and_notes = MagicMock()
+        self.doc._PowerpointDocument__get_text_from_shapes = MagicMock()
+        slide = MagicMock()
+        slide.Shapes.Title.TextFrame.TextRange.Text = 'SlideText'
+        pres = MagicMock()
+        pres.Slides = MagicMock(side_effect=[slide, slide])
+        self.doc.presentation = pres
 
-            # WHEN reading the titles and notes
-            self.doc.create_titles_and_notes()
+        # WHEN reading the titles and notes
+        self.doc.create_titles_and_notes()
 
-            # THEN the save should have been called exactly once with 2 titles and 2 notes
-            self.doc.save_titles_and_notes.assert_called_once_with(['SlideText\n', 'SlideText\n'], [' ', ' '])
-        else:
-            self.skipTest('Powerpoint not available, skipping test.')
+        # THEN the save should have been called exactly once with 2 titles and 2 notes
+        self.doc.save_titles_and_notes.assert_called_once_with(['SlideText\n', 'SlideText\n'], [' ', ' '])
 
     def create_titles_and_notes_with_no_slides_test(self):
         """
         Test creating the titles from PowerPoint when it returns no slides
         """
-        if is_win() and self.real_controller.check_available():
-            # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
-            doc = PowerpointDocument(self.real_controller, self.file_name)
-            doc.save_titles_and_notes = MagicMock()
-            doc._PowerpointDocument__get_text_from_shapes = MagicMock()
-            pres = MagicMock()
-            pres.Slides = []
-            doc.presentation = pres
+        # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
+        doc = PowerpointDocument(self.mock_controller, self.file_name)
+        doc.save_titles_and_notes = MagicMock()
+        doc._PowerpointDocument__get_text_from_shapes = MagicMock()
+        pres = MagicMock()
+        pres.Slides = []
+        doc.presentation = pres
 
-            # WHEN reading the titles and notes
-            doc.create_titles_and_notes()
+        # WHEN reading the titles and notes
+        doc.create_titles_and_notes()
 
-            # THEN the save should have been called exactly once with empty titles and notes
-            doc.save_titles_and_notes.assert_called_once_with([], [])
-        else:
-            self.skipTest('Powerpoint not available, skipping test.')
+        # THEN the save should have been called exactly once with empty titles and notes
+        doc.save_titles_and_notes.assert_called_once_with([], [])
 
     def get_text_from_shapes_test(self):
         """
