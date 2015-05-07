@@ -42,4 +42,4 @@ __pycache__
 *.~\?~
 .coverage
 cover
-vlc-tests.kdev4
+*.kdev4
