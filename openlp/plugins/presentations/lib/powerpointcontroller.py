@@ -324,7 +324,6 @@ class PowerpointDocument(PresentationDocument):
             size = ScreenList().current['size']
             ppt_window = None
             try:
-                self.presentation.SlideShowSettings.ShowWithAnimation = True
                 ppt_window = self.presentation.SlideShowSettings.Run()
             except (AttributeError, pywintypes.com_error) as e:
                 log.exception('Caught exception while in start_presentation')
