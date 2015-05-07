@@ -628,6 +628,77 @@ class TestVLCPlayer(TestCase, TestMixin):
         mocked_display.vlc_widget.raise_.assert_called_with()
         self.assertTrue(result, 'The value returned from play() should be True')
 
+    @patch('openlp.core.ui.media.vlcplayer.threading')
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def play_media_wait_state_not_playing_test(self, mocked_get_vlc, mocked_threading):
+        """
+        Test the play() method when media_wait_state() returns False
+        """
+        # GIVEN: A bunch of mocked out things
+        mocked_thread = MagicMock()
+        mocked_threading.Thread.return_value = mocked_thread
+        mocked_vlc = MagicMock()
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_controller = MagicMock()
+        mocked_controller.media_info.start_time = 0
+        mocked_display = MagicMock()
+        mocked_display.controller = mocked_controller
+        vlc_player = VlcPlayer(None)
+        vlc_player.state = MediaState.Paused
+
+        # WHEN: play() is called
+        with patch.object(vlc_player, 'media_state_wait') as mocked_media_state_wait, \
+                patch.object(vlc_player, 'volume') as mocked_volume:
+            mocked_media_state_wait.return_value = False
+            result = vlc_player.play(mocked_display)
+
+        # THEN: A thread should be started, but the method should return False
+        mocked_thread.start.assert_called_with()
+        self.assertFalse(result)
+
+    @patch('openlp.core.ui.media.vlcplayer.threading')
+    @patch('openlp.core.ui.media.vlcplayer.get_vlc')
+    def play_dvd_test(self, mocked_get_vlc, mocked_threading):
+        """
+        Test the play() method with a DVD
+        """
+        # GIVEN: A bunch of mocked out things
+        mocked_thread = MagicMock()
+        mocked_threading.Thread.return_value = mocked_thread
+        mocked_vlc = MagicMock()
+        mocked_get_vlc.return_value = mocked_vlc
+        mocked_controller = MagicMock()
+        mocked_controller.media_info.start_time = 0
+        mocked_controller.media_info.end_time = 50
+        mocked_controller.media_info.media_type = MediaType.DVD
+        mocked_controller.media_info.volume = 100
+        mocked_controller.media_info.title_track = 1
+        mocked_controller.media_info.audio_track = 1
+        mocked_controller.media_info.subtitle_track = 1
+        mocked_display = MagicMock()
+        mocked_display.controller = mocked_controller
+        vlc_player = VlcPlayer(None)
+        vlc_player.state = MediaState.Paused
+
+        # WHEN: play() is called
+        with patch.object(vlc_player, 'media_state_wait') as mocked_media_state_wait, \
+                patch.object(vlc_player, 'volume') as mocked_volume:
+            mocked_media_state_wait.return_value = True
+            result = vlc_player.play(mocked_display)
+
+        # THEN: A bunch of things should happen to play the media
+        mocked_thread.start.assert_called_with()
+        mocked_display.vlc_media_player.set_title.assert_called_with(1)
+        mocked_display.vlc_media_player.play.assert_called_with()
+        mocked_display.vlc_media_player.audio_set_track.assert_called_with(1)
+        mocked_display.vlc_media_player.video_set_spu.assert_called_with(1)
+        self.assertEqual(50, mocked_controller.media_info.length)
+        mocked_volume.assert_called_with(mocked_display, 100)
+        mocked_controller.seek_slider.setMaximum.assert_called_with(50000)
+        self.assertEqual(MediaState.Playing, vlc_player.state)
+        mocked_display.vlc_widget.raise_.assert_called_with()
+        self.assertTrue(result, 'The value returned from play() should be True')
+
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
     def pause_test(self, mocked_get_vlc):
         """
