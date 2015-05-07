@@ -370,13 +370,15 @@ class TestVLCPlayer(TestCase, TestMixin):
         self.assertEqual(10, mocked_controller.media_info.length)
         self.assertTrue(result)
 
+    @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
     @patch('openlp.core.ui.media.vlcplayer.os.path.normcase')
-    def load_audio_cd_test(self, mocked_normcase, mocked_get_vlc):
+    def load_audio_cd_test(self, mocked_normcase, mocked_get_vlc, mocked_is_win):
         """
         Test loading an audio CD into VLC
         """
         # GIVEN: A mocked out get_vlc() method
+        mocked_is_win.return_value = False
         media_path = '/dev/sr0'
         mocked_normcase.side_effect = lambda x: x
         mocked_vlc = MagicMock()
@@ -460,13 +462,15 @@ class TestVLCPlayer(TestCase, TestMixin):
         self.assertEqual(10, mocked_controller.media_info.length)
         self.assertTrue(result)
 
+    @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
     @patch('openlp.core.ui.media.vlcplayer.os.path.normcase')
-    def load_audio_cd_no_tracks_test(self, mocked_normcase, mocked_get_vlc):
+    def load_audio_cd_no_tracks_test(self, mocked_normcase, mocked_get_vlc, mocked_is_win):
         """
         Test loading an audio CD that has no tracks into VLC
         """
         # GIVEN: A mocked out get_vlc() method
+        mocked_is_win.return_value = False
         media_path = '/dev/sr0'
         mocked_normcase.side_effect = lambda x: x
         mocked_vlc = MagicMock()
