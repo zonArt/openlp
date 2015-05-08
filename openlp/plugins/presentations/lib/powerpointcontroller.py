@@ -73,8 +73,18 @@ class PowerpointController(PresentationController):
         if is_win():
             try:
                 winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, 'PowerPoint.Application').Close()
+                try:
+                    # Try to detect if the version is 12 (2007) or above, and if so add 'odp' as a support filetype
+                    version_key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, 'PowerPoint.Application\\CurVer')
+                    tmp1, app_version_string, tmp2 = winreg.EnumValue(version_key, 0)
+                    version_key.Close()
+                    app_version = int(app_version_string[-2:])
+                    if app_version >= 12:
+                        self.also_supports = ['odp']
+                except (OSError, ValueError):
+                    log.warning('Detection of powerpoint version using registry failed.')
                 return True
-            except WindowsError:
+            except OSError:
                 pass
         return False
 
@@ -511,8 +521,12 @@ def _get_text_from_shapes(shapes):
     :param shapes: A set of shapes to search for text.
     """
     text = ''
-    for shape in shapes:
-        if shape.PlaceholderFormat.Type == 2:  # 2 from is enum PpPlaceholderType.ppPlaceholderBody
-            if shape.HasTextFrame and shape.TextFrame.HasText:
-                text += shape.TextFrame.TextRange.Text + '\n'
+    try:
+        for shape in shapes:
+            if shape.PlaceholderFormat.Type == 2:  # 2 from is enum PpPlaceholderType.ppPlaceholderBody
+                if shape.HasTextFrame and shape.TextFrame.HasText:
+                    text += shape.TextFrame.TextRange.Text + '\n'
+    except pywintypes.com_error as e:
+        log.warning('Failed to extract text from powerpoint slide')
+        log.warning(e)
     return text
