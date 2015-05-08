@@ -34,8 +34,10 @@ from openlp.core.common import is_win, Settings
 if is_win():
     from win32com.client import DispatchWithEvents
     import win32com
+    import win32con
     import winreg
     import win32ui
+    import win32gui
     import pywintypes
 
 
@@ -339,9 +341,25 @@ class PowerpointDocument(PresentationDocument):
                 except AttributeError as e:
                     log.exception('AttributeError while in start_presentation')
                     log.exception(e)
+            if ppt_window and Settings().value('presentations/powerpoint hide in taskbar'):
+                win32gui.EnumWindows(self._window_enum_callback, size)
             # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
             if len(ScreenList().screen_list) > 1:
                 Registry().get('main_window').activateWindow()
+
+    def _window_enum_callback(self, hwnd, size):
+        """
+        Method for callback from win32gui.EnumWindows.
+        Used to hide the powerpoint presentation window from the taskbar.
+        """
+        # Get the size of the current window and if it matches the size of our main display we assume
+        # it is the powerpoint presentation window and hides it from the taskbar.
+        (left, top, right, bottom) = win32gui.GetWindowRect(hwnd)
+        if size.y() == top and size.height() == (bottom - top) and size.x() == left and size.width() == (right - left):
+            win32gui.ShowWindow(hwnd, win32con.SW_HIDE)
+            win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE,
+                                   win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_TOOLWINDOW)
+            win32gui.ShowWindow(hwnd, win32con.SW_SHOW)
 
     def get_slide_number(self):
         """
