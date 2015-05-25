@@ -39,6 +39,8 @@ if is_win():
     import win32ui
     import win32gui
     import pywintypes
+    import win32process
+    import win32api
 
 
 from openlp.core.lib import ScreenList
@@ -354,6 +356,7 @@ class PowerpointDocument(PresentationDocument):
             # Hide the presentation windows icon from the taskbar, if enabled and if powerpoint 2007 or newer
             if ppt_window and Settings().value('presentations/powerpoint hide in taskbar') and \
                     float(self.presentation.Application.Version) >= 12.0:
+                log.debug('main display size:  y=%d, height=%d, x=%d, width=%d' % (size.y(), size.height(), size.x(), size.width()))
                 win32gui.EnumWindows(self._window_enum_callback, size)
             # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
             if len(ScreenList().screen_list) > 1:
@@ -367,6 +370,16 @@ class PowerpointDocument(PresentationDocument):
         # Get the size of the current window and if it matches the size of our main display we assume
         # it is the powerpoint presentation window and hides it from the taskbar.
         (left, top, right, bottom) = win32gui.GetWindowRect(hwnd)
+        log.debug('window size:  left=%d, top=%d, right=%d, width=%d' % (left, top, right, bottom))
+        log.debug('compare size:  %d and %d, %d and %d, %d and %d, %d and %d' % (size.y(), top, size.height(), (bottom - top), size.x(), left, size.width(), (right - left)))
+        log.debug('window title: %s' % win32gui.GetWindowText(hwnd))
+        try:
+            t,p = win32process.GetWindowThreadProcessId(hwnd)
+            handle = win32api.OpenProcess(0x0410, False, p)
+            nama = win32process.GetModuleFileNameEx(handle, 0)
+            log.debug('module name: %s' % nama)
+        except Exception:
+            log.debug('could not get window module name')
         if size.y() == top and size.height() == (bottom - top) and size.x() == left and size.width() == (right - left):
             win32gui.ShowWindow(hwnd, win32con.SW_HIDE)
             win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE,
