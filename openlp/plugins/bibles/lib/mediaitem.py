@@ -193,7 +193,7 @@ class BibleMediaItem(MediaManagerItem):
         self.add_search_fields('quick', translate('BiblesPlugin.MediaItem', 'Quick'))
         self.quickTab.setVisible(True)
         # Add the Advanced Search tab.
-        self.add_search_tab('advanced', UiStrings().Advanced)
+        self.add_search_tab('advanced', translate('BiblesPlugin.MediaItem', 'Advanced'))
         self.advanced_book_label = QtGui.QLabel(self.advancedTab)
         self.advanced_book_label.setObjectName('advanced_book_label')
         self.advancedLayout.addWidget(self.advanced_book_label, 0, 0, QtCore.Qt.AlignRight)
