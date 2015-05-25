@@ -659,6 +659,7 @@ class TestInfoLabel(TestCase):
         set_tool_tip_mock.assert_called_once_with('Label Text')
         mocked_super().setText.assert_called_once_with('Label Text')
 
+
 class TestLiveController(TestCase):
 
     def initial_live_controller_test(self):
@@ -672,6 +673,7 @@ class TestLiveController(TestCase):
         # WHEN: the default controller is built.
         # THEN: The controller should not be a live controller.
         self.assertEqual(live_controller.is_live, True, 'The slide controller should be a live controller')
+
 
 class TestPreviewLiveController(TestCase):
 
