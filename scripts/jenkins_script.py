@@ -91,7 +91,7 @@ class JenkinsTrigger(object):
         """
         self.token = token
         self.repo_name = get_repo_name()
-        self.jenkins_instance = Jenkins(JENKINS_URL, verify=False)
+        self.jenkins_instance = Jenkins(JENKINS_URL)
 
     def trigger_build(self):
         """
