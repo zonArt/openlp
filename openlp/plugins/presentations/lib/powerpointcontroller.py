@@ -351,7 +351,9 @@ class PowerpointDocument(PresentationDocument):
                 except AttributeError as e:
                     log.exception('AttributeError while in start_presentation')
                     log.exception(e)
-            if ppt_window and Settings().value('presentations/powerpoint hide in taskbar'):
+            # Hide the presentation windows icon from the taskbar, if enabled and if powerpoint 2007 or newer
+            if ppt_window and Settings().value('presentations/powerpoint hide in taskbar') and \
+                    float(self.presentation.Application.Version) >= 12.0:
                 win32gui.EnumWindows(self._window_enum_callback, size)
             # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
             if len(ScreenList().screen_list) > 1:

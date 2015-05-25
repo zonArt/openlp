@@ -133,7 +133,8 @@ class PresentationTab(SettingsTab):
             translate('PresentationPlugin.PresentationTab',
                       'Let PowerPoint control the size and position of the presentation window.'))
         self.ppt_hide_check_box.setText(
-            translate('PresentationPlugin.PresentationTab', 'Hide PowerPoint presentation windows from the taskbar'))
+            translate('PresentationPlugin.PresentationTab',
+                      'Hide PowerPoint presentation windows from the taskbar (PowerPoint 2007 and newer)'))
         self.pdf_program_check_box.setText(
             translate('PresentationPlugin.PresentationTab', 'Use given full path for mudraw or ghostscript binary:'))
 
