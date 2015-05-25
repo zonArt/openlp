@@ -27,7 +27,7 @@ from PyQt4 import QtCore, QtGui
 from unittest import TestCase
 from openlp.core import Registry
 from openlp.core.lib import ServiceItemAction
-from openlp.core.ui import SlideController
+from openlp.core.ui import SlideController, LiveController, PreviewController
 from openlp.core.ui.slidecontroller import InfoLabel, WIDE_MENU, NON_TEXT_MENU
 
 from tests.functional import MagicMock, patch
@@ -84,24 +84,24 @@ class TestSlideController(TestCase):
         # THEN: then call set up the toolbar to blank the display screen.
         toolbar.set_widget_visible.assert_called_with(NON_TEXT_MENU, True)
 
-    def receive_spin_delay_test(self):
+    @patch('openlp.core.ui.slidecontroller.Settings')
+    def receive_spin_delay_test(self, MockedSettings):
         """
         Test that the spin box is updated accordingly after a call to receive_spin_delay()
         """
-        with patch('openlp.core.ui.slidecontroller.Settings') as MockedSettings:
-            # GIVEN: A new SlideController instance.
-            mocked_value = MagicMock(return_value=1)
-            MockedSettings.return_value = MagicMock(value=mocked_value)
-            mocked_delay_spin_box = MagicMock()
-            slide_controller = SlideController(None)
-            slide_controller.delay_spin_box = mocked_delay_spin_box
+        # GIVEN: A new SlideController instance.
+        mocked_value = MagicMock(return_value=1)
+        MockedSettings.return_value = MagicMock(value=mocked_value)
+        mocked_delay_spin_box = MagicMock()
+        slide_controller = SlideController(None)
+        slide_controller.delay_spin_box = mocked_delay_spin_box
 
-            # WHEN: The receive_spin_delay() method is called
-            slide_controller.receive_spin_delay()
+        # WHEN: The receive_spin_delay() method is called
+        slide_controller.receive_spin_delay()
 
-            # THEN: The Settings()value() and delay_spin_box.setValue() methods should have been called correctly
-            mocked_value.assert_called_with('core/loop delay')
-            mocked_delay_spin_box.setValue.assert_called_with(1)
+        # THEN: The Settings()value() and delay_spin_box.setValue() methods should have been called correctly
+        mocked_value.assert_called_with('core/loop delay')
+        mocked_delay_spin_box.setValue.assert_called_with(1)
 
     def toggle_display_blank_test(self):
         """
@@ -267,25 +267,25 @@ class TestSlideController(TestCase):
         mocked_keypress_queue.append.assert_called_once_with(ServiceItemAction.Next)
         mocked_process_queue.assert_called_once_with()
 
-    def update_slide_limits_test(self):
+    @patch('openlp.core.ui.slidecontroller.Settings')
+    def update_slide_limits_test(self, MockedSettings):
         """
         Test that calling the update_slide_limits() method updates the slide limits
         """
         # GIVEN: A mocked out Settings object, a new SlideController and a mocked out main_window
-        with patch('openlp.core.ui.slidecontroller.Settings') as MockedSettings:
-            mocked_value = MagicMock(return_value=10)
-            MockedSettings.return_value = MagicMock(value=mocked_value)
-            mocked_main_window = MagicMock(advanced_settings_section='advanced')
-            Registry.create()
-            Registry().register('main_window', mocked_main_window)
-            slide_controller = SlideController(None)
+        mocked_value = MagicMock(return_value=10)
+        MockedSettings.return_value = MagicMock(value=mocked_value)
+        mocked_main_window = MagicMock(advanced_settings_section='advanced')
+        Registry.create()
+        Registry().register('main_window', mocked_main_window)
+        slide_controller = SlideController(None)
 
-            # WHEN: update_slide_limits() is called
-            slide_controller.update_slide_limits()
+        # WHEN: update_slide_limits() is called
+        slide_controller.update_slide_limits()
 
-            # THEN: The value of slide_limits should be 10
-            mocked_value.assert_called_once_with('advanced/slide limits')
-            self.assertEqual(10, slide_controller.slide_limits, 'Slide limits should have been updated to 10')
+        # THEN: The value of slide_limits should be 10
+        mocked_value.assert_called_once_with('advanced/slide limits')
+        self.assertEqual(10, slide_controller.slide_limits, 'Slide limits should have been updated to 10')
 
     def enable_tool_bar_live_test(self):
         """
@@ -522,7 +522,8 @@ class TestSlideController(TestCase):
         # THEN: It should have exited early
         self.assertEqual(0, mocked_item.is_command.call_count, 'The service item should have not been called')
 
-    def on_slide_selected_index_service_item_command_test(self):
+    @patch.object(Registry, 'execute')
+    def on_slide_selected_index_service_item_command_test(self, mocked_execute):
         """
         Test that when there is a command service item, the command is executed
         """
@@ -533,17 +534,16 @@ class TestSlideController(TestCase):
         mocked_update_preview = MagicMock()
         mocked_preview_widget = MagicMock()
         mocked_slide_selected = MagicMock()
-        with patch.object(Registry, 'execute') as mocked_execute:
-            Registry.create()
-            slide_controller = SlideController(None)
-            slide_controller.service_item = mocked_item
-            slide_controller.update_preview = mocked_update_preview
-            slide_controller.preview_widget = mocked_preview_widget
-            slide_controller.slide_selected = mocked_slide_selected
-            slide_controller.is_live = True
+        Registry.create()
+        slide_controller = SlideController(None)
+        slide_controller.service_item = mocked_item
+        slide_controller.update_preview = mocked_update_preview
+        slide_controller.preview_widget = mocked_preview_widget
+        slide_controller.slide_selected = mocked_slide_selected
+        slide_controller.is_live = True
 
-            # WHEN: The method is called
-            slide_controller.on_slide_selected_index([9])
+        # WHEN: The method is called
+        slide_controller.on_slide_selected_index([9])
 
         # THEN: It should have sent a notification
         mocked_item.is_command.assert_called_once_with()
@@ -552,7 +552,8 @@ class TestSlideController(TestCase):
         self.assertEqual(0, mocked_preview_widget.change_slide.call_count, 'Change slide should not have been called')
         self.assertEqual(0, mocked_slide_selected.call_count, 'slide_selected should not have been called')
 
-    def on_slide_selected_index_service_item_not_command_test(self):
+    @patch.object(Registry, 'execute')
+    def on_slide_selected_index_service_item_not_command_test(self, mocked_execute):
         """
         Test that when there is a service item but it's not a command, the preview widget is updated
         """
@@ -563,16 +564,15 @@ class TestSlideController(TestCase):
         mocked_update_preview = MagicMock()
         mocked_preview_widget = MagicMock()
         mocked_slide_selected = MagicMock()
-        with patch.object(Registry, 'execute') as mocked_execute:
-            Registry.create()
-            slide_controller = SlideController(None)
-            slide_controller.service_item = mocked_item
-            slide_controller.update_preview = mocked_update_preview
-            slide_controller.preview_widget = mocked_preview_widget
-            slide_controller.slide_selected = mocked_slide_selected
+        Registry.create()
+        slide_controller = SlideController(None)
+        slide_controller.service_item = mocked_item
+        slide_controller.update_preview = mocked_update_preview
+        slide_controller.preview_widget = mocked_preview_widget
+        slide_controller.slide_selected = mocked_slide_selected
 
-            # WHEN: The method is called
-            slide_controller.on_slide_selected_index([7])
+        # WHEN: The method is called
+        slide_controller.on_slide_selected_index([7])
 
         # THEN: It should have sent a notification
         mocked_item.is_command.assert_called_once_with()
@@ -642,20 +642,47 @@ class TestInfoLabel(TestCase):
             elided_test_string = metrics.elidedText(test_string, QtCore.Qt.ElideRight, label_width)
             mocked_qpainter().drawText.assert_called_once_with(mocked_rect(), QtCore.Qt.AlignLeft, elided_test_string)
 
-    def set_text_test(self):
+    @patch('builtins.super')
+    def set_text_test(self, mocked_super):
         """
         Test the reimplemented setText method
         """
-        with patch('builtins.super') as mocked_super:
+        # GIVEN: An instance of InfoLabel and mocked setToolTip method
+        info_label = InfoLabel()
+        set_tool_tip_mock = MagicMock()
+        info_label.setToolTip = set_tool_tip_mock
 
-            # GIVEN: An instance of InfoLabel and mocked setToolTip method
-            info_label = InfoLabel()
-            set_tool_tip_mock = MagicMock()
-            info_label.setToolTip = set_tool_tip_mock
+        # WHEN: Calling the instance method setText
+        info_label.setText('Label Text')
 
-            # WHEN: Calling the instance method setText
-            info_label.setText('Label Text')
+        # THEN: The setToolTip and super class setText methods should have been called with the same text
+        set_tool_tip_mock.assert_called_once_with('Label Text')
+        mocked_super().setText.assert_called_once_with('Label Text')
 
-            # THEN: The setToolTip and super class setText methods should have been called with the same text
-            set_tool_tip_mock.assert_called_once_with('Label Text')
-            mocked_super().setText.assert_called_once_with('Label Text')
+class TestLiveController(TestCase):
+
+    def initial_live_controller_test(self):
+        """
+        Test the initial live slide controller state .
+        """
+        # GIVEN: A new SlideController instance.
+        Registry.create()
+        live_controller = LiveController(None)
+
+        # WHEN: the default controller is built.
+        # THEN: The controller should not be a live controller.
+        self.assertEqual(live_controller.is_live, True, 'The slide controller should be a live controller')
+
+class TestPreviewLiveController(TestCase):
+
+    def initial_preview_controller_test(self):
+        """
+        Test the initial preview slide controller state.
+        """
+        # GIVEN: A new SlideController instance.
+        Registry.create()
+        preview_controller = PreviewController(None)
+
+        # WHEN: the default controller is built.
+        # THEN: The controller should not be a live controller.
+        self.assertEqual(preview_controller.is_live, False, 'The slide controller should be a Preview controller')
