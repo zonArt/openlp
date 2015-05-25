@@ -551,6 +551,7 @@ class ImageMediaItem(MediaManagerItem):
             service_item.title = items[0].text(0)
         else:
             service_item.title = str(self.plugin.name_strings['plural'])
+
         service_item.add_capability(ItemCapabilities.CanMaintain)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
@@ -697,3 +698,15 @@ class ImageMediaItem(MediaManagerItem):
             filename = os.path.split(str(file_object.filename))[1]
             results.append([file_object.filename, filename])
         return results
+
+    def create_item_from_id(self, item_id):
+        """
+        Create a media item from an item id. Overridden from the parent method to change the item type.
+
+        :param item_id: Id to make live
+        """
+        item = QtGui.QTreeWidgetItem()
+        item_data = self.manager.get_object_filtered(ImageFilenames, ImageFilenames.filename == item_id)
+        item.setText(0, os.path.basename(item_data.filename))
+        item.setData(0, QtCore.Qt.UserRole, item_data)
+        return item
