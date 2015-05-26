@@ -151,6 +151,7 @@ class PowerpointDocument(PresentationDocument):
         self.slide_count = 0
         self.blank_slide = 1
         self.blank_click = None
+        self.presentation_hwnd = None
 
     def load_presentation(self):
         """
@@ -269,6 +270,9 @@ class PowerpointDocument(PresentationDocument):
             log.exception(e)
             trace_error_handler(log)
             self.show_error_msg()
+        # Stop powerpoint from flashing in the taskbar
+        if self.presentation_hwnd:
+            win32gui.FlashWindowEx(self.presentation_hwnd, win32con.FLASHW_STOP, 0, 0)
         # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
         if len(ScreenList().screen_list) > 1:
             Registry().get('main_window').activateWindow()
@@ -353,10 +357,11 @@ class PowerpointDocument(PresentationDocument):
                 except AttributeError as e:
                     log.exception('AttributeError while in start_presentation')
                     log.exception(e)
-            # Hide the presentation windows icon from the taskbar, if enabled and if powerpoint 2007 or newer
-            if ppt_window and Settings().value('presentations/powerpoint hide in taskbar') and \
-                    float(self.presentation.Application.Version) >= 12.0:
-                log.debug('main display size:  y=%d, height=%d, x=%d, width=%d' % (size.y(), size.height(), size.x(), size.width()))
+            # Find the presentation window and save the handle for later
+            self.presentation_hwnd = None
+            if ppt_window:
+                log.debug('main display size:  y=%d, height=%d, x=%d, width=%d'
+                          % (size.y(), size.height(), size.x(), size.width()))
                 win32gui.EnumWindows(self._window_enum_callback, size)
             # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
             if len(ScreenList().screen_list) > 1:
@@ -365,26 +370,30 @@ class PowerpointDocument(PresentationDocument):
     def _window_enum_callback(self, hwnd, size):
         """
         Method for callback from win32gui.EnumWindows.
-        Used to hide the powerpoint presentation window from the taskbar.
+        Used to find the powerpoint presentation window and stop it flashing in the taskbar.
         """
         # Get the size of the current window and if it matches the size of our main display we assume
-        # it is the powerpoint presentation window and hides it from the taskbar.
+        # it is the powerpoint presentation window.
         (left, top, right, bottom) = win32gui.GetWindowRect(hwnd)
         log.debug('window size:  left=%d, top=%d, right=%d, width=%d' % (left, top, right, bottom))
-        log.debug('compare size:  %d and %d, %d and %d, %d and %d, %d and %d' % (size.y(), top, size.height(), (bottom - top), size.x(), left, size.width(), (right - left)))
+        log.debug('compare size:  %d and %d, %d and %d, %d and %d, %d and %d'
+                  % (size.y(), top, size.height(), (bottom - top), size.x(), left, size.width(), (right - left)))
         log.debug('window title: %s' % win32gui.GetWindowText(hwnd))
+        module_name = ''
         try:
-            t,p = win32process.GetWindowThreadProcessId(hwnd)
-            handle = win32api.OpenProcess(0x0410, False, p)
-            nama = win32process.GetModuleFileNameEx(handle, 0)
-            log.debug('module name: %s' % nama)
+            thread_ud, process_id = win32process.GetWindowThreadProcessId(hwnd)
+            handle = win32api.OpenProcess((win32con.PROCESS_VM_READ | win32con.PROCESS_QUERY_INFORMATION),
+                                          False, process_id)
+            module_name = win32process.GetModuleFileNameEx(handle, 0)
+            log.debug('module name: %s' % module_name)
         except Exception:
             log.debug('could not get window module name')
-        if size.y() == top and size.height() == (bottom - top) and size.x() == left and size.width() == (right - left):
-            win32gui.ShowWindow(hwnd, win32con.SW_HIDE)
-            win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE,
-                                   win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_TOOLWINDOW)
-            win32gui.ShowWindow(hwnd, win32con.SW_SHOW)
+        if size.y() == top and size.height() == (bottom - top) and size.x() == left and \
+                size.width() == (right - left) and 'POWERPNT.EXE' in module_name:
+            log.debug('Found a match and will save the handle')
+            self.presentation_hwnd = hwnd
+            # Stop powerpoint from flashing in the taskbar
+            win32gui.FlashWindowEx(self.presentation_hwnd, win32con.FLASHW_STOP, 0, 0)
 
     def get_slide_number(self):
         """
@@ -458,6 +467,9 @@ class PowerpointDocument(PresentationDocument):
         if self.get_slide_number() > self.get_slide_count():
             log.debug('past end, stepping back to previous')
             self.previous_step()
+        # Stop powerpoint from flashing in the taskbar
+        if self.presentation_hwnd:
+            win32gui.FlashWindowEx(self.presentation_hwnd, win32con.FLASHW_STOP, 0, 0)
         # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
         if len(ScreenList().screen_list) > 1:
             Registry().get('main_window').activateWindow()
