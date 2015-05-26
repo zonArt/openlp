@@ -133,13 +133,13 @@ class TestMainDisplay(TestCase, TestMixin):
         mocked_songs_plugin.refresh_css.assert_called_with(main_display.frame)
         mocked_bibles_plugin.refresh_css.assert_called_with(main_display.frame)
 
-    @patch('openlp.core.is_macosx')
-    def macosx_non_primary_screen_window_flags_test(self, mocked_is_macosx):
+    @patch('openlp.core.ui.maindisplay.is_macosx')
+    def macosx_non_primary_screen_window_flags_test(self, is_macosx):
         """
         Test that on Mac OS X when the current screen isn't primary we use the WindowStaysOnTop window flag
         """
         # GIVEN: A new SlideController instance on Mac OS X with the current display not being primary.
-        mocked_is_macosx.return_value = True
+        is_macosx.return_value = True
         self.screens.set_current_display(1)
         display = MagicMock()
 
@@ -151,13 +151,13 @@ class TestMainDisplay(TestCase, TestMixin):
                          main_display.windowFlags(),
                          'The window flags should be Qt.WindowStaysOnTop, Qt.Window, and Qt.FramelessWindowHint.')
 
-    @patch('openlp.core.is_macosx')
-    def macosx_primary_screen_window_flags_test(self, mocked_is_macosx):
+    @patch('openlp.core.ui.maindisplay.is_macosx')
+    def macosx_primary_screen_window_flags_test(self, is_macosx):
         """
         Test that on Mac OS X when the current screen is primary we don't use the WindowStaysOnTop window flag
         """
         # GIVEN: A new SlideController instance on Mac OS X with the current display being primary.
-        mocked_is_macosx.return_value = True
+        is_macosx.return_value = True
         self.screens.set_current_display(0)
         display = MagicMock()
 
@@ -168,13 +168,13 @@ class TestMainDisplay(TestCase, TestMixin):
         self.assertEqual(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint, main_display.windowFlags(),
                          'The window flags should be Qt.Window and Qt.FramelessWindowHint.')
 
-    @patch('openlp.core.is_macosx')
-    def macosx_non_primary_screen_window_state_test(self, mocked_is_macosx):
+    @patch('openlp.core.ui.maindisplay.is_macosx')
+    def macosx_non_primary_screen_window_state_test(self, is_macosx):
         """
         Test that on Mac OS X when the current screen isn't primary we don't set the window state to full screen
         """
         # GIVEN: A new SlideController instance on Mac OS X with the current display not being primary.
-        mocked_is_macosx.return_value = True
+        is_macosx.return_value = True
         self.screens.set_current_display(1)
         display = MagicMock()
 
@@ -185,13 +185,13 @@ class TestMainDisplay(TestCase, TestMixin):
         self.assertNotEqual(QtCore.Qt.WindowFullScreen, main_display.windowState(),
                             'The window state should not be full screen.')
 
-    @patch('openlp.core.is_macosx')
-    def macosx_primary_screen_window_state_test(self, mocked_is_macosx):
+    @patch('openlp.core.ui.maindisplay.is_macosx')
+    def macosx_primary_screen_window_state_test(self, is_macosx):
         """
         Test that on Mac OS X when the current screen is primary we set the window state to full screen
         """
         # GIVEN: A new SlideController instance on Mac OS X with the current display being primary.
-        mocked_is_macosx.return_value = True
+        is_macosx.return_value = True
         self.screens.set_current_display(0)
         display = MagicMock()
 
