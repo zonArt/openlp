@@ -34,6 +34,7 @@ from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
 from tests.helpers.testmixin import TestMixin
 from tests.functional import MagicMock, patch
 
+
 class TestMainDisplay(TestCase, TestMixin):
 
     def setUp(self):
