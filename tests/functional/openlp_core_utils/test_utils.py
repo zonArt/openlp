@@ -185,7 +185,7 @@ class TestUtils(TestCase):
         self.assertEqual(wanted_name, result, 'The file name should not contain any special characters.')
 
     def delete_file_no_path_test(self):
-        """"
+        """
         Test the delete_file function when called with out a valid path
         """
         # GIVEN: A blank path
@@ -196,7 +196,7 @@ class TestUtils(TestCase):
         self.assertFalse(result, "delete_file should return False when called with ''")
 
     def delete_file_path_success_test(self):
-        """"
+        """
         Test the delete_file function when it successfully deletes a file
         """
         # GIVEN: A mocked os which returns True when os.path.exists is called
@@ -209,7 +209,7 @@ class TestUtils(TestCase):
             self.assertTrue(result, 'delete_file should return True when it successfully deletes a file')
 
     def delete_file_path_no_file_exists_test(self):
-        """"
+        """
         Test the delete_file function when the file to remove does not exist
         """
         # GIVEN: A mocked os which returns False when os.path.exists is called
@@ -222,7 +222,7 @@ class TestUtils(TestCase):
             self.assertTrue(result, 'delete_file should return True when the file doesnt exist')
 
     def delete_file_path_exception_test(self):
-        """"
+        """
         Test the delete_file function when os.remove raises an exception
         """
         # GIVEN: A mocked os which returns True when os.path.exists is called and raises an OSError when os.remove is

@@ -33,10 +33,14 @@ from tests.utils.constants import TEST_RESOURCES_PATH
 
 from openlp.plugins.presentations.lib.powerpointcontroller import PowerpointController, PowerpointDocument,\
     _get_text_from_shapes
-from openlp.core.common import is_win
+from openlp.core.common import is_win, Settings
 
 if is_win():
     import pywintypes
+
+__default_settings__ = {
+    'presentations/powerpoint slide click advance': True
+}
 
 
 class TestPowerpointController(TestCase, TestMixin):
@@ -104,6 +108,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
         self.mock_presentation_document_get_temp_folder.return_value = 'temp folder'
         self.file_name = os.path.join(TEST_RESOURCES_PATH, 'presentations', 'test.pptx')
         self.real_controller = PowerpointController(self.mock_plugin)
+        Settings().extend_default_settings(__default_settings__)
 
     def tearDown(self):
         """
@@ -126,6 +131,7 @@ class TestPowerpointDocument(TestCase, TestMixin):
                 instance = PowerpointDocument(self.mock_controller, self.mock_presentation)
                 instance.presentation = MagicMock()
                 instance.presentation.SlideShowWindow.View.GotoSlide = MagicMock(side_effect=pywintypes.com_error('1'))
+                instance.index_map[42] = 42
 
                 # WHEN: Calling goto_slide which will throw an exception
                 instance.goto_slide(42)
@@ -227,3 +233,23 @@ class TestPowerpointDocument(TestCase, TestMixin):
 
         # THEN: it should not fail but return empty string
         self.assertEqual(result, '', 'result should be empty')
+
+    def goto_slide_test(self):
+        """
+        Test that goto_slide goes to next effect if the slide is already displayed
+        """
+        # GIVEN: A Document with mocked controller, presentation, and mocked functions get_slide_number and next_step
+        doc = PowerpointDocument(self.mock_controller, self.mock_presentation)
+        doc.presentation = MagicMock()
+        doc.presentation.SlideShowWindow.View.GetClickIndex.return_value = 1
+        doc.presentation.SlideShowWindow.View.GetClickCount.return_value = 2
+        doc.get_slide_number = MagicMock()
+        doc.get_slide_number.return_value = 1
+        doc.next_step = MagicMock()
+        doc.index_map[1] = 1
+
+        # WHEN: Calling goto_slide
+        doc.goto_slide(1)
+
+        # THEN: next_step() should be call to try to advance to the next effect.
+        self.assertTrue(doc.next_step.called, 'next_step() should have been called!')

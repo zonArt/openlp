@@ -989,15 +989,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         # Read the  temp file and output the user's CONF file with blanks to
         # make it more readable.
         temp_conf = open(temp_file, 'r')
-        export_conf = open(export_file_name, 'w')
-        for file_record in temp_conf:
-            # Get rid of any invalid entries.
-            if file_record.find('@Invalid()') == -1:
-                file_record = file_record.replace('%20', ' ')
-                export_conf.write(file_record)
-        temp_conf.close()
-        export_conf.close()
-        os.remove(temp_file)
+        try:
+            export_conf = open(export_file_name, 'w')
+            for file_record in temp_conf:
+                # Get rid of any invalid entries.
+                if file_record.find('@Invalid()') == -1:
+                    file_record = file_record.replace('%20', ' ')
+                    export_conf.write(file_record)
+            temp_conf.close()
+            export_conf.close()
+            os.remove(temp_file)
+        except OSError as ose:
+                QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
+                                           translate('OpenLP.MainWindow', 'An error occurred while exporting the '
+                                                                          'settings: %s') % ose.strerror,
+                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def on_mode_default_item_clicked(self):
         """
@@ -1311,6 +1317,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 filename = filename[0].upper() + filename[1:]
             if filename in self.recent_files:
                 self.recent_files.remove(filename)
+            if not isinstance(self.recent_files, list):
+                self.recent_files = [self.recent_files]
             self.recent_files.insert(0, filename)
             while len(self.recent_files) > max_recent_files:
                 self.recent_files.pop()

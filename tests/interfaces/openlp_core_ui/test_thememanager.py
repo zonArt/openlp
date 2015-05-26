@@ -25,7 +25,7 @@ Interface tests to test the themeManager class and related methods.
 from unittest import TestCase
 
 from openlp.core.common import Registry, Settings
-from openlp.core.ui import ThemeManager
+from openlp.core.ui import ThemeManager, ThemeForm, FileRenameForm
 from tests.functional import patch, MagicMock
 from tests.helpers.testmixin import TestMixin
 
@@ -105,3 +105,20 @@ class TestThemeManager(TestCase, TestMixin):
         new_theme.trigger()
 
         assert mocked_event.call_count == 1, 'The on_add_theme method should have been called once'
+
+    @patch('openlp.core.ui.themeform.ThemeForm._setup')
+    @patch('openlp.core.ui.filerenameform.FileRenameForm._setup')
+    def bootstrap_post_test(self, mocked_theme_form, mocked_rename_form):
+        """
+        Test the functions of bootstrap_post_setup are called.
+        """
+        # GIVEN:
+        self.theme_manager.load_themes = MagicMock()
+        self.theme_manager.path = MagicMock()
+
+        # WHEN:
+        self.theme_manager.bootstrap_post_set_up()
+
+        # THEN:
+        self.assertEqual(self.theme_manager.path, self.theme_manager.theme_form.path)
+        self.assertEqual(1, self.theme_manager.load_themes.call_count, "load_themes should have been called once")

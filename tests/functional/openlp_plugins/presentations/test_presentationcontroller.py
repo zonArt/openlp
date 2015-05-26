@@ -81,9 +81,9 @@ class TestPresentationController(TestCase):
             self.document.save_titles_and_notes(titles, notes)
 
             # THEN: the last call to open should have been for slideNotes2.txt
-            mocked_open.assert_any_call(os.path.join('test', 'titles.txt'), mode='w')
-            mocked_open.assert_any_call(os.path.join('test', 'slideNotes1.txt'), mode='w')
-            mocked_open.assert_any_call(os.path.join('test', 'slideNotes2.txt'), mode='w')
+            mocked_open.assert_any_call(os.path.join('test', 'titles.txt'), mode='wt', encoding='utf-8')
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes1.txt'), mode='wt', encoding='utf-8')
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes2.txt'), mode='wt', encoding='utf-8')
             self.assertEqual(mocked_open.call_count, 3, 'There should be exactly three files opened')
             mocked_open().writelines.assert_called_once_with(['uno', 'dos'])
             mocked_open().write.assert_called_any('one')
@@ -126,9 +126,9 @@ class TestPresentationController(TestCase):
             self.assertIs(type(result_notes), list, 'result_notes should be of type list')
             self.assertEqual(len(result_notes), 2, 'There should be two items in the notes')
             self.assertEqual(mocked_open.call_count, 3, 'Three files should be opened')
-            mocked_open.assert_any_call(os.path.join('test', 'titles.txt'))
-            mocked_open.assert_any_call(os.path.join('test', 'slideNotes1.txt'))
-            mocked_open.assert_any_call(os.path.join('test', 'slideNotes2.txt'))
+            mocked_open.assert_any_call(os.path.join('test', 'titles.txt'), encoding='utf-8')
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes1.txt'), encoding='utf-8')
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes2.txt'), encoding='utf-8')
             self.assertEqual(mocked_exists.call_count, 3, 'Three files should have been checked')
 
     def get_titles_and_notes_with_file_not_found_test(self):

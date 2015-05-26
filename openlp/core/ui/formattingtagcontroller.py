@@ -146,7 +146,7 @@ class FormattingTagController(object):
         end = self.start_html_to_end_html(start_html)
         if not end_html:
             if not end:
-                return translate('OpenLP.FormattingTagForm', 'Start tag %s is not valid HTML' % start_html), None
+                return translate('OpenLP.FormattingTagForm', 'Start tag %s is not valid HTML') % start_html, None
             return None, end
         return None, None
 
@@ -166,5 +166,5 @@ class FormattingTagController(object):
             return None, end
         if end and end != end_html:
             return translate('OpenLP.FormattingTagForm',
-                             'End tag %s does not match end tag for start tag %s' % (end, start_html)), None
+                             'End tag %s does not match end tag for start tag %s') % (end, start_html), None
         return None, None

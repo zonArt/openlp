@@ -22,3 +22,23 @@
 """
 The :mod:`~tests.helpers` module provides helper classes for use in the tests.
 """
+from datetime import datetime
+
+
+class MockDateTime(object):
+    return_values = [datetime(2015, 4, 15, 18, 35, 21, 0)]
+    call_counter = 0
+
+    @classmethod
+    def revert(cls):
+        cls.return_values = [datetime(2015, 4, 15, 18, 35, 21, 0)]
+        cls.call_counter = 0
+
+    @classmethod
+    def now(cls):
+        if len(cls.return_values) > cls.call_counter:
+            mocked_datetime = cls.return_values[cls.call_counter]
+        else:
+            mocked_datetime = cls.return_values[-1]
+        cls.call_counter += 1
+        return mocked_datetime

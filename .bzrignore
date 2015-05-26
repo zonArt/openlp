@@ -40,3 +40,6 @@ __pycache__
 # Rejected diff's
 *.rej
 *.~\?~
+.coverage
+cover
+*.kdev4

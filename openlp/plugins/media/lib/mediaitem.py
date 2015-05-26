@@ -33,8 +33,8 @@ from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adj
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path, format_milliseconds
 from openlp.core.utils import get_locale_key
-from openlp.core.ui.media.vlcplayer import VLC_AVAILABLE
-if VLC_AVAILABLE:
+from openlp.core.ui.media.vlcplayer import get_vlc
+if get_vlc() is not None:
     from openlp.plugins.media.forms.mediaclipselectorform import MediaClipSelectorForm
 
 
@@ -91,7 +91,10 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         self.on_new_prompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.replace_action.setText(UiStrings().ReplaceBG)
-        self.replace_action.setToolTip(UiStrings().ReplaceLiveBG)
+        if 'webkit' in get_media_players()[0]:
+            self.replace_action.setToolTip(UiStrings().ReplaceLiveBG)
+        else:
+            self.replace_action.setToolTip(UiStrings().ReplaceLiveBGDisabled)
         self.reset_action.setText(UiStrings().ResetBG)
         self.reset_action.setToolTip(UiStrings().ResetLiveBG)
         self.automatic = UiStrings().Automatic
@@ -139,6 +142,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         # Replace backgrounds do not work at present so remove functionality.
         self.replace_action = self.toolbar.add_toolbar_action('replace_action', icon=':/slides/slide_blank.png',
                                                               triggers=self.on_replace_click)
+        if 'webkit' not in get_media_players()[0]:
+            self.replace_action.setDisabled(True)
         self.reset_action = self.toolbar.add_toolbar_action('reset_action', icon=':/system/system_close.png',
                                                             visible=False, triggers=self.on_reset_click)
         self.media_widget = QtGui.QWidget(self)
@@ -340,6 +345,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         media.sort(key=lambda file_name: get_locale_key(os.path.split(str(file_name))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)
+            item_name = None
             if track.startswith('optical:'):
                 # Handle optical based item
                 (file_name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(track)
@@ -364,7 +370,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                     item_name.setIcon(VIDEO_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
                 item_name.setToolTip(track)
-            self.list_view.addItem(item_name)
+            if item_name:
+                self.list_view.addItem(item_name)
 
     def get_list(self, type=MediaType.Audio):
         """

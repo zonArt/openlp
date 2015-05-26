@@ -230,17 +230,27 @@ class PresentationMediaItem(MediaManagerItem):
             Settings().setValue(self.settings_section + '/presentations files', self.get_file_list())
             self.application.set_normal_cursor()
 
-    def clean_up_thumbnails(self, filepath):
+    def clean_up_thumbnails(self, filepath, clean_for_update=False):
         """
         Clean up the files created such as thumbnails
 
         :param filepath: File path of the presention to clean up after
+        :param clean_for_update: Only clean thumbnails if update is needed
         :return: None
         """
         for cidx in self.controllers:
-            doc = self.controllers[cidx].add_document(filepath)
-            doc.presentation_deleted()
-            doc.close_presentation()
+            root, file_ext = os.path.splitext(filepath)
+            file_ext = file_ext[1:]
+            if file_ext in self.controllers[cidx].supports or file_ext in self.controllers[cidx].also_supports:
+                doc = self.controllers[cidx].add_document(filepath)
+                if clean_for_update:
+                    thumb_path = doc.get_thumbnail_path(1, True)
+                    if not thumb_path or not os.path.exists(filepath) or os.path.getmtime(
+                            thumb_path) < os.path.getmtime(filepath):
+                        doc.presentation_deleted()
+                else:
+                    doc.presentation_deleted()
+                doc.close_presentation()
 
     def generate_slide_data(self, service_item, item=None, xml_version=False, remote=False,
                             context=ServiceItemContext.Service, presentation_file=None):

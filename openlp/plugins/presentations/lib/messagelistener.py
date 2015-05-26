@@ -93,7 +93,7 @@ class Controller(object):
             return True
         if not self.doc.is_loaded():
             if not self.doc.load_presentation():
-                log.warning('Failed to activate %s' % self.doc.filepath)
+                log.warning('Failed to activate %s' % self.doc.file_path)
                 return False
         if self.is_live:
             self.doc.start_presentation()
@@ -104,7 +104,7 @@ class Controller(object):
         if self.doc.is_active():
             return True
         else:
-            log.warning('Failed to activate %s' % self.doc.filepath)
+            log.warning('Failed to activate %s' % self.doc.file_path)
             return False
 
     def slide(self, slide):

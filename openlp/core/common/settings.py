@@ -25,7 +25,6 @@ This class contains the core default settings.
 import datetime
 import logging
 import os
-import sys
 
 from PyQt4 import QtCore, QtGui
 
@@ -43,6 +42,21 @@ if is_linux():
     # Default to False on Xfce.
     if os.environ.get('DESKTOP_SESSION') == 'xfce':
         X11_BYPASS_DEFAULT = False
+
+
+def recent_files_conv(value):
+    """
+    If the value is not a list convert it to a list
+    :param value: Value to convert
+    :return: value as a List
+    """
+    if isinstance(value, list):
+        return value
+    elif isinstance(value, str):
+        return [value]
+    elif isinstance(value, bytes):
+        return [value.decode()]
+    return []
 
 
 class Settings(QtCore.QSettings):
@@ -66,10 +80,9 @@ class Settings(QtCore.QSettings):
         The first entry is the *old key*; it will be removed.
 
         The second entry is the *new key*; we will add it to the config. If this is just an empty string, we just remove
-        the old key.
-
-        The last entry is a list containing two-pair tuples. If the list is empty, no conversion is made. Otherwise each
-        pair describes how to convert the old setting's value::
+        the old key. The last entry is a list containing two-pair tuples. If the list is empty, no conversion is made.
+        If the first value is callable i.e. a function, the function will be called with the old setting's value.
+        Otherwise each pair describes how to convert the old setting's value::
 
             (SlideLimits.Wrap, True)
 
@@ -216,7 +229,8 @@ class Settings(QtCore.QSettings):
         'shortcuts/moveDown': [QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
         'shortcuts/nextTrackItem': [],
         'shortcuts/nextItem_live': [QtGui.QKeySequence(QtCore.Qt.Key_Down), QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
-        'shortcuts/nextItem_preview': [],
+        'shortcuts/nextItem_preview': [QtGui.QKeySequence(QtCore.Qt.Key_Down),
+                                       QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
         'shortcuts/nextService': [QtGui.QKeySequence(QtCore.Qt.Key_Right)],
         'shortcuts/newService': [],
         'shortcuts/offlineHelpItem': [],
@@ -230,7 +244,8 @@ class Settings(QtCore.QSettings):
         'shortcuts/playSlidesLoop': [],
         'shortcuts/playSlidesOnce': [],
         'shortcuts/previousService': [QtGui.QKeySequence(QtCore.Qt.Key_Left)],
-        'shortcuts/previousItem_preview': [],
+        'shortcuts/previousItem_preview': [QtGui.QKeySequence(QtCore.Qt.Key_Up),
+                                           QtGui.QKeySequence(QtCore.Qt.Key_PageUp)],
         'shortcuts/printServiceItem': [QtGui.QKeySequence('Ctrl+P')],
         'shortcuts/songExportItem': [],
         'shortcuts/songUsageStatus': [QtGui.QKeySequence(QtCore.Qt.Key_F4)],
@@ -292,6 +307,10 @@ class Settings(QtCore.QSettings):
         'user interface/preview panel': True,
         'user interface/preview splitter geometry': QtCore.QByteArray(),
         'projector/db type': 'sqlite',
+        'projector/db username': '',
+        'projector/db password': '',
+        'projector/db hostname': '',
+        'projector/db database': '',
         'projector/enable': True,
         'projector/connect on start': False,
         'projector/last directory import': '',
@@ -328,7 +347,7 @@ class Settings(QtCore.QSettings):
         ('general/language', 'core/language', []),
         ('general/last version test', 'core/last version test', []),
         ('general/loop delay', 'core/loop delay', []),
-        ('general/recent files', 'core/recent files', []),
+        ('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
         ('general/save prompt', 'core/save prompt', []),
         ('general/screen blank', 'core/screen blank', []),
         ('general/show splash', 'core/show splash', []),
@@ -353,7 +372,7 @@ class Settings(QtCore.QSettings):
 
         :param default_values: A dict with setting keys and their default values.
         """
-        Settings.__default_settings__ = dict(list(default_values.items()) + list(Settings.__default_settings__.items()))
+        Settings.__default_settings__.update(default_values)
 
     @staticmethod
     def set_filename(ini_file):
@@ -410,7 +429,9 @@ class Settings(QtCore.QSettings):
                     for new, old in rules:
                         # If the value matches with the condition (rule), then use the provided value. This is used to
                         # convert values. E. g. an old value 1 results in True, and 0 in False.
-                        if old == old_value:
+                        if callable(new):
+                            old_value = new(old_value)
+                        elif old == old_value:
                             old_value = new
                             break
                     self.setValue(new_key, old_value)

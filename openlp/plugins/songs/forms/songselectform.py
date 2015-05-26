@@ -187,6 +187,14 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         self.application.process_events()
         # Get the full song
         song = self.song_select_importer.get_song(song, self._update_song_progress)
+        if not song:
+            QtGui.QMessageBox.critical(
+                self, translate('SongsPlugin.SongSelectForm', 'Incomplete song'),
+                translate('SongsPlugin.SongSelectForm', 'This song is missing some information, like the lyrics, '
+                                                        'and cannot be imported.'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok), QtGui.QMessageBox.Ok)
+            self.stacked_widget.setCurrentIndex(1)
+            return
         # Update the UI
         self.title_edit.setText(song['title'])
         self.copyright_edit.setText(song['copyright'])
@@ -359,15 +367,12 @@ class SongSelectForm(QtGui.QDialog, Ui_SongSelectDialog):
         Import a song from SongSelect.
         """
         self.song_select_importer.save_song(self.song)
-        question_dialog = QtGui.QMessageBox()
-        question_dialog.setWindowTitle(translate('SongsPlugin.SongSelectForm', 'Song Imported'))
-        question_dialog.setText(translate('SongsPlugin.SongSelectForm', 'Your song has been imported, would you like '
-                                                                        'to exit now, or import more songs?'))
-        question_dialog.addButton(QtGui.QPushButton(translate('SongsPlugin.SongSelectForm', 'Import More Songs')),
-                                  QtGui.QMessageBox.YesRole)
-        question_dialog.addButton(QtGui.QPushButton(translate('SongsPlugin.SongSelectForm', 'Exit Now')),
-                                  QtGui.QMessageBox.NoRole)
-        if question_dialog.exec_() == QtGui.QMessageBox.Yes:
+        self.song = None
+        if QtGui.QMessageBox.question(self, translate('SongsPlugin.SongSelectForm', 'Song Imported'),
+                                      translate('SongsPlugin.SongSelectForm', 'Your song has been imported, would you '
+                                                                              'like to import more songs?'),
+                                      QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                                      QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
             self.on_back_button_clicked()
         else:
             self.application.process_events()

@@ -36,12 +36,7 @@ class TestListPreviewWidget(TestCase):
         """
         self.setup_patcher = patch('openlp.core.ui.listpreviewwidget.ListPreviewWidget._setup')
         self.mocked_setup = self.setup_patcher.start()
-
-    def tearDown(self):
-        """
-        Remove the mocks
-        """
-        self.setup_patcher.stop()
+        self.addCleanup(self.setup_patcher.stop)
 
     def new_list_preview_widget_test(self):
         """

@@ -39,6 +39,12 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog, RegistryProperties):
         Constructor
         """
         super(FileRenameForm, self).__init__(Registry().get('main_window'))
+        self._setup()
+
+    def _setup(self):
+        """
+        Set up the class. This method is mocked out by the tests.
+        """
         self.setupUi(self)
 
     def exec_(self, copy=False):

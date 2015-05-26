@@ -43,6 +43,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         super(EditVerseForm, self).__init__(parent)
         self.setupUi(self)
+        self.has_single_verse = False
         self.insert_button.clicked.connect(self.on_insert_button_clicked)
         self.split_button.clicked.connect(self.on_split_button_clicked)
         self.verse_text_edit.cursorPositionChanged.connect(self.on_cursor_position_changed)
@@ -98,6 +99,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         Adjusts the verse number SpinBox in regard to the selected verse type and the cursor's position.
         """
+        if self.has_single_verse:
+            return
         position = self.verse_text_edit.textCursor().position()
         text = self.verse_text_edit.toPlainText()
         verse_name = VerseType.translated_names[
