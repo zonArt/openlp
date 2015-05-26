@@ -824,6 +824,8 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.on_stop_loop()
         old_item = self.service_item
+        # rest to allow the remote pick up verse 1 if large imaged
+        self.selected_row = 0
         # take a copy not a link to the servicemanager copy.
         self.service_item = copy.copy(service_item)
         if old_item and self.is_live and old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
@@ -1417,11 +1419,11 @@ class SlideController(DisplayController, RegistryProperties):
 
 class PreviewController(RegistryMixin, OpenLPMixin, SlideController):
     """
-    Set up the Live Controller.
+    Set up the Preview Controller.
     """
     def __init__(self, parent):
         """
-        Set up the general Controller.
+        Set up the base Controller as a preview.
         """
         super(PreviewController, self).__init__(parent)
         self.split = 0
@@ -1441,7 +1443,7 @@ class LiveController(RegistryMixin, OpenLPMixin, SlideController):
     """
     def __init__(self, parent):
         """
-        Set up the general Controller.
+        Set up the base Controller as a live.
         """
         super(LiveController, self).__init__(parent)
         self.is_live = True

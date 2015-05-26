@@ -119,7 +119,7 @@ class TestBibleHTTP(TestCase):
 
     def bibleserver_get_bibles_test(self):
         """
-        Test getting list of bibles from BibelServer.com
+        Test getting list of bibles from BibleServer.com
         """
         # GIVEN: A new Bible Server extraction class
         handler = BSExtract()
@@ -134,7 +134,7 @@ class TestBibleHTTP(TestCase):
 
     def biblegateway_get_bibles_test(self):
         """
-        Test getting list of bibles from BibelGateway.com
+        Test getting list of bibles from BibleGateway.com
         """
         # GIVEN: A new Bible Gateway extraction class
         handler = BGExtract()

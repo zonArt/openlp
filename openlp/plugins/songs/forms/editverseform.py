@@ -43,6 +43,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         super(EditVerseForm, self).__init__(parent)
         self.setupUi(self)
+        self.has_single_verse = False
         self.insert_button.clicked.connect(self.on_insert_button_clicked)
         self.split_button.clicked.connect(self.on_split_button_clicked)
         self.verse_text_edit.cursorPositionChanged.connect(self.on_cursor_position_changed)
