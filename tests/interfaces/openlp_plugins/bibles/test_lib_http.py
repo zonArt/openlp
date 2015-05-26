@@ -25,7 +25,7 @@
 from unittest import TestCase
 
 from openlp.core.common import Registry
-from openlp.plugins.bibles.lib.http import BGExtract, CWExtract
+from openlp.plugins.bibles.lib.http import BGExtract, CWExtract, BSExtract
 from tests.interfaces import MagicMock
 
 
@@ -116,3 +116,46 @@ class TestBibleHTTP(TestCase):
 
         # THEN: We should get back a valid service item
         assert len(results.verse_list) == 36, 'The book of John should not have had any verses added or removed'
+
+    def bibleserver_get_bibles_test(self):
+        """
+        Test getting list of bibles from BibleServer.com
+        """
+        # GIVEN: A new Bible Server extraction class
+        handler = BSExtract()
+
+        # WHEN: downloading bible list from bibleserver
+        bibles = handler.get_bibles_from_http()
+
+        # THEN: The list should not be None, and some known bibles should be there
+        self.assertIsNotNone(bibles)
+        self.assertIn(('New Int. Readers Version', 'NIRV', 'en'), bibles)
+        self.assertIn(('Българската Библия', 'BLG', 'bg'), bibles)
+
+    def biblegateway_get_bibles_test(self):
+        """
+        Test getting list of bibles from BibleGateway.com
+        """
+        # GIVEN: A new Bible Gateway extraction class
+        handler = BGExtract()
+
+        # WHEN: downloading bible list from Crosswalk
+        bibles = handler.get_bibles_from_http()
+
+        # THEN: The list should not be None, and some known bibles should be there
+        self.assertIsNotNone(bibles)
+        self.assertIn(('Holman Christian Standard Bible', 'HCSB', 'en'), bibles)
+
+    def crosswalk_get_bibles_test(self):
+        """
+        Test getting list of bibles from Crosswalk.com
+        """
+        # GIVEN: A new Crosswalk extraction class
+        handler = CWExtract()
+
+        # WHEN: downloading bible list from Crosswalk
+        bibles = handler.get_bibles_from_http()
+
+        # THEN: The list should not be None, and some known bibles should be there
+        self.assertIsNotNone(bibles)
+        self.assertIn(('Giovanni Diodati 1649 (Italian)', 'gdb', 'it'), bibles)

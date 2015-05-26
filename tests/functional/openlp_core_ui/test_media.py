@@ -33,9 +33,6 @@ from tests.helpers.testmixin import TestMixin
 
 class TestMedia(TestCase, TestMixin):
 
-    def setUp(self):
-        pass
-
     def test_get_media_players_no_config(self):
         """
         Test that when there's no config, get_media_players() returns an empty list of players (not a string)

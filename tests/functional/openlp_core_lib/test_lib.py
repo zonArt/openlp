@@ -176,7 +176,7 @@ class TestLib(TestCase):
 
             # THEN: None should be returned
             mocked_isfile.assert_called_with(filename)
-            mocked_open.assert_called_with(filename, 'r')
+            mocked_open.assert_called_with(filename, 'r', encoding='utf-8')
             self.assertIsNone(result, 'None should be returned if the file cannot be opened')
 
     def get_text_file_string_decode_error_test(self):

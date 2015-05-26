@@ -131,6 +131,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         log.info('BibleDB loaded')
         QtCore.QObject.__init__(self)
         self.bible_plugin = parent
+        self.session = None
         if 'path' not in kwargs:
             raise KeyError('Missing keyword argument "path".')
         if 'name' not in kwargs and 'file' not in kwargs:
@@ -144,8 +145,8 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         if 'file' in kwargs:
             self.file = kwargs['file']
         Manager.__init__(self, 'bibles', init_schema, self.file, upgrade)
-        if 'file' in kwargs:
-            self.get_name()
+        if self.session and 'file' in kwargs:
+                self.get_name()
         if 'path' in kwargs:
             self.path = kwargs['path']
         self.wizard = None
@@ -163,9 +164,6 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         Returns the version name of the Bible.
         """
         version_name = self.get_object(BibleMeta, 'name')
-        # Fallback to old way of naming
-        if not version_name:
-            version_name = self.get_object(BibleMeta, 'Version')
         self.name = version_name.value if version_name else None
         return self.name
 

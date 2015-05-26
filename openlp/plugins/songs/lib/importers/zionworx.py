@@ -118,8 +118,8 @@ class ZionWorxImport(SongImport):
                     self.add_verse(verse)
                 title = self.title
                 if not self.finish():
-                    self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
-                                   + (': "' + title + '"' if title else ''))
+                    self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index +
+                                   (': "' + title + '"' if title else ''))
 
     def _decode(self, str):
         """

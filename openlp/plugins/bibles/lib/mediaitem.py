@@ -849,7 +849,7 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanWordSplit)
         service_item.add_capability(ItemCapabilities.CanEditTitle)
         # Service Item: Title
-        service_item.title = create_separated_list(raw_title)
+        service_item.title = '%s %s' % (verses.format_verses(), verses.format_versions())
         # Service Item: Theme
         if not self.settings.bible_theme:
             service_item.theme = None

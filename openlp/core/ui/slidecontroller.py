@@ -408,7 +408,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.set_live_hot_keys(self)
             self.__add_actions_to_widget(self.controller)
         else:
-            self.preview_widget.doubleClicked.connect(self.on_preview_add_to_service)
+            self.preview_widget.doubleClicked.connect(self.on_preview_double_click)
             self.toolbar.set_widget_visible(['editSong'], False)
             self.controller.addActions([self.next_item, self.previous_item])
         Registry().register_function('slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
@@ -717,8 +717,8 @@ class SlideController(DisplayController, RegistryProperties):
         self.play_slides_loop.setChecked(False)
         self.play_slides_loop.setIcon(build_icon(':/media/media_time.png'))
         if item.is_text():
-            if (Settings().value(self.main_window.songs_settings_section + '/display songbar')
-                    and not self.song_menu.menu().isEmpty()):
+            if (Settings().value(self.main_window.songs_settings_section + '/display songbar') and
+                    not self.song_menu.menu().isEmpty()):
                 self.toolbar.set_widget_visible(['song_menu'], True)
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
             self.toolbar.set_widget_visible(LOOP_LIST)
@@ -824,6 +824,8 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.on_stop_loop()
         old_item = self.service_item
+        # rest to allow the remote pick up verse 1 if large imaged
+        self.selected_row = 0
         # take a copy not a link to the servicemanager copy.
         self.service_item = copy.copy(service_item)
         if old_item and self.is_live and old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
@@ -1069,8 +1071,13 @@ class SlideController(DisplayController, RegistryProperties):
         :param start:
         """
         # Only one thread should be in here at the time. If already locked just skip, since the update will be
-        # done by the thread holding the lock. If it is a "start" slide, we must wait for the lock.
-        if not self.slide_selected_lock.acquire(start):
+        # done by the thread holding the lock. If it is a "start" slide, we must wait for the lock, but only for 0.2
+        # seconds, since we don't want to cause a deadlock
+        timeout = 0.2 if start else -1
+        if not self.slide_selected_lock.acquire(start, timeout):
+            if start:
+                self.log_debug('Could not get lock in slide_selected after waiting %f, skip to avoid deadlock.'
+                               % timeout)
             return
         row = self.preview_widget.current_slide_number()
         self.selected_row = 0
@@ -1309,18 +1316,21 @@ class SlideController(DisplayController, RegistryProperties):
         if self.service_item:
             self.service_manager.add_service_item(self.service_item)
 
-    def on_go_live_click(self, field=None):
+    def on_preview_double_click(self, field=None):
         """
-        triggered by clicking the Preview slide items
+        Triggered when a preview slide item is doubleclicked
         """
-        if Settings().value('advanced/double click live'):
-            # Live and Preview have issues if we have video or presentations
-            # playing in both at the same time.
-            if self.service_item.is_command():
-                Registry().execute('%s_stop' % self.service_item.name.lower(), [self.service_item, self.is_live])
-            if self.service_item.is_media():
-                self.on_media_close()
-            self.on_go_live()
+        if self.service_item:
+            if Settings().value('advanced/double click live'):
+                # Live and Preview have issues if we have video or presentations
+                # playing in both at the same time.
+                if self.service_item.is_command():
+                    Registry().execute('%s_stop' % self.service_item.name.lower(), [self.service_item, self.is_live])
+                if self.service_item.is_media():
+                    self.on_media_close()
+                self.on_go_live()
+            else:
+                self.on_preview_add_to_service()
 
     def on_go_live(self, field=None):
         """
@@ -1409,16 +1419,16 @@ class SlideController(DisplayController, RegistryProperties):
 
 class PreviewController(RegistryMixin, OpenLPMixin, SlideController):
     """
-    Set up the Live Controller.
+    Set up the Preview Controller.
     """
     def __init__(self, parent):
         """
-        Set up the general Controller.
+        Set up the base Controller as a preview.
         """
         super(PreviewController, self).__init__(parent)
         self.split = 0
         self.type_prefix = 'preview'
-        self.category = None
+        self.category = 'Preview Toolbar'
 
     def bootstrap_post_set_up(self):
         """
@@ -1433,7 +1443,7 @@ class LiveController(RegistryMixin, OpenLPMixin, SlideController):
     """
     def __init__(self, parent):
         """
-        Set up the general Controller.
+        Set up the base Controller as a live.
         """
         super(LiveController, self).__init__(parent)
         self.is_live = True

@@ -90,7 +90,7 @@ def get_text_file_string(text_file):
     file_handle = None
     content = None
     try:
-        file_handle = open(text_file, 'r')
+        file_handle = open(text_file, 'r', encoding='utf-8')
         if not file_handle.read(3) == '\xEF\xBB\xBF':
             # no BOM was found
             file_handle.seek(0)
@@ -312,6 +312,7 @@ def create_separated_list(string_list):
 
 
 from .colorbutton import ColorButton
+from .exceptions import ValidationError
 from .filedialog import FileDialog
 from .screen import ScreenList
 from .listwidgetwithdnd import ListWidgetWithDnD

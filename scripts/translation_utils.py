@@ -53,7 +53,9 @@ from getpass import getpass
 import base64
 import json
 import webbrowser
+import glob
 
+from lxml import etree, objectify
 from optparse import OptionParser
 from PyQt4 import QtCore
 
@@ -76,6 +78,7 @@ class Command(object):
     Prepare = 3
     Update = 4
     Generate = 5
+    Check = 6
 
 
 class CommandStack(object):
@@ -292,6 +295,38 @@ def create_translation():
     print_quiet('Opening browser to OpenLP project...')
 
 
+def check_format_strings():
+    """
+    This method runs through the ts-files and looks for mismatches between format strings in the original text
+    and in the translations.
+    """
+    path = os.path.join(os.path.abspath('..'), 'resources', 'i18n', '*.ts')
+    file_list = glob.glob(path)
+    for filename in file_list:
+        print_quiet('Checking %s' % filename)
+        file = open(filename, 'rb')
+        tree = objectify.parse(file)
+        root = tree.getroot()
+        for tag in root.iter('message'):
+            location = tag.location.get('filename')
+            line = tag.location.get('line')
+            org_text = tag.source.text
+            translation = tag.translation.text
+            if not translation:
+                for num in tag.iter('numerusform'):
+                    print_verbose('parsed numerusform: location: %s, source: %s, translation: %s' % (
+                                  location, org_text, num.text))
+                    if num and org_text.count('%') != num.text.count('%'):
+                        print_quiet(
+                            'ERROR: Translation from %s at line %s has a mismatch of format input:\n%s\n%s\n' % (
+                                location, line, org_text, num.text))
+            else:
+                print_verbose('parsed: location: %s, source: %s, translation: %s' % (location, org_text, translation))
+                if org_text.count('%') != translation.count('%'):
+                    print_quiet('ERROR: Translation from %s at line %s has a mismatch of format input:\n%s\n%s\n' % (
+                                location, line, org_text, translation))
+
+
 def process_stack(command_stack):
     """
     This method looks at the commands in the command stack, and processes them
@@ -315,6 +350,8 @@ def process_stack(command_stack):
                 generate_binaries()
             elif command == Command.Create:
                 create_translation()
+            elif command == Command.Check:
+                check_format_strings()
         print_quiet('Finished processing commands.')
     else:
         print_quiet('No commands to process.')
@@ -345,6 +382,8 @@ def main():
                       help='show extra information while processing translations')
     parser.add_option('-q', '--quiet', dest='quiet', action='store_true',
                       help='suppress all output other than errors')
+    parser.add_option('-f', '--check-format-strings', dest='check', action='store_true',
+                      help='check that format strings are matching in translations')
     (options, args) = parser.parse_args()
     # Create and populate the command stack
     command_stack = CommandStack()
@@ -358,6 +397,8 @@ def main():
         command_stack.append(Command.Update)
     if options.generate:
         command_stack.append(Command.Generate)
+    if options.check:
+        command_stack.append(Command.Check)
     verbose_mode = options.verbose
     quiet_mode = options.quiet
     if options.username:
