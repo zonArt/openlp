@@ -135,9 +135,9 @@ class TestMainDisplay(TestCase, TestMixin):
         mocked_bibles_plugin.refresh_css.assert_called_with(main_display.frame)
 
     @patch('openlp.core.ui.maindisplay.is_macosx')
-    def macosx_non_primary_screen_window_flags_test(self, is_macosx):
+    def macosx_non_primary_screen_window_flags_state_test(self, is_macosx):
         """
-        Test that on Mac OS X when the current screen isn't primary we use the WindowStaysOnTop window flag
+        Test that on Mac OS X when the current screen isn't primary we set the proper window flags and window state
         """
         # GIVEN: A new SlideController instance on Mac OS X with the current display not being primary.
         is_macosx.return_value = True
@@ -147,49 +147,17 @@ class TestMainDisplay(TestCase, TestMixin):
         # WHEN: The default controller is built.
         main_display = MainDisplay(display)
 
-        # THEN: The window flags should be the same as those needed on Mac OS X for the non primary display.
+        # THEN: The window flags and state should be the same as those needed on Mac OS X for the non primary display.
         self.assertEqual(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint,
                          main_display.windowFlags(),
                          'The window flags should be Qt.WindowStaysOnTop, Qt.Window, and Qt.FramelessWindowHint.')
-
-    @patch('openlp.core.ui.maindisplay.is_macosx')
-    def macosx_primary_screen_window_flags_test(self, is_macosx):
-        """
-        Test that on Mac OS X when the current screen is primary we don't use the WindowStaysOnTop window flag
-        """
-        # GIVEN: A new SlideController instance on Mac OS X with the current display being primary.
-        is_macosx.return_value = True
-        self.screens.set_current_display(0)
-        display = MagicMock()
-
-        # WHEN: The default controller is built.
-        main_display = MainDisplay(display)
-
-        # THEN: The window flags should be the same as those needed on Mac OS X for the primary display.
-        self.assertEqual(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint, main_display.windowFlags(),
-                         'The window flags should be Qt.Window and Qt.FramelessWindowHint.')
-
-    @patch('openlp.core.ui.maindisplay.is_macosx')
-    def macosx_non_primary_screen_window_state_test(self, is_macosx):
-        """
-        Test that on Mac OS X when the current screen isn't primary we don't set the window state to full screen
-        """
-        # GIVEN: A new SlideController instance on Mac OS X with the current display not being primary.
-        is_macosx.return_value = True
-        self.screens.set_current_display(1)
-        display = MagicMock()
-
-        # WHEN: The default controller is built.
-        main_display = MainDisplay(display)
-
-        # THEN: The window state should not be full screen.
         self.assertNotEqual(QtCore.Qt.WindowFullScreen, main_display.windowState(),
                             'The window state should not be full screen.')
 
     @patch('openlp.core.ui.maindisplay.is_macosx')
-    def macosx_primary_screen_window_state_test(self, is_macosx):
+    def macosx_primary_screen_window_flags_state_test(self, is_macosx):
         """
-        Test that on Mac OS X when the current screen is primary we set the window state to full screen
+        Test that on Mac OS X when the current screen is primary we set the proper window flags and window state
         """
         # GIVEN: A new SlideController instance on Mac OS X with the current display being primary.
         is_macosx.return_value = True
@@ -199,6 +167,8 @@ class TestMainDisplay(TestCase, TestMixin):
         # WHEN: The default controller is built.
         main_display = MainDisplay(display)
 
-        # THEN: The window state should be full screen.
+        # THEN: The window flags and state should be the same as those needed on Mac OS X for the primary display.
+        self.assertEqual(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint, main_display.windowFlags(),
+                         'The window flags should be Qt.Window and Qt.FramelessWindowHint.')
         self.assertEqual(QtCore.Qt.WindowFullScreen, main_display.windowState(),
                          'The window state should be full screen.')
