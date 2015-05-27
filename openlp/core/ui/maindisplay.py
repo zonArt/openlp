@@ -164,6 +164,8 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             # and menu bar
             if self.screens.current['primary']:
                 self.setWindowState(QtCore.Qt.WindowFullScreen)
+            else:
+                window_flags |= QtCore.Qt.WindowStaysOnTopHint
         self.setWindowFlags(window_flags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.set_transparency(False)
