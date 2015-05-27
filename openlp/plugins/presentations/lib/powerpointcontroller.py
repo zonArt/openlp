@@ -39,8 +39,6 @@ if is_win():
     import win32ui
     import win32gui
     import pywintypes
-    import win32process
-    import win32api
 
 
 from openlp.core.lib import ScreenList
@@ -375,21 +373,13 @@ class PowerpointDocument(PresentationDocument):
         # Get the size of the current window and if it matches the size of our main display we assume
         # it is the powerpoint presentation window.
         (left, top, right, bottom) = win32gui.GetWindowRect(hwnd)
+        window_title = win32gui.GetWindowText(hwnd)
         log.debug('window size:  left=%d, top=%d, right=%d, width=%d' % (left, top, right, bottom))
         log.debug('compare size:  %d and %d, %d and %d, %d and %d, %d and %d'
                   % (size.y(), top, size.height(), (bottom - top), size.x(), left, size.width(), (right - left)))
-        log.debug('window title: %s' % win32gui.GetWindowText(hwnd))
-        module_name = ''
-        try:
-            thread_ud, process_id = win32process.GetWindowThreadProcessId(hwnd)
-            handle = win32api.OpenProcess((win32con.PROCESS_VM_READ | win32con.PROCESS_QUERY_INFORMATION),
-                                          False, process_id)
-            module_name = win32process.GetModuleFileNameEx(handle, 0)
-            log.debug('module name: %s' % module_name)
-        except Exception:
-            log.debug('could not get window module name')
+        log.debug('window title: %s' % window_title)
         if size.y() == top and size.height() == (bottom - top) and size.x() == left and \
-                size.width() == (right - left) and 'POWERPNT.EXE' in module_name:
+                size.width() == (right - left) and os.path.basename(self.file_path) in window_title:
             log.debug('Found a match and will save the handle')
             self.presentation_hwnd = hwnd
             # Stop powerpoint from flashing in the taskbar
@@ -435,7 +425,7 @@ class PowerpointDocument(PresentationDocument):
         log.debug('goto_slide')
         try:
             if Settings().value('presentations/powerpoint slide click advance') \
-                    and self.get_slide_number() == self.index_map[slide_no]:
+                    and self.get_slide_number() == slide_no:
                 click_index = self.presentation.SlideShowWindow.View.GetClickIndex()
                 click_count = self.presentation.SlideShowWindow.View.GetClickCount()
                 log.debug('We are already on this slide - go to next effect if any left, idx: %d, count: %d'
