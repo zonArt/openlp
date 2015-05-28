@@ -34,6 +34,7 @@ from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path, format_milliseconds
 from openlp.core.utils import get_locale_key
 from openlp.core.ui.media.vlcplayer import get_vlc
+
 if get_vlc() is not None:
     from openlp.plugins.media.forms.mediaclipselectorform import MediaClipSelectorForm
 
@@ -412,7 +413,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         When the load optical button is clicked, open the clip selector window.
         """
         # self.media_clip_selector_form.exec_()
-        if VLC_AVAILABLE:
+        if get_vlc():
             media_clip_selector_form = MediaClipSelectorForm(self, self.main_window, None)
             media_clip_selector_form.exec_()
             del media_clip_selector_form
