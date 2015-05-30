@@ -515,7 +515,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param service_item: The ServiceItem containing the details to be played.
         """
         used_players = get_media_players()[0]
-        if service_item.processor != UiStrings().Automatic:
+        if service_item.processor and service_item.processor != UiStrings().Automatic:
             used_players = [service_item.processor.lower()]
         # If no player, we can't play
         if not used_players:
