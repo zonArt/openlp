@@ -131,6 +131,7 @@ class WorshipAssistantImport(SongImport):
                 return
             verse = ''
             used_verses = []
+            verse_id = VerseType.tags[VerseType.Verse] + '1'
             for line in lyrics.splitlines():
                 if line.startswith('['):  # verse marker
                     # Add previous verse

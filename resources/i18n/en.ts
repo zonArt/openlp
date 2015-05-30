@@ -1413,6 +1413,11 @@ You will need to re-import this Bible to use it again.</source>
 
 You will need to re-import this Bible to use it again.</translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
+        <source>Advanced</source>
+        <translation type="unfinished">Advanced</translation>
+    </message>
 </context>
 <context>
     <name>BiblesPlugin.OpenSongImport</name>
@@ -1864,12 +1869,12 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation>You need to type in a group name.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="641"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="642"/>
         <source>Could not add the new group.</source>
         <translation>Could not add the new group.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="644"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="645"/>
         <source>This group already exists.</source>
         <translation>This group already exists.</translation>
     </message>
@@ -1918,34 +1923,34 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation>Select Image(s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="663"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="664"/>
         <source>You must select an image to replace the background with.</source>
         <translation>You must select an image to replace the background with.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
         <source>Missing Image(s)</source>
         <translation>Missing Image(s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="582"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="583"/>
         <source>The following image(s) no longer exist: %s</source>
         <translation>The following image(s) no longer exist: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="680"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="681"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="676"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="677"/>
         <source>There was no display item to amend.</source>
         <translation>There was no display item to amend.</translation>
     </message>
@@ -1996,7 +2001,7 @@ Do you want to add the other images anyway?</translation>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="328"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="355"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>VLC is an external player which supports a number of different formats.</translation>
     </message>
@@ -3955,7 +3960,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
 <context>
     <name>OpenLP.MainDisplay</name>
     <message>
-        <location filename="openlp/core/ui/maindisplay.py" line="211"/>
+        <location filename="openlp/core/ui/maindisplay.py" line="213"/>
         <source>OpenLP Display</source>
         <translation>OpenLP Display</translation>
     </message>
@@ -4262,7 +4267,7 @@ You can download the latest version from http://openlp.org/.</translation>
         <translation>The Main Display has been blanked out</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1152"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1155"/>
         <source>Default Theme: %s</source>
         <translation>Default Theme: %s</translation>
     </message>
@@ -4278,12 +4283,12 @@ You can download the latest version from http://openlp.org/.</translation>
         <translation>Configure &amp;Shortcuts...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
         <source>Close OpenLP</source>
         <translation>Close OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>Are you sure you want to close OpenLP?</translation>
     </message>
@@ -4357,13 +4362,13 @@ Re-running this wizard may make changes to your current OpenLP configuration and
 Re-running this wizard may make changes to your current OpenLP configuration and possibly add songs to your existing songs list and change your default theme.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation>Clear List</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
         <source>Clear the list of recent files.</source>
         <translation>Clear the list of recent files.</translation>
     </message>
@@ -4403,37 +4408,37 @@ Re-running this wizard may make changes to your current OpenLP configuration and
         <translation>OpenLP Export Settings Files (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="915"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
         <source>Import settings</source>
         <translation>Import settings</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="915"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
         <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
         <translation>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="927"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>Export Settings File</source>
         <translation>Export Settings File</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="927"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>OpenLP Export Settings File (*.conf)</source>
         <translation>OpenLP Export Settings File (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
         <source>New Data Directory Error</source>
         <translation>New Data Directory Error</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1390"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4494,17 +4499,17 @@ Processing has terminated and no changes have been made.</translation>
         <translation>Toggle the visibility of the Projector Manager</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
         <source>Export setting error</source>
         <translation>Export setting error</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="981"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="984"/>
         <source>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</source>
         <translation>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
         <source>An error occurred while exporting the settings: %s</source>
         <translation>An error occurred while exporting the settings: %s</translation>
     </message>
@@ -7556,7 +7561,7 @@ Please try selecting it individually.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="124"/>
         <source>Replace live background is not available on this platform in this version of OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Replace live background is not available on this platform in this version of OpenLP.</translation>
     </message>
 </context>
 <context>
@@ -7597,50 +7602,50 @@ Please try selecting it individually.</translation>
 <context>
     <name>PresentationPlugin</name>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="159"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="160"/>
         <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
         <translation>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="172"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
         <source>Presentation</source>
         <comment>name singular</comment>
         <translation>Presentation</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="174"/>
         <source>Presentations</source>
         <comment>name plural</comment>
         <translation>Presentations</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="177"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="178"/>
         <source>Presentations</source>
         <comment>container title</comment>
         <translation>Presentations</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="181"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="182"/>
         <source>Load a new presentation.</source>
         <translation>Load a new presentation.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="185"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
         <source>Delete the selected presentation.</source>
         <translation>Delete the selected presentation.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
         <source>Preview the selected presentation.</source>
         <translation>Preview the selected presentation.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
         <source>Send the selected presentation live.</source>
         <translation>Send the selected presentation live.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="189"/>
         <source>Add the selected presentation to the service.</source>
         <translation>Add the selected presentation to the service.</translation>
     </message>
@@ -7701,7 +7706,7 @@ Please try selecting it individually.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="481"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="529"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</translation>
     </message>
@@ -7709,48 +7714,53 @@ Please try selecting it individually.</translation>
 <context>
     <name>PresentationPlugin.PresentationTab</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="116"/>
         <source>Available Controllers</source>
         <translation>Available Controllers</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="139"/>
         <source>%s (unavailable)</source>
         <translation>%s (unavailable)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="121"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="124"/>
         <source>Allow presentation application to be overridden</source>
         <translation>Allow presentation application to be overridden</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="119"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="122"/>
         <source>PDF options</source>
         <translation>PDF options</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="132"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation>Use given full path for mudraw or ghostscript binary:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="221"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="233"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation>Select mudraw or ghostscript binary.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="227"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="239"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation>The program is not ghostscript or mudraw which is required.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
         <source>PowerPoint options</source>
-        <translation type="unfinished"></translation>
+        <translation>PowerPoint options</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
         <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
+        <translation>Clicking on a selected slide in the slidecontroller advances to next effect.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
+        <source>Let PowerPoint control the size and position of the presentation window.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9686,7 +9696,7 @@ Please enter the verses separated by spaces.</translation>
         <translation>File not valid WorshipAssistant CSV format.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="184"/>
+        <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="185"/>
         <source>Record %d</source>
         <translation>Record %d</translation>
     </message>

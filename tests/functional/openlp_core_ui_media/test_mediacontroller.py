@@ -59,6 +59,21 @@ class TestMediaController(TestCase, TestMixin):
         self.assertListEqual(media_player.audio_extensions_list, media_controller.audio_extensions_list,
                              'Audio extensions should be the same')
 
+    def resize_test(self):
+        """
+        Test that the resize method is called correctly
+        """
+        # GIVEN: A media controller, a player and a display
+        media_controller = MediaController()
+        mocked_player = MagicMock()
+        mocked_display = MagicMock()
+
+        # WHEN: resize() is called
+        media_controller.resize(mocked_display, mocked_player)
+
+        # THEN: The player's resize method should be called correctly
+        mocked_player.resize.assert_called_with(mocked_display)
+
     def check_file_type_no_players_test(self):
         """
         Test that we don't try to play media when no players available
@@ -81,3 +96,101 @@ class TestMediaController(TestCase, TestMixin):
 
             # THEN: it should return False
             self.assertFalse(ret, '_check_file_type should return False when no mediaplayers are available.')
+
+    @patch('openlp.core.ui.media.mediacontroller.get_media_players')
+    @patch('openlp.core.ui.media.mediacontroller.UiStrings')
+    def check_file_type_no_processor_test(self, mocked_uistrings, mocked_get_media_players):
+        """
+        Test that we don't try to play media when the processor for the service item is None
+        """
+        # GIVEN: A mocked UiStrings, get_media_players, controller, display and service_item
+        mocked_get_media_players.return_value = ([], '')
+        mocked_ret_uistrings = MagicMock()
+        mocked_ret_uistrings.Automatic = 1
+        mocked_uistrings.return_value = mocked_ret_uistrings
+        media_controller = MediaController()
+        mocked_controller = MagicMock()
+        mocked_display = MagicMock()
+        mocked_service_item = MagicMock()
+        mocked_service_item.processor = None
+
+        # WHEN: calling _check_file_type when the processor for the service item is None
+        ret = media_controller._check_file_type(mocked_controller, mocked_display, mocked_service_item)
+
+        # THEN: it should return False
+        self.assertFalse(ret, '_check_file_type should return False when the processor for service_item is None.')
+
+    def media_play_msg_test(self):
+        """
+        Test that the media controller responds to the request to play a loaded video
+        """
+        # GIVEN: A media controller and a message with two elements
+        media_controller = MediaController()
+        message = (1, 2)
+
+        # WHEN: media_play_msg() is called
+        with patch.object(media_controller, u'media_play') as mocked_media_play:
+            media_controller.media_play_msg(message, False)
+
+        # THEN: The underlying method is called
+        mocked_media_play.assert_called_with(1, False)
+
+    def media_pause_msg_test(self):
+        """
+        Test that the media controller responds to the request to pause a loaded video
+        """
+        # GIVEN: A media controller and a message with two elements
+        media_controller = MediaController()
+        message = (1, 2)
+
+        # WHEN: media_play_msg() is called
+        with patch.object(media_controller, u'media_pause') as mocked_media_pause:
+            media_controller.media_pause_msg(message)
+
+        # THEN: The underlying method is called
+        mocked_media_pause.assert_called_with(1)
+
+    def media_stop_msg_test(self):
+        """
+        Test that the media controller responds to the request to stop a loaded video
+        """
+        # GIVEN: A media controller and a message with two elements
+        media_controller = MediaController()
+        message = (1, 2)
+
+        # WHEN: media_play_msg() is called
+        with patch.object(media_controller, u'media_stop') as mocked_media_stop:
+            media_controller.media_stop_msg(message)
+
+        # THEN: The underlying method is called
+        mocked_media_stop.assert_called_with(1)
+
+    def media_volume_msg_test(self):
+        """
+        Test that the media controller responds to the request to change the volume
+        """
+        # GIVEN: A media controller and a message with two elements
+        media_controller = MediaController()
+        message = (1, [50])
+
+        # WHEN: media_play_msg() is called
+        with patch.object(media_controller, u'media_volume') as mocked_media_volume:
+            media_controller.media_volume_msg(message)
+
+        # THEN: The underlying method is called
+        mocked_media_volume.assert_called_with(1, 50)
+
+    def media_seek_msg_test(self):
+        """
+        Test that the media controller responds to the request to seek to a particular position
+        """
+        # GIVEN: A media controller and a message with two elements
+        media_controller = MediaController()
+        message = (1, [800])
+
+        # WHEN: media_play_msg() is called
+        with patch.object(media_controller, u'media_seek') as mocked_media_seek:
+            media_controller.media_seek_msg(message)
+
+        # THEN: The underlying method is called
+        mocked_media_seek.assert_called_with(1, 800)

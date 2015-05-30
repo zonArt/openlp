@@ -828,8 +828,10 @@ class SlideController(DisplayController, RegistryProperties):
         self.selected_row = 0
         # take a copy not a link to the servicemanager copy.
         self.service_item = copy.copy(service_item)
-        if old_item and self.is_live and old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
-            self._reset_blank()
+        # Reset blanking if needed
+        if old_item and self.is_live and (old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay) or
+                                          self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay)):
+            self._reset_blank(self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay))
         if service_item.is_command():
             Registry().execute(
                 '%s_start' % service_item.name.lower(), [self.service_item, self.is_live, self.hide_mode(), slide_no])
@@ -1080,6 +1082,7 @@ class SlideController(DisplayController, RegistryProperties):
                                % timeout)
             return
         row = self.preview_widget.current_slide_number()
+        old_selected_row = self.selected_row
         self.selected_row = 0
         if -1 < row < self.preview_widget.slide_count():
             if self.service_item.is_command():
@@ -1089,7 +1092,7 @@ class SlideController(DisplayController, RegistryProperties):
             else:
                 to_display = self.service_item.get_rendered_frame(row)
                 if self.service_item.is_text():
-                    self.display.text(to_display)
+                    self.display.text(to_display, row != old_selected_row)
                 else:
                     if start:
                         self.display.build_html(self.service_item, to_display)
@@ -1119,8 +1122,7 @@ class SlideController(DisplayController, RegistryProperties):
         This updates the preview frame, for example after changing a slide or using *Blank to Theme*.
         """
         self.log_debug('update_preview %s ' % self.screens.current['primary'])
-        if not self.screens.current['primary'] and self.service_item and \
-                self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
+        if self.service_item and self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change is slow
             QtCore.QTimer.singleShot(0.5, self.grab_maindisplay)
             QtCore.QTimer.singleShot(2.5, self.grab_maindisplay)
@@ -1349,7 +1351,11 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param item: The service item to be processed
         """
-        self.media_controller.video(self.controller_type, item, self.hide_mode())
+        if self.is_live and self.hide_mode() == HideMode.Theme:
+            self.media_controller.video(self.controller_type, item, HideMode.Blank)
+            self.on_blank_display(True)
+        else:
+            self.media_controller.video(self.controller_type, item, self.hide_mode())
         if not self.is_live:
             self.preview_display.show()
             self.slide_preview.hide()
@@ -1362,16 +1368,22 @@ class SlideController(DisplayController, RegistryProperties):
         self.preview_display.hide()
         self.slide_preview.show()
 
-    def _reset_blank(self):
+    def _reset_blank(self, no_theme):
         """
         Used by command items which provide their own displays to reset the
         screen hide attributes
+
+        :param no_theme: Does the new item support theme-blanking.
         """
         hide_mode = self.hide_mode()
         if hide_mode == HideMode.Blank:
             self.on_blank_display(True)
         elif hide_mode == HideMode.Theme:
-            self.on_theme_display(True)
+            # The new item-type doesn't support theme-blanking, so 'switch' to normal blanking.
+            if no_theme:
+                self.on_blank_display(True)
+            else:
+                self.on_theme_display(True)
         elif hide_mode == HideMode.Screen:
             self.on_hide_display(True)
         else:

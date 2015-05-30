@@ -1407,6 +1407,11 @@ You will need to re-import this Bible to use it again.</source>
 
 நீங்கள் இந்த பைபிள் மீண்டும் பயன்படுத்த மீண்டும் இறக்குமதி செய்ய வேண்டும்.</translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
+        <source>Advanced</source>
+        <translation type="unfinished">முன்னேறிய</translation>
+    </message>
 </context>
 <context>
     <name>BiblesPlugin.OpenSongImport</name>
@@ -1859,12 +1864,12 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="641"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="642"/>
         <source>Could not add the new group.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="644"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="645"/>
         <source>This group already exists.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1913,34 +1918,34 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation>தேர்ந்தெடுக்கவும் படம் (கள்)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="663"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="664"/>
         <source>You must select an image to replace the background with.</source>
         <translation>நீங்கள் பின்னணி பதிலாக ஒரு படத்தை தேர்வு செய்ய வேண்டும்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
         <source>Missing Image(s)</source>
         <translation>காணாமல் போன படம் (கள்)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="582"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="583"/>
         <source>The following image(s) no longer exist: %s</source>
         <translation>இந்த படம் (கள்) இல்லை: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>பின்வரும் படத்தை (கள்) இனி இல்லை: %s 
 இருப்பினும் மற்ற படங்களை சேர்க்கவும் வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="680"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="681"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>உங்கள் பின்னணி பதிலாக ஒரு பிரச்சனை இருந்தது, பட கோப்பு &quot;%s&quot; இல்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="676"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="677"/>
         <source>There was no display item to amend.</source>
         <translation>திருத்தும் இல்லை காட்சி பொருளாக இருந்தது.</translation>
     </message>
@@ -1991,7 +1996,7 @@ Do you want to add the other images anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="328"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="355"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3859,7 +3864,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
 <context>
     <name>OpenLP.MainDisplay</name>
     <message>
-        <location filename="openlp/core/ui/maindisplay.py" line="211"/>
+        <location filename="openlp/core/ui/maindisplay.py" line="213"/>
         <source>OpenLP Display</source>
         <translation>OpenLP காட்சி</translation>
     </message>
@@ -4166,7 +4171,7 @@ You can download the latest version from http://openlp.org/.</source>
         <translation>முக்கிய காட்சி அவுட் வெற்றாக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1152"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1155"/>
         <source>Default Theme: %s</source>
         <translation>இயல்புநிலை தீம்: %s</translation>
     </message>
@@ -4182,12 +4187,12 @@ You can download the latest version from http://openlp.org/.</source>
         <translation>உள்ளமைக்கவும் &amp;குறுக்குவழிகளை...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
         <source>Close OpenLP</source>
         <translation>OpenLP மூட</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>நீங்கள் OpenLP மூடப்பட வேண்டுமா?</translation>
     </message>
@@ -4261,13 +4266,13 @@ Re-running this wizard may make changes to your current OpenLP configuration and
 மீண்டும் இயங்கும் இந்த வழிகாட்டி உங்கள் தற்போதைய OpenLP கட்டமைப்பு மாற்றங்கள் மற்றும் சாத்தியமான ஏற்கனவே இசை பட்டியலில் இசை சேர்க்க, உங்கள் இயல்புநிலை தீம் மாற்றலாம்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation>தெளிவான பட்டியல்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
         <source>Clear the list of recent files.</source>
         <translation>சமீபத்திய கோப்புகளை அழிக்கவும்.</translation>
     </message>
@@ -4308,37 +4313,37 @@ Re-running this wizard may make changes to your current OpenLP configuration and
         <translation>OpenLP ஏற்றுமதி அமைப்புகள் கோப்புகள் (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="915"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
         <source>Import settings</source>
         <translation>அமைப்புகள் இறக்குமதி </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="915"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
         <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
         <translation>OpenLP இப்போது மூடிவிடும். இறக்குமதி அமைப்புகளை நீங்கள் OpenLP தொடங்க அடுத்த முறை பயன்படுத்தப்படும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="927"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>Export Settings File</source>
         <translation> அமைப்புகள் கோப்பு ஏற்றுமதி செய்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="927"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>OpenLP Export Settings File (*.conf)</source>
         <translation>OpenLP ஏற்றுமதி அமைப்புகள் கோப்ப (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
         <source>New Data Directory Error</source>
         <translation>புதிய தகவல்கள் டைரக்டரி பிழை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1390"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>புதிய தரவு அடைவு இடத்திற்கு OpenLP தரவு நகல் - %s - நகல் முடிக்க காத்திருக்கவும</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4393,17 +4398,17 @@ Processing has terminated and no changes have been made.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
         <source>Export setting error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="981"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="984"/>
         <source>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
         <source>An error occurred while exporting the settings: %s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7492,51 +7497,51 @@ Please try selecting it individually.</source>
 <context>
     <name>PresentationPlugin</name>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="159"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="160"/>
         <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
         <translation>&lt;strong&gt;விளக்கக்காட்சி Plugin&lt;/strong&gt;&lt;br /&gt;
 வழங்கல் plugin பல்வேறு திட்டங்கள் பல பயன்படுத்தி விளக்கக்காட்சிகள் காட்ட உதவுகிறது. இன்னும் வழங்கல் திட்டங்கள் தேர்வு பெட்டியை கீழே ஒரு துளி பயனர் கிடைக்கும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="172"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
         <source>Presentation</source>
         <comment>name singular</comment>
         <translation>விளக்கக்காட்சி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="174"/>
         <source>Presentations</source>
         <comment>name plural</comment>
         <translation>விளக்கக்காட்சிகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="177"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="178"/>
         <source>Presentations</source>
         <comment>container title</comment>
         <translation>விளக்கக்காட்சிகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="181"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="182"/>
         <source>Load a new presentation.</source>
         <translation>ஒரு புதிய விளக்கக்காட்சியை ஏற்ற.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="185"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
         <source>Delete the selected presentation.</source>
         <translation>தேர்ந்தெடுக்கப்பட்ட விளக்கக்காட்சியை நீக்கு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
         <source>Preview the selected presentation.</source>
         <translation>தேர்ந்தெடுக்கப்பட்ட வழங்கல் முன்னோட்டத்தை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
         <source>Send the selected presentation live.</source>
         <translation>தற்போது தேர்ந்தெடுக்கப்பட்ட வழங்கல் அனுப்ப.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="189"/>
         <source>Add the selected presentation to the service.</source>
         <translation>சேவை தேர்ந்தெடுக்கப்பட்ட வழங்கல் சேர்க்கலாம்.</translation>
     </message>
@@ -7597,7 +7602,7 @@ Please try selecting it individually.</source>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="481"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="529"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7605,48 +7610,53 @@ Please try selecting it individually.</source>
 <context>
     <name>PresentationPlugin.PresentationTab</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="116"/>
         <source>Available Controllers</source>
         <translation>கிடைக்கும் கட்டுப்படுத்திகளின</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="139"/>
         <source>%s (unavailable)</source>
         <translation>%s (இல்லை)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="121"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="124"/>
         <source>Allow presentation application to be overridden</source>
         <translation>விளக்கக்காட்சி மேலெழுதப்படலாம் அனுமதி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="119"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="122"/>
         <source>PDF options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="132"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="221"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="233"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="227"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="239"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
         <source>PowerPoint options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
         <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
+        <source>Let PowerPoint control the size and position of the presentation window.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9579,7 +9589,7 @@ Please enter the verses separated by spaces.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="184"/>
+        <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="185"/>
         <source>Record %d</source>
         <translation>சாதனையை %d</translation>
     </message>

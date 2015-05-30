@@ -32,11 +32,14 @@ import time
 from openlp.core.common import is_win, Settings
 
 if is_win():
-    from win32com.client import Dispatch
+    from win32com.client import DispatchWithEvents
     import win32com
+    import win32con
     import winreg
     import win32ui
+    import win32gui
     import pywintypes
+
 
 from openlp.core.lib import ScreenList
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, translate
@@ -70,8 +73,18 @@ class PowerpointController(PresentationController):
         if is_win():
             try:
                 winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, 'PowerPoint.Application').Close()
+                try:
+                    # Try to detect if the version is 12 (2007) or above, and if so add 'odp' as a support filetype
+                    version_key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, 'PowerPoint.Application\\CurVer')
+                    tmp1, app_version_string, tmp2 = winreg.EnumValue(version_key, 0)
+                    version_key.Close()
+                    app_version = int(app_version_string[-2:])
+                    if app_version >= 12:
+                        self.also_supports = ['odp']
+                except (OSError, ValueError):
+                    log.warning('Detection of powerpoint version using registry failed.')
                 return True
-            except WindowsError:
+            except OSError:
                 pass
         return False
 
@@ -80,12 +93,22 @@ class PowerpointController(PresentationController):
             """
             Loads PowerPoint process.
             """
+            class PowerPointEvents:
+                """
+                Class to catch events from PowerPoint.
+                """
+                def OnSlideShowNextClick(self, slideshow_window, effect):
+                    """
+                    Occurs on the next click of the slide.
+                    If the main OpenLP window is not in focus force update of the slidecontroller.
+                    """
+                    if not Registry().get('main_window').isActiveWindow():
+                        log.debug('main window is not in focus - should update slidecontroller')
+                        Registry().execute('slidecontroller_live_change', slideshow_window.View.CurrentShowPosition)
+
             log.debug('start_process')
             if not self.process:
-                self.process = Dispatch('PowerPoint.Application')
-            self.process.Visible = True
-            # ppWindowMinimized = 2
-            self.process.WindowState = 2
+                self.process = DispatchWithEvents('PowerPoint.Application', PowerPointEvents)
 
         def kill(self):
             """
@@ -124,6 +147,9 @@ class PowerpointDocument(PresentationDocument):
         self.presentation = None
         self.index_map = {}
         self.slide_count = 0
+        self.blank_slide = 1
+        self.blank_click = None
+        self.presentation_hwnd = None
 
     def load_presentation(self):
         """
@@ -132,23 +158,15 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('load_presentation')
         try:
-            if not self.controller.process or not self.controller.process.Visible:
+            if not self.controller.process:
                 self.controller.start_process()
-            self.controller.process.Presentations.Open(self.file_path, False, False, True)
+            self.controller.process.Presentations.Open(os.path.normpath(self.file_path), False, False, False)
             self.presentation = self.controller.process.Presentations(self.controller.process.Presentations.Count)
             self.create_thumbnails()
             self.create_titles_and_notes()
-            # Powerpoint 2010 and 2013 pops up when loading a file, so we minimize it again
-            if float(self.presentation.Application.Version) >= 14.0:
-                try:
-                    # ppWindowMinimized = 2
-                    self.presentation.Application.WindowState = 2
-                except (AttributeError, pywintypes.com_error) as e:
-                    log.exception('Failed to minimize main powerpoint window')
-                    log.exception(e)
-                    trace_error_handler(log)
-            # Make sure powerpoint doesn't steal focus
-            Registry().get('main_window').activateWindow()
+            # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
+            if len(ScreenList().screen_list) > 1:
+                Registry().get('main_window').activateWindow()
             return True
         except (AttributeError, pywintypes.com_error) as e:
             log.exception('Exception caught while loading Powerpoint presentation')
@@ -194,8 +212,9 @@ class PowerpointDocument(PresentationDocument):
                 trace_error_handler(log)
         self.presentation = None
         self.controller.remove_doc(self)
-        # Make sure powerpoint doesn't steal focus
-        Registry().get('main_window').activateWindow()
+        # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
+        if len(ScreenList().screen_list) > 1:
+            Registry().get('main_window').activateWindow()
 
     def is_loaded(self):
         """
@@ -203,10 +222,6 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('is_loaded')
         try:
-            if not self.controller.process.Visible:
-                return False
-            if self.controller.process.Windows.Count == 0:
-                return False
             if self.controller.process.Presentations.Count == 0:
                 return False
         except (AttributeError, pywintypes.com_error) as e:
@@ -241,13 +256,11 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('unblank_screen')
         try:
-            self.presentation.SlideShowSettings.Run()
-            # ppSlideShowRunning = 1
-            self.presentation.SlideShowWindow.View.State = 1
             self.presentation.SlideShowWindow.Activate()
-            # Unblanking is broken in PowerPoint 2010 and 2013, need to redisplay
-            if float(self.presentation.Application.Version) >= 14.0:
-                self.presentation.SlideShowWindow.View.GotoSlide(self.blank_slide, False)
+            self.presentation.SlideShowWindow.View.State = 1
+            # Unblanking is broken in PowerPoint 2010 (14.0), need to redisplay
+            if 15.0 > float(self.presentation.Application.Version) >= 14.0:
+                self.presentation.SlideShowWindow.View.GotoSlide(self.index_map[self.blank_slide], False)
                 if self.blank_click:
                     self.presentation.SlideShowWindow.View.GotoClick(self.blank_click)
         except (AttributeError, pywintypes.com_error) as e:
@@ -255,8 +268,12 @@ class PowerpointDocument(PresentationDocument):
             log.exception(e)
             trace_error_handler(log)
             self.show_error_msg()
-        # Make sure powerpoint doesn't steal focus
-        Registry().get('main_window').activateWindow()
+        # Stop powerpoint from flashing in the taskbar
+        if self.presentation_hwnd:
+            win32gui.FlashWindowEx(self.presentation_hwnd, win32con.FLASHW_STOP, 0, 0)
+        # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
+        if len(ScreenList().screen_list) > 1:
+            Registry().get('main_window').activateWindow()
 
     def blank_screen(self):
         """
@@ -264,8 +281,8 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('blank_screen')
         try:
-            # Unblanking is broken in PowerPoint 2010 and 2013, need to save info for later
-            if float(self.presentation.Application.Version) >= 14.0:
+            # Unblanking is broken in PowerPoint 2010 (14.0), need to save info for later
+            if 15.0 > float(self.presentation.Application.Version) >= 14.0:
                 self.blank_slide = self.get_slide_number()
                 self.blank_click = self.presentation.SlideShowWindow.View.GetClickIndex()
             # ppSlideShowBlackScreen = 3
@@ -295,7 +312,7 @@ class PowerpointDocument(PresentationDocument):
 
     def stop_presentation(self):
         """
-        Stops the current presentation and hides the output.
+        Stops the current presentation and hides the output. Used when blanking to desktop.
         """
         log.debug('stop_presentation')
         try:
@@ -321,28 +338,52 @@ class PowerpointDocument(PresentationDocument):
                 except win32ui.error:
                     dpi = 96
             size = ScreenList().current['size']
-            ppt_window = self.presentation.SlideShowSettings.Run()
-            if not ppt_window:
-                return
+            ppt_window = None
             try:
-                ppt_window.Top = size.y() * 72 / dpi
-                ppt_window.Height = size.height() * 72 / dpi
-                ppt_window.Left = size.x() * 72 / dpi
-                ppt_window.Width = size.width() * 72 / dpi
-            except AttributeError as e:
-                log.exception('AttributeError while in start_presentation')
+                ppt_window = self.presentation.SlideShowSettings.Run()
+            except (AttributeError, pywintypes.com_error) as e:
+                log.exception('Caught exception while in start_presentation')
                 log.exception(e)
-            # Powerpoint 2010 and 2013 pops up when starting a file, so we minimize it again
-            if float(self.presentation.Application.Version) >= 14.0:
+                trace_error_handler(log)
+                self.show_error_msg()
+            if ppt_window and not Settings().value('presentations/powerpoint control window'):
                 try:
-                    # ppWindowMinimized = 2
-                    self.presentation.Application.WindowState = 2
-                except (AttributeError, pywintypes.com_error) as e:
-                    log.exception('Failed to minimize main powerpoint window')
+                    ppt_window.Top = size.y() * 72 / dpi
+                    ppt_window.Height = size.height() * 72 / dpi
+                    ppt_window.Left = size.x() * 72 / dpi
+                    ppt_window.Width = size.width() * 72 / dpi
+                except AttributeError as e:
+                    log.exception('AttributeError while in start_presentation')
                     log.exception(e)
-                    trace_error_handler(log)
-            # Make sure powerpoint doesn't steal focus
-            Registry().get('main_window').activateWindow()
+            # Find the presentation window and save the handle for later
+            self.presentation_hwnd = None
+            if ppt_window:
+                log.debug('main display size:  y=%d, height=%d, x=%d, width=%d'
+                          % (size.y(), size.height(), size.x(), size.width()))
+                win32gui.EnumWindows(self._window_enum_callback, size)
+            # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
+            if len(ScreenList().screen_list) > 1:
+                Registry().get('main_window').activateWindow()
+
+    def _window_enum_callback(self, hwnd, size):
+        """
+        Method for callback from win32gui.EnumWindows.
+        Used to find the powerpoint presentation window and stop it flashing in the taskbar.
+        """
+        # Get the size of the current window and if it matches the size of our main display we assume
+        # it is the powerpoint presentation window.
+        (left, top, right, bottom) = win32gui.GetWindowRect(hwnd)
+        window_title = win32gui.GetWindowText(hwnd)
+        log.debug('window size:  left=%d, top=%d, right=%d, width=%d' % (left, top, right, bottom))
+        log.debug('compare size:  %d and %d, %d and %d, %d and %d, %d and %d'
+                  % (size.y(), top, size.height(), (bottom - top), size.x(), left, size.width(), (right - left)))
+        log.debug('window title: %s' % window_title)
+        if size.y() == top and size.height() == (bottom - top) and size.x() == left and \
+                size.width() == (right - left) and os.path.basename(self.file_path) in window_title:
+            log.debug('Found a match and will save the handle')
+            self.presentation_hwnd = hwnd
+            # Stop powerpoint from flashing in the taskbar
+            win32gui.FlashWindowEx(self.presentation_hwnd, win32con.FLASHW_STOP, 0, 0)
 
     def get_slide_number(self):
         """
@@ -384,7 +425,7 @@ class PowerpointDocument(PresentationDocument):
         log.debug('goto_slide')
         try:
             if Settings().value('presentations/powerpoint slide click advance') \
-                    and self.get_slide_number() == self.index_map[slide_no]:
+                    and self.get_slide_number() == slide_no:
                 click_index = self.presentation.SlideShowWindow.View.GetClickIndex()
                 click_count = self.presentation.SlideShowWindow.View.GetClickCount()
                 log.debug('We are already on this slide - go to next effect if any left, idx: %d, count: %d'
@@ -405,6 +446,7 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug('next_step')
         try:
+            self.presentation.SlideShowWindow.Activate()
             self.presentation.SlideShowWindow.View.Next()
         except (AttributeError, pywintypes.com_error) as e:
             log.exception('Caught exception while in next_step')
@@ -415,6 +457,12 @@ class PowerpointDocument(PresentationDocument):
         if self.get_slide_number() > self.get_slide_count():
             log.debug('past end, stepping back to previous')
             self.previous_step()
+        # Stop powerpoint from flashing in the taskbar
+        if self.presentation_hwnd:
+            win32gui.FlashWindowEx(self.presentation_hwnd, win32con.FLASHW_STOP, 0, 0)
+        # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
+        if len(ScreenList().screen_list) > 1:
+            Registry().get('main_window').activateWindow()
 
     def previous_step(self):
         """
@@ -490,8 +538,12 @@ def _get_text_from_shapes(shapes):
     :param shapes: A set of shapes to search for text.
     """
     text = ''
-    for shape in shapes:
-        if shape.PlaceholderFormat.Type == 2:  # 2 from is enum PpPlaceholderType.ppPlaceholderBody
-            if shape.HasTextFrame and shape.TextFrame.HasText:
-                text += shape.TextFrame.TextRange.Text + '\n'
+    try:
+        for shape in shapes:
+            if shape.PlaceholderFormat.Type == 2:  # 2 from is enum PpPlaceholderType.ppPlaceholderBody
+                if shape.HasTextFrame and shape.TextFrame.HasText:
+                    text += shape.TextFrame.TextRange.Text + '\n'
+    except pywintypes.com_error as e:
+        log.warning('Failed to extract text from powerpoint slide')
+        log.warning(e)
     return text
