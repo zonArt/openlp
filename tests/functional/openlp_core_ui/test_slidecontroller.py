@@ -231,6 +231,65 @@ class TestSlideController(TestCase):
         mocked_display.setVisible.assert_called_once_with(False)
         mocked_media_controller.media_stop.assert_called_once_with(slide_controller)
 
+    def on_go_live_live_controller_test(self):
+        """
+        Test that when the on_go_live() method is called the message is sent to the live controller and focus is
+        set correctly.
+        """
+        # GIVEN: A new SlideController instance and plugin preview then pressing go live should respond
+        mocked_display = MagicMock()
+        mocked_live_controller = MagicMock()
+        mocked_preview_widget = MagicMock()
+        mocked_service_item = MagicMock()
+        mocked_service_item.from_service = False
+        mocked_preview_widget.current_slide_number.return_value = 1
+        mocked_preview_widget.slide_count.return_value = 2
+        mocked_live_controller.preview_widget = MagicMock()
+        Registry.create()
+        Registry().register('live_controller', mocked_live_controller)
+        slide_controller = SlideController(None)
+        slide_controller.service_item = mocked_service_item
+        slide_controller.preview_widget = mocked_preview_widget
+        slide_controller.display = mocked_display
+
+        # WHEN: on_go_live() is called
+        slide_controller.on_go_live()
+
+        # THEN: the live controller should have the service item and the focus set to live
+        mocked_live_controller.add_service_manager_item.assert_called_once_with(mocked_service_item, 1)
+        mocked_live_controller.preview_widget.setFocus.assert_called_once_with()
+
+    def on_go_live_service_manager_test(self):
+        """
+        Test that when the on_go_live() method is called the message is sent to the live controller and focus is
+        set correctly.
+        """
+        # GIVEN: A new SlideController instance and service manager preview then pressing go live should respond
+        mocked_display = MagicMock()
+        mocked_service_manager = MagicMock()
+        mocked_live_controller = MagicMock()
+        mocked_preview_widget = MagicMock()
+        mocked_service_item = MagicMock()
+        mocked_service_item.from_service = True
+        mocked_service_item.unique_identifier = 42
+        mocked_preview_widget.current_slide_number.return_value = 1
+        mocked_preview_widget.slide_count.return_value = 2
+        mocked_live_controller.preview_widget = MagicMock()
+        Registry.create()
+        Registry().register('live_controller', mocked_live_controller)
+        Registry().register('service_manager', mocked_service_manager)
+        slide_controller = SlideController(None)
+        slide_controller.service_item = mocked_service_item
+        slide_controller.preview_widget = mocked_preview_widget
+        slide_controller.display = mocked_display
+
+        # WHEN: on_go_live() is called
+        slide_controller.on_go_live()
+
+        # THEN: the service manager should have the service item and the focus set to live
+        mocked_service_manager.preview_live.assert_called_once_with(42, 1)
+        mocked_live_controller.preview_widget.setFocus.assert_called_once_with()
+
     def service_previous_test(self):
         """
         Check that calling the service_previous() method adds the previous key to the queue and processes the queue

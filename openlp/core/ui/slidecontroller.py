@@ -427,7 +427,7 @@ class SlideController(DisplayController, RegistryProperties):
         """
         Called, when a shortcut has been activated to jump to a chorus, verse, etc.
 
-        **Note**: This implementation is based on shortcuts. But it rather works like "key sequenes". You have to
+        **Note**: This implementation is based on shortcuts. But it rather works like "key sequences". You have to
         press one key after the other and **not** at the same time.
         For example to jump to "V3" you have to press "V" and afterwards but within a time frame of 350ms
         you have to press "3".
@@ -1344,6 +1344,7 @@ class SlideController(DisplayController, RegistryProperties):
                 self.service_manager.preview_live(self.service_item.unique_identifier, row)
             else:
                 self.live_controller.add_service_manager_item(self.service_item, row)
+            self.live_controller.preview_widget.setFocus()
 
     def on_media_start(self, item):
         """
