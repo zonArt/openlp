@@ -379,8 +379,9 @@ class PowerpointDocument(PresentationDocument):
         log.debug('compare size:  %d and %d, %d and %d, %d and %d, %d and %d'
                   % (size.y(), top, size.height(), (bottom - top), size.x(), left, size.width(), (right - left)))
         log.debug('window title: %s' % window_title)
+        filename_root, filename_ext = os.path.splitext(os.path.basename(self.file_path))
         if size.y() == top and size.height() == (bottom - top) and size.x() == left and \
-                size.width() == (right - left) and os.path.basename(self.file_path) in window_title:
+                size.width() == (right - left) and filename_root in window_title:
             log.debug('Found a match and will save the handle')
             self.presentation_hwnd = hwnd
             # Stop powerpoint from flashing in the taskbar
