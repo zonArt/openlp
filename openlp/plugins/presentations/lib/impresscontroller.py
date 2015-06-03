@@ -231,21 +231,13 @@ class ImpressDocument(PresentationDocument):
             return False
         self.desktop = desktop
         properties = []
-        if not is_win():
-            # Recent versions of Impress on Windows won't start the presentation if it starts as minimized. It seems OK
-            # on Linux though.
-            properties.append(self.create_property('Minimized', True))
+        properties.append(self.create_property('Hidden', True))
         properties = tuple(properties)
         try:
             self.document = desktop.loadComponentFromURL(url, '_blank', 0, properties)
         except:
             log.warning('Failed to load presentation %s' % url)
             return False
-        if is_win():
-            # As we can't start minimized the Impress window gets in the way.
-            # Either window.setPosSize(0, 0, 200, 400, 12) or .setVisible(False)
-            window = self.document.getCurrentController().getFrame().getContainerWindow()
-            window.setVisible(False)
         self.presentation = self.document.getPresentation()
         self.presentation.Display = ScreenList().current['number'] + 1
         self.control = None
@@ -382,6 +374,8 @@ class ImpressDocument(PresentationDocument):
         """
         log.debug('start presentation OpenOffice')
         if self.control is None or not self.control.isRunning():
+            window = self.document.getCurrentController().getFrame().getContainerWindow()
+            window.setVisible(True)
             self.presentation.start()
             self.control = self.presentation.getController()
             # start() returns before the Component is ready. Try for 15 seconds.
@@ -390,6 +384,7 @@ class ImpressDocument(PresentationDocument):
                 time.sleep(0.1)
                 sleep_count += 1
                 self.control = self.presentation.getController()
+            window.setVisible(False)
         else:
             self.control.activate()
             self.goto_slide(1)
