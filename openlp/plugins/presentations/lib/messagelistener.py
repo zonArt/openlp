@@ -243,7 +243,7 @@ class Controller(object):
         Instruct the controller to stop and hide the presentation.
         """
         log.debug('Live = %s, stop' % self.is_live)
-        # The document has not been loaded yet, so don't do anything. This can happen when going live with a 
+        # The document has not been loaded yet, so don't do anything. This can happen when going live with a
         # presentation while blanked to desktop.
         if not self.doc:
             return
