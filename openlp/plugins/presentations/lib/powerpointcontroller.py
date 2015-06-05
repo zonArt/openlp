@@ -32,7 +32,7 @@ import time
 from openlp.core.common import is_win, Settings
 
 if is_win():
-    from win32com.client import DispatchWithEvents
+    from win32com.client import Dispatch
     import win32com
     import win32con
     import winreg
@@ -93,22 +93,9 @@ class PowerpointController(PresentationController):
             """
             Loads PowerPoint process.
             """
-            class PowerPointEvents:
-                """
-                Class to catch events from PowerPoint.
-                """
-                def OnSlideShowNextClick(self, slideshow_window, effect):
-                    """
-                    Occurs on the next click of the slide.
-                    If the main OpenLP window is not in focus force update of the slidecontroller.
-                    """
-                    if not Registry().get('main_window').isActiveWindow():
-                        log.debug('main window is not in focus - should update slidecontroller')
-                        Registry().execute('slidecontroller_live_change', slideshow_window.View.CurrentShowPosition)
-
             log.debug('start_process')
             if not self.process:
-                self.process = DispatchWithEvents('PowerPoint.Application', PowerPointEvents)
+                self.process = Dispatch('PowerPoint.Application')
 
         def kill(self):
             """

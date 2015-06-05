@@ -35,7 +35,7 @@ import logging
 import os
 import time
 
-from openlp.core.common import is_win
+from openlp.core.common import is_win, Registry
 
 if is_win():
     from win32com.client import Dispatch
@@ -388,6 +388,9 @@ class ImpressDocument(PresentationDocument):
         else:
             self.control.activate()
             self.goto_slide(1)
+        # Make sure impress doesn't steal focus, unless we're on a single screen setup
+        if len(ScreenList().screen_list) > 1:
+            Registry().get('main_window').activateWindow()
 
     def get_slide_number(self):
         """

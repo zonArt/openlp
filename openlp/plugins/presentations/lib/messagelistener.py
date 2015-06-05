@@ -356,6 +356,7 @@ class MessageListener(object):
             self.controller = controller
         else:
             controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
+            self.timer.start()
 
     def slide(self, message):
         """
@@ -427,6 +428,7 @@ class MessageListener(object):
         is_live = message[1]
         if is_live:
             self.live_handler.shutdown()
+            self.timer.stop()
         else:
             self.preview_handler.shutdown()
 
