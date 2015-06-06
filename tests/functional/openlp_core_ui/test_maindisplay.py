@@ -34,12 +34,6 @@ from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
 from tests.helpers.testmixin import TestMixin
 from tests.functional import MagicMock, patch
 
-SCREEN = {
-    'primary': False,
-    'number': 1,
-    'size': QtCore.QRect(0, 0, 1024, 768)
-}
-
 
 class TestMainDisplay(TestCase, TestMixin):
 
@@ -49,9 +43,10 @@ class TestMainDisplay(TestCase, TestMixin):
         """
         # Mocked out desktop object
         self.desktop = MagicMock()
-        self.desktop.primaryScreen.return_value = SCREEN['primary']
-        self.desktop.screenCount.return_value = SCREEN['number']
-        self.desktop.screenGeometry.return_value = SCREEN['size']
+        self.desktop.primaryScreen.return_value = 0
+        self.desktop.screenCount.return_value = 2
+        self.desktop.screenGeometry.side_effect = lambda x: {0: QtCore.QRect(0, 0, 1024, 768),
+                                                             1: QtCore.QRect(0, 0, 1024, 768)}[x]
         self.screens = ScreenList.create(self.desktop)
         Registry.create()
         self.registry = Registry()
@@ -69,16 +64,16 @@ class TestMainDisplay(TestCase, TestMixin):
 
     def initial_main_display_test(self):
         """
-        Test the initial Main Display state .
+        Test the initial Main Display state
         """
-        # GIVEN: A new slideController instance.
+        # GIVEN: A new SlideController instance.
         display = MagicMock()
         display.is_live = True
 
-        # WHEN: the default controller is built.
+        # WHEN: The default controller is built.
         main_display = MainDisplay(display)
 
-        # THEN: The controller should not be a live controller.
+        # THEN: The controller should be a live controller.
         self.assertEqual(main_display.is_live, True, 'The main display should be a live controller')
 
     def set_transparency_enabled_test(self):
@@ -138,3 +133,42 @@ class TestMainDisplay(TestCase, TestMixin):
         # THEN: The plugins should have each been given an opportunity to add their bit to the CSS
         mocked_songs_plugin.refresh_css.assert_called_with(main_display.frame)
         mocked_bibles_plugin.refresh_css.assert_called_with(main_display.frame)
+
+    @patch('openlp.core.ui.maindisplay.is_macosx')
+    def macosx_non_primary_screen_window_flags_state_test(self, is_macosx):
+        """
+        Test that on Mac OS X when the current screen isn't primary we set the proper window flags and window state
+        """
+        # GIVEN: A new SlideController instance on Mac OS X with the current display not being primary.
+        is_macosx.return_value = True
+        self.screens.set_current_display(1)
+        display = MagicMock()
+
+        # WHEN: The default controller is built.
+        main_display = MainDisplay(display)
+
+        # THEN: The window flags and state should be the same as those needed on Mac OS X for the non primary display.
+        self.assertEqual(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint,
+                         main_display.windowFlags(),
+                         'The window flags should be Qt.WindowStaysOnTop, Qt.Window, and Qt.FramelessWindowHint.')
+        self.assertNotEqual(QtCore.Qt.WindowFullScreen, main_display.windowState(),
+                            'The window state should not be full screen.')
+
+    @patch('openlp.core.ui.maindisplay.is_macosx')
+    def macosx_primary_screen_window_flags_state_test(self, is_macosx):
+        """
+        Test that on Mac OS X when the current screen is primary we set the proper window flags and window state
+        """
+        # GIVEN: A new SlideController instance on Mac OS X with the current display being primary.
+        is_macosx.return_value = True
+        self.screens.set_current_display(0)
+        display = MagicMock()
+
+        # WHEN: The default controller is built.
+        main_display = MainDisplay(display)
+
+        # THEN: The window flags and state should be the same as those needed on Mac OS X for the primary display.
+        self.assertEqual(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint, main_display.windowFlags(),
+                         'The window flags should be Qt.Window and Qt.FramelessWindowHint.')
+        self.assertEqual(QtCore.Qt.WindowFullScreen, main_display.windowState(),
+                         'The window state should be full screen.')
