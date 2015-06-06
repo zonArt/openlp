@@ -727,7 +727,7 @@ Prašome prieš spustelėjant Naujas, įrašyti tekstą.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="147"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation>Privalote Biblijai nustatyti autorines teises. Biblijos Viešojoje Srityje turi būti pažymėtos kaip tokios.</translation>
+        <translation>Privalote Biblijai nustatyti autorių teises. Biblijos Viešojoje Srityje turi būti pažymėtos kaip tokios.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="155"/>
@@ -1019,7 +1019,7 @@ paieškos rezultatuose ir ekrane:</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="131"/>
         <source>Copyright:</source>
-        <translation>Autorinės Teisės:</translation>
+        <translation>Autorių Teisės:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="132"/>
@@ -1188,7 +1188,7 @@ Neįmanoma nustatyti pasirinktinus Knygų Pavadinimų.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="354"/>
         <source>Copyright:</source>
-        <translation>Autorinės Teisės:</translation>
+        <translation>Autorių Teisės:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="357"/>
@@ -1213,7 +1213,7 @@ Neįmanoma nustatyti pasirinktinus Knygų Pavadinimų.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="425"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation>Privalote Biblijai nustatyti autorines teises. Biblijos Viešojoje Srityje turi būti pažymėtos kaip tokios.</translation>
+        <translation>Privalote Biblijai nustatyti autorių teises. Biblijos Viešojoje Srityje turi būti pažymėtos kaip tokios.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="440"/>
@@ -1413,6 +1413,11 @@ You will need to re-import this Bible to use it again.</source>
 
 Norint vėl ja naudotis, jums reikės iš naujo ją importuoti.</translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
+        <source>Advanced</source>
+        <translation type="unfinished">Išplėstinė</translation>
+    </message>
 </context>
 <context>
     <name>BiblesPlugin.OpenSongImport</name>
@@ -1493,7 +1498,7 @@ Norint vėl ja naudotis, jums reikės iš naujo ją importuoti.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="254"/>
         <source>There is no need to backup my Bibles</source>
-        <translation type="unfinished"></translation>
+        <translation>Nėra reikalo daryti atsarginę mano Biblijų kopiją</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="256"/>
@@ -1865,12 +1870,12 @@ Prašome atkreipti dėmesį, kad eilutės iš Žiniatinklio Biblijų bus atsiųs
         <translation>Turite įrašyti grupės pavadinimą.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="641"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="642"/>
         <source>Could not add the new group.</source>
         <translation>Nepavyko pridėti naujos grupės.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="644"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="645"/>
         <source>This group already exists.</source>
         <translation>Tokia grupė jau yra.</translation>
     </message>
@@ -1919,34 +1924,34 @@ Prašome atkreipti dėmesį, kad eilutės iš Žiniatinklio Biblijų bus atsiųs
         <translation>Pasirinkite Paveikslą(-us)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="663"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="664"/>
         <source>You must select an image to replace the background with.</source>
         <translation>Privalote pasirinkti paveikslą, kuriuo pakeisite foną.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
         <source>Missing Image(s)</source>
         <translation>Trūksta Paveikslo(-ų)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="582"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="583"/>
         <source>The following image(s) no longer exist: %s</source>
         <translation>Sekančio paveikslo(-ų) daugiau nėra: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>Sekančio paveikslo(-ų) daugiau nėra: %s
 Ar vistiek norite pridėti kitus paveikslus?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="680"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="681"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>Atsirado problemų, keičiant jūsų foną, paveikslų failo &quot;%s&quot; daugiau nebėra.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="676"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="677"/>
         <source>There was no display item to amend.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1997,7 +2002,7 @@ Ar vistiek norite pridėti kitus paveikslus?</translation>
         <translation>Vaizdo Įrašai</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="328"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="355"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>VLC yra išorinis grotuvas, kuris palaiko didelį įvairių formatų skaičių.</translation>
     </message>
@@ -2395,7 +2400,7 @@ Ar OpenLP turėtų naujinti dabar?</translation>
     <message>
         <location filename="openlp/core/ui/aboutform.py" line="55"/>
         <source> build %s</source>
-        <translation type="unfinished"></translation>
+        <translation> versija %s</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="279"/>
@@ -3955,7 +3960,7 @@ Kad visiškai atšauktumėte Pirmojo Karto Vedlį (ir nepaleistumėte OpenLP), s
 <context>
     <name>OpenLP.MainDisplay</name>
     <message>
-        <location filename="openlp/core/ui/maindisplay.py" line="211"/>
+        <location filename="openlp/core/ui/maindisplay.py" line="213"/>
         <source>OpenLP Display</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4165,7 +4170,7 @@ Kad visiškai atšauktumėte Pirmojo Karto Vedlį (ir nepaleistumėte OpenLP), s
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="457"/>
         <source>&amp;User Guide</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Naudotojo Vadovas</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="454"/>
@@ -4262,7 +4267,7 @@ Galite atsisiųsti paskiausią versiją iš http://openlp.org/.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1152"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1155"/>
         <source>Default Theme: %s</source>
         <translation>Numatytoji Tema: %s</translation>
     </message>
@@ -4278,12 +4283,12 @@ Galite atsisiųsti paskiausią versiją iš http://openlp.org/.</translation>
         <translation>Konfigūruoti &amp;Sparčiuosius Klavišus...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
         <source>Close OpenLP</source>
         <translation>Uždaryti OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>Ar tikrai norite uždaryti OpenLP?</translation>
     </message>
@@ -4357,13 +4362,13 @@ Re-running this wizard may make changes to your current OpenLP configuration and
 Šio vedlio paleidimas iš naujo, gali pakeisti jūsų dabartinę OpenLP konfigūraciją ir, galbūt, į esančių giesmių sąrašą, pridėti giesmių bei pakeisti jūsų numatytąją temą.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation>Išvalyti Sąrašą</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
         <source>Clear the list of recent files.</source>
         <translation>Išvalyti paskiausių failų sąrašą.</translation>
     </message>
@@ -4403,37 +4408,37 @@ Re-running this wizard may make changes to your current OpenLP configuration and
         <translation>OpenLP Eksportuoti Nustatymų Failai (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="915"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
         <source>Import settings</source>
         <translation>Importavimo nustatymai</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="915"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
         <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
         <translation>OpenLP dabar bus uždaryta. Importuoti nustatymai bus pritaikyti kitą kartą, paleidus OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="927"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>Export Settings File</source>
         <translation>Eksportuoti Nustatymų Failą</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="927"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>OpenLP Export Settings File (*.conf)</source>
         <translation>OpenLP Eksportuotas Nustatymų Failas (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
         <source>New Data Directory Error</source>
         <translation>Naujo Duomenų Katalogo Klaida</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1390"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>OpenLP duomenys kopijuojami į naują duomenų katalogo vietą - %s - Prašome palaukti, kol bus užbaigtas kopijavimas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4494,17 +4499,17 @@ Apdorojimas buvo nutrauktas ir nepadaryta jokių pokyčių.</translation>
         <translation>Perjungti Projektorių Tvarkytuvės matomumą</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
         <source>Export setting error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="981"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="984"/>
         <source>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Raktas &quot;%s&quot; neturi numatytosios reikšmės, todėl šiame eksportavime jis bus praleistas.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
         <source>An error occurred while exporting the settings: %s</source>
         <translation>Eksportuojant nustatymus įvyko klaida: %s</translation>
     </message>
@@ -4760,7 +4765,7 @@ Nepalaikoma priesaga</translation>
     <message>
         <location filename="openlp/core/ui/printservicedialog.py" line="136"/>
         <source>Zoom Original</source>
-        <translation type="unfinished"></translation>
+        <translation>Normalus Mastelis</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/printservicedialog.py" line="141"/>
@@ -4833,7 +4838,7 @@ Nepalaikoma priesaga</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="215"/>
         <source>Fan error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ventiliatoriaus klaida</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="216"/>
@@ -4943,12 +4948,12 @@ Nepalaikoma priesaga</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="245"/>
         <source>The address specified with socket.bind() is already in use and was set to be exclusive</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresas nurodytas su socket.bind() jau yra naudojamas ir buvo nustatytas būti išskirtiniu</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="248"/>
         <source>The address specified to socket.bind() does not belong to the host</source>
-        <translation type="unfinished"></translation>
+        <translation>socket.bind() nurodytas adresas nepriklauso kompiuteriui</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="251"/>
@@ -5063,7 +5068,7 @@ Nepalaikoma priesaga</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="273"/>
         <source>The connection negotiation with the proxy server failed because the response from the proxy server could not be understood</source>
-        <translation type="unfinished"></translation>
+        <translation>Ryšio užmezgimas su įgaliotuoju serveriu nepavyko, nes nepavyko suprasti iš įgaliotojo serverio gauto atsakymo</translation>
     </message>
 </context>
 <context>
@@ -5134,7 +5139,7 @@ Nepalaikoma priesaga</translation>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="236"/>
         <source>There was an error saving projector information. See the log for the error</source>
-        <translation type="unfinished"></translation>
+        <translation>Įvyko klaida, išsaugant projektoriaus informaciją. Išsamesnei informacijai apie klaidą, žiūrėkite žurnalą</translation>
     </message>
 </context>
 <context>
@@ -5448,7 +5453,7 @@ Nepalaikoma priesaga</translation>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="101"/>
         <source>Connect to projectors on startup</source>
-        <translation>Prisijungti prie projektorių, paleidus programą</translation>
+        <translation>Paleidus programą, prisijungti prie projektorių</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="103"/>
@@ -5887,14 +5892,16 @@ Prašome išsaugoti jį, naudojant OpenLP 2.0.2 ar vėlesnę versiją.</translat
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>An error occurred while writing the service file: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Įvyko klaida, įrašinėjant pamaldų programos failą: %s</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="536"/>
         <source>The following file(s) in the service are missing: %s
 
 These files will be removed if you continue to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pamaldų programoje trūksta šio failo(-ų): %s
+
+Jei tęsite išsaugojimą, šie failai bus pašalinti.</translation>
     </message>
 </context>
 <context>
@@ -6006,17 +6013,17 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="242"/>
         <source>Show Desktop</source>
-        <translation>Rodyti Darbastalį</translation>
+        <translation>Rodyti Darbalaukį</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="499"/>
         <source>Previous Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Ankstesnė Pamaldų programa</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="504"/>
         <source>Next Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Kita Pamaldų programa</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="509"/>
@@ -6359,7 +6366,7 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="474"/>
         <source>%s (default)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s (pagal numatymą)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="316"/>
@@ -6485,7 +6492,7 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="409"/>
         <source>The theme export failed because this error occurred: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Temos eksportavimas nepavyko, nes įvyko ši klaida: %s</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="423"/>
@@ -6924,7 +6931,7 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="59"/>
         <source>Ready.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasiruošę.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="310"/>
@@ -7554,7 +7561,7 @@ Prašome jūsų pasirinkti jį patiems.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="124"/>
         <source>Replace live background is not available on this platform in this version of OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodymo Gyvai fono pakeitimas šioje platformoje šioje OpenLP versijoje yra neprieinamas.</translation>
     </message>
 </context>
 <context>
@@ -7595,50 +7602,50 @@ Prašome jūsų pasirinkti jį patiems.</translation>
 <context>
     <name>PresentationPlugin</name>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="159"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="160"/>
         <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
         <translation>&lt;strong&gt;Pateikties Papildinys&lt;/strong&gt;&lt;br /&gt;Pateikties papildinys suteikia galimybę rodyti pateiktis, naudojant kelias skirtingas programas. Prieinamas pateikčių programas vartotojas gali pasirinkti išskleidžiamajame langelyje.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="172"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
         <source>Presentation</source>
         <comment>name singular</comment>
         <translation>Pateiktis</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="174"/>
         <source>Presentations</source>
         <comment>name plural</comment>
         <translation>Pateiktys</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="177"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="178"/>
         <source>Presentations</source>
         <comment>container title</comment>
         <translation>Pateiktys</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="181"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="182"/>
         <source>Load a new presentation.</source>
         <translation>Įkelti naują pateiktį.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="185"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
         <source>Delete the selected presentation.</source>
         <translation>Ištrinti pasirinktą pateiktį.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
         <source>Preview the selected presentation.</source>
         <translation>Peržiūrėti pasirinktą pateiktį.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
         <source>Send the selected presentation live.</source>
         <translation>Siųsti pasirinktą pateiktį į rodymą Gyvai.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="189"/>
         <source>Add the selected presentation to the service.</source>
         <translation>Pridėti pasirinktą pateiktį į pamaldų programą.</translation>
     </message>
@@ -7699,7 +7706,7 @@ Prašome jūsų pasirinkti jį patiems.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="481"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="529"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation>Powerpoint integravime įvyko klaida ir pateiktis bus sustabdyta. Paleiskite pateiktį iš naujo, jei norite ją pristatyti.</translation>
     </message>
@@ -7707,48 +7714,53 @@ Prašome jūsų pasirinkti jį patiems.</translation>
 <context>
     <name>PresentationPlugin.PresentationTab</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="116"/>
         <source>Available Controllers</source>
         <translation>Prieinami Valdikliai</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="139"/>
         <source>%s (unavailable)</source>
         <translation>%s (neprieinama)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="121"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="124"/>
         <source>Allow presentation application to be overridden</source>
         <translation>Leisti pateikčių programai būti nustelbtai</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="119"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="122"/>
         <source>PDF options</source>
         <translation>PDF parinktys</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="132"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation>Naudoti nurodytą pilną kelią mudraw ar ghostscript dvejetainėms:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="221"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="233"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation>Pasirinkite mudraw ar ghostscript dvejetaines.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="227"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="239"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation>Programa nėra reikiamas ghostscript ar mudraw.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
         <source>PowerPoint options</source>
+        <translation>PowerPoint parinktys</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
+        <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
-        <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
+        <source>Let PowerPoint control the size and position of the presentation window.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7833,7 +7845,7 @@ Prašome jūsų pasirinkti jį patiems.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="324"/>
         <source>Desktop</source>
-        <translation>Darbastalis</translation>
+        <translation>Darbalaukis</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="325"/>
@@ -8145,7 +8157,7 @@ Visi iki šios datos įrašyti duomenys bus negrįžtamai ištrinti.</translatio
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="85"/>
         <source>usage_detail_%s_%s.txt</source>
-        <translation type="unfinished"></translation>
+        <translation>naudojimo_informacija_%s_%s.txt</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="103"/>
@@ -8612,7 +8624,7 @@ Koduotė atsakinga už teisingą simbolių atvaizdavimą.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>Copyright Information</source>
-        <translation>Autorinių Teisių Informacija</translation>
+        <translation>Autorių Teisių Informacija</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="320"/>
@@ -8622,7 +8634,7 @@ Koduotė atsakinga už teisingą simbolių atvaizdavimą.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="321"/>
         <source>Theme, Copyright Info &amp;&amp; Comments</source>
-        <translation>Tema, Autorinės Teisės ir Komentarai</translation>
+        <translation>Tema, Autorių Teisės ir Komentarai</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="561"/>
@@ -9276,7 +9288,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/songimport.py" line="110"/>
         <source>copyright</source>
-        <translation>autorinės teisės</translation>
+        <translation>autorių teisės</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/songimport.py" line="124"/>
@@ -9477,7 +9489,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="241"/>
         <source>Copyright:</source>
-        <translation>Autorinės Teisės:</translation>
+        <translation>Autorių Teisės:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="242"/>
@@ -9680,7 +9692,7 @@ Please enter the verses separated by spaces.</source>
         <translation>Failas yra neteisingo WorshipAssistant CSV formato.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="184"/>
+        <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="185"/>
         <source>Record %d</source>
         <translation type="unfinished"></translation>
     </message>

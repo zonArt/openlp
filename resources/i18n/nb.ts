@@ -184,7 +184,7 @@ Vennligst skriv inn tekst før du klikker Ny.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
-        <translation>Ingen samsvarende bok ble funnet i denne bibelen. Sjekk at du har stavet navnet på boken riktig.</translation>
+        <translation>Ingen samsvarende bok ble funnet i denne Bibelen. Sjekk at du har stavet navnet på boken riktig.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="216"/>
@@ -219,12 +219,12 @@ Vennligst skriv inn tekst før du klikker Ny.</translation>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="222"/>
         <source>Add the selected Bible to the service.</source>
-        <translation>Legg valgte bibelsitat til gudsteneste-/møteplanlegger.</translation>
+        <translation>Legg valgte bibelsitat til møteprogrammet.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="175"/>
         <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
-        <translation>&lt;strong&gt;Bibel&lt;/strong&gt;&lt;br /&gt;Dette tillegget gjør det mulig å vise bibelsitat fra ulike kilder under en gudstjeneste/møte.</translation>
+        <translation>&lt;strong&gt;Bibeltillegg&lt;/strong&gt;&lt;br /&gt;Dette tillegget gjør det mulig å vise bibelsitat fra ulike kilder under en gudstjeneste/møte.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
@@ -722,12 +722,12 @@ Vennligst skriv inn tekst før du klikker Ny.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="141"/>
         <source>You need to specify a version name for your Bible.</source>
-        <translation>Du må angi et navn på bibelroversettelsen.</translation>
+        <translation>Du må angi et navn på bibeloversettelsen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="147"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation>Du må angi rettighetene for Bibelen. Offentlig eiendom (&quot;Public Domain&quot;) bibler må markeres deretter.</translation>
+        <translation>Du må angi rettighetene for Bibelen. Offentlig eiendom (&quot;Public Domain&quot;) bibler må markeres som dette.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="155"/>
@@ -749,7 +749,7 @@ Vennligst skriv inn tekst før du klikker Ny.</translation>
         <source>The book name &quot;%s&quot; is not correct.
 Numbers can only be used at the beginning and must
 be followed by one or more non-numeric characters.</source>
-        <translation>Bok-navnet &quot;%s&quot; er ikke riktig.
+        <translation>Boknavnet &quot;%s&quot; er ikke riktig.
 Tall kan bare brukes først i navnet og må
 etterfølges av en eller flere ikke-numeriske tegn.</translation>
     </message>
@@ -761,7 +761,7 @@ etterfølges av en eller flere ikke-numeriske tegn.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="188"/>
         <source>The Book Name &quot;%s&quot; has been entered more than once.</source>
-        <translation>Bok-navnet &quot;%s&quot; har blitt angitt flere ganger.</translation>
+        <translation>Boknavnet &quot;%s&quot; har blitt angitt flere ganger.</translation>
     </message>
 </context>
 <context>
@@ -791,7 +791,7 @@ Du kan skille ulike søkeord med mellomrom for å søke etter alle søkeordene d
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="334"/>
         <source>There are no Bibles currently installed. Please use the Import Wizard to install one or more Bibles.</source>
-        <translation>Det er ingen bibler installert. Vennligst bruk importeringsveiviseren for å installere en eller flere bibler.</translation>
+        <translation>Det er ingen bibler installert. Vennligst bruk importveiviseren for å installere en eller flere bibler.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="334"/>
@@ -829,12 +829,12 @@ Bok kapittel%(verse)sVers%(range)sKapittel%(verse)sVerse</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="158"/>
         <source>Only show new chapter numbers</source>
-        <translation>Vis bare nye kapittelnummer</translation>
+        <translation>Vis bare nye kapittelnumre</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="161"/>
         <source>Bible theme:</source>
-        <translation>Bibel tema:</translation>
+        <translation>Bibeltema:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="165"/>
@@ -861,7 +861,7 @@ Bok kapittel%(verse)sVers%(range)sKapittel%(verse)sVerse</translation>
         <source>Note:
 Changes do not affect verses already in the service.</source>
         <translation>Merk:
-Endringer påvirker ikke vers som allerede fins i møteprogrammet.</translation>
+Endringer påvirker ikke vers som allerede finnes i møteprogrammet.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="175"/>
@@ -996,7 +996,7 @@ søkeresultat og på skjerm:</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/csvbible.py" line="145"/>
         <source>Importing verses... done.</source>
-        <translation>Importere vers... utført.</translation>
+        <translation>Importerer vers... utført.</translation>
     </message>
 </context>
 <context>
@@ -1113,7 +1113,7 @@ Det er ikke mulig å tilpasse boknavn.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="309"/>
         <source>Bible Import Wizard</source>
-        <translation>Bibelimportverktøy</translation>
+        <translation>Verktøy for bibelimport</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
@@ -1228,7 +1228,7 @@ Det er ikke mulig å tilpasse boknavn.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="640"/>
         <source>Your Bible import failed.</source>
-        <translation>Bibelimporteringen mislyktes.</translation>
+        <translation>Bibelimport mislyktes.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="481"/>
@@ -1392,7 +1392,7 @@ Det er ikke mulig å tilpasse boknavn.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="684"/>
         <source>The second Bible does not contain all the verses that are in the main Bible. Only verses found in both Bibles will be shown. %d verses have not been included in the results.</source>
-        <translation>Den andre bibelen innehoder ikke alle versene i hovedbibelen. Bare vers funnet i begge vil bli vist. %d vers er ikke med i resultatet.</translation>
+        <translation>Den andre bibelen inneholder ikke alle versene i hovedbibelen. Bare vers funnet i begge vil bli vist. %d vers er ikke med i resultatet.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="306"/>
@@ -1412,6 +1412,11 @@ You will need to re-import this Bible to use it again.</source>
         <translation>Er du sikker på at du vil slette &quot;%s&quot; bibel fra OpenLP?
 
  Du må importere denne bibelen på nytt for å bruke den igjen.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
+        <source>Advanced</source>
+        <translation type="unfinished">Avansert</translation>
     </message>
 </context>
 <context>
@@ -1478,7 +1483,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="243"/>
         <source>Previous releases of OpenLP 2.0 are unable to use upgraded Bibles. This will create a backup of your current Bibles so that you can simply copy the files back to your OpenLP data directory if you need to revert to a previous release of OpenLP. Instructions on how to restore the files can be found in our &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Frequently Asked Questions&lt;/a&gt;.</source>
-        <translation>Tidligere versjoner av OpenLP 2.0 kan ikke benytte oppgraderte bibler. Dette vil opprette en backup av dine eksisterende bibler slik at du enkelt kan kopiere filene tilbake til OpenLP fillageret dersom du behøver å gå tilbake til en tidligere versjon av OpenLP. Instruksjoner på hvordan du kan gjenopprette filene kan finnes i vår &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Ofte Spurte Spørsmål (FAQ)&lt;/a&gt;.</translation>
+        <translation>Tidligere versjoner av OpenLP 2.0 kan ikke benytte oppgraderte bibler. Dette vil opprette en backup av dine eksisterende bibler slik at du enkelt kan kopiere filene tilbake til OpenLP fillageret dersom du behøver å gå tilbake til en tidligere versjon av programmet. Instruksjoner på hvordan du kan gjenopprette filene kan finnes i vår &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Ofte Spurte Spørsmål (FAQ)&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="251"/>
@@ -1602,7 +1607,7 @@ Vær oppmerksom på at versene fra nettbibler blir nedlastet på din forespørse
     <message>
         <location filename="openlp/plugins/bibles/lib/zefania.py" line="111"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
-        <translation>Feil bibelfiltype oppgitt. Zefania bibler kan komprimeres. Du må dekomprimere dem før import.</translation>
+        <translation>Feil bibelfiltype oppgitt. Zefania bibler kan være komprimert. Du må dekomprimere dem før import.</translation>
     </message>
 </context>
 <context>
@@ -1671,12 +1676,12 @@ Vær oppmerksom på at versene fra nettbibler blir nedlastet på din forespørse
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="115"/>
         <source>Add the selected custom slide to the service.</source>
-        <translation>Legg valgte lysbilde til møteplan.</translation>
+        <translation>Legg valgte lysbilde til møteprogrammet.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="66"/>
         <source>&lt;strong&gt;Custom Slide Plugin &lt;/strong&gt;&lt;br /&gt;The custom slide plugin provides the ability to set up custom text slides that can be displayed on the screen the same way songs are. This plugin provides greater freedom over the songs plugin.</source>
-        <translation>&lt;strong&gt;Brukerdefinert lysbilde&lt;/strong&gt;&lt;br/&gt; Programtillegget for brukerdefinert lysbilde gir en større frihet til å lage egne lysbilder som kan vises på samme vis som sanger. </translation>
+        <translation>&lt;strong&gt;Brukerdefinert lysbilde&lt;/strong&gt;&lt;br/&gt; Programtillegget for brukerdefinert lysbilde gir en større frihet til å lage egne lysbilder som kan vises på samme måte som sanger. </translation>
     </message>
 </context>
 <context>
@@ -1784,7 +1789,7 @@ Vær oppmerksom på at versene fra nettbibler blir nedlastet på din forespørse
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="57"/>
         <source>&lt;strong&gt;Image Plugin&lt;/strong&gt;&lt;br /&gt;The image plugin provides displaying of images.&lt;br /&gt;One of the distinguishing features of this plugin is the ability to group a number of images together in the service manager, making the displaying of multiple images easier. This plugin can also make use of OpenLP&apos;s &quot;timed looping&quot; feature to create a slide show that runs automatically. In addition to this, images from the plugin can be used to override the current theme&apos;s background, which renders text-based items like songs with the selected image as a background instead of the background provided by the theme.</source>
-        <translation>&lt;strong&gt;Bildetillegg&lt;/strong&gt;&lt;br/&gt;Bildetillegget gir mulighet til visning av bilder.&lt;br /&gt;Et av særtrekkene med dette tillegget er muligheten til å gruppere flere bilder sammen i møteplanleggeren, noe som gjør visning av flere bilder enklere. Programtillegget kan også benytte seg av OpenLP&apos;s &quot;tidsbestemte løkke-funksjon&quot; til å lage en lysbildefremvisning som kjører automatisk. I tillegg kan bilder fra tillegget brukes til å overstyre gjeldende temabakgrunn, noe som gir tekstbaserte bilder som sanger det valgte bildet som bakgrunn.</translation>
+        <translation>&lt;strong&gt;Bildetillegg&lt;/strong&gt;&lt;br/&gt;Bildetillegget gir mulighet til visning av bilder.&lt;br /&gt;Et av særtrekkene med dette tillegget er muligheten til å gruppere flere bilder sammen i møteprogrammet, noe som gjør visning av flere bilder enklere. Programtillegget kan også benytte seg av OpenLP&apos;s &quot;tidsbestemte løkke-funksjon&quot; til å lage en lysbildefremvisning som kjører automatisk. I tillegg kan bilder fra tillegget brukes til å overstyre gjeldende temabakgrunn, noe som gir tekstbaserte bilder som sanger det valgte bildet som bakgrunn.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="107"/>
@@ -1863,12 +1868,12 @@ Vær oppmerksom på at versene fra nettbibler blir nedlastet på din forespørse
         <translation>Du må skrive inn et gruppenavn.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="641"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="642"/>
         <source>Could not add the new group.</source>
         <translation>Kunne ikke legge til den nye gruppen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="644"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="645"/>
         <source>This group already exists.</source>
         <translation>Denne gruppen finnes allerede.</translation>
     </message>
@@ -1917,34 +1922,34 @@ Vær oppmerksom på at versene fra nettbibler blir nedlastet på din forespørse
         <translation>Velg bilde(r)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="663"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="664"/>
         <source>You must select an image to replace the background with.</source>
         <translation>Du må velge et bilde å erstatte bakgrunnen med.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
         <source>Missing Image(s)</source>
         <translation>Bilde(r) mangler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="582"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="583"/>
         <source>The following image(s) no longer exist: %s</source>
-        <translation>De følgende bilde(r) finnes ikke lenger: %s</translation>
+        <translation>De(t) følgende bilde(r) finnes ikke lenger: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>De følgende bilde(r) finnes ikke lenger: %s
 Vil du likevel legge til de andre bildene?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="680"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="681"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>Det oppstod et problem ved erstatting av bakgrunnen, bildefilen &quot;%s&quot; finnes ikke lenger.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="676"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="677"/>
         <source>There was no display item to amend.</source>
         <translation>Det var ingen visningselement å endre.</translation>
     </message>
@@ -1995,7 +2000,7 @@ Vil du likevel legge til de andre bildene?</translation>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="328"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="355"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>VLC er en ekstern spiller som støtter et antall forskjellige formater.</translation>
     </message>
@@ -2121,7 +2126,7 @@ Vil du likevel legge til de andre bildene?</translation>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="194"/>
         <source>Clip Range</source>
-        <translation>Klipp lengde</translation>
+        <translation>Klipplengde</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="195"/>
@@ -2169,7 +2174,7 @@ Vil du likevel legge til de andre bildene?</translation>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="225"/>
         <source>An error happened during initialization of VLC player</source>
-        <translation>En feil oppstod under oppstart av VLCavspiller</translation>
+        <translation>En feil oppstod under oppstart av VLC mediaspiller</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="246"/>
@@ -2262,7 +2267,7 @@ Vil du likevel legge til de andre bildene?</translation>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="208"/>
         <source>There was no display item to amend.</source>
-        <translation>Det var ingen visning element å legge til.</translation>
+        <translation>Det var ikke noe visningselement å legge til.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="449"/>
@@ -2328,7 +2333,7 @@ Vil du likevel legge til de andre bildene?</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="427"/>
         <source>&amp;Projector Manager</source>
-        <translation>Behandle &amp;projektorinnstillinger</translation>
+        <translation>Behandle &amp;prosjektorinnstillinger</translation>
     </message>
 </context>
 <context>
@@ -2349,7 +2354,7 @@ Vil du likevel legge til de andre bildene?</translation>
 You have to upgrade your existing Bibles.
 Should OpenLP upgrade now?</source>
         <translation>Bibelformatet er forandret.
-Du må oppgradere eksiterende bibler.
+Du må oppgradere eksisterende bibler.
 Vil du at OpenLP skal oppgradere nå?</translation>
     </message>
     <message>
@@ -2416,7 +2421,7 @@ Find out more about OpenLP: http://openlp.org/
 OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider volunteering by using the button below.</source>
         <translation>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
 
-OpenLP er et gratis presentasjonprogram for menigheter og forsamlinger. Det kan brukes i kirker og bedehus til å vise sangtekster, bibelvers, videoer, bilder og til og med presentasjoner (hvis Impress, PowerPoint eller PowerPoint Viewer er installert) ved hjelp av datamaskin og dataprojektor.
+OpenLP er et gratis presentasjonprogram for menigheter og forsamlinger. Det kan brukes i kirker og bedehus til å vise sangtekster, bibelvers, videoer, bilder og til og med presentasjoner (hvis Impress, PowerPoint eller PowerPoint Viewer er installert) ved hjelp av datamaskin og dataprosjektør.
 
 Finn ut mer om OpenLP: http://openlp.org/
 
@@ -2511,7 +2516,7 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation>Prosjekt ledelse
+        <translation>Prosjektledelse
     %s
 
 Utviklere
@@ -2581,7 +2586,7 @@ Utvikler verktøy
     Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/
     MuPDF: http://www.mupdf.com/
 
-Endelig takk
+Til slutt
    &quot;For så høyt har Gud elsket verden at han ga 
     sin Sønn, den enbårne, for at hver den som 
     tror på ham, ikke skal gå fortapt, 
@@ -2617,7 +2622,7 @@ Delvis copyright © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="263"/>
         <source>Remember active media manager tab on startup</source>
-        <translation>Husk aktiv  fane i Innholdselementer ved oppstart</translation>
+        <translation>Husk aktiv  fane i innholdselementer ved oppstart</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="265"/>
@@ -2657,7 +2662,7 @@ Delvis copyright © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="295"/>
         <source>Image file:</source>
-        <translation>Bilde fil:</translation>
+        <translation>Bildefil:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="504"/>
@@ -2737,7 +2742,7 @@ Delvis copyright © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="284"/>
         <source>Time when usual service starts.</source>
-        <translation>Tidspunkt når møtet starter.</translation>
+        <translation>Tidspunkt når møtet normalt starter.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="285"/>
@@ -2762,7 +2767,7 @@ Delvis copyright © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="314"/>
         <source>Bypass X11 Window Manager</source>
-        <translation>Bypass X11 Window Manager</translation>
+        <translation>Forbigå X11 Window Manager</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="467"/>
@@ -2876,7 +2881,7 @@ The data directory will be changed when OpenLP is closed.</source>
 %s 
 
 
-Dataene katalogen vil bli endret når OpenLP blir lukket.</translation>
+Datakatalogen vil bli endret når OpenLP blir lukket.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="279"/>
@@ -3359,12 +3364,12 @@ Versjon: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
         <source>First Time Wizard</source>
-        <translation>Førstegangs veiviser</translation>
+        <translation>Oppstartsveiviser</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="224"/>
         <source>Welcome to the First Time Wizard</source>
-        <translation>Velkommen til førstegangs veiviser</translation>
+        <translation>Velkommen til oppstartsveiviseren</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="235"/>
@@ -3399,17 +3404,17 @@ Versjon: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="243"/>
         <source>Allow remote access</source>
-        <translation>Tillate fjernstyring</translation>
+        <translation>Tillat fjernstyring</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
         <source>Monitor Song Usage</source>
-        <translation>Overvåke bruk av sanger</translation>
+        <translation>Overvåk bruk av sanger</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
         <source>Allow Alerts</source>
-        <translation>Tillate varselmeldinger</translation>
+        <translation>Tillat varselmeldinger</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="266"/>
@@ -3429,7 +3434,7 @@ Versjon: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
         <source>No Internet Connection</source>
-        <translation>Mangler internettilkobling</translation>
+        <translation>Ingen internettilkobling</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="247"/>
@@ -3474,7 +3479,7 @@ Versjon: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="269"/>
         <source>Default output display:</source>
-        <translation>Standard skjerm:</translation>
+        <translation>Standard framvisningsskjerm:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="270"/>
@@ -3494,7 +3499,7 @@ Versjon: %s
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="546"/>
         <source>Please wait while OpenLP is set up and your data is downloaded.</source>
-        <translation>Venligst vent mens OpenLP blir satt opp og data lastet ned.</translation>
+        <translation>Vennligst vent mens OpenLP blir satt opp og data lastet ned.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="550"/>
@@ -3516,9 +3521,9 @@ Versjon: %s
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.  Click the Finish button now to start OpenLP with initial settings and no sample data.
 
 To re-run the First Time Wizard and import this sample data at a later time, check your Internet connection and re-run this wizard by selecting &quot;Tools/Re-run First Time Wizard&quot; from OpenLP.</source>
-        <translation>Ingen Internett-tilkobling ble funnet. &quot;Første-gangs veiviseren&quot; trenger en Internett-tilkobling for å kunne laste ned eksempel-sanger, bibler og temaer. Klikk Fullfør-knappen for å starte OpenLP og utføre innledende innstillinger uten eksempeldata. 
+        <translation>Ingen Internettilkobling ble funnet. Oppstartsveiviseren trenger en Internett-tilkobling for å kunne laste ned eksempelsanger, bibler og temaer. Klikk Fullfør-knappen for å starte OpenLP og utføre innledende innstillinger uten eksempeldata. 
 
-For å kjøre &quot;Første-gangs veiviser&quot; og importere disse eksempeldata på et senere tidspunkt, kan du kontrollere Internettilkoblingen og kjøre denne veiviseren ved å velge &quot;Verktøy / Kjør førstegangs veiviser på nytt&quot; fra OpenLP.</translation>
+For å kjøre oppstartsveiviseren og importere disse eksempeldata på et senere tidspunkt, kan du kontrollere Internettilkoblingen og kjøre denne veiviseren ved å velge &quot;Verktøy / Kjør oppstartsveiviser på nytt&quot; fra OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
@@ -3528,7 +3533,7 @@ For å kjøre &quot;Første-gangs veiviser&quot; og importere disse eksempeldata
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="533"/>
         <source>There was a connection problem during download, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
-        <translation>Det var forbindelseproblemer, så videre nedlasting ble avsluttet. Prøv å kjøre førstegangs veiviseren senere.</translation>
+        <translation>Det var forbindelsesproblemer, så videre nedlasting ble avsluttet. Prøv å kjøre oppstartsveiviseren senere.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="564"/>
@@ -3553,7 +3558,7 @@ For å kjøre &quot;Første-gangs veiviser&quot; og importere disse eksempeldata
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>There was a connection problem while downloading, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
-        <translation>Det var forbindelsesproblemer under nedlastingen, så videre nedlasting ble avsluttet. Prøv å kjøre førstegangs veiviseren senere.</translation>
+        <translation>Det var forbindelsesproblemer under nedlastingen, så videre nedlasting ble avsluttet. Prøv å kjøre oppstartsveiviseren senere.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
@@ -3567,7 +3572,7 @@ For å kjøre &quot;Første-gangs veiviser&quot; og importere disse eksempeldata
 To cancel the First Time Wizard completely (and not start OpenLP), click the %s button now.</source>
         <translation>
 
-For å avbryte &quot;Førstegangs veiviser&quot; fullstendig (og ikke starte OpenLP), trykk på %s knappen nå.</translation>
+For å avbryte oppstartsveiviseren fullstendig (og ikke starte OpenLP), trykk på %s knappen nå.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="230"/>
@@ -3620,7 +3625,7 @@ For å avbryte &quot;Førstegangs veiviser&quot; fullstendig (og ikke starte Ope
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="112"/>
         <source>Configure Formatting Tags</source>
-        <translation>Konfigurere formateringskoder</translation>
+        <translation>Konfigurer formateringskoder</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="126"/>
@@ -3809,12 +3814,12 @@ For å avbryte &quot;Førstegangs veiviser&quot; fullstendig (og ikke starte Ope
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="211"/>
         <source>Show blank screen warning</source>
-        <translation>Vis &quot;svart skjerm&quot;-advarsel</translation>
+        <translation>Vis &quot;blank skjerm&quot;-advarsel</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="212"/>
         <source>Automatically open the last service</source>
-        <translation>Åpne forrige møteplan automatisk</translation>
+        <translation>Åpne forrige møteprogram automatisk</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="213"/>
@@ -3829,12 +3834,12 @@ For å avbryte &quot;Førstegangs veiviser&quot; fullstendig (og ikke starte Ope
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="216"/>
         <source>Prompt to save before starting a new service</source>
-        <translation>Spør om å lagre før du starter en ny møteplan</translation>
+        <translation>Spør om å lagre før du starter et nytt møteprogram</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="219"/>
         <source>Automatically preview next item in service</source>
-        <translation>Automatisk forhåndsvis neste post i møteplanen </translation>
+        <translation>Automatisk forhåndsvis neste post i møteprogrammet </translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="222"/>
@@ -3904,7 +3909,7 @@ For å avbryte &quot;Førstegangs veiviser&quot; fullstendig (og ikke starte Ope
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="317"/>
         <source>Service Item Slide Limits</source>
-        <translation>Bideveksling</translation>
+        <translation>Bildeveksling</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="228"/>
@@ -3953,7 +3958,7 @@ For å avbryte &quot;Førstegangs veiviser&quot; fullstendig (og ikke starte Ope
 <context>
     <name>OpenLP.MainDisplay</name>
     <message>
-        <location filename="openlp/core/ui/maindisplay.py" line="211"/>
+        <location filename="openlp/core/ui/maindisplay.py" line="213"/>
         <source>OpenLP Display</source>
         <translation>OpenLP Display</translation>
     </message>
@@ -4088,7 +4093,7 @@ For å avbryte &quot;Førstegangs veiviser&quot; fullstendig (og ikke starte Ope
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="433"/>
         <source>Toggle the visibility of the media manager.</source>
-        <translation>Slår på Innholdselementer.</translation>
+        <translation>Slå på Innholdselementer.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="435"/>
@@ -4261,7 +4266,7 @@ Du kan laste ned siste versjon fra http://openlp.org/.</translation>
         <translation>Visningsskjerm er avslått</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1152"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1155"/>
         <source>Default Theme: %s</source>
         <translation>Standard tema: %s</translation>
     </message>
@@ -4277,12 +4282,12 @@ Du kan laste ned siste versjon fra http://openlp.org/.</translation>
         <translation>Konfigurer &amp;hurtigtaster...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
         <source>Close OpenLP</source>
         <translation>Avslutt OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1083"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>Er du sikker på at du vil avslutte OpenLP?</translation>
     </message>
@@ -4334,35 +4339,35 @@ Du kan laste ned siste versjon fra http://openlp.org/.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="474"/>
         <source>Re-run First Time Wizard</source>
-        <translation>Kjør første gangs veiviseren på nytt</translation>
+        <translation>Kjør oppstartsveiviseren på nytt</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="475"/>
         <source>Re-run the First Time Wizard, importing songs, Bibles and themes.</source>
-        <translation>Kjør første gangs veiviseren på nytt og importer sanger, bibler og tema.</translation>
+        <translation>Kjør oppstartsveiviseren på nytt og importer sanger, bibler og tema.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="672"/>
         <source>Re-run First Time Wizard?</source>
-        <translation>Vil du kjøre første gangs veiviseren på nytt?</translation>
+        <translation>Vil du kjøre oppstartsveiviseren på nytt?</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="672"/>
         <source>Are you sure you want to re-run the First Time Wizard?
 
 Re-running this wizard may make changes to your current OpenLP configuration and possibly add songs to your existing songs list and change your default theme.</source>
-        <translation>Vil du kjøre første gangs veiviseren på nytt?
+        <translation>Vil du kjøre oppstartsveiviseren på nytt?
 
 Dersom du kjører veiviseren på nytt vil det sannsynlig føre til forandringer i gjeldende oppsett i OpenLP og legge til sanger i eksisterende sangliste og bytte gjeldene tema.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation>Tøm listen</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1292"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
         <source>Clear the list of recent files.</source>
         <translation>Tøm listen over siste brukte møteprogram.</translation>
     </message>
@@ -4384,7 +4389,7 @@ Dersom du kjører veiviseren på nytt vil det sannsynlig føre til forandringer 
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="423"/>
         <source>Import OpenLP settings from a specified *.config file previously exported on this or another machine</source>
-        <translation>Importer OpenLP-innstillier fra en spesifisert *.config fil som tidlegere er eksportert fra denne eller en annen datamaskin</translation>
+        <translation>Importer OpenLP-innstillier fra en spesifisert *.config fil som tidligere er eksportert fra denne eller en annen datamaskin</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="830"/>
@@ -4402,37 +4407,37 @@ Dersom du kjører veiviseren på nytt vil det sannsynlig føre til forandringer 
         <translation>OpenLP eksportinnstillingsfiler (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="915"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
         <source>Import settings</source>
         <translation>Importer innstillinger</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="915"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
         <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
         <translation>OpenLP vil nå avsluttes. Importerte innstillinger blir aktive ved neste oppstart av OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="927"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>Export Settings File</source>
         <translation>Eksporter innstillingsfil</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="927"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>OpenLP Export Settings File (*.conf)</source>
         <translation>OpenLP eksportinnstillingsfiler (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
         <source>New Data Directory Error</source>
         <translation>Ny datakatalog feil</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1387"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1390"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>Kopierer OpenLP data til ny datakatalogplassering - %s. Vent til kopieringen er ferdig</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4480,30 +4485,30 @@ Behandlingen er avsluttet og ingen endringer er gjort.</translation>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="395"/>
         <source>Projector Manager</source>
-        <translation>Projektor behandler</translation>
+        <translation>Prosjektørbehandler</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="428"/>
         <source>Toggle Projector Manager</source>
-        <translation>Vis projektorbehandler</translation>
+        <translation>Vis prosjektørbehandler</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="429"/>
         <source>Toggle the visibility of the Projector Manager</source>
-        <translation>Slår på/av projektorbehandler</translation>
+        <translation>Slår på/av prosjektørbehandler</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
         <source>Export setting error</source>
         <translation>Eksportinnstillingene er feil</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="981"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="984"/>
         <source>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</source>
         <translation>Tasten &quot;%s&quot; har ikke en standardverdi, så den vil bli hoppet over i denne eksporten.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1004"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
         <source>An error occurred while exporting the settings: %s</source>
         <translation>Det oppstod en feil under eksport av innstillingene: %s</translation>
     </message>
@@ -4606,7 +4611,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="382"/>
         <source>Duplicate files were found on import and were ignored.</source>
-        <translation>Like versjoner av filene ble funnet ved importen og ble ignorert.</translation>
+        <translation>Doble versjoner av filene ble funnet ved importen og ble ignorert.</translation>
     </message>
 </context>
 <context>
@@ -4637,7 +4642,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="521"/>
         <source>Error while sending data to projector</source>
-        <translation>Feil under sending av data til projektor</translation>
+        <translation>Feil under sending av data til prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="545"/>
@@ -4698,7 +4703,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="87"/>
         <source>Inactive</source>
-        <translation>Inaktive</translation>
+        <translation>Inaktiv</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/pluginform.py" line="145"/>
@@ -4721,12 +4726,12 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/printservicedialog.py" line="148"/>
         <source>Fit Page</source>
-        <translation>Tilpass siden</translation>
+        <translation>Tilpass til siden</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/printservicedialog.py" line="148"/>
         <source>Fit Width</source>
-        <translation>Tilpass bredden</translation>
+        <translation>Tilpass til bredden</translation>
     </message>
 </context>
 <context>
@@ -4784,7 +4789,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/printservicedialog.py" line="143"/>
         <source>Add page break before each text item</source>
-        <translation>Legg til sideskift for hver tekst-post</translation>
+        <translation>Legg til sideskift for hver tekstpost</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/printservicedialog.py" line="146"/>
@@ -4817,7 +4822,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="212"/>
         <source>General projector error</source>
-        <translation>Generell projektorfeil</translation>
+        <translation>Generell prosjektørfeil</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="213"/>
@@ -4867,12 +4872,12 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="222"/>
         <source>Projector Busy</source>
-        <translation>Projektor opptatt</translation>
+        <translation>Prosjektør opptatt</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="223"/>
         <source>Projector/Display Error</source>
-        <translation>Projektor/skjermfeil</translation>
+        <translation>Prosjektør/skjermfeil</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="224"/>
@@ -4922,7 +4927,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="237"/>
         <source>The local system ran out of resources (e.g., too many sockets)</source>
-        <translation>Det lokale systemet gikk tom for ressurser (for eksempel for mange &quot;sockets&quot;)</translation>
+        <translation>Det lokale systemet gikk tom for ressurser (for eksempel for mange tilkoblinger)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="239"/>
@@ -5012,7 +5017,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="280"/>
         <source>Getting status</source>
-        <translation>Får status</translation>
+        <translation>Mottar status</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="281"/>
@@ -5047,7 +5052,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="287"/>
         <source>Projector Information available</source>
-        <translation>Projektorinformasjon er tilgjengelig</translation>
+        <translation>Prosjektørinformasjon er tilgjengelig</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="288"/>
@@ -5088,17 +5093,17 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="110"/>
         <source>Add New Projector</source>
-        <translation>Legg til ny projektor</translation>
+        <translation>Legg til ny prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="113"/>
         <source>Edit Projector</source>
-        <translation>Rediger projektor</translation>
+        <translation>Rediger prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="115"/>
         <source>IP Address</source>
-        <translation>IPadresse</translation>
+        <translation>IP-adresse</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="118"/>
@@ -5133,7 +5138,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="236"/>
         <source>There was an error saving projector information. See the log for the error</source>
-        <translation>Det oppsto en feil ved lagring av projektorinformasjonen. Se i loggen for informasjon</translation>
+        <translation>Det oppsto en feil ved lagring av prosjektørinformasjonen. Se i loggen for informasjon</translation>
     </message>
 </context>
 <context>
@@ -5141,32 +5146,32 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="83"/>
         <source>Add Projector</source>
-        <translation>Legg til projektor</translation>
+        <translation>Legg til prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="83"/>
         <source>Add a new projector</source>
-        <translation>Legg til en ny projektor</translation>
+        <translation>Legg til en ny prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="89"/>
         <source>Edit Projector</source>
-        <translation>Rediger projektor</translation>
+        <translation>Rediger prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="89"/>
         <source>Edit selected projector</source>
-        <translation>Rediger valgte projektor</translation>
+        <translation>Rediger valgte prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="94"/>
         <source>Delete Projector</source>
-        <translation>Slett projektor</translation>
+        <translation>Slett prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="94"/>
         <source>Delete selected projector</source>
-        <translation>Slett valgte projektor</translation>
+        <translation>Slett valgte prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="100"/>
@@ -5176,42 +5181,42 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="100"/>
         <source>Choose input source on selected projector</source>
-        <translation>Velg inngangskilde for valgte projektor</translation>
+        <translation>Velg inngangskilde for valgte prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="106"/>
         <source>View Projector</source>
-        <translation>Vis projektor</translation>
+        <translation>Vis prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="106"/>
         <source>View selected projector information</source>
-        <translation>Vis informasjon for valgte projektor</translation>
+        <translation>Vis informasjon for valgte prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="120"/>
         <source>Connect to selected projector</source>
-        <translation>Koble til valgte projektor</translation>
+        <translation>Koble til valgte prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="120"/>
         <source>Connect to selected projectors</source>
-        <translation>Koble til valgte projektorer</translation>
+        <translation>Koble til valgte prosjektører</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="127"/>
         <source>Disconnect from selected projectors</source>
-        <translation>Koble fra valgte projektorer</translation>
+        <translation>Koble fra valgte prosjektører</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="134"/>
         <source>Disconnect from selected projector</source>
-        <translation>Koble fra valgte projektor</translation>
+        <translation>Koble fra valgte prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="149"/>
         <source>Power on selected projector</source>
-        <translation>Slå på valgte projektor</translation>
+        <translation>Slå på valgte prosjektør</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="162"/>
@@ -5572,7 +5577,7 @@ Filendelsen støttes ikke</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="188"/>
         <source>&amp;Delete From Service</source>
-        <translation>&amp;Slett fra møteprogramet</translation>
+        <translation>&amp;Slett fra møteprogrammet</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="188"/>
@@ -7401,7 +7406,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="123"/>
         <source>Replace live background.</source>
-        <translation>Erstatt fremvisningbakgrunn.</translation>
+        <translation>Bytt fremvisningbakgrunn.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="126"/>
@@ -7555,7 +7560,7 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="124"/>
         <source>Replace live background is not available on this platform in this version of OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>En kan ikke bytte fremvist bakgrunnsbilde på denne plattformen i denne versjonen av OpenLP.</translation>
     </message>
 </context>
 <context>
@@ -7596,50 +7601,50 @@ Vennligst prøv å velge den individuelt.</translation>
 <context>
     <name>PresentationPlugin</name>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="159"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="160"/>
         <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
         <translation>&lt;strong&gt;Programtillegget for presentasjoner&lt;/strong&gt;&lt;br/&gt;Programtillegget gir mulighet til å vise presentasjoner ved hjelp av en rekke ulike programmer. Valget av tilgjengelige presentasjonsprogrammer er tilgjengelig for brukeren i en nedtrekksboks.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="172"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
         <source>Presentation</source>
         <comment>name singular</comment>
         <translation>Presentasjon</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="174"/>
         <source>Presentations</source>
         <comment>name plural</comment>
         <translation>Presentasjoner</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="177"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="178"/>
         <source>Presentations</source>
         <comment>container title</comment>
         <translation>Presentasjoner</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="181"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="182"/>
         <source>Load a new presentation.</source>
         <translation>Last en ny presentasjon.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="185"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
         <source>Delete the selected presentation.</source>
         <translation>Slett den valgte presentasjonen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
         <source>Preview the selected presentation.</source>
         <translation>Forhåndsvis den valgte presentasjonen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
         <source>Send the selected presentation live.</source>
         <translation>Fremvis valgte presentasjon.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="189"/>
         <source>Add the selected presentation to the service.</source>
         <translation>Legg valgte presentasjon til møteprogrammet.</translation>
     </message>
@@ -7700,7 +7705,7 @@ Vennligst prøv å velge den individuelt.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="481"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="529"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation>Det oppstod en feil i Powerpointintegrasjonen og presentasjonen vil bli stoppet. Start presentasjonen på nytt hvis du ønsker å fortsette.</translation>
     </message>
@@ -7708,48 +7713,53 @@ Vennligst prøv å velge den individuelt.</translation>
 <context>
     <name>PresentationPlugin.PresentationTab</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="113"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="116"/>
         <source>Available Controllers</source>
         <translation>Tilgjengelige presentasjonsprogram</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="139"/>
         <source>%s (unavailable)</source>
         <translation>%s (utilgjengelig)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="121"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="124"/>
         <source>Allow presentation application to be overridden</source>
         <translation>Tillat presentasjonsprogrammet å bli overstyrt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="119"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="122"/>
         <source>PDF options</source>
         <translation>PDF-valg</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="132"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation>Bruk fullstendig bane for mudraw eller ghost binary:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="221"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="233"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation>Velg mudraw eller ghost binary.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="227"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="239"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation>Programmet er ikke ghostscript eller mudraw som er nødvendig.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
         <source>PowerPoint options</source>
-        <translation type="unfinished"></translation>
+        <translation>PowerPoint valg</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
         <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
+        <translation>Ved å klikke på et valgt lysbilde i fremvisningskontrollen; fortsetter til neste effekt.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
+        <source>Let PowerPoint control the size and position of the presentation window.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9684,7 +9694,7 @@ Fyll inn versene adskilt med mellomrom.</translation>
         <translation>Filen er ikke i gyldig WorshipAssistant CSV-format.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="184"/>
+        <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="185"/>
         <source>Record %d</source>
         <translation>Post %d</translation>
     </message>

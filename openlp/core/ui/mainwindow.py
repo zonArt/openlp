@@ -900,7 +900,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         for section_key in import_keys:
             if 'eneral' in section_key:
                 section_key = section_key.lower()
-            value = import_settings.value(section_key)
+            try:
+                value = import_settings.value(section_key)
+            except KeyError:
+                log.warning('The key "%s" does not exist (anymore), so it will be skipped.' % section_key)
             if value is not None:
                 settings.setValue('%s' % (section_key), value)
         now = datetime.now()
