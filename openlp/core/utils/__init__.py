@@ -414,6 +414,11 @@ def get_web_page(url, header=None, update_openlp=False):
             page = None
             if retries > CONNECTION_RETRIES:
                 raise
+        except socket.gaierror:
+            log.exception('Socket gaierror: {}'.format(url))
+            page = None
+            if retries > CONNECTION_RETRIES:
+                raise
         except ConnectionRefusedError:
             log.exception('ConnectionRefused: {}'.format(url))
             page = None
