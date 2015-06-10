@@ -33,7 +33,7 @@ import ntpath
 
 from PyQt4 import QtGui
 
-from openlp.core.common import RegistryProperties, Settings, translate, AppLocation
+from openlp.core.common import RegistryProperties, Settings, translate, AppLocation, md5_hash
 from openlp.core.lib import ImageSource, build_icon, clean_tags, expand_tags, create_thumb
 
 log = logging.getLogger(__name__)
@@ -326,6 +326,12 @@ class ServiceItem(RegistryProperties):
         # If the item should have a display title but this frame doesn't have one, we make one up
         if self.is_capable(ItemCapabilities.HasDisplayTitle) and not display_title:
             display_title = translate('OpenLP.ServiceItem', '[slide %d]') % (len(self._raw_frames) + 1)
+        # Update image path to match servicemanager location if file was loaded from service
+        if image and not self.has_original_files and self.name == 'presentations':
+            file_location = os.path.join(path, file_name)
+            file_location_hash = md5_hash(file_location.encode('utf-8'))
+            image = os.path.join(AppLocation.get_section_data_path(self.name), 'thumbnails',
+                                 file_location_hash, ntpath.basename(image))
         self._raw_frames.append({'title': file_name, 'image': image, 'path': path,
                                  'display_title': display_title, 'notes': notes})
         self._new_item()
