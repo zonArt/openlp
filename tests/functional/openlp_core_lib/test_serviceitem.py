@@ -28,7 +28,7 @@ from unittest import TestCase
 from tests.functional import MagicMock, patch
 from tests.utils import assert_length, convert_file_service_item
 
-from openlp.core.common import Registry
+from openlp.core.common import Registry, md5_hash
 from openlp.core.lib import ItemCapabilities, ServiceItem, ServiceItemType
 
 VERSE = 'The Lord said to {r}Noah{/r}: \n'\
@@ -243,6 +243,33 @@ class TestServiceItem(TestCase):
         # THEN: verify that it is setup as a Command and that the frame data matches
         self.assertEqual(service_item.service_item_type, ServiceItemType.Command, 'It should be a Command')
         self.assertEqual(service_item.get_frames()[0], frame, 'Frames should match')
+
+    def add_from_command_for_a_presentation_thumb_test(self):
+        """
+        Test the Service Item - adding a presentation, and updating the thumb path
+        """
+        # GIVEN: A service item, a mocked icon and presentation data
+        with patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path') as mocked_get_section_data_path:
+            mocked_get_section_data_path.return_value = '/mocked/section/path'
+            service_item = ServiceItem(None)
+            service_item.has_original_files = False
+            service_item.name = 'presentations'
+            presentation_name = 'test.pptx'
+            thumb = '/tmp/test/thumb.png'
+            display_title = 'DisplayTitle'
+            notes = 'Note1\nNote2\n'
+            expected_thumb_path = os.path.join('/mocked/section/path/thumbnails',
+                                               md5_hash(os.path.join(TEST_PATH, presentation_name).encode('utf-8')),
+                                               'thumb.png')
+            frame = {'title': presentation_name, 'image': expected_thumb_path, 'path': TEST_PATH,
+                     'display_title': display_title, 'notes': notes}
+
+            # WHEN: adding presentation to service_item
+            service_item.add_from_command(TEST_PATH, presentation_name, thumb, display_title, notes)
+
+            # THEN: verify that it is setup as a Command and that the frame data matches
+            self.assertEqual(service_item.service_item_type, ServiceItemType.Command, 'It should be a Command')
+            self.assertEqual(service_item.get_frames()[0], frame, 'Frames should match')
 
     def service_item_load_optical_media_from_service_test(self):
         """
