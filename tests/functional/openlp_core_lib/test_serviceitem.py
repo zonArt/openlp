@@ -250,15 +250,15 @@ class TestServiceItem(TestCase):
         """
         # GIVEN: A service item, a mocked icon and presentation data
         with patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path') as mocked_get_section_data_path:
-            mocked_get_section_data_path.return_value = '/mocked/section/path'
+            mocked_get_section_data_path.return_value = os.path.join('mocked', 'section', 'path')
             service_item = ServiceItem(None)
             service_item.has_original_files = False
             service_item.name = 'presentations'
             presentation_name = 'test.pptx'
-            thumb = '/tmp/test/thumb.png'
+            thumb = os.path.join('tmp', 'test', 'thumb.png')
             display_title = 'DisplayTitle'
             notes = 'Note1\nNote2\n'
-            expected_thumb_path = os.path.join('/mocked/section/path/thumbnails',
+            expected_thumb_path = os.path.join('mocked', 'section', 'path', 'thumbnails',
                                                md5_hash(os.path.join(TEST_PATH, presentation_name).encode('utf-8')),
                                                'thumb.png')
             frame = {'title': presentation_name, 'image': expected_thumb_path, 'path': TEST_PATH,
