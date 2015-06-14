@@ -281,6 +281,7 @@ class PresentationMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.CanPreview)
             service_item.add_capability(ItemCapabilities.CanLoop)
             service_item.add_capability(ItemCapabilities.CanAppend)
+            service_item.name = 'images'
             # force a nonexistent theme
             service_item.theme = -1
             for bitem in items:

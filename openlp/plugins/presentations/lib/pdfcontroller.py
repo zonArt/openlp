@@ -89,11 +89,11 @@ class PdfController(PresentationController):
         # Analyse the output to see it the program is mudraw, ghostscript or neither
         for line in runlog.splitlines():
             decoded_line = line.decode()
-            found_mudraw = re.search('usage: mudraw.*', decoded_line)
+            found_mudraw = re.search('usage: mudraw.*', decoded_line, re.IGNORECASE)
             if found_mudraw:
                 program_type = 'mudraw'
                 break
-            found_gs = re.search('GPL Ghostscript.*', decoded_line)
+            found_gs = re.search('GPL Ghostscript.*', decoded_line, re.IGNORECASE)
             if found_gs:
                 program_type = 'gs'
                 break
@@ -222,8 +222,8 @@ class PdfDocument(PresentationDocument):
                 continue
         # Calculate the ratio from pdf to screen
         if width > 0 and height > 0:
-            width_ratio = size.right() / width
-            height_ratio = size.bottom() / height
+            width_ratio = size.width() / width
+            height_ratio = size.height() / height
             # return the resolution that should be used. 72 is default.
             if width_ratio > height_ratio:
                 return int(height_ratio * 72)
@@ -254,7 +254,7 @@ class PdfDocument(PresentationDocument):
             if not os.path.isdir(self.get_temp_folder()):
                 os.makedirs(self.get_temp_folder())
             if self.controller.mudrawbin:
-                runlog = check_output([self.controller.mudrawbin, '-w', str(size.right()), '-h', str(size.bottom()),
+                runlog = check_output([self.controller.mudrawbin, '-w', str(size.width()), '-h', str(size.height()),
                                        '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path],
                                       startupinfo=self.startupinfo)
             elif self.controller.gsbin:
