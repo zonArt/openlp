@@ -32,7 +32,7 @@ import time
 from openlp.core.common import is_win, Settings
 
 if is_win():
-    from win32com.client import DispatchWithEvents
+    from win32com.client import Dispatch
     import win32com
     import win32con
     import winreg
@@ -93,22 +93,9 @@ class PowerpointController(PresentationController):
             """
             Loads PowerPoint process.
             """
-            class PowerPointEvents:
-                """
-                Class to catch events from PowerPoint.
-                """
-                def OnSlideShowNextClick(self, slideshow_window, effect):
-                    """
-                    Occurs on the next click of the slide.
-                    If the main OpenLP window is not in focus force update of the slidecontroller.
-                    """
-                    if not Registry().get('main_window').isActiveWindow():
-                        log.debug('main window is not in focus - should update slidecontroller')
-                        Registry().execute('slidecontroller_live_change', slideshow_window.View.CurrentShowPosition)
-
             log.debug('start_process')
             if not self.process:
-                self.process = DispatchWithEvents('PowerPoint.Application', PowerPointEvents)
+                self.process = Dispatch('PowerPoint.Application')
 
         def kill(self):
             """
@@ -330,6 +317,7 @@ class PowerpointDocument(PresentationDocument):
             """
             log.debug('start_presentation')
             # SlideShowWindow measures its size/position by points, not pixels
+            # https://technet.microsoft.com/en-us/library/dn528846.aspx
             try:
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
             except win32ui.error:
@@ -378,8 +366,9 @@ class PowerpointDocument(PresentationDocument):
         log.debug('compare size:  %d and %d, %d and %d, %d and %d, %d and %d'
                   % (size.y(), top, size.height(), (bottom - top), size.x(), left, size.width(), (right - left)))
         log.debug('window title: %s' % window_title)
+        filename_root, filename_ext = os.path.splitext(os.path.basename(self.file_path))
         if size.y() == top and size.height() == (bottom - top) and size.x() == left and \
-                size.width() == (right - left) and os.path.basename(self.file_path) in window_title:
+                size.width() == (right - left) and filename_root in window_title:
             log.debug('Found a match and will save the handle')
             self.presentation_hwnd = hwnd
             # Stop powerpoint from flashing in the taskbar

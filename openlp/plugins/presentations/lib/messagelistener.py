@@ -243,6 +243,10 @@ class Controller(object):
         Instruct the controller to stop and hide the presentation.
         """
         log.debug('Live = %s, stop' % self.is_live)
+        # The document has not been loaded yet, so don't do anything. This can happen when going live with a
+        # presentation while blanked to desktop.
+        if not self.doc:
+            return
         # Save the current slide number to be able to return to this slide if the presentation is activated again.
         if self.doc.is_active():
             self.doc.slidenumber = self.doc.get_slide_number()
@@ -352,6 +356,7 @@ class MessageListener(object):
             self.controller = controller
         else:
             controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
+            self.timer.start()
 
     def slide(self, message):
         """
@@ -423,6 +428,7 @@ class MessageListener(object):
         is_live = message[1]
         if is_live:
             self.live_handler.shutdown()
+            self.timer.stop()
         else:
             self.preview_handler.shutdown()
 

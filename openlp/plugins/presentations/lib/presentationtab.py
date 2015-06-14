@@ -128,7 +128,8 @@ class PresentationTab(SettingsTab):
                       'Clicking on a selected slide in the slidecontroller advances to next effect.'))
         self.ppt_window_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
-                      'Let PowerPoint control the size and position of the presentation window.'))
+                      'Let PowerPoint control the size and position of the presentation window '
+                      '(workaround for Windows 8 scaling issue).'))
         self.pdf_program_check_box.setText(
             translate('PresentationPlugin.PresentationTab', 'Use given full path for mudraw or ghostscript binary:'))
 
