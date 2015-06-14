@@ -135,5 +135,5 @@ class TestPdfController(TestCase, TestMixin):
             self.assertEqual(760, image.height(), 'The height should be 760')
             self.assertEqual(537, image.width(), 'The width should be 537')
         else:
-            self.assertEqual(767, image.height(), 'The height should be 767')
+            self.assertEqual(768, image.height(), 'The height should be 768')
             self.assertEqual(543, image.width(), 'The width should be 543')

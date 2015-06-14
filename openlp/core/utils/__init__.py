@@ -24,6 +24,7 @@ The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
 from datetime import datetime
 from distutils.version import LooseVersion
+from http.client import HTTPException
 import logging
 import locale
 import os
@@ -414,6 +415,11 @@ def get_web_page(url, header=None, update_openlp=False):
             page = None
             if retries > CONNECTION_RETRIES:
                 raise
+        except socket.gaierror:
+            log.exception('Socket gaierror: {}'.format(url))
+            page = None
+            if retries > CONNECTION_RETRIES:
+                raise
         except ConnectionRefusedError:
             log.exception('ConnectionRefused: {}'.format(url))
             page = None
@@ -422,6 +428,11 @@ def get_web_page(url, header=None, update_openlp=False):
             break
         except ConnectionError:
             log.exception('Connection error: {}'.format(url))
+            page = None
+            if retries > CONNECTION_RETRIES:
+                raise
+        except HTTPException:
+            log.exception('HTTPException error: {}'.format(url))
             page = None
             if retries > CONNECTION_RETRIES:
                 raise

@@ -1106,8 +1106,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.image_manager.stop_manager = True
         while self.image_manager.image_thread.isRunning():
             time.sleep(0.1)
-        # Clean temporary files used by services
-        self.service_manager_contents.clean_up()
         if save_settings:
             if Settings().value('advanced/save current plugin'):
                 Settings().setValue('advanced/current media plugin', self.media_tool_box.currentIndex())
@@ -1124,6 +1122,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if self.live_controller.display:
             self.live_controller.display.close()
             self.live_controller.display = None
+        # Clean temporary files used by services
+        self.service_manager_contents.clean_up()
         if is_win():
             # Needed for Windows to stop crashes on exit
             Registry().remove('application')

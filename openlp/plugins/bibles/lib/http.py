@@ -748,7 +748,10 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre
     """
     if not reference_url:
         return None
-    page = get_web_page(reference_url, header, True)
+    try:
+        page = get_web_page(reference_url, header, True)
+    except:
+        page = None
     if not page:
         send_error_message('download')
         return None
