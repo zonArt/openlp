@@ -48,6 +48,7 @@ class TestMediaItem(TestCase, TestMixin):
         with patch('openlp.core.lib.mediamanageritem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
             self.media_item = SongMediaItem(None, MagicMock())
+            self.media_item.save_auto_select_id = MagicMock()
             self.media_item.list_view = MagicMock()
             self.media_item.list_view.save_auto_select_id = MagicMock()
             self.media_item.list_view.clear = MagicMock()
@@ -91,6 +92,7 @@ class TestMediaItem(TestCase, TestMixin):
 
             # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
             self.media_item.list_view.clear.assert_called_with()
+            self.media_item.save_auto_select_id.assert_called_with()
             MockedQListWidgetItem.assert_called_with('My Song (My Author)')
             mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_song.id)
             self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
