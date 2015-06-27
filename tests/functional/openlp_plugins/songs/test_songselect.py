@@ -82,6 +82,23 @@ class TestSongSelectImport(TestCase, TestMixin):
         self.assertFalse(result, 'The login method should have returned False')
 
     @patch('openlp.plugins.songs.lib.songselect.build_opener')
+    def login_except_test(self,  mocked_build_opener):
+        """
+        Test that when logging in to SongSelect fails, the login method raises URLError
+        """
+        # GIVEN: A bunch of mocked out stuff and an importer object
+        mocked_build_opener.open.side_effect = URLError('Fake URLError')
+        mock_callback = MagicMock()
+        importer = SongSelectImport(None)
+
+        # WHEN: The login method is called after being rigged to fail
+        result = importer.login('username', 'password', mock_callback)
+
+        # THEN: callback was called 1 time and False was returned
+        self.assertEqual(1, mock_callback.call_count, 'callback should have been called 1 times')
+        self.assertFalse(result, 'The login method should have returned False')
+
+    @patch('openlp.plugins.songs.lib.songselect.build_opener')
     @patch('openlp.plugins.songs.lib.songselect.BeautifulSoup')
     def login_succeeds_test(self, MockedBeautifulSoup, mocked_build_opener):
         """

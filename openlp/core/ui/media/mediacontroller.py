@@ -721,8 +721,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         display = self._define_display(self.live_controller)
         if self.live_controller.controller_type in self.current_media_players and \
                 self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
-                self.current_media_players[self.live_controller.controller_type].pause(display)
-                self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
+            self.current_media_players[self.live_controller.controller_type].pause(display)
+            self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
 
     def media_blank(self, msg):
         """
@@ -737,7 +737,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return
         Registry().execute('live_display_hide', hide_mode)
         display = self._define_display(self.live_controller)
-        if self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
+        if self.live_controller.controller_type in self.current_media_players and \
+                self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
             self.current_media_players[self.live_controller.controller_type].pause(display)
             self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
 
