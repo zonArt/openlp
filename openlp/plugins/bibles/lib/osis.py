@@ -153,7 +153,8 @@ class OSISBible(BibleDB):
                             # Verse-tags contains the text
                             for verse in chapter:
                                 verse_number = verse.get("osisID").split('.')[2]
-                                self.create_verse(db_book.id, chapter_number, verse_number, verse.text.strip())
+                                if verse.text:
+                                    self.create_verse(db_book.id, chapter_number, verse_number, verse.text.strip())
                         self.wizard.increment_progress_bar(
                             translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
                             {'bookname': db_book.name, 'chapter': chapter_number})
