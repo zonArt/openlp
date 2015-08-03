@@ -1088,22 +1088,22 @@ Det er ikke mulig å tilpasse boknavn.</translation>
         <translation>Importerer %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>Download Error</source>
         <translation>Nedlastingsfeil</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Det oppstod et problem ved nedlastingen av de valgte versene. Vennligst sjekk internettilkoblingen. Dersom denne feilen vedvarer, vær vennlig å rapportere feilen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>Parse Error</source>
         <translation>Analysefeil</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Det oppstod et problem ved uthenting av de valgte versene. Dersom denne feilen vedvarer, vær vennlig å rapportere feilen.</translation>
     </message>
@@ -1416,7 +1416,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
         <source>Advanced</source>
-        <translation type="unfinished">Avansert</translation>
+        <translation>Avansert</translation>
     </message>
 </context>
 <context>
@@ -1448,7 +1448,7 @@ You will need to re-import this Bible to use it again.</source>
         <translation>Fjerner ubrukte tagger (dette kan ta noen minutter) ...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="168"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
         <translation>Importerer %(bookname)s %(chapter)s...</translation>
     </message>
@@ -2000,7 +2000,7 @@ Vil du likevel legge til de andre bildene?</translation>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="355"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="357"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>VLC er en ekstern spiller som støtter et antall forskjellige formater.</translation>
     </message>
@@ -2230,42 +2230,42 @@ Vil du likevel legge til de andre bildene?</translation>
 <context>
     <name>MediaPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="93"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="94"/>
         <source>Select Media</source>
         <translation>Velg media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="331"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="332"/>
         <source>You must select a media file to delete.</source>
         <translation>Du må velge en mediefil som skal slettes.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="194"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>Du må velge en fil å erstatte bakgrunnen med.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="212"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="213"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Det oppstod et problem ved bytting av bakgrunn, filen &quot;%s&quot; finnes ikke lenger.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>Missing Media File</source>
         <translation>Mediefil mangler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>The file %s no longer exists.</source>
         <translation>Filen %s finnes ikke lenger.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="293"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="294"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Videoer (%s);;Lyd (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="208"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="209"/>
         <source>There was no display item to amend.</source>
         <translation>Det var ikke noe visningselement å legge til.</translation>
     </message>
@@ -2275,7 +2275,7 @@ Vil du likevel legge til de andre bildene?</translation>
         <translation>Denne filtypen støttes ikke</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="102"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="103"/>
         <source>Use Player:</source>
         <translation>Bruk mediaspiller:</translation>
     </message>
@@ -2290,27 +2290,27 @@ Vil du likevel legge til de andre bildene?</translation>
         <translation>VLC mediaspiller er nødvendig for avspilling av optiske enheter</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="130"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
         <source>Load CD/DVD</source>
         <translation>Legg til CD/DVD</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="132"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
         <translation>Legg til CD/DVD - støttes bare når VLC er installert og aktivert</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="239"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="240"/>
         <source>The optical disc %s is no longer available.</source>
         <translation>Den optiske platen %s er ikke lenger tilgjengelig.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>Mediaclip already saved</source>
         <translation>Media-klippet er allerede lagret </translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>This mediaclip has already been saved</source>
         <translation>Dette media-klippet har allerede blitt lagret </translation>
     </message>
@@ -2339,7 +2339,7 @@ Vil du likevel legge til de andre bildene?</translation>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="305"/>
+        <location filename="openlp/core/utils/__init__.py" line="306"/>
         <source>Image Files</source>
         <translation>Bildefiler</translation>
     </message>
@@ -5509,12 +5509,12 @@ Filendelsen støttes ikke</translation>
 <context>
     <name>OpenLP.ServiceItem</name>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="616"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="622"/>
         <source>&lt;strong&gt;Start&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Start&lt;/strong&gt;: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="619"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="625"/>
         <source>&lt;strong&gt;Length&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Lengde&lt;/strong&gt;: %s</translation>
     </message>
@@ -6127,7 +6127,7 @@ Disse filene vil bli fjernet hvis du fortsetter til lagre.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="390"/>
         <source>Go to &quot;Other&quot;</source>
-        <translation>Gå til &quot;Annet&quot;</translation>
+        <translation>Gå til &quot;Tilleggsinformasjon&quot;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="207"/>
@@ -7687,17 +7687,17 @@ Vennligst prøv å velge den individuelt.</translation>
         <translation>Presentasjoner (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>Missing Presentation</source>
         <translation>Presentasjonen mangler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="364"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="365"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Presentasjonen %s er ufullstendig, vennligst oppdater.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Presentasjonen %s eksisterer ikke lenger.</translation>
     </message>
@@ -7705,7 +7705,7 @@ Vennligst prøv å velge den individuelt.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="529"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="517"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation>Det oppstod en feil i Powerpointintegrasjonen og presentasjonen vil bli stoppet. Start presentasjonen på nytt hvis du ønsker å fortsette.</translation>
     </message>
@@ -7718,7 +7718,7 @@ Vennligst prøv å velge den individuelt.</translation>
         <translation>Tilgjengelige presentasjonsprogram</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="139"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="140"/>
         <source>%s (unavailable)</source>
         <translation>%s (utilgjengelig)</translation>
     </message>
@@ -7733,17 +7733,17 @@ Vennligst prøv å velge den individuelt.</translation>
         <translation>PDF-valg</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="132"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation>Bruk fullstendig bane for mudraw eller ghost binary:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="233"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="234"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation>Velg mudraw eller ghost binary.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="239"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="240"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation>Programmet er ikke ghostscript eller mudraw som er nødvendig.</translation>
     </message>
@@ -7759,7 +7759,7 @@ Vennligst prøv å velge den individuelt.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
-        <source>Let PowerPoint control the size and position of the presentation window.</source>
+        <source>Let PowerPoint control the size and position of the presentation window (workaround for Windows 8 scaling issue).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9298,17 +9298,17 @@ Fyll inn versene adskilt med mellomrom.</translation>
         <translation>Følgende sanger kunne ikke importeres:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="67"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="68"/>
         <source>Cannot access OpenOffice or LibreOffice</source>
         <translation>Får ikke tilgang til OpenOffice eller LibreOffice</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="83"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="84"/>
         <source>Unable to open file</source>
         <translation>Umulig å åpne fil</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="85"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="86"/>
         <source>File not found</source>
         <translation>Fil ikke funnet</translation>
     </message>

@@ -1087,22 +1087,22 @@ Veebipiibli raamatute nimesid pole võimalik muuta.</translation>
         <translation>Raamatu %s importimine...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>Download Error</source>
         <translation>Tõrge allalaadimisel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Valitud salmide allalaadimisel esines viga. Kontrolli oma internetiühendust ning kui see viga kordub, teata sellest veast.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>Parse Error</source>
         <translation>Parsimise viga</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Sinu salmide vahemiku analüüsimisel esines viga. Kui see viga kordub, siis palun teata sellest veast.</translation>
     </message>
@@ -1415,7 +1415,7 @@ Et jälle seda piiblit kasutada, pead selle uuesti importima.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
         <source>Advanced</source>
-        <translation type="unfinished">Täpsem</translation>
+        <translation>Täpsem</translation>
     </message>
 </context>
 <context>
@@ -1447,7 +1447,7 @@ Et jälle seda piiblit kasutada, pead selle uuesti importima.</translation>
         <translation>Kasutamata siltide eemaldamine (võib võtta mõne minuti)...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="168"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
         <translation>%(bookname)s %(chapter)s importimine...</translation>
     </message>
@@ -2000,7 +2000,7 @@ Kas tahad teised pildid sellest hoolimata lisada?</translation>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="355"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="357"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2230,42 +2230,42 @@ Kas tahad teised pildid sellest hoolimata lisada?</translation>
 <context>
     <name>MediaPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="93"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="94"/>
         <source>Select Media</source>
         <translation>Meedia valimine</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="331"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="332"/>
         <source>You must select a media file to delete.</source>
         <translation>Pead enne valima meedia, mida kustutada.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="194"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>Pead enne valima meediafaili, millega tausta asendada.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="212"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="213"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Tausta asendamisel esines viga, meediafaili &quot;%s&quot; enam pole.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>Missing Media File</source>
         <translation>Puuduv meediafail</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>The file %s no longer exists.</source>
         <translation>Faili %s ei ole enam olemas.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="293"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="294"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Videod (%s);;Audio (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="208"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="209"/>
         <source>There was no display item to amend.</source>
         <translation>Polnud ühtegi kuvatavat elementi, mida täiendada.</translation>
     </message>
@@ -2275,7 +2275,7 @@ Kas tahad teised pildid sellest hoolimata lisada?</translation>
         <translation>Fail pole toetatud:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="102"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="103"/>
         <source>Use Player:</source>
         <translation>Kasutatav meediaesitaja:</translation>
     </message>
@@ -2290,27 +2290,27 @@ Kas tahad teised pildid sellest hoolimata lisada?</translation>
         <translation>Plaatide esitamiseks on vaja VLC mängijat</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="130"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
         <source>Load CD/DVD</source>
         <translation>Laadi CD/DVD</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="132"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="239"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="240"/>
         <source>The optical disc %s is no longer available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>Mediaclip already saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>This mediaclip has already been saved</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2339,7 +2339,7 @@ Kas tahad teised pildid sellest hoolimata lisada?</translation>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="305"/>
+        <location filename="openlp/core/utils/__init__.py" line="306"/>
         <source>Image Files</source>
         <translation>Pildifailid</translation>
     </message>
@@ -2380,7 +2380,7 @@ Kas OpenLP peaks kohe uuendamist alustama?</translation>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="652"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Ava</translation>
     </message>
 </context>
 <context>
@@ -2804,7 +2804,7 @@ Andmekataloog muudetakse OpenLP sulgemisel.</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="279"/>
         <source>Thursday</source>
-        <translation type="unfinished"></translation>
+        <translation>Neljapäev</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="313"/>
@@ -5413,12 +5413,12 @@ Selle lõpuga fail ei ole toetatud</translation>
 <context>
     <name>OpenLP.ServiceItem</name>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="616"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="622"/>
         <source>&lt;strong&gt;Start&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Algus&lt;/strong&gt;: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="619"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="625"/>
         <source>&lt;strong&gt;Length&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Kestus&lt;/strong&gt;: %s</translation>
     </message>
@@ -7588,17 +7588,17 @@ Palun vali see eraldi.</translation>
         <translation>Esitlused (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>Missing Presentation</source>
         <translation>Puuduv esitlus</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="364"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="365"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Esitlus %s pole täielik, palun laadi uuesti.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Esitlust %s pole enam olemas.</translation>
     </message>
@@ -7606,7 +7606,7 @@ Palun vali see eraldi.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="529"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="517"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7619,7 +7619,7 @@ Palun vali see eraldi.</translation>
         <translation>Saadaolevad juhtijad</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="139"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="140"/>
         <source>%s (unavailable)</source>
         <translation>%s (pole saadaval)</translation>
     </message>
@@ -7634,17 +7634,17 @@ Palun vali see eraldi.</translation>
         <translation>PDFi valikud</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="132"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="233"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="234"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="239"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="240"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7660,7 +7660,7 @@ Palun vali see eraldi.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
-        <source>Let PowerPoint control the size and position of the presentation window.</source>
+        <source>Let PowerPoint control the size and position of the presentation window (workaround for Windows 8 scaling issue).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8023,7 +8023,7 @@ All data recorded before this date will be permanently deleted.</source>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="59"/>
         <source>All requested data has been deleted successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kõik päritud andmed kustutati edukalt.</translation>
     </message>
 </context>
 <context>
@@ -8091,7 +8091,7 @@ Please select an existing path on your computer.</source>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
         <source>An error occurred while creating the report: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Raporti koostamisel esines viga: %s</translation>
     </message>
 </context>
 <context>
@@ -8412,12 +8412,12 @@ Kodeering on vajalik märkide õige esitamise jaoks.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="203"/>
         <source>Could not find the &quot;Songs.MB&quot; file. It must be in the same folder as the &quot;Songs.DB&quot; file.</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;Songs.MB&quot; faili ei leitud. See peaks olema &quot;Songs.DB&quot; failiga samas kaustas.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="219"/>
         <source>This file is not a valid EasyWorship database.</source>
-        <translation type="unfinished"></translation>
+        <translation>See fail ei ole sobiv EasyWorship andmebaas.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="248"/>
@@ -8655,17 +8655,17 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="304"/>
         <source>&amp;Edit Author Type</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Muuda autori liiki</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="611"/>
         <source>Edit Author Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Autori liigi muutmine</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="611"/>
         <source>Choose type for this author</source>
-        <translation type="unfinished"></translation>
+        <translation>Vali selle autori liik</translation>
     </message>
 </context>
 <context>
@@ -8771,7 +8771,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="148"/>
         <source>This wizard will help to export your songs to the open and free &lt;strong&gt;OpenLyrics &lt;/strong&gt; worship song format.</source>
-        <translation type="unfinished"></translation>
+        <translation>See nõustaja aitab laule eksportida avatud ja vabas &lt;strong&gt;OpenLyricsi&lt;/strong&gt; ülistuslaulude vormingus.</translation>
     </message>
 </context>
 <context>
@@ -8952,17 +8952,17 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="239"/>
         <source>EasyWorship Service File</source>
-        <translation type="unfinished"></translation>
+        <translation>EasyWorship teenistuse fail</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="348"/>
         <source>WorshipCenter Pro Song Files</source>
-        <translation type="unfinished"></translation>
+        <translation>WorshipCenter Pro laulufailid</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="349"/>
         <source>The WorshipCenter Pro importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation type="unfinished"></translation>
+        <translation>WorshipCenter Pro importija on toetatud ainult Windowsis. See on keelatud, kuna vajalik Pythoni moodul puudub. Kui tahad seda importijat kasutada, paigalda &quot;pyodbc&quot; moodul.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="268"/>
@@ -9194,17 +9194,17 @@ Please enter the verses separated by spaces.</source>
         <translation>Järgnevaid laule polnud võimalik importida:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="67"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="68"/>
         <source>Cannot access OpenOffice or LibreOffice</source>
         <translation>Puudub ligipääs OpenOffice&apos;le või LibreOffice&apos;le</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="83"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="84"/>
         <source>Unable to open file</source>
         <translation>Faili avamine ei õnnestunud</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="85"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="86"/>
         <source>File not found</source>
         <translation>Faili ei leitud</translation>
     </message>

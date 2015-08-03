@@ -1088,22 +1088,22 @@ Nincs lehetőség a könyvnevek módosítására.</translation>
         <translation>Importálás: %s…</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>Download Error</source>
         <translation>Letöltési hiba</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Probléma történt a kijelölt versek letöltésekor. Kérem, ellenőrizd a az internetkapcsolatot, és ha a hiba nem oldódik meg, fontold meg a hiba bejelentését.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>Parse Error</source>
         <translation>Feldolgozási hiba</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Probléma történt a kijelölt versek kicsomagolásakor. Ha a hiba nem oldódik meg, fontold meg a hiba bejelentését.</translation>
     </message>
@@ -1268,8 +1268,7 @@ Nincs lehetőség a könyvnevek módosítására.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="634"/>
         <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
-        <translation>Biblia regisztrálva. Megjegyzés: a versek csak kérésre lesznek letöltve 
-és akkor is internet kapcsolat szükségeltetik.</translation>
+        <translation>Biblia regisztrálva. Megjegyzés: a versek csak kérésre lesznek letöltve és akkor is internet kapcsolat szükségeltetik.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
@@ -1417,7 +1416,7 @@ Az esetleges újbóli alkalmazásához újra be kell majd importálni.</translat
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
         <source>Advanced</source>
-        <translation type="unfinished">Haladó</translation>
+        <translation>Haladó</translation>
     </message>
 </context>
 <context>
@@ -1438,7 +1437,7 @@ Az esetleges újbóli alkalmazásához újra be kell majd importálni.</translat
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="126"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation>%(bookname) %(chapter) fejezetének importálása...</translation>
+        <translation>Importálás: %(bookname) %(chapter) fejezet</translation>
     </message>
 </context>
 <context>
@@ -1449,9 +1448,9 @@ Az esetleges újbóli alkalmazásához újra be kell majd importálni.</translat
         <translation>Nem használt címkék eltávolítása (ez eltarthat pár percig)…</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="168"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation>%(bookname) %(chapter) fejezetének importálása...</translation>
+        <translation>Importálás: %(bookname) %(chapter) fejezet</translation>
     </message>
 </context>
 <context>
@@ -1617,7 +1616,7 @@ Megjegyzés: a webes bibliák versei csak kérésre lesznek letöltve és ekkor 
     <message>
         <location filename="openlp/plugins/bibles/lib/zefania.py" line="105"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation>%(bookname) %(chapter) fejezetének importálása...</translation>
+        <translation>Importálás: %(bookname) %(chapter) fejezet</translation>
     </message>
 </context>
 <context>
@@ -2001,7 +2000,7 @@ Szeretnél más képeket megadni?</translation>
         <translation>Videó</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="355"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="357"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>A VLC egy külső lejátszó, amely több különböző formátumot támogat.</translation>
     </message>
@@ -2231,42 +2230,42 @@ Szeretnél más képeket megadni?</translation>
 <context>
     <name>MediaPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="93"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="94"/>
         <source>Select Media</source>
         <translation>Médiafájl kijelölése</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="331"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="332"/>
         <source>You must select a media file to delete.</source>
         <translation>Ki kell jelölni egy médiafájlt a törléshez.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="194"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>Ki kell jelölni médiafájlt a háttér cseréjéhez.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="212"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="213"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Probléma történt a háttér cseréje során, a médiafájl nem létezik: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>Missing Media File</source>
         <translation>Hiányzó médiafájl</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>The file %s no longer exists.</source>
         <translation>A fájl nem létezik: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="293"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="294"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Videók (%s);;Hang (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="208"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="209"/>
         <source>There was no display item to amend.</source>
         <translation>Nem volt módosított megjelenő elem.</translation>
     </message>
@@ -2276,7 +2275,7 @@ Szeretnél más képeket megadni?</translation>
         <translation>Nem támogatott fájl</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="102"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="103"/>
         <source>Use Player:</source>
         <translation>Lejátszó alkalmazása:</translation>
     </message>
@@ -2291,27 +2290,27 @@ Szeretnél más képeket megadni?</translation>
         <translation>VLC lejátszó szükséges az optikai eszközök lejátszásához</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="130"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
         <source>Load CD/DVD</source>
         <translation>CD/DVD betöltése</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="132"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
         <translation>CD/DVD betöltése ‒ csak telepített és engedélyezett VLC esetén támogatott</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="239"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="240"/>
         <source>The optical disc %s is no longer available.</source>
         <translation>Az optikai lemez már nem elérhető: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>Mediaclip already saved</source>
         <translation>A médiaklip el van mentve</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>This mediaclip has already been saved</source>
         <translation>A médiaklip már el volt mentve</translation>
     </message>
@@ -2340,7 +2339,7 @@ Szeretnél más képeket megadni?</translation>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="305"/>
+        <location filename="openlp/core/utils/__init__.py" line="306"/>
         <source>Image Files</source>
         <translation>Képfájlok</translation>
     </message>
@@ -5082,7 +5081,7 @@ Az utótag nem támogatott</translation>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="172"/>
         <source>You must enter a name for this entry.&lt;br /&gt;Please enter a new name for this entry.</source>
-        <translation>Meg kell adni egy nevet a bejegyzéshez.&lt;br /&gt;Adj meg egy nevet.</translation>
+        <translation>Meg kell adni egy új nevet a bejegyzéshez.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="182"/>
@@ -5511,12 +5510,12 @@ Az utótag nem támogatott</translation>
 <context>
     <name>OpenLP.ServiceItem</name>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="616"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="622"/>
         <source>&lt;strong&gt;Start&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Kezdés&lt;/strong&gt;: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="619"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="625"/>
         <source>&lt;strong&gt;Length&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Hossz&lt;/strong&gt;: %s</translation>
     </message>
@@ -7689,17 +7688,17 @@ Meg lehet próbálni egyenként kijelölni a fájlokat.</translation>
         <translation>Bemutatók (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>Missing Presentation</source>
         <translation>Hiányzó bemutató</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="364"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="365"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>A bemutató hiányos, újra kell tölteni: %s.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>The presentation %s no longer exists.</source>
         <translation>A bemutató már nem létezik: %s.</translation>
     </message>
@@ -7707,7 +7706,7 @@ Meg lehet próbálni egyenként kijelölni a fájlokat.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="529"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="517"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation>Hiba történt a Powerpoint integrációban, ezért a prezentáció leáll. Újraindítással lehet újra bemutatni a prezentációt.</translation>
     </message>
@@ -7720,7 +7719,7 @@ Meg lehet próbálni egyenként kijelölni a fájlokat.</translation>
         <translation>Elérhető vezérlők</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="139"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="140"/>
         <source>%s (unavailable)</source>
         <translation>%s (elérhetetlen)</translation>
     </message>
@@ -7735,17 +7734,17 @@ Meg lehet próbálni egyenként kijelölni a fájlokat.</translation>
         <translation>PDF beállítások</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="132"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation>A megadott teljes útvonal alkalmazása a mudraw vagy a ghostscript bináris számára:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="233"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="234"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation>Jelöld ki a mudraw vagy a ghostscript binárist.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="239"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="240"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation>A megadott program nem a szükséges ghostscript vagy a mudraw.</translation>
     </message>
@@ -7761,7 +7760,7 @@ Meg lehet próbálni egyenként kijelölni a fájlokat.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
-        <source>Let PowerPoint control the size and position of the presentation window.</source>
+        <source>Let PowerPoint control the size and position of the presentation window (workaround for Windows 8 scaling issue).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9150,7 +9149,7 @@ A versszakokat szóközzel elválasztva kell megadni.</translation>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="390"/>
         <source>copy</source>
         <comment>For song cloning</comment>
-        <translation>másolás</translation>
+        <translation>másolat</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
@@ -9297,17 +9296,17 @@ A versszakokat szóközzel elválasztva kell megadni.</translation>
         <translation>A következő dalok nem importálhatók:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="67"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="68"/>
         <source>Cannot access OpenOffice or LibreOffice</source>
         <translation>Nem lehet elérni az OpenOffice-t vagy a LibreOffice-t</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="83"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="84"/>
         <source>Unable to open file</source>
         <translation>Nem sikerült megnyitni a fájlt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="85"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="86"/>
         <source>File not found</source>
         <translation>A fájl nem található</translation>
     </message>

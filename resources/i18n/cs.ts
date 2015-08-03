@@ -1088,22 +1088,22 @@ Není možné přizpůsobit si názvy knih.</translation>
         <translation>Importuji %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>Download Error</source>
         <translation>Chyba stahování</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Při stahování výběru veršů se vyskytl problém. Prosím prověřte své internetové připojení. Pokud se tato chyba stále objevuje, zvašte prosím nahlášení chyby.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>Parse Error</source>
         <translation>Chyba zpracování</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Při rozbalování výběru veršů se vyskytl problém. Pokud se tato chyba stále objevuje, zvašte prosím nahlášení chyby.</translation>
     </message>
@@ -1416,7 +1416,7 @@ Pro použití bude potřeba naimportovat Bibli znovu.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
         <source>Advanced</source>
-        <translation type="unfinished">Pokročilé</translation>
+        <translation>Pokročilé</translation>
     </message>
 </context>
 <context>
@@ -1437,7 +1437,7 @@ Pro použití bude potřeba naimportovat Bibli znovu.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="126"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuji %(bookname)s %(chapter)s...</translation>
     </message>
 </context>
 <context>
@@ -1448,9 +1448,9 @@ Pro použití bude potřeba naimportovat Bibli znovu.</translation>
         <translation>Odstraňuji nepoužívané značky (může trvat několik minut)...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="168"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuji %(bookname)s %(chapter)s...</translation>
     </message>
 </context>
 <context>
@@ -1615,7 +1615,7 @@ Upozornění: Verše z www Bible budou stáhnuty na vyžádání a proto je vyž
     <message>
         <location filename="openlp/plugins/bibles/lib/zefania.py" line="105"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuji %(bookname)s %(chapter)s...</translation>
     </message>
 </context>
 <context>
@@ -2001,7 +2001,7 @@ Chcete přidat ostatní obrázky?</translation>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="355"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="357"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>VLC je externí přehrávač médií, který podporuje mnoho různých formátů.</translation>
     </message>
@@ -2231,42 +2231,42 @@ Chcete přidat ostatní obrázky?</translation>
 <context>
     <name>MediaPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="93"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="94"/>
         <source>Select Media</source>
         <translation>Vybrat médium</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="331"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="332"/>
         <source>You must select a media file to delete.</source>
         <translation>Ke smazání musíte nejdříve vybrat soubor s médiem.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="194"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>K nahrazení pozadí musíte nejdříve vybrat soubor s médiem.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="212"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="213"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Problém s nahrazením pozadí. Soubor s médiem &quot;%s&quot; už neexistuje.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>Missing Media File</source>
         <translation>Chybějící soubory s médii</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>The file %s no longer exists.</source>
         <translation>Soubor %s už neexistuje.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="293"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="294"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Video (%s);;Audio (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="208"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="209"/>
         <source>There was no display item to amend.</source>
         <translation>Žádná položka k zobrazení nebyla pozměněna.</translation>
     </message>
@@ -2276,7 +2276,7 @@ Chcete přidat ostatní obrázky?</translation>
         <translation>Nepodporovaný soubor</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="102"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="103"/>
         <source>Use Player:</source>
         <translation>Použít přehrávač:</translation>
     </message>
@@ -2291,27 +2291,27 @@ Chcete přidat ostatní obrázky?</translation>
         <translation>Pro přehrávání optických disků je vyžadován přehrávač VLC</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="130"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
         <source>Load CD/DVD</source>
         <translation>Načíst CD/DVD</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="132"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
         <translation>Načíst CD/DVD - podporováno jen když je nainstalovaný a zapnutý přehrávač VLC</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="239"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="240"/>
         <source>The optical disc %s is no longer available.</source>
         <translation>Optický disk %s už není dostupný.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>Mediaclip already saved</source>
         <translation>Klip již uložen</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>This mediaclip has already been saved</source>
         <translation>Tento klip byl již uložen</translation>
     </message>
@@ -2340,7 +2340,7 @@ Chcete přidat ostatní obrázky?</translation>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="305"/>
+        <location filename="openlp/core/utils/__init__.py" line="306"/>
         <source>Image Files</source>
         <translation>Soubory s obrázky</translation>
     </message>
@@ -3695,12 +3695,12 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="149"/>
         <source>Start tag %s is not valid HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Počáteční značka %s není ve formátu HTML</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="169"/>
         <source>End tag %s does not match end tag for start tag %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Koncová značka %s neodpovídá ukončení k počáteční značce %s</translation>
     </message>
 </context>
 <context>
@@ -5510,12 +5510,12 @@ Přípona není podporovaná</translation>
 <context>
     <name>OpenLP.ServiceItem</name>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="616"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="622"/>
         <source>&lt;strong&gt;Start&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Začátek&lt;/strong&gt;: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="619"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="625"/>
         <source>&lt;strong&gt;Length&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Délka&lt;/strong&gt;: %s</translation>
     </message>
@@ -5898,7 +5898,9 @@ Obsah souboru není v kódování UTF-8.</translation>
         <source>The following file(s) in the service are missing: %s
 
 These files will be removed if you continue to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Následující soubor(y) ve službě chybí: %s
+
+Tyto souby se vymažou, pokud službu uložíte.</translation>
     </message>
 </context>
 <context>
@@ -7558,7 +7560,7 @@ Prosím zkuste ho vybrat jednotlivě.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="124"/>
         <source>Replace live background is not available on this platform in this version of OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahradit živé pozadí (live background) není dostupné pro tento operační systém a tuto verzi aplikace OpenLP.</translation>
     </message>
 </context>
 <context>
@@ -7685,17 +7687,17 @@ Prosím zkuste ho vybrat jednotlivě.</translation>
         <translation>Prezentace (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>Missing Presentation</source>
         <translation>Chybějící prezentace</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="364"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="365"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Prezentace %s není kompletní. Načtěte ji znovu.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Prezentace %s už neexistuje.</translation>
     </message>
@@ -7703,7 +7705,7 @@ Prosím zkuste ho vybrat jednotlivě.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="529"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="517"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation>Vznikla chyba se začlenění Powerpoint prezentace a prezentace bude zastavena. Pokud si přejete prezentaci zobrazit, spusťte ji znovu.</translation>
     </message>
@@ -7716,7 +7718,7 @@ Prosím zkuste ho vybrat jednotlivě.</translation>
         <translation>Dostupné ovládání</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="139"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="140"/>
         <source>%s (unavailable)</source>
         <translation>%s (nedostupný)</translation>
     </message>
@@ -7731,33 +7733,33 @@ Prosím zkuste ho vybrat jednotlivě.</translation>
         <translation>Možnosti PDF</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="132"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation>Použít úplnou cestu k programu mudraw nebo ghostscript:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="233"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="234"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation>Vybrat program mudraw nebo ghostscript</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="239"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="240"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation>Vybraný program není ani ghostscript ani mudraw. Jeden z nich je vyžadován.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
         <source>PowerPoint options</source>
-        <translation type="unfinished"></translation>
+        <translation>Možnosti PowerPointu</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
         <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klepnutí na vybraný snímek v seznamu snímků spustí dalsí efekt (volba opraví efekty a animace PowerPoint prezentacích).</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
-        <source>Let PowerPoint control the size and position of the presentation window.</source>
+        <source>Let PowerPoint control the size and position of the presentation window (workaround for Windows 8 scaling issue).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9298,17 +9300,17 @@ Prosím zadejte sloky oddělené mezerou.</translation>
         <translation>Následující písně nemohly být importovány:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="67"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="68"/>
         <source>Cannot access OpenOffice or LibreOffice</source>
         <translation>Nelze přistupovat k aplikacím OpenOffice nebo LibreOffice</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="83"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="84"/>
         <source>Unable to open file</source>
         <translation>Nelze otevřít soubor</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="85"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="86"/>
         <source>File not found</source>
         <translation>Soubor nenalezen</translation>
     </message>

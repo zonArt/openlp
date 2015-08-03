@@ -1089,22 +1089,22 @@ Es ist nicht möglich die Büchernamen anzupassen.</translation>
         <translation>Importiere »%s«...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>Download Error</source>
         <translation>Download Fehler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="789"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Beim Herunterladen des Bibeltextes ist ein Fehler aufgetreten. Bitte überprüfen Sie Ihre Internetverbindung. Wenden Sie sich bitte an den OpenLP Support, sollte dieser Fehler weiterhin auftreten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>Parse Error</source>
         <translation>Formatfehler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="795"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Beim Auslesen des Bibeltextes ist ein Fehler aufgetreten. Wenden Sie sich bitte an den OpenLP Support, sollte dieser Fehler wiederholt auftritt.</translation>
     </message>
@@ -1416,7 +1416,7 @@ Um sie wieder zu benutzen, muss sie erneut importier werden.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
         <source>Advanced</source>
-        <translation type="unfinished">Erweitert</translation>
+        <translation>Erweitert</translation>
     </message>
 </context>
 <context>
@@ -1448,7 +1448,7 @@ Um sie wieder zu benutzen, muss sie erneut importier werden.</translation>
         <translation>Entferne unbenutzte Tags (dies kann einige Minuten dauern) ...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="167"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="168"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2001,7 +2001,7 @@ Wollen Sie die anderen Bilder trotzdem hinzufügen?</translation>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="355"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="357"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>VLC ist ein externer Player der viele verschiedene Dateiformate unterstützt.</translation>
     </message>
@@ -2231,42 +2231,42 @@ Wollen Sie die anderen Bilder trotzdem hinzufügen?</translation>
 <context>
     <name>MediaPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="93"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="94"/>
         <source>Select Media</source>
         <translation>Audio-/Videodatei auswählen</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="331"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="332"/>
         <source>You must select a media file to delete.</source>
         <translation>Die Audio-/Videodatei, die entfernt werden soll, muss ausgewählt sein.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="194"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>Das Video, das Sie als Hintergrund setzen möchten, muss ausgewählt sein.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="212"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="213"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Da auf die Mediendatei »%s« nicht mehr zugegriffen werden kann, konnte sie nicht als Hintergrund gesetzt werden.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>Missing Media File</source>
         <translation>Fehlende Audio-/Videodatei</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="256"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
         <source>The file %s no longer exists.</source>
         <translation>Die Audio-/Videodatei »%s« existiert nicht mehr.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="293"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="294"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Video (%s);;Audio (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="208"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="209"/>
         <source>There was no display item to amend.</source>
         <translation>Es waren keine Änderungen nötig.</translation>
     </message>
@@ -2276,7 +2276,7 @@ Wollen Sie die anderen Bilder trotzdem hinzufügen?</translation>
         <translation>Nicht unterstütztes Dateiformat</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="102"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="103"/>
         <source>Use Player:</source>
         <translation>Nutze Player:</translation>
     </message>
@@ -2291,27 +2291,27 @@ Wollen Sie die anderen Bilder trotzdem hinzufügen?</translation>
         <translation>Der VLC Player ist für das Abspielen von optischen Medien erforderlich</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="130"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
         <source>Load CD/DVD</source>
         <translation>Starte CD/DVD</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="132"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
         <translation>Starten einer CD/DVD - ist nur unterstützt wenn der VLC Player installiert und aktivert ist</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="239"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="240"/>
         <source>The optical disc %s is no longer available.</source>
         <translation>Das optische Medium %s ist nicht länger verfügbar.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>Mediaclip already saved</source>
         <translation>Audio-/Videoausschnitt bereits gespeichert</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="432"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
         <source>This mediaclip has already been saved</source>
         <translation>Dieser Audio-/Videoausschnitt ist bereits gespeichert</translation>
     </message>
@@ -2340,7 +2340,7 @@ Wollen Sie die anderen Bilder trotzdem hinzufügen?</translation>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="305"/>
+        <location filename="openlp/core/utils/__init__.py" line="306"/>
         <source>Image Files</source>
         <translation>Bilddateien</translation>
     </message>
@@ -5417,12 +5417,12 @@ Dateiendung nicht unterstützt.</translation>
 <context>
     <name>OpenLP.ServiceItem</name>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="616"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="622"/>
         <source>&lt;strong&gt;Start&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Anfang&lt;/strong&gt;: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="619"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="625"/>
         <source>&lt;strong&gt;Length&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Spiellänge&lt;/strong&gt;: %s</translation>
     </message>
@@ -7593,17 +7593,17 @@ Bitte wählen Sie die Dateien einzeln aus.</translation>
         <translation>Präsentationen (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>Missing Presentation</source>
         <translation>Fehlende Präsentation</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="364"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="365"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>Die Präsentation %s ist unvollständig, bitte erneut laden.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="373"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
         <source>The presentation %s no longer exists.</source>
         <translation>Die Präsentation %s existiert nicht mehr.</translation>
     </message>
@@ -7611,7 +7611,7 @@ Bitte wählen Sie die Dateien einzeln aus.</translation>
 <context>
     <name>PresentationPlugin.PowerpointDocument</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="529"/>
+        <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="517"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7624,7 +7624,7 @@ Bitte wählen Sie die Dateien einzeln aus.</translation>
         <translation>Verwendete Präsentationsprogramme</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="139"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="140"/>
         <source>%s (unavailable)</source>
         <translation>%s (nicht verfügbar)</translation>
     </message>
@@ -7639,17 +7639,17 @@ Bitte wählen Sie die Dateien einzeln aus.</translation>
         <translation>PDF-Optionen</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="132"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation>Geben Sie einen vollständigen Pfad für die mudraw oder ghostscript-Bibliothek an:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="233"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="234"/>
         <source>Select mudraw or ghostscript binary.</source>
         <translation>Wählen Sie eine mudraw oder ghostscript-Bibliothek aus.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="239"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="240"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
         <translation>Das angegebene Programm ist nicht mudraw oder ghostscript.</translation>
     </message>
@@ -7665,7 +7665,7 @@ Bitte wählen Sie die Dateien einzeln aus.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
-        <source>Let PowerPoint control the size and position of the presentation window.</source>
+        <source>Let PowerPoint control the size and position of the presentation window (workaround for Windows 8 scaling issue).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8667,17 +8667,17 @@ Bitte geben Sie die Verse mit Leerzeichen getrennt ein.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="304"/>
         <source>&amp;Edit Author Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Autortyp &amp;bearbeiten</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="611"/>
         <source>Edit Author Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Autortyp bearbeiten</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="611"/>
         <source>Choose type for this author</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Typ für diesen Autor</translation>
     </message>
 </context>
 <context>
@@ -9207,17 +9207,17 @@ Er wurde wegen einem fehlenden Python-Modul deaktiviert. Wenn Sie diesen Importe
         <translation>Die folgenden Lieder konnten nicht importiert werden:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="67"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="68"/>
         <source>Cannot access OpenOffice or LibreOffice</source>
         <translation>Kann OpenOffice.org oder LibreOffice nicht öffnen</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="83"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="84"/>
         <source>Unable to open file</source>
         <translation>Konnte Datei nicht öffnen</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="85"/>
+        <location filename="openlp/plugins/songs/lib/importers/openoffice.py" line="86"/>
         <source>File not found</source>
         <translation>Datei nicht gefunden</translation>
     </message>
@@ -9410,7 +9410,7 @@ Er wurde wegen einem fehlenden Python-Modul deaktiviert. Wenn Sie diesen Importe
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="243"/>
         <source>Lyrics:</source>
-        <translation type="unfinished"></translation>
+        <translation>Text:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
