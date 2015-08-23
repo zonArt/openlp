@@ -757,7 +757,7 @@ seuraata ainakin yksi tai useampia ei-numeerisia merkkejä.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="188"/>
         <source>Duplicate Book Name</source>
-        <translation>Duplikaatti kirjan nimi</translation>
+        <translation>Päällekkäinen kirjan nimi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="188"/>
@@ -1403,7 +1403,7 @@ tarpeen mukaan, joten internet yhteys tarvitaan käyttöä varten.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="306"/>
         <source>Search Scripture Reference...</source>
-        <translation>Hae jaeviittauksia...</translation>
+        <translation>Hae jaeviittauksin...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="306"/>
@@ -1834,7 +1834,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="118"/>
         <source>Delete the selected image.</source>
-        <translation>Poista valittu kuva.</translation>
+        <translation>Poista valittu kuva tai ryhmä.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="119"/>
@@ -1857,7 +1857,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/images/forms/addgroupdialog.py" line="55"/>
         <source>Add group</source>
-        <translation>Lisää ryhmä.</translation>
+        <translation>Luo ryhmä</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/addgroupdialog.py" line="56"/>
@@ -1968,12 +1968,12 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="221"/>
         <source>You must select an image or group to delete.</source>
-        <translation>Sinun pitää valita kuva tai ryhmä, jonka poistat.</translation>
+        <translation>Valitse kuva tai ryhmä poistoa varten.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
         <source>Remove group</source>
-        <translation>Poista ryhmä</translation>
+        <translation>Ryhmän poistaminen</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
@@ -1999,7 +1999,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/core/ui/media/webkitplayer.py" line="392"/>
         <source>Audio</source>
-        <translation>Audio</translation>
+        <translation>Ääni</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/webkitplayer.py" line="393"/>
@@ -2022,7 +2022,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="91"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
-        <translation>&lt;strong&gt;Media-lisäosa&lt;/strong&gt;&lt;br /&gt; Media-lisäosa mahdollistaa audio ja video tiedostojen toistamisen.</translation>
+        <translation>&lt;strong&gt;Media-lisäosa&lt;/strong&gt;&lt;br /&gt; Media-lisäosa mahdollistaa ääni ja videotiedostojen toistamisen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="101"/>
@@ -2231,7 +2231,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="605"/>
         <source>The name of the mediaclip must not contain the character &quot;:&quot;</source>
-        <translation>Mediaklipsin nimessä ei saa olla merkkejä kuten &quot;;&quot;</translation>
+        <translation>Mediatiedoston nimessä ei voi käyttää kaksoispistettä &quot;:&quot;</translation>
     </message>
 </context>
 <context>
@@ -2269,7 +2269,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="294"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
-        <translation>Videoita (%s);;Audio (%s);;%s (*)</translation>
+        <translation>Videoita (%s);;Äänitiedostoja (%s);;%s (*)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="209"/>
@@ -2299,7 +2299,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
         <source>Load CD/DVD</source>
-        <translation>Avaa CD/DVD</translation>
+        <translation>Avaa CD/DVD.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="132"/>
@@ -3380,7 +3380,7 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
         <source>Media (Audio and Video)</source>
-        <translation>Media (audio ja video)</translation>
+        <translation>Media (Ääni ja videot)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="243"/>
@@ -3881,7 +3881,7 @@ jos toista näyttölaitetta ei ole kytketty</translation>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="233"/>
         <source>Background Audio</source>
-        <translation>Taustan audio</translation>
+        <translation>Taustamusiikki</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="234"/>
@@ -4592,7 +4592,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="382"/>
         <source>Duplicate files were found on import and were ignored.</source>
-        <translation>Duplikaatteeja tiedostoja löytyi tuotaessa ja ne ohitettiin.</translation>
+        <translation>Tuotaesa löytyi päällekkäisiä tiedostoja ja ne ohitettiin.</translation>
     </message>
 </context>
 <context>
@@ -6053,7 +6053,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="317"/>
         <source>Pause audio.</source>
-        <translation>Pysäytä audio</translation>
+        <translation>Pysäytä kappale.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="272"/>
@@ -6128,7 +6128,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="323"/>
         <source>Background Audio</source>
-        <translation>Taustan audio</translation>
+        <translation>Taustamusiikki</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="327"/>
@@ -7026,7 +7026,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="133"/>
         <source>Welcome to the Duplicate Song Removal Wizard</source>
-        <translation>Tervetuloa laulujen duplikaattien poistotoimintoon.</translation>
+        <translation>Tervetuloa päällekkäisten laulujen poistotoimintoon.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="504"/>
@@ -7051,7 +7051,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="54"/>
         <source>Add group</source>
-        <translation>Lisää ryhmä</translation>
+        <translation>Luo ryhmä.</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="55"/>
@@ -7123,7 +7123,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
         <source>Service %Y-%m-%d %H-%M</source>
         <comment>This may not contain any of the following characters: /\?*|&lt;&gt;[]&quot;:+
 See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for more information.</comment>
-        <translation>Lista-%d.%m.%Y luotu %H;%M</translation>
+        <translation>Lista-%d.%m.%Y luotu %H.%M</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="73"/>
@@ -7138,7 +7138,7 @@ See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for 
     <message>
         <location filename="openlp/core/common/uistrings.py" line="75"/>
         <source>Duplicate Error</source>
-        <translation>Duplikaatti virhe</translation>
+        <translation>Päällekkäisyys virhe</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="76"/>
@@ -7950,7 +7950,7 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="179"/>
         <source>Scan the QR code or click &lt;a href=&quot;https://play.google.com/store/apps/details?id=org.openlp.android&quot;&gt;download&lt;/a&gt; to install the Android app from Google Play.</source>
-        <translation>Skannaa QR-koodi tai klikkaa &lt;a href=&quot;https://play.google.com/store/apps/details?id=org.openlp.android&quot;&gt;lataa&lt;/a&gt; asentaaksesi Android-sovelluksen Google Play:sta.</translation>
+        <translation>Skannaa QR-koodi tai klikkaa &lt;a href=&quot;https://play.google.com/store/apps/details?id=org.openlp.android&quot;&gt;lataa&lt;/a&gt; ja asenna Android-sovellus Google Play:sta.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="174"/>
@@ -7970,7 +7970,7 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="190"/>
         <source>User Authentication</source>
-        <translation>Käyttäjän todentäminen</translation>
+        <translation>Käyttäjän todentaminen</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="191"/>
@@ -8372,12 +8372,12 @@ Enkoodaus määrittelee tekstille oikean merkistöesityksen.</translation>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
         <source>Find &amp;Duplicate Songs</source>
-        <translation>Etsi &amp;duplikaatit laulut</translation>
+        <translation>&amp;Päällekkäisten laulujen haku</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
         <source>Find and remove duplicate songs in the song database.</source>
-        <translation>Etsi ja poista duplikaatit laulut tietokannasta.</translation>
+        <translation>Hae ja poista päällekkäisiä lauluja.</translation>
     </message>
 </context>
 <context>
@@ -8689,7 +8689,7 @@ Enkoodaus määrittelee tekstille oikean merkistöesityksen.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="323"/>
         <source>Linked Audio</source>
-        <translation>Linkitetty audio</translation>
+        <translation>Taustamusiikki</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="325"/>
@@ -9093,7 +9093,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/mediafilesdialog.py" line="66"/>
         <source>Select one or more audio files from the list below, and click OK to import them into this song.</source>
-        <translation>Valitse yksi tai useampia audio-tiedostoja alla olevasta luettelosta ja paina OK tuodaksesi ne tähän lauluun.</translation>
+        <translation>Valitse yksi tai useampia äänitiedosto alla olevasta luettelosta ja paina OK liittääksesi ne tähän lauluun.</translation>
     </message>
 </context>
 <context>
@@ -9129,7 +9129,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="128"/>
         <source>Maintain the lists of authors, topics and books.</source>
-        <translation>Ylläpidä luetteloa tekijöistä, kappaleista ja kirjoista.</translation>
+        <translation>Ylläpidä luetteloa tekijöistä, kappaleista ja laulukirjoista.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="390"/>
@@ -9729,12 +9729,15 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="135"/>
         <source>This wizard will help you to remove duplicate songs from the song database. You will have a chance to review every potential duplicate song before it is deleted. So no songs will be deleted without your explicit approval.</source>
-        <translation>Tämä avustaja auttaa poistamaan duplikaatit laulut laulutietokannasta. Saat katselmoida poistettavaksi ehdotetut laulut ennen poistoa. Lauluja ei täten poisteta ilman hyväksyntääsi.</translation>
+        <translation>Tämä avustaja auttaa päällekkäisten laulujen löytämisessä. 
+
+Avustaja hakee päällekkäisiä lauluja, voit itse valita poistatko ne vai et.
+Avustaja ei siis poista lauluja ilman hyväksyntääsi.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="140"/>
         <source>Searching for duplicate songs.</source>
-        <translation>Etsi duplikaatteja lauluja.</translation>
+        <translation>Etsitään päällekkäisiä lauluja...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="141"/>
@@ -9749,7 +9752,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="150"/>
         <source>Review duplicate songs (%s/%s)</source>
-        <translation>Esikatsele duplikaatit laulut (%s/%s)</translation>
+        <translation>Päällekkäisten laulujen tarkastelu (%s/%s)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="216"/>
@@ -9759,7 +9762,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="216"/>
         <source>No duplicate songs have been found in the database.</source>
-        <translation>Duplikaatteja lauluja ei löytynyt tietokannasta.</translation>
+        <translation>Päällekkäisiä lauluja ei löytynyt.</translation>
     </message>
 </context>
 </TS>
