@@ -312,6 +312,13 @@ class Ui_MainWindow(object):
                                                    icon=':/system/system_help_contents.png',
                                                    can_shortcuts=True,
                                                    category=UiStrings().Help, triggers=self.on_offline_help_clicked)
+        elif is_macosx():
+            self.local_help_file = os.path.join(AppLocation.get_directory(AppLocation.AppDir),
+                                                '..', 'Resources', 'OpenLP.help')
+            self.offline_help_item = create_action(main_window, 'offlineHelpItem',
+                                                   icon=':/system/system_help_contents.png',
+                                                   can_shortcuts=True,
+                                                   category=UiStrings().Help, triggers=self.on_offline_help_clicked)
         self.on_line_help_item = create_action(main_window, 'onlineHelpItem',
                                                icon=':/system/system_online_help.png',
                                                can_shortcuts=True,
@@ -354,7 +361,7 @@ class Ui_MainWindow(object):
         add_actions(self.tools_menu, (self.tools_open_data_folder, None))
         add_actions(self.tools_menu, (self.tools_first_time_wizard, None))
         add_actions(self.tools_menu, [self.update_theme_images])
-        if is_win():
+        if (is_win() or is_macosx()) and (hasattr(sys, 'frozen') and sys.frozen == 1):
             add_actions(self.help_menu, (self.offline_help_item, self.on_line_help_item, None, self.web_site_item,
                         self.about_item))
         else:
@@ -453,7 +460,7 @@ class Ui_MainWindow(object):
         self.settings_plugin_list_item.setStatusTip(translate('OpenLP.MainWindow', 'List the Plugins'))
         self.about_item.setText(translate('OpenLP.MainWindow', '&About'))
         self.about_item.setStatusTip(translate('OpenLP.MainWindow', 'More information about OpenLP'))
-        if is_win():
+        if is_win() or is_macosx():
             self.offline_help_item.setText(translate('OpenLP.MainWindow', '&User Guide'))
         self.on_line_help_item.setText(translate('OpenLP.MainWindow', '&Online Help'))
         self.search_shortcut_action.setText(UiStrings().Search)
@@ -762,7 +769,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Load the local OpenLP help file
         """
-        os.startfile(self.local_help_file)
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + self.local_help_file))
 
     def on_online_help_clicked(self):
         """
