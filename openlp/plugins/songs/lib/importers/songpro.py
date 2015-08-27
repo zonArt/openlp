@@ -65,21 +65,21 @@ class SongProImport(SongImport):
         """
         Initialise the SongPro importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(SongProImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
         Receive a single file or a list of files to import.
         """
         self.encoding = None
-        with open(self.import_source, 'r') as songs_file:
+        with open(self.import_source, 'rt') as songs_file:
             self.import_wizard.progress_bar.setMaximum(0)
             tag = ''
             text = ''
             for file_line in songs_file:
                 if self.stop_import_flag:
                     break
-                file_line = str(file_line, 'cp1252')
+                file_line = file_line
                 file_text = file_line.rstrip()
                 if file_text and file_text[0] == '#':
                     self.process_section(tag, text.rstrip())
@@ -87,6 +87,7 @@ class SongProImport(SongImport):
                     text = ''
                 else:
                     text += file_line
+            self.finish()
 
     def process_section(self, tag, text):
         """
