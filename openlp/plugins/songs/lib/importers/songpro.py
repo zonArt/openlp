@@ -79,7 +79,6 @@ class SongProImport(SongImport):
             for file_line in songs_file:
                 if self.stop_import_flag:
                     break
-                file_line = file_line
                 file_text = file_line.rstrip()
                 if file_text and file_text[0] == '#':
                     self.process_section(tag, text.rstrip())
