@@ -518,7 +518,6 @@ class BibleImportForm(OpenLPWizard):
                                            translate('BiblesPlugin.ImportWizardForm',
                                                      'An error occurred while downloading the list of bibles from %s.'))
                 bibles = None
-            print(bibles)
             if bibles:
                 self.web_bible_list[download_type] = {}
                 for (bible_name, bible_key, language_code) in bibles:
