@@ -60,7 +60,7 @@ if sys.version_info[0] > 2:
         """Translate string or bytes to bytes.
         """
         if isinstance(s, str):
-            return bytes(s, sys.getfilesystemencoding())
+            return s.encode()
         else:
             return s
 
