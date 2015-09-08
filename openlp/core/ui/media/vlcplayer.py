@@ -80,11 +80,8 @@ def get_vlc():
         if is_win():
             if not isinstance(e, WindowsError) and e.winerror != 126:
                 raise
-        elif is_macosx():
-            pass
         else:
-            raise
-
+            pass
     if is_vlc_available:
         try:
             VERSION = vlc.libvlc_get_version().decode('UTF-8')
@@ -95,19 +92,22 @@ def get_vlc():
         if LooseVersion(VERSION.split()[0]) < LooseVersion('1.1.0'):
             is_vlc_available = False
             log.debug('VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
-        # On linux we need to initialise X threads, but not when running tests.
-        if is_vlc_available and is_linux() and 'nose' not in sys.argv[0]:
-            import ctypes
-            try:
-                x11 = ctypes.cdll.LoadLibrary('libX11.so')
-                x11.XInitThreads()
-            except:
-                log.exception('Failed to run XInitThreads(), VLC might not work properly!')
-
     if is_vlc_available:
         return vlc
     else:
         return None
+
+
+# On linux we need to initialise X threads, but not when running tests.
+# This needs to happen on module load and not in get_vlc(), otherwise it can cause crashes on some DE on some setups
+# (reported on Gnome3, Unity, Cinnamon, all GTK+ based) when using native filedialogs...
+if is_linux() and 'nose' not in sys.argv[0] and get_vlc():
+    import ctypes
+    try:
+        x11 = ctypes.cdll.LoadLibrary('libX11.so')
+        x11.XInitThreads()
+    except:
+        log.exception('Failed to run XInitThreads(), VLC might not work properly!')
 
 
 class VlcPlayer(MediaPlayer):

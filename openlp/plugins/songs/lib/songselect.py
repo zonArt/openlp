@@ -27,7 +27,6 @@ from http.cookiejar import CookieJar
 from urllib.parse import urlencode
 from urllib.request import HTTPCookieProcessor, URLError, build_opener
 from html.parser import HTMLParser
-from html import unescape
 
 
 from bs4 import BeautifulSoup, NavigableString
@@ -131,8 +130,8 @@ class SongSelectImport(object):
                 break
             for result in search_results:
                 song = {
-                    'title': unescape(result.find('h3').string),
-                    'authors': [unescape(author.string) for author in result.find_all('li')],
+                    'title': self.html_parser.unescape(result.find('h3').string),
+                    'authors': [self.html_parser.unescape(author.string) for author in result.find_all('li')],
                     'link': BASE_URL + result.find('a')['href']
                 }
                 if callback:
@@ -168,7 +167,7 @@ class SongSelectImport(object):
         if callback:
             callback()
         song['copyright'] = '/'.join([li.string for li in song_page.find('ul', 'copyright').find_all('li')])
-        song['copyright'] = unescape(song['copyright'])
+        song['copyright'] = self.html_parser.unescape(song['copyright'])
         song['ccli_number'] = song_page.find('ul', 'info').find('li').string.split(':')[1].strip()
         song['verses'] = []
         verses = lyrics_page.find('section', 'lyrics').find_all('p')
@@ -181,9 +180,9 @@ class SongSelectImport(object):
                 else:
                     verse['lyrics'] += '\n'
             verse['lyrics'] = verse['lyrics'].strip(' \n\r\t')
-            song['verses'].append(unescape(verse))
+            song['verses'].append(self.html_parser.unescape(verse))
         for counter, author in enumerate(song['authors']):
-            song['authors'][counter] = unescape(author)
+            song['authors'][counter] = self.html_parser.unescape(author)
         return song
 
     def save_song(self, song):

@@ -517,17 +517,19 @@ class BibleImportForm(OpenLPWizard):
                 critical_error_message_box(translate('BiblesPlugin.ImportWizardForm', 'Error during download'),
                                            translate('BiblesPlugin.ImportWizardForm',
                                                      'An error occurred while downloading the list of bibles from %s.'))
-            self.web_bible_list[download_type] = {}
-            for (bible_name, bible_key, language_code) in bibles:
-                self.web_bible_list[download_type][bible_name] = (bible_key, language_code)
+                bibles = None
+            if bibles:
+                self.web_bible_list[download_type] = {}
+                for (bible_name, bible_key, language_code) in bibles:
+                    self.web_bible_list[download_type][bible_name] = (bible_key, language_code)
             self.web_progress_bar.setValue(download_type + 1)
         # Update combo box if something got into the list
         if self.web_bible_list:
             self.on_web_source_combo_box_index_changed(0)
-            self.web_source_combo_box.setEnabled(True)
-            self.web_translation_combo_box.setEnabled(True)
-            self.web_update_button.setEnabled(True)
-            self.web_progress_bar.setVisible(False)
+        self.web_source_combo_box.setEnabled(True)
+        self.web_translation_combo_box.setEnabled(True)
+        self.web_update_button.setEnabled(True)
+        self.web_progress_bar.setVisible(False)
 
     def register_fields(self):
         """
