@@ -89,9 +89,9 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
 
         :param theme_name: The current theme name.
         :param old_theme_name: The old theme name. Has only to be passed, when the theme has been renamed.
-        Defaults to *None*.
+            Defaults to *None*.
         :param only_delete: Only remove the given ``theme_name`` from the ``_theme_dimensions`` list. This can be
-        used when a theme is permanently deleted.
+            used when a theme is permanently deleted.
         """
         if old_theme_name is not None and old_theme_name in self._theme_dimensions:
             del self._theme_dimensions[old_theme_name]

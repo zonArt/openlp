@@ -320,7 +320,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         cache.
 
         :param path: The path to the image to be displayed. **Note**, the path is only passed to identify the image.
-        If the image has changed it has to be re-added to the image manager.
+            If the image has changed it has to be re-added to the image manager.
         """
         image = self.image_manager.get_image_bytes(path, ImageSource.ImagePlugin)
         self.controller.media_controller.media_reset(self.controller)

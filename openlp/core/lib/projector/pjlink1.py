@@ -25,7 +25,9 @@
 
     See PJLink Class 1 Specifications for details.
     http://pjlink.jbmia.or.jp/english/dl.html
+
         Section 5-1 PJLink Specifications
+
         Section 5-5 Guidelines for Input Terminals
 
     NOTE:

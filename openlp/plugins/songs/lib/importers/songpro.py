@@ -36,30 +36,30 @@ class SongProImport(SongImport):
 
     **SongPro Song File Format:**
 
-    SongPro has the option to export under its File menu
-    This produces files containing single or multiple songs
-    The file is text with lines tagged with # followed by an identifier.
-    This is documented here: http://creationsoftware.com/ImportIdentifiers.php
-    An example here: http://creationsoftware.com/ExampleImportingManySongs.txt
-
-    #A - next line is the Song Author
-    #B - the lines following until next tagged line are the "Bridge" words
-        (can be in rtf or plain text) which we map as B1
-    #C - the lines following until next tagged line are the chorus words
-        (can be in rtf or plain text)
-        which we map as C1
-    #D - the lines following until next tagged line are the "Ending" words
-        (can be in rtf or plain text) which we map as E1
-    #E - this song ends here, so we process the song -
-        and start again at the next line
-    #G - next line is the Group
-    #M - next line is the Song Number
-    #N - next line are Notes
-    #R - next line is the SongCopyright
-    #O - next line is the Verse Sequence
-    #T - next line is the Song Title
-    #1 - #7 the lines following until next tagged line are the verse x words
-        (can be in rtf or plain text)
+        | SongPro has the option to export under its File menu
+        | This produces files containing single or multiple songs
+        | The file is text with lines tagged with # followed by an identifier.
+        | This is documented here: http://creationsoftware.com/ImportIdentifiers.php
+        | An example here: http://creationsoftware.com/ExampleImportingManySongs.txt
+        |
+        | #A - next line is the Song Author
+        | #B - the lines following until next tagged line are the "Bridge" words
+        |     (can be in rtf or plain text) which we map as B1
+        | #C - the lines following until next tagged line are the chorus words
+        |     (can be in rtf or plain text)
+        |     which we map as C1
+        | #D - the lines following until next tagged line are the "Ending" words
+        |     (can be in rtf or plain text) which we map as E1
+        | #E - this song ends here, so we process the song -
+        |     and start again at the next line
+        | #G - next line is the Group
+        | #M - next line is the Song Number
+        | #N - next line are Notes
+        | #R - next line is the SongCopyright
+        | #O - next line is the Verse Sequence
+        | #T - next line is the Song Title
+        | #1 - #7 the lines following until next tagged line are the verse x words
+        |     (can be in rtf or plain text)
     """
     def __init__(self, manager, **kwargs):
         """

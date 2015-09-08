@@ -743,7 +743,7 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre
     :param reference_url: The URL to obtain the soup from.
     :param header: An optional HTTP header to pass to the bible web server.
     :param pre_parse_regex: A regular expression to run on the webpage. Allows manipulation of the webpage before
-    passing to BeautifulSoup for parsing.
+        passing to BeautifulSoup for parsing.
     :param pre_parse_substitute: The text to replace any matches to the regular expression with.
     """
     if not reference_url:

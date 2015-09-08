@@ -91,7 +91,7 @@ class SongXML(object):
         Add a verse to the ``<lyrics>`` tag.
 
         :param type:  A string denoting the type of verse. Possible values are *v*, *c*, *b*, *p*, *i*, *e* and *o*.
-        Any other type is **not** allowed, this also includes translated types.
+            Any other type is **not** allowed, this also includes translated types.
         :param number: An integer denoting the number of the item, for example: verse 1.
         :param content: The actual text of the verse to be stored.
         :param lang:  The verse's language code (ISO-639). This is not required, but should be added if available.
@@ -113,6 +113,7 @@ class SongXML(object):
         Iterates through the verses in the XML and returns a list of verses and their attributes.
 
         :param xml: The XML of the song to be parsed.
+
         The returned list has the following format::
 
             [[{'type': 'v', 'label': '1'}, u"optional slide split 1[---]optional slide split 2"],
@@ -371,7 +372,7 @@ class OpenLyrics(object):
 
         :param xml: The XML to parse (unicode).
         :param parse_and_temporary_save: Switch to skip processing the whole song and storing the songs in the database
-        with a temporary flag. Defaults to ``False``.
+            with a temporary flag. Defaults to ``False``.
         """
         # No xml get out of here.
         if not xml:
