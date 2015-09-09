@@ -640,6 +640,51 @@ class TestSlideController(TestCase):
         mocked_preview_widget.change_slide.assert_called_once_with(7)
         mocked_slide_selected.assert_called_once_with()
 
+    @patch.object(Registry, 'execute')
+    def process_item_test(self, mocked_execute):
+        """
+        Test that presentation service-items is closed when followed by a media service-item
+        """
+        # GIVEN: A mocked presentation service item, a mocked media service item, a mocked Registry.execute
+        #        and a slide controller with many mocks.
+        mocked_pres_item = MagicMock()
+        mocked_pres_item.name = 'mocked_presentation_item'
+        mocked_pres_item.is_command.return_value = True
+        mocked_pres_item.is_media.return_value = False
+        mocked_pres_item.is_image.return_value = False
+        mocked_pres_item.from_service = False
+        mocked_pres_item.get_frames.return_value = []
+        mocked_media_item = MagicMock()
+        mocked_media_item.name = 'mocked_media_item'
+        mocked_media_item.is_command.return_value = True
+        mocked_media_item.is_media.return_value = True
+        mocked_media_item.is_image.return_value = False
+        mocked_media_item.from_service = False
+        mocked_media_item.get_frames.return_value = []
+        Registry.create()
+        mocked_main_window = MagicMock()
+        Registry().register('main_window', mocked_main_window)
+        slide_controller = SlideController(None)
+        slide_controller.service_item = mocked_pres_item
+        slide_controller.is_live = False
+        slide_controller.preview_widget = MagicMock()
+        slide_controller.enable_tool_bar = MagicMock()
+        slide_controller.on_media_start = MagicMock()
+        slide_controller.slide_selected = MagicMock()
+        slide_controller.on_stop_loop = MagicMock()
+        slide_controller.info_label = MagicMock()
+        slide_controller.display = MagicMock()
+        slide_controller.split = 0
+        slide_controller.type_prefix = 'test'
+
+        # WHEN: _process_item is called
+        slide_controller._process_item(mocked_media_item, 0)
+
+        # THEN: Registry.execute should have been called to stop the presentation
+        self.assertEqual(3, mocked_execute.call_count, 'Execute should have been called 3 times')
+        self.assertEqual('mocked_presentation_item_stop', mocked_execute.call_args_list[1][0][0],
+                         'The presentation should have been stopped.')
+
 
 class TestInfoLabel(TestCase):
 
