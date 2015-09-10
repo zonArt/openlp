@@ -104,7 +104,11 @@ def get_vlc():
 if is_linux() and 'nose' not in sys.argv[0] and get_vlc():
     import ctypes
     try:
-        x11 = ctypes.cdll.LoadLibrary('libX11.so')
+        try:
+            x11 = ctypes.cdll.LoadLibrary('libX11.so.6')
+        except OSError:
+            # If libx11.so.6 was not found, fallback to more generic libx11.so
+            x11 = ctypes.cdll.LoadLibrary('libX11.so')
         x11.XInitThreads()
     except:
         log.exception('Failed to run XInitThreads(), VLC might not work properly!')

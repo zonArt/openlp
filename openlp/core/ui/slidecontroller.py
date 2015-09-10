@@ -902,7 +902,8 @@ class SlideController(DisplayController, RegistryProperties):
             # This avoids the service theme/desktop flashing on screen
             # However opening a new item of the same type will automatically
             # close the previous, so make sure we don't close the new one.
-            if old_item.is_command() and not service_item.is_command():
+            if old_item.is_command() and not service_item.is_command() or \
+                    old_item.is_command() and not old_item.is_media() and service_item.is_media():
                 Registry().execute('%s_stop' % old_item.name.lower(), [old_item, self.is_live])
             if old_item.is_media() and not service_item.is_media():
                 self.on_media_close()
