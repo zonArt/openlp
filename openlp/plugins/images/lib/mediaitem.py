@@ -285,7 +285,7 @@ class ImageMediaItem(MediaManagerItem):
         :param combobox: The QComboBox to add the options to.
         :param parent_group_id: The ID of the group that will be added.
         :param prefix: A string containing the prefix that will be added in front of the groupname for each level of
-        the tree.
+            the tree.
         """
         if parent_group_id == 0:
             combobox.clear()
@@ -333,7 +333,7 @@ class ImageMediaItem(MediaManagerItem):
         :param images: A List of Image Filenames objects that will be used to reload the mediamanager list.
         :param initial_load: When set to False, the busy cursor and progressbar will be shown while loading images.
         :param open_group: ImageGroups object of the group that must be expanded after reloading the list in the
-        interface.
+            interface.
         """
         if not initial_load:
             self.application.set_busy_cursor()
@@ -469,7 +469,7 @@ class ImageMediaItem(MediaManagerItem):
         :param images_list: A List of strings containing image filenames
         :param group_id: The ID of the group to save the images in
         :param reload_list: This boolean is set to True when the list in the interface should be reloaded after saving
-        the new images
+            the new images
         """
         for filename in images_list:
             if not isinstance(filename, str):

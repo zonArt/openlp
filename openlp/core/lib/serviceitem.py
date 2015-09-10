@@ -388,7 +388,7 @@ class ServiceItem(RegistryProperties):
 
         :param service_item: The item to extract data from.
         :param path: Defaults to *None*. This is the service manager path for things which have their files saved
-        with them or None when the saved service is lite and the original file paths need to be preserved.
+            with them or None when the saved service is lite and the original file paths need to be preserved.
         """
         log.debug('set_from_service called with path %s' % path)
         header = service_item['serviceitem']['header']

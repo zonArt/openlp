@@ -21,20 +21,21 @@
 ###############################################################################
 """
 The :mod:`songcompare` module provides functionality to search for
-duplicate songs. It has one single :function:`songs_probably_equal`.
+duplicate songs. It has one single :func:`songs_probably_equal`.
 
-The algorithm is based on the diff algorithm.
-First a diffset is calculated for two songs.
-To compensate for typos all differences that are smaller than a
-limit (<max_typo_size) and are surrounded by larger equal blocks
-(>min_fragment_size) are removed and the surrounding equal parts are merged.
-Finally two conditions can qualify a song tuple to be a duplicate:
-1. There is a block of equal content that is at least min_block_size large.
-   This condition should hit for all larger songs that have a long enough
-   equal part. Even if only one verse is equal this condition should still hit.
-2. Two thirds of the smaller song is contained in the larger song.
-   This condition should hit if one of the two songs (or both) is small (smaller
-   than the min_block_size), but most of the song is contained in the other song.
+| The algorithm is based on the diff algorithm.
+| First a diffset is calculated for two songs.
+| To compensate for typos all differences that are smaller than a
+  limit (<max_typo_size) and are surrounded by larger equal blocks
+  (>min_fragment_size) are removed and the surrounding equal parts are merged.
+| Finally two conditions can qualify a song tuple to be a duplicate:
+
+    1. There is a block of equal content that is at least min_block_size large.
+       This condition should hit for all larger songs that have a long enough
+       equal part. Even if only one verse is equal this condition should still hit.
+    2. Two thirds of the smaller song is contained in the larger song.
+       This condition should hit if one of the two songs (or both) is small (smaller
+       than the min_block_size), but most of the song is contained in the other song.
 """
 
 import difflib

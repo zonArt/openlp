@@ -36,7 +36,7 @@ class EasySlidesImport(SongImport):
     Import songs exported from EasySlides
 
     The format example is here:
-    http://wiki.openlp.org/Development:EasySlides_-_Song_Data_Format
+    http://wiki.openlp.org/Development:EasySlides\_-_Song_Data_Format
     """
     def __init__(self, manager, **kwargs):
         """
