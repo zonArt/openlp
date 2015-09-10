@@ -52,10 +52,20 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
     log.info('%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, plugin):
+        self.setup()
+        super(MediaMediaItem, self).__init__(parent, plugin)
+
+    def setup(self):
+        """
+        Allow early setup to be mocked.
+        """
         self.icon_path = 'images/image'
         self.background = False
         self.automatic = ''
-        super(MediaMediaItem, self).__init__(parent, plugin)
+        self.optical_icon = build_icon(':/media/media_optical.png')
+        self.video_icon = build_icon(':/media/media_video.png')
+        self.audio_icon = build_icon(':/media/media_audio.png')
+        self.error_icon = build_icon(':/general/general_delete.png')
 
     def setup_item(self):
         """
@@ -64,10 +74,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.single_service_item = False
         self.has_search = True
         self.media_object = None
-        self.optical_icon = build_icon(':/media/media_optical.png')
-        self.video_icon = build_icon(':/media/media_video.png')
-        self.audio_icon = build_icon(':/media/media_audio.png')
-        self.error_icon = build_icon(':/general/general_delete.png')
         self.display_controller = DisplayController(self.parent())
         self.display_controller.controller_layout = QtGui.QVBoxLayout()
         self.media_controller.register_controller(self.display_controller)
