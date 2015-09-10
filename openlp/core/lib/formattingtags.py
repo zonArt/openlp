@@ -185,8 +185,8 @@ class FormattingTags(object):
                 A boolean stating whether this is a build-in tag or not. Should be ``True`` in most cases.
 
             * temporary
-                A temporary tag will not be saved, but is also considered when displaying text containing the tag. It has
-                to be a ``boolean``.
+                A temporary tag will not be saved, but is also considered when displaying text containing the tag. It
+                has to be a ``boolean``.
         """
         FormattingTags.html_expands.extend(tags)
 
