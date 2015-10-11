@@ -179,7 +179,7 @@ class RemoteTab(SettingsTab):
         self.qr_description_label.setText(
             translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="%s">download</a> to install the '
                                                 'Android app from Google Play.') %
-                                          'https://play.google.com/store/apps/details?id=org.openlp.android2') 
+            'https://play.google.com/store/apps/details?id=org.openlp.android2')
         self.https_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'HTTPS Server'))
         self.https_error_label.setText(
             translate('RemotePlugin.RemoteTab', 'Could not find an SSL certificate. The HTTPS server will not be '
