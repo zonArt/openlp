@@ -129,7 +129,7 @@ for bug in bugs:
     commit_command.append('lp:' + bug)
 
 commit_command.append('-m')
-commit_command.append('"' + commit_message + '"')
+commit_command.append(commit_message)
 
 commit_command.append('--author')
 commit_command.append('"' + author_email + '"')

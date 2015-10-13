@@ -473,8 +473,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             return
         projector = list_item.data(QtCore.Qt.UserRole)
         msg = QtGui.QMessageBox()
-        msg.setText('Delete projector (%s) %s?' % (projector.link.ip, projector.link.name))
-        msg.setInformativeText('Are you sure you want to delete this projector?')
+        msg.setText(translate('OpenLP.ProjectorManager', 'Delete projector (%s) %s?') % (projector.link.ip,
+                                                                                         projector.link.name))
+        msg.setInformativeText(translate('OpenLP.ProjectorManager', 'Are you sure you want to delete this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
         ans = msg.exec_()
