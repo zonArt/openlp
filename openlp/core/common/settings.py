@@ -118,6 +118,7 @@ class Settings(QtCore.QSettings):
         'advanced/slide limits': SlideLimits.End,
         'advanced/single click preview': False,
         'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
+        'advanced/search as type': True,
         'crashreport/last directory': '',
         'formattingTags/html_tags': '',
         'core/audio repeat list': False,
@@ -321,48 +322,10 @@ class Settings(QtCore.QSettings):
     }
     __file_path__ = ''
     __obsolete_settings__ = [
-        # Changed during 1.9.x development.
-        ('bibles/bookname language', 'bibles/book name language', []),
-        ('general/enable slide loop', 'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)]),
-        ('songs/ccli number', 'core/ccli number', []),
-        ('media/use phonon', '', []),
-        # Changed during 2.1.x development.
-        ('advanced/stylesheet fix', '', []),
-        ('bibles/last directory 1', 'bibles/last directory import', []),
-        ('media/background color', 'players/background color', []),
-        ('themes/last directory', 'themes/last directory import', []),
-        ('themes/last directory 1', 'themes/last directory export', []),
-        ('songs/last directory 1', 'songs/last directory import', []),
-        ('songusage/last directory 1', 'songusage/last directory export', []),
-        ('user interface/mainwindow splitter geometry', 'user interface/main window splitter geometry', []),
-        ('shortcuts/makeLive', 'shortcuts/make_live', []),
-        ('general/audio repeat list', 'core/audio repeat list', []),
-        ('general/auto open', 'core/auto open', []),
-        ('general/auto preview', 'core/auto preview', []),
-        ('general/audio start paused', 'core/audio start paused', []),
-        ('general/auto unblank', 'core/auto unblank', []),
-        ('general/blank warning', 'core/blank warning', []),
-        ('general/ccli number', 'core/ccli number', []),
-        ('general/has run wizard', 'core/has run wizard', []),
-        ('general/language', 'core/language', []),
-        ('general/last version test', 'core/last version test', []),
-        ('general/loop delay', 'core/loop delay', []),
-        ('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
-        ('general/save prompt', 'core/save prompt', []),
-        ('general/screen blank', 'core/screen blank', []),
-        ('general/show splash', 'core/show splash', []),
-        ('general/songselect password', 'core/songselect password', []),
-        ('general/songselect username', 'core/songselect username', []),
-        ('general/update check', 'core/update check', []),
-        ('general/view mode', 'core/view mode', []),
-        ('general/display on monitor', 'core/display on monitor', []),
-        ('general/override position', 'core/override position', []),
-        ('general/x position', 'core/x position', []),
-        ('general/y position', 'core/y position', []),
-        ('general/monitor', 'core/monitor', []),
-        ('general/height', 'core/height', []),
-        ('general/monitor', 'core/monitor', []),
-        ('general/width', 'core/width', [])
+        # Changed during 2.2.x development.
+        #('advanced/stylesheet fix', '', []),
+        #('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
+        ('songs/search as type', 'advanced/search as type', [])
     ]
 
     @staticmethod
