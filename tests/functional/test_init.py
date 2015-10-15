@@ -33,7 +33,6 @@ from openlp.core.common import Settings
 from tests.helpers.testmixin import TestMixin
 from tests.functional import MagicMock, patch, call
 
-
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
 
 
