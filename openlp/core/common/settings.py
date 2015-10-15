@@ -323,8 +323,8 @@ class Settings(QtCore.QSettings):
     __file_path__ = ''
     __obsolete_settings__ = [
         # Changed during 2.2.x development.
-        #('advanced/stylesheet fix', '', []),
-        #('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
+        # ('advanced/stylesheet fix', '', []),
+        # ('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
         ('songs/search as type', 'advanced/search as type', [])
     ]
 
