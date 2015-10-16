@@ -288,7 +288,8 @@ def parse_options():
     parser.add_argument('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
                         help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".')
     parser.add_argument('-p', '--portable', dest='portable', action='store_true',
-                        help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).')
+                        help='Specify if this should be run as a portable app, '
+                             'off a USB flash drive (not implemented).')
     parser.add_argument('-d', '--dev-version', dest='dev_version', action='store_true',
                         help='Ignore the version file and pull the version directly from Bazaar')
     parser.add_argument('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')

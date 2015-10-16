@@ -31,7 +31,7 @@ class TestInitFunctions(TestMixin, TestCase):
 
     def parse_options_basic_test(self):
         """
-        Test the parse options process works 
+        Test the parse options process works
 
         """
         # GIVEN: a a set of system arguments.
@@ -142,4 +142,3 @@ class TestInitFunctions(TestMixin, TestCase):
         args = parse_options()
         # THEN: the following fields will have been extracted.
         self.assertEquals(args, None, 'The args should be None')
-

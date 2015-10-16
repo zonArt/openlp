@@ -67,4 +67,3 @@ class TestAdvancedTab(TestCase, TestMixin):
         self.assertEqual(2, len(settings_form.processes), 'Two post save processes should be created')
         self.assertTrue("songs_config_updated" in settings_form.processes, 'The songs plugin should be called')
         self.assertTrue("custom_config_updated" in settings_form.processes, 'The custom plugin should be called')
-
