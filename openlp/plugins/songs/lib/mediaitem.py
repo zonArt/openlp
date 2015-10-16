@@ -115,7 +115,7 @@ class SongMediaItem(MediaManagerItem):
         Is triggered when the songs config is updated
         """
         log.debug('config_updated')
-        self.search_as_you_type = Settings().value(self.settings_section + '/search as type')
+        self.search_as_you_type = Settings().value('advanced/search as type')
         self.update_service_on_edit = Settings().value(self.settings_section + '/update service on edit')
         self.add_song_from_service = Settings().value(self.settings_section + '/add song from service')
         self.display_songbook = Settings().value(self.settings_section + '/display songbook')
@@ -590,4 +590,4 @@ class SongMediaItem(MediaManagerItem):
         :param show_error: Is this an error?
         """
         search_results = self.search_entire(string)
-        return [[song.id, song.title] for song in search_results]
+        return [[song.id, song.title, song.alternate_title] for song in search_results]
