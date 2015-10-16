@@ -389,7 +389,7 @@ class Ui_MainWindow(object):
         self.file_menu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.file_import_menu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.file_export_menu.setTitle(translate('OpenLP.MainWindow', '&Export'))
-        self.recent_files_menu.setTitle(translate('OpenLP.MainWindow', '&Recent Files'))
+        self.recent_files_menu.setTitle(translate('OpenLP.MainWindow', '&Recent Services'))
         self.view_menu.setTitle(translate('OpenLP.MainWindow', '&View'))
         self.view_mode_menu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
         self.tools_menu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
@@ -400,16 +400,16 @@ class Ui_MainWindow(object):
         self.service_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Service Manager'))
         self.theme_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Theme Manager'))
         self.projector_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Projector Manager'))
-        self.file_new_item.setText(translate('OpenLP.MainWindow', '&New'))
+        self.file_new_item.setText(translate('OpenLP.MainWindow', '&New Service'))
         self.file_new_item.setToolTip(UiStrings().NewService)
         self.file_new_item.setStatusTip(UiStrings().CreateService)
-        self.file_open_item.setText(translate('OpenLP.MainWindow', '&Open'))
+        self.file_open_item.setText(translate('OpenLP.MainWindow', '&Open Service'))
         self.file_open_item.setToolTip(UiStrings().OpenService)
         self.file_open_item.setStatusTip(translate('OpenLP.MainWindow', 'Open an existing service.'))
-        self.file_save_item.setText(translate('OpenLP.MainWindow', '&Save'))
+        self.file_save_item.setText(translate('OpenLP.MainWindow', '&Save Service'))
         self.file_save_item.setToolTip(UiStrings().SaveService)
         self.file_save_item.setStatusTip(translate('OpenLP.MainWindow', 'Save the current service to disk.'))
-        self.file_save_as_item.setText(translate('OpenLP.MainWindow', 'Save &As...'))
+        self.file_save_as_item.setText(translate('OpenLP.MainWindow', 'Save Service &As...'))
         self.file_save_as_item.setToolTip(translate('OpenLP.MainWindow', 'Save Service As'))
         self.file_save_as_item.setStatusTip(translate('OpenLP.MainWindow',
                                             'Save the current service under a new name.'))
@@ -456,7 +456,7 @@ class Ui_MainWindow(object):
         self.lock_panel.setText(translate('OpenLP.MainWindow', 'L&ock Panels'))
         self.lock_panel.setStatusTip(translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
         self.view_live_panel.setStatusTip(translate('OpenLP.MainWindow', 'Toggle the visibility of the live panel.'))
-        self.settings_plugin_list_item.setText(translate('OpenLP.MainWindow', '&Plugin List'))
+        self.settings_plugin_list_item.setText(translate('OpenLP.MainWindow', '&Manage Plugins'))
         self.settings_plugin_list_item.setStatusTip(translate('OpenLP.MainWindow', 'List the Plugins'))
         self.about_item.setText(translate('OpenLP.MainWindow', '&About'))
         self.about_item.setStatusTip(translate('OpenLP.MainWindow', 'More information about OpenLP'))
@@ -505,7 +505,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         super(MainWindow, self).__init__()
         Registry().register('main_window', self)
         self.clipboard = self.application.clipboard()
-        self.arguments = self.application.args
+        self.arguments = ''.join(self.application.args)
         # Set up settings sections for the main application (not for use by plugins).
         self.ui_settings_section = 'user interface'
         self.general_settings_section = 'core'
@@ -634,7 +634,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.live_controller.display.setFocus()
         self.activateWindow()
         if self.arguments:
-            self.open_cmd_line_files()
+            self.open_cmd_line_files(self.arguments)
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_last_file()
         view_mode = Settings().value('%s/view mode' % self.general_settings_section)
@@ -1416,15 +1416,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             settings.remove('advanced/data path')
         self.application.set_normal_cursor()
 
-    def open_cmd_line_files(self):
+    def open_cmd_line_files(self, filename):
         """
         Open files passed in through command line arguments
         """
-        args = []
-        for a in self.arguments:
-            args.extend([a])
-        for filename in args:
-            if not isinstance(filename, str):
-                filename = str(filename, sys.getfilesystemencoding())
-            if filename.endswith(('.osz', '.oszl')):
-                self.service_manager_contents.load_file(filename)
+        if not isinstance(filename, str):
+            filename = str(filename, sys.getfilesystemencoding())
+        if filename.endswith(('.osz', '.oszl')):
+            self.service_manager_contents.load_file(filename)

@@ -78,7 +78,7 @@ class Ui_PluginViewDialog(object):
         """
         Translate the UI on the fly
         """
-        pluginViewDialog.setWindowTitle(translate('OpenLP.PluginForm', 'Plugin List'))
+        pluginViewDialog.setWindowTitle(translate('OpenLP.PluginForm', 'Manage Plugins'))
         self.plugin_info_group_box.setTitle(translate('OpenLP.PluginForm', 'Plugin Details'))
         self.version_label.setText('%s:' % UiStrings().Version)
         self.about_label.setText('%s:' % UiStrings().About)

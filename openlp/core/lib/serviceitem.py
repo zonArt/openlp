@@ -129,7 +129,7 @@ class ItemCapabilities(object):
     OnLoadUpdate = 8
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
-    #HasDetailedTitleDisplay = 11
+    # HasDetailedTitleDisplay = 11
     HasVariableStartTime = 12
     CanSoftBreak = 13
     CanWordSplit = 14
