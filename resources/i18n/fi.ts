@@ -1,39 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fi" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fi" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="151"/>
         <source>&amp;Alert</source>
-        <translation>&amp;Hälytys</translation>
+        <translation>&amp;Uusi huomioviesti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="151"/>
         <source>Show an alert message.</source>
-        <translation>Näytä hälytysviesti.</translation>
+        <translation>Näytä huomioviesti.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="209"/>
         <source>Alert</source>
         <comment>name singular</comment>
-        <translation>Hälytys</translation>
+        <translation>Huomioviestit</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="210"/>
         <source>Alerts</source>
         <comment>name plural</comment>
-        <translation>Hälytykset</translation>
+        <translation>Huomioviestit</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="214"/>
         <source>Alerts</source>
         <comment>container title</comment>
-        <translation>Hälytykset</translation>
+        <translation>Huomioviestit</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="199"/>
         <source>&lt;strong&gt;Alerts Plugin&lt;/strong&gt;&lt;br /&gt;The alert plugin controls the displaying of alerts on the display screen.</source>
-        <translation>&lt;strong&gt;Hälytykset lisäosa&lt;/strong&gt;&lt;br /&gt;Hälytykset lisäosa huolehtii infoviestien näyttämisestä esityksen aikana.</translation>
+        <translation>&lt;strong&gt;Huomioviestit&lt;/strong&gt;&lt;br /&gt;&lt;br/&gt;
+Tämä moduuli mahdollistaa huomioviestien&lt;br/&gt;
+näyttämisen esityksen aikana.</translation>
     </message>
 </context>
 <context>
@@ -41,17 +42,17 @@
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="95"/>
         <source>Alert Message</source>
-        <translation>Hälytysviesti</translation>
+        <translation>Uusi huomioviesti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="96"/>
         <source>Alert &amp;text:</source>
-        <translation>Hälytyksen &amp;teksti</translation>
+        <translation>&amp;Viesti:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="98"/>
         <source>&amp;New</source>
-        <translation>&amp;Uusi</translation>
+        <translation>&amp;Tallenna pohjaksi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="99"/>
@@ -71,43 +72,53 @@
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="107"/>
         <source>New Alert</source>
-        <translation>Uusi hälytys</translation>
+        <translation>Uusi huomioviestijavascript:;</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="97"/>
         <source>&amp;Parameter:</source>
-        <translation>&amp;Parametri:</translation>
+        <translation>&amp;Muuttuja:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="178"/>
         <source>No Parameter Found</source>
-        <translation>Parametriä ei löydy</translation>
+        <translation>Muuttujaa ei löydy</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="178"/>
         <source>You have not entered a parameter to be replaced.
 Do you want to continue anyway?</source>
-        <translation>Et ole antanut lainkaan tekstiin sijoitettavaa parametriä.
-Tahdotko jatkaa siitä huolimatta?</translation>
+        <translation>Viestissä oleva &lt;&gt; muuttuja on tyhjä!
+”Muuttuja” kenttä on tyhjä, haluatko jatkaa siitä huolimatta?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
         <source>No Placeholder Found</source>
-        <translation>Ei korvattavaa parametria tekstissä</translation>
+        <translation>Viesti ei sisällä muuttujaa &lt;&gt;</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
-        <translation>Hälytystekstissä ei ole lainkaan &apos;&lt;&gt;&apos; parametria.
-Tahdotko jatkaa siitä huolimatta?</translation>
+        <translation>Viestissä ei ole &lt;&gt; muuttujaa.
+Haluatko jatkaa siitä huolimatta?
+
+Voit lisätä muuttujan kirjoittamalla &lt;&gt; osaksi viestiä.
+
+Esimerkki:
+Viesti: Auto &lt;&gt; tukkii pelastustien.
+Muuttuja: ABC-123
+Näytetään: Auto ABC-123 tukkii pelastustien.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="107"/>
-        <source>You haven&apos;t specified any text for your alert. 
+        <source>You haven't specified any text for your alert. 
 Please type in some text before clicking New.</source>
-        <translation>Et ole määritellyt viestitekstiä hälytykselle.
-Ole hyvä ja kirjoita teksti ennen kuin painat Uusi.</translation>
+        <translation>Tyhjää pohjaa ei voida luoda,
+viesti ei voi olla tyhjä.
+
+Luodaksesi uuden pohjan, sinun 
+on kirjoitettava &quot;Viesti&quot; kenttään tekstiä.</translation>
     </message>
 </context>
 <context>
@@ -115,7 +126,7 @@ Ole hyvä ja kirjoita teksti ennen kuin painat Uusi.</translation>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertsmanager.py" line="63"/>
         <source>Alert message created and displayed.</source>
-        <translation>Hälytysviesti on luotu ja näytetty.</translation>
+        <translation>Huomioviesti on luotu ja näytetty.</translation>
     </message>
 </context>
 <context>
@@ -148,7 +159,7 @@ Ole hyvä ja kirjoita teksti ennen kuin painat Uusi.</translation>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="104"/>
         <source>Alert timeout:</source>
-        <translation>Hälytyksen kesto:</translation>
+        <translation>Huomioviestin kesto:</translation>
     </message>
 </context>
 <context>
@@ -162,7 +173,7 @@ Ole hyvä ja kirjoita teksti ennen kuin painat Uusi.</translation>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="206"/>
         <source>Bible</source>
         <comment>name singular</comment>
-        <translation>Raamattu</translation>
+        <translation>Raamatut</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="207"/>
@@ -210,22 +221,25 @@ Ole hyvä ja tarkista oikeinkirjoitus.</translation>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="220"/>
         <source>Preview the selected Bible.</source>
-        <translation>Esikatsele valittua Raamatun tekstiä.</translation>
+        <translation>Esikatsele valittua Raamatunpaikkaa.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="221"/>
         <source>Send the selected Bible live.</source>
-        <translation>Lähetä valittu teksti Esitykseen.</translation>
+        <translation>Lähetä valittu paikka Esitykseen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="222"/>
         <source>Add the selected Bible to the service.</source>
-        <translation>Lisää valittu Raamatun teksti Listaan.</translation>
+        <translation>Lisää valittu Raamatunpaikka Listaan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="175"/>
         <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
-        <translation>&lt;strong&gt;Raamattu-lisäosa&lt;/strong&gt;&lt;br /&gt;Raamattu-lisäosalla voi näyttää Raamatun jakeita suoraan Raamatusta tilaisuuden aikana.</translation>
+        <translation>&lt;strong&gt;Raamatut&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;
+
+Tämän moduulin avulla voidaan näyttää
+Raamatuntekstejä eri lähteistä.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
@@ -833,7 +847,7 @@ kirjojen pitkiä nimiä eivätkä saa päätyä pisteisiin.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="158"/>
         <source>Only show new chapter numbers</source>
-        <translation>Älä toista lukunumeroita</translation>
+        <translation>Näytä luvun numero vain ensimmäisessä jakeessa</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="161"/>
@@ -864,13 +878,13 @@ kirjojen pitkiä nimiä eivätkä saa päätyä pisteisiin.</translation>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="173"/>
         <source>Note:
 Changes do not affect verses already in the service.</source>
-        <translation>Huomio:
-Muutokset eivät vaikuta Listassa oleviin kohteisiin.</translation>
+        <translation>
+Huomio: Muutokset eivät vaikuta Listassa oleviin kohteisiin.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="175"/>
         <source>Display second Bible verses</source>
-        <translation>Näytä vertailukäännöksen valinnan kenttä</translation>
+        <translation>Näytä vertailutekstin valinnan kenttä</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="176"/>
@@ -914,7 +928,7 @@ Käyttääksesi oletusarvoja tyhjennä tämä kenttä.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="188"/>
         <source>Default Bible Language</source>
-        <translation>Raamatun oletuskirja</translation>
+        <translation>Raamatun kirjojen nimet</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="189"/>
@@ -936,7 +950,7 @@ hakutuloksissa ja näytöllä.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="157"/>
         <source>Show verse numbers</source>
-        <translation>Näytä jaenumerot</translation>
+        <translation>Näytä luku ja jae numerot</translation>
     </message>
 </context>
 <context>
@@ -1043,7 +1057,7 @@ hakutuloksissa ja näytöllä.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="137"/>
         <source>Global Settings</source>
-        <translation>Globaalit asetukset</translation>
+        <translation>Yleiset asetukset</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="138"/>
@@ -1071,7 +1085,7 @@ ei voida uudelleennimetä.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="78"/>
         <source>To use the customized book names, &quot;Bible language&quot; must be selected on the Meta Data tab or, if &quot;Global settings&quot; is selected, on the Bible page in Configure OpenLP.</source>
-        <translation>Käyttääksesi mukautettuja kirjannimiä, &quot;Raamatun kieli&quot; pitää valita Asetukset&gt;Raamatut välilehdeltä tai jos globaalit asetukset on valittu, valinta tehdään Raamattu-sivulla OpenLP:n asetuksissa.</translation>
+        <translation>Käyttääksesi mukautettuja kirjannimiä, &quot;Raamatun kieli&quot; pitää valita Asetukset&gt;Raamatut välilehdeltä tai jos Yleiset asetukset on valittu, valinta tehdään Raamattu-sivulla OpenLP:n asetuksissa.</translation>
     </message>
 </context>
 <context>
@@ -1079,7 +1093,7 @@ ei voida uudelleennimetä.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="610"/>
         <source>Registering Bible and loading books...</source>
-        <translation>Rekisteröidään Raamattu ja ladataan kirjoja...</translation>
+        <translation>Rekisteröidään Raamattua ja ladataan kirjoja...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="634"/>
@@ -1123,7 +1137,9 @@ ei voida uudelleennimetä.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="312"/>
         <source>This wizard will help you to import Bibles from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
-        <translation>Tämä ohjattu toiminto helpottaa Raamattujen tuomista ohjelmaan eri formaateissa. Paina &apos;Seuraava&apos;-painiketta aloittaaksesi tuonnin valitsemalla formaatin, josta teksti tuodaan.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Voi ei, OpenLP kohtasi virheen joka keskeytti ohjelman toiminnan!&lt;br&gt;
+Voit auttaa ohjelman kehittäjiä lähettämällä alle kerätyn virheraportin tutkintaa varten&lt;br&gt;
+sähköpostilla osoitteeseen &lt;a href=&quot;mailto:bugs@openlp.org Subject=Bug report&quot;&gt; bugs@openlp.org &lt;/a&gt; &lt;br&gt;</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="323"/>
@@ -1231,7 +1247,7 @@ ei voida uudelleennimetä.</translation>
         <translation>Raamattu on jo olemassa. Ole hyvä ja tuo jokin toinen Raamattu tai poista ensin nykyinen versio.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="640"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="642"/>
         <source>Your Bible import failed.</source>
         <translation>Raamatun tuonti epäonnistui.</translation>
     </message>
@@ -1266,20 +1282,20 @@ ei voida uudelleennimetä.</translation>
         <translation>Jaetiedosto:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="584"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="586"/>
         <source>Registering Bible...</source>
         <translation>Rekisteröidään Raamattua...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="634"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="636"/>
         <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
-        <translation>Raamattu rekisteröity. Huomaathan, että jakeet ladataan palvelimelta
-tarpeen mukaan, joten internet yhteys tarvitaan käyttöä varten.</translation>
+        <translation>Raamattu rekisteröity. Jakeet ladataan käytettäessä
+verkon välityksellä, siksi tähän tarvitaan nettiyhteys.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
         <source>Click to download bible list</source>
-        <translation>Klikkaa ladataksesi luettelon Raamatuista</translation>
+        <translation>Klikkaa ladataksesi luettelo Raamatuista</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="333"/>
@@ -1326,92 +1342,92 @@ tarpeen mukaan, joten internet yhteys tarvitaan käyttöä varten.</translation>
 <context>
     <name>BiblesPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="193"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="194"/>
         <source>Quick</source>
         <translation>Pikahaku</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="277"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="278"/>
         <source>Find:</source>
         <translation>Etsi:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="287"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="288"/>
         <source>Book:</source>
         <translation>Kirja:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="288"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="289"/>
         <source>Chapter:</source>
         <translation>Luku:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="289"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="290"/>
         <source>Verse:</source>
         <translation>Jae:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="290"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="291"/>
         <source>From:</source>
         <translation>Alkaen:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="291"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="292"/>
         <source>To:</source>
         <translation>Asti:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="306"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
         <source>Text Search</source>
         <translation>Hakusanoilla</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="293"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="294"/>
         <source>Second:</source>
         <translation>Vertailuteksti:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="306"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
         <source>Scripture Reference</source>
         <translation>Jaeviite</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="298"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="299"/>
         <source>Toggle to keep or clear the previous results.</source>
         <translation>Vaihda valinta pitääksesi tai pyyhkiäksesi edelliset tulokset.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="87"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="88"/>
         <source>You cannot combine single and dual Bible verse search results. Do you want to delete your search results and start a new search?</source>
         <translation>Et voi yhdistää yhden ja kahden käännöksen jaehakujen tuloksia. Haluatko poistaa hakutulokset ja aloittaa uuden haun?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="410"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="411"/>
         <source>Bible not fully loaded.</source>
         <translation>Raamattu ei latautunut kokonaan.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="684"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="685"/>
         <source>Information</source>
         <translation>Tiedot</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="684"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="685"/>
         <source>The second Bible does not contain all the verses that are in the main Bible. Only verses found in both Bibles will be shown. %d verses have not been included in the results.</source>
         <translation>Toissijainen Raamattu ei sisällä kaikkia ensisijaisen käännöksen jakeita. Vain ne jakeet, jotka ovat kummassakin käännöksessä, voidaan näyttää. %d jaetta jätettiin pois hakutuloksista.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="306"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
         <source>Search Scripture Reference...</source>
         <translation>Hae jaeviittauksin...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="306"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
         <source>Search Text...</source>
         <translation>Hae hakusanoilla...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="498"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="499"/>
         <source>Are you sure you want to completely delete &quot;%s&quot; Bible from OpenLP?
 
 You will need to re-import this Bible to use it again.</source>
@@ -1420,7 +1436,7 @@ You will need to re-import this Bible to use it again.</source>
 Jos poistat Raamatun, et voi käyttää sitä ellet asenna sitä uudestaan.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="196"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="197"/>
         <source>Advanced</source>
         <translation>Paikan valinta</translation>
     </message>
@@ -1464,7 +1480,7 @@ Jos poistat Raamatun, et voi käyttää sitä ellet asenna sitä uudestaan.</tra
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="107"/>
         <source>Select a Backup Directory</source>
-        <translation>Valitse hakemisto varmuuskopiolle</translation>
+        <translation>Valitse tiedostosijainti varmuuskopiolle</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="233"/>
@@ -1474,22 +1490,29 @@ Jos poistat Raamatun, et voi käyttää sitä ellet asenna sitä uudestaan.</tra
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="236"/>
         <source>This wizard will help you to upgrade your existing Bibles from a prior version of OpenLP 2. Click the next button below to start the upgrade process.</source>
-        <translation>Tämä ohjattu toiminto auttaa päivittämään nykyiset Raamatut edellisestä versiosta OpenLP 2:een. Paina &apos;Seuraava&apos;-painiketta jatkaaksesi päivitystä.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Tämä toiminto auttaa sinua päivittämään nykyiset Raamattusi &lt;br&gt;
+uudempaan OpenLP:n versioon. &lt;br&gt;&lt;br&gt;
+Paina ”Seuraava” aloittaaksesi. &lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="240"/>
         <source>Select Backup Directory</source>
-        <translation>Valitse hakemisto varmuuskopiolle</translation>
+        <translation>Valitse tiedostosijainti varmuuskopiolle</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="241"/>
         <source>Please select a backup directory for your Bibles</source>
-        <translation>Ole hyvä ja valitse hakemisto, jonne Raamatut varmuuskopiodaan</translation>
+        <translation>Valitse tiedostosijainti, jonne haluat varmuuskopioida Raamattusi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="243"/>
         <source>Previous releases of OpenLP 2.0 are unable to use upgraded Bibles. This will create a backup of your current Bibles so that you can simply copy the files back to your OpenLP data directory if you need to revert to a previous release of OpenLP. Instructions on how to restore the files can be found in our &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Frequently Asked Questions&lt;/a&gt;.</source>
-        <translation>Vanhemmat versiot OpenLP 2.0 eivät voi käyttää päivitettyjä Raamatun käännöksiä. Tämä tekee varmuuskopion nykyisistä Raamatuista, jotta voit kopioida ne takaisin OpenLP:n hakemistoon, jos sinun tarvitsee jostain syystä palata käyttämään ohjelman vanhempaa versiota. Ohjeet Raamattujen palauttamiseen on nettisivullamme kohdassa &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Frequently Asked Questions&lt;/a&gt;.</translation>
+        <translation>Raamattujen tiedostomuoto uudistui versiossa 2.1. &lt;br&gt;
+Aiemmat OpenLP:n versiot eivät pysty avaamaan päivitettyjä&lt;br&gt; raamattutiedostoja. Vanhanmuotoiset Raamattusi varmuuskopioidaan&lt;br&gt; 
+ ja voit halutessasi käyttää niitä sijoittamalla ne OpenLP:n vanhemman&lt;br&gt; 
+version tiedostokansioon.&lt;br&gt;&lt;br&gt;
+
+Lisätietoja löydät englanniksi artikkelista: &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Frequently Asked Questions&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="251"/>
@@ -1499,7 +1522,7 @@ Jos poistat Raamatun, et voi käyttää sitä ellet asenna sitä uudestaan.</tra
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="253"/>
         <source>Backup Directory:</source>
-        <translation>Varmuuskopioihakemisto:</translation>
+        <translation>Varmuuskopion tiedostosijainti:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="254"/>
@@ -1531,7 +1554,8 @@ Jos poistat Raamatun, et voi käyttää sitä ellet asenna sitä uudestaan.</tra
         <source>The backup was not successful.
 To backup your Bibles you need permission to write to the given directory.</source>
         <translation>Varmuuskopiointi epäonnistui.
-Varmuuskopiointia varten tarvitaan kirjoitusoikeudet annettuun hakemistoon.</translation>
+OpenLP:llä ei ole muokkausoikeutta annettuun tiedostosijaintiin.
+Yritä tallentamista toiseen tiedostosijaintiin.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="511"/>
@@ -1581,7 +1605,8 @@ Valmis</translation>
         <source>Upgrading Bible(s): %s successful%s
 Please note that verses from Web Bibles will be downloaded on demand and so an Internet connection is required.</source>
         <translation>Raamattujen päivitys: %s onnistui %s
-Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, joten nettiyhteys niiden käyttämiseksi vaaditaan.</translation>
+Jakeet ladataan käytettäessä verkon 
+välityksellä, siksi tähän tarvitaan nettiyhteys.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="555"/>
@@ -1596,7 +1621,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="275"/>
         <source>You need to specify a backup directory for your Bibles.</source>
-        <translation>Määrittele hakemisto Raamattujen varmuuskopioille.</translation>
+        <translation>Anna tiedostosijainti Raamattujen varmuuskopioille.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="330"/>
@@ -1631,7 +1656,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
         <location filename="openlp/plugins/custom/customplugin.py" line="99"/>
         <source>Custom Slide</source>
         <comment>name singular</comment>
-        <translation>Tekstidia</translation>
+        <translation>Tekstidiat</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="100"/>
@@ -1658,7 +1683,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="110"/>
         <source>Add a new custom slide.</source>
-        <translation>Lisää uusi tekstidia</translation>
+        <translation>Lisää uusi tekstidia.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="111"/>
@@ -1688,7 +1713,11 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="66"/>
         <source>&lt;strong&gt;Custom Slide Plugin &lt;/strong&gt;&lt;br /&gt;The custom slide plugin provides the ability to set up custom text slides that can be displayed on the screen the same way songs are. This plugin provides greater freedom over the songs plugin.</source>
-        <translation>&lt;strong&gt;Tekstidiat&lt;/strong&gt;&lt;br /&gt;Tekstidiat lisäosa mahdollistaa yksittäisten diojen näyttämisen laulujen tapaan. Tekstidia voidaan muokata lauluja vapaammin omiin tarkoituksiin sopiviksi.</translation>
+        <translation>&lt;strong&gt;Tekstidiat&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;
+
+Tämän moduulin avulla voidaan näyttää tekstidioja.
+Tekstidioja on mahdollista muokata lauluja vapaammin
+tiettyjä tarkoituksia varten.</translation>
     </message>
 </context>
 <context>
@@ -1696,12 +1725,12 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/custom/lib/customtab.py" line="60"/>
         <source>Custom Display</source>
-        <translation>Mukautettu näyttö</translation>
+        <translation>Tekstidiat</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/lib/customtab.py" line="61"/>
         <source>Display footer</source>
-        <translation>Näytä lopputunniste</translation>
+        <translation>Näytä alatunniste</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/lib/customtab.py" line="62"/>
@@ -1749,7 +1778,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="114"/>
         <source>&amp;Credits:</source>
-        <translation>&amp;Lopputekstit:</translation>
+        <translation>&amp;Lopputeksti:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomform.py" line="238"/>
@@ -1777,7 +1806,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="48"/>
         <source>Edit Slide</source>
-        <translation>Muokkaa diaa</translation>
+        <translation>Tekstidian muokkaus</translation>
     </message>
 </context>
 <context>
@@ -1785,10 +1814,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message numerus="yes">
         <location filename="openlp/plugins/custom/lib/mediaitem.py" line="186"/>
         <source>Are you sure you want to delete the %n selected custom slide(s)?</source>
-        <translation>
-            <numerusform>Oletko varma, että tahdot poistaa %n valittua mukautettua dia(a)?</numerusform>
-            <numerusform>Oletko varma, että haluat poistaa %n tekstidian/diat?</numerusform>
-        </translation>
+        <translation><numerusform>Oletko varma, että tahdot poistaa %n valittua mukautettua dia(a)?</numerusform><numerusform>Oletko varma, että haluat poistaa %n tekstidian/diat?</numerusform></translation>
     </message>
 </context>
 <context>
@@ -1796,13 +1822,20 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="57"/>
         <source>&lt;strong&gt;Image Plugin&lt;/strong&gt;&lt;br /&gt;The image plugin provides displaying of images.&lt;br /&gt;One of the distinguishing features of this plugin is the ability to group a number of images together in the service manager, making the displaying of multiple images easier. This plugin can also make use of OpenLP&apos;s &quot;timed looping&quot; feature to create a slide show that runs automatically. In addition to this, images from the plugin can be used to override the current theme&apos;s background, which renders text-based items like songs with the selected image as a background instead of the background provided by the theme.</source>
-        <translation>&lt;strong&gt;Kuvankatselu-lisäosa&lt;/strong&gt;&lt;br /&gt;Kuvankatselu toteuttaa helpon kuvien näyttämisen.&lt;br /&gt;Lisäosa mahdollistaa kokonaisen kuvajoukon näyttämisen yhdessä Listalla, mikä tekee useiden kuvien näyttämisestä hallitumpaa. Kuvia voi myös ajaa diaesityksenä OpenLP:n ajastusta hyödyntäen. Lisäksi kuvia voi käyttää jumalanpalvelukselle valitun taustakuvan sijaan, mikä mahdollistaa kuvien käyttämisen taustakuvana teksteille teeman sijaan.</translation>
+        <translation>&lt;strong&gt;Kuvat&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;
+
+Tämä moduuli mahdollistaa &lt;br/&gt;
+kuvien näyttämisen. &lt;br/&gt;&lt;br/&gt;
+
+Moduulin avulla voidaan&lt;br/&gt;
+esimerkiksi luoda kuvista ryhmiä, toistaa&lt;br/&gt;
+niitä automaattisesti sekä asettaa taustakuvia.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="107"/>
         <source>Image</source>
         <comment>name singular</comment>
-        <translation>Kuva</translation>
+        <translation>Kuvat</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="108"/>
@@ -1819,7 +1852,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="114"/>
         <source>Load a new image.</source>
-        <translation>Tuo kuvia</translation>
+        <translation>Tuo kuvia.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="116"/>
@@ -1986,7 +2019,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/images/lib/imagetab.py" line="65"/>
         <source>Visible background for images with aspect ratio different to screen.</source>
-        <translation>Näkyvä tausta kuville, joiden mittasuhteet poikkeavat näytön mittasuhteista.</translation>
+        <translation>Taustaväri kuville jotka eivät täytä koko näyttöä. </translation>
     </message>
 </context>
 <context>
@@ -2007,7 +2040,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="357"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="359"/>
         <source>VLC is an external player which supports a number of different formats.</source>
         <translation>VLC on ulkoinen soitin, joka tukee lukuista joukkoa eri tiedostomuotoja.</translation>
     </message>
@@ -2022,7 +2055,11 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="91"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
-        <translation>&lt;strong&gt;Media-lisäosa&lt;/strong&gt;&lt;br /&gt; Media-lisäosa mahdollistaa ääni ja videotiedostojen toistamisen.</translation>
+        <translation>&lt;strong&gt;Media&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;
+
+Tämän moduulin avulla on mahdollista&lt;br/&gt;
+toistaa video ja äänitiedostoja.&lt;br/&gt;&lt;br/&gt;
+Nämä vaativat toimiakseen mediasoittimen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="101"/>
@@ -2148,7 +2185,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="198"/>
         <source>Jump to start point</source>
-        <translation>Siirry alkupisteeseen</translation>
+        <translation>Siirry alkuun</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="199"/>
@@ -2163,7 +2200,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="202"/>
         <source>Jump to end point</source>
-        <translation>Siirry loppupisteeseen</translation>
+        <translation>Siirry loppuun</translation>
     </message>
 </context>
 <context>
@@ -2237,42 +2274,44 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
 <context>
     <name>MediaPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="94"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="99"/>
         <source>Select Media</source>
         <translation>Valitse media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="332"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="338"/>
         <source>You must select a media file to delete.</source>
         <translation>Sinun täytyy valita mediatiedosto poistettavaksi.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="201"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>Sinun täytyy valita mediatiedosto, jolla taustakuva korvataan.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="213"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="219"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Taustakuvan korvaamisessa on ongelmia, mediatiedosto &apos;%s&quot; ei ole enää saatavilla.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="263"/>
         <source>Missing Media File</source>
         <translation>Puuttuva mediatiedosto</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="257"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="263"/>
         <source>The file %s no longer exists.</source>
-        <translation>Tiedosto %s ei ole enää olemassa.</translation>
+        <translation>Tätä tiedostoa ei enää löydetty sijainnista:
+%s 
+Tiedosto on joko siirretty, poistettu tai uudelleennimetty.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="294"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="300"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Videoita (%s);;Äänitiedostoja (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="209"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="215"/>
         <source>There was no display item to amend.</source>
         <translation>Muutettavaa näytön kohdetta ei ole.</translation>
     </message>
@@ -2282,7 +2321,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
         <translation>Tiedostomuotoa ei tueta.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="103"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="108"/>
         <source>Use Player:</source>
         <translation>Käytä soitinta:</translation>
     </message>
@@ -2297,27 +2336,27 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
         <translation>VLC-soitin vaaditaan optisten medioiden soittamiseksi</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="131"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="136"/>
         <source>Load CD/DVD</source>
         <translation>Avaa CD/DVD.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="132"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="137"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
         <translation>Levyjen toisto edellyttää koneeseen asennettua VLC:tä ja sen käyttöönottoa asetuksista.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="240"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="246"/>
         <source>The optical disc %s is no longer available.</source>
         <translation>Optinen levy %s ei ole käytettävissä.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="439"/>
         <source>Mediaclip already saved</source>
         <translation>Medialeike on jo tallennettu</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="433"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="439"/>
         <source>This mediaclip has already been saved</source>
         <translation>Medialeike on tallennettu aiemmin</translation>
     </message>
@@ -2327,7 +2366,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
     <message>
         <location filename="openlp/plugins/media/lib/mediatab.py" line="56"/>
         <source>Allow media player to be overridden</source>
-        <translation>Salli mediasoittimen ylimääritteleminen</translation>
+        <translation>Salli mediasoittimen valinta</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediatab.py" line="57"/>
@@ -2338,7 +2377,7 @@ Haluatko siitä huolimatta lisätä muut valitut kuvat?</translation>
 <context>
     <name>OPenLP.MainWindow</name>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="434"/>
         <source>&amp;Projector Manager</source>
         <translation>&amp;Projektorin hallinta</translation>
     </message>
@@ -2372,20 +2411,21 @@ Pitäisikö OpenLP:n päivittää ne nyt?</translation>
     <message>
         <location filename="openlp/core/__init__.py" line="211"/>
         <source>OpenLP has been upgraded, do you want to create a backup of OpenLPs data folder?</source>
-        <translation>OpenLP on päivitetty, tahdotko luoda varmuuskopion OpenLP:n työhakemistosta?</translation>
+        <translation>OpenLP on päivitetty, haluatko varmuuskopioida 
+OpenLP:n vanhan tiedostokansion?</translation>
     </message>
     <message>
         <location filename="openlp/core/__init__.py" line="223"/>
         <source>Backup of the data folder failed!</source>
-        <translation>Työhakemiston varmuuskopionti epäonnistui!</translation>
+        <translation>Tiedostokansion varmuuskopionti epäonnistui!</translation>
     </message>
     <message>
         <location filename="openlp/core/__init__.py" line="226"/>
         <source>A backup of the data folder has been created at %s</source>
-        <translation>Työhakemiston varmuuskopio on luotu sijaintiin %s</translation>
+        <translation>Tiedostokansio on varmuuskopioitu kansioon: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="652"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="653"/>
         <source>Open</source>
         <translation>Avaa</translation>
     </message>
@@ -2410,12 +2450,18 @@ Pitäisikö OpenLP:n päivittää ne nyt?</translation>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="279"/>
         <source>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</source>
-        <translation>Tämä ohjelma on vapaa, voit jakaa ja / tai muuttaa sitä ehtojen mukaisesti GNU General Public Licensen julkaissut Free Software Foundation, version 2 lisenssillä.</translation>
+        <translation>Tämä on ilmainen sovellus, voit jakaa tai 
+tehdä siihen muutoksia vapaasti seuraavaan 
+lisenssiin perustuen:
+
+GNU General Public License version 2
+Free Software Foundation</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="284"/>
         <source>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</source>
-        <translation>Tätä ohjelmaa levitetään siinä toivossa, että se olisi hyödyllinen, mutta ilman mitään takuuta; ilman edes hiljaista takuuta kaupallisesti hyväksyttävästä laadusta tai soveltuvuudesta tiettyyn tarkoitukseen.</translation>
+        <translation>Tätä ohjelmaa levitetään siinä toivossa, että se olisi hyödyllinen.
+Ohjelman toiminnalle ei anneta minkäänlaisia oikeudellisia takuita.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="92"/>
@@ -2428,11 +2474,18 @@ Find out more about OpenLP: http://openlp.org/
 OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider volunteering by using the button below.</source>
         <translation>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
 
-OpenLP on vapaa seurakuntakäyttöön suunniteltu ohjelmisto, jota käytetään laulunsanojen, Raamatun tekstin, videoiden, kuvien ja esitysgrafiikan (jos Impress, Powerpoint tai Powerpoint Viewer on asennettuna) näyttämiseen jumalanpalveluksissa tietokonetta ja projektoria käyttäen.
+OpenLP on ilmainen, avoimeen lähdekoodiin 
+perustuva sovellus joka suunniteltiin seurakuntakäyttöön. 
 
-Lisätietoja OpenLP:sta löytyy sivulta http://openlp.org/
+Sovelluksella voidaan näyttää esimerkiksi laulunsanoja, Raamatunpaikkoja, videoita ja presentaatioita.
 
-OpenLP on toteutettu ja sitä ylläpidetään vapaaehtoisvoimin. Jos tahdot jatkossa nähdä enemmän vapaita kristillisiä ohjelmistoja, ole hyvä ja harkitse ryhtymistä vapaaehtoiseksi painamalla alla olevaa painiketta.</translation>
+Jotkin ominaisuudet edellyttävät ulkoisen sovelluksen, kuten
+PowerPointin, Libre Officen tai PowerPoint Viewerin asentamista dia-esityksiä varten tai VLC mediasoitinta videoiden toistoon. 
+
+Lisätietoa OpenLP:stä löydät ohjelman kotisivuilta: http://openlp.org/
+
+OpenLP on toteutettu täysin vapaaehtoisvoimin, jos haluat 
+auttaa ohjelman kehityksessä, voit painaa alla olevaa painiketta ja ottaa selvää eri tavoista olla mukana. (Sivusto Englanniksi.)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="663"/>
@@ -2485,7 +2538,7 @@ Translators
         %s
     Japanese (ja)
         %s
-    Norwegian Bokm&#xe5;l (nb)
+    Norwegian Bokmål (nb)
         %s
     Dutch (nl)
         %s
@@ -2524,91 +2577,123 @@ Final Credit
     bring this software to you for free because
     He has set us free.</source>
         <translation>Projektin johtaminen
+
 %s
- 
+
 Kehittäjät
+
 %s
  
 Lahjoittajat
+
 %s
- 
+
 Testaajat
 %s
  
-Paketoijat
+Eri käyttöjärjestelmien asennustiedostot
+
 %s
- 
+
 Kääntäjät
+
 Afrikaans (af)
 %s
+
 Czeck (cs)
 %s
+
 Danish (da)
 %s
+
 German (de)
 %s
+
 Greek (el)
 %s
+
 English, United Kingdom (en_GB)
 %s
+
 English, South Africa (en_ZA)
 %s
+
 Spanish (es)
 %s
+
 Estonian (et)
 %s
+
 Finnish (fi)
 %s
+
 French (fr)
 %s
+
 Hungarian (hu)
 %s
+
 Indonesian (id)
 %s
+
 Japanese (ja)
 %s
+
 Norwegian Bokmål (nb)
 %s
+
 Dutch (nl)
 %s
+
 Polish (pl)
 %s
+
 Portuguese, Brazil (pt_BR)
 %s
+
 Russian (ru)
 %s
+
 Swedish (sv)
 %s
+
 Tamil(Sri-Lanka) (ta_LK)
 %s
+
 Chinese(China) (zh_CN)
 %s
+
 
 Dokumentointi
 %s
  
-Käännös
+Ohjelmassa käytettyjä teknologioita
+
 Python: http://www.python.org/
-Qt4: http://qt.digia.com/
+Qt4: http://qt.io
 PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro
 Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/
 MuPDF: http://www.mupdf.com/
  
-Suurin kiitos
-&quot;Sillä niin on Jumala maailmaa rakastanut,
-että hän antoi ainokaisen Poikansa, ettei yksikään, 
-joka häneen uskoo, hukkuisi,
-vaan hänellä olisi iankaikkinen elämä&quot; -- Joh. 3:16
+
+Suurin kiitos -  Johannes 3:16
+
+&quot;Sillä niin on Jumala maailmaa
+rakastanut, että hän antoi ainokaisen
+Poikansa, ettei yksikään,joka häneen uskoo,
+hukkuisi, vaan hänellä olisi iankaikkinen elämä&quot;
   
-Ja viimeisenä, mutta ei vähäisimpänä, kiitos kuuluu Jumalalle 
-meidän Isällemme, joka lähetti Poikansa kuolemaan ristillä puolestamme
-ja pesi meidät puhtaaksi synnistä. Tahdomme antaa tämän ohjelmiston 
-ilmaiseksi sen tähden, mitä hän on tehnyt meidän edestämme samoin ilmaiseksi.</translation>
+Kiitos kuuluu Jumalalle meidän Isällemme, 
+joka lähetti Poikansa kuolemaan ristillä puolestamme
+ja antoi meidän syntimme anteeksi.
+
+Haluamme tarjota tämän ohjelmiston ilmaiseksi – 
+Kuolihan Jeesus puolestamme vaikkemme sitä ansainneet.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="270"/>
-        <source>Copyright &#xa9; 2004-2015 %s
-Portions copyright &#xa9; 2004-2015 %s</source>
+        <source>Copyright © 2004-2015 %s
+Portions copyright © 2004-2015 %s</source>
         <translation>Tekijäinoikeudet  © 2004-2015 %s
 Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     </message>
@@ -2623,7 +2708,7 @@ Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="262"/>
         <source>Number of recent files to display:</source>
-        <translation>Kuinka monta viimeisintä tiedostoa näytetään</translation>
+        <translation>Viimeisimpien listatiedostojen määrä:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="263"/>
@@ -2643,7 +2728,7 @@ Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="271"/>
         <source>Enable application exit confirmation</source>
-        <translation>Varmista sovelluksen sulkeminen ennen poistumista</translation>
+        <translation>Vahvista sovelluksen sulkeminen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="291"/>
@@ -2658,7 +2743,7 @@ Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="293"/>
         <source>Default Image</source>
-        <translation>Oletuskuva</translation>
+        <translation>Taustakuva ohjelman käynnistyttyä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="294"/>
@@ -2673,7 +2758,7 @@ Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="504"/>
         <source>Open File</source>
-        <translation>Avaa tiedosto</translation>
+        <translation>Tiedoston valinta</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="52"/>
@@ -2708,7 +2793,7 @@ Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="275"/>
         <source>Date and Time:</source>
-        <translation>Päiväys ja aika:</translation>
+        <translation>Päivä ja aika:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="276"/>
@@ -2773,7 +2858,8 @@ Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="314"/>
         <source>Bypass X11 Window Manager</source>
-        <translation>Ohita X11:n ikkunamanageri</translation>
+        <translation>Ohita X11:n ikkunamanageri (ei koske Windows tai Mac käyttäjiä, 
+jos käytössäsi on Linux, tämä voi ratkaista näyttöongelmia)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="467"/>
@@ -2798,12 +2884,12 @@ Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="300"/>
         <source>Browse for new data file location.</source>
-        <translation>Selaa uutta datatiedostojen sijaintia.</translation>
+        <translation>Valitse uusi tiedostojen sijainti.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="302"/>
         <source>Set the data location to the default.</source>
-        <translation>Aseta datan sijainti oletusarvoksi.</translation>
+        <translation>Palauta tiedostokansion oletussijainti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="304"/>
@@ -2813,7 +2899,7 @@ Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="305"/>
         <source>Cancel OpenLP data directory location change.</source>
-        <translation>Peruuta OpenLP:n datahakemiston sijainnin muuttaminen.</translation>
+        <translation>Peruuta OpenLP:n tiedostokansion sijainnin muuttaminen.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="307"/>
@@ -2823,32 +2909,34 @@ Osittaiset tekijäinoikeudet © 2004-2015 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="308"/>
         <source>Copy the OpenLP data files to the new location.</source>
-        <translation>Kopioi OpenLP:n datatiedostot uuteen sijaintiin.</translation>
+        <translation>Kopioi OpenLP:n tiedostokansio uuteen sijaintiin.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="310"/>
         <source>&lt;strong&gt;WARNING:&lt;/strong&gt; New data directory location contains OpenLP data files.  These files WILL be replaced during a copy.</source>
-        <translation>&lt;strong&gt;VAROITUS:&lt;/strong&gt; Uudessa datahakemiston sijainnissa on OpenLP:n datatiedostoja.Nämä tiedostot korvataan kopioinnin yhteydessä.</translation>
+        <translation>&lt;strong&gt;HUOMIO:&lt;/strong&gt; Uudessa tiedostokansion 
+sijainnissa on jo ennestään OpenLP:n tiedostoja. 
+Nämä tiedostot tuhotaan kopioinnin yhteydessä.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="370"/>
         <source>Data Directory Error</source>
-        <translation>Datahakemiston virhe</translation>
+        <translation>Tiedostokansion virhe</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="516"/>
         <source>Select Data Directory Location</source>
-        <translation>Valitse datahakemiston sijainti</translation>
+        <translation>Valitse tiedostokansion sijainti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="528"/>
         <source>Confirm Data Directory Change</source>
-        <translation>Vahvista datahakemiston muuttaminen</translation>
+        <translation>Vahvista tiedostokansion sijainnin muuttaminen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="553"/>
         <source>Reset Data Directory</source>
-        <translation>Resetoi datahakemisto</translation>
+        <translation>Nollaa tiedostokansio</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="592"/>
@@ -2866,13 +2954,15 @@ This data directory was previously changed from the OpenLP default location.  If
 Click &quot;No&quot; to stop loading OpenLP. allowing you to fix the the problem.
 
 Click &quot;Yes&quot; to reset the data directory to the default location.</source>
-        <translation>OpenLP datahakemistoa ei löytynyt
+        <translation>OpenLP tiedostokansiota ei löytynyt
 
 %s
 
-Tämä datahakemisto sijaitsi siirrettävällä medialla ja median pitää olla saatavilla.
+Tämä tiedostokansio sijaitsi siirrettävällä levyllä jota OpenLP ei löydä.
 
-Paina &quot;Kyllä&quot; palauttaaksesi datahakemiston oletussijaintiin.</translation>
+Jos valitset &quot;Ei&quot; voit yrittää korjata ongelmaa itse.
+
+Paina &quot;Kyllä&quot; palauttaaksesi tiedostokansion oletussijaintiin.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="528"/>
@@ -2881,11 +2971,12 @@ Paina &quot;Kyllä&quot; palauttaaksesi datahakemiston oletussijaintiin.</transl
 %s
 
 The data directory will be changed when OpenLP is closed.</source>
-        <translation>Oletko varma, etta tahdot muuttaa OpenLP:n data hakemiston sijainnin hakemistoon:
+        <translation>Oletko varma, etta haluat muuttaa OpenLP:n 
+tiedostokansion tiedostosijainnin seuraavaksi:
 
 %s
 
-Datahakemisto muutetaan, kun OpenLP on suljettu.</translation>
+Muutos tehdään, kun OpenLP suljetaan seuraavan kerran.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="279"/>
@@ -2895,21 +2986,22 @@ Datahakemisto muutetaan, kun OpenLP on suljettu.</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="313"/>
         <source>Display Workarounds</source>
-        <translation>Näytä kiertotavat</translation>
+        <translation>Erikoisasetukset</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="315"/>
         <source>Use alternating row colours in lists</source>
-        <translation>Käytä vaihtoehtoista väritystä luetteloissa</translation>
+        <translation>Värjää joka toinen luetteloiden kohteista</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="553"/>
         <source>Are you sure you want to change the location of the OpenLP data directory to the default location?
 
 This location will be used after OpenLP is  closed.</source>
-        <translation>Oletko varma, että haluat muutaa OpenLP:n datahakemiston sijainnin oletussijainniksi?
+        <translation>Oletko varma, että haluat muutaa OpenLP:n
+tiedostokansion sijainnin oletusijaintiin?
 
-Sijainto otetaan käytettöön sen jälkeen, kun OpenLP on ensin suljettu.</translation>
+Tiedostokansion sijainti muutetaan, kun OpenLP suljetaan seuraavan kerran.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="592"/>
@@ -2920,13 +3012,16 @@ The location you have selected
 %s
 
 appears to contain OpenLP data files. Do you wish to replace these files with the current data files?</source>
-        <translation>VAROITUS:
+        <translation>HUOMIO:
 
 Sijainti, jonka olet valinnut
 
 %s
 
-näyttää sisältävän OpenLP:n datatiedostoja. Oletko varma, että tahdot korvata nämä tiedostot nykyisillä datatiedostoilla?</translation>
+näyttää sisältävän OpenLP:n tiedostoja. 
+
+Oletko varma, että haluat korvata nämä 
+tiedostot nykyisillä tiedostoilla?</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="638"/>
@@ -3210,7 +3305,9 @@ näyttää sisältävän OpenLP:n datatiedostoja. Oletko varma, että tahdot kor
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="95"/>
         <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
-        <translation>Uups. OpenLP päätyi virheeseen, josta ei voi jatkaa. Tekstikentässä on tietoa virheestä, joka saattaa helpottaa ohjelmakehittäjien työtä, joten ole hyvä ja lähetä se sähköpostilla osoitteeseen bugs@openlp.org. Lisää myös kuvaus siitä, mitä olit tekemässä, kun virhe tapahtui.</translation>
+        <translation>&lt;strong&gt;Voi ei, OpenLP kohtasi virheen joka keskeytti ohjelman toiminnan!&lt;/strong&gt; &lt;br&gt;&lt;br&gt;
+&lt;strong&gt;Voit auttaa&lt;/strong&gt; ohjelman kehittäjiä lähettämällä alle kerätyn virheraportin&lt;br&gt;
+tutkintaa varten sähköpostilla osoitteeseen: &lt;a href=&quot;mailto:bugs@openlp.org Subject=Bug report&quot;&gt; bugs@openlp.org &lt;/a&gt; &lt;br&gt; &lt;br&gt; &lt;strong&gt;Jos käytössäsi ei ole sähköpostisovellusta,&lt;/strong&gt; voit tallentaa virheraportin &lt;br&gt; tiedostoksi ja lähettää sen itse sähköpostilla selaimen kautta.&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="101"/>
@@ -3220,14 +3317,13 @@ näyttää sisältävän OpenLP:n datatiedostoja. Oletko varma, että tahdot kor
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="102"/>
         <source>Save to File</source>
-        <translation>Tallenna tiedostoon</translation>
+        <translation>Tallenna tiedostoksi</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="92"/>
         <source>Please enter a description of what you were doing to cause this error 
 (Minimum 20 characters)</source>
-        <translation>Ole hyvä ja kerro lyhyesti, mitä olit tekemässä, kun virhe tapahtui.
-(Vähintään 20 kirjainta)</translation>
+        <translation>Ole hyvä ja kirjoita alapuolella olevaan tekstikenttään mitä olit tekemässä, kun virhe tapahtui.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="103"/>
@@ -3237,7 +3333,7 @@ näyttää sisältävän OpenLP:n datatiedostoja. Oletko varma, että tahdot kor
     <message>
         <location filename="openlp/core/ui/exceptionform.py" line="217"/>
         <source>Description characters to enter : %s</source>
-        <translation>Kuvauksessa on merkkejä: %s</translation>
+        <translation>Kuvauksen 20 merkin minimipituudesta on jäljellä %s merkkiä.</translation>
     </message>
 </context>
 <context>
@@ -3304,7 +3400,7 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/filerenameform.py" line="57"/>
         <source>File Rename</source>
-        <translation>Tiedoston uudelleennimeäminen</translation>
+        <translation>Uudelleennimeäminen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/filerenamedialog.py" line="60"/>
@@ -3345,27 +3441,28 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
         <source>First Time Wizard</source>
-        <translation>Ensikäynnistyksen ohjattu toiminto</translation>
+        <translation>Ensimmäisen käyttökerran avustaja</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="224"/>
         <source>Welcome to the First Time Wizard</source>
-        <translation>Tervetuloa ensikäynnistyksen ohjattuun toimintoon</translation>
+        <translation>Ensimmäisen käyttökerran avustaja</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="235"/>
         <source>Activate required Plugins</source>
-        <translation>Aktivoi tarvittavat lisäosat</translation>
+        <translation>Moduulien valinta</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="236"/>
         <source>Select the Plugins you wish to use. </source>
-        <translation>Valitse lisäosat, joita haluat käyttää.</translation>
+        <translation>Valitse listasta ne ohjelman osat joita haluat käyttää.
+Moduulit ovat olennainen osa ohjelmaa, ilman erityistä syytä kannattaa ne kaikki pitää päällä.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="239"/>
         <source>Bible</source>
-        <translation>Raamattu</translation>
+        <translation>Raamatut</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
@@ -3375,32 +3472,32 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="241"/>
         <source>Presentations</source>
-        <translation>Esitykset</translation>
+        <translation>Presentaatiot (Kuten dia ja .pdf tiedostot)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
         <source>Media (Audio and Video)</source>
-        <translation>Media (Ääni ja videot)</translation>
+        <translation>Media (Ääni ja videotiedostot)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="243"/>
         <source>Allow remote access</source>
-        <translation>Salli etäkäyttö</translation>
+        <translation>Etäkäyttö (Kuten selaimella tai älypuhelimella)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
         <source>Monitor Song Usage</source>
-        <translation>Tilastoi laulujen käyttöä</translation>
+        <translation>Laulujen käyttötilastointi</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
         <source>Allow Alerts</source>
-        <translation>Salli hälytykset</translation>
+        <translation>Huomioviestit</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="266"/>
         <source>Default Settings</source>
-        <translation>Oletusasetukset</translation>
+        <translation>Perusasetukset</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="209"/>
@@ -3410,7 +3507,7 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="591"/>
         <source>Enabling selected plugins...</source>
-        <translation>Otetaan käyttöön valittuja lisäosia...</translation>
+        <translation>Aktivoidaan valittuja moduuleja...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
@@ -3425,22 +3522,22 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
         <source>Sample Songs</source>
-        <translation>Esimerkkejä lauluista</translation>
+        <translation>Tekijänoikeusvapaita lauluja</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="261"/>
         <source>Select and download public domain songs.</source>
-        <translation>Valitse ja lataa tekijäinoikeusvapaita lauluja.</translation>
+        <translation>Valitse listasta esimerkkilauluja halutuilla kielillä.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="262"/>
         <source>Sample Bibles</source>
-        <translation>Esimerkkejä Raamatuista</translation>
+        <translation>Tekijänoikeusvapaita Raamatunkäännöksiä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="263"/>
         <source>Select and download free Bibles.</source>
-        <translation>Valitse ja lataa ilmaisia Raamattuja.</translation>
+        <translation>Valitse listasta ne Raamatunkäännökset jotka haluat ladata.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="264"/>
@@ -3450,22 +3547,22 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="265"/>
         <source>Select and download sample themes.</source>
-        <translation>Valitse ja lataa esimerkkiteemoja.</translation>
+        <translation>Voit ladata sovellukseen esimerkkiteemoja valitsemalla listasta haluamasi.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="267"/>
         <source>Set up default settings to be used by OpenLP.</source>
-        <translation>Määritä oletusasetukset, joita OpenLP käyttää.</translation>
+        <translation>Valitse näyttö jota haluat käyttää esitykseen sekä yleinen teema.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="269"/>
         <source>Default output display:</source>
-        <translation>Oletusarvoinen näyttölaite:</translation>
+        <translation>Näyttö ulostuloa varten:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="270"/>
         <source>Select default theme:</source>
-        <translation>Valitse oletusarvoinen teema:</translation>
+        <translation>Yleinen teema:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="274"/>
@@ -3485,7 +3582,7 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="550"/>
         <source>Setting Up</source>
-        <translation>Määritetään asetuksia</translation>
+        <translation>Otetaan käyttöön</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
@@ -3502,9 +3599,10 @@ Version: %s
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.  Click the Finish button now to start OpenLP with initial settings and no sample data.
 
 To re-run the First Time Wizard and import this sample data at a later time, check your Internet connection and re-run this wizard by selecting &quot;Tools/Re-run First Time Wizard&quot; from OpenLP.</source>
-        <translation>Ei internetyhteyttä. Ensikäynnistyksen ohjattu toiminto tarvitsee internetyhteyttä, jotta järjestelmään voidaan ladata esimerkkilauluja, Raamattuja ja teemoja. Paina &apos;Lopeta&apos;-painiketta käynnistääksesi OpenLP:n oletusarvoisilla asetuksilla ilman esimerkkejä.
+        <translation>Ei internetyhteyttä. Ensikäynnistyksen ohjattu toiminto tarvitsee internet yhteyden ladatakseen vapaasti ladattavia lauluja, Raamattuja ja teemoja. Paina &apos;Lopeta&apos;-painiketta käynnistääksesi OpenLP oletusarvoisilla asetuksilla.
 
-Suorittaaksesi ohjatun toiminnon uudelleen myöhemmin, tarkista internetyhteys ja suorita toiminto uudelleen valitsemalla &quot;Työkalut/Käynnistä ensiasennuksen ohjattu toiminto&quot; OpenLP:stä.</translation>
+Voit halutessasi suorittaa ensiasennuksen ohjatun
+toiminnon myöhemmin  &quot;Työkalut&quot; valikon kautta.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
@@ -3524,17 +3622,17 @@ Suorittaaksesi ohjatun toiminnon uudelleen myöhemmin, tarkista internetyhteys j
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="568"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
-        <translation>Lataus valmis. Paina %s painiketta käynnistääksesi OpenLP:n.</translation>
+        <translation>Lataus valmis. Paina %s käynnistääksesi OpenLP.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="573"/>
         <source>Click the %s button to return to OpenLP.</source>
-        <translation>Paina  %s painiketta palataksesi OpenLP:hen.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Kaikki on nyt valmista, paina %s palataksesi sovellukseen.&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="577"/>
         <source>Click the %s button to start OpenLP.</source>
-        <translation>Paina %s painiketta käynnistääksesi OpenLP:n.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Kaikki on valmista, paina %s ja aloita sovelluksen käyttö.&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
@@ -3544,7 +3642,10 @@ Suorittaaksesi ohjatun toiminnon uudelleen myöhemmin, tarkista internetyhteys j
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
         <source>This wizard will help you to configure OpenLP for initial use. Click the %s button below to start.</source>
-        <translation>Tämä avustustoiminto ohjeistaa sinut OpenLP:n käyttöönotossa. Paina %s aloittaaksesi.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Tervetuloa!&lt;br&gt;&lt;br&gt;
+
+Tämä avustustoiminto auttaa sinua OpenLP:n käyttöönotossa. &lt;br&gt;
+Paina %s aloittaaksesi.&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
@@ -3558,17 +3659,17 @@ Keskeyttääksesi ensiasennuksen ohjatun toiminnon kokonaan (ei käynnistetä Op
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="230"/>
         <source>Downloading Resource Index</source>
-        <translation>Ladataan resurssien indeksi</translation>
+        <translation>Ladataan resursseja...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="231"/>
         <source>Please wait while the resource index is downloaded.</source>
-        <translation>Ole hyvä ja odota, kunnes indeksi on latautunut,.</translation>
+        <translation>Resursseja ladataan, tämän pitäisi viedä vain hetki.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="233"/>
         <source>Please wait while OpenLP downloads the resource index file...</source>
-        <translation>Ole hyvä ja odota kunnes OpenLP on ladannut indeksi tiedoston...</translation>
+        <translation>Ladataan tarvittavia resursseja...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="271"/>
@@ -3606,37 +3707,40 @@ Keskeyttääksesi ensiasennuksen ohjatun toiminnon kokonaan (ei käynnistetä Op
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="112"/>
         <source>Configure Formatting Tags</source>
-        <translation>Määritä muotoilu tagit.</translation>
+        <translation>Tekstin muotoilutunnuksien hallinta</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="126"/>
         <source>Description</source>
-        <translation>Kuvaus</translation>
+        <translation>Efekti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="127"/>
         <source>Tag</source>
-        <translation>Tagi</translation>
+        <translation>Tunnus</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="128"/>
         <source>Start HTML</source>
-        <translation>Aloita HTML</translation>
+        <translation>HTML koodin alku</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="129"/>
         <source>End HTML</source>
-        <translation>Lopeta HTML</translation>
+        <translation>HTML koodin loppu</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="115"/>
         <source>Default Formatting</source>
-        <translation>Oletusmuotoilu</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Tunnukset mahdollistavat tekstin muotoilun teemasta poikkeavaksi.&lt;br&gt;&lt;br&gt;
+
+Käyttö: Maalaa tekstiä laulua tai tekstidiaa muokatessa ja klikkaa hiiren oikeaa painiketta, valitse muotoilu. &lt;br&gt;
+Voit myös kirjoitaa tunnuksen itse: {tunnus} teksti johon muotoilu tulee {/tunnus}&lt;/font&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="125"/>
         <source>Custom Formatting</source>
-        <translation>Mukautettu muotoilu</translation>
+        <translation>Omat muotoilutunnukset</translation>
     </message>
 </context>
 <context>
@@ -3644,27 +3748,27 @@ Keskeyttääksesi ensiasennuksen ohjatun toiminnon kokonaan (ei käynnistetä Op
     <message>
         <location filename="openlp/core/ui/formattingtagform.py" line="96"/>
         <source>&lt;HTML here&gt;</source>
-        <translation>&lt;HTML tänne&gt;</translation>
+        <translation>&lt;Kirjoita HTML koodi tähän&gt;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagform.py" line="200"/>
         <source>Validation Error</source>
-        <translation>Virhe validoinnissa</translation>
+        <translation>Virhe</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagform.py" line="180"/>
         <source>Description is missing</source>
-        <translation>Kuvaus puuttuu</translation>
+        <translation>Kuvaus ei voi olla tyhjä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagform.py" line="183"/>
         <source>Tag is missing</source>
-        <translation>Tagi puuttuu</translation>
+        <translation>Tunnus puuttuu</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="80"/>
         <source>Tag %s already defined.</source>
-        <translation>Tagi %s on jo määritelty.</translation>
+        <translation>Tunnus%s on jo määritelty.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="82"/>
@@ -3674,12 +3778,12 @@ Keskeyttääksesi ensiasennuksen ohjatun toiminnon kokonaan (ei käynnistetä Op
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="149"/>
         <source>Start tag %s is not valid HTML</source>
-        <translation>Aloitustagi %s ei ole kelvollista HTML:ää</translation>
+        <translation>Aloitustunnus%s ei ole kelvollista HTML:ää</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="169"/>
         <source>End tag %s does not match end tag for start tag %s</source>
-        <translation>Lopetustagi %s ei täsmää aloitus tagin %s lopetustagiin</translation>
+        <translation>Lopetus tunnus%s ei täsmää aloitus tunnuksen %s lopetus tunnukseen.</translation>
     </message>
 </context>
 <context>
@@ -3762,7 +3866,7 @@ Keskeyttääksesi ensiasennuksen ohjatun toiminnon kokonaan (ei käynnistetä Op
     <message>
         <location filename="openlp/core/lib/formattingtags.py" line="148"/>
         <source>Break</source>
-        <translation>Katko</translation>
+        <translation>Rivinvaihto</translation>
     </message>
 </context>
 <context>
@@ -3775,18 +3879,18 @@ Keskeyttääksesi ensiasennuksen ohjatun toiminnon kokonaan (ei käynnistetä Op
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="207"/>
         <source>Monitors</source>
-        <translation>Näyttölaitteet</translation>
+        <translation>Näytöt</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="208"/>
         <source>Select monitor for output display:</source>
-        <translation>Valitse näyttölaite ulostuloa varten:</translation>
+        <translation>Valitse näyttö ulostuloa varten:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="209"/>
         <source>Display if a single screen</source>
         <translation>Näytä Esitys ensisijaisessa näytössä,
-jos toista näyttölaitetta ei ole kytketty</translation>
+jos toista näyttöä ei ole kytketty</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="210"/>
@@ -3806,7 +3910,7 @@ jos toista näyttölaitetta ei ole kytketty</translation>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="213"/>
         <source>Show the splash screen</source>
-        <translation>Näytä logo käynnistyksen aikana</translation>
+        <translation>Näytä OpenLP:n logo käynnistyksen aikana</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="215"/>
@@ -3821,7 +3925,7 @@ jos toista näyttölaitetta ei ole kytketty</translation>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="219"/>
         <source>Automatically preview next item in service</source>
-        <translation>Näytä automaattisesti esikatselu Listan seuraavalle kohteelle</translation>
+        <translation>Näytä esikatselu automaattisesti Listan seuraavalle kohteelle</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="222"/>
@@ -3876,7 +3980,7 @@ jos toista näyttölaitetta ei ole kytketty</translation>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="221"/>
         <source>Timed slide interval:</source>
-        <translation>Ajastetun dian tauko:</translation>
+        <translation>Automaattisen toiston nopeus:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="233"/>
@@ -3891,7 +3995,7 @@ jos toista näyttölaitetta ei ole kytketty</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="317"/>
         <source>Service Item Slide Limits</source>
-        <translation>Listan kohteen dian rajoitukset</translation>
+        <translation>Esityksen kierto</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="228"/>
@@ -3906,22 +4010,23 @@ jos toista näyttölaitetta ei ole kytketty</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="318"/>
         <source>Behavior of next/previous on the last/first slide:</source>
-        <translation>Seuraava / edellinen -toiminta viimeisen / ensimmäisen dian kohdalla:</translation>
+        <translation>Kun viimeistä diaa toistetaan ja siirrytään seuraavaan tai,
+kun ensimmäistä diaa toistetaan ja siirrytään edelliseen:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="319"/>
         <source>&amp;Remain on Slide</source>
-        <translation>&amp;Jää dian kohdalle</translation>
+        <translation>&amp;Mitään ei tapahdu</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="320"/>
         <source>&amp;Wrap around</source>
-        <translation>&amp;Kierrä ympäri</translation>
+        <translation>&amp;Siirry ensimmäiseen tai viimeiseen diaan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="321"/>
         <source>&amp;Move to next/previous service item</source>
-        <translation>&amp;Siirry seuraavaan / edelliseen Listan riviin</translation>
+        <translation>&amp;Lähetä seuraava tai edellinen Listan kohde Esitykseen</translation>
     </message>
 </context>
 <context>
@@ -3948,282 +4053,282 @@ jos toista näyttölaitetta ei ole kytketty</translation>
 <context>
     <name>OpenLP.MainWindow</name>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="382"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="389"/>
         <source>&amp;File</source>
         <translation>&amp;Tiedosto</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="383"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="390"/>
         <source>&amp;Import</source>
-        <translation>T&amp;uonti</translation>
+        <translation>&amp;Tuo tiedostosta...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="384"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="391"/>
         <source>&amp;Export</source>
-        <translation>&amp;Vienti</translation>
+        <translation>Vie tiedostoksi…</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="386"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="393"/>
         <source>&amp;View</source>
-        <translation>&amp;Näytä</translation>
+        <translation>&amp;Ulkoasu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="387"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="394"/>
         <source>M&amp;ode</source>
-        <translation>Ti&amp;la</translation>
+        <translation>&amp;Valmisasettelut</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="395"/>
         <source>&amp;Tools</source>
         <translation>&amp;Työkalut</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="389"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="396"/>
         <source>&amp;Settings</source>
         <translation>&amp;Asetukset</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="416"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="423"/>
         <source>&amp;Language</source>
         <translation>&amp;Kieli</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="391"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="398"/>
         <source>&amp;Help</source>
         <translation>&amp;Ohjeet</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="400"/>
         <source>Service Manager</source>
         <translation>Lista</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="394"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
         <source>Theme Manager</source>
         <translation>Teemat</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="396"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
         <source>&amp;New</source>
         <translation>&amp;Uusi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
         <source>&amp;Open</source>
         <translation>&amp;Avaa</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="408"/>
         <source>Open an existing service.</source>
-        <translation>Avaa Lista tiedosto.</translation>
+        <translation>Avaa Listatiedosto.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="402"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="409"/>
         <source>&amp;Save</source>
         <translation>&amp;Tallenna</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="404"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="411"/>
         <source>Save the current service to disk.</source>
         <translation>Tallenna nykyinen Lista.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
         <source>Save &amp;As...</source>
         <translation>Tallenna &amp;nimellä...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="413"/>
         <source>Save Service As</source>
         <translation>Tallenna Lista nimellä</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
         <source>Save the current service under a new name.</source>
         <translation>Tallenna nykyinen Lista uudella nimellä.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="411"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
         <source>E&amp;xit</source>
-        <translation>&amp;Poistu</translation>
+        <translation>&amp;Sulje sovellus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="419"/>
         <source>Quit OpenLP</source>
-        <translation>Lopeta OpenLP</translation>
+        <translation>Sulje OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="415"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
         <source>&amp;Theme</source>
         <translation>T&amp;eema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="419"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
         <source>&amp;Configure OpenLP...</source>
-        <translation>&amp;Asetukset</translation>
+        <translation>&amp;Määritä asetukset</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="438"/>
         <source>&amp;Media Manager</source>
         <translation>&amp;Kirjastot</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="432"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
         <source>Toggle Media Manager</source>
         <translation>Näytä / piilota kirjastot</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="440"/>
         <source>Toggle the visibility of the media manager.</source>
         <translation>Näytä tai piilota kirjastot.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="435"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="442"/>
         <source>&amp;Theme Manager</source>
         <translation>&amp;Teemat</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="436"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
         <source>Toggle Theme Manager</source>
         <translation>Näytä / piilota Teemat</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="444"/>
         <source>Toggle the visibility of the theme manager.</source>
-        <translation>Näytä tai piilota Teemat</translation>
+        <translation>Näytä tai piilota teemojen hallinta</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="446"/>
         <source>&amp;Service Manager</source>
         <translation>&amp;Lista</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="440"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
         <source>Toggle Service Manager</source>
         <translation>Näytä / piilota Lista</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
         <source>Toggle the visibility of the service manager.</source>
         <translation>Näytä tai piilota Lista.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="450"/>
         <source>&amp;Preview Panel</source>
         <translation>&amp;Esikatselu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="444"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
         <source>Toggle Preview Panel</source>
         <translation>Näytä / piilota  esikatselu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="452"/>
         <source>Toggle the visibility of the preview panel.</source>
         <translation>Näytä tai piilota esikatselu.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="454"/>
         <source>&amp;Live Panel</source>
         <translation>&amp;Esitys</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="455"/>
         <source>Toggle Live Panel</source>
         <translation>Näytä / piilota Esitys</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="458"/>
         <source>Toggle the visibility of the live panel.</source>
         <translation>Näytä tai piilota Esitys.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="452"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
         <source>&amp;Plugin List</source>
-        <translation>&amp;Lisäosat</translation>
+        <translation>&amp;Moduulien hallinta</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="453"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="460"/>
         <source>List the Plugins</source>
-        <translation>Lisäosien luettelo</translation>
+        <translation>Lista moduuleista</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="457"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="464"/>
         <source>&amp;User Guide</source>
         <translation>&amp;Käyttöohjeet</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="454"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="461"/>
         <source>&amp;About</source>
         <translation>&amp;Tietoa OpenLP:stä</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="455"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="462"/>
         <source>More information about OpenLP</source>
         <translation>Lisätietoa OpenLP:sta</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="458"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="465"/>
         <source>&amp;Online Help</source>
         <translation>&amp;Ohjeet verkossa</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="462"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="469"/>
         <source>&amp;Web Site</source>
         <translation>&amp;Kotisivut</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="467"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="474"/>
         <source>Use the system language, if available.</source>
         <translation>Käytä järjestelmän kieltä, jos se on saatavilla.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="465"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="472"/>
         <source>Set the interface language to %s</source>
         <translation>Aseta käyttöliittymän kieleksi %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="468"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="475"/>
         <source>Add &amp;Tool...</source>
         <translation>Lisää &amp;Työkalu...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="469"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="476"/>
         <source>Add an application to the list of tools.</source>
         <translation>Lisää sovellus työkalujen luetteloon.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="480"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="487"/>
         <source>&amp;Default</source>
-        <translation>&amp;Oletus</translation>
+        <translation>&amp;Oletusulkoasu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="481"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="488"/>
         <source>Set the view mode back to the default.</source>
-        <translation>Palauta näyttötila oletusarvoksi.</translation>
+        <translation>Palauta oletusarvoiset ulkoasuasetukset.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="482"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="489"/>
         <source>&amp;Setup</source>
-        <translation>&amp;Asetukset</translation>
+        <translation>&amp;Esikatselu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="483"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="490"/>
         <source>Set the view mode to Setup.</source>
-        <translation>Aseta näyttötila asetuksiin.</translation>
+        <translation>Käytä esikatselua korostavaa asettelua.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="484"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="491"/>
         <source>&amp;Live</source>
         <translation>&amp;Esitys</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="485"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="492"/>
         <source>Set the view mode to Live.</source>
-        <translation>Käytä Esitys näkymää.</translation>
+        <translation>Käytä Esitystä korostavaa asettelua.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="615"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="622"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
@@ -4232,24 +4337,24 @@ Nykyinen versiosi on: %s
 Voit ladata päivityksen osoitteesta: http://openlp.org/</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="618"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="625"/>
         <source>OpenLP Version Updated</source>
         <translation>OpenLP:n versio on nyt päivitetty.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="718"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="725"/>
         <source>OpenLP Main Display Blanked</source>
         <translation>OpenLP:n Esitys on pimennetty</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="718"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="725"/>
         <source>The Main Display has been blanked out</source>
-        <translation>Pääasiallinen näyttö on pimennetty</translation>
+        <translation>Esityksen näyttö on pimennetty</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1155"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1162"/>
         <source>Default Theme: %s</source>
-        <translation>Oletusteema: %s</translation>
+        <translation>Yleinen teema: %s</translation>
     </message>
     <message>
         <location filename="openlp/core/utils/languagemanager.py" line="83"/>
@@ -4258,204 +4363,208 @@ Voit ladata päivityksen osoitteesta: http://openlp.org/</translation>
         <translation>Suomi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="417"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
         <source>Configure &amp;Shortcuts...</source>
         <translation>&amp;Pikanäppäimet</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1093"/>
         <source>Close OpenLP</source>
-        <translation>Haluatko sulkea OpenLP:n?</translation>
+        <translation>Sulkeminen</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1086"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1093"/>
         <source>Are you sure you want to close OpenLP?</source>
-        <translation>Vahvistus: Suljetaanko OpenLP?</translation>
+        <translation>Suljetaanko OpenLP?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="471"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="478"/>
         <source>Open &amp;Data Folder...</source>
-        <translation>Avaa &amp;Data-kansio...</translation>
+        <translation>Avaa &amp;Tiedostokansion sijainti</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="472"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="479"/>
         <source>Open the folder where songs, bibles and other data resides.</source>
         <translation>Avaa kansio, jossa laulut, Raamatut ja muut tiedot sijaitsevat.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="466"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="473"/>
         <source>&amp;Autodetect</source>
         <translation>&amp;Tunnista automaattisesti</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="477"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="484"/>
         <source>Update Theme Images</source>
         <translation>Päivitä teemojen kuvat</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="478"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="485"/>
         <source>Update the preview images for all themes.</source>
         <translation>Päivitä kaikkien teemojen esikatselukuvat.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="417"/>
         <source>Print the current service.</source>
         <translation>Tulosta nykyinen Lista.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="385"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
         <source>&amp;Recent Files</source>
-        <translation>&amp;Viimeisimmät tiedostot</translation>
+        <translation>&amp;Viimeisimmät listatiedostot</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="456"/>
         <source>L&amp;ock Panels</source>
-        <translation>Lukitse paneelit</translation>
+        <translation>&amp;Lukitse nämä asetukset</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="450"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="457"/>
         <source>Prevent the panels being moved.</source>
-        <translation>Estä paneelien siirtäminen.</translation>
+        <translation>Estä ulkoasun osien näkyvyyden muuttaminen.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="474"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="481"/>
         <source>Re-run First Time Wizard</source>
-        <translation>Käynnistä ensiasennuksen ohjattu toiminto</translation>
+        <translation>Suorita ensimmäisen käyttökerran avustaja</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="475"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="482"/>
         <source>Re-run the First Time Wizard, importing songs, Bibles and themes.</source>
-        <translation>Suorita uudelleen ensiasennuksen ohjattu toiminto, tuo lauluja, Raamattuja ja teemoja ohjelmaan.</translation>
+        <translation>Suorita ensimmäisen käyttökerran avustaja uudelleen.
+Voit tuoda sovellukseen lauluja, Raamattuja ja teemoja.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="672"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="679"/>
         <source>Re-run First Time Wizard?</source>
-        <translation>Ajetaanko uudelleen ensiasennuksen ohjattu toiminto?</translation>
+        <translation>Ensimmäisen käyttökerran avustaja - Vahvistus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="672"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="679"/>
         <source>Are you sure you want to re-run the First Time Wizard?
 
 Re-running this wizard may make changes to your current OpenLP configuration and possibly add songs to your existing songs list and change your default theme.</source>
-        <translation>Haluatko varmasti suorittaa ensiasennuksen ohjatun toiminnon uudelleen?
+        <translation>Haluatko varmasti suorittaa ensimmäisen käyttökerran avustajan?
 
-Tämä voi vaikuttaa asetuksiisi, lisätä esimerkkilauluja/raamattuja tietokantaasi sekä muuttaa oletusteemaasi. </translation>
+Tämän avulla voidaan muuttaa joitakin asetuksia
+sekä ladata esimerkiksi lauluja ja Raamattuja.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1302"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation>Tyhjennä luettelo</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1295"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1302"/>
         <source>Clear the list of recent files.</source>
-        <translation>Tyhjentää viimeksi käytettyjen tiedostojen luettelon.</translation>
+        <translation>Tyhjentää viimeksi käytettyjen listatiedostojen luettelon.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
         <source>Configure &amp;Formatting Tags...</source>
-        <translation>Muokkaa &amp;Muotoilu tageja...</translation>
+        <translation>Tekstin &amp;muotoilutunnukset</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
         <source>Export OpenLP settings to a specified *.config file</source>
-        <translation>Vie OpenLP:n asetukset  *.conf tiedostoon</translation>
+        <translation>Tallenna OpenLP:n asetukset  *.conf tiedostoksi.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
         <source>Settings</source>
         <translation>Asetukset</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="423"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="430"/>
         <source>Import OpenLP settings from a specified *.config file previously exported on this or another machine</source>
-        <translation>Tuo OpenLP:n asetuksen määritellystä *.config -tiedostosta, joka on aiemmin viety tästä tai jostain toisesta järjestelmästä.</translation>
+        <translation>Tuo OpenLP:n asetukset .config muotoisesta asetustiedostosta.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="830"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="837"/>
         <source>Import settings?</source>
         <translation>Tuodaanko asetukset?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="843"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="850"/>
         <source>Open File</source>
-        <translation>Avaa tiedosto</translation>
+        <translation>Tiedoston valinta</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="843"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="850"/>
         <source>OpenLP Export Settings Files (*.conf)</source>
-        <translation>OpenLP:n viedyt asetustiedostot (*.conf)</translation>
+        <translation>OpenLP:n asetukset (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="925"/>
         <source>Import settings</source>
         <translation>Tuo asetukset</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="918"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="925"/>
         <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
         <translation>OpenLP sulkeutuu nyt. Tuodut asetukset otetaan käyttöön seuraavan käynnistyksen yhteydessä.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="937"/>
         <source>Export Settings File</source>
         <translation>Vie asetustiedosto</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="937"/>
         <source>OpenLP Export Settings File (*.conf)</source>
-        <translation>OpenLP:n viedyt asetustiedostot (*.conf)</translation>
+        <translation>OpenLP:n asetukset (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1405"/>
         <source>New Data Directory Error</source>
-        <translation>Uuden datahakemiston virhe</translation>
+        <translation>Virhe uudessa tiedostokansiossa</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1390"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1397"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
-        <translation>Kopioidaan OpenLP:n tietoja uuteen datahakemiston sijaintiin - %s - Ole hyvä ja odota kopioinnin loppumista.</translation>
+        <translation>Kopioidaan OpenLP:n tiedostoja uuteen tiedostokansion sijaintiin - %s - 
+Ole hyvä ja odota kopioinnin loppumista.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1398"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1405"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
-        <translation>OpenLP:n datahakemiston kopiointi epäonnistui
+        <translation>OpenLP:n tiedostokansion kopiointi epäonnistui
 
 %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="321"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="328"/>
         <source>General</source>
         <translation>Yleinen</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
         <source>Library</source>
         <translation>Kirjastot</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="460"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="467"/>
         <source>Jump to the search box of the current active plugin.</source>
         <translation>Siirry aktiivisen liitännäisen hakukenttään.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="830"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="837"/>
         <source>Are you sure you want to import settings?
 
  Importing settings will make permanent changes to your current OpenLP configuration.
 
  Importing incorrect settings may cause erratic behaviour or OpenLP to terminate abnormally.</source>
-        <translation>Oletko varma, että tahdot tuoda asetukset?
+        <translation>&lt;font size=&quot;4&quot;&gt;Haluatko varmasti tuoda asetukset?&lt;br&gt;&lt;br&gt;
 
-Asetusten tuominen tekee pysyviä muutoksia nykyiseen OpenLP-konfiguraatioon.
+Asetusten tuominen muuttaa sovelluksen käyttämiä asetuksia.&lt;br&gt;&lt;br&gt;
 
-Epäkelpojen asetusten tuominen saattaa aiheuttaa virheellistä toimintaa tai OpenLP saattaa sulkeutua epänormaalisti.</translation>
+Viallinen asetustiedosto voi aiheuttaa virheellistä&lt;br&gt;
+toimintaa ja ohjelma saattaa sulkeutua yllättäen..&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="878"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="885"/>
         <source>The file you have selected does not appear to be a valid OpenLP settings file.
 
 Processing has terminated and no changes have been made.</source>
@@ -4464,32 +4573,32 @@ Processing has terminated and no changes have been made.</source>
 Käsittely on keskeytetty eikä muutoksia ole tehty.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="402"/>
         <source>Projector Manager</source>
         <translation>Projektorin hallinta</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="428"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="435"/>
         <source>Toggle Projector Manager</source>
         <translation>Näytä / piilota  projektorin hallinta</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="429"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="436"/>
         <source>Toggle the visibility of the Projector Manager</source>
-        <translation>Näytä tai piilota projektorin hallinta</translation>
+        <translation>Näytä tai piilota projektorin hallinta.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1014"/>
         <source>Export setting error</source>
         <translation>Asetusten vienti epäonnistui</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="984"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="991"/>
         <source>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</source>
         <translation>Painikkeella &quot;%s&quot; ei ole oletusarvoa, joten se jätetään välistä tietoja vietäessä.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1007"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1014"/>
         <source>An error occurred while exporting the settings: %s</source>
         <translation>Virhe asetusten viennin aikana: %s</translation>
     </message>
@@ -4506,7 +4615,9 @@ Käsittely on keskeytetty eikä muutoksia ole tehty.</translation>
         <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
 
 Database: %s</source>
-        <translation>Tietokanta, jota yritetään ladata, on luotu uudemmalla OpenLP:n versiolla. Tietokannan versio on %d, kun OpenLP edellyttää version olevan %d. Tietokantaa ei voi ladta.
+        <translation>Tietokanta, jota yritetään tuoda, on luotu uudemmalla OpenLP:n versiolla. Tietokannan versio on %d, nykyisen asennuksen versio on: %d. 
+
+Tietokantaa ei voida tuoda.
 
 Tietokanta: %s.</translation>
     </message>
@@ -4515,7 +4626,7 @@ Tietokanta: %s.</translation>
         <source>OpenLP cannot load your database.
 
 Database: %s</source>
-        <translation>OpenLP ei voi ladata tietokantaa.
+        <translation>OpenLP ei voi tuoda tietokantaa.
 
 Tietokanta: %s.</translation>
     </message>
@@ -4525,7 +4636,7 @@ Tietokanta: %s.</translation>
     <message>
         <location filename="openlp/core/lib/__init__.py" line="254"/>
         <source>No Items Selected</source>
-        <translation>Kohtia ei ole valittu luettelosta</translation>
+        <translation>Valinta on tyhjä</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="153"/>
@@ -4598,35 +4709,35 @@ Tiedostopäätettä ei tueta.</translation>
 <context>
     <name>OpenLP.OpenLyricsImportError</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="713"/>
+        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="714"/>
         <source>&lt;lyrics&gt; tag is missing.</source>
-        <translation>&lt;lyrics&gt; tagi puuttuu.</translation>
+        <translation>&lt;lyrics&gt; Tunniste puuttuu.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="718"/>
+        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="719"/>
         <source>&lt;verse&gt; tag is missing.</source>
-        <translation>&lt;verse&gt; tagi puuttuu.</translation>
+        <translation>&lt;verse&gt; Tunniste puuttuu.</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.PJLink1</name>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="254"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="256"/>
         <source>Unknown status</source>
         <translation>Tilaa ei tunnisteta</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="264"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="266"/>
         <source>No message</source>
         <translation>Ei viestiä</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="521"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="523"/>
         <source>Error while sending data to projector</source>
         <translation>Virhe lähetettäessä tiedot projektorille</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="545"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="547"/>
         <source>Undefined command:</source>
         <translation>Määrittelemätön komento:</translation>
     </message>
@@ -4636,7 +4747,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/media/playertab.py" line="55"/>
         <source>Players</source>
-        <translation>Soittimet</translation>
+        <translation>Mediasoittimet</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/playertab.py" line="124"/>
@@ -4651,7 +4762,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/media/playertab.py" line="128"/>
         <source>Visible background for videos with aspect ratio different to screen.</source>
-        <translation>Näkyvä tausta videoille, joiden mittasuhteet poikkeavat näytön mittasuhteista.</translation>
+        <translation>Taustaväri videoille jotka eivät täytä koko näyttöä. </translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/playertab.py" line="253"/>
@@ -4664,12 +4775,12 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="81"/>
         <source>Plugin List</source>
-        <translation>Luettelo lisäosista</translation>
+        <translation>Moduulien hallinta</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="82"/>
         <source>Plugin Details</source>
-        <translation>Lisäosan tiedot</translation>
+        <translation>Moduulin tiedot</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="85"/>
@@ -4679,7 +4790,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="86"/>
         <source>Active</source>
-        <translation>Aktiivinen</translation>
+        <translation>Käytössä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="87"/>
@@ -4694,7 +4805,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/pluginform.py" line="143"/>
         <source>%s (Active)</source>
-        <translation>%s (Aktiivinen)</translation>
+        <translation>%s (Käytössä)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/pluginform.py" line="147"/>
@@ -4848,7 +4959,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="221"/>
         <source>Invalid Parameter</source>
-        <translation>Virheellinen parametri</translation>
+        <translation>Virheellinen arvo</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="222"/>
@@ -4858,7 +4969,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="223"/>
         <source>Projector/Display Error</source>
-        <translation>Projektori/Näyttö virhe</translation>
+        <translation>Projektori/Näyttövirhe</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="224"/>
@@ -4953,7 +5064,8 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="259"/>
         <source>The last operation attempted has not finished yet (still in progress in the background)</source>
-        <translation>Viimeisin yritetty toiminto ei ole vielä loppunut (yhä käynnissä taustalla)</translation>
+        <translation>Viimeisintä toimintoa ei ole vielä suoritettu loppuun.
+(Toimintoa suoritetaan yhä taustalla)</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="262"/>
@@ -5275,145 +5387,155 @@ Tiedostopäätettä ei tueta.</translation>
         <translation>P&amp;oista projektori</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="629"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="630"/>
         <source>Name</source>
         <translation>Nimi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="631"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="632"/>
         <source>IP</source>
         <translation>IP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="633"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="634"/>
         <source>Port</source>
         <translation>Portti</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="635"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="636"/>
         <source>Notes</source>
         <translation>Muistiinpanot</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="639"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="640"/>
         <source>Projector information not available at this time.</source>
         <translation>Projektorin tiedot eivät ole saatavilla juuri nyt</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="642"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="643"/>
         <source>Projector Name</source>
         <translation>Projektorin nimi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="644"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="645"/>
         <source>Manufacturer</source>
         <translation>Valmistaja</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="646"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="647"/>
         <source>Model</source>
         <translation>Malli</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="648"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="649"/>
         <source>Other info</source>
         <translation>Muut tiedot</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="650"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="651"/>
         <source>Power status</source>
         <translation>Virran tila</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="652"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="653"/>
         <source>Shutter is</source>
         <translation>Sulkija on</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="652"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="653"/>
         <source>Closed</source>
         <translation>suljettu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="655"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="656"/>
         <source>Current source input is</source>
         <translation>Nykyinen tulo on</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="661"/>
         <source>Lamp</source>
         <translation>Lamppu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="661"/>
         <source>On</source>
         <translation>Päällä</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="661"/>
         <source>Off</source>
         <translation>Pois</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="660"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="661"/>
         <source>Hours</source>
         <translation>Tuntia</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="671"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="672"/>
         <source>No current errors or warnings</source>
         <translation>Ei virheitä tai varoituksia</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="673"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="674"/>
         <source>Current errors/warnings</source>
         <translation>Nykyiset virheet/varoiutukset</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="676"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="677"/>
         <source>Projector Information</source>
         <translation>Projektorin tiedot</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="808"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="809"/>
         <source>No message</source>
         <translation>Ei viestiä</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/manager.py" line="971"/>
+        <location filename="openlp/core/ui/projector/manager.py" line="972"/>
         <source>Not Implemented Yet</source>
         <translation>Ei ole vielä toteutettu</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/projector/manager.py" line="476"/>
+        <source>Delete projector (%s) %s?</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/projector/manager.py" line="478"/>
+        <source>Are you sure you want to delete this projector?</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>OpenLP.ProjectorPJLink</name>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="745"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="747"/>
         <source>Fan</source>
         <translation>Tuuletin</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="749"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="751"/>
         <source>Lamp</source>
         <translation>Lamppu</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="753"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="755"/>
         <source>Temperature</source>
         <translation>Lämpötila</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="757"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="759"/>
         <source>Cover</source>
         <translation>Peite</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="761"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="763"/>
         <source>Filter</source>
         <translation>Suodin</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/projector/pjlink1.py" line="765"/>
+        <location filename="openlp/core/lib/projector/pjlink1.py" line="767"/>
         <source>Other</source>
         <translation>Muu</translation>
     </message>
@@ -5433,7 +5555,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="101"/>
         <source>Connect to projectors on startup</source>
-        <translation>Yhdistä projektorit käynnistyksessä</translation>
+        <translation>Yhdistä projektorit käynnistäessä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="103"/>
@@ -5479,7 +5601,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/lib/screen.py" line="135"/>
         <source>Screen</source>
-        <translation>Näyttölaite</translation>
+        <translation>Näyttö</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/screen.py" line="137"/>
@@ -5523,7 +5645,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="155"/>
         <source>Move item to the top of the service.</source>
-        <translation>Siirrä kohde Listan ylimmäksi.</translation>
+        <translation>Siirrä kohde Listan ensimmäiseksi.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="160"/>
@@ -5613,7 +5735,11 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="1488"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
-        <translation>Näyttöelementtiä ei voi näyttää, koska sen vaatimaa lisäosaa ei ole asennettu tai aktivoitu.</translation>
+        <translation>Kohdetta ei voida näyttää!
+
+Kohteen tarvitsemaa moduulia ei ole asennettu tai se on otettu pois käytöstä.
+
+Voit hallita moduuleja ”Asetukset” valikon kautta.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="194"/>
@@ -5678,7 +5804,7 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="452"/>
         <source>Modified Service</source>
-        <translation>Muokattu Lista</translation>
+        <translation>Sulkeminen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="452"/>
@@ -5788,17 +5914,17 @@ Tiedostopäätettä ei tueta.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="253"/>
         <source>&amp;Auto play slides</source>
-        <translation>Toista diat &amp;automaatisesti</translation>
+        <translation>Toista &amp;automaatisesti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="257"/>
         <source>Auto play slides &amp;Loop</source>
-        <translation>Toista automaattisesti diat &amp;silmukassa</translation>
+        <translation>Toista automaattisesti &amp;loputtomasti.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="262"/>
         <source>Auto play slides &amp;Once</source>
-        <translation>Toista diat automaattisesti &amp;kertaalleen</translation>
+        <translation>Toista automaattisesti &amp;loppuun</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="884"/>
@@ -5842,7 +5968,7 @@ Tallenna se käyttäen OpenLP:n versiota 2.0.2. tai uudempaa.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="895"/>
         <source>&amp;Auto Start - inactive</source>
-        <translation>&amp;Automaattinen toisto - pois päältä</translation>
+        <translation>&amp;Automaattinen toisto - Ei päällä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="897"/>
@@ -5857,7 +5983,7 @@ Tallenna se käyttäen OpenLP:n versiota 2.0.2. tai uudempaa.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="984"/>
         <source>Delay between slides in seconds.</source>
-        <translation>Viive sekunteina diojen välissä.</translation>
+        <translation>Automaattisen toiston vaihtoaika sekunteina.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="1516"/>
@@ -5978,22 +6104,22 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="313"/>
         <source>Go To</source>
-        <translation>Siirry</translation>
+        <translation>Säkeen valinta</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="232"/>
         <source>Blank Screen</source>
-        <translation>Pimennä näyttölaite</translation>
+        <translation>Pimennä näyttö.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="237"/>
         <source>Blank to Theme</source>
-        <translation>Pimennä teemaan</translation>
+        <translation>Näytä vain teeman tausta.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="242"/>
         <source>Show Desktop</source>
-        <translation>Näytä työpöytä</translation>
+        <translation>Näytä työpöytä.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="499"/>
@@ -6013,12 +6139,12 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="207"/>
         <source>Move to previous.</source>
-        <translation>Siirry edelliseen</translation>
+        <translation>Siirry edelliseen.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="214"/>
         <source>Move to next.</source>
-        <translation>Siirry seuraavaan</translation>
+        <translation>Siirry seuraavaan.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="270"/>
@@ -6028,12 +6154,12 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="289"/>
         <source>Delay between slides in seconds.</source>
-        <translation>Viive sekunteina diojen välissä.</translation>
+        <translation>Automaattisen toiston vaihtoaika sekunteina.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="293"/>
         <source>Move to live.</source>
-        <translation>Siirrä Esitykseen.</translation>
+        <translation>Lähetä Esitykseen.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="296"/>
@@ -6043,7 +6169,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="300"/>
         <source>Edit and reload song preview.</source>
-        <translation>Muokkaa ja lataa laulu esikatseluun.</translation>
+        <translation>Muokkaa ja esikatsele.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="268"/>
@@ -6108,7 +6234,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="390"/>
         <source>Go to &quot;Other&quot;</source>
-        <translation>Siirry &quot;Muu&quot; säkeeseen</translation>
+        <translation>Siirry &quot;Muuhun&quot;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="207"/>
@@ -6144,42 +6270,42 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
 <context>
     <name>OpenLP.SourceSelectForm</name>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="389"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="393"/>
         <source>Select Projector Source</source>
         <translation>Valitse projektorin lähtö</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="387"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="391"/>
         <source>Edit Projector Source Text</source>
         <translation>Muokkaa projektorin lähdön tekstiä</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="148"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="152"/>
         <source>Ignoring current changes and return to OpenLP</source>
         <translation>Ohitetaan nykyiset muutokset ja palataan OpenLP:hen</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="151"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="155"/>
         <source>Delete all user-defined text and revert to PJLink default text</source>
-        <translation>Poista kaikki käyttäjän määrittelemät teksti ja palauta PJLink oletustekstit</translation>
+        <translation>Poista käyttäjän määrittämä teksti ja palauta PJLink:in oletusteksti.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="154"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="158"/>
         <source>Discard changes and reset to previous user-defined text</source>
         <translation>Hylkää muutokset ja palaa edeltäviin käyttäjän määrittelemiin teksteihin</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="157"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="161"/>
         <source>Save changes and return to OpenLP</source>
         <translation>Tallenna muutokset ja palaa OpenLP:hen</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="471"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="475"/>
         <source>Delete entries for this projector</source>
         <translation>Poista tämän projektorin tiedot</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="472"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="476"/>
         <source>Are you sure you want to delete ALL user-defined source input text for this projector?</source>
         <translation>Oletko varma, että haluat poistaa KAIKKI käyttäjän määrittelemät tekstit tälle projektorille?</translation>
     </message>
@@ -6194,7 +6320,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/lib/spelltextedit.py" line="110"/>
         <source>Formatting Tags</source>
-        <translation>Muotoilutagit</translation>
+        <translation>Tekstin muotoilu</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/spelltextedit.py" line="91"/>
@@ -6212,12 +6338,12 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themelayoutdialog.py" line="72"/>
         <source>The blue box shows the main area.</source>
-        <translation>Sininen laatikko osoittaa varsinaisen pääalueen.</translation>
+        <translation>Sininen laatikko on alue, jolla teksti näytetään.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themelayoutdialog.py" line="73"/>
         <source>The red box shows the footer.</source>
-        <translation>Punainen laatikko osoittaa alatunnisteen.</translation>
+        <translation>Punainen laatikko näyttää alatunnisteelle varatun alueen.</translation>
     </message>
 </context>
 <context>
@@ -6278,7 +6404,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="153"/>
         <source>(approximately %d lines per slide)</source>
-        <translation>(noin %d riviä dialla)</translation>
+        <translation>Näytölle mahtuu %d riviä tekstiä tällä koolla ja nykyisillä näyttöasetuksilla.</translation>
     </message>
 </context>
 <context>
@@ -6341,7 +6467,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="111"/>
         <source>Set As &amp;Global Default</source>
-        <translation>Aseta &amp;globaali oletusarvo</translation>
+        <translation>Aseta &amp;Yleiseksi teemaksi</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="474"/>
@@ -6356,17 +6482,20 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="753"/>
         <source>You are unable to delete the default theme.</source>
-        <translation>Et voi poistaa oletusteemaa.</translation>
+        <translation>Et voi poistaa &quot;Yleiseksi&quot; asetettua teemaa.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="760"/>
         <source>Theme %s is used in the %s plugin.</source>
-        <translation>Teemaa %s käytetään %s -lisäosassa.</translation>
+        <translation>Teemaa %s käytetään %s -moduulissa.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="374"/>
         <source>You have not selected a theme.</source>
-        <translation>Et ole valinnut teemaa.</translation>
+        <translation>Teemaa ei ole valittu.
+
+Ole hyvä ja valitse haluttu
+teema teemojen listasta.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="377"/>
@@ -6391,7 +6520,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="423"/>
         <source>Select Theme Import File</source>
-        <translation>Valitse tuotavan teeman tiedosto</translation>
+        <translation>Valitse tuotava OpenLP teematiedosto</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="600"/>
@@ -6436,17 +6565,18 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="333"/>
         <source>Delete Confirmation</source>
-        <translation>Poiston vahvistaminen</translation>
+        <translation>Poistaminen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="333"/>
         <source>Delete %s theme?</source>
-        <translation>Poistetaanko %s teema?</translation>
+        <translation>Haluatko varmasti poistaa teeman:
+%S</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="760"/>
         <source>Validation Error</source>
-        <translation>Virhe validoinnissa</translation>
+        <translation>Virhe</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="614"/>
@@ -6477,7 +6607,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="423"/>
         <source>OpenLP Themes (*.otz)</source>
-        <translation>OpenLP Teemat (*.otz)</translation>
+        <translation>OpenLP Teema (*.otz)</translation>
     </message>
 </context>
 <context>
@@ -6490,32 +6620,33 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="396"/>
         <source>Welcome to the Theme Wizard</source>
-        <translation>Tervetuloa  teemojen ohjattuun toimintoon</translation>
+        <translation>Uuden teeman luonti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="401"/>
         <source>Set Up Background</source>
-        <translation>Määrittele tausta</translation>
+        <translation>Taustan asetukset</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="402"/>
         <source>Set up your theme&apos;s background according to the parameters below.</source>
-        <translation>Asta teemallesi tausta allaolevia parametreja säätämällä.</translation>
+        <translation>Valitse listasta haluttu tausta. Läpinäkyvä tausta mahdollistaa esimerkiksi 
+PowerPoint tai videotaustojen käyttämisen erillisellä ohjelmalla.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="404"/>
         <source>Background type:</source>
-        <translation>Taustan tyyppi</translation>
+        <translation>Valitse haluttu tausta:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="407"/>
         <source>Gradient</source>
-        <translation>Väriliuku</translation>
+        <translation>Liukuväri</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="415"/>
         <source>Gradient:</source>
-        <translation>Väriliuku:</translation>
+        <translation>Kuvio:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="416"/>
@@ -6545,12 +6676,12 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="428"/>
         <source>Main Area Font Details</source>
-        <translation>Tekstialueen fontin asetukset</translation>
+        <translation>Fontin asetukset</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="429"/>
         <source>Define the font and display characteristics for the Display text</source>
-        <translation>Määrittele fontti ja sen ominaisuudet tekstille</translation>
+        <translation>Valitse käytettävä fontti ja muotoilut.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="448"/>
@@ -6590,37 +6721,37 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="445"/>
         <source>Footer Area Font Details</source>
-        <translation>Alatunnisteen fontin asetukset</translation>
+        <translation>Alatunnisteen fontti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="446"/>
         <source>Define the font and display characteristics for the Footer text</source>
-        <translation>Määrittele fontti ja sen ominaisuudet alatunnisteessa</translation>
+        <translation>Valitse käytettävä fontti ja muotoilut alatunnisteessa.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="452"/>
         <source>Text Formatting Details</source>
-        <translation>Tekstin muotolutiedot</translation>
+        <translation>Tekstin lisäasetukset</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="453"/>
         <source>Allows additional display formatting information to be defined</source>
-        <translation>Sallii ylimääräisten näytön muotoilutietojen määrittelemisen</translation>
+        <translation>Valitse tekstin tasauksen ja siirtymäefektien asetukset.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="455"/>
         <source>Horizontal Align:</source>
-        <translation>Vaakasuora kohdistus</translation>
+        <translation>Vaakasuora tasaus:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="456"/>
         <source>Left</source>
-        <translation>Vasen</translation>
+        <translation>Vasempaan reunaan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="457"/>
         <source>Right</source>
-        <translation>Oikea</translation>
+        <translation>Oikeaan reunaan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="458"/>
@@ -6630,7 +6761,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="461"/>
         <source>Output Area Locations</source>
-        <translation>Tulostusalueen sijainti</translation>
+        <translation>Näyttöalueen asetukset</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="464"/>
@@ -6640,22 +6771,22 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="465"/>
         <source>&amp;Use default location</source>
-        <translation>&amp;Käytä oletussijaintia</translation>
+        <translation>&amp;Määritä automaattisesti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="475"/>
         <source>X position:</source>
-        <translation>X sijainti:</translation>
+        <translation>Vaakatason sisennys:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="482"/>
         <source>px</source>
-        <translation>px</translation>
+        <translation> pikseliä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="477"/>
         <source>Y position:</source>
-        <translation>Y sijainti:</translation>
+        <translation>Pystytason sisennys:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="479"/>
@@ -6670,7 +6801,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="483"/>
         <source>Use default location</source>
-        <translation>Käytä oletussijaintia</translation>
+        <translation>Määritä automaattisesti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="488"/>
@@ -6685,12 +6816,13 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="398"/>
         <source>This wizard will help you to create and edit your themes. Click the next button below to start the process by setting up your background.</source>
-        <translation>Tämä ohjattu toiminto helpottaa teemojen muokkamista ja luomista. Paina &apos;Seuraava&apos;-painiketta aloittaksesi taustan asetuksisata.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Tämän työkalun avulla voit luoda uuden teeman.&lt;br&gt;
+Aloita teeman luonti painamalla &apos;Seuraava&apos;.&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="460"/>
         <source>Transitions:</source>
-        <translation>Siirtymät:</translation>
+        <translation>Näytä siirtymäefekti diaa vaihtaessa:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="474"/>
@@ -6710,12 +6842,12 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="426"/>
         <source>Background color:</source>
-        <translation>Taustaväri:</translation>
+        <translation>Taustan väri:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="459"/>
         <source>Justify</source>
-        <translation>Tasaa</translation>
+        <translation>Tasaa molemmat reunat</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="485"/>
@@ -6725,17 +6857,17 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="410"/>
         <source>Transparent</source>
-        <translation>Läpikuultava</translation>
+        <translation>Läpinäkyvä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="486"/>
         <source>Preview and Save</source>
-        <translation>Esikatsele ja tallenna</translation>
+        <translation>Teeman yhteenveto</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="487"/>
         <source>Preview the theme and save it.</source>
-        <translation>Esikatsele teema ja tallenna se.</translation>
+        <translation>Voit nyt tallentaa teeman tai palata muokkaukseen. Alapuolella on malli teeman ulkoasusta.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="181"/>
@@ -6750,17 +6882,17 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="511"/>
         <source>Theme Name Missing</source>
-        <translation>Teeman nimi puuttuu</translation>
+        <translation>Teeman nimikenttä on tyhjä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="511"/>
         <source>There is no name for this theme. Please enter one.</source>
-        <translation>Teemalle ei ole annettu nimeä. Ole hyvä ja anna se.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Teema tarvitsee nimen, anna teemalle nimi ennen tallentamista. &lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="516"/>
         <source>Theme Name Invalid</source>
-        <translation>Teeman nimi on kelvoton</translation>
+        <translation>Teeman nimi on virheellinen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="516"/>
@@ -6780,12 +6912,16 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="462"/>
         <source>Allows you to change and move the Main and Footer areas.</source>
-        <translation>Sallii muuttaa ja siirtää tekstin ja alatunnisteen alueita.</translation>
+        <translation>Voit halutessasi muuttaa käytettävissä olevaa näytön 
+resoluutiota sekä tekstin sisennystä reunoilta.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="181"/>
         <source>You have not selected a background image. Please select one before continuing.</source>
-        <translation>Et ole valinnut taustakuvaa. Ole hyvä ja valitse kuva ennen kuin jatketaan eteenpäin.</translation>
+        <translation>Taustakuvaa ei ole valittu.
+
+Sinun on valittava kuva ennen
+kuin voit jatkaa eteenpäin.</translation>
     </message>
 </context>
 <context>
@@ -6793,22 +6929,32 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="115"/>
         <source>Global Theme</source>
-        <translation>Globaali teema</translation>
+        <translation>Yleinen teema</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="118"/>
         <source>Theme Level</source>
-        <translation>Teeman taso</translation>
+        <translation>Teemojen toiminta</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="119"/>
         <source>S&amp;ong Level</source>
-        <translation>La&amp;ulun taso</translation>
+        <translation>&amp;Kohdekohtainen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="120"/>
         <source>Use the theme from each song in the database. If a song doesn&apos;t have a theme associated with it, then use the service&apos;s theme. If the service doesn&apos;t have a theme, then use the global theme.</source>
-        <translation>Käytä teemaa, mikä on määritelty laululle tietokannassa. Jos laululle ei ole määritelty teemaa, käytetään Listan teemaa. Jos Listalle ei ole määritelty teemaa, käytetään globaalia teemaa sen sijaan.</translation>
+        <translation>Käytä kohdekohtaisia teemoja. 
+Voit valita eri lauluille ja tekstidioille 
+omat teemansa. Raamatut käyttävät 
+Raamatuille määriteltyä teemaa. 
+
+Jos kohteelle ei ole määritetty 
+omaa teemaa, käytetään Listan 
+teemaa, jos Listalla ei ole teemaa 
+käytetään Yleistä teemaa.
+
+</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="124"/>
@@ -6818,17 +6964,24 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="125"/>
         <source>Use the theme from the service, overriding any of the individual songs&apos; themes. If the service doesn&apos;t have a theme, then use the global theme.</source>
-        <translation>Käytä Listalle määriteltyä teemaa ylimäärittelemään laulukohtaiset teemat. Jos ajolistalla ei ole teemaa, käytetään globaalia teemaa sen sijaan.</translation>
+        <translation>Käytä Listan teemaa ja korvaa 
+sillä kohdekohtaiset teemat. 
+
+Jos Listalla ei ole teemaa, 
+käytetään Yleistä teemaa sen sijaan.
+
+</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="129"/>
         <source>&amp;Global Level</source>
-        <translation>&amp;Globaali taso</translation>
+        <translation>&amp;Yleinen taso</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="130"/>
         <source>Use the global theme, overriding any themes associated with either the service or the songs.</source>
-        <translation>Käytä globaalia teemaa ylimäärittelemään kaikki Listalle tai lauluille määritellyt teemat.</translation>
+        <translation>Käytä Yleistä teemaa ja korvaa 
+sillä kohdekohtaiset ja Listan teemat.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="43"/>
@@ -6838,7 +6991,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="116"/>
         <source>Universal Settings</source>
-        <translation>Yleiseet asetukset</translation>
+        <translation>Yleiset asetukset</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="117"/>
@@ -6927,17 +7080,17 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="310"/>
         <source>Welcome to the Bible Import Wizard</source>
-        <translation>Tervetuloa Raamattujen tuonnin ohjattuun toimintoon.</translation>
+        <translation>Raamattujen tuonti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="146"/>
         <source>Welcome to the Song Export Wizard</source>
-        <translation>Tervetuloa laulujen viennin ohjattuun toimintoon.</translation>
+        <translation>Laulujen vienti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="134"/>
         <source>Welcome to the Song Import Wizard</source>
-        <translation>Tervetuloa laulujen tuonnin ohjattuun toimintoon.</translation>
+        <translation>Laulujen tuonti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="34"/>
@@ -6953,7 +7106,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="37"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -6999,12 +7152,12 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="234"/>
         <source>Welcome to the Bible Upgrade Wizard</source>
-        <translation>Tervetuloa Raamattujen päiviittämisen ohjattuun toimintoon</translation>
+        <translation>Raamattujen päivittäminen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="57"/>
         <source>Open %s Folder</source>
-        <translation>Avaa %s hakemisto</translation>
+        <translation>Avaa %s kansio</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="61"/>
@@ -7016,7 +7169,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
         <location filename="openlp/core/ui/wizard.py" line="65"/>
         <source>You need to specify one %s folder to import from.</source>
         <comment>A song format e.g. PowerSong</comment>
-        <translation>Sinun tulee määritellä ainakin yksi %s hakemisto tuotavaksi.</translation>
+        <translation>Sinun on määritettävä vähintään yksi %s kansio, josta haluat tuoda tiedostoja.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="309"/>
@@ -7026,7 +7179,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="133"/>
         <source>Welcome to the Duplicate Song Removal Wizard</source>
-        <translation>Tervetuloa päällekkäisten laulujen poistotoimintoon.</translation>
+        <translation>Päällekkäisten laulujen haku</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="504"/>
@@ -7076,7 +7229,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="59"/>
         <source>Bottom</source>
-        <translation>Alas</translation>
+        <translation>Alareunaan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="60"/>
@@ -7116,7 +7269,7 @@ Nämä tiedostot poistetaan jos tallennat.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="68"/>
         <source>Default Color:</source>
-        <translation>Oletusväri:</translation>
+        <translation>Taustan väri:</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="69"/>
@@ -7133,7 +7286,7 @@ See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for 
     <message>
         <location filename="openlp/core/common/uistrings.py" line="74"/>
         <source>Display style:</source>
-        <translation>Näyttötyyli:</translation>
+        <translation>Numeroiden sulut:</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="75"/>
@@ -7181,7 +7334,7 @@ Ole hyvä ja yritä valita se erikseen.</translation>
         <location filename="openlp/core/common/uistrings.py" line="83"/>
         <source>pt</source>
         <comment>Abbreviated font pointsize unit</comment>
-        <translation>pt</translation>
+        <translation> pt</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="84"/>
@@ -7198,19 +7351,19 @@ Ole hyvä ja yritä valita se erikseen.</translation>
         <location filename="openlp/core/common/uistrings.py" line="86"/>
         <source>Invalid Folder Selected</source>
         <comment>Singular</comment>
-        <translation>Virheellinen hakemisto valittu</translation>
+        <translation>Valittu tiedostosijainti on virheellinen</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="87"/>
         <source>Invalid File Selected</source>
         <comment>Singular</comment>
-        <translation>Virheellinen tiedosto valittu</translation>
+        <translation>Virheellinen tiedosto on valittu</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="88"/>
         <source>Invalid Files Selected</source>
         <comment>Plural</comment>
-        <translation>Virheelliset tiedostot valittu</translation>
+        <translation>Virheelliset tiedostot on valittu</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="89"/>
@@ -7220,7 +7373,7 @@ Ole hyvä ja yritä valita se erikseen.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="90"/>
         <source>Import</source>
-        <translation>Tuonti</translation>
+        <translation>Tuo tiedosta…</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="91"/>
@@ -7306,7 +7459,7 @@ Ole hyvä ja yritä valita se erikseen.</translation>
         <location filename="openlp/core/common/uistrings.py" line="106"/>
         <source>No Folder Selected</source>
         <comment>Singular</comment>
-        <translation>Hakemistoa ei ole valittu</translation>
+        <translation>Kansiota ei ole valittu</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="107"/>
@@ -7324,13 +7477,13 @@ Ole hyvä ja yritä valita se erikseen.</translation>
         <location filename="openlp/core/common/uistrings.py" line="109"/>
         <source>No Item Selected</source>
         <comment>Singular</comment>
-        <translation>Yhtään kohtaa ei ole valittu</translation>
+        <translation>Tyhjä kenttä</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="110"/>
         <source>No Items Selected</source>
         <comment>Plural</comment>
-        <translation>Kohtia ei ole valittu luettelosta</translation>
+        <translation>Valinta on tyhjä</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="111"/>
@@ -7350,12 +7503,12 @@ Ole hyvä ja yritä valita se erikseen.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="115"/>
         <source>Play Slides in Loop</source>
-        <translation>Toista diat silmukassa</translation>
+        <translation>Toista loputtomasti</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="116"/>
         <source>Play Slides to End</source>
-        <translation>Toista diat alusta loppuun </translation>
+        <translation>Toista loppuun</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="117"/>
@@ -7419,7 +7572,7 @@ Ole hyvä ja yritä valita se erikseen.</translation>
         <location filename="openlp/core/common/uistrings.py" line="131"/>
         <source>Search Themes...</source>
         <comment>Search bar place holder text </comment>
-        <translation>Etsi teemoja...</translation>
+        <translation>Hae teemoja...</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="132"/>
@@ -7464,12 +7617,12 @@ Ole hyvä ja yritä valita se erikseen.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="141"/>
         <source>Stop Play Slides in Loop</source>
-        <translation>Keskeytä diojen toisto silmukassa</translation>
+        <translation>Keskeytä loputon toisto</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="142"/>
         <source>Stop Play Slides to End</source>
-        <translation>Keskeytä diojen toisto alusta loppuun</translation>
+        <translation>Keskeytä loppuun asti toistaminen</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="143"/>
@@ -7491,7 +7644,7 @@ Ole hyvä ja yritä valita se erikseen.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="146"/>
         <source>Top</source>
-        <translation>Ylös</translation>
+        <translation>Yläreunaan</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="147"/>
@@ -7531,7 +7684,7 @@ Ole hyvä ja yritä valita se erikseen.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="112"/>
         <source>OpenLP 2.2</source>
-        <translation>OpenLP 2.2</translation>
+        <translation>OpenLP</translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="118"/>
@@ -7541,7 +7694,8 @@ Ole hyvä ja yritä valita se erikseen.</translation>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="124"/>
         <source>Replace live background is not available on this platform in this version of OpenLP.</source>
-        <translation>Korvattava esityksen tausta ei ole saatavilla tälle alustalle nykyversion OpenLP:ssä.</translation>
+        <translation>Esityksen videotaustoja ei vielä tueta tässä OpenLP:n versiossa.
+Voit kuitenkin käyttää videotaustoja läpinäkyvien teemojen avulla.</translation>
     </message>
 </context>
 <context>
@@ -7584,13 +7738,23 @@ Ole hyvä ja yritä valita se erikseen.</translation>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="160"/>
         <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
-        <translation>&lt;strong&gt;Esitysgrafiikka-lisäosa&lt;/strong&gt;&lt;/br&gt;Esitysgrafiikka-lisäosa mahdollistaa valmiiden esitysten käyttämisen Listalla. Käytettävissä olevat esitysgrafiikkaohjelmat voi valita alasvetolistalta.</translation>
+        <translation>&lt;strong&gt;Presentaatiot&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;
+
+Tämä moduuli mahdollistaa presentaatioiden, kuten 
+diaesityksien ja .pdf tiedostojen näyttämisen.&lt;br/&gt;&lt;br/&gt;
+
+Presentaatiot tarvitsevat avukseen sopivat ohjaimet.
+Diaesityksiin tarvitaan esimerkiksi joko Power Point
+tai Libre Office. &lt;br/&gt;&lt;br/&gt;
+
+Ohjaimia on mahdollista tarkkailla&lt;br/&gt;
+”Asetukset” valikon kautta.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
         <source>Presentation</source>
         <comment>name singular</comment>
-        <translation>Presentaatio</translation>
+        <translation>Presentaatiot</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="174"/>
@@ -7697,7 +7861,7 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="116"/>
         <source>Available Controllers</source>
-        <translation>Saatavilla olevat ohjaimet</translation>
+        <translation>Käytettävissä olevat sovellukset</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="140"/>
@@ -7707,7 +7871,7 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="124"/>
         <source>Allow presentation application to be overridden</source>
-        <translation>Salli ylimääritellä esitysgrafiikan sovellus</translation>
+        <translation>Salli esityssovelluksen valinta Presentaatioille</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="122"/>
@@ -7718,7 +7882,7 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
         <translation>Määritä polku mudraw tai ghostscript ohjelmaan.
-(OpenLP käyttää oletuksena sisäänrakennettua)</translation>
+(OpenLP käyttää oletuksena sisäänrakennettua.)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="234"/>
@@ -7733,17 +7897,18 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
         <source>PowerPoint options</source>
-        <translation>PowerPoint asetukset</translation>
+        <translation>PowerPoint:in asetukset</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
         <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
-        <translation>Klikkaamalla valittua dia diakokoelmassa siirtyy seuraavaan efektiin.</translation>
+        <translation>Toista diaesityksen efektit, kuten animaatiot ja siirtymät.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
         <source>Let PowerPoint control the size and position of the presentation window (workaround for Windows 8 scaling issue).</source>
-        <translation type="unfinished"></translation>
+        <translation>Anna PowerPointin määritellä käytettävät näyttöasetukset. 
+(Tämä korjaa Windows 8:n ja 10:n liityviä PowePoint ongelmia.)</translation>
     </message>
 </context>
 <context>
@@ -7751,25 +7916,31 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="95"/>
         <source>&lt;strong&gt;Remote Plugin&lt;/strong&gt;&lt;br /&gt;The remote plugin provides the ability to send messages to a running version of OpenLP on a different computer via a web browser or through the remote API.</source>
-        <translation>&lt;strong&gt;Kaukosäädin-lisäosa&lt;/strong&gt;&lt;/br&gt;Kaukosäädin-lisäosa mahdollistaa viestien lähettämisen OpenLP:n esitykseen toiselta koneelta tai esimerkiksi hyvästä android-puhelimesta.</translation>
+        <translation>&lt;strong&gt;Etähallinta &lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;
+
+Tämä moduuli mahdollistaa OpenLP:n etäkäytön&lt;br/&gt;
+esimerkiksi toiselta koneelta tai Android puhelimella. &lt;br&gt;&lt;br&gt;
+
+Moduulin avulla on myös mahdollista välittää&lt;br&gt;
+Esitys verkkoselaimeen sekä käyttää lavanäkymää.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="107"/>
         <source>Remote</source>
         <comment>name singular</comment>
-        <translation>Kaukosäädin</translation>
+        <translation>Etähallinta</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="108"/>
         <source>Remotes</source>
         <comment>name plural</comment>
-        <translation>Kaukosäätimet</translation>
+        <translation>Etähallinta</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="112"/>
         <source>Remote</source>
         <comment>container title</comment>
-        <translation>Kaukosäädin</translation>
+        <translation>Etähallinta</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="120"/>
@@ -7792,17 +7963,17 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="317"/>
         <source>Slide Controller</source>
-        <translation>Diojen ohjaus</translation>
+        <translation>Esitys</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="318"/>
         <source>Alerts</source>
-        <translation>Hälytykset</translation>
+        <translation>Huomioviestit</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="319"/>
         <source>Search</source>
-        <translation>Etsi</translation>
+        <translation>Haku</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="320"/>
@@ -7852,7 +8023,7 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="329"/>
         <source>Show Alert</source>
-        <translation>Näytä hälytys</translation>
+        <translation>Näytä huomioviesti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="330"/>
@@ -7882,12 +8053,12 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="335"/>
         <source>Service</source>
-        <translation>Palvelu</translation>
+        <translation>Lista</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="336"/>
         <source>Slides</source>
-        <translation>Diat</translation>
+        <translation>Esitys</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="337"/>
@@ -7897,17 +8068,17 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="313"/>
         <source>OpenLP 2.2 Remote</source>
-        <translation>OpenLP 2.2 Kaukosäädin</translation>
+        <translation>OpenLP  |  Etähallinta</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="314"/>
         <source>OpenLP 2.2 Stage View</source>
-        <translation>OpenLP 2.2 näyttämönäkymä</translation>
+        <translation>OpenLP | Lavanäyttö</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="315"/>
         <source>OpenLP 2.2 Live View</source>
-        <translation>OpenLP 2.2. Esitysnäkymä</translation>
+        <translation>OpenLP | Esitys</translation>
     </message>
 </context>
 <context>
@@ -7930,12 +8101,12 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="172"/>
         <source>Remote URL:</source>
-        <translation>Palvelimen URL:</translation>
+        <translation>Etähallinnan osoite:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="173"/>
         <source>Stage view URL:</source>
-        <translation>Näyttölavan URL:</translation>
+        <translation>Lavanäytön osoite:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="175"/>
@@ -7948,44 +8119,45 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
         <translation>Android sovellus</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="179"/>
-        <source>Scan the QR code or click &lt;a href=&quot;https://play.google.com/store/apps/details?id=org.openlp.android&quot;&gt;download&lt;/a&gt; to install the Android app from Google Play.</source>
-        <translation>Skannaa QR-koodi tai klikkaa &lt;a href=&quot;https://play.google.com/store/apps/details?id=org.openlp.android&quot;&gt;lataa&lt;/a&gt; ja asenna Android-sovellus Google Play:sta.</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="174"/>
         <source>Live view URL:</source>
-        <translation>Esitysnäkymän URL:</translation>
+        <translation>Esitysnäkymän osoite:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="182"/>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="183"/>
         <source>HTTPS Server</source>
         <translation>HTTPS palvelin</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="183"/>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="184"/>
         <source>Could not find an SSL certificate. The HTTPS server will not be available unless an SSL certificate is found. Please see the manual for more information.</source>
         <translation>SSL sertifikaattia ei löydy. HTTPS palvelinta ei voi käyttää ellei SSL sertifikaattia ole saatavilla. Katso ohjekirjasta lisätietoja.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="190"/>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="191"/>
         <source>User Authentication</source>
         <translation>Käyttäjän todentaminen</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="191"/>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="192"/>
         <source>User id:</source>
         <translation>Käyttäjän id:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="192"/>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="193"/>
         <source>Password:</source>
         <translation>Salasana:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="176"/>
         <source>Show thumbnails of non-text slides in remote and stage view.</source>
-        <translation>Näytä pienet kuvat tekstittömistä dioista kaukosäätimessä ja näyttämönäkymässä.</translation>
+        <translation>Näytä pienet kuvat tekstittömistä dioista
+etähallinnassa ja lavanäkymässä.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="179"/>
+        <source>Scan the QR code or click &lt;a href=&quot;%s&quot;&gt;download&lt;/a&gt; to install the Android app from Google Play.</source>
+        <translation>Skannaa QR-koodi tai klikkaa &lt;a href=&quot;%s&quot;&gt;lataa&lt;/a&gt; asentaaksesi Android-sovelluksen Google Play:sta.</translation>
     </message>
 </context>
 <context>
@@ -8008,7 +8180,7 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="97"/>
         <source>&amp;Extract Tracking Data</source>
-        <translation>Pura tilastotiedot</translation>
+        <translation>Tallenna nimellä</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="97"/>
@@ -8028,25 +8200,28 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="238"/>
         <source>&lt;strong&gt;SongUsage Plugin&lt;/strong&gt;&lt;br /&gt;This plugin tracks the usage of songs in services.</source>
-        <translation>&lt;strong&gt;Laulujen käyttötilastointi -lisäosa&lt;/strong&gt;&lt;/br&gt;Tämä lisäosa pitää yllä tilastoa jumalanpalveluksissa käytetyistä lauluista.</translation>
+        <translation>&lt;strong&gt;Laulujen käyttötilastointi&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;
+
+Tämän moduulin avulla voidaan&lt;br/&gt;
+tilastoida käytettyjä lauluja.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="249"/>
         <source>SongUsage</source>
         <comment>name singular</comment>
-        <translation>Soittotilasto</translation>
+        <translation>Laulujen käyttötilastointi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="250"/>
         <source>SongUsage</source>
         <comment>name plural</comment>
-        <translation>Soittotilasto</translation>
+        <translation>Laulujen käyttötilastointi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="254"/>
         <source>SongUsage</source>
         <comment>container title</comment>
-        <translation>Soittotilasto</translation>
+        <translation>Laulujen käyttötilastointi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="155"/>
@@ -8056,7 +8231,7 @@ ei enää ole - se on poistettu, siirretty tai uudelleennimetty.</translation>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="179"/>
         <source>Song usage tracking is active.</source>
-        <translation>Soittotilastointi on aktiivinen.</translation>
+        <translation>Laulujen käyttötilastointi on päällä.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="184"/>
@@ -8183,7 +8358,7 @@ Ole hyvä ja valitse olemassaoleva kansio tietokoneestasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="143"/>
         <source>&amp;Song</source>
-        <translation>&amp;Laulu</translation>
+        <translation>&amp;Laulut</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="123"/>
@@ -8193,7 +8368,10 @@ Ole hyvä ja valitse olemassaoleva kansio tietokoneestasi.</translation>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="222"/>
         <source>&lt;strong&gt;Songs Plugin&lt;/strong&gt;&lt;br /&gt;The songs plugin provides the ability to display and manage songs.</source>
-        <translation>&lt;strong&gt;Laulut -lisäosa&lt;/strong&gt;&lt;br /&gt;Laulut -lisäosalla voidaan näyttää ja hallinnoida laulujen sanoja.</translation>
+        <translation>&lt;strong&gt;Laulut&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;
+
+Tämä moduuli mahdollistaa laulujen&lt;br/&gt; 
+näyttämisen ja hallinnoinnin.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="157"/>
@@ -8305,7 +8483,7 @@ Enkoodaus määrittelee tekstille oikean merkistöesityksen.</translation>
         <location filename="openlp/plugins/songs/songsplugin.py" line="267"/>
         <source>Song</source>
         <comment>name singular</comment>
-        <translation>Laulu</translation>
+        <translation>Laulut</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="268"/>
@@ -8332,7 +8510,7 @@ Enkoodaus määrittelee tekstille oikean merkistöesityksen.</translation>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="279"/>
         <source>Edit the selected song.</source>
-        <translation>Muokkaa valittua lalulua.</translation>
+        <translation>Muokkaa valittua laulua.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="280"/>
@@ -8367,7 +8545,7 @@ Enkoodaus määrittelee tekstille oikean merkistöesityksen.</translation>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="129"/>
         <source>Import songs from CCLI&apos;s SongSelect service.</source>
-        <translation>Tuo laulut CCLI SongSelect ajolistan tiedostoista.</translation>
+        <translation>Tuo laulut CCLI SongSelect Listatiedostosta.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
@@ -8498,7 +8676,8 @@ Enkoodaus määrittelee tekstille oikean merkistöesityksen.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="203"/>
         <source>Could not find the &quot;Songs.MB&quot; file. It must be in the same folder as the &quot;Songs.DB&quot; file.</source>
-        <translation>Tiedostoa &quot;Songs.MB&quot; ei löydy. Se täytyy olla samassa hakemistossa kuin &quot;Songs.DB&quot; -tiedosto.</translation>
+        <translation>Tiedostoa &quot;Songs.MB&quot; ei löydetty.
+Varmista, että se on tallennettuna samaan kansioon kuin ”Songs.DB” tiedosto.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="219"/>
@@ -8564,7 +8743,7 @@ Enkoodaus määrittelee tekstille oikean merkistöesityksen.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="303"/>
         <source>&amp;Add to Song</source>
-        <translation>&amp;Lisää lauluun</translation>
+        <translation>&amp;Lisää tekijä</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="327"/>
@@ -8579,7 +8758,7 @@ Enkoodaus määrittelee tekstille oikean merkistöesityksen.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="308"/>
         <source>A&amp;dd to Song</source>
-        <translation>&amp;Lisää lauluun</translation>
+        <translation>&amp;Lisää aihe</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="309"/>
@@ -8659,7 +8838,7 @@ Enkoodaus määrittelee tekstille oikean merkistöesityksen.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="662"/>
         <source>You have not selected a valid topic. Either select a topic from the list, or type in a new topic and click the &quot;Add Topic to Song&quot; button to add the new topic.</source>
-        <translation>Et ole valinnut kelvollista aihetta. Valitse joko aihe luettelosta tai syötä uusi aihe ja paina &quot;Lisää aihe laululle&quot; -painiketta.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Aihe ei voi olla tyhjä, kirjoita haluttu aihe tai&lt;br&gt; valitse jo olemassa oleva aihe listasta.&lt;font size=&quot;4&quot;&gt;</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="203"/>
@@ -8761,7 +8940,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editversedialog.py" line="70"/>
         <source>Edit Verse</source>
-        <translation>Muokkaa säettä</translation>
+        <translation>Sanojen muokkaus</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editversedialog.py" line="71"/>
@@ -8789,12 +8968,12 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="151"/>
         <source>Select Songs</source>
-        <translation>Valitse laulut</translation>
+        <translation>Laulujen valinta</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="152"/>
         <source>Check the songs you want to export.</source>
-        <translation>Tarkista laulut, jotka tahdot viedä.</translation>
+        <translation>Valitse laulut, jotka haluat tallentaa.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="155"/>
@@ -8809,22 +8988,22 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="157"/>
         <source>Select Directory</source>
-        <translation>Valitse hakemisto</translation>
+        <translation>Valitse tiedostosijainti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="160"/>
         <source>Directory:</source>
-        <translation>Hakemisto:</translation>
+        <translation>Tiedostosijainti:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="161"/>
         <source>Exporting</source>
-        <translation>Viedään</translation>
+        <translation>Tallennetaan...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="162"/>
         <source>Please wait while your songs are exported.</source>
-        <translation>Ole hyvä ja odota hetki kunnes laulut on viety.</translation>
+        <translation>Lauluja tallennetaan, ole hyvä ja odota hetki.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="178"/>
@@ -8844,22 +9023,24 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="192"/>
         <source>You need to specify a directory.</source>
-        <translation>Sinun pitää määritellä hakemisto.</translation>
+        <translation>Sinun täytyy määritellä tiedostosijainti.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="317"/>
         <source>Select Destination Folder</source>
-        <translation>Valitse kohdehakemisto</translation>
+        <translation>Valitse tiedostosijainti.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="158"/>
         <source>Select the directory where you want the songs to be saved.</source>
-        <translation>Valitse hakemisto, jonne laulut tallennetaan.</translation>
+        <translation>Valitse tiedostosijainti, jonne haluat tallentaa laulut.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="148"/>
         <source>This wizard will help to export your songs to the open and free &lt;strong&gt;OpenLyrics &lt;/strong&gt; worship song format.</source>
-        <translation>Tämä ohjattu toiminto helpottaa laulujen viemistä avoimeen ja vapaaseen &lt;strong&gt;OpenLyrics&lt;/strong&gt; ylistyslaulujen formaattiin.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Tämä toiminto auttaa sinua tallentamaan&lt;br&gt; laulusi &lt;strong&gt;OpenLyrics&lt;/strong&gt; muotoon. &lt;br&gt;&lt;br&gt;Näin OpenLyrics tiedostomuotoa tukevat &lt;br&gt;
+sovellukset pystyvät käyttämään laulujasi.&lt;br&gt;&lt;br&gt;
+Paina &quot;Seuraava&quot; aloittaaksesi&lt;/font&gt;</translation>
     </message>
 </context>
 <context>
@@ -8885,7 +9066,8 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="136"/>
         <source>This wizard will help you to import songs from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
-        <translation>Tämä ohjattu toiminto helpottaa laulujen tuomista eri formaateista. Paina &apos;Seuraava&apos;-painiketta aloittaaksesi prosessin valitsemalla muodon, josta tuonti tehdään.</translation>
+        <translation>&lt;font size=&quot;4&quot;&gt;Tämä toiminto auttaa sinua tuomaan ohjelmaan lauluja erilaisista tiedostoista. &lt;br&gt;&lt;br&gt;
+Paina ”Seuraava” aloittaaksesi.&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="200"/>
@@ -8960,7 +9142,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="190"/>
         <source>OpenLyrics or OpenLP 2.0 Exported Song</source>
-        <translation>OpenLyrics tai OpenLP 2.0 viety laulu</translation>
+        <translation>OpenLyrics tai OpenLP 2.0 viety laulutiedosto</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="189"/>
@@ -8990,7 +9172,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="275"/>
         <source>You need to specify a valid PowerSong 1.0 database folder.</source>
-        <translation>Sinun pitää määritellä kelvollinen PowerSong 1.0 tietokannan hakemisto.</translation>
+        <translation>Annetun tiedostosijainnin pitää sisältää toimiva PowerSong 1.0 tietokanta.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="359"/>
@@ -9121,10 +9303,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message numerus="yes">
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="361"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
-        <translation>
-            <numerusform>Oletko varma että haluat poistaa kaikki %n valittua laulu(a)?</numerusform>
-            <numerusform>Oletko varma että haluat poistaa kaikki %n valittua laulu(a)?</numerusform>
-        </translation>
+        <translation><numerusform>Oletko varma että haluat poistaa kaikki %n valittua laulu(a)?</numerusform><numerusform>Oletko varma että haluat poistaa kaikki %n valittua laulu(a)?</numerusform></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="128"/>
@@ -9155,12 +9334,12 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
         <source>Search Authors...</source>
-        <translation>Etsi tekijöitä...</translation>
+        <translation>Hae tekijöitä...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
         <source>Search Song Books...</source>
-        <translation>Etsi laulukirjoja...</translation>
+        <translation>Hae laulukirjoista...</translation>
     </message>
 </context>
 <context>
@@ -9184,7 +9363,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/openlyricsexport.py" line="64"/>
         <source>Exporting &quot;%s&quot;...</source>
-        <translation>Viedään &quot;%s&quot;...</translation>
+        <translation>Tallennetaan &quot;%s&quot;...</translation>
     </message>
 </context>
 <context>
@@ -9192,7 +9371,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/opensong.py" line="139"/>
         <source>Invalid OpenSong song file. Missing song tag.</source>
-        <translation>Virheellinen OpenSong laulutiedosto. Laulun tagi puuttuu.</translation>
+        <translation>Virheellinen OpenSong laulutiedosto. Laulun tunniste puuttuu.</translation>
     </message>
 </context>
 <context>
@@ -9261,7 +9440,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="249"/>
         <source>Finished export. To import these files use the &lt;strong&gt;OpenLyrics&lt;/strong&gt; importer.</source>
-        <translation>Vienti valmistui. Tuodaksesi nämä tiedostot käytä &lt;strong&gt;OpenLyrics&lt;/strong&gt; tuontia.</translation>
+        <translation>Valmista! Voit avata tiedoston toisessa asennuksessa &lt;strong&gt;OpenLyrics&lt;/strong&gt; tuonnin avulla.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="255"/>
@@ -9382,7 +9561,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="489"/>
         <source>Are you sure you want to delete the selected book?</source>
-        <translation>Oletko varma, että tahdot poistaa valitun kirjan?</translation>
+        <translation>Haluatko varmasti poistaa valitun kirjan?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="489"/>
@@ -9440,7 +9619,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="234"/>
         <source>Search Text:</source>
-        <translation>Etsi tekstiä:</translation>
+        <translation>Hae tekstiä:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="235"/>
@@ -9558,7 +9737,7 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/songstab.py" line="73"/>
         <source>Songs Mode</source>
-        <translation>Laulut-tila</translation>
+        <translation>Laulut</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/songstab.py" line="74"/>
@@ -9583,7 +9762,12 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/songstab.py" line="80"/>
         <source>Display songbook in footer</source>
-        <translation>Näytä laulukirja alatunnisteessa.</translation>
+        <translation>Näytä laulukirja alatunnisteessa</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="81"/>
+        <source>Display &quot;%s&quot; symbol before copyright info</source>
+        <translation>Näytä &quot;%s&quot; symboli ennen tekijäinoikeusinfoa.</translation>
     </message>
 </context>
 <context>
