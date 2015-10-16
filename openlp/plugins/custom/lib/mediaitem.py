@@ -85,6 +85,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         log.debug('Config loaded')
         self.add_custom_from_service = Settings().value(self.settings_section + '/add custom from service')
+        self.search_as_you_type = Settings().value('advanced/search as type')
 
     def retranslateUi(self):
         """
@@ -269,11 +270,12 @@ class CustomMediaItem(MediaManagerItem):
 
         :param text: The search text
         """
-        search_length = 2
-        if len(text) > search_length:
-            self.on_search_text_button_clicked()
-        elif not text:
-            self.on_clear_text_button_click()
+        if self.search_as_you_type:
+            search_length = 2
+            if len(text) > search_length:
+                self.on_search_text_button_clicked()
+            elif not text:
+                self.on_clear_text_button_click()
 
     def service_load(self, item):
         """
