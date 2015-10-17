@@ -404,6 +404,7 @@ def get_web_page(url, header=None, update_openlp=False):
         try:
             page = urllib.request.urlopen(req, timeout=CONNECTION_TIMEOUT)
             log.debug('Downloaded page {}'.format(page.geturl()))
+            break
         except urllib.error.URLError as err:
             log.exception('URLError on {}'.format(url))
             log.exception('URLError: {}'.format(err.reason))

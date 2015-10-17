@@ -173,6 +173,19 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             Registry().register_function('live_display_hide', self.hide_display)
             Registry().register_function('live_display_show', self.show_display)
             Registry().register_function('update_display_css', self.css_changed)
+        self.close_display = False
+
+    def closeEvent(self, event):
+        """
+        Catch the close event, and check that the close event is triggered by OpenLP closing the display.
+        On Windows this event can be triggered by pressing ALT+F4, which we want to ignore.
+
+        :param event: The triggered event
+        """
+        if self.close_display:
+            super().closeEvent(event)
+        else:
+            event.ignore()
 
     def close(self):
         """
@@ -182,6 +195,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             Registry().remove_function('live_display_hide', self.hide_display)
             Registry().remove_function('live_display_show', self.show_display)
             Registry().remove_function('update_display_css', self.css_changed)
+        self.close_display = True
         super().close()
 
     def set_transparency(self, enabled):
