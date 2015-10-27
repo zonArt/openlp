@@ -75,7 +75,8 @@ class ZionWorxImport(SongImport):
         """
         Receive a CSV file (from a ZionWorx database dump) to import.
         """
-        with open(self.import_source, 'rt') as songs_file:
+        # Encoding should always be ISO-8859-1
+        with open(self.import_source, 'rt', encoding='ISO-8859-1') as songs_file:
             field_names = ['SongNum', 'Title1', 'Title2', 'Lyrics', 'Writer', 'Copyright', 'Keywords',
                            'DefaultStyle']
             songs_reader = csv.DictReader(songs_file, field_names)
@@ -112,10 +113,10 @@ class ZionWorxImport(SongImport):
                     if line and not line.isspace():
                         verse += line + '\n'
                     elif verse:
-                        self.add_verse(verse)
+                        self.add_verse(verse, 'v')
                         verse = ''
                 if verse:
-                    self.add_verse(verse)
+                    self.add_verse(verse, 'v')
                 title = self.title
                 if not self.finish():
                     self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index +
