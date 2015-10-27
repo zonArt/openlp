@@ -101,9 +101,7 @@ RECORDSET_TEST_DATA = [TestRecord(1, 'TITLE', 'Amazing Grace'),
                            'Just to learn from His&crlf;lips words of comfort&crlf;In the beautiful&crlf;'
                            'garden of prayer.&crlf;&crlf;There\'s a garden where&crlf;Jesus is waiting,&crlf;'
                            'And He bids you to come,&crlf;meet Him there;&crlf;Just to bow and&crlf;'
-                           'receive a new blessing&crlf;In the beautiful&crlf;garden of prayer.&crlf;&crlf;'),
-                       
-                        ]
+                           'receive a new blessing&crlf;In the beautiful&crlf;garden of prayer.&crlf;&crlf;')]
 SONG_TEST_DATA = [{'title': 'Amazing Grace',
                    'verses': [
                        ('Amazing grace! How\nsweet the sound\nThat saved a wretch like me!\nI once was lost,\n'
@@ -120,9 +118,9 @@ SONG_TEST_DATA = [{'title': 'Amazing Grace',
                         'me here below,\nShall be forever mine.'),
                        ('When we\'ve been there\nten thousand years,\nBright shining as the sun,\n'
                         'We\'ve no less days to\nsing God\'s praise\nThan when we\'d first begun.')],
-                    'author': 'John Newton',
-                    'comments': 'The original version',
-                    'copyright': 'Public Domain'},
+                   'author': 'John Newton',
+                   'comments': 'The original version',
+                   'copyright': 'Public Domain'},
                   {'title': 'Beautiful Garden Of Prayer, The',
                    'verses': [
                        ('There\'s a garden where\nJesus is waiting,\nThere\'s a place that\nis wondrously fair,\n'
@@ -200,7 +198,7 @@ class TestWorshipCenterProSongImport(TestCase):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             mocked_add_verse = MagicMock()
-            mocked_parse_author= MagicMock()
+            mocked_parse_author = MagicMock()
             mocked_add_comment = MagicMock()
             mocked_add_copyright = MagicMock()
             mocked_finish = MagicMock()

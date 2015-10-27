@@ -35,6 +35,7 @@ from openlp.core.common import Registry
 TEST_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'zionworxsongs'))
 
+
 class TestZionWorxImport(TestCase):
     """
     Test the functions in the :mod:`zionworximport` module.
@@ -58,6 +59,7 @@ class TestZionWorxImport(TestCase):
 
             # THEN: The importer should be an instance of SongImport
             self.assertIsInstance(importer, SongImport)
+
 
 class TestZionWorxFileImport(SongImportTestHelper):
 
