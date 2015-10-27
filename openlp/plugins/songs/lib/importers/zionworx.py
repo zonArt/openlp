@@ -75,7 +75,7 @@ class ZionWorxImport(SongImport):
         """
         Receive a CSV file (from a ZionWorx database dump) to import.
         """
-        with open(self.import_source, 'rb') as songs_file:
+        with open(self.import_source, 'rt') as songs_file:
             field_names = ['SongNum', 'Title1', 'Title2', 'Lyrics', 'Writer', 'Copyright', 'Keywords',
                            'DefaultStyle']
             songs_reader = csv.DictReader(songs_file, field_names)
@@ -123,8 +123,7 @@ class ZionWorxImport(SongImport):
 
     def _decode(self, str):
         """
-        Decodes CSV input to unicode, stripping all control characters (except new lines).
+        Strips all control characters (except new lines).
         """
-        # This encoding choice seems OK. ZionWorx has no option for setting the
-        # encoding for its songs, so we assume encoding is always the same.
-        return str(str, 'cp1252').translate(CONTROL_CHARS_MAP)
+        # ZionWorx has no option for setting the encoding for its songs, so we assume encoding is always the same.
+        return str.translate(CONTROL_CHARS_MAP)
