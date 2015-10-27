@@ -24,7 +24,7 @@ The :mod:`worshipcenterpro` module provides the functionality for importing
 a WorshipCenter Pro database into the OpenLP database.
 """
 import logging
-
+import re
 import pyodbc
 
 from openlp.core.common import translate
@@ -71,8 +71,41 @@ class WorshipCenterProImport(SongImport):
                 break
             self.set_defaults()
             self.title = songs[song]['TITLE']
+            if 'AUTHOR' in songs[song]:
+                self.parse_author(songs[song]['AUTHOR'])
+            if 'CCLISONGID' in songs[song]:
+                self.ccli_number = songs[song]['CCLISONGID']
+            if 'COMMENTS' in songs[song]:
+                self.add_comment(songs[song]['COMMENTS'])
+            if 'COPY' in songs[song]:
+                self.add_copyright(songs[song]['COPY'])
+            if 'SUBJECT' in songs[song]:
+                self.topics.append(songs[song]['SUBJECT'])
             lyrics = songs[song]['LYRICS'].strip('&crlf;&crlf;')
             for verse in lyrics.split('&crlf;&crlf;'):
                 verse = verse.replace('&crlf;', '\n')
-                self.add_verse(verse)
+                marker_type = 'v'
+                # Find verse markers if any
+                marker_start = verse.find('<')
+                if marker_start > -1:
+                    marker_end = verse.find('>')
+                    marker = verse[marker_start + 1:marker_end]
+                    # Identify the marker type
+                    if 'REFRAIN' in marker or 'CHORUS' in marker:
+                        marker_type = 'c'
+                    elif 'BRIDGE' in marker:
+                        marker_type = 'b'
+                    elif 'PRECHORUS' in marker:
+                        marker_type = 'p'
+                    elif 'END' in marker:
+                        marker_type = 'e'
+                    elif 'INTRO' in marker:
+                        marker_type = 'i'
+                    elif 'TAG' in marker:
+                        marker_type = 'o'
+                    else:
+                        marker_type = 'v'
+                    # Strip tags from text
+                    verse = re.sub('<[^<]+?>', '', verse)
+                self.add_verse(verse, marker_type)
             self.finish()
