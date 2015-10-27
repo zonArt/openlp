@@ -25,6 +25,9 @@ This module contains tests for the WorshipCenter Pro song importer.
 import os
 from unittest import TestCase, SkipTest
 
+if os.name != 'nt':
+    raise SkipTest('Not Windows, skipping test')
+
 import pyodbc
 from tests.functional import patch, MagicMock
 
