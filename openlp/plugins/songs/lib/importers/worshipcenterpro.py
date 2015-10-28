@@ -107,5 +107,5 @@ class WorshipCenterProImport(SongImport):
                         marker_type = 'v'
                     # Strip tags from text
                     verse = re.sub('<[^<]+?>', '', verse)
-                self.add_verse(verse, marker_type)
+                self.add_verse(verse.strip(), marker_type)
             self.finish()
