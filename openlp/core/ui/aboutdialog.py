@@ -172,7 +172,7 @@ class UiAboutDialog(object):
         fi = translate('OpenLP.AboutForm', 'Finnish (fi)')
         fr = translate('OpenLP.AboutForm', 'French (fr)')
         hu = translate('OpenLP.AboutForm', 'Hungarian (hu)')
-        id = translate('OpenLP.AboutForm', 'Indonesian (id)')
+        ind = translate('OpenLP.AboutForm', 'Indonesian (id)')
         ja = translate('OpenLP.AboutForm', 'Japanese (ja)')
         nb = translate('OpenLP.AboutForm', 'Norwegian Bokm\xe5l (nb)')
         nl = translate('OpenLP.AboutForm', 'Dutch (nl)')
@@ -283,7 +283,7 @@ class UiAboutDialog(object):
            fi, '\n        '.join(translators['fi']),
            fr, '\n        '.join(translators['fr']),
            hu, '\n        '.join(translators['hu']),
-           id, '\n        '.join(translators['id']),
+           ind, '\n        '.join(translators['id']),
            ja, '\n        '.join(translators['ja']),
            nb, '\n        '.join(translators['nb']),
            nl, '\n        '.join(translators['nl']),
