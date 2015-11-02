@@ -200,12 +200,12 @@ class UiAboutDialog(object):
                                  '    bring this software to you for free because\n'
                                  '    He has set us free.')
         self.credits_text_edit.setPlainText(
-          '%s\n'
-          '    %s\n'
-          '\n'
-          '%s\n'
-          '    %s\n'
-          '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
           '%s\n'
           '    %s\n'
           '\n'
