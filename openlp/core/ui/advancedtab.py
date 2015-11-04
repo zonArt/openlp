@@ -354,8 +354,8 @@ class AdvancedTab(SettingsTab):
         self.default_color = settings.value('default color')
         self.default_file_edit.setText(settings.value('default image'))
         self.slide_limits = settings.value('slide limits')
-        self.search_as_you_type = settings.value('search as type')
-        self.search_as_type_check_box.setChecked(self.search_as_you_type)
+        self.is_search_as_you_type_enabled = settings.value('search as type')
+        self.search_as_type_check_box.setChecked(self.is_search_as_you_type_enabled)
         # Prevent the dialog displayed by the alternate_rows_check_box to display.
         self.alternate_rows_check_box.blockSignals(True)
         self.alternate_rows_check_box.setChecked(settings.value('alternate rows'))
@@ -431,11 +431,11 @@ class AdvancedTab(SettingsTab):
             settings.setValue('x11 bypass wm', self.x11_bypass_check_box.isChecked())
             self.settings_form.register_post_process('config_screen_changed')
         self.settings_form.register_post_process('slidecontroller_update_slide_limits')
-        settings.setValue('search as type', self.search_as_you_type)
+        settings.setValue('search as type', self.is_search_as_you_type_enabled)
         settings.endGroup()
 
     def on_search_as_type_check_box_changed(self, check_state):
-        self.search_as_you_type = (check_state == QtCore.Qt.Checked)
+        self.is_search_as_you_type_enabled = (check_state == QtCore.Qt.Checked)
         self.settings_form.register_post_process('songs_config_updated')
         self.settings_form.register_post_process('custom_config_updated')
 
