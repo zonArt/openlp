@@ -172,7 +172,7 @@ class UiAboutDialog(object):
         fi = translate('OpenLP.AboutForm', 'Finnish (fi)')
         fr = translate('OpenLP.AboutForm', 'French (fr)')
         hu = translate('OpenLP.AboutForm', 'Hungarian (hu)')
-        id = translate('OpenLP.AboutForm', 'Indonesian (id)')
+        ind = translate('OpenLP.AboutForm', 'Indonesian (id)')
         ja = translate('OpenLP.AboutForm', 'Japanese (ja)')
         nb = translate('OpenLP.AboutForm', 'Norwegian Bokm\xe5l (nb)')
         nl = translate('OpenLP.AboutForm', 'Dutch (nl)')
@@ -200,101 +200,101 @@ class UiAboutDialog(object):
                                  '    bring this software to you for free because\n'
                                  '    He has set us free.')
         self.credits_text_edit.setPlainText(
-          '%s\n'
-          '    %s\n'
-          '\n'
-          '%s\n'
-          '    %s\n'
-          '\n'
-          '%s\n'
-          '    %s\n'
-          '\n'
-          '%s\n'
-          '    %s\n'
-          '\n'
-          '%s\n'
-          '    %s\n'
-          '\n'
-          '%s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '    %s\n'
-          '        %s\n'
-          '\n'
-          '%s\n'
-          '    %s\n'
-          '\n'
-          '%s\n%s' %
-          (project_lead, lead,
-           devs, '\n    '.join(developers),
-           cons, '\n    '.join(contributors),
-           tests, '\n    '.join(testers),
-           packs, '\n    '.join(packagers),
-           laters,
-           af, '\n        '.join(translators['af']),
-           cs, '\n        '.join(translators['cs']),
-           da, '\n        '.join(translators['da']),
-           de, '\n        '.join(translators['de']),
-           el, '\n        '.join(translators['el']),
-           gb, '\n        '.join(translators['en_GB']),
-           enza, '\n        '.join(translators['en_ZA']),
-           es, '\n        '.join(translators['es']),
-           et, '\n        '.join(translators['et']),
-           fi, '\n        '.join(translators['fi']),
-           fr, '\n        '.join(translators['fr']),
-           hu, '\n        '.join(translators['hu']),
-           id, '\n        '.join(translators['id']),
-           ja, '\n        '.join(translators['ja']),
-           nb, '\n        '.join(translators['nb']),
-           nl, '\n        '.join(translators['nl']),
-           pl, '\n        '.join(translators['pl']),
-           ptbr, '\n        '.join(translators['pt_BR']),
-           ru, '\n        '.join(translators['ru']),
-           sv, '\n        '.join(translators['sv']),
-           talk, '\n        '.join(translators['ta_LK']),
-           zhcn, '\n        '.join(translators['zh_CN']),
-           documentation, '\n    '.join(documentors),
-           built_with, final_credit))
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n%s' %
+            (project_lead, lead,
+             devs, '\n    '.join(developers),
+             cons, '\n    '.join(contributors),
+             tests, '\n    '.join(testers),
+             packs, '\n    '.join(packagers),
+             laters,
+             af, '\n        '.join(translators['af']),
+             cs, '\n        '.join(translators['cs']),
+             da, '\n        '.join(translators['da']),
+             de, '\n        '.join(translators['de']),
+             el, '\n        '.join(translators['el']),
+             gb, '\n        '.join(translators['en_GB']),
+             enza, '\n        '.join(translators['en_ZA']),
+             es, '\n        '.join(translators['es']),
+             et, '\n        '.join(translators['et']),
+             fi, '\n        '.join(translators['fi']),
+             fr, '\n        '.join(translators['fr']),
+             hu, '\n        '.join(translators['hu']),
+             ind, '\n        '.join(translators['id']),
+             ja, '\n        '.join(translators['ja']),
+             nb, '\n        '.join(translators['nb']),
+             nl, '\n        '.join(translators['nl']),
+             pl, '\n        '.join(translators['pl']),
+             ptbr, '\n        '.join(translators['pt_BR']),
+             ru, '\n        '.join(translators['ru']),
+             sv, '\n        '.join(translators['sv']),
+             talk, '\n        '.join(translators['ta_LK']),
+             zhcn, '\n        '.join(translators['zh_CN']),
+             documentation, '\n    '.join(documentors),
+             built_with, final_credit))
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.credits_tab),
                                        translate('OpenLP.AboutForm', 'Credits'))
         copyright_note = translate('OpenLP.AboutForm',
