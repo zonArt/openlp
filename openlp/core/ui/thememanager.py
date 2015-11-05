@@ -755,12 +755,19 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 return False
             # check for use in the system else where.
             if test_plugin:
+                plugin_usage = ""
                 for plugin in self.plugin_manager.plugins:
-                    if plugin.uses_theme(theme):
-                        critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
-                                                   translate('OpenLP.ThemeManager',
-                                                             'Theme %s is used in the %s plugin.')
-                                                   % (theme, plugin.name))
-                        return False
+                    used_count = plugin.uses_theme(theme)
+                    if used_count:
+                        plugin_usage = "%s%s" % (plugin_usage, (translate('OpenLP.ThemeManager',
+                                                                          '%s time(s) by %s') %
+                                                                (used_count, plugin.name)))
+                        plugin_usage = "%s\n" % plugin_usage
+                if plugin_usage:
+                    critical_error_message_box(translate('OpenLP.ThemeManager', 'Unable to delete theme'),
+                                               translate('OpenLP.ThemeManager', 'Theme is currently used \n\n%s') %
+                                               plugin_usage)
+
+                    return False
             return True
         return False

@@ -119,14 +119,6 @@ class ImageMediaItem(MediaManagerItem):
                 icon=':/general/general_edit.png',
                 triggers=self.on_edit_click)
             create_widget_action(self.list_view, separator=True)
-        if self.has_delete_icon:
-            create_widget_action(
-                self.list_view,
-                'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
-                text=self.plugin.get_string(StringContent.Delete)['title'],
-                icon=':/general/general_delete.png',
-                can_shortcuts=True, triggers=self.on_delete_click)
-            create_widget_action(self.list_view, separator=True)
         create_widget_action(
             self.list_view,
             'listView%s%sItem' % (self.plugin.name.title(), StringContent.Preview.title()),
@@ -155,6 +147,14 @@ class ImageMediaItem(MediaManagerItem):
                 text=translate('OpenLP.MediaManagerItem', '&Add to selected Service Item'),
                 icon=':/general/general_add.png',
                 triggers=self.on_add_edit_click)
+            create_widget_action(self.list_view, separator=True)
+        if self.has_delete_icon:
+            create_widget_action(
+                self.list_view,
+                'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
+                text=self.plugin.get_string(StringContent.Delete)['title'],
+                icon=':/general/general_delete.png',
+                can_shortcuts=True, triggers=self.on_delete_click)
         self.add_custom_context_actions()
         # Create the context menu and add all actions from the list_view.
         self.menu = QtGui.QMenu()

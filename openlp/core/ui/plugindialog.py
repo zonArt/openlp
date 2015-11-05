@@ -33,21 +33,21 @@ class Ui_PluginViewDialog(object):
     """
     The UI of the plugin view dialog
     """
-    def setupUi(self, pluginViewDialog):
+    def setupUi(self, plugin_view_dialog):
         """
         Set up the UI
         """
-        pluginViewDialog.setObjectName('pluginViewDialog')
-        pluginViewDialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
-        pluginViewDialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        self.plugin_layout = QtGui.QVBoxLayout(pluginViewDialog)
+        plugin_view_dialog.setObjectName('plugin_view_dialog')
+        plugin_view_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
+        plugin_view_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.plugin_layout = QtGui.QVBoxLayout(plugin_view_dialog)
         self.plugin_layout.setObjectName('plugin_layout')
         self.list_layout = QtGui.QHBoxLayout()
         self.list_layout.setObjectName('list_layout')
-        self.plugin_list_widget = QtGui.QListWidget(pluginViewDialog)
+        self.plugin_list_widget = QtGui.QListWidget(plugin_view_dialog)
         self.plugin_list_widget.setObjectName('plugin_list_widget')
         self.list_layout.addWidget(self.plugin_list_widget)
-        self.plugin_info_group_box = QtGui.QGroupBox(pluginViewDialog)
+        self.plugin_info_group_box = QtGui.QGroupBox(plugin_view_dialog)
         self.plugin_info_group_box.setObjectName('plugin_info_group_box')
         self.plugin_info_layout = QtGui.QFormLayout(self.plugin_info_group_box)
         self.plugin_info_layout.setObjectName('plugin_info_layout')
@@ -70,15 +70,15 @@ class Ui_PluginViewDialog(object):
         self.plugin_info_layout.addRow(self.about_label, self.about_text_browser)
         self.list_layout.addWidget(self.plugin_info_group_box)
         self.plugin_layout.addLayout(self.list_layout)
-        self.button_box = create_button_box(pluginViewDialog, 'button_box', ['ok'])
+        self.button_box = create_button_box(plugin_view_dialog, 'button_box', ['ok'])
         self.plugin_layout.addWidget(self.button_box)
-        self.retranslateUi(pluginViewDialog)
+        self.retranslateUi(plugin_view_dialog)
 
-    def retranslateUi(self, pluginViewDialog):
+    def retranslateUi(self, plugin_view_dialog):
         """
         Translate the UI on the fly
         """
-        pluginViewDialog.setWindowTitle(translate('OpenLP.PluginForm', 'Plugin List'))
+        plugin_view_dialog.setWindowTitle(translate('OpenLP.PluginForm', 'Manage Plugins'))
         self.plugin_info_group_box.setTitle(translate('OpenLP.PluginForm', 'Plugin Details'))
         self.version_label.setText('%s:' % UiStrings().Version)
         self.about_label.setText('%s:' % UiStrings().About)

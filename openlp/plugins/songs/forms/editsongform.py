@@ -178,7 +178,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog, RegistryProperties):
         if invalid_verses:
             valid = create_separated_list(verse_names)
             if len(invalid_verses) > 1:
-                msg = translate('SongsPlugin.EditSongForm', 'There are no verses corresponding to "%(invalid)s".'
+                msg = translate('SongsPlugin.EditSongForm', 'There are no verses corresponding to "%(invalid)s". '
                                 'Valid entries are %(valid)s.\nPlease enter the verses separated by spaces.') % \
                     {'invalid': ', '.join(invalid_verses), 'valid': valid}
             else:

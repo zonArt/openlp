@@ -137,22 +137,6 @@ class PresentationPlugin(Plugin):
             self.register_controllers(controller)
         return bool(self.controllers)
 
-    def app_startup(self):
-        """
-        Perform tasks on application startup.
-        """
-        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
-        super().app_startup()
-        files_from_config = Settings().value('presentations/presentations files')
-        for file in files_from_config:
-            try:
-                self.media_item.clean_up_thumbnails(file, True)
-            except AttributeError:
-                pass
-        self.media_item.list_view.clear()
-        Settings().setValue('presentations/thumbnail_scheme', 'md5')
-        self.media_item.validate_and_load(files_from_config)
-
     def about(self):
         """
         Return information about this plugin.

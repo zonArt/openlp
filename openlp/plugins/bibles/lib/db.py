@@ -476,16 +476,6 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         self.save_meta('language_id', language_id)
         return language_id
 
-    def is_old_database(self):
-        """
-        Returns ``True`` if it is a bible database, which has been created prior to 1.9.6.
-        """
-        try:
-            self.session.query(Book).all()
-        except:
-            return True
-        return False
-
     def dump_bible(self):
         """
         Utility debugging method to dump the contents of a bible.

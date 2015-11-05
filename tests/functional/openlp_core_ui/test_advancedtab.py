@@ -20,36 +20,50 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test for proper bzr tags.
+Package to test the openlp.core.ui.advancedtab package.
 """
-import os
 from unittest import TestCase
 
-from subprocess import Popen, PIPE
+from openlp.core.common import Registry
+from openlp.core.ui.advancedtab import AdvancedTab
+from openlp.core.ui.settingsform import SettingsForm
 
-TAGS1 = {'1.9.0', '1.9.1', '1.9.2', '1.9.3', '1.9.4', '1.9.5', '1.9.6', '1.9.7', '1.9.8', '1.9.9', '1.9.10',
-         '1.9.11', '1.9.12', '2.0', '2.1.0', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.1.5', '2.1.6', '2.2'
-         }
+from tests.helpers.testmixin import TestMixin
 
 
-class TestBzrTags(TestCase):
+class TestAdvancedTab(TestCase, TestMixin):
 
-    def bzr_tags_test(self):
+    def setUp(self):
         """
-        Test for proper bzr tags
+        Set up a few things for the tests
         """
-        # GIVEN: A bzr branch
-        path = os.path.dirname(__file__)
+        Registry.create()
 
-        # WHEN getting the branches tags
-        bzr = Popen(('bzr', 'tags', '--directory=' + path), stdout=PIPE)
-        std_out = bzr.communicate()[0]
-        count = len(TAGS1)
-        tags = [line.decode('utf-8').split()[0] for line in std_out.splitlines()]
-        count1 = 0
-        for t in tags:
-            if t in TAGS1:
-                count1 += 1
+    def test_creation(self):
+        """
+        Test that Advanced Tab is created.
+        """
+        # GIVEN: A new Advanced Tab
+        settings_form = SettingsForm(None)
 
-        # THEN the tags should match the accepted tags
-        self.assertEqual(count, count1, 'List of tags should match')
+        # WHEN: I create an advanced tab
+        advanced_tab = AdvancedTab(settings_form)
+
+        # THEN:
+        self.assertEqual("Advanced", advanced_tab.tab_title, 'The tab title should be Advanced')
+
+    def test_change_search_as_type(self):
+        """
+        Test that when search as type is changed custom and song configs are updated
+        """
+        # GIVEN: A new Advanced Tab
+        settings_form = SettingsForm(None)
+        advanced_tab = AdvancedTab(settings_form)
+
+        # WHEN: I change search as type check box
+        advanced_tab.on_search_as_type_check_box_changed(True)
+
+        # THEN: we should have two post save processed to run
+        self.assertEqual(2, len(settings_form.processes), 'Two post save processes should be created')
+        self.assertTrue("songs_config_updated" in settings_form.processes, 'The songs plugin should be called')
+        self.assertTrue("custom_config_updated" in settings_form.processes, 'The custom plugin should be called')
