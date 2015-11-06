@@ -150,6 +150,7 @@ class HttpRouter(RegistryProperties):
         self.routes = [
             ('^/$', {'function': self.serve_file, 'secure': False}),
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
+            ('^/(stage)/(.*)$', {'function': self.stages, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
             (r'^/(\w+)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
@@ -170,6 +171,7 @@ class HttpRouter(RegistryProperties):
         self.settings_section = 'remotes'
         self.translate()
         self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), 'remotes', 'html')
+        self.config_dir = os.path.join(AppLocation.get_data_path(), 'stages')
 
     def do_post_processor(self):
         """
@@ -340,6 +342,44 @@ class HttpRouter(RegistryProperties):
             'settings': translate('RemotePlugin.Mobile', 'Settings'),
         }
 
+    def stages(self, temp_path, file_name):
+        """
+        Allow Stage view to be delivered with custom views.
+
+        :param temp_path: base path of the URL
+        :param file_name: file name with path
+        :return:
+        """
+        log.debug('serve file request %s' % file_name)
+        parts = file_name.split('/')
+        if len(parts) == 3:
+            file_name = parts[0] + '/' + parts[2]
+        path = os.path.normpath(os.path.join(self.config_dir, file_name))
+        print(path)
+        if not path.startswith(self.config_dir):
+            return self.do_not_found()
+        content = None
+        ext, content_type = self.get_content_type(path)
+        file_handle = None
+        try:
+            if ext == '.html':
+                variables = self.template_vars
+                content = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
+            else:
+                file_handle = open(path, 'rb')
+                log.debug('Opened %s' % path)
+                content = file_handle.read()
+        except IOError:
+            log.exception('Failed to open %s' % path)
+            return self.do_not_found()
+        finally:
+            if file_handle:
+                file_handle.close()
+        self.send_response(200)
+        self.send_header('Content-type', content_type)
+        self.end_headers()
+        return content
+
     def serve_file(self, file_name=None):
         """
         Send a file to the socket. For now, just a subset of file types and must be top level inside the html folder.
@@ -384,6 +424,8 @@ class HttpRouter(RegistryProperties):
         """
         Examines the extension of the file and determines what the content_type should be, defaults to text/plain
         Returns the extension and the content_type
+
+        :param file_name: name of file
         """
         ext = os.path.splitext(file_name)[1]
         content_type = FILE_TYPES.get(ext, 'text/plain')
@@ -392,6 +434,10 @@ class HttpRouter(RegistryProperties):
     def serve_thumbnail(self, controller_name=None, dimensions=None, file_name=None):
         """
         Serve an image file. If not found return 404.
+
+        :param file_name: file name to be served
+        :param dimensions: image size
+        :param controller_name: controller to be called
         """
         log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name, dimensions, file_name))
         supported_controllers = ['presentations', 'images']
@@ -496,6 +542,8 @@ class HttpRouter(RegistryProperties):
     def controller_text(self, var):
         """
         Perform an action on the slide controller.
+
+        :param var: variable - not used
         """
         log.debug("controller_text var = %s" % var)
         current_item = self.live_controller.service_item
@@ -629,6 +677,8 @@ class HttpRouter(RegistryProperties):
     def go_live(self, plugin_name):
         """
         Go live on an item of type ``plugin``.
+
+        :param plugin_name: name of plugin
         """
         try:
             request_id = json.loads(self.request_data)['request']['id']
@@ -642,6 +692,8 @@ class HttpRouter(RegistryProperties):
     def add_to_service(self, plugin_name):
         """
         Add item of type ``plugin_name`` to the end of the service.
+
+        :param plugin_name: name of plugin to be called
         """
         try:
             request_id = json.loads(self.request_data)['request']['id']
