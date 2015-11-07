@@ -27,7 +27,7 @@ import os
 import html
 import lxml.html
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets, QtPrintSupport
 
 from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import get_text_file_string
@@ -104,7 +104,7 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 """
 
 
-class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties):
+class PrintServiceForm(QtWidgets.QDialog, Ui_PrintServiceDialog, RegistryProperties):
     """
     The :class:`~openlp.core.ui.printserviceform.PrintServiceForm` class displays a dialog for printing the service.
     """
@@ -113,8 +113,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties)
         Constructor
         """
         super(PrintServiceForm, self).__init__(Registry().get('main_window'))
-        self.printer = QtGui.QPrinter()
-        self.print_dialog = QtGui.QPrintDialog(self.printer, self)
+        self.printer = QtPrintSupport.QPrinter()
+        self.print_dialog = QtPrintSupport.QPrintDialog(self.printer, self)
         self.document = QtGui.QTextDocument()
         self.zoom = 0
         self.setupUi(self)
@@ -324,7 +324,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties)
         """
         Called, when the *print_button* is clicked. Opens the *print_dialog*.
         """
-        if not self.print_dialog.exec_():
+        if not self.print_dialog.exec():
             return
         self.update_song_usage()
         # Print the document.

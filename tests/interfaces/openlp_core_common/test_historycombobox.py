@@ -25,7 +25,7 @@ Module to test the :mod:`~openlp.core.common.historycombobox` module.
 
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui, QtTest
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry
 from openlp.core.common import HistoryComboBox
@@ -40,7 +40,7 @@ class TestHistoryComboBox(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
         self.combo = HistoryComboBox(self.main_window)
 

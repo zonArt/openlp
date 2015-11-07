@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import translate
 from openlp.core.lib.ui import create_button_box
@@ -30,18 +30,18 @@ class Ui_AddGroupDialog(object):
     def setupUi(self, add_group_dialog):
         add_group_dialog.setObjectName('add_group_dialog')
         add_group_dialog.resize(300, 10)
-        self.dialog_layout = QtGui.QVBoxLayout(add_group_dialog)
+        self.dialog_layout = QtWidgets.QVBoxLayout(add_group_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
-        self.name_layout = QtGui.QFormLayout()
+        self.name_layout = QtWidgets.QFormLayout()
         self.name_layout.setObjectName('name_layout')
-        self.parent_group_label = QtGui.QLabel(add_group_dialog)
+        self.parent_group_label = QtWidgets.QLabel(add_group_dialog)
         self.parent_group_label.setObjectName('parent_group_label')
-        self.parent_group_combobox = QtGui.QComboBox(add_group_dialog)
+        self.parent_group_combobox = QtWidgets.QComboBox(add_group_dialog)
         self.parent_group_combobox.setObjectName('parent_group_combobox')
         self.name_layout.addRow(self.parent_group_label, self.parent_group_combobox)
-        self.name_label = QtGui.QLabel(add_group_dialog)
+        self.name_label = QtWidgets.QLabel(add_group_dialog)
         self.name_label.setObjectName('name_label')
-        self.name_edit = QtGui.QLineEdit(add_group_dialog)
+        self.name_edit = QtWidgets.QLineEdit(add_group_dialog)
         self.name_edit.setObjectName('name_edit')
         self.name_label.setBuddy(self.name_edit)
         self.name_layout.addRow(self.name_label, self.name_edit)

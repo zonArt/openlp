@@ -24,7 +24,7 @@ The :mod:`~openlp.plugins.alerts.lib.alertsmanager` module contains the part of 
 displaying of alerts.
 """
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import OpenLPMixin, RegistryMixin, Registry, RegistryProperties, Settings, translate
 
@@ -33,13 +33,15 @@ class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperti
     """
     AlertsManager manages the settings of Alerts.
     """
+    alerts_text = QtCore.pyqtSignal(list)
+
     def __init__(self, parent):
         super(AlertsManager, self).__init__(parent)
         self.timer_id = 0
         self.alert_list = []
         Registry().register_function('live_display_active', self.generate_alert)
         Registry().register_function('alerts_text', self.alert_text)
-        QtCore.QObject.connect(self, QtCore.SIGNAL('alerts_text'), self.alert_text)
+        self.alerts_text.connect(self.alert_text)
 
     def alert_text(self, message):
         """

@@ -22,25 +22,16 @@
 """
 Base directory for tests
 """
-import sip
-sip.setapi('QDate', 2)
-sip.setapi('QDateTime', 2)
-sip.setapi('QString', 2)
-sip.setapi('QTextStream', 2)
-sip.setapi('QTime', 2)
-sip.setapi('QUrl', 2)
-sip.setapi('QVariant', 2)
-
 import sys
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 if sys.version_info[1] >= 3:
     from unittest.mock import ANY, MagicMock, patch, mock_open, call
 else:
     from mock import ANY, MagicMock, patch, mock_open, call
 
-# Only one QApplication can be created. Use QtGui.QApplication.instance() when you need to "create" a  QApplication.
-application = QtGui.QApplication([])
+# Only one QApplication can be created. Use QtWidgets.QApplication.instance() when you need to "create" a  QApplication.
+application = QtWidgets.QApplication([])
 application.setApplicationName('OpenLP')
 
 __all__ = ['ANY', 'MagicMock', 'patch', 'mock_open', 'call', 'application']

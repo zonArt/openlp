@@ -20,14 +20,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
 
 
-class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
+class AuthorsForm(QtWidgets.QDialog, Ui_AuthorsDialog):
     """
     Class to control the Maintenance of Authors Dialog
     """
@@ -41,7 +41,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.first_name_edit.textEdited.connect(self.on_first_name_edited)
         self.last_name_edit.textEdited.connect(self.on_last_name_edited)
 
-    def exec_(self, clear=True):
+    def exec(self, clear=True):
         """
         Execute the dialog.
 
@@ -52,7 +52,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
             self.last_name_edit.clear()
             self.display_edit.clear()
         self.first_name_edit.setFocus()
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def on_first_name_edited(self, display_name):
         """
@@ -102,14 +102,14 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
             if critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm',
                                   'You have not set a display name for the author, combine the first and last names?'),
-                    parent=self, question=True) == QtGui.QMessageBox.Yes:
+                    parent=self, question=True) == QtWidgets.QMessageBox.Yes:
                 self.display_edit.setText(self.first_name_edit.text() + ' ' + self.last_name_edit.text())
-                return QtGui.QDialog.accept(self)
+                return QtWidgets.QDialog.accept(self)
             else:
                 self.display_edit.setFocus()
                 return False
         else:
-            return QtGui.QDialog.accept(self)
+            return QtWidgets.QDialog.accept(self)
 
     def _get_first_name(self):
         """

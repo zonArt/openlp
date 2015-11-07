@@ -21,7 +21,7 @@
 ###############################################################################
 
 
-from PyQt4 import QtGui, QtCore, QtWebKit
+from PyQt5 import QtGui, QtCore, QtWebKitWidgets
 
 from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, RegistryMixin, Settings
 from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, ScreenList, ServiceItem, expand_tags, \
@@ -60,7 +60,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         self.force_page = False
         self._theme_dimensions = {}
         self._calculate_default()
-        self.web = QtWebKit.QWebView()
+        self.web = QtWebKitWidgets.QWebView()
         self.web.setVisible(False)
         self.web_frame = self.web.page().mainFrame()
         Registry().register_function('theme_update_global', self.set_global_theme)
@@ -364,7 +364,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         # For the life of my I don't know why we have to completely kill the QWebView in order for the display to work
         # properly, but we do. See bug #1041366 for an example of what happens if we take this out.
         self.web = None
-        self.web = QtWebKit.QWebView()
+        self.web = QtWebKitWidgets.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()

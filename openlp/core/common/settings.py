@@ -26,7 +26,7 @@ import datetime
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 from openlp.core.common import ThemeLevel, SlideLimits, UiStrings, is_win, is_linux
 
@@ -425,10 +425,6 @@ class Settings(QtCore.QSettings):
 
         **Note**, this method only converts a few types and might need to be extended if a certain type is missing!
         """
-        # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
-        # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
-        if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
-            setting = None
         # Handle 'None' type (empty value) properly.
         if setting is None:
             # An empty string saved to the settings results in a None type being returned.

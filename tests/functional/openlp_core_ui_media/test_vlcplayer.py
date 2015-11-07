@@ -107,9 +107,9 @@ class TestVLCPlayer(TestCase, TestMixin):
     @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
-    @patch('openlp.core.ui.media.vlcplayer.QtGui')
+    @patch('openlp.core.ui.media.vlcplayer.QtWidgets')
     @patch('openlp.core.ui.media.vlcplayer.Settings')
-    def setup_test(self, MockedSettings, MockedQtGui, mocked_get_vlc, mocked_is_macosx, mocked_is_win):
+    def setup_test(self, MockedSettings, MockedQtWidgets, mocked_get_vlc, mocked_is_macosx, mocked_is_win):
         """
         Test the setup method
         """
@@ -121,8 +121,8 @@ class TestVLCPlayer(TestCase, TestMixin):
         MockedSettings.return_value = mocked_settings
         mocked_qframe = MagicMock()
         mocked_qframe.winId.return_value = 2
-        MockedQtGui.QFrame.NoFrame = 1
-        MockedQtGui.QFrame.return_value = mocked_qframe
+        MockedQtWidgets.QFrame.NoFrame = 1
+        MockedQtWidgets.QFrame.return_value = mocked_qframe
         mocked_media_player_new = MagicMock()
         mocked_instance = MagicMock()
         mocked_instance.media_player_new.return_value = mocked_media_player_new
@@ -157,9 +157,9 @@ class TestVLCPlayer(TestCase, TestMixin):
     @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
-    @patch('openlp.core.ui.media.vlcplayer.QtGui')
+    @patch('openlp.core.ui.media.vlcplayer.QtWidgets')
     @patch('openlp.core.ui.media.vlcplayer.Settings')
-    def setup_has_audio_test(self, MockedSettings, MockedQtGui, mocked_get_vlc, mocked_is_macosx, mocked_is_win):
+    def setup_has_audio_test(self, MockedSettings, MockedQtWidgets, mocked_get_vlc, mocked_is_macosx, mocked_is_win):
         """
         Test the setup method when has_audio is True
         """
@@ -171,8 +171,8 @@ class TestVLCPlayer(TestCase, TestMixin):
         MockedSettings.return_value = mocked_settings
         mocked_qframe = MagicMock()
         mocked_qframe.winId.return_value = 2
-        MockedQtGui.QFrame.NoFrame = 1
-        MockedQtGui.QFrame.return_value = mocked_qframe
+        MockedQtWidgets.QFrame.NoFrame = 1
+        MockedQtWidgets.QFrame.return_value = mocked_qframe
         mocked_media_player_new = MagicMock()
         mocked_instance = MagicMock()
         mocked_instance.media_player_new.return_value = mocked_media_player_new
@@ -194,9 +194,10 @@ class TestVLCPlayer(TestCase, TestMixin):
     @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
-    @patch('openlp.core.ui.media.vlcplayer.QtGui')
+    @patch('openlp.core.ui.media.vlcplayer.QtWidgets')
     @patch('openlp.core.ui.media.vlcplayer.Settings')
-    def setup_visible_mouse_test(self, MockedSettings, MockedQtGui, mocked_get_vlc, mocked_is_macosx, mocked_is_win):
+    def setup_visible_mouse_test(self, MockedSettings, MockedQtWidgets, mocked_get_vlc, mocked_is_macosx,
+                                 mocked_is_win):
         """
         Test the setup method when Settings().value("hide mouse") is False
         """
@@ -208,8 +209,8 @@ class TestVLCPlayer(TestCase, TestMixin):
         MockedSettings.return_value = mocked_settings
         mocked_qframe = MagicMock()
         mocked_qframe.winId.return_value = 2
-        MockedQtGui.QFrame.NoFrame = 1
-        MockedQtGui.QFrame.return_value = mocked_qframe
+        MockedQtWidgets.QFrame.NoFrame = 1
+        MockedQtWidgets.QFrame.return_value = mocked_qframe
         mocked_media_player_new = MagicMock()
         mocked_instance = MagicMock()
         mocked_instance.media_player_new.return_value = mocked_media_player_new
@@ -231,9 +232,9 @@ class TestVLCPlayer(TestCase, TestMixin):
     @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
-    @patch('openlp.core.ui.media.vlcplayer.QtGui')
+    @patch('openlp.core.ui.media.vlcplayer.QtWidgets')
     @patch('openlp.core.ui.media.vlcplayer.Settings')
-    def setup_windows_test(self, MockedSettings, MockedQtGui, mocked_get_vlc, mocked_is_macosx, mocked_is_win):
+    def setup_windows_test(self, MockedSettings, MockedQtWidgets, mocked_get_vlc, mocked_is_macosx, mocked_is_win):
         """
         Test the setup method when running on Windows
         """
@@ -245,8 +246,8 @@ class TestVLCPlayer(TestCase, TestMixin):
         MockedSettings.return_value = mocked_settings
         mocked_qframe = MagicMock()
         mocked_qframe.winId.return_value = 2
-        MockedQtGui.QFrame.NoFrame = 1
-        MockedQtGui.QFrame.return_value = mocked_qframe
+        MockedQtWidgets.QFrame.NoFrame = 1
+        MockedQtWidgets.QFrame.return_value = mocked_qframe
         mocked_media_player_new = MagicMock()
         mocked_instance = MagicMock()
         mocked_instance.media_player_new.return_value = mocked_media_player_new
@@ -268,9 +269,9 @@ class TestVLCPlayer(TestCase, TestMixin):
     @patch('openlp.core.ui.media.vlcplayer.is_win')
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     @patch('openlp.core.ui.media.vlcplayer.get_vlc')
-    @patch('openlp.core.ui.media.vlcplayer.QtGui')
+    @patch('openlp.core.ui.media.vlcplayer.QtWidgets')
     @patch('openlp.core.ui.media.vlcplayer.Settings')
-    def setup_osx_test(self, MockedSettings, MockedQtGui, mocked_get_vlc, mocked_is_macosx, mocked_is_win):
+    def setup_osx_test(self, MockedSettings, MockedQtWidgets, mocked_get_vlc, mocked_is_macosx, mocked_is_win):
         """
         Test the setup method when running on OS X
         """
@@ -282,8 +283,8 @@ class TestVLCPlayer(TestCase, TestMixin):
         MockedSettings.return_value = mocked_settings
         mocked_qframe = MagicMock()
         mocked_qframe.winId.return_value = 2
-        MockedQtGui.QFrame.NoFrame = 1
-        MockedQtGui.QFrame.return_value = mocked_qframe
+        MockedQtWidgets.QFrame.NoFrame = 1
+        MockedQtWidgets.QFrame.return_value = mocked_qframe
         mocked_media_player_new = MagicMock()
         mocked_instance = MagicMock()
         mocked_instance.media_player_new.return_value = mocked_media_player_new

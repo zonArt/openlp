@@ -24,7 +24,7 @@ Package to test the openlp.core.ui.renderer package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry
 from openlp.core.lib import Renderer, ScreenList, ServiceItem

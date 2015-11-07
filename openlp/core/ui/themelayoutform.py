@@ -22,12 +22,12 @@
 """
 The form layout
 """
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtWidgets
 
 from .themelayoutdialog import Ui_ThemeLayoutDialog
 
 
-class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
+class ThemeLayoutForm(QtWidgets.QDialog, Ui_ThemeLayoutDialog):
     """
     The exception dialog
     """
@@ -38,7 +38,7 @@ class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
         super(ThemeLayoutForm, self).__init__(parent)
         self.setupUi(self)
 
-    def exec_(self, image):
+    def exec(self, image):
         """
         Run the Dialog with correct heading.
         """
@@ -46,4 +46,4 @@ class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
         self.theme_display_label.setPixmap(pixmap)
         display_aspect_ratio = float(image.width()) / image.height()
         self.theme_display_label.setFixedSize(400, 400 / display_aspect_ratio)
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)

@@ -31,7 +31,7 @@ import os
 import logging
 import time
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import AppLocation, Settings, RegistryProperties
 

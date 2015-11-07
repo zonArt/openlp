@@ -27,7 +27,7 @@ import time
 from threading import Lock
 
 from unittest import TestCase
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 
 from openlp.core.common import Registry
 from openlp.core.lib import ImageManager, ScreenList

@@ -22,7 +22,7 @@
 """
 The layout of the theme
 """
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import translate
 from openlp.core.lib import build_icon
@@ -39,25 +39,25 @@ class Ui_ThemeLayoutDialog(object):
         """
         themeLayoutDialog.setObjectName('themeLayoutDialogDialog')
         themeLayoutDialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
-        self.preview_layout = QtGui.QVBoxLayout(themeLayoutDialog)
+        self.preview_layout = QtWidgets.QVBoxLayout(themeLayoutDialog)
         self.preview_layout.setObjectName('preview_layout')
-        self.preview_area = QtGui.QWidget(themeLayoutDialog)
+        self.preview_area = QtWidgets.QWidget(themeLayoutDialog)
         self.preview_area.setObjectName('preview_area')
-        self.preview_area_layout = QtGui.QGridLayout(self.preview_area)
-        self.preview_area_layout.setMargin(0)
+        self.preview_area_layout = QtWidgets.QGridLayout(self.preview_area)
+        self.preview_area_layout.setContentsMargins(0, 0, 0, 0)
         self.preview_area_layout.setColumnStretch(0, 1)
         self.preview_area_layout.setRowStretch(0, 1)
         self.preview_area_layout.setObjectName('preview_area_layout')
-        self.theme_display_label = QtGui.QLabel(self.preview_area)
-        self.theme_display_label.setFrameShape(QtGui.QFrame.Box)
+        self.theme_display_label = QtWidgets.QLabel(self.preview_area)
+        self.theme_display_label.setFrameShape(QtWidgets.QFrame.Box)
         self.theme_display_label.setScaledContents(True)
         self.theme_display_label.setObjectName('theme_display_label')
         self.preview_area_layout.addWidget(self.theme_display_label)
         self.preview_layout.addWidget(self.preview_area)
-        self.main_colour_label = QtGui.QLabel(self.preview_area)
+        self.main_colour_label = QtWidgets.QLabel(self.preview_area)
         self.main_colour_label.setObjectName('main_colour_label')
         self.preview_layout.addWidget(self.main_colour_label)
-        self.footer_colour_label = QtGui.QLabel(self.preview_area)
+        self.footer_colour_label = QtWidgets.QLabel(self.preview_area)
         self.footer_colour_label.setObjectName('footer_colour_label')
         self.preview_layout.addWidget(self.footer_colour_label)
         self.button_box = create_button_box(themeLayoutDialog, 'button_box', ['ok'])

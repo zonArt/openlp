@@ -24,7 +24,7 @@ Package to test the openlp.plugins.songs.forms.editsongform package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry
 from openlp.core.common.uistrings import UiStrings
@@ -44,7 +44,7 @@ class TestEditSongForm(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
         Registry().register('theme_manager', MagicMock())
         self.form = EditSongForm(MagicMock(), self.main_window, MagicMock())

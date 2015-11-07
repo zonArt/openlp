@@ -24,7 +24,7 @@ import logging
 import os
 import shutil
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, md5_hash
 from openlp.core.lib import create_thumb, validate_thumb

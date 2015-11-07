@@ -115,7 +115,6 @@ import urllib.error
 from urllib.parse import urlparse, parse_qs
 
 from mako.template import Template
-from PyQt4 import QtCore
 
 from openlp.core.common import RegistryProperties, AppLocation, Settings, translate, UiStrings
 from openlp.core.lib import PluginStatus, StringContent, image_to_byte, ItemCapabilities, create_thumb
@@ -471,7 +470,7 @@ class HttpRouter(RegistryProperties):
 
         :param action: This is the action, either ``hide`` or ``show``.
         """
-        self.live_controller.emit(QtCore.SIGNAL('slidecontroller_toggle_display'), action)
+        self.live_controller.slidecontroller_toggle_display.emit(action)
         self.do_json_header()
         return json.dumps({'results': {'success': True}}).encode()
 
@@ -486,7 +485,7 @@ class HttpRouter(RegistryProperties):
             except KeyError:
                 return self.do_http_error()
             text = urllib.parse.unquote(text)
-            self.alerts_manager.emit(QtCore.SIGNAL('alerts_text'), [text])
+            self.alerts_manager.alerts_text.emit([text])
             success = True
         else:
             success = False
@@ -552,7 +551,7 @@ class HttpRouter(RegistryProperties):
         :param display_type: This is the type of slide controller, either ``preview`` or ``live``.
         :param action: The action to perform.
         """
-        event = 'slidecontroller_%s_%s' % (display_type, action)
+        event = getattr(self.live_controller, 'slidecontroller_%s_%s' % (display_type, action))
         if self.request_data:
             try:
                 data = json.loads(self.request_data)['request']['id']
@@ -560,9 +559,9 @@ class HttpRouter(RegistryProperties):
                 return self.do_http_error()
             log.info(data)
             # This slot expects an int within a list.
-            self.live_controller.emit(QtCore.SIGNAL(event), [data])
+            event.emit([data])
         else:
-            self.live_controller.emit(QtCore.SIGNAL(event))
+            event.emit()
         json_data = {'results': {'success': True}}
         self.do_json_header()
         return json.dumps(json_data).encode()
@@ -581,15 +580,15 @@ class HttpRouter(RegistryProperties):
 
         :param action: The action to perform.
         """
-        event = 'servicemanager_%s_item' % action
+        event = getattr(self.service_manager, 'servicemanager_%s_item' % action)
         if self.request_data:
             try:
                 data = json.loads(self.request_data)['request']['id']
             except KeyError:
                 return self.do_http_error()
-            self.service_manager.emit(QtCore.SIGNAL(event), data)
+            event.emit(data)
         else:
-            self.service_manager.emit(QtCore.SIGNAL(event))
+            event.emit()
         self.do_json_header()
         return json.dumps({'results': {'success': True}}).encode()
 
@@ -636,7 +635,7 @@ class HttpRouter(RegistryProperties):
             return self.do_http_error()
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
-            plugin.media_item.emit(QtCore.SIGNAL('%s_go_live' % plugin_name), [request_id, True])
+            getattr(plugin.media_item, '%s_go_live' % plugin_name).emit([request_id, True])
         return self.do_http_success()
 
     def add_to_service(self, plugin_name):
@@ -650,5 +649,5 @@ class HttpRouter(RegistryProperties):
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
             item_id = plugin.media_item.create_item_from_id(request_id)
-            plugin.media_item.emit(QtCore.SIGNAL('%s_add_to_service' % plugin_name), [item_id, True])
+            getattr(plugin.media_item, '%s_add_to_service' % plugin_name).emit([item_id, True])
         self.do_http_success()
