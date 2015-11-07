@@ -94,7 +94,7 @@ OPTIONAL_MODULES = [
     ('mysql.connector', '(MySQL support)', True),
     ('psycopg2', '(PostgreSQL support)', True),
     ('nose', '(testing framework)', True),
-    ('mock',  '(testing module)', sys.version_info[1] < 3),
+    ('mock', '(testing module)', sys.version_info[1] < 3),
     ('jenkins', '(access jenkins api - package name: jenkins-webapi)', True),
 ]
 

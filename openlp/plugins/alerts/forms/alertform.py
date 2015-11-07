@@ -181,7 +181,7 @@ class AlertForm(QtWidgets.QDialog, Ui_AlertDialog):
                                                      'You have not entered a parameter to be replaced.\n'
                                                      'Do you want to continue anyway?'),
                                            QtWidgets.QMessageBox.StandardButtons(
-                                                       QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes)
+                                               QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes)
                                            ) == QtWidgets.QMessageBox.No:
             self.parameter_edit.setFocus()
             return False
@@ -194,7 +194,7 @@ class AlertForm(QtWidgets.QDialog, Ui_AlertDialog):
                                                      'The alert text does not contain \'<>\'.\n'
                                                      'Do you want to continue anyway?'),
                                            QtWidgets.QMessageBox.StandardButtons(
-                                                       QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes)
+                                               QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes)
                                            ) == QtWidgets.QMessageBox.No:
             self.parameter_edit.setFocus()
             return False

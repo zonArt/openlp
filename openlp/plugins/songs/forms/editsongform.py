@@ -281,9 +281,9 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             return True
         if len(tags) % 2 != 0:
             return False
-        for i in range(len(tags)-1):
-            if tags[i+1] == "{/" + tags[i][1:]:
-                del tags[i:i+2]
+        for i in range(len(tags) - 1):
+            if tags[i + 1] == "{/" + tags[i][1:]:
+                del tags[i:i + 2]
                 return self._validate_tags(tags, False)
         return False
 

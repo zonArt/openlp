@@ -123,7 +123,7 @@ class EasyWorshipSongImport(SongImport):
             log.debug('Given ews file is of unknown version.')
             return
         entry_count = self.get_i32(file_pos)
-        entry_length = self.get_i16(file_pos+4)
+        entry_length = self.get_i16(file_pos + 4)
         file_pos += 6
         self.import_wizard.progress_bar.setMaximum(entry_count)
         # Loop over songs

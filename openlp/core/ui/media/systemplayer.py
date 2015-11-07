@@ -256,6 +256,3 @@ class SystemPlayer(MediaPlayer):
                 '</strong><br/>' + str(self.audio_extensions_list) +
                 '<br/><strong>' + translate('Media.player', 'Video') +
                 '</strong><br/>' + str(self.video_extensions_list) + '<br/>')
-
-
-

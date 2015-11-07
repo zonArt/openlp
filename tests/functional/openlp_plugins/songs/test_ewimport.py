@@ -119,7 +119,7 @@ class TestFieldDesc:
 TEST_DATA_ENCODING = 'cp1252'
 CODE_PAGE_MAPPINGS = [
     (852, 'cp1250'), (737, 'cp1253'), (775, 'cp1257'), (855, 'cp1251'), (857, 'cp1254'),
-    (866,  'cp1251'), (869, 'cp1253'), (862, 'cp1255'), (874, 'cp874')]
+    (866, 'cp1251'), (869, 'cp1253'), (862, 'cp1255'), (874, 'cp874')]
 TEST_FIELD_DESCS = [
     TestFieldDesc('Title', FieldType.String, 50),
     TestFieldDesc('Text Percentage Bottom', FieldType.Int16, 2), TestFieldDesc('RecID', FieldType.Int32, 4),

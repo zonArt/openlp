@@ -193,7 +193,7 @@ class CustomMediaItem(MediaManagerItem):
                               'Are you sure you want to delete the %n selected custom slide(s)?',
                               '', QtCore.QCoreApplication.CodecForTr, len(items)),
                     QtWidgets.QMessageBox.StandardButtons(
-                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                        QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                     QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
                 return
             row_list = [item.row() for item in self.list_view.selectedIndexes()]
