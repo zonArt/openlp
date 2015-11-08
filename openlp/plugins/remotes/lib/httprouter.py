@@ -150,7 +150,7 @@ class HttpRouter(RegistryProperties):
         self.routes = [
             ('^/$', {'function': self.serve_file, 'secure': False}),
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
-            ('^/(stage)/(.*)$', {'function': self.stages, 'secure': False}),
+            ('^/(stages)/(.*)$', {'function': self.stages, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
             (r'^/(\w+)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
@@ -352,10 +352,12 @@ class HttpRouter(RegistryProperties):
         """
         log.debug('serve file request %s' % file_name)
         parts = file_name.split('/')
-        if len(parts) == 3:
-            file_name = parts[0] + '/' + parts[2]
+        if len(parts) == 1:
+            file_name = parts[0] + '/stage.html'
+        elif len(parts) == 3:
+            print(parts)
+            file_name = parts[1] + '/' + parts[2]
         path = os.path.normpath(os.path.join(self.config_dir, file_name))
-        print(path)
         if not path.startswith(self.config_dir):
             return self.do_not_found()
         content = None
