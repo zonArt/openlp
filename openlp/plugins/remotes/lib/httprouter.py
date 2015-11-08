@@ -363,6 +363,12 @@ class HttpRouter(RegistryProperties):
         return self._process_file(path)
 
     def _process_file(self, path):
+        """
+        Common file processing code
+
+        :param path: path to file to be loaded
+        :return: web resource to be loaded
+        """
         content = None
         ext, content_type = self.get_content_type(path)
         file_handle = None
