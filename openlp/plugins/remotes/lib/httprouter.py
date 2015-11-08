@@ -150,7 +150,7 @@ class HttpRouter(RegistryProperties):
         self.routes = [
             ('^/$', {'function': self.serve_file, 'secure': False}),
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
-            ('^/(stages)/(.*)$', {'function': self.stages, 'secure': False}),
+            ('^/(stage)/(.*)$', {'function': self.stages, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
             (r'^/(\w+)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
@@ -360,6 +360,9 @@ class HttpRouter(RegistryProperties):
         path = os.path.normpath(os.path.join(self.config_dir, file_name))
         if not path.startswith(self.config_dir):
             return self.do_not_found()
+        return self._process_file(path)
+
+    def _process_file(self, path):
         content = None
         ext, content_type = self.get_content_type(path)
         file_handle = None
@@ -400,27 +403,7 @@ class HttpRouter(RegistryProperties):
         path = os.path.normpath(os.path.join(self.html_dir, file_name))
         if not path.startswith(self.html_dir):
             return self.do_not_found()
-        content = None
-        ext, content_type = self.get_content_type(path)
-        file_handle = None
-        try:
-            if ext == '.html':
-                variables = self.template_vars
-                content = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
-            else:
-                file_handle = open(path, 'rb')
-                log.debug('Opened %s' % path)
-                content = file_handle.read()
-        except IOError:
-            log.exception('Failed to open %s' % path)
-            return self.do_not_found()
-        finally:
-            if file_handle:
-                file_handle.close()
-        self.send_response(200)
-        self.send_header('Content-type', content_type)
-        self.end_headers()
-        return content
+        return self._process_file(path)
 
     def get_content_type(self, file_name):
         """
