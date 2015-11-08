@@ -357,7 +357,7 @@ class TestRouter(TestCase, TestMixin):
         self.router.stages('stages', 'trb')
 
         # THEN: we should use the specific stage file instance
-        self.router._process_file.assert_called_with('trb/stage.html')
+        self.router._process_file.assert_called_with(os.path.join('trb', 'stage.html'))
 
     def remote_stage_personal_css_test(self):
         """
@@ -375,4 +375,4 @@ class TestRouter(TestCase, TestMixin):
         self.router.stages('stages', 'stages/trb/trb.css')
 
         # THEN: we should use the specific stage file instance
-        self.router._process_file.assert_called_with('trb/trb.css')
+        self.router._process_file.assert_called_with(os.path.join('trb', 'trb.css'))
