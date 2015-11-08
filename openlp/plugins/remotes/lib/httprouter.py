@@ -353,10 +353,10 @@ class HttpRouter(RegistryProperties):
         log.debug('serve file request %s' % file_name)
         parts = file_name.split('/')
         if len(parts) == 1:
-            file_name = parts[0] + '/stage.html'
+            file_name = os.path.join(parts[0], 'stage.html')
         elif len(parts) == 3:
             print(parts)
-            file_name = parts[1] + '/' + parts[2]
+            file_name = os.path.join(parts[1], parts[2])
         path = os.path.normpath(os.path.join(self.config_dir, file_name))
         if not path.startswith(self.config_dir):
             return self.do_not_found()
