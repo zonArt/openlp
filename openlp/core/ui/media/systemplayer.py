@@ -29,6 +29,7 @@
 """
 The :mod:`~openlp.core.ui.media.systemplayer` contains the system (aka QtMultimedia) player component.
 """
+import functools
 import logging
 import mimetypes
 
@@ -78,21 +79,16 @@ class SystemPlayer(MediaPlayer):
         mimetypes.init()
         media_service = self.media_player.service()
         log.info(media_service.__class__.__name__)
-        container_control = media_service.requestControl('org.qt-project.qt.mediacontainercontrol/5.0')
-        if container_control is not None:
-            supported_codecs = container_control.supportedContainers()
-            self.media_player.service().releaseControl(container_control)
-            for mime_type in supported_codecs:
-                # mime_type = str(mime_type)
-                # if mime_type.startswith('audio/'):
-                log.info(mime_type)
-                # self._add_to_list(self.audio_extensions_list, mime_type)
-                # video_device_info = QtMultimedia.QVideoDeviceInfo(QtMultimedia.QAudioDeviceInfo.defaultOutputDevice())
-                # log.info('Supported audio codecs: %s', device_info.supportedCodecs())
-                # for mime_type in device_info.supportedCodecs():
-                #     elif mime_type.startswith('video/'):
-                #         self._add_to_list(self.video_extensions_list, mime_type)
-        self._add_to_list(self.audio_extensions_list, 'audio/pcm')
+        # supportedMimeTypes doesn't return anything on Linux and Windows and
+        # the mimetypes it returns on Mac OS X may not be playable.
+        # supported_codecs = self.media_player.supportedMimeTypes()
+        # for mime_type in supported_codecs:
+        #     mime_type = str(mime_type)
+        #     log.info(mime_type)
+        #     if mime_type.startswith('audio/'):
+        #         self._add_to_list(self.audio_extensions_list, mime_type)
+        #     elif mime_type.startswith('video/'):
+        #         self._add_to_list(self.video_extensions_list, mime_type)
 
     def _add_to_list(self, mime_type_list, mimetype):
         """
@@ -105,16 +101,6 @@ class SystemPlayer(MediaPlayer):
             if ext not in mime_type_list:
                 mime_type_list.append(ext)
         log.info('MediaPlugin: %s extensions: %s' % (mimetype, ' '.join(extensions)))
-        # Add extensions for this mimetype from self.additional_extensions.
-        # This hack clears mimetypes' and operating system's shortcomings
-        # by providing possibly missing extensions.
-        if mimetype in list(self.additional_extensions.keys()):
-            for extension in self.additional_extensions[mimetype]:
-                ext = '*%s' % extension
-                if ext not in mime_type_list:
-                    mime_type_list.append(ext)
-            log.info('MediaPlugin: %s additional extensions: %s' %
-                     (mimetype, ' '.join(self.additional_extensions[mimetype])))
 
     def setup(self, display):
         """
@@ -140,13 +126,17 @@ class SystemPlayer(MediaPlayer):
         Load a video into the display
         :param display:
         """
-        log.debug('load vid in Phonon Controller')
+        log.debug('load vid in System Controller')
         controller = display.controller
         volume = controller.media_info.volume
         path = controller.media_info.file_info.absoluteFilePath()
-        display.media_player.setMedia(QtMultimedia.QMediaContent(QtCore.QUrl.fromLocalFile(path)))
-        self.volume(display, volume)
-        return True
+        # Check if file is playable due to mimetype filters being nonexistent on Linux and Windows
+        if self.check_media(path):
+            display.media_player.setMedia(QtMultimedia.QMediaContent(QtCore.QUrl.fromLocalFile(path)))
+            self.volume(display, volume)
+            return True
+        else:
+            return False
 
     def resize(self, display):
         """
@@ -256,3 +246,45 @@ class SystemPlayer(MediaPlayer):
                 '</strong><br/>' + str(self.audio_extensions_list) +
                 '<br/><strong>' + translate('Media.player', 'Video') +
                 '</strong><br/>' + str(self.video_extensions_list) + '<br/>')
+
+    def check_media(self, path):
+        """
+        Check if a file can be played
+        Uses a separate QMediaPlayer in a thread
+
+        :param path: Path to file to be checked
+        :return: True if file can be played otherwise False
+        """
+        thread = QtCore.QThread()
+        check_media_player = CheckMedia(path)
+        check_media_player.moveToThread(thread)
+        check_media_player.finished.connect(thread.quit)
+        thread.started.connect(check_media_player.play)
+        thread.start()
+        while thread.isRunning():
+            self.application.processEvents()
+        return check_media_player.result
+
+
+class CheckMedia(QtMultimedia.QMediaPlayer):
+    """
+    Class used to check if a media file is playable
+    """
+    finished = QtCore.pyqtSignal()
+
+    def __init__(self, path):
+        super(CheckMedia, self).__init__(None, QtMultimedia.QMediaPlayer.VideoSurface)
+        self.result = None
+
+        self.error.connect(functools.partial(self.signals, 'error'))
+        self.mediaStatusChanged.connect(functools.partial(self.signals, 'media'))
+
+        self.setMedia(QtMultimedia.QMediaContent(QtCore.QUrl.fromLocalFile(path)))
+
+    def signals(self, origin, status):
+        if origin == 'media' and status == self.BufferedMedia:
+            self.result = True
+            self.finished.emit()
+        elif origin == 'error' and status != self.NoError:
+            self.result = False
+            self.finished.emit()
