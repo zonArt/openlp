@@ -230,7 +230,7 @@ class TestLib(TestCase):
             # GIVEN: A set of mocked-out Qt classes
             mocked_byte_array = MagicMock()
             MockedQtCore.QByteArray.return_value = mocked_byte_array
-            mocked_byte_array.toBase64.return_value = QtCore.QByteArray('base64mock')
+            mocked_byte_array.toBase64.return_value = QtCore.QByteArray(b'base64mock')
             mocked_buffer = MagicMock()
             MockedQtCore.QBuffer.return_value = mocked_buffer
             MockedQtCore.QIODevice.WriteOnly = 'writeonly'

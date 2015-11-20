@@ -109,7 +109,7 @@ class TestRenderer(TestCase):
         """
         # GIVEN: A line of with a space text and the logical split
         renderer = Renderer()
-        renderer.empty_height = 25
+        renderer.empty_height = 480
         given_line = 'a\n[---]\nb'
         expected_words = ['a<br>[---]<br>b']
         service_item = ServiceItem(None)
@@ -126,7 +126,7 @@ class TestRenderer(TestCase):
         """
         # GIVEN: A line of with a space before the logical split
         renderer = Renderer()
-        renderer.empty_height = 25
+        renderer.empty_height = 480
         given_line = '\n       [---]\n'
         expected_words = ['<br>       [---]']
         service_item = ServiceItem(None)
@@ -143,7 +143,7 @@ class TestRenderer(TestCase):
         """
         # GIVEN: A line of with a space after the logical split
         renderer = Renderer()
-        renderer.empty_height = 25
+        renderer.empty_height = 480
         given_line = '\n[---]  \n'
         expected_words = ['<br>[---]  ']
         service_item = ServiceItem(None)
