@@ -28,9 +28,7 @@ from http.cookiejar import CookieJar
 from urllib.parse import urlencode
 from urllib.request import HTTPCookieProcessor, URLError, build_opener
 from html.parser import HTMLParser
-if sys.version_info > (3, 4):
-    from html import unescape
-
+from html import unescape
 
 from bs4 import BeautifulSoup, NavigableString
 
@@ -132,18 +130,11 @@ class SongSelectImport(object):
             if not search_results:
                 break
             for result in search_results:
-                if sys.version_info > (3, 4):
-                    song = {
-                        'title': unescape(result.find('h3').string),
-                        'authors': [unescape(author.string) for author in result.find_all('li')],
-                        'link': BASE_URL + result.find('a')['href']
-                    }
-                else:
-                    song = {
-                        'title': self.html_parser.unescape(result.find('h3').string),
-                        'authors': [self.html_parser.unescape(author.string) for author in result.find_all('li')],
-                        'link': BASE_URL + result.find('a')['href']
-                    }
+                song = {
+                    'title': unescape(result.find('h3').string),
+                    'authors': [unescape(author.string) for author in result.find_all('li')],
+                    'link': BASE_URL + result.find('a')['href']
+                }
                 if callback:
                     callback(song)
                 songs.append(song)
@@ -177,10 +168,7 @@ class SongSelectImport(object):
         if callback:
             callback()
         song['copyright'] = '/'.join([li.string for li in song_page.find('ul', 'copyright').find_all('li')])
-        if sys.version_info > (3, 4):
-            song['copyright'] = unescape(song['copyright'])
-        else:
-            song['copyright'] = self.html_parser.unescape(song['copyright'])
+        song['copyright'] = unescape(song['copyright'])
         song['ccli_number'] = song_page.find('ul', 'info').find('li').string.split(':')[1].strip()
         song['verses'] = []
         verses = lyrics_page.find('section', 'lyrics').find_all('p')
@@ -193,15 +181,9 @@ class SongSelectImport(object):
                 else:
                     verse['lyrics'] += '\n'
             verse['lyrics'] = verse['lyrics'].strip(' \n\r\t')
-            if sys.version_info > (3, 4):
-                song['verses'].append(unescape(verse))
-            else:
-                song['verses'].append(self.html_parser.unescape(verse))
+            song['verses'].append(unescape(verse))
         for counter, author in enumerate(song['authors']):
-            if sys.version_info > (3, 4):
-                song['authors'][counter] = unescape(author)
-            else:
-                song['authors'][counter] = self.html_parser.unescape(author)
+            song['authors'][counter] = unescape(author)
         return song
 
     def save_song(self, song):
