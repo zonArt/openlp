@@ -204,7 +204,7 @@ class BibleImportForm(OpenLPWizard):
         self.web_bible_tab.setObjectName('WebBibleTab')
         self.web_bible_layout = QtWidgets.QFormLayout(self.web_bible_tab)
         self.web_bible_layout.setObjectName('WebBibleLayout')
-        self.web_source_label = QtWidgets.QLabel(self.web_bible_tab)
+        self.web_update_label = QtWidgets.QLabel(self.web_bible_tab)
         self.web_update_label.setObjectName('WebUpdateLabel')
         self.web_bible_layout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.web_update_label)
         self.web_update_button = QtWidgets.QPushButton(self.web_bible_tab)
