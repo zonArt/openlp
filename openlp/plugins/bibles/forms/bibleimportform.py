@@ -259,7 +259,7 @@ class BibleImportForm(OpenLPWizard):
         self.zefania_widget = QtWidgets.QWidget(self.select_page)
         self.zefania_widget.setObjectName('ZefaniaWidget')
         self.zefania_layout = QtWidgets.QFormLayout(self.zefania_widget)
-        self.zefania_layout.setMargin(0)
+        self.zefania_layout.setContentsMargin(0, 0, 0, 0)
         self.zefania_layout.setObjectName('ZefaniaLayout')
         self.zefania_file_label = QtWidgets.QLabel(self.zefania_widget)
         self.zefania_file_label.setObjectName('ZefaniaFileLabel')
