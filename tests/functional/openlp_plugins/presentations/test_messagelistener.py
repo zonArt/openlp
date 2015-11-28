@@ -26,7 +26,7 @@ from unittest import TestCase
 
 from openlp.core.common import Registry
 from openlp.plugins.presentations.lib.mediaitem import MessageListener, PresentationMediaItem
-from tests.functional import patch, MagicMock, call
+from tests.functional import patch, MagicMock
 from tests.helpers.testmixin import TestMixin
 
 
@@ -104,4 +104,3 @@ class TestMessageListener(TestCase, TestMixin):
 
         # THEN: The controllers will be setup.
         self.assertTrue(len(controllers), 'We have loaded a controller')
-
