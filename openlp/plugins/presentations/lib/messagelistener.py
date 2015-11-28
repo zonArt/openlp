@@ -290,6 +290,13 @@ class MessageListener(object):
     log.info('Message Listener loaded')
 
     def __init__(self, media_item):
+        self._setup(media_item)
+
+    def _setup(self, media_item):
+        """
+        Start up code moved out to make mocking easier
+        :param media_item: The plugin media item handing Presentations
+        """
         self.controllers = media_item.controllers
         self.media_item = media_item
         self.preview_handler = Controller(False)
