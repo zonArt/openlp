@@ -396,6 +396,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
 
         :param suffix_list: New Suffix's to be supported
         """
+        print(suffix_list)
         if isinstance(suffix_list, str):
             self.suffixes.append(suffix_list)
         else:

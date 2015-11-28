@@ -346,6 +346,12 @@ class MessageListener(object):
             self.handler = self.media_item.find_controller_by_type(file)
             if not self.handler:
                 return
+        else:
+            # the saved handler is not present so need to use one based on file suffix.
+            if not self.controllers[self.handler].available:
+                self.handler = self.media_item.find_controller_by_type(file)
+                if not self.handler:
+                    return
         if is_live:
             controller = self.live_handler
         else:
