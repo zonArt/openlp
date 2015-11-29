@@ -50,7 +50,11 @@ class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperti
         :param message: The message text to be displayed
         """
         if message:
-            self.display_alert(message[0])
+            text = message[0]
+            # remove line breaks as these crash javascript code on display
+            while '\n' in text:
+                text = text.replace('\n', ' ')
+            self.display_alert(text)
 
     def display_alert(self, text=''):
         """

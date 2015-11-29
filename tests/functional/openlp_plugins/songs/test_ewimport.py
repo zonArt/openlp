@@ -403,7 +403,7 @@ class TestEasyWorshipSongImport(TestCase):
 
                 # THEN: do_import should return None having called retrieve_windows_encoding with the correct encoding.
                 self.assertIsNone(importer.do_import(), 'do_import should return None when db_size is less than 0x800')
-                mocked_retrieve_windows_encoding.assert_call(encoding)
+                mocked_retrieve_windows_encoding.assert_any_call(encoding)
 
     def db_file_import_test(self):
         """

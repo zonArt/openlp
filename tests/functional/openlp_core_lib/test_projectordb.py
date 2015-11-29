@@ -94,6 +94,12 @@ class TestProjectorDB(TestCase):
                 mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
                 self.projector = ProjectorDB()
 
+    def tearDown(self):
+        """
+        Clean up
+        """
+        self.projector = None
+
     def find_record_by_ip_test(self):
         """
         Test find record by IP
