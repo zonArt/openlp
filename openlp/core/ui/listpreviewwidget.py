@@ -131,10 +131,14 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                 else:
                     label.setScaledContents(True)
                 if self.service_item.is_command():
-                    label.setPixmap(QtGui.QPixmap(frame['image']))
+                    pixmap = QtGui.QPixmap(frame['image'])
+                    pixmap.setDevicePixelRatio(label.devicePixelRatio())
+                    label.setPixmap(pixmap)
                 else:
                     image = self.image_manager.get_image(frame['path'], ImageSource.ImagePlugin)
-                    label.setPixmap(QtGui.QPixmap.fromImage(image))
+                    pixmap = QtGui.QPixmap.fromImage(image)
+                    pixmap.setDevicePixelRatio(label.devicePixelRatio())
+                    label.setPixmap(pixmap)
                 self.setCellWidget(frame_number, 0, label)
                 slide_height = width // self.screen_ratio
                 row += 1

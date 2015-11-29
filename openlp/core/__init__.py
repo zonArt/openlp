@@ -341,6 +341,7 @@ def main(args=None):
     application = OpenLP(qt_args)
     application.setOrganizationName('OpenLP')
     application.setOrganizationDomain('openlp.org')
+    application.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     if args and args.portable:
         application.setApplicationName('OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)

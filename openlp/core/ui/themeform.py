@@ -193,6 +193,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         if self.page(page_id) == self.preview_page:
             self.update_theme()
             frame = self.theme_manager.generate_image(self.theme)
+            frame.setDevicePixelRatio(self.devicePixelRatio())
             self.preview_box_label.setPixmap(frame)
             self.display_aspect_ratio = float(frame.width()) / frame.height()
             self.resizeEvent()
