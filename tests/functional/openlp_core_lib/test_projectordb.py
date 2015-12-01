@@ -90,7 +90,6 @@ class TestProjectorDB(TestCase):
         """
         if not hasattr(self, 'projector'):
             with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-                mocked_init_url.start()
                 mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
                 self.projector = ProjectorDB()
 
