@@ -65,7 +65,6 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         """
         Set up anything necessary for all tests
         """
-        mocked_init_url.start()
         mocked_init_url.return_value = 'sqlite:///{}'.format(tmpfile)
         self.build_settings()
         self.setup_application()
