@@ -272,7 +272,6 @@ class TestRouter(TestCase, TestMixin):
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
         mocked_image_manager = MagicMock()
-        Registry.create()
         Registry().register('image_manager', mocked_image_manager)
         file_name = 'another%20test/slide1.png'
         full_path = os.path.normpath(os.path.join('thumbnails', file_name))
@@ -295,9 +294,12 @@ class TestRouter(TestCase, TestMixin):
             self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
             mocked_exists.assert_called_with(urllib.parse.unquote(full_path))
             self.assertEqual(mocked_image_to_byte.call_count, 1, 'Called once')
-            mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'),
-                                                   'slide1.png', None, '120x90')
-            mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'), 'slide1.png', '120x90')
+            mocked_image_manager.add_image.assert_any_call(os.path.normpath(os.path.join('thumbnails', 'another test',
+                                                                                         'slide1.png')),
+                                                           'slide1.png', None, width, height)
+            mocked_image_manager.get_image.assert_any_call(os.path.normpath(os.path.join('thumbnails', 'another test',
+                                                                                         'slide1.png')),
+                                                           'slide1.png', width, height)
 
     def remote_next_test(self):
         """

@@ -25,7 +25,7 @@ Package to test the openlp.core.ui.media.vlcplayer package.
 import os
 import sys
 from datetime import datetime, timedelta
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from openlp.core.common import Registry
 from openlp.core.ui.media import MediaState, MediaType
@@ -49,6 +49,22 @@ class TestVLCPlayer(TestCase, TestMixin):
         if 'openlp.core.ui.media.vendor.vlc' in sys.modules:
             del sys.modules['openlp.core.ui.media.vendor.vlc']
         MockDateTime.revert()
+
+    @skip('No way to test this')
+    @patch('openlp.core.ui.media.vlcplayer.vlc')
+    def get_vlc_fails_and_removes_module_test(self, mocked_vlc):
+        """
+        Test that when the VLC import fails, it removes the module from sys.modules
+        """
+        # GIVEN: We're on OS X and we don't have the VLC plugin path set
+        mocked_vlc.Instance.side_effect = NameError
+        mocked_vlc.libvlc_get_version.return_value = b'0.0.0'
+
+        # WHEN: An checking if the player is available
+        get_vlc()
+
+        # THEN: The extra environment variable should be there
+        self.assertNotIn('openlp.core.ui.media.vendor.vlc', sys.modules)
 
     @patch('openlp.core.ui.media.vlcplayer.is_macosx')
     def fix_vlc_22_plugin_path_test(self, mocked_is_macosx):
@@ -74,10 +90,6 @@ class TestVLCPlayer(TestCase, TestMixin):
         """
         # GIVEN: We're not on OS X and we don't have the VLC plugin path set
         mocked_is_macosx.return_value = False
-        if 'VLC_PLUGIN_PATH' in os.environ:
-            del os.environ['VLC_PLUGIN_PATH']
-        if 'openlp.core.ui.media.vendor.vlc' in sys.modules:
-            del sys.modules['openlp.core.ui.media.vendor.vlc']
 
         # WHEN: An checking if the player is available
         get_vlc()
