@@ -293,15 +293,12 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         if self.height() != self.screen['size'].height() or not self.isVisible():
             shrink = True
             js = 'show_alert("%s", "%s")' % (text_prepared, 'top')
-            print(js)
         else:
             shrink = False
             js = 'show_alert("%s", "")' % text_prepared
-            print(js)
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
-                print(height)
                 alert_height = int(height)
                 self.resize(self.width(), alert_height)
                 self.setVisible(True)
