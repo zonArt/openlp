@@ -342,11 +342,11 @@ class HttpRouter(RegistryProperties):
             'settings': translate('RemotePlugin.Mobile', 'Settings'),
         }
 
-    def stages(self, temp_path, file_name):
+    def stages(self, url_path, file_name):
         """
         Allow Stage view to be delivered with custom views.
 
-        :param temp_path: base path of the URL
+        :param url_path: base path of the URL. Not used but passed by caller
         :param file_name: file name with path
         :return:
         """
@@ -355,7 +355,6 @@ class HttpRouter(RegistryProperties):
         if len(parts) == 1:
             file_name = os.path.join(parts[0], 'stage.html')
         elif len(parts) == 3:
-            print(parts)
             file_name = os.path.join(parts[1], parts[2])
         path = os.path.normpath(os.path.join(self.config_dir, file_name))
         if not path.startswith(self.config_dir):
