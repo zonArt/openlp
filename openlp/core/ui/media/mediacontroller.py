@@ -531,12 +531,16 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 if not title:
                     continue
                 player = self.media_players[title]
+                # The system player may not return what files it can play so add it now
+                #  and check whether it can play the file later
                 if title == 'system':
-                    self.resize(display, player)
-                    if player.load(display):
-                        self.current_media_players[controller.controller_type] = player
-                        controller.media_info.media_type = MediaType.Video
-                        return True
+                    if not controller.media_info.is_background or controller.media_info.is_background and \
+                            player.can_background:
+                        self.resize(display, player)
+                        if player.load(display):
+                            self.current_media_players[controller.controller_type] = player
+                            controller.media_info.media_type = MediaType.Video
+                            return True
                 if suffix in player.video_extensions_list:
                     if not controller.media_info.is_background or controller.media_info.is_background and \
                             player.can_background:
