@@ -120,6 +120,36 @@ class TestMediaController(TestCase, TestMixin):
         # THEN: it should return False
         self.assertFalse(ret, '_check_file_type should return False when the processor for service_item is None.')
 
+    @patch('openlp.core.ui.media.mediacontroller.get_media_players')
+    @patch('openlp.core.ui.media.mediacontroller.UiStrings')
+    def check_file_type_automatic_processor_test(self, mocked_uistrings, mocked_get_media_players):
+        """
+        Test that we can play media when players are available and we have a automatic processor from the service item
+        """
+        # GIVEN: A mocked UiStrings, get_media_players, controller, display and service_item
+        mocked_get_media_players.return_value = (['vlc', 'webkit'], '')
+        mocked_ret_uistrings = MagicMock()
+        mocked_ret_uistrings.Automatic = 1
+        mocked_uistrings.return_value = mocked_ret_uistrings
+        media_controller = MediaController()
+        mocked_vlc = MagicMock()
+        mocked_vlc.video_extensions_list = ['*.mp4']
+        media_controller.media_players = {'vlc': mocked_vlc, 'webkit': MagicMock()}
+        mocked_controller = MagicMock()
+        mocked_suffix = MagicMock()
+        mocked_suffix.return_value = 'mp4'
+        mocked_controller.media_info.file_info.suffix = mocked_suffix
+        mocked_display = MagicMock()
+        mocked_service_item = MagicMock()
+        mocked_service_item.processor = 1
+
+        # WHEN: calling _check_file_type when the processor for the service item is None
+        ret = media_controller._check_file_type(mocked_controller, mocked_display, mocked_service_item)
+
+        # THEN: it should return False
+        self.assertTrue(ret, '_check_file_type should return True when mediaplayers are available and '
+                             'the service item has an automatic processor.')
+
     def media_play_msg_test(self):
         """
         Test that the media controller responds to the request to play a loaded video
