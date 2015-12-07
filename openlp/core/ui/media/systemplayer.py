@@ -81,14 +81,14 @@ class SystemPlayer(MediaPlayer):
         log.info(media_service.__class__.__name__)
         # supportedMimeTypes doesn't return anything on Linux and Windows and
         # the mimetypes it returns on Mac OS X may not be playable.
-        # supported_codecs = self.media_player.supportedMimeTypes()
-        # for mime_type in supported_codecs:
-        #     mime_type = str(mime_type)
-        #     log.info(mime_type)
-        #     if mime_type.startswith('audio/'):
-        #         self._add_to_list(self.audio_extensions_list, mime_type)
-        #     elif mime_type.startswith('video/'):
-        #         self._add_to_list(self.video_extensions_list, mime_type)
+        supported_codecs = self.media_player.supportedMimeTypes()
+        for mime_type in supported_codecs:
+            mime_type = str(mime_type)
+            log.info(mime_type)
+            if mime_type.startswith('audio/'):
+                self._add_to_list(self.audio_extensions_list, mime_type)
+            elif mime_type.startswith('video/'):
+                self._add_to_list(self.video_extensions_list, mime_type)
 
     def _add_to_list(self, mime_type_list, mimetype):
         """
