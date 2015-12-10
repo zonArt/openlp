@@ -146,9 +146,39 @@ class TestMediaController(TestCase, TestMixin):
         # WHEN: calling _check_file_type when the processor for the service item is None
         ret = media_controller._check_file_type(mocked_controller, mocked_display, mocked_service_item)
 
-        # THEN: it should return False
+        # THEN: it should return True
         self.assertTrue(ret, '_check_file_type should return True when mediaplayers are available and '
                              'the service item has an automatic processor.')
+
+    @patch('openlp.core.ui.media.mediacontroller.get_media_players')
+    @patch('openlp.core.ui.media.mediacontroller.UiStrings')
+    def check_file_type_processor_different_from_available_test(self, mocked_uistrings, mocked_get_media_players):
+        """
+        Test that we can play media when players available are different from the processor from the service item
+        """
+        # GIVEN: A mocked UiStrings, get_media_players, controller, display and service_item
+        mocked_get_media_players.return_value = (['phonon'], '')
+        mocked_ret_uistrings = MagicMock()
+        mocked_ret_uistrings.Automatic = 'automatic'
+        mocked_uistrings.return_value = mocked_ret_uistrings
+        media_controller = MediaController()
+        mocked_phonon = MagicMock()
+        mocked_phonon.video_extensions_list = ['*.mp4']
+        media_controller.media_players = {'phonon': mocked_phonon}
+        mocked_controller = MagicMock()
+        mocked_suffix = MagicMock()
+        mocked_suffix.return_value = 'mp4'
+        mocked_controller.media_info.file_info.suffix = mocked_suffix
+        mocked_display = MagicMock()
+        mocked_service_item = MagicMock()
+        mocked_service_item.processor = 'vlc'
+
+        # WHEN: calling _check_file_type when the processor for the service item is None
+        ret = media_controller._check_file_type(mocked_controller, mocked_display, mocked_service_item)
+
+        # THEN: it should return True
+        self.assertTrue(ret, '_check_file_type should return True when the players available are different'
+                             'from the processor from the service item.')
 
     def media_play_msg_test(self):
         """
