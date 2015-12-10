@@ -160,8 +160,7 @@ class SystemPlayer(MediaPlayer):
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         self.volume(display, controller.media_info.volume)
-        controller.media_info.length = int(display.media_player.duration() / 1000)
-        controller.seek_slider.setMaximum(controller.media_info.length * 1000)
+        display.media_player.durationChanged.connect(functools.partial(self.set_duration, controller))
         self.state = MediaState.Playing
         display.video_widget.raise_()
         return True
@@ -178,6 +177,9 @@ class SystemPlayer(MediaPlayer):
         """
         Stop the current media item
         """
+        display.media_player.blockSignals(True)
+        display.media_player.durationChanged.disconnect()
+        display.media_player.blockSignals(False)
         display.media_player.stop()
         self.set_visible(display, False)
         self.state = MediaState.Stopped
@@ -186,9 +188,7 @@ class SystemPlayer(MediaPlayer):
         """
         Set the volume
         """
-        # 1.0 is the highest value
         if display.has_audio:
-            vol = float(vol) / float(100)
             display.media_player.setVolume(vol)
 
     def seek(self, display, seek_value):
@@ -213,6 +213,11 @@ class SystemPlayer(MediaPlayer):
         """
         if self.has_own_widget:
             display.video_widget.setVisible(status)
+
+    @staticmethod
+    def set_duration(controller, duration):
+        controller.media_info.length = int(duration / 1000)
+        controller.seek_slider.setMaximum(controller.media_info.length * 1000)
 
     def update_ui(self, display):
         """
@@ -257,6 +262,7 @@ class SystemPlayer(MediaPlayer):
         """
         thread = QtCore.QThread()
         check_media_player = CheckMedia(path)
+        check_media_player.setVolume(0)
         check_media_player.moveToThread(thread)
         check_media_player.finished.connect(thread.quit)
         thread.started.connect(check_media_player.play)
@@ -284,7 +290,9 @@ class CheckMedia(QtMultimedia.QMediaPlayer):
     def signals(self, origin, status):
         if origin == 'media' and status == self.BufferedMedia:
             self.result = True
+            self.stop()
             self.finished.emit()
         elif origin == 'error' and status != self.NoError:
             self.result = False
+            self.stop()
             self.finished.emit()
