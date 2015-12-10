@@ -518,7 +518,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         # If no player, we can't play
         if not used_players:
             return False
-        default_player = used_players[0]
+        default_player = [used_players[0]]
         if service_item.processor and service_item.processor != UiStrings().Automatic:
             # check to see if the player is usable else use the default one.
             if not service_item.processor.lower() in used_players:
