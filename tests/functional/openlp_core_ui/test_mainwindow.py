@@ -71,7 +71,7 @@ class TestMainWindow(TestCase, TestMixin):
         with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
 
             # WHEN the argument is processed
-            self.main_window.open_cmd_line_files()
+            self.main_window.open_cmd_line_files(service)
 
             # THEN the service from the arguments is loaded
             mocked_load_path.assert_called_with(service), 'load_path should have been called with the service\'s path'
@@ -86,7 +86,7 @@ class TestMainWindow(TestCase, TestMixin):
         with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
 
             # WHEN the argument is processed
-            self.main_window.open_cmd_line_files()
+            self.main_window.open_cmd_line_files("")
 
             # THEN the file should not be opened
             assert not mocked_load_path.called, 'load_path should not have been called'

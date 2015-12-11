@@ -115,7 +115,7 @@ class SongMediaItem(MediaManagerItem):
         Is triggered when the songs config is updated
         """
         log.debug('config_updated')
-        self.search_as_you_type = Settings().value(self.settings_section + '/search as type')
+        self.is_search_as_you_type_enabled = Settings().value('advanced/search as type')
         self.update_service_on_edit = Settings().value(self.settings_section + '/update service on edit')
         self.add_song_from_service = Settings().value(self.settings_section + '/add song from service')
         self.display_songbook = Settings().value(self.settings_section + '/display songbook')
@@ -279,7 +279,7 @@ class SongMediaItem(MediaManagerItem):
         If search as type enabled invoke the search on each key press. If the Lyrics are being searched do not start
         till 7 characters have been entered.
         """
-        if self.search_as_you_type:
+        if self.is_search_as_you_type_enabled:
             search_length = 1
             if self.search_text_edit.current_search_type() == SongSearch.Entire:
                 search_length = 4
@@ -590,4 +590,4 @@ class SongMediaItem(MediaManagerItem):
         :param show_error: Is this an error?
         """
         search_results = self.search_entire(string)
-        return [[song.id, song.title] for song in search_results]
+        return [[song.id, song.title, song.alternate_title] for song in search_results]

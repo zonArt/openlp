@@ -60,22 +60,22 @@ class SongShowPlusImport(SongImport):
 
     * Each piece of data in the song file has some information that precedes it.
     * The general format of this data is as follows:
-    4 Bytes, forming a 32 bit number, a key if you will, this describes what the data is (see blockKey below)
-    4 Bytes, forming a 32 bit number, which is the number of bytes until the next block starts
-    1 Byte, which tells how many bytes follows
-    1 or 4 Bytes, describes how long the string is, if its 1 byte, the string is less than 255
-    The next bytes are the actual data.
-    The next block of data follows on.
+        | 4 Bytes, forming a 32 bit number, a key if you will, this describes what the data is (see blockKey below)
+        | 4 Bytes, forming a 32 bit number, which is the number of bytes until the next block starts
+        | 1 Byte, which tells how many bytes follows
+        | 1 or 4 Bytes, describes how long the string is, if its 1 byte, the string is less than 255
+        | The next bytes are the actual data.
+        | The next block of data follows on.
 
-    This description does differ for verses. Which includes extra bytes stating the verse type or number. In some cases
-    a "custom" verse is used, in that case, this block will in include 2 strings, with the associated string length
-    descriptors. The first string is the name of the verse, the second is the verse content.
+        This description does differ for verses. Which includes extra bytes stating the verse type or number. In some
+        cases a "custom" verse is used, in that case, this block will in include 2 strings, with the associated string
+        length descriptors. The first string is the name of the verse, the second is the verse content.
 
-    The file is ended with four null bytes.
+        The file is ended with four null bytes.
 
-    Valid extensions for a SongShow Plus song file are:
+        Valid extensions for a SongShow Plus song file are:
 
-    * .sbsong
+        * .sbsong
     """
 
     other_count = 0

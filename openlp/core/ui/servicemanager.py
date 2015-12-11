@@ -480,7 +480,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Create the initial service array with the base items to be saved.
 
-        :return service array
+        :return: service array
         """
         service = []
         core = {'lite-service': self._save_lite,

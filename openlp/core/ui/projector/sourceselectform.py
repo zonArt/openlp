@@ -44,17 +44,19 @@ def source_group(inputs, source_text):
     Return a dictionary where key is source[0] and values are inputs
     grouped by source[0].
 
-    source_text = dict{"key1": "key1-text",
-                       "key2": "key2-text",
-                       ...}
-    return:
-        dict{ key1[0]: { "key11": "key11-text",
-                         "key12": "key12-text",
-                         "key13": "key13-text",
-                         ... }
-              key2[0]: {"key21": "key21-text",
-                        "key22": "key22-text",
-                        ... }
+    ::
+
+        source_text = dict{"key1": "key1-text",
+                           "key2": "key2-text",
+                           ...}
+        return:
+            dict{key1[0]: {"key11": "key11-text",
+                           "key12": "key12-text",
+                           "key13": "key13-text",
+                           ...}
+                 key2[0]: {"key21": "key21-text",
+                           "key22": "key22-text",
+                           ...}
 
     :param inputs: List of inputs
     :param source_text: Dictionary of {code: text} values to display
@@ -81,16 +83,18 @@ def Build_Tab(group, source_key, default, projector, projectordb, edit=False):
     Create the radio button page for a tab.
     Dictionary will be a 1-key entry where key=tab to setup, val=list of inputs.
 
-    source_key: {"groupkey1": {"key11": "key11-text",
-                               "key12": "key12-text",
-                               ...
-                              },
-                 "groupkey2": {"key21": "key21-text",
-                               "key22": "key22-text",
-                               ....
-                              },
-                 ...
-                }
+    ::
+
+        source_key: {"groupkey1": {"key11": "key11-text",
+                                   "key12": "key12-text",
+                                   ...
+                                   },
+                     "groupkey2": {"key21": "key21-text",
+                                   "key22": "key22-text",
+                                   ...
+                                   },
+                     ...
+                     }
 
     :param group: Button group widget to add buttons to
     :param source_key: Dictionary of sources for radio buttons

@@ -178,12 +178,14 @@ class BiblePlugin(Plugin):
 
     def uses_theme(self, theme):
         """
-        Called to find out if the bible plugin is currently using a theme. Returns ``True`` if the theme is being used,
-        otherwise returns ``False``.
+        Called to find out if the bible plugin is currently using a theme. Returns ``1`` if the theme is being used,
+        otherwise returns ``0``.
 
         :param theme: The theme
         """
-        return str(self.settings_tab.bible_theme) == theme
+        if str(self.settings_tab.bible_theme) == theme:
+            return 1
+        return 0
 
     def rename_theme(self, old_theme, new_theme):
         """

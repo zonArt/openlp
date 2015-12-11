@@ -66,9 +66,9 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
     :param dialog: The parent object. This has to be a ``QDialog`` descendant.
     :param name: A string which is set as object name.
     :param standard_buttons: A list of strings for the used buttons. It might contain: ``ok``, ``save``, ``cancel``,
-    ``close``, and ``defaults``.
+        ``close``, and ``defaults``.
     :param custom_buttons: A list of additional buttons. If an item is an instance of QtGui.QAbstractButton it is added
-    with QDialogButtonBox.ActionRole. Otherwise the item has to be a tuple of a Button and a ButtonRole.
+        with QDialogButtonBox.ActionRole. Otherwise the item has to be a tuple of a Button and a ButtonRole.
     """
     if custom_buttons is None:
         custom_buttons = []

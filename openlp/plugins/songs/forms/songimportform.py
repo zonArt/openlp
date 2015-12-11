@@ -228,6 +228,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
         :param listbox: A listbox (QListWidget).
         :param filters: The file extension filters. It should contain the file descriptions as well as the file
             extensions. For example::
+
                 'SongBeamer Files (*.sng)'
         """
         if filters:

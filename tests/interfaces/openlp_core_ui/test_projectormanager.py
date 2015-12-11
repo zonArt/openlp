@@ -51,7 +51,6 @@ class TestProjectorManager(TestCase, TestMixin):
         Registry.create()
         if not hasattr(self, 'projector_manager'):
             with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-                mocked_init_url.start()
                 mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
                 self.projectordb = ProjectorDB()
                 if not hasattr(self, 'projector_manager'):

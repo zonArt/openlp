@@ -238,10 +238,10 @@ class ActionList(object):
 
         :param action: The action to add (QAction). **Note**, the action must not have an empty ``objectName``.
         :param category: The category this action belongs to. The category has to be a python string. . **Note**,
-        if the category is ``None``, the category and its actions are being hidden in the shortcut dialog. However,
-        if they are added, it is possible to avoid assigning shortcuts twice, which is important.
+            if the category is ``None``, the category and its actions are being hidden in the shortcut dialog. However,
+            if they are added, it is possible to avoid assigning shortcuts twice, which is important.
         :param weight: The weight specifies how important a category is. However, this only has an impact on the order
-        the categories are displayed.
+            the categories are displayed.
         """
         if category not in self.categories:
             self.categories.append(category)

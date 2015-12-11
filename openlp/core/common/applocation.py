@@ -99,7 +99,7 @@ class AppLocation(object):
         Get a list of files from the data files path.
 
         :param section: Defaults to *None*. The section of code getting the files - used to load from a section's
-        data subdirectory.
+            data subdirectory.
         :param extension:
             Defaults to *None*. The extension to search for. For example::
 

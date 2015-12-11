@@ -43,11 +43,6 @@ log = logging.getLogger(__name__)
 
 
 CLAPPERBOARD = ':/media/slidecontroller_multimedia.png'
-OPTICAL = ':/media/media_optical.png'
-VIDEO_ICON = build_icon(':/media/media_video.png')
-AUDIO_ICON = build_icon(':/media/media_audio.png')
-OPTICAL_ICON = build_icon(OPTICAL)
-ERROR_ICON = build_icon(':/general/general_delete.png')
 
 
 class MediaMediaItem(MediaManagerItem, RegistryProperties):
@@ -57,10 +52,20 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
     log.info('%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, plugin):
+        self.setup()
+        super(MediaMediaItem, self).__init__(parent, plugin)
+
+    def setup(self):
+        """
+        Allow early setup to be mocked.
+        """
         self.icon_path = 'images/image'
         self.background = False
         self.automatic = ''
-        super(MediaMediaItem, self).__init__(parent, plugin)
+        self.optical_icon = build_icon(':/media/media_optical.png')
+        self.video_icon = build_icon(':/media/media_video.png')
+        self.audio_icon = build_icon(':/media/media_audio.png')
+        self.error_icon = build_icon(':/general/general_delete.png')
 
     def setup_item(self):
         """
@@ -130,7 +135,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
             optical_button_tooltip = translate('MediaPlugin.MediaItem',
                                                'Load CD/DVD - only supported when VLC is installed and enabled')
-        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=OPTICAL_ICON, text=optical_button_text,
+        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=self.optical_icon,
+                                                            text=optical_button_text,
                                                             tooltip=optical_button_tooltip,
                                                             triggers=self.on_load_optical)
         if disable_optical_button_text:
@@ -351,14 +357,14 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 # Handle optical based item
                 (file_name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(track)
                 item_name = QtGui.QListWidgetItem(clip_name)
-                item_name.setIcon(OPTICAL_ICON)
+                item_name.setIcon(self.optical_icon)
                 item_name.setData(QtCore.Qt.UserRole, track)
                 item_name.setToolTip('%s@%s-%s' % (file_name, format_milliseconds(start), format_milliseconds(end)))
             elif not os.path.exists(track):
                 # File doesn't exist, mark as error.
                 file_name = os.path.split(str(track))[1]
                 item_name = QtGui.QListWidgetItem(file_name)
-                item_name.setIcon(ERROR_ICON)
+                item_name.setIcon(self.error_icon)
                 item_name.setData(QtCore.Qt.UserRole, track)
                 item_name.setToolTip(track)
             elif track_info.isFile():
@@ -366,9 +372,9 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 file_name = os.path.split(str(track))[1]
                 item_name = QtGui.QListWidgetItem(file_name)
                 if '*.%s' % (file_name.split('.')[-1].lower()) in self.media_controller.audio_extensions_list:
-                    item_name.setIcon(AUDIO_ICON)
+                    item_name.setIcon(self.audio_icon)
                 else:
-                    item_name.setIcon(VIDEO_ICON)
+                    item_name.setIcon(self.video_icon)
                 item_name.setData(QtCore.Qt.UserRole, track)
                 item_name.setToolTip(track)
             if item_name:

@@ -503,7 +503,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         Returns a theme object from an XML file
 
         :param theme_name: Name of the theme to load from file
-        :return The theme object.
+        :return: The theme object.
         """
         self.log_debug('get theme data for theme %s' % theme_name)
         xml_file = os.path.join(self.path, str(theme_name), str(theme_name) + '.xml')
@@ -519,7 +519,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         Display a warning box to the user that a theme already exists
 
         :param theme_name: Name of the theme.
-        :return Confirm if the theme is to be overwritten.
+        :return: Confirm if the theme is to be overwritten.
         """
         ret = QtGui.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
                                          translate('OpenLP.ThemeManager',
@@ -607,7 +607,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         Check if theme already exists and displays error message
 
         :param theme_name:  Name of the Theme to test
-        :return True or False if theme exists
+        :return: True or False if theme exists
         """
         theme_dir = os.path.join(self.path, theme_name)
         if os.path.exists(theme_dir):
@@ -718,7 +718,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
 
         :param theme_xml: The Theme data object.
         :param image_path: Where the theme image is stored
-        :return Theme data.
+        :return: Theme data.
         """
         theme = ThemeXML()
         theme.parse(theme_xml)
@@ -734,7 +734,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         :param confirm_text: Confirm message text to be displayed.
         :param test_plugin: Do we check the plugins for theme usage.
         :param confirm: Do we display a confirm box before run checks.
-        :return True or False depending on the validity.
+        :return: True or False depending on the validity.
         """
         self.global_theme = Settings().value(self.settings_section + '/global theme')
         if check_item_selected(self.theme_list_widget, select_text):
@@ -755,12 +755,19 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 return False
             # check for use in the system else where.
             if test_plugin:
+                plugin_usage = ""
                 for plugin in self.plugin_manager.plugins:
-                    if plugin.uses_theme(theme):
-                        critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
-                                                   translate('OpenLP.ThemeManager',
-                                                             'Theme %s is used in the %s plugin.')
-                                                   % (theme, plugin.name))
-                        return False
+                    used_count = plugin.uses_theme(theme)
+                    if used_count:
+                        plugin_usage = "%s%s" % (plugin_usage, (translate('OpenLP.ThemeManager',
+                                                                          '%s time(s) by %s') %
+                                                                (used_count, plugin.name)))
+                        plugin_usage = "%s\n" % plugin_usage
+                if plugin_usage:
+                    critical_error_message_box(translate('OpenLP.ThemeManager', 'Unable to delete theme'),
+                                               translate('OpenLP.ThemeManager', 'Theme is currently used \n\n%s') %
+                                               plugin_usage)
+
+                    return False
             return True
         return False

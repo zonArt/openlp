@@ -240,4 +240,4 @@ class TestThemeManager(TestCase):
             theme_manager.unzip_theme('theme.file', 'folder')
 
             # THEN: The critical_error_message_box should have been called
-            mocked_critical_error_message_box.assert_called_once(ANY, ANY)
+            self.assertEqual(mocked_critical_error_message_box.call_count, 1, 'Should have been called once')
