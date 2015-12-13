@@ -51,7 +51,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         self.main_window = QtGui.QMainWindow()
         Registry().register('main_window', self.main_window)
         # Mock VLC so we don't actually use it
-        self.vlc_patcher = patch('openlp.plugins.media.forms.mediaclipselectorform.vlc')
+        self.vlc_patcher = patch('openlp.plugins.media.forms.mediaclipselectorform.get_vlc')
         self.vlc_patcher.start()
         Registry().register('application', self.app)
         # Mock the media item

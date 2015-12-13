@@ -28,7 +28,7 @@ import logging
 import os
 import threading
 import sys
-
+import ctypes
 from PyQt4 import QtGui
 
 from openlp.core.common import Settings, is_win, is_macosx, is_linux
@@ -71,8 +71,19 @@ def get_vlc():
         if is_macosx():
             # Newer versions of VLC on OS X need this. See https://forum.videolan.org/viewtopic.php?t=124521
             os.environ['VLC_PLUGIN_PATH'] = '/Applications/VLC.app/Contents/MacOS/plugins'
+        # On Windows when frozen in PyInstaller, we need to blank SetDllDirectoryW to allow loading of the VLC dll.
+        # This is due to limitations (by desgin) in PyInstaller. SetDllDirectoryW original value is restored once 
+        # VLC has been imported. 
+        if is_win():
+            buffer_size = 1024
+            dll_directory = ctypes.create_unicode_buffer(buffer_size)
+            new_buffer_size = ctypes.windll.kernel32.GetDllDirectoryW(buffer_size, dll_directory)
+            dll_directory = ''.join(dll_directory[:new_buffer_size]).replace('\0', '')
+            log.debug('Original DllDirectory: %s' % dll_directory)
+            ctypes.windll.kernel32.SetDllDirectoryW(None)
         from openlp.core.ui.media.vendor import vlc
-
+        if is_win():
+            ctypes.windll.kernel32.SetDllDirectoryW(dll_directory)
         is_vlc_available = bool(vlc.get_default_instance())
     except (ImportError, NameError, NotImplementedError):
         pass

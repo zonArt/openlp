@@ -31,23 +31,13 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.common import translate, is_win, is_linux, is_macosx, RegistryProperties
 from openlp.plugins.media.forms.mediaclipselectordialog import Ui_MediaClipSelector
 from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.ui.media.vlcplayer import get_vlc
 
 if is_win():
     from win32com.client import Dispatch
 
 if is_linux():
     import dbus
-
-try:
-    from openlp.core.ui.media.vendor import vlc
-except (ImportError, NameError, NotImplementedError):
-    pass
-except OSError as e:
-    if is_win():
-        if not isinstance(e, WindowsError) and e.winerror != 126:
-            raise
-    else:
-        raise
 
 log = logging.getLogger(__name__)
 
@@ -126,6 +116,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         """
         Setup VLC instance and mediaplayer
         """
+        vlc = get_vlc()
         self.vlc_instance = vlc.Instance()
         # creating an empty vlc media player
         self.vlc_media_player = self.vlc_instance.media_player_new()
@@ -160,6 +151,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         :param path: Path to the device to be tested.
         :return: True if it was an audio CD else False.
         """
+        vlc = get_vlc()
         # Detect by trying to play it as a CD
         self.vlc_media = self.vlc_instance.media_new_location('cdda://' + path)
         self.vlc_media_player.set_media(self.vlc_media)
@@ -193,6 +185,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         :param clicked: Given from signal, not used.
         """
         log.debug('on_load_disc_button_clicked')
+        vlc = get_vlc()
         self.disable_all()
         self.application.set_busy_cursor()
         path = self.media_path_combobox.currentText()
@@ -281,6 +274,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
 
         :param clicked: Given from signal, not used.
         """
+        vlc = get_vlc()
         if self.vlc_media_player.get_state() == vlc.State.Playing:
             self.vlc_media_player.pause()
             self.play_button.setIcon(self.play_icon)
@@ -381,6 +375,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         :param index: The index of the newly chosen title track.
         """
         log.debug('in on_titles_combo_box_changed, index: %d', index)
+        vlc = get_vlc()
         if not self.vlc_media_player:
             log.error('vlc_media_player was None')
             return
@@ -619,6 +614,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         :param media_state: VLC media state to wait for.
         :return: True if state was reached within 15 seconds, False if not or error occurred.
         """
+        vlc = get_vlc()
         start = datetime.now()
         while media_state != self.vlc_media_player.get_state():
             if self.vlc_media_player.get_state() == vlc.State.Error:
