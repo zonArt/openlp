@@ -514,17 +514,17 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param display: Which display to use
         :param service_item: The ServiceItem containing the details to be played.
         """
-        used_players = get_media_players()
-        default_player = used_players[0]
+        used_players = get_media_players()[0]
+        # If no player, we can't play
+        if not used_players:
+            return False
+        default_player = [used_players[0]]
         if service_item.processor and service_item.processor != UiStrings().Automatic:
             # check to see if the player is usable else use the default one.
             if not service_item.processor.lower() in used_players:
                 used_players = default_player
             else:
                 used_players = [service_item.processor.lower()]
-        # If no player, we can't play
-        if not used_players:
-            return False
         if controller.media_info.file_info.isFile():
             suffix = '*.%s' % controller.media_info.file_info.suffix().lower()
             for title in used_players:

@@ -167,7 +167,7 @@ class HTTPSServer(HTTPServer):
         local_data = AppLocation.get_directory(AppLocation.DataDir)
         self.socket = ssl.SSLSocket(
             sock=socket.socket(self.address_family, self.socket_type),
-            ssl_version=ssl.PROTOCOL_TLSv1,
+            ssl_version=ssl.PROTOCOL_TLSv1_2,
             certfile=os.path.join(local_data, 'remotes', 'openlp.crt'),
             keyfile=os.path.join(local_data, 'remotes', 'openlp.key'),
             server_side=True)
