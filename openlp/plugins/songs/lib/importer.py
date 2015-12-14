@@ -46,6 +46,7 @@ from .importers.propresenter import ProPresenterImport
 from .importers.worshipassistant import WorshipAssistantImport
 from .importers.powerpraise import PowerPraiseImport
 from .importers.presentationmanager import PresentationManagerImport
+from .importers.lyrix import LyrixImport
 
 log = logging.getLogger(__name__)
 
@@ -166,6 +167,8 @@ class SongFormat(object):
     WorshipAssistant = 21
     WorshipCenterPro = 22
     ZionWorx = 23
+    Lyrix = 24
+    VideoPsalm = 25
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -361,6 +364,22 @@ class SongFormat(object):
                                          'First convert your ZionWorx database to a CSV text file, as '
                                          'explained in the <a href="http://manual.openlp.org/songs.html'
                                          '#importing-from-zionworx">User Manual</a>.')
+        },
+        Lyrix: {
+            'class': LyrixImport,
+            'name': 'Lyrix',
+            'prefix': 'lyrix',
+            'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'Lyrix Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'Exported Lyrix files')
+        },
+        VideoPsalm: {
+            #'class': VideoPsalmImport,
+            'name': 'VideoPsalm',
+            'prefix': 'videopsalm',
+            'filter': '%s (*.json)' % translate('SongsPlugin.ImportWizardForm', 'VideoPsalm Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'Exported VideoPsalm files'),
+            'descriptionText': translate('SongsPlugin.ImportWizardForm','The VideoPsalm songbooks are normally located '
+                                         'in %s') % 'C:\\Users\\Public\\Documents\\VideoPsalm\\SongBooks\\'
         }
     }
 
@@ -393,7 +412,9 @@ class SongFormat(object):
             SongFormat.WordsOfWorship,
             SongFormat.WorshipAssistant,
             SongFormat.WorshipCenterPro,
-            SongFormat.ZionWorx
+            SongFormat.ZionWorx,
+            SongFormat.Lyrix,
+            SongFormat.VideoPsalm
         ]
 
     @staticmethod
