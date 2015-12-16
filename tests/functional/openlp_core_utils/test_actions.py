@@ -163,8 +163,9 @@ class TestActionList(TestCase, TestMixin):
         action_with_same_shortcuts1.setObjectName('action_with_same_shortcuts1')
         # Add default shortcuts to Settings class.
         default_shortcuts = {
-            'shortcuts/action1': [QtGui.QKeySequence('a'), QtGui.QKeySequence('b')],
-            'shortcuts/action_with_same_shortcuts1': [QtGui.QKeySequence('b'), QtGui.QKeySequence('a')]
+            'shortcuts/action1': [QtGui.QKeySequence(QtCore.Qt.Key_A), QtGui.QKeySequence(QtCore.Qt.Key_B)],
+            'shortcuts/action_with_same_shortcuts1': [QtGui.QKeySequence(QtCore.Qt.Key_B),
+                                                      QtGui.QKeySequence(QtCore.Qt.Key_A)]
         }
         Settings.extend_default_settings(default_shortcuts)
 
@@ -193,8 +194,9 @@ class TestActionList(TestCase, TestMixin):
         action_with_same_shortcuts2.setObjectName('action_with_same_shortcuts2')
         # Add default shortcuts to Settings class.
         default_shortcuts = {
-            'shortcuts/action2': [QtGui.QKeySequence('c'), QtGui.QKeySequence('d')],
-            'shortcuts/action_with_same_shortcuts2': [QtGui.QKeySequence('d'), QtGui.QKeySequence('c')]
+            'shortcuts/action2': [QtGui.QKeySequence(QtCore.Qt.Key_C), QtGui.QKeySequence(QtCore.Qt.Key_D)],
+            'shortcuts/action_with_same_shortcuts2': [QtGui.QKeySequence(QtCore.Qt.Key_D),
+                                                      QtGui.QKeySequence(QtCore.Qt.Key_C)]
         }
         Settings.extend_default_settings(default_shortcuts)
 
@@ -225,8 +227,9 @@ class TestActionList(TestCase, TestMixin):
         action_with_same_shortcuts3.setShortcutContext(QtCore.Qt.WidgetShortcut)
         # Add default shortcuts to Settings class.
         default_shortcuts = {
-            'shortcuts/action3': [QtGui.QKeySequence('e'), QtGui.QKeySequence('f')],
-            'shortcuts/action_with_same_shortcuts3': [QtGui.QKeySequence('e'), QtGui.QKeySequence('f')]
+            'shortcuts/action3': [QtGui.QKeySequence(QtCore.Qt.Key_E), QtGui.QKeySequence(QtCore.Qt.Key_F)],
+            'shortcuts/action_with_same_shortcuts3': [QtGui.QKeySequence(QtCore.Qt.Key_E),
+                                                      QtGui.QKeySequence(QtCore.Qt.Key_F)]
         }
         Settings.extend_default_settings(default_shortcuts)
 
