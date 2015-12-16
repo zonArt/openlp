@@ -80,6 +80,9 @@ class AdvancedTab(SettingsTab):
         self.expand_service_item_check_box = QtGui.QCheckBox(self.ui_group_box)
         self.expand_service_item_check_box.setObjectName('expand_service_item_check_box')
         self.ui_layout.addRow(self.expand_service_item_check_box)
+        self.search_as_type_check_box = QtGui.QCheckBox(self.ui_group_box)
+        self.search_as_type_check_box.setObjectName('SearchAsType_check_box')
+        self.ui_layout.addRow(self.search_as_type_check_box)
         self.enable_auto_close_check_box = QtGui.QCheckBox(self.ui_group_box)
         self.enable_auto_close_check_box.setObjectName('enable_auto_close_check_box')
         self.ui_layout.addRow(self.enable_auto_close_check_box)
@@ -251,6 +254,7 @@ class AdvancedTab(SettingsTab):
         self.end_slide_radio_button.clicked.connect(self.on_end_slide_button_clicked)
         self.wrap_slide_radio_button.clicked.connect(self.on_wrap_slide_button_clicked)
         self.next_item_radio_button.clicked.connect(self.on_next_item_button_clicked)
+        self.search_as_type_check_box.stateChanged.connect(self.on_search_as_type_check_box_changed)
 
     def retranslateUi(self):
         """
@@ -319,6 +323,7 @@ class AdvancedTab(SettingsTab):
         self.end_slide_radio_button.setText(translate('OpenLP.GeneralTab', '&Remain on Slide'))
         self.wrap_slide_radio_button.setText(translate('OpenLP.GeneralTab', '&Wrap around'))
         self.next_item_radio_button.setText(translate('OpenLP.GeneralTab', '&Move to next/previous service item'))
+        self.search_as_type_check_box.setText(translate('SongsPlugin.GeneralTab', 'Enable search as you type'))
 
     def load(self):
         """
@@ -349,6 +354,8 @@ class AdvancedTab(SettingsTab):
         self.default_color = settings.value('default color')
         self.default_file_edit.setText(settings.value('default image'))
         self.slide_limits = settings.value('slide limits')
+        self.is_search_as_you_type_enabled = settings.value('search as type')
+        self.search_as_type_check_box.setChecked(self.is_search_as_you_type_enabled)
         # Prevent the dialog displayed by the alternate_rows_check_box to display.
         self.alternate_rows_check_box.blockSignals(True)
         self.alternate_rows_check_box.setChecked(settings.value('alternate rows'))
@@ -424,7 +431,13 @@ class AdvancedTab(SettingsTab):
             settings.setValue('x11 bypass wm', self.x11_bypass_check_box.isChecked())
             self.settings_form.register_post_process('config_screen_changed')
         self.settings_form.register_post_process('slidecontroller_update_slide_limits')
+        settings.setValue('search as type', self.is_search_as_you_type_enabled)
         settings.endGroup()
+
+    def on_search_as_type_check_box_changed(self, check_state):
+        self.is_search_as_you_type_enabled = (check_state == QtCore.Qt.Checked)
+        self.settings_form.register_post_process('songs_config_updated')
+        self.settings_form.register_post_process('custom_config_updated')
 
     def cancel(self):
         """

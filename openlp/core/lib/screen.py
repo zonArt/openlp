@@ -142,7 +142,9 @@ class ScreenList(object):
         """
         Add a screen to the list of known screens.
 
-        :param screen: A dict with the screen properties::
+        :param screen: A dict with the screen properties:
+
+            ::
 
                 {
                     'primary': True,

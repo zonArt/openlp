@@ -51,6 +51,12 @@ class SettingsTab(QtGui.QWidget, RegistryProperties):
         self.tab_visited = False
         if icon_path:
             self.icon_path = icon_path
+        self._setup()
+
+    def _setup(self):
+        """
+        Run some initial setup. This method is separate from __init__ in order to mock it out in tests.
+        """
         self.setupUi()
         self.retranslateUi()
         self.initialise()

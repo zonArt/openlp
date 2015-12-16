@@ -515,11 +515,21 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param service_item: The ServiceItem containing the details to be played.
         """
         used_players = get_media_players()[0]
-        if service_item.processor != UiStrings().Automatic:
-            used_players = [service_item.processor.lower()]
+        # If no player, we can't play
+        if not used_players:
+            return False
+        default_player = [used_players[0]]
+        if service_item.processor and service_item.processor != UiStrings().Automatic:
+            # check to see if the player is usable else use the default one.
+            if not service_item.processor.lower() in used_players:
+                used_players = default_player
+            else:
+                used_players = [service_item.processor.lower()]
         if controller.media_info.file_info.isFile():
             suffix = '*.%s' % controller.media_info.file_info.suffix().lower()
             for title in used_players:
+                if not title:
+                    continue
                 player = self.media_players[title]
                 if suffix in player.video_extensions_list:
                     if not controller.media_info.is_background or controller.media_info.is_background and \
@@ -586,7 +596,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             else:
                 controller.mediabar.actions['playbackPlay'].setVisible(False)
                 controller.mediabar.actions['playbackPause'].setVisible(True)
-            controller.mediabar.actions['playbackStop'].setVisible(True)
+            controller.mediabar.actions['playbackStop'].setDisabled(False)
             if controller.is_live:
                 if controller.hide_menu.defaultAction().isChecked() and not controller.media_info.is_background:
                     controller.hide_menu.defaultAction().trigger()
@@ -616,7 +626,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         display = self._define_display(controller)
         self.current_media_players[controller.controller_type].pause(display)
         controller.mediabar.actions['playbackPlay'].setVisible(True)
-        controller.mediabar.actions['playbackStop'].setVisible(True)
+        controller.mediabar.actions['playbackStop'].setDisabled(False)
         controller.mediabar.actions['playbackPause'].setVisible(False)
 
     def media_stop_msg(self, msg):
@@ -642,7 +652,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             self.current_media_players[controller.controller_type].set_visible(display, False)
             controller.seek_slider.setSliderPosition(0)
             controller.mediabar.actions['playbackPlay'].setVisible(True)
-            controller.mediabar.actions['playbackStop'].setVisible(False)
+            controller.mediabar.actions['playbackStop'].setDisabled(True)
             controller.mediabar.actions['playbackPause'].setVisible(False)
 
     def media_volume_msg(self, msg):
@@ -716,8 +726,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         display = self._define_display(self.live_controller)
         if self.live_controller.controller_type in self.current_media_players and \
                 self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
-                self.current_media_players[self.live_controller.controller_type].pause(display)
-                self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
+            self.current_media_players[self.live_controller.controller_type].pause(display)
+            self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
 
     def media_blank(self, msg):
         """
@@ -732,7 +742,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return
         Registry().execute('live_display_hide', hide_mode)
         display = self._define_display(self.live_controller)
-        if self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
+        if self.live_controller.controller_type in self.current_media_players and \
+                self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
             self.current_media_players[self.live_controller.controller_type].pause(display)
             self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
 

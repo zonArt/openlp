@@ -83,6 +83,7 @@
     <file>openlp-logo-64x64.png</file>
     <file>openlp-logo-128x128.png</file>
     <file>openlp-logo-256x256.png</file>
+    <file>openlp-logo.svg</file>
   </qresource>
   <qresource prefix="graphics">
     <file>exception.png</file>

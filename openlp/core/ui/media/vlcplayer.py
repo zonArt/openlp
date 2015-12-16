@@ -27,71 +27,91 @@ from distutils.version import LooseVersion
 import logging
 import os
 import threading
+import sys
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Settings, is_win, is_macosx
+from openlp.core.common import Settings, is_win, is_macosx, is_linux
 from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState, MediaType
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 
 log = logging.getLogger(__name__)
 
-VLC_AVAILABLE = False
-try:
-    from openlp.core.ui.media.vendor import vlc
-    VLC_AVAILABLE = bool(vlc.get_default_instance())
-except (ImportError, NameError, NotImplementedError):
-    pass
-except OSError as e:
-    if is_win():
-        if not isinstance(e, WindowsError) and e.winerror != 126:
-            raise
-    elif is_macosx():
-        pass
-    else:
-        raise
+# Audio and video extensions copied from 'include/vlc_interface.h' from vlc 2.2.0 source
+AUDIO_EXT = ['*.3ga', '*.669', '*.a52', '*.aac', '*.ac3', '*.adt', '*.adts', '*.aif', '*.aifc', '*.aiff', '*.amr',
+             '*.aob', '*.ape', '*.awb', '*.caf', '*.dts', '*.flac', '*.it', '*.kar', '*.m4a', '*.m4b', '*.m4p', '*.m5p',
+             '*.mid', '*.mka', '*.mlp', '*.mod', '*.mpa', '*.mp1', '*.mp2', '*.mp3', '*.mpc', '*.mpga', '*.mus',
+             '*.oga', '*.ogg', '*.oma', '*.opus', '*.qcp', '*.ra', '*.rmi', '*.s3m', '*.sid', '*.spx', '*.thd', '*.tta',
+             '*.voc', '*.vqf', '*.w64', '*.wav', '*.wma', '*.wv', '*.xa', '*.xm']
 
-if VLC_AVAILABLE:
+VIDEO_EXT = ['*.3g2', '*.3gp', '*.3gp2', '*.3gpp', '*.amv', '*.asf', '*.avi', '*.bik', '*.divx', '*.drc', '*.dv',
+             '*.f4v', '*.flv', '*.gvi', '*.gxf', '*.iso', '*.m1v', '*.m2v', '*.m2t', '*.m2ts', '*.m4v', '*.mkv',
+             '*.mov', '*.mp2', '*.mp2v', '*.mp4', '*.mp4v', '*.mpe', '*.mpeg', '*.mpeg1', '*.mpeg2', '*.mpeg4', '*.mpg',
+             '*.mpv2', '*.mts', '*.mtv', '*.mxf', '*.mxg', '*.nsv', '*.nuv', '*.ogg', '*.ogm', '*.ogv', '*.ogx', '*.ps',
+             '*.rec', '*.rm', '*.rmvb', '*.rpl', '*.thp', '*.tod', '*.ts', '*.tts', '*.txd', '*.vob', '*.vro', '*.webm',
+             '*.wm', '*.wmv', '*.wtv', '*.xesc',
+             # These extensions was not in the official list, added manually.
+             '*.nut', '*.rv', '*.xvid']
+
+
+def get_vlc():
+    """
+    In order to make this module more testable, we have to wrap the VLC import inside a method. We do this so that we
+    can mock out the VLC module entirely.
+
+    :return: The "vlc" module, or None
+    """
+    if 'openlp.core.ui.media.vendor.vlc' in sys.modules:
+        # If VLC has already been imported, no need to do all the stuff below again
+        return sys.modules['openlp.core.ui.media.vendor.vlc']
+
+    is_vlc_available = False
     try:
-        VERSION = vlc.libvlc_get_version().decode('UTF-8')
+        if is_macosx():
+            # Newer versions of VLC on OS X need this. See https://forum.videolan.org/viewtopic.php?t=124521
+            os.environ['VLC_PLUGIN_PATH'] = '/Applications/VLC.app/Contents/MacOS/plugins'
+        from openlp.core.ui.media.vendor import vlc
+
+        is_vlc_available = bool(vlc.get_default_instance())
+    except (ImportError, NameError, NotImplementedError):
+        pass
+    except OSError as e:
+        if is_win():
+            if not isinstance(e, WindowsError) and e.winerror != 126:
+                raise
+        else:
+            pass
+    if is_vlc_available:
+        try:
+            VERSION = vlc.libvlc_get_version().decode('UTF-8')
+        except:
+            VERSION = '0.0.0'
+        # LooseVersion does not work when a string contains letter and digits (e. g. 2.0.5 Twoflower).
+        # http://bugs.python.org/issue14894
+        if LooseVersion(VERSION.split()[0]) < LooseVersion('1.1.0'):
+            is_vlc_available = False
+            log.debug('VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
+    if is_vlc_available:
+        return vlc
+    else:
+        return None
+
+
+# On linux we need to initialise X threads, but not when running tests.
+# This needs to happen on module load and not in get_vlc(), otherwise it can cause crashes on some DE on some setups
+# (reported on Gnome3, Unity, Cinnamon, all GTK+ based) when using native filedialogs...
+if is_linux() and 'nose' not in sys.argv[0] and get_vlc():
+    import ctypes
+    try:
+        try:
+            x11 = ctypes.cdll.LoadLibrary('libX11.so.6')
+        except OSError:
+            # If libx11.so.6 was not found, fallback to more generic libx11.so
+            x11 = ctypes.cdll.LoadLibrary('libX11.so')
+        x11.XInitThreads()
     except:
-        VERSION = '0.0.0'
-    # LooseVersion does not work when a string contains letter and digits (e. g. 2.0.5 Twoflower).
-    # http://bugs.python.org/issue14894
-    if LooseVersion(VERSION.split()[0]) < LooseVersion('1.1.0'):
-        VLC_AVAILABLE = False
-        log.debug('VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
-
-AUDIO_EXT = ['*.mp3', '*.wav', '*.wma', '*.ogg']
-
-VIDEO_EXT = [
-    '*.3gp',
-    '*.asf', '*.wmv',
-    '*.au',
-    '*.avi',
-    '*.divx',
-    '*.flv',
-    '*.mov',
-    '*.mp4', '*.m4v',
-    '*.ogm', '*.ogv',
-    '*.mkv', '*.mka',
-    '*.ts', '*.mpg',
-    '*.mpg', '*.mp2',
-    '*.nsc',
-    '*.nsv',
-    '*.nut',
-    '*.ra', '*.ram', '*.rm', '*.rv', '*.rmbv',
-    '*.a52', '*.dts', '*.aac', '*.flac', '*.dv', '*.vid',
-    '*.tta', '*.tac',
-    '*.ty',
-    '*.dts',
-    '*.xa',
-    '*.iso',
-    '*.vob',
-    '*.webm',
-    '*.xvid'
-]
+        log.exception('Failed to run XInitThreads(), VLC might not work properly!')
 
 
 class VlcPlayer(MediaPlayer):
@@ -115,6 +135,7 @@ class VlcPlayer(MediaPlayer):
         """
         Set up the media player
         """
+        vlc = get_vlc()
         display.vlc_widget = QtGui.QFrame(display)
         display.vlc_widget.setFrameStyle(QtGui.QFrame.NoFrame)
         # creating a basic vlc instance
@@ -142,7 +163,7 @@ class VlcPlayer(MediaPlayer):
             # framework and not the old Carbon.
             display.vlc_media_player.set_nsobject(win_id)
         else:
-            # for Linux using the X Server
+            # for Linux/*BSD using the X Server
             display.vlc_media_player.set_xwindow(win_id)
         self.has_own_widget = True
 
@@ -150,12 +171,13 @@ class VlcPlayer(MediaPlayer):
         """
         Return the availability of VLC
         """
-        return VLC_AVAILABLE
+        return get_vlc() is not None
 
     def load(self, display):
         """
         Load a video into VLC
         """
+        vlc = get_vlc()
         log.debug('load vid in Vlc Controller')
         controller = display.controller
         volume = controller.media_info.volume
@@ -195,6 +217,7 @@ class VlcPlayer(MediaPlayer):
         Wait for the video to change its state
         Wait no longer than 60 seconds. (loading an iso file needs a long time)
         """
+        vlc = get_vlc()
         start = datetime.now()
         while not media_state == display.vlc_media.get_state():
             if display.vlc_media.get_state() == vlc.State.Error:
@@ -214,6 +237,7 @@ class VlcPlayer(MediaPlayer):
         """
         Play the current item
         """
+        vlc = get_vlc()
         controller = display.controller
         start_time = 0
         log.debug('vlc play')
@@ -259,6 +283,7 @@ class VlcPlayer(MediaPlayer):
         """
         Pause the current item
         """
+        vlc = get_vlc()
         if display.vlc_media.get_state() != vlc.State.Playing:
             return
         display.vlc_media_player.pause()
@@ -308,6 +333,7 @@ class VlcPlayer(MediaPlayer):
         """
         Update the UI
         """
+        vlc = get_vlc()
         # Stop video if playback is finished.
         if display.vlc_media.get_state() == vlc.State.Ended:
             self.stop(display)

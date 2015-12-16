@@ -55,7 +55,7 @@ The XML of an `OpenLyrics <http://openlyrics.info/>`_  song looks like this::
         </lyrics>
     </song>
 """
-import cgi
+import html
 import logging
 import re
 
@@ -91,7 +91,7 @@ class SongXML(object):
         Add a verse to the ``<lyrics>`` tag.
 
         :param type:  A string denoting the type of verse. Possible values are *v*, *c*, *b*, *p*, *i*, *e* and *o*.
-        Any other type is **not** allowed, this also includes translated types.
+            Any other type is **not** allowed, this also includes translated types.
         :param number: An integer denoting the number of the item, for example: verse 1.
         :param content: The actual text of the verse to be stored.
         :param lang:  The verse's language code (ISO-639). This is not required, but should be added if available.
@@ -113,6 +113,7 @@ class SongXML(object):
         Iterates through the verses in the XML and returns a list of verses and their attributes.
 
         :param xml: The XML of the song to be parsed.
+
         The returned list has the following format::
 
             [[{'type': 'v', 'label': '1'}, u"optional slide split 1[---]optional slide split 2"],
@@ -120,17 +121,7 @@ class SongXML(object):
         """
         self.song_xml = None
         verse_list = []
-        if not xml.startswith('<?xml') and not xml.startswith('<song'):
-            # This is an old style song, without XML. Let's handle it correctly by iterating through the verses, and
-            # then recreating the internal xml object as well.
-            self.song_xml = objectify.fromstring('<song version="1.0" />')
-            self.lyrics = etree.SubElement(self.song_xml, 'lyrics')
-            verses = xml.split('\n\n')
-            for count, verse in enumerate(verses):
-                verse_list.append([{'type': 'v', 'label': str(count)}, str(verse)])
-                self.add_verse_to_lyrics('v', str(count), verse)
-            return verse_list
-        elif xml.startswith('<?xml'):
+        if xml.startswith('<?xml'):
             xml = xml[38:]
         try:
             self.song_xml = objectify.fromstring(xml)
@@ -318,7 +309,7 @@ class OpenLyrics(object):
             if 'lang' in verse[0]:
                 verse_element.set('lang', verse[0]['lang'])
             # Create a list with all "optional" verses.
-            optional_verses = cgi.escape(verse[1])
+            optional_verses = html.escape(verse[1])
             optional_verses = optional_verses.split('\n[---]\n')
             start_tags = ''
             end_tags = ''
@@ -371,7 +362,7 @@ class OpenLyrics(object):
 
         :param xml: The XML to parse (unicode).
         :param parse_and_temporary_save: Switch to skip processing the whole song and storing the songs in the database
-        with a temporary flag. Defaults to ``False``.
+            with a temporary flag. Defaults to ``False``.
         """
         # No xml get out of here.
         if not xml:

@@ -36,6 +36,10 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
     'custom/db type': 'sqlite',
+    'custom/db username': '',
+    'custom/db password': '',
+    'custom/db hostname': '',
+    'custom/db database': '',
     'custom/last search type': CustomSearch.Titles,
     'custom/display footer': True,
     'custom/add custom from service': True
@@ -68,11 +72,9 @@ class CustomPlugin(Plugin):
         """
         Called to find out if the custom plugin is currently using a theme.
 
-        Returns True if the theme is being used, otherwise returns False.
+        Returns count of the times the theme is used.
         """
-        if self.db_manager.get_all_objects(CustomSlide, CustomSlide.theme_name == theme):
-            return True
-        return False
+        return len(self.db_manager.get_all_objects(CustomSlide, CustomSlide.theme_name == theme))
 
     def rename_theme(self, old_theme, new_theme):
         """

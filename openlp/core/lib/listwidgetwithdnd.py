@@ -95,7 +95,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
             event.accept()
             files = []
             for url in event.mimeData().urls():
-                local_file = url.toLocalFile()
+                local_file = os.path.normpath(url.toLocalFile())
                 if os.path.isfile(local_file):
                     files.append(local_file)
                 elif os.path.isdir(local_file):

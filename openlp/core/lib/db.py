@@ -60,6 +60,35 @@ def init_db(url, auto_flush=True, auto_commit=False, base=None):
     return session, metadata
 
 
+def get_db_path(plugin_name, db_file_name=None):
+    """
+    Create a path to a database from the plugin name and database name
+
+    :param plugin_name: Name of plugin
+    :param db_file_name: File name of database
+    :return: The path to the database as type str
+    """
+    if db_file_name is None:
+        return 'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
+    else:
+        return 'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
+
+
+def handle_db_error(plugin_name, db_file_name):
+    """
+    Log and report to the user that a database cannot be loaded
+
+    :param plugin_name: Name of plugin
+    :param db_file_name: File name of database
+    :return: None
+    """
+    db_path = get_db_path(plugin_name, db_file_name)
+    log.exception('Error loading database: %s', db_path)
+    critical_error_message_box(translate('OpenLP.Manager', 'Database Error'),
+                               translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s')
+                               % db_path)
+
+
 def init_url(plugin_name, db_file_name=None):
     """
     Return the database URL.
@@ -69,21 +98,14 @@ def init_url(plugin_name, db_file_name=None):
     """
     settings = Settings()
     settings.beginGroup(plugin_name)
-    db_url = ''
     db_type = settings.value('db type')
     if db_type == 'sqlite':
-        if db_file_name is None:
-            db_url = 'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
-        else:
-            db_url = 'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
+        db_url = get_db_path(plugin_name, db_file_name)
     else:
         db_url = '%s://%s:%s@%s/%s' % (db_type, urlquote(settings.value('db username')),
                                        urlquote(settings.value('db password')),
                                        urlquote(settings.value('db hostname')),
                                        urlquote(settings.value('db database')))
-        if db_type == 'mysql':
-            db_encoding = settings.value('db encoding')
-            db_url += '?charset=%s' % urlquote(db_encoding)
     settings.endGroup()
     return db_url
 
@@ -123,9 +145,13 @@ def upgrade_db(url, upgrade):
     version_meta = session.query(Metadata).get('version')
     if version_meta is None:
         # Tables have just been created - fill the version field with the most recent version
-        version = upgrade.__version__
+        if session.query(Metadata).get('dbversion'):
+            version = 0
+        else:
+            version = upgrade.__version__
         version_meta = Metadata.populate(key='version', value=version)
         session.add(version_meta)
+        session.commit()
     else:
         version = int(version_meta.value)
     if version > upgrade.__version__:
@@ -212,7 +238,7 @@ class Manager(object):
             try:
                 db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
             except (SQLAlchemyError, DBAPIError):
-                log.exception('Error loading database: %s', self.db_url)
+                handle_db_error(plugin_name, db_file_name)
                 return
             if db_ver > up_ver:
                 critical_error_message_box(
@@ -225,10 +251,7 @@ class Manager(object):
         try:
             self.session = init_schema(self.db_url)
         except (SQLAlchemyError, DBAPIError):
-            log.exception('Error loading database: %s', self.db_url)
-            critical_error_message_box(translate('OpenLP.Manager', 'Database Error'),
-                                       translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s')
-                                       % self.db_url)
+            handle_db_error(plugin_name, db_file_name)
 
     def save_object(self, object_instance, commit=True):
         """

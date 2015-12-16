@@ -22,17 +22,16 @@
 """
 Package to test the openlp.core.__init__ package.
 """
-from optparse import Values
 import os
-
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core import OpenLP, parse_options
 from openlp.core.common import Settings
-from tests.helpers.testmixin import TestMixin
 
+from tests.helpers.testmixin import TestMixin
+from tests.functional import MagicMock, patch, call
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
 
@@ -65,6 +64,25 @@ class TestInit(TestCase, TestMixin):
         self.assertTrue(result, "The method should have returned True.")
         mocked_file_method.assert_called_once_with()
         self.assertEqual(self.openlp.args[0], file_path, "The path should be in args.")
+
+    @patch('openlp.core.is_macosx')
+    def application_activate_event_test(self, mocked_is_macosx):
+        """
+        Test that clicking on the dock icon on Mac OS X restores the main window if it is minimized
+        """
+        # GIVEN: Mac OS X and an ApplicationActivate event
+        mocked_is_macosx.return_value = True
+        event = MagicMock()
+        event.type.return_value = QtCore.QEvent.ApplicationActivate
+        mocked_main_window = MagicMock()
+        self.openlp.main_window = mocked_main_window
+
+        # WHEN: The icon in the dock is clicked
+        result = self.openlp.event(event)
+
+        # THEN:
+        self.assertTrue(result, "The method should have returned True.")
+        # self.assertFalse(self.openlp.main_window.isMinimized())
 
     def backup_on_upgrade_first_install_test(self):
         """
@@ -113,17 +131,3 @@ class TestInit(TestCase, TestMixin):
             # THEN: It should ask if we want to create a backup
             self.assertEqual(Settings().value('core/application version'), '2.2.0', 'Version should be upgraded!')
             self.assertEqual(mocked_question.call_count, 1, 'A question should have been asked!')
-
-    def parse_options_short_options_test(self):
-        """
-        Test that parse_options parses short options correctly
-        """
-        # GIVEN: A list of vaild short options
-        options = ['-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
-
-        # WHEN: Calling parse_options
-        resluts = parse_options(options)
-
-        # THEN: A tuple should be returned with the parsed options and left over args
-        self.assertEqual(resluts, (Values({'no_error_form': True, 'dev_version': True, 'portable': True,
-                                           'style': 'style', 'loglevel': 'debug'}), ['extra', 'qt', 'args']))

@@ -83,14 +83,14 @@ def get_text_file_string(text_file):
     None.
 
     :param text_file: The name of the file.
-    :return The file as a single string
+    :return: The file as a single string
     """
     if not os.path.isfile(text_file):
         return False
     file_handle = None
     content = None
     try:
-        file_handle = open(text_file, 'r')
+        file_handle = open(text_file, 'r', encoding='utf-8')
         if not file_handle.read(3) == '\xEF\xBB\xBF':
             # no BOM was found
             file_handle.seek(0)
@@ -108,7 +108,7 @@ def str_to_bool(string_value):
     Convert a string version of a boolean into a real boolean.
 
     :param string_value: The string value to examine and convert to a boolean type.
-    :return The correct boolean value
+    :return: The correct boolean value
     """
     if isinstance(string_value, bool):
         return string_value
@@ -123,7 +123,7 @@ def build_icon(icon):
     :param icon:
         The icon to build. This can be a QIcon, a resource string in the form ``:/resource/file.png``, or a file
         location like ``/path/to/file.png``. However, the **recommended** way is to specify a resource string.
-    :return The build icon.
+    :return: The build icon.
     """
     button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):
@@ -168,7 +168,7 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     :param return_icon: States if an icon should be build and returned from the thumb. Defaults to ``True``.
     :param size: Allows to state a own size (QtCore.QSize) to use. Defaults to ``None``, which means that a default
      height of 88 is used.
-    :return The final icon.
+    :return: The final icon.
     """
     ext = os.path.splitext(thumb_path)[1].lower()
     reader = QtGui.QImageReader(image_path)
@@ -194,7 +194,7 @@ def validate_thumb(file_path, thumb_path):
 
     :param file_path: The path to the file. The file **must** exist!
     :param thumb_path: The path to the thumb.
-    :return True, False if the image has changed since the thumb was created.
+    :return: True, False if the image has changed since the thumb was created.
     """
     if not os.path.exists(thumb_path):
         return False
@@ -312,6 +312,7 @@ def create_separated_list(string_list):
 
 
 from .colorbutton import ColorButton
+from .exceptions import ValidationError
 from .filedialog import FileDialog
 from .screen import ScreenList
 from .listwidgetwithdnd import ListWidgetWithDnD

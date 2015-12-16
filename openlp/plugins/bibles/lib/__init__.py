@@ -178,7 +178,7 @@ def update_reference_separators():
     default_separators = [
         '|'.join([
             translate('BiblesPlugin', ':', 'Verse identifier e.g. Genesis 1 : 1 = Genesis Chapter 1 Verse 1'),
-            translate('BiblesPlugin', 'v','Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1'),
+            translate('BiblesPlugin', 'v', 'Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1'),
             translate('BiblesPlugin', 'V', 'Verse identifier e.g. Genesis 1 V 1 = Genesis Chapter 1 Verse 1'),
             translate('BiblesPlugin', 'verse', 'Verse identifier e.g. Genesis 1 verse 1 = Genesis Chapter 1 Verse 1'),
             translate('BiblesPlugin', 'verses',
@@ -371,7 +371,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                 from_chapter = from_verse
                 from_verse = None
             if to_chapter:
-                if to_chapter < from_chapter:
+                if from_chapter and to_chapter < from_chapter:
                     continue
                 else:
                     chapter = to_chapter
@@ -387,7 +387,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                     from_verse = 1
                 if not to_verse:
                     to_verse = -1
-                if to_chapter > from_chapter:
+                if to_chapter and to_chapter > from_chapter:
                     ref_list.append((book_ref_id, from_chapter, from_verse, -1))
                     for i in range(from_chapter + 1, to_chapter):
                         ref_list.append((book_ref_id, i, 1, -1))

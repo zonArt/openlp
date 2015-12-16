@@ -25,7 +25,6 @@ This module contains tests for the lib submodule of the Remotes plugin.
 import os
 import urllib.request
 from unittest import TestCase
-from PyQt4 import QtCore
 from openlp.core.common import Settings, Registry
 from openlp.core.ui import ServiceManager
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
@@ -128,7 +127,7 @@ class TestRouter(TestCase, TestMixin):
 
         # THEN: the function should have been called only once
         self.router.send_response.assert_called_once_with(401)
-        self.assertEqual(self.router.send_header.call_count, 2, 'The header should have been called twice.')
+        self.assertEqual(self.router.send_header.call_count, 5, 'The header should have been called five times.')
 
     def get_content_type_test(self):
         """
@@ -187,7 +186,6 @@ class TestRouter(TestCase, TestMixin):
 
         # THEN: it should return a 404
         self.router.send_response.assert_called_once_with(404)
-        self.router.send_header.assert_called_once_with('Content-type', 'text/html')
         self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
 
     def serve_file_with_valid_params_test(self):
@@ -217,14 +215,19 @@ class TestRouter(TestCase, TestMixin):
         """
         Test the serve_thumbnail routine without params
         """
+        # GIVEN: mocked environment
         self.router.send_response = MagicMock()
         self.router.send_header = MagicMock()
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
+
+        # WHEN: I request a thumbnail
         self.router.serve_thumbnail()
+
+        # THEN: The headers should be set correctly
         self.router.send_response.assert_called_once_with(404)
-        self.assertEqual(self.router.send_response.call_count, 1, 'Send response called once')
-        self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
+        self.assertEqual(self.router.send_response.call_count, 1, 'Send response should be called once')
+        self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers should be called once')
 
     def serve_thumbnail_with_invalid_params_test(self):
         """
@@ -240,7 +243,7 @@ class TestRouter(TestCase, TestMixin):
         self.router.serve_thumbnail('badcontroller', 'tecnologia 1.pptx/slide1.png')
 
         # THEN: a 404 should be returned
-        self.assertEqual(len(self.router.send_header.mock_calls), 1, 'One header')
+        self.assertEqual(len(self.router.send_header.mock_calls), 4, 'header should be called 4 times')
         self.assertEqual(len(self.router.send_response.mock_calls), 1, 'One response')
         self.assertEqual(len(self.router.wfile.mock_calls), 1, 'Once call to write to the socket')
         self.router.send_response.assert_called_once_with(404)
@@ -269,7 +272,6 @@ class TestRouter(TestCase, TestMixin):
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
         mocked_image_manager = MagicMock()
-        Registry.create()
         Registry().register('image_manager', mocked_image_manager)
         file_name = 'another%20test/slide1.png'
         full_path = os.path.normpath(os.path.join('thumbnails', file_name))
@@ -284,7 +286,7 @@ class TestRouter(TestCase, TestMixin):
             mocked_location.get_section_data_path.return_value = ''
 
             # WHEN: pass good controller and filename
-            result = self.router.serve_thumbnail('presentations', '{0}x{1}'.format(width, height), file_name)
+            self.router.serve_thumbnail('presentations', '{0}x{1}'.format(width, height), file_name)
 
             # THEN: a file should be returned
             self.assertEqual(self.router.send_header.call_count, 1, 'One header')
@@ -292,9 +294,12 @@ class TestRouter(TestCase, TestMixin):
             self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
             mocked_exists.assert_called_with(urllib.parse.unquote(full_path))
             self.assertEqual(mocked_image_to_byte.call_count, 1, 'Called once')
-            mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'),
-                                                   'slide1.png', None, '120x90')
-            mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'), 'slide1.png', '120x90')
+            mocked_image_manager.add_image.assert_any_call(os.path.normpath(os.path.join('thumbnails', 'another test',
+                                                                                         'slide1.png')),
+                                                           'slide1.png', None, width, height)
+            mocked_image_manager.get_image.assert_any_call(os.path.normpath(os.path.join('thumbnails', 'another test',
+                                                                                         'slide1.png')),
+                                                           'slide1.png', width, height)
 
     def remote_next_test(self):
         """
@@ -337,3 +342,39 @@ class TestRouter(TestCase, TestMixin):
 
             # THEN: service_manager.next_item() should have been called
             self.assertTrue(mocked_previous_item.called, 'previous_item() should have been called in service_manager')
+
+    def remote_stage_personal_html_test(self):
+        """
+        Test the stage url with a parameter after loaded a url/stage.html file
+        """
+        # GIVEN: initial route
+        self.router.config_dir = ''
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        self.router._process_file = MagicMock()
+
+        # WHEN: I call stage with a suffix
+        self.router.stages('stages', 'trb')
+
+        # THEN: we should use the specific stage file instance
+        self.router._process_file.assert_called_with(os.path.join('trb', 'stage.html'))
+
+    def remote_stage_personal_css_test(self):
+        """
+        Test the html with reference stages/trb/trb.css then loaded a stages/trb/trb.css file
+        """
+        # GIVEN: initial route
+        self.router.config_dir = ''
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        self.router._process_file = MagicMock()
+
+        # WHEN: I call stage with a suffix
+        self.router.stages('stages', 'stages/trb/trb.css')
+
+        # THEN: we should use the specific stage file instance
+        self.router._process_file.assert_called_with(os.path.join('trb', 'trb.css'))

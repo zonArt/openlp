@@ -30,7 +30,7 @@ logging and a plugin framework are contained within the openlp.core module.
 import os
 import sys
 import logging
-from optparse import OptionParser
+import argparse
 from traceback import format_exception
 import shutil
 import time
@@ -250,7 +250,7 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
 
     def event(self, event):
         """
-        Enables direct file opening on OS X
+        Enables platform specific event handling i.e. direct file opening on OS X
 
         :param event: The event
         """
@@ -259,8 +259,19 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
             log.debug('Got open file event for %s!', file_name)
             self.args.insert(0, file_name)
             return True
-        else:
-            return QtGui.QApplication.event(self, event)
+        # Mac OS X should restore app window when user clicked on the OpenLP icon
+        # in the Dock bar. However, OpenLP consists of multiple windows and this
+        # does not work. This workaround fixes that.
+        # The main OpenLP window is restored when it was previously minimized.
+        elif event.type() == QtCore.QEvent.ApplicationActivate:
+            if is_macosx() and hasattr(self, 'main_window'):
+                if self.main_window.isMinimized():
+                    # Copied from QWidget.setWindowState() docs on how to restore and activate a minimized window
+                    # while preserving its maximized and/or full-screen state.
+                    self.main_window.setWindowState(self.main_window.windowState() & ~QtCore.Qt.WindowMinimized |
+                                                    QtCore.Qt.WindowActive)
+                    return True
+        return QtGui.QApplication.event(self, event)
 
 
 def parse_options(args):
@@ -271,17 +282,18 @@ def parse_options(args):
     :return: a tuple of parsed options of type optparse.Value and a list of remaining argsZ
     """
     # Set up command line options.
-    usage = 'Usage: %prog [options] [qt-options]'
-    parser = OptionParser(usage=usage)
-    parser.add_option('-e', '--no-error-form', dest='no_error_form', action='store_true',
-                      help='Disable the error notification form.')
-    parser.add_option('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
-                      help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".')
-    parser.add_option('-p', '--portable', dest='portable', action='store_true',
-                      help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).')
-    parser.add_option('-d', '--dev-version', dest='dev_version', action='store_true',
-                      help='Ignore the version file and pull the version directly from Bazaar')
-    parser.add_option('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
+    parser = argparse.ArgumentParser(prog='openlp.py')
+    parser.add_argument('-e', '--no-error-form', dest='no_error_form', action='store_true',
+                        help='Disable the error notification form.')
+    parser.add_argument('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
+                        help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".')
+    parser.add_argument('-p', '--portable', dest='portable', action='store_true',
+                        help='Specify if this should be run as a portable app, '
+                             'off a USB flash drive (not implemented).')
+    parser.add_argument('-d', '--dev-version', dest='dev_version', action='store_true',
+                        help='Ignore the version file and pull the version directly from Bazaar')
+    parser.add_argument('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
+    parser.add_argument('rargs', nargs='?', default=[])
     # Parse command line options and deal with them. Use args supplied pragmatically if possible.
     return parser.parse_args(args) if args else parser.parse_args()
 
@@ -307,18 +319,18 @@ def main(args=None):
 
     :param args: Some args
     """
-    (options, args) = parse_options(args)
+    args = parse_options(args)
     qt_args = []
-    if options.loglevel.lower() in ['d', 'debug']:
+    if args and args.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
-    elif options.loglevel.lower() in ['w', 'warning']:
+    elif args and args.loglevel.lower() in ['w', 'warning']:
         log.setLevel(logging.WARNING)
     else:
         log.setLevel(logging.INFO)
-    if options.style:
-        qt_args.extend(['-style', options.style])
+    if args and args.style:
+        qt_args.extend(['-style', args.style])
     # Throw the rest of the arguments at Qt, just in case.
-    qt_args.extend(args)
+    qt_args.extend(args.rargs)
     # Bug #1018855: Set the WM_CLASS property in X11
     if not is_win() and not is_macosx():
         qt_args.append('OpenLP')
@@ -328,7 +340,7 @@ def main(args=None):
     application = OpenLP(qt_args)
     application.setOrganizationName('OpenLP')
     application.setOrganizationDomain('openlp.org')
-    if options.portable:
+    if args and args.portable:
         application.setApplicationName('OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
@@ -372,6 +384,6 @@ def main(args=None):
         application.installTranslator(default_translator)
     else:
         log.debug('Could not find default_translator.')
-    if not options.no_error_form:
+    if args and not args.no_error_form:
         sys.excepthook = application.hook_exception
     sys.exit(application.run(qt_args))

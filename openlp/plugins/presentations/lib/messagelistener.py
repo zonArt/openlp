@@ -93,7 +93,7 @@ class Controller(object):
             return True
         if not self.doc.is_loaded():
             if not self.doc.load_presentation():
-                log.warning('Failed to activate %s' % self.doc.filepath)
+                log.warning('Failed to activate %s' % self.doc.file_path)
                 return False
         if self.is_live:
             self.doc.start_presentation()
@@ -104,7 +104,7 @@ class Controller(object):
         if self.doc.is_active():
             return True
         else:
-            log.warning('Failed to activate %s' % self.doc.filepath)
+            log.warning('Failed to activate %s' % self.doc.file_path)
             return False
 
     def slide(self, slide):
@@ -243,6 +243,13 @@ class Controller(object):
         Instruct the controller to stop and hide the presentation.
         """
         log.debug('Live = %s, stop' % self.is_live)
+        # The document has not been loaded yet, so don't do anything. This can happen when going live with a
+        # presentation while blanked to desktop.
+        if not self.doc:
+            return
+        # Save the current slide number to be able to return to this slide if the presentation is activated again.
+        if self.doc.is_active():
+            self.doc.slidenumber = self.doc.get_slide_number()
         self.hide_mode = HideMode.Screen
         if not self.doc:
             return
@@ -266,8 +273,6 @@ class Controller(object):
             return
         if not self.activate():
             return
-        if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
-            self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
         Registry().execute('live_display_hide', HideMode.Screen)
 
@@ -285,6 +290,13 @@ class MessageListener(object):
     log.info('Message Listener loaded')
 
     def __init__(self, media_item):
+        self._setup(media_item)
+
+    def _setup(self, media_item):
+        """
+        Start up code moved out to make mocking easier
+        :param media_item: The plugin media item handing Presentations
+        """
         self.controllers = media_item.controllers
         self.media_item = media_item
         self.preview_handler = Controller(False)
@@ -341,6 +353,12 @@ class MessageListener(object):
             self.handler = self.media_item.find_controller_by_type(file)
             if not self.handler:
                 return
+        else:
+            # the saved handler is not present so need to use one based on file suffix.
+            if not self.controllers[self.handler].available:
+                self.handler = self.media_item.find_controller_by_type(file)
+                if not self.handler:
+                    return
         if is_live:
             controller = self.live_handler
         else:
@@ -351,6 +369,7 @@ class MessageListener(object):
             self.controller = controller
         else:
             controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
+            self.timer.start()
 
     def slide(self, message):
         """
@@ -422,6 +441,7 @@ class MessageListener(object):
         is_live = message[1]
         if is_live:
             self.live_handler.shutdown()
+            self.timer.stop()
         else:
             self.preview_handler.shutdown()
 

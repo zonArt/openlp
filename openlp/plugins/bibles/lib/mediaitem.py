@@ -30,7 +30,8 @@ from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
     critical_error_message_box, find_and_set_in_combo_box, build_icon
 from openlp.core.utils import get_locale_key
-from openlp.plugins.bibles.forms import BibleImportForm, EditBibleForm
+from openlp.plugins.bibles.forms.bibleimportform import BibleImportForm
+from openlp.plugins.bibles.forms.editbibleform import EditBibleForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, VerseReferenceList, get_reference_separator, \
     LanguageSelection, BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
@@ -193,7 +194,7 @@ class BibleMediaItem(MediaManagerItem):
         self.add_search_fields('quick', translate('BiblesPlugin.MediaItem', 'Quick'))
         self.quickTab.setVisible(True)
         # Add the Advanced Search tab.
-        self.add_search_tab('advanced', UiStrings().Advanced)
+        self.add_search_tab('advanced', translate('BiblesPlugin.MediaItem', 'Advanced'))
         self.advanced_book_label = QtGui.QLabel(self.advancedTab)
         self.advanced_book_label.setObjectName('advanced_book_label')
         self.advancedLayout.addWidget(self.advanced_book_label, 0, 0, QtCore.Qt.AlignRight)
@@ -849,7 +850,7 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanWordSplit)
         service_item.add_capability(ItemCapabilities.CanEditTitle)
         # Service Item: Title
-        service_item.title = create_separated_list(raw_title)
+        service_item.title = '%s %s' % (verses.format_verses(), verses.format_versions())
         # Service Item: Theme
         if not self.settings.bible_theme:
             service_item.theme = None

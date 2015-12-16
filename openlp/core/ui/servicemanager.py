@@ -480,7 +480,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Create the initial service array with the base items to be saved.
 
-        :return service array
+        :return: service array
         """
         service = []
         core = {'lite-service': self._save_lite,
@@ -533,7 +533,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             self.application.set_normal_cursor()
             title = translate('OpenLP.ServiceManager', 'Service File(s) Missing')
             message = translate('OpenLP.ServiceManager',
-                                'The following file(s) in the service are missing:\n\t%s\n\n'
+                                'The following file(s) in the service are missing: %s\n\n'
                                 'These files will be removed if you continue to save.') % "\n\t".join(missing_list)
             answer = QtGui.QMessageBox.critical(self, title, message,
                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
@@ -601,6 +601,12 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 shutil.copy(temp_file_name, path_file_name)
             except shutil.Error:
                 return self.save_file_as()
+            except OSError as ose:
+                QtGui.QMessageBox.critical(self, translate('OpenLP.ServiceManager', 'Error Saving File'),
+                                           translate('OpenLP.ServiceManager', 'An error occurred while writing the '
+                                                     'service file: %s') % ose.strerror,
+                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                success = False
             self.main_window.add_recent_file(path_file_name)
             self.set_modified(False)
         delete_file(temp_file_name)

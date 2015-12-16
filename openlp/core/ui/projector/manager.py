@@ -114,15 +114,15 @@ class Ui_ProjectorManager(object):
                                             text=translate('OpenLP.ProjectorManager',
                                                            'Connect to selected projector'),
                                             icon=':/projector/projector_connect.png',
-                                            tootip=translate('OpenLP.ProjectorManager',
-                                                             'Connect to selected projector'),
+                                            tooltip=translate('OpenLP.ProjectorManager',
+                                                              'Connect to selected projector'),
                                             triggers=self.on_connect_projector)
         self.one_toolbar.add_toolbar_action('connect_projector_multiple',
                                             text=translate('OpenLP.ProjectorManager',
                                                            'Connect to selected projectors'),
                                             icon=':/projector/projector_connect_tiled.png',
-                                            tootip=translate('OpenLP.ProjectorManager',
-                                                             'Connect to selected projector'),
+                                            tooltip=translate('OpenLP.ProjectorManager',
+                                                              'Connect to selected projector'),
                                             triggers=self.on_connect_projector)
         self.one_toolbar.add_toolbar_action('disconnect_projector',
                                             text=translate('OpenLP.ProjectorManager',
@@ -181,15 +181,15 @@ class Ui_ProjectorManager(object):
                                                               'Blank selected projector screen'),
                                             triggers=self.on_blank_projector)
         self.one_toolbar.add_toolbar_action('show_projector',
-                                            ext=translate('OpenLP.ProjectorManager',
-                                                          'Show selected projector screen'),
+                                            text=translate('OpenLP.ProjectorManager',
+                                                           'Show selected projector screen'),
                                             icon=':/projector/projector_show.png',
                                             tooltip=translate('OpenLP.ProjectorManager',
                                                               'Show selected projector screen'),
                                             triggers=self.on_show_projector)
         self.one_toolbar.add_toolbar_action('show_projector_multiple',
-                                            ext=translate('OpenLP.ProjectorManager',
-                                                          'Show selected projector screen'),
+                                            text=translate('OpenLP.ProjectorManager',
+                                                           'Show selected projector screen'),
                                             icon=':/projector/projector_show_tiled.png',
                                             tooltip=translate('OpenLP.ProjectorManager',
                                                               'Show selected projector screen'),
@@ -473,8 +473,9 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             return
         projector = list_item.data(QtCore.Qt.UserRole)
         msg = QtGui.QMessageBox()
-        msg.setText('Delete projector (%s) %s?' % (projector.link.ip, projector.link.name))
-        msg.setInformativeText('Are you sure you want to delete this projector?')
+        msg.setText(translate('OpenLP.ProjectorManager', 'Delete projector (%s) %s?') % (projector.link.ip,
+                                                                                         projector.link.name))
+        msg.setInformativeText(translate('OpenLP.ProjectorManager', 'Are you sure you want to delete this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
         ans = msg.exec_()

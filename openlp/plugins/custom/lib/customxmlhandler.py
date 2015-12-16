@@ -84,7 +84,7 @@ class CustomXMLBuilder(object):
         Add a verse to the ``<lyrics>`` tag.
 
         :param verse_type: A string denoting the type of verse. Possible values are "Chorus", "Verse", "Bridge",
-        and "Custom".
+            and "Custom".
         :param number:  An integer denoting the number of the item, for example: verse 1.
         :param content: The actual text of the verse to be stored.
 

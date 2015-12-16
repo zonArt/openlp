@@ -25,7 +25,9 @@ Presentationmanager song files into the current database.
 """
 
 import os
-from lxml import objectify
+import re
+import chardet
+from lxml import objectify, etree
 
 from openlp.core.ui.wizard import WizardStrings
 from .songimport import SongImport
@@ -42,7 +44,18 @@ class PresentationManagerImport(SongImport):
             if self.stop_import_flag:
                 return
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
-            root = objectify.parse(open(file_path, 'rb')).getroot()
+            try:
+                tree = etree.parse(file_path, parser=etree.XMLParser(recover=True))
+            except etree.XMLSyntaxError:
+                # Try to detect encoding and use it
+                file = open(file_path, mode='rb')
+                encoding = chardet.detect(file.read())['encoding']
+                file.close()
+                # Open file with detected encoding and remove encoding declaration
+                text = open(file_path, mode='r', encoding=encoding).read()
+                text = re.sub('.+\?>\n', '', text)
+                tree = etree.fromstring(text, parser=etree.XMLParser(recover=True))
+            root = objectify.fromstring(etree.tostring(tree))
             self.process_song(root)
 
     def process_song(self, root):

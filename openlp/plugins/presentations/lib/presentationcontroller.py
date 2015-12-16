@@ -132,9 +132,9 @@ class PresentationDocument(object):
         """
         The location where thumbnail images will be stored
         """
-        # TODO: If statment can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
+        # TODO: If statement can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         if Settings().value('presentations/thumbnail_scheme') == 'md5':
-            folder = md5_hash('', self.file_path)
+            folder = md5_hash(self.file_path.encode('utf-8'))
         else:
             folder = self.get_file_name()
         return os.path.join(self.controller.thumbnail_folder, folder)
@@ -143,9 +143,9 @@ class PresentationDocument(object):
         """
         The location where thumbnail images will be stored
         """
-        # TODO: If statment can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
+        # TODO: If statement can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
         if Settings().value('presentations/thumbnail_scheme') == 'md5':
-            folder = md5_hash('', self.file_path)
+            folder = md5_hash(self.file_path.encode('utf-8'))
         else:
             folder = folder = self.get_file_name()
         return os.path.join(self.controller.temp_folder, folder)
@@ -306,7 +306,7 @@ class PresentationDocument(object):
         titles_file = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
         if os.path.exists(titles_file):
             try:
-                with open(titles_file) as fi:
+                with open(titles_file, encoding='utf-8') as fi:
                     titles = fi.read().splitlines()
             except:
                 log.exception('Failed to open/read existing titles file')
@@ -316,7 +316,7 @@ class PresentationDocument(object):
             note = ''
             if os.path.exists(notes_file):
                 try:
-                    with open(notes_file) as fn:
+                    with open(notes_file, encoding='utf-8') as fn:
                         note = fn.read()
                 except:
                     log.exception('Failed to open/read notes file')
@@ -331,12 +331,12 @@ class PresentationDocument(object):
         """
         if titles:
             titles_file = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
-            with open(titles_file, mode='w') as fo:
+            with open(titles_file, mode='wt', encoding='utf-8') as fo:
                 fo.writelines(titles)
         if notes:
             for slide_no, note in enumerate(notes, 1):
                 notes_file = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % slide_no)
-                with open(notes_file, mode='w') as fn:
+                with open(notes_file, mode='wt', encoding='utf-8') as fn:
                     fn.write(note)
 
 

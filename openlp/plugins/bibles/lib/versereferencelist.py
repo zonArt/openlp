@@ -20,6 +20,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from openlp.plugins.bibles.lib import get_reference_separator
+
 
 class VerseReferenceList(object):
     """
@@ -53,38 +55,50 @@ class VerseReferenceList(object):
         self.version_list.append({'version': version, 'copyright': copyright, 'permission': permission})
 
     def format_verses(self):
+        verse_sep = get_reference_separator('sep_v_display')
+        range_sep = get_reference_separator('sep_r_display')
+        list_sep = get_reference_separator('sep_l_display')
         result = ''
         for index, verse in enumerate(self.verse_list):
             if index == 0:
-                result = '%s %s:%s' % (verse['book'], verse['chapter'], verse['start'])
+                result = '%s %s%s%s' % (verse['book'], verse['chapter'], verse_sep, verse['start'])
                 if verse['start'] != verse['end']:
-                    result = '%s-%s' % (result, verse['end'])
+                    result = '%s%s%s' % (result, range_sep, verse['end'])
                 continue
             prev = index - 1
             if self.verse_list[prev]['version'] != verse['version']:
                 result = '%s (%s)' % (result, self.verse_list[prev]['version'])
-            result += ', '
+            result += '%s ' % list_sep
             if self.verse_list[prev]['book'] != verse['book']:
-                result = '%s%s %s:' % (result, verse['book'], verse['chapter'])
+                result = '%s%s %s%s' % (result, verse['book'], verse['chapter'], verse_sep)
             elif self.verse_list[prev]['chapter'] != verse['chapter']:
-                result = '%s%s:' % (result, verse['chapter'])
+                result = '%s%s%s' % (result, verse['chapter'], verse_sep)
             result += str(verse['start'])
             if verse['start'] != verse['end']:
-                result = '%s-%s' % (result, verse['end'])
+                result = '%s%s%s' % (result, range_sep, verse['end'])
         if len(self.version_list) > 1:
             result = '%s (%s)' % (result, verse['version'])
         return result
 
-    def format_versions(self):
+    def format_versions(self, copyright=True, permission=True):
+        """
+        Format a string with the bible versions used
+
+        :param copyright: If the copyright info should be included, default is true.
+        :param permission: If the permission info should be included, default is true.
+        :return: A formatted string with the bible versions used
+        """
         result = ''
         for index, version in enumerate(self.version_list):
             if index > 0:
                 if result[-1] not in [';', ',', '.']:
                     result += ';'
                 result += ' '
-            result = '%s%s, %s' % (result, version['version'], version['copyright'])
-            if version['permission'].strip():
-                result = result + ', ' + version['permission']
+            result += version['version']
+            if copyright and version['copyright'].strip():
+                result += ', ' + version['copyright']
+            if permission and version['permission'].strip():
+                result += ', ' + version['permission']
         result = result.rstrip()
         if result.endswith(','):
             return result[:len(result) - 1]

@@ -408,7 +408,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.set_live_hot_keys(self)
             self.__add_actions_to_widget(self.controller)
         else:
-            self.preview_widget.doubleClicked.connect(self.on_preview_add_to_service)
+            self.preview_widget.doubleClicked.connect(self.on_preview_double_click)
             self.toolbar.set_widget_visible(['editSong'], False)
             self.controller.addActions([self.next_item, self.previous_item])
         Registry().register_function('slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
@@ -427,7 +427,7 @@ class SlideController(DisplayController, RegistryProperties):
         """
         Called, when a shortcut has been activated to jump to a chorus, verse, etc.
 
-        **Note**: This implementation is based on shortcuts. But it rather works like "key sequenes". You have to
+        **Note**: This implementation is based on shortcuts. But it rather works like "key sequences". You have to
         press one key after the other and **not** at the same time.
         For example to jump to "V3" you have to press "V" and afterwards but within a time frame of 350ms
         you have to press "3".
@@ -580,6 +580,7 @@ class SlideController(DisplayController, RegistryProperties):
         self.display.setup()
         if self.is_live:
             self.__add_actions_to_widget(self.display)
+        if self.display.audio_player:
             self.display.audio_player.connectSlot(QtCore.SIGNAL('tick(qint64)'), self.on_audio_time_remaining)
         # The SlidePreview's ratio.
         try:
@@ -716,8 +717,8 @@ class SlideController(DisplayController, RegistryProperties):
         self.play_slides_loop.setChecked(False)
         self.play_slides_loop.setIcon(build_icon(':/media/media_time.png'))
         if item.is_text():
-            if (Settings().value(self.main_window.songs_settings_section + '/display songbar')
-                    and not self.song_menu.menu().isEmpty()):
+            if (Settings().value(self.main_window.songs_settings_section + '/display songbar') and
+                    not self.song_menu.menu().isEmpty()):
                 self.toolbar.set_widget_visible(['song_menu'], True)
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
             self.toolbar.set_widget_visible(LOOP_LIST)
@@ -823,10 +824,14 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.on_stop_loop()
         old_item = self.service_item
+        # rest to allow the remote pick up verse 1 if large imaged
+        self.selected_row = 0
         # take a copy not a link to the servicemanager copy.
         self.service_item = copy.copy(service_item)
-        if old_item and self.is_live and old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
-            self._reset_blank()
+        # Reset blanking if needed
+        if old_item and self.is_live and (old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay) or
+                                          self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay)):
+            self._reset_blank(self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay))
         if service_item.is_command():
             Registry().execute(
                 '%s_start' % service_item.name.lower(), [self.service_item, self.is_live, self.hide_mode(), slide_no])
@@ -834,26 +839,28 @@ class SlideController(DisplayController, RegistryProperties):
         self.slide_list = {}
         if self.is_live:
             self.song_menu.menu().clear()
-            self.display.audio_player.reset()
-            self.set_audio_items_visibility(False)
-            self.audio_pause_item.setChecked(False)
-            # If the current item has background audio
-            if self.service_item.is_capable(ItemCapabilities.HasBackgroundAudio):
-                self.log_debug('Starting to play...')
-                self.display.audio_player.add_to_playlist(self.service_item.background_audio)
-                self.track_menu.clear()
-                for counter in range(len(self.service_item.background_audio)):
-                    action = self.track_menu.addAction(os.path.basename(self.service_item.background_audio[counter]))
-                    action.setData(counter)
-                    action.triggered.connect(self.on_track_triggered)
-                self.display.audio_player.repeat = \
-                    Settings().value(self.main_window.general_settings_section + '/audio repeat list')
-                if Settings().value(self.main_window.general_settings_section + '/audio start paused'):
-                    self.audio_pause_item.setChecked(True)
-                    self.display.audio_player.pause()
-                else:
-                    self.display.audio_player.play()
-                self.set_audio_items_visibility(True)
+            if self.display.audio_player:
+                self.display.audio_player.reset()
+                self.set_audio_items_visibility(False)
+                self.audio_pause_item.setChecked(False)
+                # If the current item has background audio
+                if self.service_item.is_capable(ItemCapabilities.HasBackgroundAudio):
+                    self.log_debug('Starting to play...')
+                    self.display.audio_player.add_to_playlist(self.service_item.background_audio)
+                    self.track_menu.clear()
+                    for counter in range(len(self.service_item.background_audio)):
+                        action = self.track_menu.addAction(
+                            os.path.basename(self.service_item.background_audio[counter]))
+                        action.setData(counter)
+                        action.triggered.connect(self.on_track_triggered)
+                    self.display.audio_player.repeat = \
+                        Settings().value(self.main_window.general_settings_section + '/audio repeat list')
+                    if Settings().value(self.main_window.general_settings_section + '/audio start paused'):
+                        self.audio_pause_item.setChecked(True)
+                        self.display.audio_player.pause()
+                    else:
+                        self.display.audio_player.play()
+                    self.set_audio_items_visibility(True)
         row = 0
         width = self.main_window.control_splitter.sizes()[self.split]
         for frame_number, frame in enumerate(self.service_item.get_frames()):
@@ -895,7 +902,8 @@ class SlideController(DisplayController, RegistryProperties):
             # This avoids the service theme/desktop flashing on screen
             # However opening a new item of the same type will automatically
             # close the previous, so make sure we don't close the new one.
-            if old_item.is_command() and not service_item.is_command():
+            if old_item.is_command() and not service_item.is_command() or \
+                    old_item.is_command() and not old_item.is_media() and service_item.is_media():
                 Registry().execute('%s_stop' % old_item.name.lower(), [old_item, self.is_live])
             if old_item.is_media() and not service_item.is_media():
                 self.on_media_close()
@@ -1066,10 +1074,16 @@ class SlideController(DisplayController, RegistryProperties):
         :param start:
         """
         # Only one thread should be in here at the time. If already locked just skip, since the update will be
-        # done by the thread holding the lock. If it is a "start" slide, we must wait for the lock.
-        if not self.slide_selected_lock.acquire(start):
+        # done by the thread holding the lock. If it is a "start" slide, we must wait for the lock, but only for 0.2
+        # seconds, since we don't want to cause a deadlock
+        timeout = 0.2 if start else -1
+        if not self.slide_selected_lock.acquire(start, timeout):
+            if start:
+                self.log_debug('Could not get lock in slide_selected after waiting %f, skip to avoid deadlock.'
+                               % timeout)
             return
         row = self.preview_widget.current_slide_number()
+        old_selected_row = self.selected_row
         self.selected_row = 0
         if -1 < row < self.preview_widget.slide_count():
             if self.service_item.is_command():
@@ -1079,7 +1093,7 @@ class SlideController(DisplayController, RegistryProperties):
             else:
                 to_display = self.service_item.get_rendered_frame(row)
                 if self.service_item.is_text():
-                    self.display.text(to_display)
+                    self.display.text(to_display, row != old_selected_row)
                 else:
                     if start:
                         self.display.build_html(self.service_item, to_display)
@@ -1109,8 +1123,7 @@ class SlideController(DisplayController, RegistryProperties):
         This updates the preview frame, for example after changing a slide or using *Blank to Theme*.
         """
         self.log_debug('update_preview %s ' % self.screens.current['primary'])
-        if not self.screens.current['primary'] and self.service_item and \
-                self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
+        if self.service_item and self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change is slow
             QtCore.QTimer.singleShot(0.5, self.grab_maindisplay)
             QtCore.QTimer.singleShot(2.5, self.grab_maindisplay)
@@ -1306,18 +1319,21 @@ class SlideController(DisplayController, RegistryProperties):
         if self.service_item:
             self.service_manager.add_service_item(self.service_item)
 
-    def on_go_live_click(self, field=None):
+    def on_preview_double_click(self, field=None):
         """
-        triggered by clicking the Preview slide items
+        Triggered when a preview slide item is doubleclicked
         """
-        if Settings().value('advanced/double click live'):
-            # Live and Preview have issues if we have video or presentations
-            # playing in both at the same time.
-            if self.service_item.is_command():
-                Registry().execute('%s_stop' % self.service_item.name.lower(), [self.service_item, self.is_live])
-            if self.service_item.is_media():
-                self.on_media_close()
-            self.on_go_live()
+        if self.service_item:
+            if Settings().value('advanced/double click live'):
+                # Live and Preview have issues if we have video or presentations
+                # playing in both at the same time.
+                if self.service_item.is_command():
+                    Registry().execute('%s_stop' % self.service_item.name.lower(), [self.service_item, self.is_live])
+                if self.service_item.is_media():
+                    self.on_media_close()
+                self.on_go_live()
+            else:
+                self.on_preview_add_to_service()
 
     def on_go_live(self, field=None):
         """
@@ -1329,6 +1345,7 @@ class SlideController(DisplayController, RegistryProperties):
                 self.service_manager.preview_live(self.service_item.unique_identifier, row)
             else:
                 self.live_controller.add_service_manager_item(self.service_item, row)
+            self.live_controller.preview_widget.setFocus()
 
     def on_media_start(self, item):
         """
@@ -1336,7 +1353,11 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param item: The service item to be processed
         """
-        self.media_controller.video(self.controller_type, item, self.hide_mode())
+        if self.is_live and self.hide_mode() == HideMode.Theme:
+            self.media_controller.video(self.controller_type, item, HideMode.Blank)
+            self.on_blank_display(True)
+        else:
+            self.media_controller.video(self.controller_type, item, self.hide_mode())
         if not self.is_live:
             self.preview_display.show()
             self.slide_preview.hide()
@@ -1349,16 +1370,22 @@ class SlideController(DisplayController, RegistryProperties):
         self.preview_display.hide()
         self.slide_preview.show()
 
-    def _reset_blank(self):
+    def _reset_blank(self, no_theme):
         """
         Used by command items which provide their own displays to reset the
         screen hide attributes
+
+        :param no_theme: Does the new item support theme-blanking.
         """
         hide_mode = self.hide_mode()
         if hide_mode == HideMode.Blank:
             self.on_blank_display(True)
         elif hide_mode == HideMode.Theme:
-            self.on_theme_display(True)
+            # The new item-type doesn't support theme-blanking, so 'switch' to normal blanking.
+            if no_theme:
+                self.on_blank_display(True)
+            else:
+                self.on_theme_display(True)
         elif hide_mode == HideMode.Screen:
             self.on_hide_display(True)
         else:
@@ -1406,16 +1433,16 @@ class SlideController(DisplayController, RegistryProperties):
 
 class PreviewController(RegistryMixin, OpenLPMixin, SlideController):
     """
-    Set up the Live Controller.
+    Set up the Preview Controller.
     """
     def __init__(self, parent):
         """
-        Set up the general Controller.
+        Set up the base Controller as a preview.
         """
         super(PreviewController, self).__init__(parent)
         self.split = 0
         self.type_prefix = 'preview'
-        self.category = None
+        self.category = 'Preview Toolbar'
 
     def bootstrap_post_set_up(self):
         """
@@ -1430,7 +1457,7 @@ class LiveController(RegistryMixin, OpenLPMixin, SlideController):
     """
     def __init__(self, parent):
         """
-        Set up the general Controller.
+        Set up the base Controller as a live.
         """
         super(LiveController, self).__init__(parent)
         self.is_live = True

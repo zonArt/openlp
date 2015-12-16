@@ -44,7 +44,7 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
 
         :param clear:  Set to False if the text input box should not be cleared when showing the dialog (default: True).
         :param show_top_level_group:  Set to True when "-- Top level group --" should be showed as first item
-        (default: False).
+            (default: False).
         :param selected_group: The ID of the group that should be selected by default when showing the dialog.
         """
         if clear:

@@ -59,7 +59,8 @@ class UiFirstTimeWizard(object):
         first_time_wizard.resize(550, 386)
         first_time_wizard.setModal(True)
         first_time_wizard.setOptions(QtGui.QWizard.IndependentPages | QtGui.QWizard.NoBackButtonOnStartPage |
-                                     QtGui.QWizard.NoBackButtonOnLastPage | QtGui.QWizard.HaveCustomButton1)
+                                     QtGui.QWizard.NoBackButtonOnLastPage | QtGui.QWizard.HaveCustomButton1 |
+                                     QtGui.QWizard.HaveCustomButton2)
         if is_macosx():
             first_time_wizard.setPixmap(QtGui.QWizard.BackgroundPixmap,
                                         QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
@@ -69,6 +70,7 @@ class UiFirstTimeWizard(object):
         self.finish_button = self.button(QtGui.QWizard.FinishButton)
         self.no_internet_finish_button = self.button(QtGui.QWizard.CustomButton1)
         self.cancel_button = self.button(QtGui.QWizard.CancelButton)
+        self.no_internet_cancel_button = self.button(QtGui.QWizard.CustomButton2)
         self.next_button = self.button(QtGui.QWizard.NextButton)
         self.back_button = self.button(QtGui.QWizard.BackButton)
         add_welcome_page(first_time_wizard, ':/wizards/wizard_firsttime.bmp')
@@ -271,3 +273,4 @@ class UiFirstTimeWizard(object):
                                                                            'and OpenLP is configured.'))
         self.progress_label.setText(translate('OpenLP.FirstTimeWizard', 'Starting configuration process...'))
         first_time_wizard.setButtonText(QtGui.QWizard.CustomButton1, translate('OpenLP.FirstTimeWizard', 'Finish'))
+        first_time_wizard.setButtonText(QtGui.QWizard.CustomButton2, translate('OpenLP.FirstTimeWizard', 'Cancel'))

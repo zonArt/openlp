@@ -312,6 +312,13 @@ class Ui_MainWindow(object):
                                                    icon=':/system/system_help_contents.png',
                                                    can_shortcuts=True,
                                                    category=UiStrings().Help, triggers=self.on_offline_help_clicked)
+        elif is_macosx():
+            self.local_help_file = os.path.join(AppLocation.get_directory(AppLocation.AppDir),
+                                                '..', 'Resources', 'OpenLP.help')
+            self.offline_help_item = create_action(main_window, 'offlineHelpItem',
+                                                   icon=':/system/system_help_contents.png',
+                                                   can_shortcuts=True,
+                                                   category=UiStrings().Help, triggers=self.on_offline_help_clicked)
         self.on_line_help_item = create_action(main_window, 'onlineHelpItem',
                                                icon=':/system/system_online_help.png',
                                                can_shortcuts=True,
@@ -354,7 +361,7 @@ class Ui_MainWindow(object):
         add_actions(self.tools_menu, (self.tools_open_data_folder, None))
         add_actions(self.tools_menu, (self.tools_first_time_wizard, None))
         add_actions(self.tools_menu, [self.update_theme_images])
-        if is_win():
+        if (is_win() or is_macosx()) and (hasattr(sys, 'frozen') and sys.frozen == 1):
             add_actions(self.help_menu, (self.offline_help_item, self.on_line_help_item, None, self.web_site_item,
                         self.about_item))
         else:
@@ -382,7 +389,7 @@ class Ui_MainWindow(object):
         self.file_menu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.file_import_menu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.file_export_menu.setTitle(translate('OpenLP.MainWindow', '&Export'))
-        self.recent_files_menu.setTitle(translate('OpenLP.MainWindow', '&Recent Files'))
+        self.recent_files_menu.setTitle(translate('OpenLP.MainWindow', '&Recent Services'))
         self.view_menu.setTitle(translate('OpenLP.MainWindow', '&View'))
         self.view_mode_menu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
         self.tools_menu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
@@ -393,16 +400,16 @@ class Ui_MainWindow(object):
         self.service_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Service Manager'))
         self.theme_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Theme Manager'))
         self.projector_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Projector Manager'))
-        self.file_new_item.setText(translate('OpenLP.MainWindow', '&New'))
+        self.file_new_item.setText(translate('OpenLP.MainWindow', '&New Service'))
         self.file_new_item.setToolTip(UiStrings().NewService)
         self.file_new_item.setStatusTip(UiStrings().CreateService)
-        self.file_open_item.setText(translate('OpenLP.MainWindow', '&Open'))
+        self.file_open_item.setText(translate('OpenLP.MainWindow', '&Open Service'))
         self.file_open_item.setToolTip(UiStrings().OpenService)
         self.file_open_item.setStatusTip(translate('OpenLP.MainWindow', 'Open an existing service.'))
-        self.file_save_item.setText(translate('OpenLP.MainWindow', '&Save'))
+        self.file_save_item.setText(translate('OpenLP.MainWindow', '&Save Service'))
         self.file_save_item.setToolTip(UiStrings().SaveService)
         self.file_save_item.setStatusTip(translate('OpenLP.MainWindow', 'Save the current service to disk.'))
-        self.file_save_as_item.setText(translate('OpenLP.MainWindow', 'Save &As...'))
+        self.file_save_as_item.setText(translate('OpenLP.MainWindow', 'Save Service &As...'))
         self.file_save_as_item.setToolTip(translate('OpenLP.MainWindow', 'Save Service As'))
         self.file_save_as_item.setStatusTip(translate('OpenLP.MainWindow',
                                             'Save the current service under a new name.'))
@@ -449,11 +456,11 @@ class Ui_MainWindow(object):
         self.lock_panel.setText(translate('OpenLP.MainWindow', 'L&ock Panels'))
         self.lock_panel.setStatusTip(translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
         self.view_live_panel.setStatusTip(translate('OpenLP.MainWindow', 'Toggle the visibility of the live panel.'))
-        self.settings_plugin_list_item.setText(translate('OpenLP.MainWindow', '&Plugin List'))
+        self.settings_plugin_list_item.setText(translate('OpenLP.MainWindow', '&Manage Plugins'))
         self.settings_plugin_list_item.setStatusTip(translate('OpenLP.MainWindow', 'List the Plugins'))
         self.about_item.setText(translate('OpenLP.MainWindow', '&About'))
         self.about_item.setStatusTip(translate('OpenLP.MainWindow', 'More information about OpenLP'))
-        if is_win():
+        if is_win() or is_macosx():
             self.offline_help_item.setText(translate('OpenLP.MainWindow', '&User Guide'))
         self.on_line_help_item.setText(translate('OpenLP.MainWindow', '&Online Help'))
         self.search_shortcut_action.setText(UiStrings().Search)
@@ -498,7 +505,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         super(MainWindow, self).__init__()
         Registry().register('main_window', self)
         self.clipboard = self.application.clipboard()
-        self.arguments = self.application.args
+        self.arguments = ''.join(self.application.args)
         # Set up settings sections for the main application (not for use by plugins).
         self.ui_settings_section = 'user interface'
         self.general_settings_section = 'core'
@@ -627,7 +634,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.live_controller.display.setFocus()
         self.activateWindow()
         if self.arguments:
-            self.open_cmd_line_files()
+            self.open_cmd_line_files(self.arguments)
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_last_file()
         view_mode = Settings().value('%s/view mode' % self.general_settings_section)
@@ -762,7 +769,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Load the local OpenLP help file
         """
-        os.startfile(self.local_help_file)
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + self.local_help_file))
 
     def on_online_help_clicked(self):
         """
@@ -900,7 +907,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         for section_key in import_keys:
             if 'eneral' in section_key:
                 section_key = section_key.lower()
-            value = import_settings.value(section_key)
+            try:
+                value = import_settings.value(section_key)
+            except KeyError:
+                log.warning('The key "%s" does not exist (anymore), so it will be skipped.' % section_key)
             if value is not None:
                 settings.setValue('%s' % (section_key), value)
         now = datetime.now()
@@ -989,15 +999,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         # Read the  temp file and output the user's CONF file with blanks to
         # make it more readable.
         temp_conf = open(temp_file, 'r')
-        export_conf = open(export_file_name, 'w')
-        for file_record in temp_conf:
-            # Get rid of any invalid entries.
-            if file_record.find('@Invalid()') == -1:
-                file_record = file_record.replace('%20', ' ')
-                export_conf.write(file_record)
-        temp_conf.close()
-        export_conf.close()
-        os.remove(temp_file)
+        try:
+            export_conf = open(export_file_name, 'w')
+            for file_record in temp_conf:
+                # Get rid of any invalid entries.
+                if file_record.find('@Invalid()') == -1:
+                    file_record = file_record.replace('%20', ' ')
+                    export_conf.write(file_record)
+            temp_conf.close()
+            export_conf.close()
+            os.remove(temp_file)
+        except OSError as ose:
+                QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
+                                           translate('OpenLP.MainWindow', 'An error occurred while exporting the '
+                                                                          'settings: %s') % ose.strerror,
+                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def on_mode_default_item_clicked(self):
         """
@@ -1097,8 +1113,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.image_manager.stop_manager = True
         while self.image_manager.image_thread.isRunning():
             time.sleep(0.1)
-        # Clean temporary files used by services
-        self.service_manager_contents.clean_up()
         if save_settings:
             if Settings().value('advanced/save current plugin'):
                 Settings().setValue('advanced/current media plugin', self.media_tool_box.currentIndex())
@@ -1115,6 +1129,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         if self.live_controller.display:
             self.live_controller.display.close()
             self.live_controller.display = None
+        # Clean temporary files used by services
+        self.service_manager_contents.clean_up()
         if is_win():
             # Needed for Windows to stop crashes on exit
             Registry().remove('application')
@@ -1311,6 +1327,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 filename = filename[0].upper() + filename[1:]
             if filename in self.recent_files:
                 self.recent_files.remove(filename)
+            if not isinstance(self.recent_files, list):
+                self.recent_files = [self.recent_files]
             self.recent_files.insert(0, filename)
             while len(self.recent_files) > max_recent_files:
                 self.recent_files.pop()
@@ -1398,15 +1416,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             settings.remove('advanced/data path')
         self.application.set_normal_cursor()
 
-    def open_cmd_line_files(self):
+    def open_cmd_line_files(self, filename):
         """
         Open files passed in through command line arguments
         """
-        args = []
-        for a in self.arguments:
-            args.extend([a])
-        for filename in args:
-            if not isinstance(filename, str):
-                filename = str(filename, sys.getfilesystemencoding())
-            if filename.endswith(('.osz', '.oszl')):
-                self.service_manager_contents.load_file(filename)
+        if not isinstance(filename, str):
+            filename = str(filename, sys.getfilesystemencoding())
+        if filename.endswith(('.osz', '.oszl')):
+            self.service_manager_contents.load_file(filename)

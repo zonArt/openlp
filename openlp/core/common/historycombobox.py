@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`~openlp.core.lib.historycombobox` module contains the HistoryComboBox widget
+The :mod:`~openlp.core.common.historycombobox` module contains the HistoryComboBox widget
 """
 
 from PyQt4 import QtCore, QtGui
@@ -28,9 +28,9 @@ from PyQt4 import QtCore, QtGui
 
 class HistoryComboBox(QtGui.QComboBox):
     """
-    The :class:`~openlp.core.lib.historycombobox.HistoryComboBox` widget emulates the QLineEdit ``returnPressed`` signal
-    for when the :kbd:`Enter` or :kbd:`Return` keys are pressed, and saves anything that is typed into the edit box into
-    its list.
+    The :class:`~openlp.core.common.historycombobox.HistoryComboBox` widget emulates the QLineEdit ``returnPressed``
+    signal for when the :kbd:`Enter` or :kbd:`Return` keys are pressed, and saves anything that is typed into the edit
+    box into its list.
     """
     returnPressed = QtCore.pyqtSignal()
 

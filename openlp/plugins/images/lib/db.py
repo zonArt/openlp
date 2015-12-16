@@ -48,24 +48,24 @@ def init_schema(url):
     Setup the images database connection and initialise the database schema.
 
     :param url: The database to setup
-    The images database contains the following tables:
+        The images database contains the following tables:
 
-        * image_groups
-        * image_filenames
+            * image_groups
+            * image_filenames
 
-    **image_groups Table**
-        This table holds the names of the images groups. It has the following columns:
+        **image_groups Table**
+            This table holds the names of the images groups. It has the following columns:
 
-        * id
-        * parent_id
-        * group_name
+            * id
+            * parent_id
+            * group_name
 
-    **image_filenames Table**
-        This table holds the filenames of the images and the group they belong to. It has the following columns:
+        **image_filenames Table**
+            This table holds the filenames of the images and the group they belong to. It has the following columns:
 
-        * id
-        * group_id
-        * filename
+            * id
+            * group_id
+            * filename
     """
     session, metadata = init_db(url)
 

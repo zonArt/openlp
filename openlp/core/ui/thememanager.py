@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, OpenLPMixin, RegistryMixin, \
     check_directory_exists, UiStrings, translate, is_win
-from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, get_text_file_string, build_icon, \
+from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, ValidationError, get_text_file_string, build_icon, \
     check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
@@ -354,11 +354,15 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         delete_file(os.path.join(self.path, thumb))
         delete_file(os.path.join(self.thumb_path, thumb))
         try:
-            encoding = get_filesystem_encoding()
-            shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
+            # Windows is always unicode, so no need to encode filenames
+            if is_win():
+                shutil.rmtree(os.path.join(self.path, theme))
+            else:
+                encoding = get_filesystem_encoding()
+                shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError as os_error:
             shutil.Error = os_error
-            self.log_exception('Error deleting theme %s', theme)
+            self.log_exception('Error deleting theme %s' % theme)
 
     def on_export_theme(self, field=None):
         """
@@ -377,17 +381,11 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         self.application.set_busy_cursor()
         if path:
             Settings().setValue(self.settings_section + '/last directory export', path)
-            try:
-                self._export_theme(path, theme)
+            if self._export_theme(path, theme):
                 QtGui.QMessageBox.information(self,
                                               translate('OpenLP.ThemeManager', 'Theme Exported'),
                                               translate('OpenLP.ThemeManager',
                                                         'Your theme has been successfully exported.'))
-            except (IOError, OSError):
-                self.log_exception('Export Theme Failed')
-                critical_error_message_box(translate('OpenLP.ThemeManager', 'Theme Export Failed'),
-                                           translate('OpenLP.ThemeManager',
-                                                     'Your theme could not be exported due to an error.'))
         self.application.set_normal_cursor()
 
     def _export_theme(self, path, theme):
@@ -397,30 +395,35 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         :param theme: The name of the theme to be exported
         """
         theme_path = os.path.join(path, theme + '.otz')
+        theme_zip = None
         try:
             theme_zip = zipfile.ZipFile(theme_path, 'w')
             source = os.path.join(self.path, theme)
             for files in os.walk(source):
                 for name in files[2]:
                     theme_zip.write(os.path.join(source, name), os.path.join(theme, name))
-        except (IOError, OSError):
+            theme_zip.close()
+            return True
+        except OSError as ose:
+            self.log_exception('Export Theme Failed')
+            critical_error_message_box(translate('OpenLP.ThemeManager', 'Theme Export Failed'),
+                                       translate('OpenLP.ThemeManager', 'The theme export failed because this error '
+                                                                        'occurred: %s') % ose.strerror)
             if theme_zip:
                 theme_zip.close()
                 shutil.rmtree(theme_path, True)
-            raise
-        else:
-            theme_zip.close()
+            return False
 
     def on_import_theme(self, field=None):
         """
         Opens a file dialog to select the theme file(s) to import before attempting to extract OpenLP themes from
-        those files. This process will load both OpenLP version 1 and version 2 themes.
+        those files. This process will only load version 2 themes.
         :param field:
         """
         files = FileDialog.getOpenFileNames(self,
                                             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
                                             Settings().value(self.settings_section + '/last directory import'),
-                                            translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))
+                                            translate('OpenLP.ThemeManager', 'OpenLP Themes (*.otz)'))
         self.log_info('New Themes %s' % str(files))
         if not files:
             return
@@ -500,7 +503,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         Returns a theme object from an XML file
 
         :param theme_name: Name of the theme to load from file
-        :return The theme object.
+        :return: The theme object.
         """
         self.log_debug('get theme data for theme %s' % theme_name)
         xml_file = os.path.join(self.path, str(theme_name), str(theme_name) + '.xml')
@@ -516,7 +519,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         Display a warning box to the user that a theme already exists
 
         :param theme_name: Name of the theme.
-        :return Confirm if the theme is to be overwritten.
+        :return: Confirm if the theme is to be overwritten.
         """
         ret = QtGui.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
                                          translate('OpenLP.ThemeManager',
@@ -535,7 +538,6 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         :param directory:
         """
         self.log_debug('Unzipping theme %s' % file_name)
-        file_name = str(file_name)
         theme_zip = None
         out_file = None
         file_xml = None
@@ -545,8 +547,12 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             xml_file = [name for name in theme_zip.namelist() if os.path.splitext(name)[1].lower() == '.xml']
             if len(xml_file) != 1:
                 self.log_error('Theme contains "%s" XML files' % len(xml_file))
-                raise Exception('validation')
+                raise ValidationError
             xml_tree = ElementTree(element=XML(theme_zip.read(xml_file[0]))).getroot()
+            theme_version = xml_tree.get('version', default=None)
+            if not theme_version or float(theme_version) < 2.0:
+                self.log_error('Theme version is less than 2.0')
+                raise ValidationError
             theme_name = xml_tree.find('name').text.strip()
             theme_folder = os.path.join(directory, theme_name)
             theme_exists = os.path.exists(theme_folder)
@@ -565,7 +571,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 check_directory_exists(os.path.dirname(full_name))
                 if os.path.splitext(name)[1].lower() == '.xml':
                     file_xml = str(theme_zip.read(name), 'utf-8')
-                    out_file = open(full_name, 'w')
+                    out_file = open(full_name, 'w', encoding='utf-8')
                     out_file.write(file_xml)
                 else:
                     out_file = open(full_name, 'wb')
@@ -573,13 +579,10 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 out_file.close()
         except (IOError, zipfile.BadZipfile):
             self.log_exception('Importing theme from zip failed %s' % file_name)
-            raise Exception('validation')
-        except Exception as info:
-            if str(info) == 'validation':
-                critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
-                                           translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
-            else:
-                raise
+            raise ValidationError
+        except ValidationError:
+            critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
+                                       translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
         finally:
             # Close the files, to be able to continue creating the theme.
             if theme_zip:
@@ -604,7 +607,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         Check if theme already exists and displays error message
 
         :param theme_name:  Name of the Theme to test
-        :return True or False if theme exists
+        :return: True or False if theme exists
         """
         theme_dir = os.path.join(self.path, theme_name)
         if os.path.exists(theme_dir):
@@ -646,8 +649,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             delete_file(self.old_background_image)
         out_file = None
         try:
-            out_file = open(theme_file, 'w')
-            out_file.write(theme_pretty_xml.decode('UTF-8'))
+            out_file = open(theme_file, 'w', encoding='utf-8')
+            out_file.write(theme_pretty_xml.decode('utf-8'))
         except IOError:
             self.log_exception('Saving theme to file failed')
         finally:
@@ -715,7 +718,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
 
         :param theme_xml: The Theme data object.
         :param image_path: Where the theme image is stored
-        :return Theme data.
+        :return: Theme data.
         """
         theme = ThemeXML()
         theme.parse(theme_xml)
@@ -731,7 +734,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         :param confirm_text: Confirm message text to be displayed.
         :param test_plugin: Do we check the plugins for theme usage.
         :param confirm: Do we display a confirm box before run checks.
-        :return True or False depending on the validity.
+        :return: True or False depending on the validity.
         """
         self.global_theme = Settings().value(self.settings_section + '/global theme')
         if check_item_selected(self.theme_list_widget, select_text):
@@ -752,12 +755,19 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 return False
             # check for use in the system else where.
             if test_plugin:
+                plugin_usage = ""
                 for plugin in self.plugin_manager.plugins:
-                    if plugin.uses_theme(theme):
-                        critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
-                                                   translate('OpenLP.ThemeManager',
-                                                             'Theme %s is used in the %s plugin.')
-                                                   % (theme, plugin.name))
-                        return False
+                    used_count = plugin.uses_theme(theme)
+                    if used_count:
+                        plugin_usage = "%s%s" % (plugin_usage, (translate('OpenLP.ThemeManager',
+                                                                          '%s time(s) by %s') %
+                                                                (used_count, plugin.name)))
+                        plugin_usage = "%s\n" % plugin_usage
+                if plugin_usage:
+                    critical_error_message_box(translate('OpenLP.ThemeManager', 'Unable to delete theme'),
+                                               translate('OpenLP.ThemeManager', 'Theme is currently used \n\n%s') %
+                                               plugin_usage)
+
+                    return False
             return True
         return False

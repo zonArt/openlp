@@ -119,14 +119,6 @@ class ImageMediaItem(MediaManagerItem):
                 icon=':/general/general_edit.png',
                 triggers=self.on_edit_click)
             create_widget_action(self.list_view, separator=True)
-        if self.has_delete_icon:
-            create_widget_action(
-                self.list_view,
-                'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
-                text=self.plugin.get_string(StringContent.Delete)['title'],
-                icon=':/general/general_delete.png',
-                can_shortcuts=True, triggers=self.on_delete_click)
-            create_widget_action(self.list_view, separator=True)
         create_widget_action(
             self.list_view,
             'listView%s%sItem' % (self.plugin.name.title(), StringContent.Preview.title()),
@@ -155,6 +147,14 @@ class ImageMediaItem(MediaManagerItem):
                 text=translate('OpenLP.MediaManagerItem', '&Add to selected Service Item'),
                 icon=':/general/general_add.png',
                 triggers=self.on_add_edit_click)
+            create_widget_action(self.list_view, separator=True)
+        if self.has_delete_icon:
+            create_widget_action(
+                self.list_view,
+                'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
+                text=self.plugin.get_string(StringContent.Delete)['title'],
+                icon=':/general/general_delete.png',
+                can_shortcuts=True, triggers=self.on_delete_click)
         self.add_custom_context_actions()
         # Create the context menu and add all actions from the list_view.
         self.menu = QtGui.QMenu()
@@ -205,6 +205,7 @@ class ImageMediaItem(MediaManagerItem):
         images = self.manager.get_all_objects(ImageFilenames, ImageFilenames.group_id == image_group.id)
         for image in images:
             delete_file(os.path.join(self.service_path, os.path.split(image.filename)[1]))
+            delete_file(self.generate_thumbnail_path(image))
             self.manager.delete_object(ImageFilenames, image.id)
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == image_group.id)
         for group in image_groups:
@@ -227,6 +228,7 @@ class ImageMediaItem(MediaManagerItem):
                     item_data = row_item.data(0, QtCore.Qt.UserRole)
                     if isinstance(item_data, ImageFilenames):
                         delete_file(os.path.join(self.service_path, row_item.text(0)))
+                        delete_file(self.generate_thumbnail_path(item_data))
                         if item_data.group_id == 0:
                             self.list_view.takeTopLevelItem(self.list_view.indexOfTopLevelItem(row_item))
                         else:
@@ -283,7 +285,7 @@ class ImageMediaItem(MediaManagerItem):
         :param combobox: The QComboBox to add the options to.
         :param parent_group_id: The ID of the group that will be added.
         :param prefix: A string containing the prefix that will be added in front of the groupname for each level of
-        the tree.
+            the tree.
         """
         if parent_group_id == 0:
             combobox.clear()
@@ -314,6 +316,16 @@ class ImageMediaItem(MediaManagerItem):
                 return True
         return return_value
 
+    def generate_thumbnail_path(self, image):
+        """
+        Generate a path to the thumbnail
+
+        :param image: An instance of ImageFileNames
+        :return: A path to the thumbnail of type str
+        """
+        ext = os.path.splitext(image.filename)[1].lower()
+        return os.path.join(self.service_path, '{}{}'.format(str(image.id), ext))
+
     def load_full_list(self, images, initial_load=False, open_group=None):
         """
         Replace the list of images and groups in the interface.
@@ -321,7 +333,7 @@ class ImageMediaItem(MediaManagerItem):
         :param images: A List of Image Filenames objects that will be used to reload the mediamanager list.
         :param initial_load: When set to False, the busy cursor and progressbar will be shown while loading images.
         :param open_group: ImageGroups object of the group that must be expanded after reloading the list in the
-        interface.
+            interface.
         """
         if not initial_load:
             self.application.set_busy_cursor()
@@ -335,27 +347,26 @@ class ImageMediaItem(MediaManagerItem):
         # Sort the images by its filename considering language specific.
         # characters.
         images.sort(key=lambda image_object: get_locale_key(os.path.split(str(image_object.filename))[1]))
-        for imageFile in images:
-            log.debug('Loading image: %s', imageFile.filename)
-            filename = os.path.split(imageFile.filename)[1]
-            ext = os.path.splitext(imageFile.filename)[1].lower()
-            thumb = os.path.join(self.service_path, "%s%s" % (str(imageFile.id), ext))
-            if not os.path.exists(imageFile.filename):
+        for image_file in images:
+            log.debug('Loading image: %s', image_file.filename)
+            filename = os.path.split(image_file.filename)[1]
+            thumb = self.generate_thumbnail_path(image_file)
+            if not os.path.exists(image_file.filename):
                 icon = build_icon(':/general/general_delete.png')
             else:
-                if validate_thumb(imageFile.filename, thumb):
+                if validate_thumb(image_file.filename, thumb):
                     icon = build_icon(thumb)
                 else:
-                    icon = create_thumb(imageFile.filename, thumb)
+                    icon = create_thumb(image_file.filename, thumb)
             item_name = QtGui.QTreeWidgetItem([filename])
             item_name.setText(0, filename)
             item_name.setIcon(0, icon)
-            item_name.setToolTip(0, imageFile.filename)
-            item_name.setData(0, QtCore.Qt.UserRole, imageFile)
-            if imageFile.group_id == 0:
+            item_name.setToolTip(0, image_file.filename)
+            item_name.setData(0, QtCore.Qt.UserRole, image_file)
+            if image_file.group_id == 0:
                 self.list_view.addTopLevelItem(item_name)
             else:
-                group_items[imageFile.group_id].addChild(item_name)
+                group_items[image_file.group_id].addChild(item_name)
             if not initial_load:
                 self.main_window.increment_progress_bar()
         if not initial_load:
@@ -458,7 +469,7 @@ class ImageMediaItem(MediaManagerItem):
         :param images_list: A List of strings containing image filenames
         :param group_id: The ID of the group to save the images in
         :param reload_list: This boolean is set to True when the list in the interface should be reloaded after saving
-        the new images
+            the new images
         """
         for filename in images_list:
             if not isinstance(filename, str):
@@ -540,6 +551,7 @@ class ImageMediaItem(MediaManagerItem):
             service_item.title = items[0].text(0)
         else:
             service_item.title = str(self.plugin.name_strings['plural'])
+
         service_item.add_capability(ItemCapabilities.CanMaintain)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
@@ -549,24 +561,24 @@ class ImageMediaItem(MediaManagerItem):
         # force a nonexistent theme
         service_item.theme = -1
         missing_items_file_names = []
-        images_file_names = []
+        images = []
         # Expand groups to images
         for bitem in items:
             if isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageGroups) or bitem.data(0, QtCore.Qt.UserRole) is None:
                 for index in range(0, bitem.childCount()):
                     if isinstance(bitem.child(index).data(0, QtCore.Qt.UserRole), ImageFilenames):
-                        images_file_names.append(bitem.child(index).data(0, QtCore.Qt.UserRole).filename)
+                        images.append(bitem.child(index).data(0, QtCore.Qt.UserRole))
             elif isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageFilenames):
-                images_file_names.append(bitem.data(0, QtCore.Qt.UserRole).filename)
+                images.append(bitem.data(0, QtCore.Qt.UserRole))
         # Don't try to display empty groups
-        if not images_file_names:
+        if not images:
             return False
         # Find missing files
-        for filename in images_file_names:
-            if not os.path.exists(filename):
-                missing_items_file_names.append(filename)
+        for image in images:
+            if not os.path.exists(image.filename):
+                missing_items_file_names.append(image.filename)
         # We cannot continue, as all images do not exist.
-        if not images_file_names:
+        if not images:
             if not remote:
                 critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
@@ -582,9 +594,10 @@ class ImageMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.No:
             return False
         # Continue with the existing images.
-        for filename in images_file_names:
-            name = os.path.split(filename)[1]
-            service_item.add_from_image(filename, name, background, os.path.join(self.service_path, name))
+        for image in images:
+            name = os.path.split(image.filename)[1]
+            thumbnail = self.generate_thumbnail_path(image)
+            service_item.add_from_image(image.filename, name, background, thumbnail)
         return True
 
     def check_group_exists(self, new_group):
@@ -685,3 +698,15 @@ class ImageMediaItem(MediaManagerItem):
             filename = os.path.split(str(file_object.filename))[1]
             results.append([file_object.filename, filename])
         return results
+
+    def create_item_from_id(self, item_id):
+        """
+        Create a media item from an item id. Overridden from the parent method to change the item type.
+
+        :param item_id: Id to make live
+        """
+        item = QtGui.QTreeWidgetItem()
+        item_data = self.manager.get_object_filtered(ImageFilenames, ImageFilenames.filename == item_id)
+        item.setText(0, os.path.basename(item_data.filename))
+        item.setData(0, QtCore.Qt.UserRole, item_data)
+        return item

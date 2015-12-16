@@ -26,7 +26,7 @@ displaying of alerts.
 
 from PyQt4 import QtCore
 
-from openlp.core.common import OpenLPMixin, RegistryMixin, Registry, RegistryProperties, translate
+from openlp.core.common import OpenLPMixin, RegistryMixin, Registry, RegistryProperties, Settings, translate
 
 
 class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperties):
@@ -48,7 +48,11 @@ class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperti
         :param message: The message text to be displayed
         """
         if message:
-            self.display_alert(message[0])
+            text = message[0]
+            # remove line breaks as these crash javascript code on display
+            while '\n' in text:
+                text = text.replace('\n', ' ')
+            self.display_alert(text)
 
     def display_alert(self, text=''):
         """
@@ -70,7 +74,8 @@ class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperti
         """
         Format and request the Alert and start the timer.
         """
-        if not self.alert_list:
+        if not self.alert_list or (self.live_controller.display.screens.display_count == 1 and
+                                   not Settings().value('core/display on monitor')):
             return
         text = self.alert_list.pop(0)
         alert_tab = self.parent().settings_tab

@@ -177,8 +177,9 @@ class RemoteTab(SettingsTab):
                                                     'Show thumbnails of non-text slides in remote and stage view.'))
         self.android_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
         self.qr_description_label.setText(
-            translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="https://play.google.com/store/'
-                      'apps/details?id=org.openlp.android">download</a> to install the Android app from Google Play.'))
+            translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="%s">download</a> to install the '
+                                                'Android app from Google Play.') %
+            'https://play.google.com/store/apps/details?id=org.openlp.android2')
         self.https_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'HTTPS Server'))
         self.https_error_label.setText(
             translate('RemotePlugin.RemoteTab', 'Could not find an SSL certificate. The HTTPS server will not be '

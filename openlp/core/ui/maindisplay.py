@@ -29,11 +29,16 @@ Some of the code for this form is based on the examples at:
 
 """
 
-import cgi
+import html
 import logging
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
-from PyQt4.phonon import Phonon
+
+PHONON_AVAILABLE = True
+try:
+    from PyQt4.phonon import Phonon
+except ImportError:
+    PHONON_AVAILABLE = False
 
 from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx
 from openlp.core.lib import ServiceItem, ImageSource, ScreenList, build_html, expand_tags, image_to_byte
@@ -139,7 +144,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         self.override = {}
         self.retranslateUi()
         self.media_object = None
-        if self.is_live:
+        if self.is_live and PHONON_AVAILABLE:
             self.audio_player = AudioPlayer(self)
         else:
             self.audio_player = None
@@ -159,6 +164,8 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             # and menu bar
             if self.screens.current['primary']:
                 self.setWindowState(QtCore.Qt.WindowFullScreen)
+            else:
+                window_flags |= QtCore.Qt.WindowStaysOnTopHint
         self.setWindowFlags(window_flags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.set_transparency(False)
@@ -166,6 +173,19 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             Registry().register_function('live_display_hide', self.hide_display)
             Registry().register_function('live_display_show', self.show_display)
             Registry().register_function('update_display_css', self.css_changed)
+        self.close_display = False
+
+    def closeEvent(self, event):
+        """
+        Catch the close event, and check that the close event is triggered by OpenLP closing the display.
+        On Windows this event can be triggered by pressing ALT+F4, which we want to ignore.
+
+        :param event: The triggered event
+        """
+        if self.close_display:
+            super().closeEvent(event)
+        else:
+            event.ignore()
 
     def close(self):
         """
@@ -175,6 +195,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             Registry().remove_function('live_display_hide', self.hide_display)
             Registry().remove_function('live_display_show', self.show_display)
             Registry().remove_function('update_display_css', self.css_changed)
+        self.close_display = True
         super().close()
 
     def set_transparency(self, enabled):
@@ -268,7 +289,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         """
         # First we convert <>& marks to html variants, then apply
         # formattingtags, finally we double all backslashes for JavaScript.
-        text_prepared = expand_tags(cgi.escape(text)).replace('\\', '\\\\').replace('\"', '\\\"')
+        text_prepared = expand_tags(html.escape(text)).replace('\\', '\\\\').replace('\"', '\\\"')
         if self.height() != self.screen['size'].height() or not self.isVisible():
             shrink = True
             js = 'show_alert("%s", "%s")' % (text_prepared, 'top')
@@ -313,7 +334,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         cache.
 
         :param path: The path to the image to be displayed. **Note**, the path is only passed to identify the image.
-        If the image has changed it has to be re-added to the image manager.
+            If the image has changed it has to be re-added to the image manager.
         """
         image = self.image_manager.get_image_bytes(path, ImageSource.ImagePlugin)
         self.controller.media_controller.media_reset(self.controller)

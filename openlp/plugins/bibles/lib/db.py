@@ -37,7 +37,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, transl
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import clean_filename
-from . import upgrade
+from openlp.plugins.bibles.lib import upgrade
 
 log = logging.getLogger(__name__)
 
@@ -131,6 +131,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         log.info('BibleDB loaded')
         QtCore.QObject.__init__(self)
         self.bible_plugin = parent
+        self.session = None
         if 'path' not in kwargs:
             raise KeyError('Missing keyword argument "path".')
         if 'name' not in kwargs and 'file' not in kwargs:
@@ -144,8 +145,8 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         if 'file' in kwargs:
             self.file = kwargs['file']
         Manager.__init__(self, 'bibles', init_schema, self.file, upgrade)
-        if 'file' in kwargs:
-            self.get_name()
+        if self.session and 'file' in kwargs:
+                self.get_name()
         if 'path' in kwargs:
             self.path = kwargs['path']
         self.wizard = None
@@ -163,9 +164,6 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         Returns the version name of the Bible.
         """
         version_name = self.get_object(BibleMeta, 'name')
-        # Fallback to old way of naming
-        if not version_name:
-            version_name = self.get_object(BibleMeta, 'Version')
         self.name = version_name.value if version_name else None
         return self.name
 
@@ -221,7 +219,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         :param book_id: The id of the book being appended.
         :param chapter: The chapter number.
         :param text_list: A dict of the verses to be inserted. The key is the verse number, and the value is the
-        verse text.
+            verse text.
         """
         log.debug('BibleDBcreate_chapter("%s", "%s")' % (book_id, chapter))
         # Text list has book and chapter as first two elements of the array.
@@ -477,16 +475,6 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         language_id = language['id']
         self.save_meta('language_id', language_id)
         return language_id
-
-    def is_old_database(self):
-        """
-        Returns ``True`` if it is a bible database, which has been created prior to 1.9.6.
-        """
-        try:
-            self.session.query(Book).all()
-        except:
-            return True
-        return False
 
     def dump_bible(self):
         """

@@ -114,17 +114,17 @@ class SearchEdit(QtGui.QLineEdit):
         default.
 
          :param items:     The list of tuples to use. The tuples should contain an integer identifier, an icon (QIcon
-         instance or string) and a title for the item in the menu. In short, they should look like this::
+             instance or string) and a title for the item in the menu. In short, they should look like this::
 
-                (<identifier>, <icon>, <title>, <place holder text>)
+                    (<identifier>, <icon>, <title>, <place holder text>)
 
-            For instance::
+                For instance::
 
-                (1, <QIcon instance>, "Titles", "Search Song Titles...")
+                    (1, <QIcon instance>, "Titles", "Search Song Titles...")
 
-            Or::
+                Or::
 
-                (2, ":/songs/authors.png", "Authors", "Search Authors...")
+                    (2, ":/songs/authors.png", "Authors", "Search Authors...")
         """
         menu = QtGui.QMenu(self)
         first = None

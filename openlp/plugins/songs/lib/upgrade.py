@@ -35,6 +35,7 @@ log = logging.getLogger(__name__)
 __version__ = 4
 
 
+# TODO: When removing an upgrade path the ftw-data needs updating to the minimum supported version
 def upgrade_1(session, metadata):
     """
     Version 1 upgrade.
@@ -109,7 +110,7 @@ def upgrade_4(session, metadata):
         op.create_table('authors_songs_tmp',
                         Column('author_id', types.Integer(), ForeignKey('authors.id'), primary_key=True),
                         Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
-                        Column('author_type', types.String(), primary_key=True,
+                        Column('author_type', types.Unicode(255), primary_key=True,
                                nullable=False, server_default=text('""')))
         op.execute('INSERT INTO authors_songs_tmp SELECT author_id, song_id, "" FROM authors_songs')
         op.drop_table('authors_songs')

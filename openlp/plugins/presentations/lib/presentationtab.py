@@ -68,6 +68,18 @@ class PresentationTab(SettingsTab):
         self.override_app_check_box.setObjectName('override_app_check_box')
         self.advanced_layout.addWidget(self.override_app_check_box)
         self.left_layout.addWidget(self.advanced_group_box)
+        # PowerPoint
+        self.powerpoint_group_box = QtGui.QGroupBox(self.left_column)
+        self.powerpoint_group_box.setObjectName('powerpoint_group_box')
+        self.powerpoint_layout = QtGui.QVBoxLayout(self.powerpoint_group_box)
+        self.powerpoint_layout.setObjectName('powerpoint_layout')
+        self.ppt_slide_click_check_box = QtGui.QCheckBox(self.powerpoint_group_box)
+        self.ppt_slide_click_check_box.setObjectName('ppt_slide_click_check_box')
+        self.powerpoint_layout.addWidget(self.ppt_slide_click_check_box)
+        self.ppt_window_check_box = QtGui.QCheckBox(self.powerpoint_group_box)
+        self.ppt_window_check_box.setObjectName('ppt_window_check_box')
+        self.powerpoint_layout.addWidget(self.ppt_window_check_box)
+        self.left_layout.addWidget(self.powerpoint_group_box)
         # Pdf options
         self.pdf_group_box = QtGui.QGroupBox(self.left_column)
         self.pdf_group_box.setObjectName('pdf_group_box')
@@ -108,8 +120,16 @@ class PresentationTab(SettingsTab):
             self.set_controller_text(checkbox, controller)
         self.advanced_group_box.setTitle(UiStrings().Advanced)
         self.pdf_group_box.setTitle(translate('PresentationPlugin.PresentationTab', 'PDF options'))
+        self.powerpoint_group_box.setTitle(translate('PresentationPlugin.PresentationTab', 'PowerPoint options'))
         self.override_app_check_box.setText(
             translate('PresentationPlugin.PresentationTab', 'Allow presentation application to be overridden'))
+        self.ppt_slide_click_check_box.setText(
+            translate('PresentationPlugin.PresentationTab',
+                      'Clicking on a selected slide in the slidecontroller advances to next effect.'))
+        self.ppt_window_check_box.setText(
+            translate('PresentationPlugin.PresentationTab',
+                      'Let PowerPoint control the size and position of the presentation window '
+                      '(workaround for Windows 8 scaling issue).'))
         self.pdf_program_check_box.setText(
             translate('PresentationPlugin.PresentationTab', 'Use given full path for mudraw or ghostscript binary:'))
 
@@ -123,11 +143,20 @@ class PresentationTab(SettingsTab):
         """
         Load the settings.
         """
+        powerpoint_available = False
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.presenter_check_boxes[controller.name]
             checkbox.setChecked(Settings().value(self.settings_section + '/' + controller.name))
+            if controller.name == 'Powerpoint' and controller.is_available():
+                powerpoint_available = True
         self.override_app_check_box.setChecked(Settings().value(self.settings_section + '/override app'))
+        # Load Powerpoint settings
+        self.ppt_slide_click_check_box.setChecked(Settings().value(self.settings_section +
+                                                                   '/powerpoint slide click advance'))
+        self.ppt_slide_click_check_box.setEnabled(powerpoint_available)
+        self.ppt_window_check_box.setChecked(Settings().value(self.settings_section + '/powerpoint control window'))
+        self.ppt_window_check_box.setEnabled(powerpoint_available)
         # load pdf-program settings
         enable_pdf_program = Settings().value(self.settings_section + '/enable_pdf_program')
         self.pdf_program_check_box.setChecked(enable_pdf_program)
@@ -160,6 +189,15 @@ class PresentationTab(SettingsTab):
         setting_key = self.settings_section + '/override app'
         if Settings().value(setting_key) != self.override_app_check_box.checkState():
             Settings().setValue(setting_key, self.override_app_check_box.checkState())
+            changed = True
+        # Save powerpoint settings
+        setting_key = self.settings_section + '/powerpoint slide click advance'
+        if Settings().value(setting_key) != self.ppt_slide_click_check_box.checkState():
+            Settings().setValue(setting_key, self.ppt_slide_click_check_box.checkState())
+            changed = True
+        setting_key = self.settings_section + '/powerpoint control window'
+        if Settings().value(setting_key) != self.ppt_window_check_box.checkState():
+            Settings().setValue(setting_key, self.ppt_window_check_box.checkState())
             changed = True
         # Save pdf-settings
         pdf_program = self.pdf_program_path.text()

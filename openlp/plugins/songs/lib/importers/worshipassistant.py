@@ -131,6 +131,7 @@ class WorshipAssistantImport(SongImport):
                 return
             verse = ''
             used_verses = []
+            verse_id = VerseType.tags[VerseType.Verse] + '1'
             for line in lyrics.splitlines():
                 if line.startswith('['):  # verse marker
                     # Add previous verse
@@ -179,6 +180,6 @@ class WorshipAssistantImport(SongImport):
                         cleaned_verse_order_list.append(verse)
                 self.verse_order_list = cleaned_verse_order_list
             if not self.finish():
-                self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d') % index
-                               + (': "' + self.title + '"' if self.title else ''))
+                self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d') % index +
+                               (': "' + self.title + '"' if self.title else ''))
             songs_file.close()

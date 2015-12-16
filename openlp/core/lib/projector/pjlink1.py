@@ -25,7 +25,9 @@
 
     See PJLink Class 1 Specifications for details.
     http://pjlink.jbmia.or.jp/english/dl.html
+
         Section 5-1 PJLink Specifications
+
         Section 5-5 Guidelines for Input Terminals
 
     NOTE:
@@ -343,7 +345,7 @@ class PJLink1(QTcpSocket):
             # Authenticated login with salt
             log.debug('(%s) Setting hash with salt="%s"' % (self.ip, data_check[2]))
             log.debug('(%s) pin="%s"' % (self.ip, self.pin))
-            salt = qmd5_hash(salt=data_check[2], data=self.pin)
+            salt = qmd5_hash(salt=data_check[2].endcode('ascii'), data=self.pin.encode('ascii'))
         else:
             salt = None
         # We're connected at this point, so go ahead and do regular I/O

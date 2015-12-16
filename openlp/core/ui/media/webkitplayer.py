@@ -22,11 +22,11 @@
 """
 The :mod:`~openlp.core.ui.media.webkit` module contains our WebKit video player
 """
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtWebKit
 
 import logging
 
-from openlp.core.common import Settings, is_macosx
+from openlp.core.common import Settings
 from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -222,13 +222,15 @@ class WebkitPlayer(MediaPlayer):
 
     def check_available(self):
         """
-        Check the availability of the media player
+        Check the availability of the media player.
+
+        :return: boolean. True if available
         """
-        # At the moment we don't have support for webkitplayer on Mac OS X
-        if is_macosx():
-            return False
-        else:
-            return True
+        web = QtWebKit.QWebPage()
+        # This script should return '[object HTMLVideoElement]' if the html5 video is available in webkit. Otherwise it
+        # should return '[object HTMLUnknownElement]'
+        return web.mainFrame().evaluateJavaScript(
+            "Object.prototype.toString.call(document.createElement('video'));") == '[object HTMLVideoElement]'
 
     def load(self, display):
         """
@@ -373,7 +375,7 @@ class WebkitPlayer(MediaPlayer):
             # check if conversion was ok and value is not 'NaN'
             if length and length != float('inf'):
                 length = int(length * 1000)
-        if current_time:
+        if current_time and length:
             controller.media_info.length = length
             controller.seek_slider.setMaximum(length)
             if not controller.seek_slider.isSliderDown():

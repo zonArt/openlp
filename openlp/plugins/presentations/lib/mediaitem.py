@@ -225,22 +225,32 @@ class PresentationMediaItem(MediaManagerItem):
                 self.clean_up_thumbnails(filepath)
                 self.main_window.increment_progress_bar()
             self.main_window.finished_progress_bar()
-            self.application.set_busy_cursor()
             for row in row_list:
                 self.list_view.takeItem(row)
             Settings().setValue(self.settings_section + '/presentations files', self.get_file_list())
+            self.application.set_normal_cursor()
 
-    def clean_up_thumbnails(self, filepath):
+    def clean_up_thumbnails(self, filepath, clean_for_update=False):
         """
         Clean up the files created such as thumbnails
 
         :param filepath: File path of the presention to clean up after
+        :param clean_for_update: Only clean thumbnails if update is needed
         :return: None
         """
         for cidx in self.controllers:
-            doc = self.controllers[cidx].add_document(filepath)
-            doc.presentation_deleted()
-            doc.close_presentation()
+            root, file_ext = os.path.splitext(filepath)
+            file_ext = file_ext[1:]
+            if file_ext in self.controllers[cidx].supports or file_ext in self.controllers[cidx].also_supports:
+                doc = self.controllers[cidx].add_document(filepath)
+                if clean_for_update:
+                    thumb_path = doc.get_thumbnail_path(1, True)
+                    if not thumb_path or not os.path.exists(filepath) or os.path.getmtime(
+                            thumb_path) < os.path.getmtime(filepath):
+                        doc.presentation_deleted()
+                else:
+                    doc.presentation_deleted()
+                doc.close_presentation()
 
     def generate_slide_data(self, service_item, item=None, xml_version=False, remote=False,
                             context=ServiceItemContext.Service, presentation_file=None):
@@ -271,6 +281,7 @@ class PresentationMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.CanPreview)
             service_item.add_capability(ItemCapabilities.CanLoop)
             service_item.add_capability(ItemCapabilities.CanAppend)
+            service_item.name = 'images'
             # force a nonexistent theme
             service_item.theme = -1
             for bitem in items:

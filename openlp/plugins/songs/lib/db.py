@@ -173,6 +173,7 @@ def init_schema(url):
     Setup the songs database connection and initialise the database schema.
 
     :param url: The database to setup
+
     The song database contains the following tables:
 
         * authors
@@ -312,7 +313,7 @@ def init_schema(url):
         'authors_songs', metadata,
         Column('author_id', types.Integer(), ForeignKey('authors.id'), primary_key=True),
         Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
-        Column('author_type', types.String(), primary_key=True, nullable=False, server_default=text('""'))
+        Column('author_type', types.Unicode(255), primary_key=True, nullable=False, server_default=text('""'))
     )
 
     # Definition of the "songs_topics" table

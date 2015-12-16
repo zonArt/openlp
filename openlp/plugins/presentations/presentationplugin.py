@@ -44,7 +44,9 @@ __default_settings__ = {'presentations/override app': QtCore.Qt.Unchecked,
                         'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
                         'presentations/Pdf': QtCore.Qt.Checked,
                         'presentations/presentations files': [],
-                        'presentations/thumbnail_scheme': ''
+                        'presentations/thumbnail_scheme': '',
+                        'presentations/powerpoint slide click advance': QtCore.Qt.Unchecked,
+                        'presentations/powerpoint control window': QtCore.Qt.Unchecked
                         }
 
 
@@ -134,19 +136,6 @@ class PresentationPlugin(Plugin):
             controller = controller_class(self)
             self.register_controllers(controller)
         return bool(self.controllers)
-
-    def app_startup(self):
-        """
-        Perform tasks on application startup.
-        """
-        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
-        super().app_startup()
-        files_from_config = Settings().value('presentations/presentations files')
-        for file in files_from_config:
-            self.media_item.clean_up_thumbnails(file)
-        self.media_item.list_view.clear()
-        Settings().setValue('presentations/thumbnail_scheme', 'md5')
-        self.media_item.validate_and_load(files_from_config)
 
     def about(self):
         """

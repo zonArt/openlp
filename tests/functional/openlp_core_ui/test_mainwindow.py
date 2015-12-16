@@ -71,7 +71,7 @@ class TestMainWindow(TestCase, TestMixin):
         with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
 
             # WHEN the argument is processed
-            self.main_window.open_cmd_line_files()
+            self.main_window.open_cmd_line_files(service)
 
             # THEN the service from the arguments is loaded
             mocked_load_path.assert_called_with(service), 'load_path should have been called with the service\'s path'
@@ -86,7 +86,7 @@ class TestMainWindow(TestCase, TestMixin):
         with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
 
             # WHEN the argument is processed
-            self.main_window.open_cmd_line_files()
+            self.main_window.open_cmd_line_files("")
 
             # THEN the file should not be opened
             assert not mocked_load_path.called, 'load_path should not have been called'
@@ -128,3 +128,21 @@ class TestMainWindow(TestCase, TestMixin):
         # THEN the main window's title should be set to the
         self.assertEqual(self.main_window.windowTitle(), '%s - %s' % (UiStrings().OLPV2x, 'test.osz'),
                          'The main window\'s title should be set to "<the contents of UiStrings().OLPV2x> - test.osz"')
+
+    def mainwindow_configuration_test(self):
+        """
+        Check that the Main Window initialises the Registry Correctly
+        """
+        # GIVEN: A built main window
+
+        # WHEN: you check the started functions
+
+        # THEN: the following registry functions should have been registered
+        self.assertEqual(len(self.registry.service_list), 6, 'The registry should have 6 services.')
+        self.assertEqual(len(self.registry.functions_list), 16, 'The registry should have 16 functions')
+        self.assertTrue('application' in self.registry.service_list, 'The application should have been registered.')
+        self.assertTrue('main_window' in self.registry.service_list, 'The main_window should have been registered.')
+        self.assertTrue('media_controller' in self.registry.service_list, 'The media_controller should have been '
+                                                                          'registered.')
+        self.assertTrue('plugin_manager' in self.registry.service_list,
+                        'The plugin_manager should have been registered.')

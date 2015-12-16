@@ -1,0 +1,135 @@
+#T
+Amazing Grace
+#C
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs20 
+\par }
+
+#1
+{\rtf1\ansi\ansicpg1252\deff0{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+{\colortbl ;\red0\green0\blue0;}
+\viewkind4\uc1\pard\cf1\lang2057\f0\fs20 Amazing Grace! how sweet the sound
+\par That saved a wretch like me;
+\par I once was lost, but now am found,
+\par Was blind, but now I see.
+\par }
+
+#2
+{\rtf1\ansi\ansicpg1252\deff0{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+{\colortbl ;\red0\green0\blue0;}
+\viewkind4\uc1\pard\cf1\lang2057\f0\fs20 'Twas grace that taught my heart to fear,
+\par And grace my fears relieved;
+\par How precious did that grace appear,
+\par The hour I first believed!
+\par }
+
+#3
+{\rtf1\ansi\ansicpg1252\deff0{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+{\colortbl ;\red0\green0\blue0;}
+\viewkind4\uc1\pard\cf1\lang2057\f0\fs20 Through many dangers, toils and snares
+\par I have already come;
+\par 'Tis grace that brought me safe thus far,
+\par And grace will lead me home.
+\par }
+
+#4
+{\rtf1\ansi\ansicpg1252\deff0{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+{\colortbl ;\red0\green0\blue0;}
+\viewkind4\uc1\pard\cf1\lang2057\f0\fs20 The Lord has promised good to me,
+\par His word my hope secures;
+\par He will my shield and portion be
+\par As long as life endures.
+\par }
+
+#5
+{\rtf1\ansi\ansicpg1252\deff0{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+{\colortbl ;\red0\green0\blue0;}
+\viewkind4\uc1\pard\cf1\lang1033\f0\fs20 Yes, when this heart and flesh shall fail,
+\par And mortal life shall cease,
+\par I shall possess within the veil
+\par A life of joy and peace.
+\par }
+
+#6
+{\rtf1\ansi\ansicpg1252\deff0{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+{\colortbl ;\red0\green0\blue0;}
+\viewkind4\uc1\pard\cf1\lang1033\f0\fs20 When we've been there a thousand years,
+\par Bright shining as the sun,
+\par We've no less days to sing God's praise
+\par Than when we first begun.
+\par }
+
+#7
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs20 
+\par }
+
+#D
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs20 
+\par }
+
+#B
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs20 
+\par }
+
+#PR
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs20 
+\par }
+
+#MS
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs20 
+\par }
+
+#C2
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs20 
+\par }
+
+#NT
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs20 
+\par }
+
+#A
+Words: John Newton (1725-1807)
+#R
+Public Domain
+#O
+123456
+#F
+Arial
+#FS
+34
+#I
+False
+#BD
+True
+#BE
+True
+#FC
+16777215
+#BC
+39168
+#FF
+16777215
+#P
+Lakes\NZ Lake 3.jpg
+#PC
+16777215
+#SB
+True
+#SH
+False
+#BM
+I
+#IT
+S
+#CC
+2762836
+#IN
+126444
+#E

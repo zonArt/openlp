@@ -105,7 +105,7 @@ class SongImport(QtCore.QObject):
         This should be called, when a song could not be imported.
 
         :param file_path: This should be the file path if ``self.import_source`` is a list with different files. If it
-        is not a list, but a single file (for instance a database), then this should be the song's title.
+            is not a list, but a single file (for instance a database), then this should be the song's title.
         :param reason: The reason why the import failed. The string should be as informative as possible.
         """
         self.set_defaults()

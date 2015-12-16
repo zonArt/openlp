@@ -271,9 +271,15 @@ window.OpenLP = {
               if (typeof value[0] !== "number"){
                 value[0] = OpenLP.escapeString(value[0])
               }
+              var txt = "";
+              if (value[2].length > 0) {
+                txt = value[1] + " ( " + value[2] + " )";
+              } else {
+                txt = value[1];
+              }
               ul.append($("<li>").append($("<a>").attr("href", "#options")
                   .attr("data-rel", "dialog").attr("value", value[0])
-                  .click(OpenLP.showOptions).text(value[1])));
+                  .click(OpenLP.showOptions).text(txt)));
             });
         }
         ul.listview("refresh");

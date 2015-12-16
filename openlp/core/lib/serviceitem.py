@@ -33,7 +33,7 @@ import ntpath
 
 from PyQt4 import QtGui
 
-from openlp.core.common import RegistryProperties, Settings, translate, AppLocation
+from openlp.core.common import RegistryProperties, Settings, translate, AppLocation, md5_hash
 from openlp.core.lib import ImageSource, build_icon, clean_tags, expand_tags, create_thumb
 
 log = logging.getLogger(__name__)
@@ -129,7 +129,7 @@ class ItemCapabilities(object):
     OnLoadUpdate = 8
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
-    HasDetailedTitleDisplay = 11
+    # HasDetailedTitleDisplay = 11
     HasVariableStartTime = 12
     CanSoftBreak = 13
     CanWordSplit = 14
@@ -326,6 +326,12 @@ class ServiceItem(RegistryProperties):
         # If the item should have a display title but this frame doesn't have one, we make one up
         if self.is_capable(ItemCapabilities.HasDisplayTitle) and not display_title:
             display_title = translate('OpenLP.ServiceItem', '[slide %d]') % (len(self._raw_frames) + 1)
+        # Update image path to match servicemanager location if file was loaded from service
+        if image and not self.has_original_files and self.name == 'presentations':
+            file_location = os.path.join(path, file_name)
+            file_location_hash = md5_hash(file_location.encode('utf-8'))
+            image = os.path.join(AppLocation.get_section_data_path(self.name), 'thumbnails',
+                                 file_location_hash, ntpath.basename(image))
         self._raw_frames.append({'title': file_name, 'image': image, 'path': path,
                                  'display_title': display_title, 'notes': notes})
         self._new_item()
@@ -382,7 +388,7 @@ class ServiceItem(RegistryProperties):
 
         :param service_item: The item to extract data from.
         :param path: Defaults to *None*. This is the service manager path for things which have their files saved
-        with them or None when the saved service is lite and the original file paths need to be preserved.
+            with them or None when the saved service is lite and the original file paths need to be preserved.
         """
         log.debug('set_from_service called with path %s' % path)
         header = service_item['serviceitem']['header']
@@ -409,11 +415,6 @@ class ServiceItem(RegistryProperties):
         self.will_auto_start = header.get('will_auto_start', False)
         self.processor = header.get('processor', None)
         self.has_original_files = True
-        # TODO: Remove me in 2,3 build phase
-        if self.is_capable(ItemCapabilities.HasDetailedTitleDisplay):
-            self.capabilities.remove(ItemCapabilities.HasDetailedTitleDisplay)
-            self.processor = self.title
-            self.title = None
         if 'background_audio' in header:
             self.background_audio = []
             for filename in header['background_audio']:

@@ -121,16 +121,13 @@ class BibleManager(RegistryProperties):
         self.old_bible_databases = []
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
+            if not bible.session:
+                continue
             name = bible.get_name()
             # Remove corrupted files.
             if name is None:
                 bible.session.close()
                 delete_file(os.path.join(self.path, filename))
-                continue
-            # Find old database versions.
-            if bible.is_old_database():
-                self.old_bible_databases.append([filename, name])
-                bible.session.close()
                 continue
             log.debug('Bible Name: "%s"', name)
             self.db_cache[name] = bible

@@ -25,7 +25,7 @@ Functional tests to test the AppLocation class and related methods.
 import os
 from unittest import TestCase
 
-from openlp.core.utils import clean_filename, get_filesystem_encoding, get_locale_key, \
+from openlp.core.utils import clean_filename, delete_file, get_filesystem_encoding, get_locale_key, \
     get_natural_key, split_filename, _get_user_agent, get_web_page, get_uno_instance, add_actions
 from tests.functional import MagicMock, patch
 
@@ -183,6 +183,59 @@ class TestUtils(TestCase):
 
         # THEN: The file name should be cleaned.
         self.assertEqual(wanted_name, result, 'The file name should not contain any special characters.')
+
+    def delete_file_no_path_test(self):
+        """
+        Test the delete_file function when called with out a valid path
+        """
+        # GIVEN: A blank path
+        # WEHN: Calling delete_file
+        result = delete_file('')
+
+        # THEN: delete_file should return False
+        self.assertFalse(result, "delete_file should return False when called with ''")
+
+    def delete_file_path_success_test(self):
+        """
+        Test the delete_file function when it successfully deletes a file
+        """
+        # GIVEN: A mocked os which returns True when os.path.exists is called
+        with patch('openlp.core.utils.os', **{'path.exists.return_value': False}):
+
+            # WHEN: Calling delete_file with a file path
+            result = delete_file('path/file.ext')
+
+            # THEN: delete_file should return True
+            self.assertTrue(result, 'delete_file should return True when it successfully deletes a file')
+
+    def delete_file_path_no_file_exists_test(self):
+        """
+        Test the delete_file function when the file to remove does not exist
+        """
+        # GIVEN: A mocked os which returns False when os.path.exists is called
+        with patch('openlp.core.utils.os', **{'path.exists.return_value': False}):
+
+            # WHEN: Calling delete_file with a file path
+            result = delete_file('path/file.ext')
+
+            # THEN: delete_file should return True
+            self.assertTrue(result, 'delete_file should return True when the file doesnt exist')
+
+    def delete_file_path_exception_test(self):
+        """
+        Test the delete_file function when os.remove raises an exception
+        """
+        # GIVEN: A mocked os which returns True when os.path.exists is called and raises an OSError when os.remove is
+        #       called.
+        with patch('openlp.core.utils.os', **{'path.exists.return_value': True, 'path.exists.side_effect': OSError}), \
+                patch('openlp.core.utils.log') as mocked_log:
+
+            # WHEN: Calling delete_file with a file path
+            result = delete_file('path/file.ext')
+
+            # THEN: delete_file should log and exception and return False
+            self.assertEqual(mocked_log.exception.call_count, 1)
+            self.assertFalse(result, 'delete_file should return False when os.remove raises an OSError')
 
     def get_locale_key_test(self):
         """

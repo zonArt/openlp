@@ -25,7 +25,7 @@ Package to test the openlp.core.utils.actions package.
 from unittest import TestCase
 
 from openlp.core.common.settings import Settings
-from openlp.core.utils import VersionThread, get_application_version, get_uno_command
+from openlp.core.utils import VersionThread, get_uno_command
 from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 

@@ -50,10 +50,13 @@ from openlp.plugins.songs.lib.songstab import SongsTab
 log = logging.getLogger(__name__)
 __default_settings__ = {
     'songs/db type': 'sqlite',
+    'songs/db username': '',
+    'songs/db password': '',
+    'songs/db hostname': '',
+    'songs/db database': '',
     'songs/last search type': SongSearch.Entire,
     'songs/last import type': SongFormat.OpenLyrics,
     'songs/update service on edit': False,
-    'songs/search as type': True,
     'songs/add song from service': True,
     'songs/display songbar': True,
     'songs/display songbook': False,
@@ -222,11 +225,9 @@ class SongsPlugin(Plugin):
         Called to find out if the song plugin is currently using a theme.
 
         :param theme: The theme to check for usage
-        :return: True if the theme is being used, otherwise returns False
+        :return: count of the number of times the theme is used.
         """
-        if self.manager.get_all_objects(Song, Song.theme_name == theme):
-            return True
-        return False
+        return len(self.manager.get_all_objects(Song, Song.theme_name == theme))
 
     def rename_theme(self, old_theme, new_theme):
         """
