@@ -96,7 +96,7 @@ for row in bug_rows:
 # <div class="context-publication"><h1>Merge ... into...
 div_branches = soup.find('div', class_='context-publication')
 branches = div_branches.h1.contents[0]
-target_branch = '+branch/' + branches[(branches.find(' into lp:')+9):]
+target_branch = '+branch/' + branches[(branches.find(' into lp:') + 9):]
 
 # Check that we are in the right branch
 bzr_info_output = subprocess.check_output(['bzr', 'info'])

@@ -443,7 +443,7 @@ class SourceSelectSingle(QDialog):
                                                QtGui.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
-        self.setMinimumHeight(key_count*25)
+        self.setMinimumHeight(key_count * 25)
         set_button_tooltip(self.button_box)
         selected = super(SourceSelectSingle, self).exec_()
         return selected

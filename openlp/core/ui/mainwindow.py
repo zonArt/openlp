@@ -566,7 +566,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.application.set_busy_cursor()
         # Simple message boxes
         Registry().register_function('theme_update_global', self.default_theme_changed)
-        QtCore.QObject.connect(self, QtCore.SIGNAL('openlp_version_check'),  self.version_notice)
+        QtCore.QObject.connect(self, QtCore.SIGNAL('openlp_version_check'), self.version_notice)
         Registry().register_function('config_screen_changed', self.screen_changed)
         Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
         # Reset the cursor
