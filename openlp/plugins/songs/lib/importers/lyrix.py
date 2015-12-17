@@ -26,13 +26,8 @@ exproted from Lyrix."""
 import logging
 import re
 
-from lxml import objectify
-from lxml.etree import Error, LxmlError
-
 from openlp.core.common import translate
-from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.importers.songimport import SongImport
-from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -64,7 +59,7 @@ class LyrixImport(SongImport):
 
     def do_import_file(self, file):
         """
-        Process the OpenSong file - pass in a file-like object, not a file path.
+        Process the Lyrix file - pass in a file-like object, not a file path.
         """
         self.set_defaults()
         # Setup variables

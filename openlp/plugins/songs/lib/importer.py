@@ -47,6 +47,7 @@ from .importers.worshipassistant import WorshipAssistantImport
 from .importers.powerpraise import PowerPraiseImport
 from .importers.presentationmanager import PresentationManagerImport
 from .importers.lyrix import LyrixImport
+from .importers.videopsalm import VideoPsalmImport
 
 log = logging.getLogger(__name__)
 
@@ -247,6 +248,13 @@ class SongFormat(object):
             'prefix': 'foilPresenter',
             'filter': '%s (*.foil)' % translate('SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
         },
+        Lyrix: {
+            'class': LyrixImport,
+            'name': 'Lyrix',
+            'prefix': 'lyrix',
+            'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'Lyrix Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'Lyrix (exported txt-files)')
+        },
         MediaShout: {
             'name': 'MediaShout',
             'prefix': 'mediaShout',
@@ -327,6 +335,16 @@ class SongFormat(object):
             'prefix': 'sundayPlus',
             'filter': '%s (*.ptf)' % translate('SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
         },
+        VideoPsalm: {
+            'class': VideoPsalmImport,
+            'name': 'VideoPsalm',
+            'prefix': 'videopsalm',
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.json)' % translate('SongsPlugin.ImportWizardForm', 'VideoPsalm Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'VideoPsalm'),
+            'descriptionText': translate('SongsPlugin.ImportWizardForm','The VideoPsalm songbooks are normally located '
+                                         'in %s') % 'C:\\Users\\Public\\Documents\\VideoPsalm\\SongBooks\\'
+        },
         WordsOfWorship: {
             'class': WordsOfWorshipImport,
             'name': 'Words of Worship',
@@ -364,22 +382,6 @@ class SongFormat(object):
                                          'First convert your ZionWorx database to a CSV text file, as '
                                          'explained in the <a href="http://manual.openlp.org/songs.html'
                                          '#importing-from-zionworx">User Manual</a>.')
-        },
-        Lyrix: {
-            'class': LyrixImport,
-            'name': 'Lyrix',
-            'prefix': 'lyrix',
-            'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'Lyrix Files'),
-            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'Exported Lyrix files')
-        },
-        VideoPsalm: {
-            #'class': VideoPsalmImport,
-            'name': 'VideoPsalm',
-            'prefix': 'videopsalm',
-            'filter': '%s (*.json)' % translate('SongsPlugin.ImportWizardForm', 'VideoPsalm Files'),
-            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'Exported VideoPsalm files'),
-            'descriptionText': translate('SongsPlugin.ImportWizardForm','The VideoPsalm songbooks are normally located '
-                                         'in %s') % 'C:\\Users\\Public\\Documents\\VideoPsalm\\SongBooks\\'
         }
     }
 
