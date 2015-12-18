@@ -342,8 +342,8 @@ class SongFormat(object):
             'selectMode': SongFormatSelect.SingleFile,
             'filter': '%s (*.json)' % translate('SongsPlugin.ImportWizardForm', 'VideoPsalm Files'),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'VideoPsalm'),
-            'descriptionText': translate('SongsPlugin.ImportWizardForm','The VideoPsalm songbooks are normally located '
-                                         'in %s') % 'C:\\Users\\Public\\Documents\\VideoPsalm\\SongBooks\\'
+            'descriptionText': translate('SongsPlugin.ImportWizardForm', 'The VideoPsalm songbooks are normally located'
+                                         ' in %s') % 'C:\\Users\\Public\\Documents\\VideoPsalm\\SongBooks\\'
         },
         WordsOfWorship: {
             'class': WordsOfWorshipImport,

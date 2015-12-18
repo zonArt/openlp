@@ -30,7 +30,7 @@ import os
 from openlp.core.common import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.importers.songimport import SongImport
-from openlp.plugins.songs.lib.ui import SongStrings
+from openlp.plugins.songs.lib.db import AuthorType
 
 log = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class VideoPsalmImport(SongImport):
             file_content = song_file.read()
             processed_content = ''
             inside_quotes = False
-            # The VideoPsalm format is not valid json, it uses illegal line breaks and unquoted keys, this must be fixed.
+            # The VideoPsalm format is not valid json, it uses illegal line breaks and unquoted keys, this must be fixed
             file_content_it = iter(file_content)
             for c in file_content_it:
                 if c == '"':
@@ -83,47 +83,36 @@ class VideoPsalmImport(SongImport):
             songbook_name = songbook['Text']
             media_folder = os.path.normpath(os.path.join(os.path.dirname(song_file.name), '..', 'Audio'))
             for song in songs:
-                #song['Composer']
-                try:
+                self.song_book_name = songbook_name
+                if 'Text' in song:
                     self.title = song['Text']
-                except KeyError:
-                    pass
-                try:
-                    self.add_author(song['Author'])
-                except KeyError:
-                    pass
-                try:
+                composer = None
+                author = None
+                if 'Composer' in song:
+                    composer = song['Composer']
+                if 'Author' in song:
+                    author = song['Author']
+                if author and composer == author:
+                    self.add_author(author, AuthorType.WordsAndMusic)
+                else:
+                    if author:
+                        self.add_author(author, AuthorType.Words)
+                    if composer:
+                        self.add_author(composer, AuthorType.Music)
+                if 'Copyright' in song:
                     self.add_copyright(song['Copyright'].replace('\n', ' ').strip())
-                except KeyError:
-                    pass
-                try:
+                if 'CCLI' in song:
                     self.ccli_number = song['CCLI']
-                except KeyError:
-                    pass
-                try:
-                    self.song_book_name = songbook_name
-                except KeyError:
-                    pass
-                try:
+                if 'Theme' in song:
                     self.topics = song['Theme'].splitlines()
-                except KeyError:
-                    pass
-                #try:
-                #    self.add_media_file(os.path.join(media_folder, song['AudioFile']))
-                #except KeyError:
-                #    pass
-                try:
+                if 'AudioFile' in song:
+                    self.add_media_file(os.path.join(media_folder, song['AudioFile']))
+                if 'Memo1' in song:
                     self.add_comment(song['Memo1'])
-                except KeyError:
-                    pass
-                try:
+                if 'Memo2' in song:
                     self.add_comment(song['Memo2'])
-                except KeyError:
-                    pass
-                try:
+                if 'Memo3' in song:
                     self.add_comment(song['Memo3'])
-                except KeyError:
-                    pass
                 for verse in song['Verses']:
                     self.add_verse(verse['Text'], 'v')
                 if not self.finish():

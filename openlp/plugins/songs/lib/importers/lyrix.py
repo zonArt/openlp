@@ -85,7 +85,7 @@ class LyrixImport(SongImport):
                         # If the CCLI was found, we are near the end
                         # Find author
                         line = next(file)
-                        author = line[line.find(':')+2:].strip()
+                        author = line[line.find(':') + 2:].strip()
                         # Find copyright
                         copyright = next(file)
                     except StopIteration:

@@ -1,6 +1,7 @@
 {
     "authors": [
-        "Martin Luther"
+        ["Martin Luther", "words"],
+        ["Unknown", "music"]
     ],
     "ccli_number": "12345",
     "comments": "This is\nthe first comment\nThis is\nthe second comment\nThis is\nthe third comment\n",
