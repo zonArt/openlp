@@ -47,3 +47,6 @@ class TestWordsOfWorshipFileImport(SongImportTestHelper):
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace (6 Verses).json')))
         self.file_import([os.path.join(TEST_PATH, 'When morning gilds the skies.wsg')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'When morning gilds the skies.json')))
+        self.file_import([os.path.join(TEST_PATH, 'Holy Holy Holy Lord God Almighty.wow-song')],
+                         self.load_external_result_data(os.path.join(TEST_PATH,
+                                                                     'Holy Holy Holy Lord God Almighty.json')))
