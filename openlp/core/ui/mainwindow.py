@@ -566,7 +566,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.application.set_busy_cursor()
         # Simple message boxes
         Registry().register_function('theme_update_global', self.default_theme_changed)
-        QtCore.QObject.connect(self, QtCore.SIGNAL('openlp_version_check'),  self.version_notice)
+        QtCore.QObject.connect(self, QtCore.SIGNAL('openlp_version_check'), self.version_notice)
         Registry().register_function('config_screen_changed', self.screen_changed)
         Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
         # Reset the cursor
@@ -1089,13 +1089,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
                 event.ignore()
         else:
             if Settings().value('advanced/enable exit confirmation'):
-                ret = QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'Close OpenLP'),
-                                                 translate('OpenLP.MainWindow', 'Are you sure you want to close '
-                                                                                'OpenLP?'),
-                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                                   QtGui.QMessageBox.No),
-                                                 QtGui.QMessageBox.Yes)
-                if ret == QtGui.QMessageBox.Yes:
+                msg_box = QtGui.QMessageBox(QtGui.QMessageBox.Question, translate('OpenLP.MainWindow', 'Exit OpenLP'),
+                                            translate('OpenLP.MainWindow', 'Are you sure you want to exit OpenLP?'),
+                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Close |
+                                                                              QtGui.QMessageBox.Cancel), self)
+                msg_box.setButtonText(QtGui.QMessageBox.Close, translate('OpenLP.MainWindow', '&Exit OpenLP'))
+                msg_box.setDefaultButton(QtGui.QMessageBox.Close)
+                if msg_box.exec() == QtGui.QMessageBox.Close:
                     self.clean_up()
                     event.accept()
                 else:

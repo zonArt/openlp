@@ -82,7 +82,7 @@ class TestSongSelectImport(TestCase, TestMixin):
         self.assertFalse(result, 'The login method should have returned False')
 
     @patch('openlp.plugins.songs.lib.songselect.build_opener')
-    def login_except_test(self,  mocked_build_opener):
+    def login_except_test(self, mocked_build_opener):
         """
         Test that when logging in to SongSelect fails, the login method raises URLError
         """

@@ -547,9 +547,9 @@ class BibleUpgradeForm(OpenLPWizard):
             if self.includeWebBible:
                 self.progress_label.setText(
                     translate('BiblesPlugin.UpgradeWizardForm',
-                              'Upgrading Bible(s): %s successful%s\nPlease note that verses from Web Bibles will be '
-                              'downloaded on demand and so an Internet connection is required.') %
-                    (successful_import, failed_import_text))
+                              'Upgrading Bible(s): %(success)d successful%(failed_text)s\nPlease note that verses '
+                              'from Web Bibles will be downloaded on demand and so an Internet connection is required.')
+                    % {'success': successful_import, 'failed_text': failed_import_text})
             else:
                 self.progress_label.setText(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading Bible(s): %s successful%s') % (

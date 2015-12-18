@@ -45,18 +45,18 @@ from openlp.core.ui.projector.editform import ProjectorEditForm
 from openlp.core.ui.projector.sourceselectform import SourceSelectTabs, SourceSelectSingle
 
 # Dict for matching projector status to display icon
-STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_item_disconnect.png',
-                S_CONNECTING:  ':/projector/projector_item_connect.png',
-                S_CONNECTED:  ':/projector/projector_off.png',
-                S_OFF:  ':/projector/projector_off.png',
-                S_INITIALIZE:  ':/projector/projector_off.png',
-                S_STANDBY:  ':/projector/projector_off.png',
-                S_WARMUP:  ':/projector/projector_warmup.png',
-                S_ON:  ':/projector/projector_on.png',
-                S_COOLDOWN:  ':/projector/projector_cooldown.png',
-                E_ERROR:  ':/projector/projector_error.png',
-                E_NETWORK:  ':/projector/projector_not_connected_error.png',
-                E_AUTHENTICATION:  ':/projector/projector_not_connected_error.png',
+STATUS_ICONS = {S_NOT_CONNECTED: ':/projector/projector_item_disconnect.png',
+                S_CONNECTING: ':/projector/projector_item_connect.png',
+                S_CONNECTED: ':/projector/projector_off.png',
+                S_OFF: ':/projector/projector_off.png',
+                S_INITIALIZE: ':/projector/projector_off.png',
+                S_STANDBY: ':/projector/projector_off.png',
+                S_WARMUP: ':/projector/projector_warmup.png',
+                S_ON: ':/projector/projector_on.png',
+                S_COOLDOWN: ':/projector/projector_cooldown.png',
+                E_ERROR: ':/projector/projector_error.png',
+                E_NETWORK: ':/projector/projector_not_connected_error.png',
+                E_AUTHENTICATION: ':/projector/projector_not_connected_error.png',
                 E_UNKNOWN_SOCKET_ERROR: ':/projector/projector_not_connected_error.png',
                 E_NOT_CONNECTED: ':/projector/projector_not_connected_error.png'
                 }
