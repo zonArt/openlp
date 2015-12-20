@@ -359,7 +359,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param hidden: The player which is doing the playing
         :param video_behind_text: Is the video to be played behind text.
         """
-        log.debug('video')
         is_valid = False
         controller = self.display_controllers[source]
         # stop running videos
@@ -435,7 +434,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param service_item: The ServiceItem containing the details to be played.
         """
         controller = self.display_controllers[DisplayControllerType.Plugin]
-        log.debug('media_length')
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
@@ -470,7 +468,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller: The media contraoller.
         :return: True if setup succeded else False.
         """
-        log.debug('media_setup_optical')
         if controller is None:
             controller = self.display_controllers[DisplayControllerType.Plugin]
         # stop running videos
@@ -569,7 +566,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param msg: First element is the controller which should be used
         :param status:
         """
-        log.debug('media_play_msg')
         self.media_play(msg[0], status)
 
     def media_play(self, controller, status=True):
@@ -579,7 +575,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller: The controller to be played
         :param status:
         """
-        log.debug('media_play')
         controller.seek_slider.blockSignals(True)
         controller.volume_slider.blockSignals(True)
         display = self._define_display(controller)
@@ -620,7 +615,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param msg: First element is the controller which should be used
         """
-        log.debug('media_pause_msg')
         self.media_pause(msg[0])
 
     def tick(self, controller):
@@ -652,7 +646,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param controller: The Controller to be paused
         """
-        log.debug('media_pause')
         display = self._define_display(controller)
         self.current_media_players[controller.controller_type].pause(display)
         controller.mediabar.actions['playbackPlay'].setVisible(True)
@@ -666,7 +659,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param msg: First element is the controller which should be used
         """
-        log.debug('media_stop_msg')
         self.media_stop(msg[0])
 
     def media_stop(self, controller):
@@ -675,7 +667,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param controller: The controller that needs to be stopped
         """
-        log.debug('media_stop')
         print("media_stop")
         display = self._define_display(controller)
         if controller.controller_type in self.current_media_players:
@@ -719,7 +710,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param msg: First element is the controller which should be used
             Second element is a list with the seek value as first element
         """
-        log.debug('media_seek')
         controller = msg[0]
         seek_value = msg[1][0]
         self.media_seek(controller, seek_value)
@@ -731,7 +721,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller: The controller to use.
         :param seek_value: The value to set.
         """
-        log.debug('media_seek')
         display = self._define_display(controller)
         self.current_media_players[controller.controller_type].seek(display, seek_value)
         print(controller.media_info.timer, controller.media_info.length, seek_value)
@@ -742,7 +731,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         Responds to the request to reset a loaded video
         :param controller: The controller to use.
         """
-        log.debug('media_reset')
         self.set_controls_visible(controller, False)
         display = self._define_display(controller)
         if controller.controller_type in self.current_media_players:
