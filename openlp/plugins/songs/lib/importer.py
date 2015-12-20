@@ -250,10 +250,10 @@ class SongFormat(object):
         },
         Lyrix: {
             'class': LyrixImport,
-            'name': 'Lyrix',
+            'name': 'LyriX',
             'prefix': 'lyrix',
-            'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'Lyrix Files'),
-            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'Lyrix (exported txt-files)')
+            'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'LyriX Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'LyriX (Exported TXT-files)')
         },
         MediaShout: {
             'name': 'MediaShout',
