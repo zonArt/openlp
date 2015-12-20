@@ -39,6 +39,8 @@ from openlp.core.ui import DisplayControllerType
 
 log = logging.getLogger(__name__)
 
+TICK_TIME = 200
+
 
 class MediaSlider(QtGui.QSlider):
     """
@@ -97,7 +99,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         self.current_media_players = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(200)
+        self.timer.setInterval(TICK_TIME)
         # Signals
         self.timer.timeout.connect(self.media_state)
         Registry().register_function('playbackPlay', self.media_play_msg)
@@ -202,6 +204,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 self.current_media_players[source].update_ui(display)
                 if self.current_media_players[source].state == MediaState.Playing:
                     any_active = True
+                    self.tick(self.display_controllers[source])
         # There are still any active players - no need to stop timer.
             if any_active:
                 return
@@ -624,11 +627,12 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller:  The Controller to be processed
         """
         if controller.media_info.playing:
-            print("AA " + controller.media_info.timer, controller.media_info.length)
+            print(controller.media_info.timer, controller.media_info.length)
             if controller.media_info.timer > controller.media_info.length:
                 controller.media_info.timer = controller.media_info.length
                 print("over")
-            controller.media_info.timer += 1000
+                self.media_stop(controller)
+            controller.media_info.timer += TICK_TIME
             seconds = controller.media_info.timer // 1000
             print(seconds)
             minutes = seconds // 60
