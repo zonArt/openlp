@@ -156,7 +156,6 @@ class SlideController(DisplayController, RegistryProperties):
         self.process_queue_lock = Lock()
         self.slide_selected_lock = Lock()
         self.timer_id = 0
-        self.media_timer = 0;
         self.song_edit = False
         self.selected_row = 0
         self.service_item = None
@@ -1303,8 +1302,6 @@ class SlideController(DisplayController, RegistryProperties):
         """
         if event.timerId() == self.timer_id:
             self.on_slide_selected_next(self.play_slides_loop.isChecked())
-        elif event.timerId() == self.media_timer:
-            self.media_controller.tick(self)
 
     def on_edit_song(self, field=None):
         """
@@ -1364,8 +1361,6 @@ class SlideController(DisplayController, RegistryProperties):
         if not self.is_live:
             self.preview_display.show()
             self.slide_preview.hide()
-        # One Second pings
-        self.media_timer = self.startTimer(1000)
 
     def on_media_close(self):
         """
@@ -1374,7 +1369,6 @@ class SlideController(DisplayController, RegistryProperties):
         self.media_controller.media_reset(self)
         self.preview_display.hide()
         self.slide_preview.show()
-        self.media_timer = 0
 
     def _reset_blank(self, no_theme):
         """

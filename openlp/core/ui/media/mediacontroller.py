@@ -630,9 +630,10 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller:  The Controller to be processed
         """
         if controller.media_info.playing:
-            print(controller.media_info.timer)
+            print("AA " + controller.media_info.timer, controller.media_info.length)
             if controller.media_info.timer > controller.media_info.length:
                 controller.media_info.timer = controller.media_info.length
+                print("over")
             controller.media_info.timer += 1000
             seconds = controller.media_info.timer // 1000
             print(seconds)
@@ -687,6 +688,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             controller.mediabar.actions['playbackPause'].setVisible(False)
             controller.media_info.playing = False
             controller.media_info.timer = 1000
+            controller.media_timer = 0
 
     def media_volume_msg(self, msg):
         """
