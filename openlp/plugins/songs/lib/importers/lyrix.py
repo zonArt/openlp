@@ -73,9 +73,10 @@ class LyrixImport(SongImport):
         try:
             # Read the file
             for line in file:
+                line = line.strip()
                 line_number += 1
                 if line_number == 4:
-                    song_title = line.strip()
+                    song_title = line
                 if line_number < 7:
                     continue
                 # Detect and get CCLI number
@@ -84,22 +85,22 @@ class LyrixImport(SongImport):
                     try:
                         # If the CCLI was found, we are near the end
                         # Find author
-                        line = next(file)
-                        author = line[line.find(':') + 2:].strip()
+                        line = next(file).strip()
+                        author = line[line.find(':') + 2:]
                         # Find copyright
-                        copyright = next(file)
+                        copyright = next(file).strip()
                     except StopIteration:
                         pass
                     break
-                if line.strip() == '':
+                if line == '':
                     if current_verse != '':
                         verses.append(current_verse)
                     current_verse = ''
                 else:
                     if current_verse == '':
-                        current_verse += line.strip()
+                        current_verse += line
                     else:
-                        current_verse += '\n' + line.strip()
+                        current_verse += '\n' + line
         except Exception as e:
             self.log_error(translate('SongsPlugin.LyrixImport', 'File %s' % file.name),
                            translate('SongsPlugin.LyrixImport', 'Error: %s') % e)

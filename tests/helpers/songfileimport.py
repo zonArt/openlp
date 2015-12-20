@@ -127,7 +127,7 @@ class SongImportTestHelper(TestCase):
             if isinstance(author, str):
                 self.mocked_add_author.assert_any_call(author)
             else:
-                self.mocked_add_author.assert_any_call(author[0], author[1])
+                self.mocked_add_author.assert_any_call(*author)
         if song_copyright:
             self.mocked_add_copyright.assert_called_with(song_copyright)
         if ccli_number:

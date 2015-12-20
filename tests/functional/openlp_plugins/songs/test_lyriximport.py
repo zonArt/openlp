@@ -19,7 +19,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the VideoPsalm song importer.
+This module contains tests for the LyriX song importer.
 """
 
 import os
@@ -31,19 +31,23 @@ from openlp.core.common import Registry
 from tests.functional import patch, MagicMock
 
 TEST_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'videopsalmsongs'))
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'lyrixsongs'))
 
 
-class TestVideoPsalmFileImport(SongImportTestHelper):
+class TestLyrixFileImport(SongImportTestHelper):
 
     def __init__(self, *args, **kwargs):
-        self.importer_class_name = 'VideoPsalmImport'
-        self.importer_module_name = 'videopsalm'
-        super(TestVideoPsalmFileImport, self).__init__(*args, **kwargs)
+        self.importer_class_name = 'LyrixImport'
+        self.importer_module_name = 'lyrix'
+        super(TestLyrixFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
         """
-        Test that loading an VideoPsalm file works correctly on various files
+        Test that loading an LyriX file works correctly on various files
         """
-        self.file_import(os.path.join(TEST_PATH, 'videopsalm-as-safe-a-stronghold.json'),
-                         self.load_external_result_data(os.path.join(TEST_PATH, 'as-safe-a-stronghold.json')))
+        self.file_import([os.path.join(TEST_PATH, 'A06.TXT')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
+        self.file_import([os.path.join(TEST_PATH, 'A002.TXT')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace2.json')))
+        self.file_import([os.path.join(TEST_PATH, 'AO05.TXT')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'in die regterhand.json')))
