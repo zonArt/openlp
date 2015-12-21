@@ -92,6 +92,12 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         super(ExceptionForm, self).__init__()
         self.setupUi(self)
         self.settings_section = 'crashreport'
+        self.report_text = '**OpenLP Bug Report**\n' \
+            'Version: %s\n\n' \
+            '--- Details of the Exception. ---\n\n%s\n\n ' \
+            '--- Exception Traceback ---\n%s\n' \
+            '--- System information ---\n%s\n' \
+            '--- Library Versions ---\n%s\n'
 
     def exec(self):
         """
@@ -137,13 +143,6 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         Saving exception log and system information to a file.
         """
-        report_text = translate('OpenLP.ExceptionForm',
-                                '**OpenLP Bug Report**\n'
-                                'Version: %s\n\n'
-                                '--- Details of the Exception. ---\n\n%s\n\n '
-                                '--- Exception Traceback ---\n%s\n'
-                                '--- System information ---\n%s\n'
-                                '--- Library Versions ---\n%s\n')
         filename = QtWidgets.QFileDialog.getSaveFileName(
             self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
@@ -152,7 +151,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         if filename:
             filename = str(filename).replace('/', os.path.sep)
             Settings().setValue(self.settings_section + '/last directory', os.path.dirname(filename))
-            report_text = report_text % self._create_report()
+            report_text = self.report_text % self._create_report()
             try:
                 report_file = open(filename, 'w')
                 try:
@@ -172,14 +171,6 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         Opening systems default email client and inserting exception log and system information.
         """
-        body = translate('OpenLP.ExceptionForm',
-                         '*OpenLP Bug Report*\n'
-                         'Version: %s\n\n'
-                         '--- Details of the Exception. ---\n\n%s\n\n '
-                         '--- Exception Traceback ---\n%s\n'
-                         '--- System information ---\n%s\n'
-                         '--- Library Versions ---\n%s\n',
-                         'Please add the information that bug reports are favoured written in English.')
         content = self._create_report()
         source = ''
         exception = ''
@@ -191,7 +182,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         subject = 'Bug report: %s in %s' % (exception, source)
         mail_to_url = QtCore.QUrlQuery('mailto:bugs@openlp.org')
         mail_to_url.addQueryItem('subject', subject)
-        mail_to_url.addQueryItem('body', body % content)
+        mail_to_url.addQueryItem('body', self.report_text % content)
         if self.file_attachment:
             mail_to_url.addQueryItem('attach', self.file_attachment)
         QtGui.QDesktopServices.openUrl(mail_to_url)

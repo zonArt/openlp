@@ -277,7 +277,7 @@ class OpenLPWizard(QtWidgets.QWizard, RegistryProperties):
         :param filters: The file extension filters. It should contain the file description
             as well as the file extension. For example::
 
-                'OpenLP 2.0 Databases (*.sqlite)'
+                'OpenLP 2 Databases (*.sqlite)'
         """
         if filters:
             filters += ';;'

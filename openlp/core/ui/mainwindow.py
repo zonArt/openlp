@@ -1096,13 +1096,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
                 event.ignore()
         else:
             if Settings().value('advanced/enable exit confirmation'):
-                ret = QtWidgets.QMessageBox.question(self, translate('OpenLP.MainWindow', 'Close OpenLP'),
-                                                     translate('OpenLP.MainWindow', 'Are you sure you want to close '
-                                                                                    'OpenLP?'),
-                                                     QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
-                                                                                           QtWidgets.QMessageBox.No),
-                                                     QtWidgets.QMessageBox.Yes)
-                if ret == QtWidgets.QMessageBox.Yes:
+                msg_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question,
+                                                translate('OpenLP.MainWindow', 'Exit OpenLP'),
+                                                translate('OpenLP.MainWindow', 'Are you sure you want to exit OpenLP?'),
+                                                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Close |
+                                                                                      QtWidgets.QMessageBox.Cancel),
+                                                self)
+                msg_box.setButtonText(QtWidgets.QMessageBox.Close, translate('OpenLP.MainWindow', '&Exit OpenLP'))
+                msg_box.setDefaultButton(QtWidgets.QMessageBox.Close)
+                if msg_box.exec() == QtWidgets.QMessageBox.Close:
                     self.clean_up()
                     event.accept()
                 else:

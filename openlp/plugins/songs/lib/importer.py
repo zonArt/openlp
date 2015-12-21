@@ -187,14 +187,14 @@ class SongFormat(object):
             'name': 'OpenLyrics',
             'prefix': 'openLyrics',
             'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
-            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2.0 Exported Song')
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2 Exported Song')
         },
         OpenLP2: {
             'class': OpenLPSongImport,
             'name': UiStrings().OLPV2,
             'prefix': 'openLP2',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.sqlite)' % (translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0 Databases'))
+            'filter': '%s (*.sqlite)' % (translate('SongsPlugin.ImportWizardForm', 'OpenLP 2 Databases'))
         },
         Generic: {
             'name': translate('SongsPlugin.ImportWizardForm', 'Generic Document/Presentation'),

@@ -166,5 +166,6 @@ class FormattingTagController(object):
             return None, end
         if end and end != end_html:
             return translate('OpenLP.FormattingTagForm',
-                             'End tag %s does not match end tag for start tag %s') % (end, start_html), None
+                             'End tag %(end)s does not match end tag for start tag %(start)s') % \
+                {'end': end, 'start': start_html}, None
         return None, None
