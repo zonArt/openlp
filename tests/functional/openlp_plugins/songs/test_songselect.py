@@ -28,6 +28,7 @@ from urllib.error import URLError
 
 from PyQt4 import QtGui
 
+from tests.helpers.songfileimport import SongImportTestHelper
 from openlp.core import Registry
 from openlp.plugins.songs.forms.songselectform import SongSelectForm, SearchWorker
 from openlp.plugins.songs.lib import Song
@@ -36,6 +37,9 @@ from openlp.plugins.songs.lib.importers.cclifile import CCLIFileImport
 
 from tests.functional import MagicMock, patch, call
 from tests.helpers.testmixin import TestMixin
+
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'songselect'))
 
 
 class TestSongSelectImport(TestCase, TestMixin):
@@ -645,68 +649,21 @@ class TestSongSelectForm(TestCase, TestMixin):
         mocked_view_button.setEnabled.assert_called_with(True)
 
 
-class TestSongSelectFileImport(TestCase, TestMixin):
-    """
-    Test SongSelect file import
-    """
-    def setUp(self):
-        """
-        Initial setups
-        """
-        Registry.create()
-        test_song_name = 'TestSong'
-        self.file_name = os.path.join('tests', 'resources', 'songselect', test_song_name)
-        self.title = 'Test Song'
-        self.ccli_number = '0000000'
-        self.authors = ['Author One', 'Author Two']
-        self.topics = ['Adoration', 'Praise']
+class TestSongSelectFileImport(SongImportTestHelper):
 
-    def songselect_import_bin_file_test(self):
-        """
-        Verify import SongSelect BIN file parses file properly
-        """
-        # GIVEN: Text file to import and mocks
-        copyright_bin = '2011 OpenLP Programmer One (Admin. by OpenLP One) | ' \
-                        'Openlp Programmer Two (Admin. by OpenLP Two)'
-        verses_bin = [
-            ['v1', 'Line One Verse One\nLine Two Verse One\nLine Three Verse One\nLine Four Verse One', None],
-            ['v2', 'Line One Verse Two\nLine Two Verse Two\nLine Three Verse Two\nLine Four Verse Two', None]
-        ]
-        song_import = CCLIFileImport(manager=None, filename=['{}.bin'.format(self.file_name)])
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'CCLIFileImport'
+        self.importer_module_name = 'cclifile'
+        super(TestSongSelectFileImport, self).__init__(*args, **kwargs)
 
-        with patch.object(song_import, 'import_wizard'), patch.object(song_import, 'finish'):
-            # WHEN: We call the song importer
-            song_import.do_import()
-            # THEN: Song values should be equal to test values in setUp
-            self.assertEquals(song_import.title, self.title, 'Song title should match')
-            self.assertEquals(song_import.ccli_number, self.ccli_number, 'CCLI Song Number should match')
-            self.assertEquals(song_import.authors, self.authors, 'Author(s) should match')
-            self.assertEquals(song_import.copyright, copyright_bin, 'Copyright should match')
-            self.assertEquals(song_import.topics, self.topics, 'Theme(s) should match')
-            self.assertEquals(song_import.verses, verses_bin, 'Verses should match with test verses')
-
-    def songselect_import_text_file_test(self):
+    def test_song_import(self):
         """
-        Verify import SongSelect TEXT file parses file properly
+        Test that loading an OpenSong file works correctly on various files
         """
-        # GIVEN: Text file to import and mocks
-        copyright_txt = '© 2011 OpenLP Programmer One (Admin. by OpenLP One)'
-        verses_txt = [
-            ['v1', 'Line One Verse One\r\nLine Two Verse One\r\nLine Three Verse One\r\nLine Four Verse One', None],
-            ['v2', 'Line One Verse Two\r\nLine Two Verse Two\r\nLine Three Verse Two\r\nLine Four Verse Two', None]
-        ]
-        song_import = CCLIFileImport(manager=None, filename=['{}.txt'.format(self.file_name)])
-
-        with patch.object(song_import, 'import_wizard'), patch.object(song_import, 'finish'):
-            # WHEN: We call the song importer
-            song_import.do_import()
-
-            # THEN: Song values should be equal to test values in setUp
-            self.assertEquals(song_import.title, self.title, 'Song title should match')
-            self.assertEquals(song_import.ccli_number, self.ccli_number, 'CCLI Song Number should match')
-            self.assertEquals(song_import.authors, self.authors, 'Author(s) should match')
-            self.assertEquals(song_import.copyright, copyright_txt, 'Copyright should match')
-            self.assertEquals(song_import.verses, verses_txt, 'Verses should match with test verses')
+        self.file_import([os.path.join(TEST_PATH, 'TestSong.bin')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'TestSong-bin.json')))
+        self.file_import([os.path.join(TEST_PATH, 'TestSong.txt')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'TestSong-txt.json')))
 
 
 class TestSearchWorker(TestCase, TestMixin):
