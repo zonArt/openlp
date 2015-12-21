@@ -22,7 +22,7 @@
 """
 Package to test the openlp.core.ui.slidecontroller package.
 """
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 from unittest import TestCase
 from openlp.core import Registry
@@ -695,7 +695,7 @@ class TestInfoLabel(TestCase):
         font = QtGui.QFont()
         metrics = QtGui.QFontMetrics(font)
 
-        with patch('openlp.core.ui.slidecontroller.QtGui.QLabel'), \
+        with patch('openlp.core.ui.slidecontroller.QtWidgets.QLabel'), \
                 patch('openlp.core.ui.slidecontroller.QtGui.QPainter') as mocked_qpainter:
 
             # GIVEN: An instance of InfoLabel, with mocked text return, width and rect methods
@@ -723,7 +723,7 @@ class TestInfoLabel(TestCase):
         font = QtGui.QFont()
         metrics = QtGui.QFontMetrics(font)
 
-        with patch('openlp.core.ui.slidecontroller.QtGui.QLabel'), \
+        with patch('openlp.core.ui.slidecontroller.QtWidgets.QLabel'), \
                 patch('openlp.core.ui.slidecontroller.QtGui.QPainter') as mocked_qpainter:
 
             # GIVEN: An instance of InfoLabel, with mocked text return, width and rect methods

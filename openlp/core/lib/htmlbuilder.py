@@ -389,7 +389,7 @@ is the function which has to be called from outside. The generated and returned 
 """
 import logging
 
-from PyQt4 import QtWebKit
+from PyQt5 import QtWebKit
 
 from openlp.core.common import Settings
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, VerticalType, HorizontalType

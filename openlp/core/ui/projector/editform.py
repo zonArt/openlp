@@ -29,9 +29,9 @@ import logging
 log = logging.getLogger(__name__)
 log.debug('editform loaded')
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import pyqtSlot, pyqtSignal
-from PyQt4.QtGui import QDialog, QPlainTextEdit, QLineEdit, QDialogButtonBox, QLabel, QGridLayout
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtWidgets import QDialog, QPlainTextEdit, QLineEdit, QDialogButtonBox, QLabel, QGridLayout
 
 from openlp.core.common import translate, verify_ip_address
 from openlp.core.lib import build_icon
@@ -151,7 +151,7 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
         self.button_box.helpRequested.connect(self.help_me)
         self.button_box.rejected.connect(self.cancel_me)
 
-    def exec_(self, projector=None):
+    def exec(self, projector=None):
         if projector is None:
             self.projector = Projector()
             self.new_projector = True
@@ -159,7 +159,7 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
             self.projector = projector
             self.new_projector = False
         self.retranslateUi(self)
-        reply = QDialog.exec_(self)
+        reply = QDialog.exec(self)
         return reply
 
     @pyqtSlot()
@@ -169,22 +169,22 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
         """
         log.debug('accept_me() signal received')
         if len(self.name_text.text().strip()) < 1:
-            QtGui.QMessageBox.warning(self,
-                                      translate('OpenLP.ProjectorEdit', 'Name Not Set'),
-                                      translate('OpenLP.ProjectorEdit',
-                                                'You must enter a name for this entry.<br />'
-                                                'Please enter a new name for this entry.'))
+            QtWidgets.QMessageBox.warning(self,
+                                          translate('OpenLP.ProjectorEdit', 'Name Not Set'),
+                                          translate('OpenLP.ProjectorEdit',
+                                                    'You must enter a name for this entry.<br />'
+                                                    'Please enter a new name for this entry.'))
             valid = False
             return
         name = self.name_text.text().strip()
         record = self.projectordb.get_projector_by_name(name)
         if record is not None and record.id != self.projector.id:
-            QtGui.QMessageBox.warning(self,
-                                      translate('OpenLP.ProjectorEdit', 'Duplicate Name'),
-                                      translate('OpenLP.ProjectorEdit',
-                                                'There is already an entry with name "%s" in '
-                                                'the database as ID "%s". <br />'
-                                                'Please enter a different name.' % (name, record.id)))
+            QtWidgets.QMessageBox.warning(self,
+                                          translate('OpenLP.ProjectorEdit', 'Duplicate Name'),
+                                          translate('OpenLP.ProjectorEdit',
+                                                    'There is already an entry with name "%s" in '
+                                                    'the database as ID "%s". <br />'
+                                                    'Please enter a different name.' % (name, record.id)))
             valid = False
             return
         adx = self.ip_text.text()
@@ -195,31 +195,32 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
                 valid = True
                 self.new_projector = True
             elif ip.id != self.projector.id:
-                QtGui.QMessageBox.warning(self,
-                                          translate('OpenLP.ProjectorWizard', 'Duplicate IP Address'),
-                                          translate('OpenLP.ProjectorWizard',
-                                                    'IP address "%s"<br />is already in the database as ID %s.'
-                                                    '<br /><br />Please Enter a different IP address.' % (adx, ip.id)))
+                QtWidgets.QMessageBox.warning(self,
+                                              translate('OpenLP.ProjectorWizard', 'Duplicate IP Address'),
+                                              translate('OpenLP.ProjectorWizard',
+                                                        'IP address "%s"<br />is already in the database as ID %s.'
+                                                        '<br /><br />Please Enter a different IP address.' %
+                                                        (adx, ip.id)))
                 valid = False
                 return
         else:
-            QtGui.QMessageBox.warning(self,
-                                      translate('OpenLP.ProjectorWizard', 'Invalid IP Address'),
-                                      translate('OpenLP.ProjectorWizard',
-                                                'IP address "%s"<br>is not a valid IP address.'
-                                                '<br /><br />Please enter a valid IP address.' % adx))
+            QtWidgets.QMessageBox.warning(self,
+                                          translate('OpenLP.ProjectorWizard', 'Invalid IP Address'),
+                                          translate('OpenLP.ProjectorWizard',
+                                                    'IP address "%s"<br>is not a valid IP address.'
+                                                    '<br /><br />Please enter a valid IP address.' % adx))
             valid = False
             return
         port = int(self.port_text.text())
         if port < 1000 or port > 32767:
-            QtGui.QMessageBox.warning(self,
-                                      translate('OpenLP.ProjectorWizard', 'Invalid Port Number'),
-                                      translate('OpenLP.ProjectorWizard',
-                                                'Port numbers below 1000 are reserved for admin use only, '
-                                                '<br />and port numbers above 32767 are not currently usable.'
-                                                '<br /><br />Please enter a valid port number between '
-                                                ' 1000 and 32767.'
-                                                '<br /><br />Default PJLink port is %s' % PJLINK_PORT))
+            QtWidgets.QMessageBox.warning(self,
+                                          translate('OpenLP.ProjectorWizard', 'Invalid Port Number'),
+                                          translate('OpenLP.ProjectorWizard',
+                                                    'Port numbers below 1000 are reserved for admin use only, '
+                                                    '<br />and port numbers above 32767 are not currently usable.'
+                                                    '<br /><br />Please enter a valid port number between '
+                                                    ' 1000 and 32767.'
+                                                    '<br /><br />Default PJLink port is %s' % PJLINK_PORT))
             valid = False
         if valid:
             self.projector.ip = self.ip_text.text()
@@ -233,11 +234,11 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
             else:
                 saved = self.projectordb.update_projector(self.projector)
             if not saved:
-                QtGui.QMessageBox.warning(self,
-                                          translate('OpenLP.ProjectorEditForm', 'Database Error'),
-                                          translate('OpenLP.ProjectorEditForm',
-                                                    'There was an error saving projector '
-                                                    'information. See the log for the error'))
+                QtWidgets.QMessageBox.warning(self,
+                                              translate('OpenLP.ProjectorEditForm', 'Database Error'),
+                                              translate('OpenLP.ProjectorEditForm',
+                                                        'There was an error saving projector '
+                                                        'information. See the log for the error'))
                 return saved
             if self.new_projector:
                 self.newProjector.emit(adx)

@@ -36,7 +36,7 @@ except ImportError:
 
 # based on code from http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.lib import translate, FormattingTags
 from openlp.core.lib.ui import create_action
@@ -44,7 +44,7 @@ from openlp.core.lib.ui import create_action
 log = logging.getLogger(__name__)
 
 
-class SpellTextEdit(QtGui.QPlainTextEdit):
+class SpellTextEdit(QtWidgets.QPlainTextEdit):
     """
     Spell checking widget based on QPlanTextEdit.
     """
@@ -73,7 +73,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
             # Rewrite the mouse event to a left button event so the cursor is moved to the location of the pointer.
             event = QtGui.QMouseEvent(QtCore.QEvent.MouseButtonPress,
                                       event.pos(), QtCore.Qt.LeftButton, QtCore.Qt.LeftButton, QtCore.Qt.NoModifier)
-        QtGui.QPlainTextEdit.mousePressEvent(self, event)
+        QtWidgets.QPlainTextEdit.mousePressEvent(self, event)
 
     def contextMenuEvent(self, event):
         """
@@ -88,7 +88,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         self.setTextCursor(cursor)
         # Add menu with available languages.
         if ENCHANT_AVAILABLE:
-            lang_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Language:'))
+            lang_menu = QtWidgets.QMenu(translate('OpenLP.SpellTextEdit', 'Language:'))
             for lang in enchant.list_languages():
                 action = create_action(lang_menu, lang, text=lang, checked=lang == self.dictionary.tag)
                 lang_menu.addAction(action)
@@ -99,7 +99,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
             text = self.textCursor().selectedText()
             if not self.dictionary.check(text):
-                spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Spelling Suggestions'))
+                spell_menu = QtWidgets.QMenu(translate('OpenLP.SpellTextEdit', 'Spelling Suggestions'))
                 for word in self.dictionary.suggest(text):
                     action = SpellAction(word, spell_menu)
                     action.correct.connect(self.correct_word)
@@ -107,7 +107,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 # Only add the spelling suggests to the menu if there are suggestions.
                 if spell_menu.actions():
                     popup_menu.insertMenu(popup_menu.actions()[0], spell_menu)
-        tag_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Formatting Tags'))
+        tag_menu = QtWidgets.QMenu(translate('OpenLP.SpellTextEdit', 'Formatting Tags'))
         if self.formatting_tags_allowed:
             for html in FormattingTags.get_html_tags():
                 action = SpellAction(html['desc'], tag_menu)
@@ -115,7 +115,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 tag_menu.addAction(action)
             popup_menu.insertSeparator(popup_menu.actions()[0])
             popup_menu.insertMenu(popup_menu.actions()[0], tag_menu)
-        popup_menu.exec_(event.globalPos())
+        popup_menu.exec(event.globalPos())
 
     def set_language(self, action):
         """
@@ -189,7 +189,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                 self.setFormat(word_object.start(), word_object.end() - word_object.start(), char_format)
 
 
-class SpellAction(QtGui.QAction):
+class SpellAction(QtWidgets.QAction):
     """
     A special QAction that returns the text in a signal.
     """

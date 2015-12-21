@@ -24,14 +24,14 @@ Provide common toolbar handling for OpenLP
 """
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib.ui import create_widget_action
 
 log = logging.getLogger(__name__)
 
 
-class OpenLPToolbar(QtGui.QToolBar):
+class OpenLPToolbar(QtWidgets.QToolBar):
     """
     Lots of toolbars around the place, so it makes sense to have a common way to manage them. This is the base toolbar
     class.

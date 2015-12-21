@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Settings, translate
 from openlp.core.lib import SettingsTab
@@ -37,23 +37,23 @@ class SongsTab(SettingsTab):
         """
         self.setObjectName('SongsTab')
         super(SongsTab, self).setupUi()
-        self.mode_group_box = QtGui.QGroupBox(self.left_column)
+        self.mode_group_box = QtWidgets.QGroupBox(self.left_column)
         self.mode_group_box.setObjectName('mode_group_box')
-        self.mode_layout = QtGui.QVBoxLayout(self.mode_group_box)
+        self.mode_layout = QtWidgets.QVBoxLayout(self.mode_group_box)
         self.mode_layout.setObjectName('mode_layout')
-        self.tool_bar_active_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.tool_bar_active_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.tool_bar_active_check_box.setObjectName('tool_bar_active_check_box')
         self.mode_layout.addWidget(self.tool_bar_active_check_box)
-        self.update_on_edit_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.update_on_edit_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.update_on_edit_check_box.setObjectName('update_on_edit_check_box')
         self.mode_layout.addWidget(self.update_on_edit_check_box)
-        self.add_from_service_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.add_from_service_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.add_from_service_check_box.setObjectName('add_from_service_check_box')
         self.mode_layout.addWidget(self.add_from_service_check_box)
-        self.display_songbook_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.display_songbook_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.display_songbook_check_box.setObjectName('songbook_check_box')
         self.mode_layout.addWidget(self.display_songbook_check_box)
-        self.display_copyright_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.display_copyright_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.display_copyright_check_box.setObjectName('copyright_check_box')
         self.mode_layout.addWidget(self.display_copyright_check_box)
         self.left_layout.addWidget(self.mode_group_box)

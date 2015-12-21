@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.lib import SettingsTab
@@ -37,14 +37,14 @@ class MediaTab(SettingsTab):
     def setupUi(self):
         self.setObjectName('MediaTab')
         super(MediaTab, self).setupUi()
-        self.advanced_group_box = QtGui.QGroupBox(self.left_column)
+        self.advanced_group_box = QtWidgets.QGroupBox(self.left_column)
         self.advanced_group_box.setObjectName('advanced_group_box')
-        self.advanced_layout = QtGui.QVBoxLayout(self.advanced_group_box)
+        self.advanced_layout = QtWidgets.QVBoxLayout(self.advanced_group_box)
         self.advanced_layout.setObjectName('advanced_layout')
-        self.override_player_check_box = QtGui.QCheckBox(self.advanced_group_box)
+        self.override_player_check_box = QtWidgets.QCheckBox(self.advanced_group_box)
         self.override_player_check_box.setObjectName('override_player_check_box')
         self.advanced_layout.addWidget(self.override_player_check_box)
-        self.auto_start_check_box = QtGui.QCheckBox(self.advanced_group_box)
+        self.auto_start_check_box = QtWidgets.QCheckBox(self.advanced_group_box)
         self.auto_start_check_box.setObjectName('auto_start_check_box')
         self.advanced_layout.addWidget(self.auto_start_check_box)
         self.left_layout.addWidget(self.advanced_group_box)

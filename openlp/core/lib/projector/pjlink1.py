@@ -46,8 +46,8 @@ __all__ = ['PJLink1']
 
 from codecs import decode
 
-from PyQt4.QtCore import pyqtSignal, pyqtSlot
-from PyQt4.QtNetwork import QAbstractSocket, QTcpSocket
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5.QtNetwork import QAbstractSocket, QTcpSocket
 
 from openlp.core.common import translate, qmd5_hash
 from openlp.core.lib.projector.constants import *

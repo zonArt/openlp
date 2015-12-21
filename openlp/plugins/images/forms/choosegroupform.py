@@ -20,12 +20,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.plugins.images.forms.choosegroupdialog import Ui_ChooseGroupDialog
 
 
-class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
+class ChooseGroupForm(QtWidgets.QDialog, Ui_ChooseGroupDialog):
     """
     This class implements the 'Choose group' form for the Images plugin.
     """
@@ -36,7 +36,7 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
         super(ChooseGroupForm, self).__init__(parent)
         self.setupUi(self)
 
-    def exec_(self, selected_group=None):
+    def exec(self, selected_group=None):
         """
         Show the form
 
@@ -47,4 +47,4 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
             for index in range(self.group_combobox.count()):
                 if self.group_combobox.itemData(index) == selected_group:
                     self.group_combobox.setCurrentIndex(index)
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)

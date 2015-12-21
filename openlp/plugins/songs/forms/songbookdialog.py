@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
@@ -37,19 +37,19 @@ class Ui_SongBookDialog(object):
         song_book_dialog.setObjectName('song_book_dialog')
         song_book_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         song_book_dialog.resize(300, 10)
-        self.dialog_layout = QtGui.QVBoxLayout(song_book_dialog)
+        self.dialog_layout = QtWidgets.QVBoxLayout(song_book_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
-        self.book_layout = QtGui.QFormLayout()
+        self.book_layout = QtWidgets.QFormLayout()
         self.book_layout.setObjectName('book_layout')
-        self.name_label = QtGui.QLabel(song_book_dialog)
+        self.name_label = QtWidgets.QLabel(song_book_dialog)
         self.name_label.setObjectName('name_label')
-        self.name_edit = QtGui.QLineEdit(song_book_dialog)
+        self.name_edit = QtWidgets.QLineEdit(song_book_dialog)
         self.name_edit.setObjectName('name_edit')
         self.name_label.setBuddy(self.name_edit)
         self.book_layout.addRow(self.name_label, self.name_edit)
-        self.publisher_label = QtGui.QLabel(song_book_dialog)
+        self.publisher_label = QtWidgets.QLabel(song_book_dialog)
         self.publisher_label.setObjectName('publisher_label')
-        self.publisher_edit = QtGui.QLineEdit(song_book_dialog)
+        self.publisher_edit = QtWidgets.QLineEdit(song_book_dialog)
         self.publisher_edit.setObjectName('publisher_edit')
         self.publisher_label.setBuddy(self.publisher_edit)
         self.book_layout.addRow(self.publisher_label, self.publisher_edit)

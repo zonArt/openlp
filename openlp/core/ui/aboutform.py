@@ -24,14 +24,14 @@ The About dialog.
 """
 import webbrowser
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import translate
 from openlp.core.utils import get_application_version
 from .aboutdialog import UiAboutDialog
 
 
-class AboutForm(QtGui.QDialog, UiAboutDialog):
+class AboutForm(QtWidgets.QDialog, UiAboutDialog):
     """
     The About dialog
     """

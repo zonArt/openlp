@@ -24,7 +24,7 @@ This module contains tests for the editverseform of the Songs plugin.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, Settings
 from openlp.core.lib import ServiceItem

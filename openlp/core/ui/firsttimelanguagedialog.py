@@ -22,7 +22,7 @@
 """
 The UI widgets of the language selection dialog.
 """
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import translate
 from openlp.core.lib import build_icon
@@ -40,20 +40,20 @@ class Ui_FirstTimeLanguageDialog(object):
         language_dialog.setObjectName('language_dialog')
         language_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         language_dialog.resize(300, 50)
-        self.dialog_layout = QtGui.QVBoxLayout(language_dialog)
+        self.dialog_layout = QtWidgets.QVBoxLayout(language_dialog)
         self.dialog_layout.setContentsMargins(8, 8, 8, 8)
         self.dialog_layout.setSpacing(8)
         self.dialog_layout.setObjectName('dialog_layout')
-        self.info_label = QtGui.QLabel(language_dialog)
+        self.info_label = QtWidgets.QLabel(language_dialog)
         self.info_label.setObjectName('info_label')
         self.dialog_layout.addWidget(self.info_label)
-        self.language_layout = QtGui.QHBoxLayout()
+        self.language_layout = QtWidgets.QHBoxLayout()
         self.language_layout.setObjectName('language_layout')
-        self.language_label = QtGui.QLabel(language_dialog)
+        self.language_label = QtWidgets.QLabel(language_dialog)
         self.language_label.setObjectName('language_label')
         self.language_layout.addWidget(self.language_label)
-        self.language_combo_box = QtGui.QComboBox(language_dialog)
-        self.language_combo_box.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
+        self.language_combo_box = QtWidgets.QComboBox(language_dialog)
+        self.language_combo_box.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToContents)
         self.language_combo_box.setObjectName("language_combo_box")
         self.language_layout.addWidget(self.language_combo_box)
         self.dialog_layout.addLayout(self.language_layout)

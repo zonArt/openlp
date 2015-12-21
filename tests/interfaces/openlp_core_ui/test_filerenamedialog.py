@@ -24,7 +24,7 @@
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui, QtTest
+from PyQt5 import QtTest, QtWidgets
 
 from openlp.core.common import Registry
 from openlp.core.ui import filerenameform
@@ -40,7 +40,7 @@ class TestStartFileRenameForm(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
         self.form = filerenameform.FileRenameForm()
 
@@ -55,23 +55,23 @@ class TestStartFileRenameForm(TestCase, TestMixin):
         """
         Test the windowTitle of the FileRenameDialog
         """
-        # GIVEN: A mocked QDialog.exec_() method
-        with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+        # GIVEN: A mocked QDialog.exec() method
+        with patch('PyQt5.QtWidgets.QDialog.exec') as mocked_exec:
 
             # WHEN: The form is executed with no args
-            self.form.exec_()
+            self.form.exec()
 
             # THEN: the window title is set correctly
             self.assertEqual(self.form.windowTitle(), 'File Rename', 'The window title should be "File Rename"')
 
             # WHEN: The form is executed with False arg
-            self.form.exec_(False)
+            self.form.exec(False)
 
             # THEN: the window title is set correctly
             self.assertEqual(self.form.windowTitle(), 'File Rename', 'The window title should be "File Rename"')
 
             # WHEN: The form is executed with True arg
-            self.form.exec_(True)
+            self.form.exec(True)
 
             # THEN: the window title is set correctly
             self.assertEqual(self.form.windowTitle(), 'File Copy', 'The window title should be "File Copy"')
@@ -81,13 +81,13 @@ class TestStartFileRenameForm(TestCase, TestMixin):
         Regression test for bug1067251
         Test that the file_name_edit setFocus has called with True when executed
         """
-        # GIVEN: A mocked QDialog.exec_() method and mocked file_name_edit.setFocus() method.
-        with patch('PyQt4.QtGui.QDialog.exec_'):
+        # GIVEN: A mocked QDialog.exec() method and mocked file_name_edit.setFocus() method.
+        with patch('PyQt5.QtWidgets.QDialog.exec'):
             mocked_set_focus = MagicMock()
             self.form.file_name_edit.setFocus = mocked_set_focus
 
             # WHEN: The form is executed
-            self.form.exec_()
+            self.form.exec()
 
             # THEN: the setFocus method of the file_name_edit has been called with True
             mocked_set_focus.assert_called_with()

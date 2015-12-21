@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import UiStrings, translate
 from openlp.core.lib import build_icon
@@ -40,37 +40,37 @@ class UiAboutDialog(object):
         """
         about_dialog.setObjectName('about_dialog')
         about_dialog.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
-        self.about_dialog_layout = QtGui.QVBoxLayout(about_dialog)
+        self.about_dialog_layout = QtWidgets.QVBoxLayout(about_dialog)
         self.about_dialog_layout.setObjectName('about_dialog_layout')
-        self.logo_label = QtGui.QLabel(about_dialog)
+        self.logo_label = QtWidgets.QLabel(about_dialog)
         self.logo_label.setPixmap(QtGui.QPixmap(':/graphics/openlp-about-logo.png'))
         self.logo_label.setObjectName('logo_label')
         self.about_dialog_layout.addWidget(self.logo_label)
-        self.about_notebook = QtGui.QTabWidget(about_dialog)
+        self.about_notebook = QtWidgets.QTabWidget(about_dialog)
         self.about_notebook.setObjectName('about_notebook')
-        self.about_tab = QtGui.QWidget()
+        self.about_tab = QtWidgets.QWidget()
         self.about_tab.setObjectName('about_tab')
-        self.about_tab_layout = QtGui.QVBoxLayout(self.about_tab)
+        self.about_tab_layout = QtWidgets.QVBoxLayout(self.about_tab)
         self.about_tab_layout.setObjectName('about_tab_layout')
-        self.about_text_edit = QtGui.QPlainTextEdit(self.about_tab)
+        self.about_text_edit = QtWidgets.QPlainTextEdit(self.about_tab)
         self.about_text_edit.setReadOnly(True)
         self.about_text_edit.setObjectName('about_text_edit')
         self.about_tab_layout.addWidget(self.about_text_edit)
         self.about_notebook.addTab(self.about_tab, '')
-        self.credits_tab = QtGui.QWidget()
+        self.credits_tab = QtWidgets.QWidget()
         self.credits_tab.setObjectName('credits_tab')
-        self.credits_tab_layout = QtGui.QVBoxLayout(self.credits_tab)
+        self.credits_tab_layout = QtWidgets.QVBoxLayout(self.credits_tab)
         self.credits_tab_layout.setObjectName('credits_tab_layout')
-        self.credits_text_edit = QtGui.QPlainTextEdit(self.credits_tab)
+        self.credits_text_edit = QtWidgets.QPlainTextEdit(self.credits_tab)
         self.credits_text_edit.setReadOnly(True)
         self.credits_text_edit.setObjectName('credits_text_edit')
         self.credits_tab_layout.addWidget(self.credits_text_edit)
         self.about_notebook.addTab(self.credits_tab, '')
-        self.license_tab = QtGui.QWidget()
+        self.license_tab = QtWidgets.QWidget()
         self.license_tab.setObjectName('license_tab')
-        self.license_tab_layout = QtGui.QVBoxLayout(self.license_tab)
+        self.license_tab_layout = QtWidgets.QVBoxLayout(self.license_tab)
         self.license_tab_layout.setObjectName('license_tab_layout')
-        self.license_text_edit = QtGui.QPlainTextEdit(self.license_tab)
+        self.license_text_edit = QtWidgets.QPlainTextEdit(self.license_tab)
         self.license_text_edit.setReadOnly(True)
         self.license_text_edit.setObjectName('license_text_edit')
         self.license_tab_layout.addWidget(self.license_text_edit)
@@ -185,8 +185,8 @@ class UiAboutDialog(object):
         documentation = translate('OpenLP.AboutForm', 'Documentation')
         built_with = translate('OpenLP.AboutForm', 'Built With\n'
                                '    Python: http://www.python.org/\n'
-                               '    Qt4: http://qt.io\n'
-                               '    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro\n'
+                               '    Qt5: http://qt.io\n'
+                               '    PyQt5: http://www.riverbankcomputing.co.uk/software/pyqt/intro\n'
                                '    Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/\n'
                                '    MuPDF: http://www.mupdf.com/\n')
         final_credit = translate('OpenLP.AboutForm', 'Final Credit\n'

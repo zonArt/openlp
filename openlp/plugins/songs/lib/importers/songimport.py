@@ -25,7 +25,7 @@ import re
 import shutil
 import os
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry, AppLocation, check_directory_exists, translate
 from openlp.core.ui.wizard import WizardStrings
