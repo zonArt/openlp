@@ -27,7 +27,7 @@ import logging
 import os
 import re
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import AppLocation
 from openlp.core.lib import translate
@@ -320,7 +320,7 @@ def retrieve_windows_encoding(recommendation=None):
                 recommended_index = index
                 break
     if recommended_index > -1:
-        choice = QtGui.QInputDialog.getItem(
+        choice = QtWidgets.QInputDialog.getItem(
             None,
             translate('SongsPlugin', 'Character Encoding'),
             translate('SongsPlugin', 'The codepage setting is responsible\n'
@@ -328,7 +328,7 @@ def retrieve_windows_encoding(recommendation=None):
                                      'Usually you are fine with the preselected choice.'),
             [pair[1] for pair in encodings], recommended_index, False)
     else:
-        choice = QtGui.QInputDialog.getItem(
+        choice = QtWidgets.QInputDialog.getItem(
             None,
             translate('SongsPlugin', 'Character Encoding'),
             translate('SongsPlugin', 'Please choose the character encoding.\n'

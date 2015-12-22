@@ -32,13 +32,7 @@ Some of the code for this form is based on the examples at:
 import html
 import logging
 
-from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
-
-PHONON_AVAILABLE = True
-try:
-    from PyQt4.phonon import Phonon
-except ImportError:
-    PHONON_AVAILABLE = False
+from PyQt5 import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets, QtOpenGL, QtGui, QtMultimedia
 
 from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx
 from openlp.core.lib import ServiceItem, ImageSource, ScreenList, build_html, expand_tags, image_to_byte
@@ -68,7 +62,7 @@ QGraphicsView {
 """
 
 
-class Display(QtGui.QGraphicsView):
+class Display(QtWidgets.QGraphicsView):
     """
     This is a general display screen class. Here the general display settings will done. It will be used as
     specialized classes by Main Display and Preview display.
@@ -97,7 +91,7 @@ class Display(QtGui.QGraphicsView):
         Set up and build the screen base
         """
         self.setGeometry(self.screen['size'])
-        self.web_view = QtWebKit.QWebView(self)
+        self.web_view = QtWebKitWidgets.QWebView(self)
         self.web_view.setGeometry(0, 0, self.screen['size'].width(), self.screen['size'].height())
         self.web_view.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
         palette = self.web_view.palette()
@@ -144,7 +138,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         self.override = {}
         self.retranslateUi()
         self.media_object = None
-        if self.is_live and PHONON_AVAILABLE:
+        if self.is_live:
             self.audio_player = AudioPlayer(self)
         else:
             self.audio_player = None
@@ -397,7 +391,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
-        return QtGui.QPixmap.grabWidget(self)
+        return self.grab()
 
     def build_html(self, service_item, image_path=''):
         """
@@ -511,6 +505,7 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
     """
     This Class will play audio only allowing components to work with a soundtrack independent of the user interface.
     """
+    position_changed = QtCore.pyqtSignal(int)
 
     def __init__(self, parent):
         """
@@ -519,78 +514,66 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         :param parent:  The parent widget.
         """
         super(AudioPlayer, self).__init__(parent)
-        self.current_index = -1
-        self.playlist = []
-        self.repeat = False
-        self.media_object = Phonon.MediaObject()
-        self.media_object.setTickInterval(100)
-        self.audio_object = Phonon.AudioOutput(Phonon.VideoCategory)
-        Phonon.createPath(self.media_object, self.audio_object)
-        self.media_object.aboutToFinish.connect(self.on_about_to_finish)
-        self.media_object.finished.connect(self.on_finished)
+        self.player = QtMultimedia.QMediaPlayer()
+        self.playlist = QtMultimedia.QMediaPlaylist(self.player)
+        self.volume_slider = None
+        self.player.positionChanged.connect(self._on_position_changed)
 
     def __del__(self):
         """
         Shutting down so clean up connections
         """
         self.stop()
-        for path in self.media_object.outputPaths():
-            path.disconnect()
 
-    def on_about_to_finish(self):
+    def _on_position_changed(self, position):
         """
-        Just before the audio player finishes the current track, queue the next
-        item in the playlist, if there is one.
+        Emit a signal when the position of the media player updates
         """
-        self.current_index += 1
-        if len(self.playlist) > self.current_index:
-            self.media_object.enqueue(self.playlist[self.current_index])
+        self.position_changed.emit(position)
 
-    def on_finished(self):
+    def set_volume_slider(self, slider):
         """
-        When the audio track finishes.
+        Connect the volume slider to the media player
+        :param slider:
         """
-        if self.repeat:
-            self.log_debug('Repeat is enabled... here we go again!')
-            self.media_object.clearQueue()
-            self.media_object.clear()
-            self.current_index = -1
-            self.play()
+        self.volume_slider = slider
+        self.volume_slider.setMinimum(0)
+        self.volume_slider.setMaximum(100)
+        self.volume_slider.setValue(self.player.volume())
+        self.volume_slider.valueChanged.connect(self.set_volume)
 
-    def connectVolumeSlider(self, slider):
+    def set_volume(self, volume):
         """
-        Connect the volume slider to the output channel.
+        Set the volume of the media player
+
+        :param volume:
         """
-        slider.setAudioOutput(self.audio_object)
+        self.player.setVolume(volume)
 
     def reset(self):
         """
         Reset the audio player, clearing the playlist and the queue.
         """
-        self.current_index = -1
-        self.playlist = []
         self.stop()
-        self.media_object.clear()
+        self.playlist.clear()
 
     def play(self):
         """
         We want to play the file so start it
         """
-        if self.current_index == -1:
-            self.on_about_to_finish()
-        self.media_object.play()
+        self.player.play()
 
     def pause(self):
         """
         Pause the Audio
         """
-        self.media_object.pause()
+        self.player.pause()
 
     def stop(self):
         """
         Stop the Audio and clean up
         """
-        self.media_object.stop()
+        self.player.stop()
 
     def add_to_playlist(self, file_names):
         """
@@ -600,23 +583,14 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         """
         if not isinstance(file_names, list):
             file_names = [file_names]
-        self.playlist.extend(list(map(Phonon.MediaSource, file_names)))
+        for file_name in file_names:
+            self.playlist.addMedia(QtCore.QUrl(file_name))
 
     def next(self):
         """
         Skip forward to the next track in the list
         """
-        if not self.repeat and self.current_index + 1 >= len(self.playlist):
-            return
-        is_playing = self.media_object.state() == Phonon.PlayingState
-        self.current_index += 1
-        if self.repeat and self.current_index == len(self.playlist):
-            self.current_index = 0
-        self.media_object.clearQueue()
-        self.media_object.clear()
-        self.media_object.enqueue(self.playlist[self.current_index])
-        if is_playing:
-            self.media_object.play()
+        self.player.next()
 
     def go_to(self, index):
         """
@@ -624,19 +598,6 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
 
         :param index: The track to go to
         """
-        is_playing = self.media_object.state() == Phonon.PlayingState
-        self.media_object.clearQueue()
-        self.media_object.clear()
-        self.current_index = index
-        self.media_object.enqueue(self.playlist[self.current_index])
-        if is_playing:
-            self.media_object.play()
-
-    def connectSlot(self, signal, slot):
-        """
-        Connect a slot to a signal on the media object.  Used by slidecontroller to connect to audio object.
-
-        :param slot: The slot the signal is attached to.
-        :param signal: The signal to be fired
-        """
-        QtCore.QObject.connect(self.media_object, signal, slot)
+        self.playlist.setCurrentIndex(index)
+        if self.player.state() == QtMultimedia.QMediaPlayer.PlayingState:
+            self.player.play()

@@ -26,7 +26,7 @@ import re
 from time import sleep
 from datetime import datetime
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import translate, is_win, is_linux, is_macosx, RegistryProperties
 from openlp.plugins.media.forms.mediaclipselectordialog import Ui_MediaClipSelector
@@ -52,7 +52,7 @@ except OSError as e:
 log = logging.getLogger(__name__)
 
 
-class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryProperties):
+class MediaClipSelectorForm(QtWidgets.QDialog, Ui_MediaClipSelector, RegistryProperties):
     """
     Class to manage the clip selection
     """
@@ -96,15 +96,15 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         if self.vlc_media:
             self.vlc_media.release()
             self.vlc_media = None
-        return QtGui.QDialog.reject(self)
+        return QtWidgets.QDialog.reject(self)
 
-    def exec_(self):
+    def exec(self):
         """
         Start dialog
         """
         self.reset_ui()
         self.setup_vlc()
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def reset_ui(self):
         """
@@ -138,7 +138,7 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
         if is_win():
             self.vlc_media_player.set_hwnd(win_id)
         elif is_macosx():
-            # We have to use 'set_nsobject' since Qt4 on OSX uses Cocoa
+            # We have to use 'set_nsobject' since Qt5 on OSX uses Cocoa
             # framework and not the old Carbon.
             self.vlc_media_player.set_nsobject(win_id)
         else:
@@ -585,11 +585,11 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector, RegistryPropert
             optical = 'optical:%d:%d:%d:%d:%d:' % (title, audio_track, subtitle_track, start_time_ms, end_time_ms)
         # Ask for an alternative name for the mediaclip
         while True:
-            new_optical_name, ok = QtGui.QInputDialog.getText(self, translate('MediaPlugin.MediaClipSelectorForm',
-                                                                              'Set name of mediaclip'),
-                                                              translate('MediaPlugin.MediaClipSelectorForm',
-                                                                        'Name of mediaclip:'),
-                                                              QtGui.QLineEdit.Normal)
+            new_optical_name, ok = QtWidgets.QInputDialog.getText(self, translate('MediaPlugin.MediaClipSelectorForm',
+                                                                                  'Set name of mediaclip'),
+                                                                  translate('MediaPlugin.MediaClipSelectorForm',
+                                                                            'Name of mediaclip:'),
+                                                                  QtWidgets.QLineEdit.Normal)
             # User pressed cancel, don't save the clip
             if not ok:
                 return

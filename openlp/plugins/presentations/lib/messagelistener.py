@@ -24,7 +24,7 @@ import logging
 import copy
 import os
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry
 from openlp.core.ui import HideMode

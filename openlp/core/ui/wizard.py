@@ -25,7 +25,7 @@ The :mod:``wizard`` module provides generic wizard tools for OpenLP.
 import logging
 import os
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate, is_macosx
 from openlp.core.lib import build_icon
@@ -67,7 +67,7 @@ class WizardStrings(object):
                                  'A song format e.g. PowerSong')
 
 
-class OpenLPWizard(QtGui.QWizard, RegistryProperties):
+class OpenLPWizard(QtWidgets.QWizard, RegistryProperties):
     """
     Generic OpenLP wizard to provide generic functionality and a unified look
     and feel.
@@ -98,8 +98,8 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         self.setObjectName(name)
         self.open_icon = build_icon(':/general/general_open.png')
         self.delete_icon = build_icon(':/general/general_delete.png')
-        self.finish_button = self.button(QtGui.QWizard.FinishButton)
-        self.cancel_button = self.button(QtGui.QWizard.CancelButton)
+        self.finish_button = self.button(QtWidgets.QWizard.FinishButton)
+        self.cancel_button = self.button(QtWidgets.QWizard.CancelButton)
         self.setupUi(image)
         self.register_fields()
         self.custom_init()
@@ -115,12 +115,12 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         """
         self.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         self.setModal(True)
-        self.setOptions(QtGui.QWizard.IndependentPages |
-                        QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
+        self.setOptions(QtWidgets.QWizard.IndependentPages |
+                        QtWidgets.QWizard.NoBackButtonOnStartPage | QtWidgets.QWizard.NoBackButtonOnLastPage)
         if is_macosx():
-            self.setPixmap(QtGui.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
+            self.setPixmap(QtWidgets.QWizard.BackgroundPixmap, QtGui.QPixmap(':/wizards/openlp-osx-wizard.png'))
         else:
-            self.setWizardStyle(QtGui.QWizard.ModernStyle)
+            self.setWizardStyle(QtWidgets.QWizard.ModernStyle)
         add_welcome_page(self, image)
         self.add_custom_pages()
         if self.with_progress_page:
@@ -156,35 +156,35 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         Add the progress page for the wizard. This page informs the user how
         the wizard is progressing with its task.
         """
-        self.progress_page = QtGui.QWizardPage()
+        self.progress_page = QtWidgets.QWizardPage()
         self.progress_page.setObjectName('progress_page')
-        self.progress_layout = QtGui.QVBoxLayout(self.progress_page)
-        self.progress_layout.setMargin(48)
+        self.progress_layout = QtWidgets.QVBoxLayout(self.progress_page)
+        self.progress_layout.setContentsMargins(48, 48, 48, 48)
         self.progress_layout.setObjectName('progress_layout')
-        self.progress_label = QtGui.QLabel(self.progress_page)
+        self.progress_label = QtWidgets.QLabel(self.progress_page)
         self.progress_label.setObjectName('progress_label')
         self.progress_label.setWordWrap(True)
         self.progress_layout.addWidget(self.progress_label)
-        self.progress_bar = QtGui.QProgressBar(self.progress_page)
+        self.progress_bar = QtWidgets.QProgressBar(self.progress_page)
         self.progress_bar.setObjectName('progress_bar')
         self.progress_layout.addWidget(self.progress_bar)
         # Add a QTextEdit and a copy to file and copy to clipboard button to be
         # able to provide feedback to the user. Hidden by default.
-        self.error_report_text_edit = QtGui.QTextEdit(self.progress_page)
+        self.error_report_text_edit = QtWidgets.QTextEdit(self.progress_page)
         self.error_report_text_edit.setObjectName('error_report_text_edit')
         self.error_report_text_edit.setHidden(True)
         self.error_report_text_edit.setReadOnly(True)
         self.progress_layout.addWidget(self.error_report_text_edit)
-        self.error_button_layout = QtGui.QHBoxLayout()
+        self.error_button_layout = QtWidgets.QHBoxLayout()
         self.error_button_layout.setObjectName('error_button_layout')
-        spacer = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.error_button_layout.addItem(spacer)
-        self.error_copy_to_button = QtGui.QPushButton(self.progress_page)
+        self.error_copy_to_button = QtWidgets.QPushButton(self.progress_page)
         self.error_copy_to_button.setObjectName('error_copy_to_button')
         self.error_copy_to_button.setHidden(True)
         self.error_copy_to_button.setIcon(build_icon(':/system/system_edit_copy.png'))
         self.error_button_layout.addWidget(self.error_copy_to_button)
-        self.error_save_to_button = QtGui.QPushButton(self.progress_page)
+        self.error_save_to_button = QtWidgets.QPushButton(self.progress_page)
         self.error_save_to_button.setObjectName('error_save_to_button')
         self.error_save_to_button.setHidden(True)
         self.error_save_to_button.setIcon(build_icon(':/general/general_save.png'))
@@ -192,12 +192,12 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         self.progress_layout.addLayout(self.error_button_layout)
         self.addPage(self.progress_page)
 
-    def exec_(self):
+    def exec(self):
         """
         Run the wizard.
         """
         self.set_defaults()
-        return QtGui.QWizard.exec_(self)
+        return QtWidgets.QWizard.exec(self)
 
     def reject(self):
         """
@@ -206,7 +206,7 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         log.debug('Wizard cancelled by user.')
         if self.with_progress_page and self.currentPage() == self.progress_page:
             Registry().execute('openlp_stop_wizard')
-        self.done(QtGui.QDialog.Rejected)
+        self.done(QtWidgets.QDialog.Rejected)
 
     def on_current_id_changed(self, page_id):
         """
@@ -283,8 +283,9 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         if filters:
             filters += ';;'
         filters += '%s (*)' % UiStrings().AllFiles
-        filename = QtGui.QFileDialog.getOpenFileName(
-            self, title, os.path.dirname(Settings().value(self.plugin.settings_section + '/' + setting_name)), filters)
+        filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(
+            self, title, os.path.dirname(Settings().value(self.plugin.settings_section + '/' + setting_name)),
+            filters)
         if filename:
             editbox.setText(filename)
         Settings().setValue(self.plugin.settings_section + '/' + setting_name, filename)
@@ -297,9 +298,9 @@ class OpenLPWizard(QtGui.QWizard, RegistryProperties):
         :param editbox: An editbox (QLineEdit).
         :param setting_name: The place where to save the last opened directory.
         """
-        folder = QtGui.QFileDialog.getExistingDirectory(
+        folder = QtWidgets.QFileDialog.getExistingDirectory(
             self, title, Settings().value(self.plugin.settings_section + '/' + setting_name),
-            QtGui.QFileDialog.ShowDirsOnly)
+            QtWidgets.QFileDialog.ShowDirsOnly)
         if folder:
             editbox.setText(folder)
         Settings().setValue(self.plugin.settings_section + '/' + setting_name, folder)

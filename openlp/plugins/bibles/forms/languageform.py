@@ -25,7 +25,7 @@ Module implementing LanguageForm.
 """
 import logging
 
-from PyQt4.QtGui import QDialog
+from PyQt5.QtWidgets import QDialog
 
 from openlp.core.common import translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -49,13 +49,13 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
         super(LanguageForm, self).__init__(parent)
         self.setupUi(self)
 
-    def exec_(self, bible_name):
+    def exec(self, bible_name):
         self.language_combo_box.addItem('')
         if bible_name:
             self.bible_label.setText(str(bible_name))
         items = BiblesResourcesDB.get_languages()
         self.language_combo_box.addItems([item['name'] for item in items])
-        return QDialog.exec_(self)
+        return QDialog.exec(self)
 
     def accept(self):
         if not self.language_combo_box.currentText():

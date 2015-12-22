@@ -25,7 +25,7 @@ by the shortcuts system.
 """
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Settings
 
@@ -357,7 +357,8 @@ class ActionList(object):
         global_context = action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
         affected_actions = []
         if global_context:
-            affected_actions = [a for a in self.get_all_child_objects(action.parent()) if isinstance(a, QtGui.QAction)]
+            affected_actions = [a for a in self.get_all_child_objects(action.parent()) if isinstance(a,
+                                                                                                     QtWidgets.QAction)]
         for existing_action in existing_actions:
             if action is existing_action:
                 continue

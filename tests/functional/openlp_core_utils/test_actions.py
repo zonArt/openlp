@@ -24,7 +24,7 @@ Package to test the openlp.core.utils.actions package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 
 from openlp.core.common import Settings
 from openlp.core.utils import ActionList
@@ -157,9 +157,9 @@ class TestActionList(TestCase, TestMixin):
         """
         # GIVEN: Two actions with the same shortcuts.
         parent = QtCore.QObject()
-        action1 = QtGui.QAction(parent)
+        action1 = QtWidgets.QAction(parent)
         action1.setObjectName('action1')
-        action_with_same_shortcuts1 = QtGui.QAction(parent)
+        action_with_same_shortcuts1 = QtWidgets.QAction(parent)
         action_with_same_shortcuts1.setObjectName('action_with_same_shortcuts1')
         # Add default shortcuts to Settings class.
         default_shortcuts = {
@@ -186,10 +186,10 @@ class TestActionList(TestCase, TestMixin):
         """
         # GIVEN: Two actions with the same shortcuts.
         parent = QtCore.QObject()
-        action2 = QtGui.QAction(parent)
+        action2 = QtWidgets.QAction(parent)
         action2.setObjectName('action2')
         second_parent = QtCore.QObject()
-        action_with_same_shortcuts2 = QtGui.QAction(second_parent)
+        action_with_same_shortcuts2 = QtWidgets.QAction(second_parent)
         action_with_same_shortcuts2.setObjectName('action_with_same_shortcuts2')
         # Add default shortcuts to Settings class.
         default_shortcuts = {
@@ -216,11 +216,11 @@ class TestActionList(TestCase, TestMixin):
         """
         # GIVEN: Two actions with the same shortcuts.
         parent = QtCore.QObject()
-        action3 = QtGui.QAction(parent)
+        action3 = QtWidgets.QAction(parent)
         action3.setObjectName('action3')
         action3.setShortcutContext(QtCore.Qt.WidgetShortcut)
         second_parent = QtCore.QObject()
-        action_with_same_shortcuts3 = QtGui.QAction(second_parent)
+        action_with_same_shortcuts3 = QtWidgets.QAction(second_parent)
         action_with_same_shortcuts3.setObjectName('action_with_same_shortcuts3')
         action_with_same_shortcuts3.setShortcutContext(QtCore.Qt.WidgetShortcut)
         # Add default shortcuts to Settings class.

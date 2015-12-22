@@ -25,6 +25,7 @@ This module contains tests for the lib submodule of the Remotes plugin.
 import os
 import urllib.request
 from unittest import TestCase
+
 from openlp.core.common import Settings, Registry
 from openlp.core.ui import ServiceManager
 from openlp.plugins.remotes.lib.httpserver import HttpRouter

@@ -24,7 +24,7 @@ The :mod:`~openlp.core.ui.shortcutlistform` module contains the form class"""
 import logging
 import re
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import RegistryProperties, Settings, translate
 from openlp.core.utils.actions import ActionList
@@ -35,7 +35,7 @@ REMOVE_AMPERSAND = re.compile(r'&{1}')
 log = logging.getLogger(__name__)
 
 
-class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties):
+class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryProperties):
     """
     The shortcut list dialog
     """
@@ -100,7 +100,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
             elif self.alternate_push_button.isChecked():
                 self._adjust_button(self.alternate_push_button, False, text=key_sequence.toString())
 
-    def exec_(self):
+    def exec(self):
         """
         Execute the dialog
         """
@@ -108,7 +108,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
         self.reload_shortcut_list()
         self._adjust_button(self.primary_push_button, False, False, '')
         self._adjust_button(self.alternate_push_button, False, False, '')
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def reload_shortcut_list(self):
         """
@@ -119,10 +119,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
             # Check if the category is for internal use only.
             if category.name is None:
                 continue
-            item = QtGui.QTreeWidgetItem([category.name])
+            item = QtWidgets.QTreeWidgetItem([category.name])
             for action in category.actions:
                 action_text = REMOVE_AMPERSAND.sub('', action.text())
-                action_item = QtGui.QTreeWidgetItem([action_text])
+                action_item = QtWidgets.QTreeWidgetItem([action_text])
                 action_item.setIcon(0, action.icon())
                 action_item.setData(0, QtCore.Qt.UserRole, action)
                 tool_tip_text = action.toolTip()
@@ -142,7 +142,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
         This refreshes the item's shortcuts shown in the list. Note, this neither adds new actions nor removes old
         actions.
         """
-        iterator = QtGui.QTreeWidgetItemIterator(self.tree_widget)
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.tree_widget)
         while iterator.value():
             item = iterator.value()
             iterator += 1
@@ -273,13 +273,14 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog, RegistryProperties)
         """
         Restores all default shortcuts.
         """
-        if self.button_box.buttonRole(button) != QtGui.QDialogButtonBox.ResetRole:
+        if self.button_box.buttonRole(button) != QtWidgets.QDialogButtonBox.ResetRole:
             return
-        if QtGui.QMessageBox.question(self, translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
-                                      translate('OpenLP.ShortcutListDialog', 'Do you want to restore all '
-                                                'shortcuts to their defaults?'),
-                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                        QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
+        if QtWidgets.QMessageBox.question(self, translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
+                                          translate('OpenLP.ShortcutListDialog', 'Do you want to restore all '
+                                                    'shortcuts to their defaults?'),
+                                          QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                QtWidgets.QMessageBox.No)
+                                          ) == QtWidgets.QMessageBox.No:
             return
         self._adjust_button(self.primary_push_button, False, text='')
         self._adjust_button(self.alternate_push_button, False, text='')

@@ -22,7 +22,7 @@
 """
 The :mod:`ui` module provides the core user interface for OpenLP
 """
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 
 class HideMode(object):
@@ -71,7 +71,7 @@ class DisplayControllerType(object):
     Plugin = 2
 
 
-class SingleColumnTableWidget(QtGui.QTableWidget):
+class SingleColumnTableWidget(QtWidgets.QTableWidget):
     """
     Class to for a single column table widget to use for the verse table widget.
     """
@@ -88,7 +88,7 @@ class SingleColumnTableWidget(QtGui.QTableWidget):
         """
         Resize the first column together with the widget.
         """
-        QtGui.QTableWidget.resizeEvent(self, event)
+        QtWidgets.QTableWidget.resizeEvent(self, event)
         if self.columnCount():
             self.setColumnWidth(0, event.size().width())
             self.resizeRowsToContents()

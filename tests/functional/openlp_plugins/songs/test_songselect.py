@@ -26,7 +26,7 @@ import os
 from unittest import TestCase
 from urllib.error import URLError
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from tests.helpers.songfileimport import SongImportTestHelper
 from openlp.core import Registry
@@ -433,7 +433,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         self.assertEqual(mocked_db_manager, ssform.db_manager, 'The correct db_manager should have been assigned')
 
     @patch('openlp.plugins.songs.forms.songselectform.SongSelectImport')
-    @patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.critical')
+    @patch('openlp.plugins.songs.forms.songselectform.QtWidgets.QMessageBox.critical')
     @patch('openlp.plugins.songs.forms.songselectform.translate')
     def login_fails_test(self, mocked_translate, mocked_critical, MockedSongSelectImport):
         """
@@ -486,7 +486,7 @@ class TestSongSelectForm(TestCase, TestMixin):
                                                                            'perhaps your username or password is '
                                                                            'incorrect?')
 
-    @patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.question')
+    @patch('openlp.plugins.songs.forms.songselectform.QtWidgets.QMessageBox.question')
     @patch('openlp.plugins.songs.forms.songselectform.translate')
     def on_import_yes_clicked_test(self, mocked_translate, mocked_question):
         """
@@ -494,7 +494,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         """
         # GIVEN: A valid SongSelectForm with a mocked out QMessageBox.question() method
         mocked_translate.side_effect = lambda *args: args[1]
-        mocked_question.return_value = QtGui.QMessageBox.Yes
+        mocked_question.return_value = QtWidgets.QMessageBox.Yes
         ssform = SongSelectForm(None, MagicMock(), MagicMock())
         mocked_song_select_importer = MagicMock()
         ssform.song_select_importer = mocked_song_select_importer
@@ -508,11 +508,12 @@ class TestSongSelectForm(TestCase, TestMixin):
         mocked_song_select_importer.save_song.assert_called_with(None)
         mocked_question.assert_called_with(ssform, 'Song Imported',
                                            'Your song has been imported, would you like to import more songs?',
-                                           QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
+                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                           QtWidgets.QMessageBox.Yes)
         mocked_on_back_button_clicked.assert_called_with()
         self.assertIsNone(ssform.song)
 
-    @patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.question')
+    @patch('openlp.plugins.songs.forms.songselectform.QtWidgets.QMessageBox.question')
     @patch('openlp.plugins.songs.forms.songselectform.translate')
     def on_import_no_clicked_test(self, mocked_translate, mocked_question):
         """
@@ -520,7 +521,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         """
         # GIVEN: A valid SongSelectForm with a mocked out QMessageBox.question() method
         mocked_translate.side_effect = lambda *args: args[1]
-        mocked_question.return_value = QtGui.QMessageBox.No
+        mocked_question.return_value = QtWidgets.QMessageBox.No
         ssform = SongSelectForm(None, MagicMock(), MagicMock())
         mocked_song_select_importer = MagicMock()
         ssform.song_select_importer = mocked_song_select_importer
@@ -534,8 +535,9 @@ class TestSongSelectForm(TestCase, TestMixin):
         mocked_song_select_importer.save_song.assert_called_with(None)
         mocked_question.assert_called_with(ssform, 'Song Imported',
                                            'Your song has been imported, would you like to import more songs?',
-                                           QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-        mocked_done.assert_called_with(QtGui.QDialog.Accepted)
+                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                           QtWidgets.QMessageBox.Yes)
+        mocked_done.assert_called_with(QtWidgets.QDialog.Accepted)
         self.assertIsNone(ssform.song)
 
     def on_back_button_clicked_test(self):
@@ -554,7 +556,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         mocked_stacked_widget.setCurrentIndex.assert_called_with(1)
         mocked_search_combobox.setFocus.assert_called_with()
 
-    @patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.information')
+    @patch('openlp.plugins.songs.forms.songselectform.QtWidgets.QMessageBox.information')
     def on_search_show_info_test(self, mocked_information):
         """
         Test that when the search_show_info signal is emitted, the on_search_show_info() method shows a dialog

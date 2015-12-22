@@ -43,8 +43,8 @@ class TestThemeManager(TestCase):
         with patch('openlp.core.ui.ThemeForm._setup'),\
                 patch('openlp.core.ui.themeform.get_images_filter',
                       **{'return_value': 'Image Files (*.bmp; *.gif)(*.bmp *.gif)'}),\
-                patch('openlp.core.ui.themeform.QtGui.QFileDialog.getOpenFileName',
-                      **{'return_value': ''}) as mocked_get_open_file_name,\
+                patch('openlp.core.ui.themeform.QtWidgets.QFileDialog.getOpenFileName',
+                      **{'return_value': ('', '')}) as mocked_get_open_file_name,\
                 patch('openlp.core.ui.themeform.translate', **{'return_value': 'Translated String'}),\
                 patch('openlp.core.ui.ThemeForm.set_background_page_values') as mocked_set_background_page_values:
             instance = ThemeForm(None)
@@ -70,8 +70,8 @@ class TestThemeManager(TestCase):
         with patch('openlp.core.ui.ThemeForm._setup'),\
                 patch('openlp.core.ui.themeform.get_images_filter',
                       **{'return_value': 'Image Files (*.bmp; *.gif)(*.bmp *.gif)'}),\
-                patch('openlp.core.ui.themeform.QtGui.QFileDialog.getOpenFileName',
-                      **{'return_value': '/new_path/file.ext'}) as mocked_get_open_file_name,\
+                patch('openlp.core.ui.themeform.QtWidgets.QFileDialog.getOpenFileName',
+                      **{'return_value': ('/new_path/file.ext', '')}) as mocked_get_open_file_name,\
                 patch('openlp.core.ui.themeform.translate', **{'return_value': 'Translated String'}),\
                 patch('openlp.core.ui.ThemeForm.set_background_page_values') as mocked_background_page_values:
             instance = ThemeForm(None)
