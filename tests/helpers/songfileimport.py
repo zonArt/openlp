@@ -124,7 +124,10 @@ class SongImportTestHelper(TestCase):
 
         self.assertEqual(importer.title, title, 'title for %s should be "%s"' % (source_file_name, title))
         for author in author_calls:
-            self.mocked_add_author.assert_any_call(author)
+            if isinstance(author, str):
+                self.mocked_add_author.assert_any_call(author)
+            else:
+                self.mocked_add_author.assert_any_call(*author)
         if song_copyright:
             self.mocked_add_copyright.assert_called_with(song_copyright)
         if ccli_number:

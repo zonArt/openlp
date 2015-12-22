@@ -27,7 +27,7 @@ import logging
 import os
 import sys
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
 from openlp.core.lib import ColorButton, SettingsTab, build_icon
@@ -58,108 +58,108 @@ class AdvancedTab(SettingsTab):
         """
         self.setObjectName('AdvancedTab')
         super(AdvancedTab, self).setupUi()
-        self.ui_group_box = QtGui.QGroupBox(self.left_column)
+        self.ui_group_box = QtWidgets.QGroupBox(self.left_column)
         self.ui_group_box.setObjectName('ui_group_box')
-        self.ui_layout = QtGui.QFormLayout(self.ui_group_box)
+        self.ui_layout = QtWidgets.QFormLayout(self.ui_group_box)
         self.ui_layout.setObjectName('ui_layout')
-        self.recent_label = QtGui.QLabel(self.ui_group_box)
+        self.recent_label = QtWidgets.QLabel(self.ui_group_box)
         self.recent_label.setObjectName('recent_label')
-        self.recent_spin_box = QtGui.QSpinBox(self.ui_group_box)
+        self.recent_spin_box = QtWidgets.QSpinBox(self.ui_group_box)
         self.recent_spin_box.setObjectName('recent_spin_box')
         self.recent_spin_box.setMinimum(0)
         self.ui_layout.addRow(self.recent_label, self.recent_spin_box)
-        self.media_plugin_check_box = QtGui.QCheckBox(self.ui_group_box)
+        self.media_plugin_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.media_plugin_check_box.setObjectName('media_plugin_check_box')
         self.ui_layout.addRow(self.media_plugin_check_box)
-        self.double_click_live_check_box = QtGui.QCheckBox(self.ui_group_box)
+        self.double_click_live_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.double_click_live_check_box.setObjectName('double_click_live_check_box')
         self.ui_layout.addRow(self.double_click_live_check_box)
-        self.single_click_preview_check_box = QtGui.QCheckBox(self.ui_group_box)
+        self.single_click_preview_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.single_click_preview_check_box.setObjectName('single_click_preview_check_box')
         self.ui_layout.addRow(self.single_click_preview_check_box)
-        self.expand_service_item_check_box = QtGui.QCheckBox(self.ui_group_box)
+        self.expand_service_item_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.expand_service_item_check_box.setObjectName('expand_service_item_check_box')
         self.ui_layout.addRow(self.expand_service_item_check_box)
-        self.search_as_type_check_box = QtGui.QCheckBox(self.ui_group_box)
+        self.search_as_type_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.search_as_type_check_box.setObjectName('SearchAsType_check_box')
         self.ui_layout.addRow(self.search_as_type_check_box)
-        self.enable_auto_close_check_box = QtGui.QCheckBox(self.ui_group_box)
+        self.enable_auto_close_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.enable_auto_close_check_box.setObjectName('enable_auto_close_check_box')
         self.ui_layout.addRow(self.enable_auto_close_check_box)
         self.left_layout.addWidget(self.ui_group_box)
         # Default service name
-        self.service_name_group_box = QtGui.QGroupBox(self.left_column)
+        self.service_name_group_box = QtWidgets.QGroupBox(self.left_column)
         self.service_name_group_box.setObjectName('service_name_group_box')
-        self.service_name_layout = QtGui.QFormLayout(self.service_name_group_box)
-        self.service_name_check_box = QtGui.QCheckBox(self.service_name_group_box)
+        self.service_name_layout = QtWidgets.QFormLayout(self.service_name_group_box)
+        self.service_name_check_box = QtWidgets.QCheckBox(self.service_name_group_box)
         self.service_name_check_box.setObjectName('service_name_check_box')
         self.service_name_layout.setObjectName('service_name_layout')
         self.service_name_layout.addRow(self.service_name_check_box)
-        self.service_name_time_label = QtGui.QLabel(self.service_name_group_box)
+        self.service_name_time_label = QtWidgets.QLabel(self.service_name_group_box)
         self.service_name_time_label.setObjectName('service_name_time_label')
-        self.service_name_day = QtGui.QComboBox(self.service_name_group_box)
+        self.service_name_day = QtWidgets.QComboBox(self.service_name_group_box)
         self.service_name_day.addItems(['', '', '', '', '', '', '', ''])
         self.service_name_day.setObjectName('service_name_day')
-        self.service_name_time = QtGui.QTimeEdit(self.service_name_group_box)
+        self.service_name_time = QtWidgets.QTimeEdit(self.service_name_group_box)
         self.service_name_time.setObjectName('service_name_time')
-        self.service_name_time_layout = QtGui.QHBoxLayout()
+        self.service_name_time_layout = QtWidgets.QHBoxLayout()
         self.service_name_time_layout.setObjectName('service_name_time_layout')
         self.service_name_time_layout.addWidget(self.service_name_day)
         self.service_name_time_layout.addWidget(self.service_name_time)
         self.service_name_layout.addRow(self.service_name_time_label, self.service_name_time_layout)
-        self.service_name_label = QtGui.QLabel(self.service_name_group_box)
+        self.service_name_label = QtWidgets.QLabel(self.service_name_group_box)
         self.service_name_label.setObjectName('service_name_label')
-        self.service_name_edit = QtGui.QLineEdit(self.service_name_group_box)
+        self.service_name_edit = QtWidgets.QLineEdit(self.service_name_group_box)
         self.service_name_edit.setObjectName('service_name_edit')
         self.service_name_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(r'[^/\\?*|<>\[\]":+]+'), self))
-        self.service_name_revert_button = QtGui.QToolButton(self.service_name_group_box)
+        self.service_name_revert_button = QtWidgets.QToolButton(self.service_name_group_box)
         self.service_name_revert_button.setObjectName('service_name_revert_button')
         self.service_name_revert_button.setIcon(build_icon(':/general/general_revert.png'))
-        self.service_name_button_layout = QtGui.QHBoxLayout()
+        self.service_name_button_layout = QtWidgets.QHBoxLayout()
         self.service_name_button_layout.setObjectName('service_name_button_layout')
         self.service_name_button_layout.addWidget(self.service_name_edit)
         self.service_name_button_layout.addWidget(self.service_name_revert_button)
         self.service_name_layout.addRow(self.service_name_label, self.service_name_button_layout)
-        self.service_name_example_label = QtGui.QLabel(self.service_name_group_box)
+        self.service_name_example_label = QtWidgets.QLabel(self.service_name_group_box)
         self.service_name_example_label.setObjectName('service_name_example_label')
-        self.service_name_example = QtGui.QLabel(self.service_name_group_box)
+        self.service_name_example = QtWidgets.QLabel(self.service_name_group_box)
         self.service_name_example.setObjectName('service_name_example')
         self.service_name_layout.addRow(self.service_name_example_label, self.service_name_example)
         self.left_layout.addWidget(self.service_name_group_box)
         # Data Directory
-        self.data_directory_group_box = QtGui.QGroupBox(self.left_column)
+        self.data_directory_group_box = QtWidgets.QGroupBox(self.left_column)
         self.data_directory_group_box.setObjectName('data_directory_group_box')
-        self.data_directory_layout = QtGui.QFormLayout(self.data_directory_group_box)
+        self.data_directory_layout = QtWidgets.QFormLayout(self.data_directory_group_box)
         self.data_directory_layout.setObjectName('data_directory_layout')
-        self.data_directory_current_label = QtGui.QLabel(self.data_directory_group_box)
+        self.data_directory_current_label = QtWidgets.QLabel(self.data_directory_group_box)
         self.data_directory_current_label.setObjectName('data_directory_current_label')
-        self.data_directory_label = QtGui.QLabel(self.data_directory_group_box)
+        self.data_directory_label = QtWidgets.QLabel(self.data_directory_group_box)
         self.data_directory_label.setObjectName('data_directory_label')
-        self.data_directory_new_label = QtGui.QLabel(self.data_directory_group_box)
+        self.data_directory_new_label = QtWidgets.QLabel(self.data_directory_group_box)
         self.data_directory_new_label.setObjectName('data_directory_current_label')
-        self.new_data_directory_edit = QtGui.QLineEdit(self.data_directory_group_box)
+        self.new_data_directory_edit = QtWidgets.QLineEdit(self.data_directory_group_box)
         self.new_data_directory_edit.setObjectName('new_data_directory_edit')
         self.new_data_directory_edit.setReadOnly(True)
-        self.new_data_directory_has_files_label = QtGui.QLabel(self.data_directory_group_box)
+        self.new_data_directory_has_files_label = QtWidgets.QLabel(self.data_directory_group_box)
         self.new_data_directory_has_files_label.setObjectName('new_data_directory_has_files_label')
         self.new_data_directory_has_files_label.setWordWrap(True)
-        self.data_directory_browse_button = QtGui.QToolButton(self.data_directory_group_box)
+        self.data_directory_browse_button = QtWidgets.QToolButton(self.data_directory_group_box)
         self.data_directory_browse_button.setObjectName('data_directory_browse_button')
         self.data_directory_browse_button.setIcon(build_icon(':/general/general_open.png'))
-        self.data_directory_default_button = QtGui.QToolButton(self.data_directory_group_box)
+        self.data_directory_default_button = QtWidgets.QToolButton(self.data_directory_group_box)
         self.data_directory_default_button.setObjectName('data_directory_default_button')
         self.data_directory_default_button.setIcon(build_icon(':/general/general_revert.png'))
-        self.data_directory_cancel_button = QtGui.QToolButton(self.data_directory_group_box)
+        self.data_directory_cancel_button = QtWidgets.QToolButton(self.data_directory_group_box)
         self.data_directory_cancel_button.setObjectName('data_directory_cancel_button')
         self.data_directory_cancel_button.setIcon(build_icon(':/general/general_delete.png'))
-        self.new_data_directory_label_layout = QtGui.QHBoxLayout()
+        self.new_data_directory_label_layout = QtWidgets.QHBoxLayout()
         self.new_data_directory_label_layout.setObjectName('new_data_directory_label_layout')
         self.new_data_directory_label_layout.addWidget(self.new_data_directory_edit)
         self.new_data_directory_label_layout.addWidget(self.data_directory_browse_button)
         self.new_data_directory_label_layout.addWidget(self.data_directory_default_button)
-        self.data_directory_copy_check_layout = QtGui.QHBoxLayout()
+        self.data_directory_copy_check_layout = QtWidgets.QHBoxLayout()
         self.data_directory_copy_check_layout.setObjectName('data_directory_copy_check_layout')
-        self.data_directory_copy_check_box = QtGui.QCheckBox(self.data_directory_group_box)
+        self.data_directory_copy_check_box = QtWidgets.QCheckBox(self.data_directory_group_box)
         self.data_directory_copy_check_box.setObjectName('data_directory_copy_check_box')
         self.data_directory_copy_check_layout.addWidget(self.data_directory_copy_check_box)
         self.data_directory_copy_check_layout.addStretch()
@@ -171,26 +171,26 @@ class AdvancedTab(SettingsTab):
         self.left_layout.addWidget(self.data_directory_group_box)
         self.left_layout.addStretch()
         # Default Image
-        self.default_image_group_box = QtGui.QGroupBox(self.right_column)
+        self.default_image_group_box = QtWidgets.QGroupBox(self.right_column)
         self.default_image_group_box.setObjectName('default_image_group_box')
-        self.default_image_layout = QtGui.QFormLayout(self.default_image_group_box)
+        self.default_image_layout = QtWidgets.QFormLayout(self.default_image_group_box)
         self.default_image_layout.setObjectName('default_image_layout')
-        self.default_color_label = QtGui.QLabel(self.default_image_group_box)
+        self.default_color_label = QtWidgets.QLabel(self.default_image_group_box)
         self.default_color_label.setObjectName('default_color_label')
         self.default_color_button = ColorButton(self.default_image_group_box)
         self.default_color_button.setObjectName('default_color_button')
         self.default_image_layout.addRow(self.default_color_label, self.default_color_button)
-        self.default_file_label = QtGui.QLabel(self.default_image_group_box)
+        self.default_file_label = QtWidgets.QLabel(self.default_image_group_box)
         self.default_file_label.setObjectName('default_file_label')
-        self.default_file_edit = QtGui.QLineEdit(self.default_image_group_box)
+        self.default_file_edit = QtWidgets.QLineEdit(self.default_image_group_box)
         self.default_file_edit.setObjectName('default_file_edit')
-        self.default_browse_button = QtGui.QToolButton(self.default_image_group_box)
+        self.default_browse_button = QtWidgets.QToolButton(self.default_image_group_box)
         self.default_browse_button.setObjectName('default_browse_button')
         self.default_browse_button.setIcon(build_icon(':/general/general_open.png'))
-        self.default_revert_button = QtGui.QToolButton(self.default_image_group_box)
+        self.default_revert_button = QtWidgets.QToolButton(self.default_image_group_box)
         self.default_revert_button.setObjectName('default_revert_button')
         self.default_revert_button.setIcon(build_icon(':/general/general_revert.png'))
-        self.default_file_layout = QtGui.QHBoxLayout()
+        self.default_file_layout = QtWidgets.QHBoxLayout()
         self.default_file_layout.setObjectName('default_file_layout')
         self.default_file_layout.addWidget(self.default_file_edit)
         self.default_file_layout.addWidget(self.default_browse_button)
@@ -198,41 +198,41 @@ class AdvancedTab(SettingsTab):
         self.default_image_layout.addRow(self.default_file_label, self.default_file_layout)
         self.right_layout.addWidget(self.default_image_group_box)
         # Hide mouse
-        self.hide_mouse_group_box = QtGui.QGroupBox(self.right_column)
+        self.hide_mouse_group_box = QtWidgets.QGroupBox(self.right_column)
         self.hide_mouse_group_box.setObjectName('hide_mouse_group_box')
-        self.hide_mouse_layout = QtGui.QVBoxLayout(self.hide_mouse_group_box)
+        self.hide_mouse_layout = QtWidgets.QVBoxLayout(self.hide_mouse_group_box)
         self.hide_mouse_layout.setObjectName('hide_mouse_layout')
-        self.hide_mouse_check_box = QtGui.QCheckBox(self.hide_mouse_group_box)
+        self.hide_mouse_check_box = QtWidgets.QCheckBox(self.hide_mouse_group_box)
         self.hide_mouse_check_box.setObjectName('hide_mouse_check_box')
         self.hide_mouse_layout.addWidget(self.hide_mouse_check_box)
         self.right_layout.addWidget(self.hide_mouse_group_box)
         # Service Item Slide Limits
-        self.slide_group_box = QtGui.QGroupBox(self.right_column)
+        self.slide_group_box = QtWidgets.QGroupBox(self.right_column)
         self.slide_group_box.setObjectName('slide_group_box')
-        self.slide_layout = QtGui.QVBoxLayout(self.slide_group_box)
+        self.slide_layout = QtWidgets.QVBoxLayout(self.slide_group_box)
         self.slide_layout.setObjectName('slide_layout')
-        self.slide_label = QtGui.QLabel(self.slide_group_box)
+        self.slide_label = QtWidgets.QLabel(self.slide_group_box)
         self.slide_label.setWordWrap(True)
         self.slide_layout.addWidget(self.slide_label)
-        self.end_slide_radio_button = QtGui.QRadioButton(self.slide_group_box)
+        self.end_slide_radio_button = QtWidgets.QRadioButton(self.slide_group_box)
         self.end_slide_radio_button.setObjectName('end_slide_radio_button')
         self.slide_layout.addWidget(self.end_slide_radio_button)
-        self.wrap_slide_radio_button = QtGui.QRadioButton(self.slide_group_box)
+        self.wrap_slide_radio_button = QtWidgets.QRadioButton(self.slide_group_box)
         self.wrap_slide_radio_button.setObjectName('wrap_slide_radio_button')
         self.slide_layout.addWidget(self.wrap_slide_radio_button)
-        self.next_item_radio_button = QtGui.QRadioButton(self.slide_group_box)
+        self.next_item_radio_button = QtWidgets.QRadioButton(self.slide_group_box)
         self.next_item_radio_button.setObjectName('next_item_radio_button')
         self.slide_layout.addWidget(self.next_item_radio_button)
         self.right_layout.addWidget(self.slide_group_box)
         # Display Workarounds
-        self.display_workaround_group_box = QtGui.QGroupBox(self.left_column)
+        self.display_workaround_group_box = QtWidgets.QGroupBox(self.left_column)
         self.display_workaround_group_box.setObjectName('display_workaround_group_box')
-        self.display_workaround_layout = QtGui.QVBoxLayout(self.display_workaround_group_box)
+        self.display_workaround_layout = QtWidgets.QVBoxLayout(self.display_workaround_group_box)
         self.display_workaround_layout.setObjectName('display_workaround_layout')
-        self.x11_bypass_check_box = QtGui.QCheckBox(self.display_workaround_group_box)
+        self.x11_bypass_check_box = QtWidgets.QCheckBox(self.display_workaround_group_box)
         self.x11_bypass_check_box.setObjectName('x11_bypass_check_box')
         self.display_workaround_layout.addWidget(self.x11_bypass_check_box)
-        self.alternate_rows_check_box = QtGui.QCheckBox(self.display_workaround_group_box)
+        self.alternate_rows_check_box = QtWidgets.QCheckBox(self.display_workaround_group_box)
         self.alternate_rows_check_box.setObjectName('alternate_rows_check_box')
         self.display_workaround_layout.addWidget(self.alternate_rows_check_box)
         self.right_layout.addWidget(self.display_workaround_group_box)
@@ -374,7 +374,7 @@ class AdvancedTab(SettingsTab):
         self.current_data_path = AppLocation.get_data_path()
         if not os.path.exists(self.current_data_path):
             log.error('Data path not found %s' % self.current_data_path)
-            answer = QtGui.QMessageBox.critical(
+            answer = QtWidgets.QMessageBox.critical(
                 self, translate('OpenLP.AdvancedTab', 'Data Directory Error'),
                 translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n%s\n\n'
                           'This data directory was previously changed from the OpenLP '
@@ -383,9 +383,9 @@ class AdvancedTab(SettingsTab):
                           'Click "No" to stop loading OpenLP. allowing you to fix the the problem.\n\n'
                           'Click "Yes" to reset the data directory to the default '
                           'location.').replace('%s', self.current_data_path),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                QtGui.QMessageBox.No)
-            if answer == QtGui.QMessageBox.No:
+                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                QtWidgets.QMessageBox.No)
+            if answer == QtWidgets.QMessageBox.No:
                 log.info('User requested termination')
                 self.main_window.clean_up()
                 sys.exit()
@@ -514,8 +514,9 @@ class AdvancedTab(SettingsTab):
         Select an image for the default display screen.
         """
         file_filters = '%s;;%s (*.*)' % (get_images_filter(), UiStrings().AllFiles)
-        filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.AdvancedTab', 'Open File'), '',
-                                                     file_filters)
+        filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(self,
+                                                                      translate('OpenLP.AdvancedTab', 'Open File'), '',
+                                                                      file_filters)
         if filename:
             self.default_file_edit.setText(filename)
         self.default_file_edit.setFocus()
@@ -526,9 +527,10 @@ class AdvancedTab(SettingsTab):
         """
         old_root_path = str(self.data_directory_label.text())
         # Get the new directory location.
-        new_data_path = QtGui.QFileDialog.getExistingDirectory(self, translate('OpenLP.AdvancedTab',
-                                                                               'Select Data Directory Location'),
-                                                               old_root_path, options=QtGui.QFileDialog.ShowDirsOnly)
+        new_data_path = QtWidgets.QFileDialog.getExistingDirectory(self, translate('OpenLP.AdvancedTab',
+                                                                                   'Select Data Directory Location'),
+                                                                   old_root_path,
+                                                                   options=QtWidgets.QFileDialog.ShowDirsOnly)
         # Set the new data path.
         if new_data_path:
             new_data_path = os.path.normpath(new_data_path)
@@ -538,15 +540,15 @@ class AdvancedTab(SettingsTab):
         else:
             return
         # Make sure they want to change the data.
-        answer = QtGui.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
-                                            translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
-                                                      'location of the OpenLP data directory to:\n\n%s\n\nThe data '
-                                                      'directory will be changed when OpenLP is closed.').
-                                            replace('%s', new_data_path),
-                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                              QtGui.QMessageBox.No),
-                                            QtGui.QMessageBox.No)
-        if answer != QtGui.QMessageBox.Yes:
+        answer = QtWidgets.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
+                                                translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
+                                                          'location of the OpenLP data directory to:\n\n%s\n\nThe data '
+                                                          'directory will be changed when OpenLP is closed.').
+                                                replace('%s', new_data_path),
+                                                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                      QtWidgets.QMessageBox.No),
+                                                QtWidgets.QMessageBox.No)
+        if answer != QtWidgets.QMessageBox.Yes:
             return
         # Check if data already exists here.
         self.check_data_overwrite(new_data_path)
@@ -563,15 +565,16 @@ class AdvancedTab(SettingsTab):
         if self.current_data_path.lower() != new_data_path.lower():
             # Make sure they want to change the data location back to the
             # default.
-            answer = QtGui.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
-                                                translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
-                                                          'location of the OpenLP data directory to the default '
-                                                          'location?\n\nThis location will be used after OpenLP is  '
-                                                          'closed.'),
-                                                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                                  QtGui.QMessageBox.No),
-                                                QtGui.QMessageBox.No)
-            if answer != QtGui.QMessageBox.Yes:
+            answer = QtWidgets.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
+                                                    translate('OpenLP.AdvancedTab', 'Are you sure you want to change '
+                                                                                    'the location of the OpenLP data '
+                                                                                    'directory to the default location?'
+                                                                                    '\n\nThis location will be used '
+                                                                                    'after OpenLP is closed.'),
+                                                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                          QtWidgets.QMessageBox.No),
+                                                    QtWidgets.QMessageBox.No)
+            if answer != QtWidgets.QMessageBox.Yes:
                 return
             self.check_data_overwrite(new_data_path)
             # Save the new location.
@@ -602,17 +605,17 @@ class AdvancedTab(SettingsTab):
         if os.path.exists(test_path):
             self.data_exists = True
             # Check is they want to replace existing data.
-            answer = QtGui.QMessageBox.warning(self,
-                                               translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
-                                               translate('OpenLP.AdvancedTab',
-                                                         'WARNING: \n\nThe location you have selected \n\n%s\n\n'
-                                                         'appears to contain OpenLP data files. Do you wish to '
-                                                         'replace these files with the current data files?').
-                                               replace('%s', os.path.abspath(data_path,)),
-                                               QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                                 QtGui.QMessageBox.No),
-                                               QtGui.QMessageBox.No)
-            if answer == QtGui.QMessageBox.Yes:
+            answer = QtWidgets.QMessageBox.warning(self,
+                                                   translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
+                                                   translate('OpenLP.AdvancedTab',
+                                                             'WARNING: \n\nThe location you have selected \n\n%s\n\n'
+                                                             'appears to contain OpenLP data files. Do you wish to '
+                                                             'replace these files with the current data files?').
+                                                   replace('%s', os.path.abspath(data_path,)),
+                                                   QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                         QtWidgets.QMessageBox.No),
+                                                   QtWidgets.QMessageBox.No)
+            if answer == QtWidgets.QMessageBox.Yes:
                 self.data_directory_copy_check_box.setChecked(True)
                 self.new_data_directory_has_files_label.show()
             else:
@@ -648,9 +651,10 @@ class AdvancedTab(SettingsTab):
 
         :param checked: The state of the check box (boolean).
         """
-        QtGui.QMessageBox.information(self, translate('OpenLP.AdvancedTab', 'Restart Required'),
-                                      translate('OpenLP.AdvancedTab', 'This change will only take effect once OpenLP '
-                                                                      'has been restarted.'))
+        QtWidgets.QMessageBox.information(self, translate('OpenLP.AdvancedTab', 'Restart Required'),
+                                          translate('OpenLP.AdvancedTab',
+                                                    'This change will only take effect once OpenLP '
+                                                    'has been restarted.'))
 
     def on_end_slide_button_clicked(self):
         """

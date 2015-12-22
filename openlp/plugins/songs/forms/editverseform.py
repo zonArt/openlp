@@ -23,7 +23,7 @@
 import re
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtGui, QtWidgets
 
 from openlp.plugins.songs.lib import VerseType
 from .editversedialog import Ui_EditVerseDialog
@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 VERSE_REGEX = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
 
 
-class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
+class EditVerseForm(QtWidgets.QDialog, Ui_EditVerseDialog):
     """
     This is the form that is used to edit the verses of the song.
     """

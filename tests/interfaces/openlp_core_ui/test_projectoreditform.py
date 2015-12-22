@@ -71,10 +71,10 @@ class TestProjectorEditForm(TestCase, TestMixin):
         :return: None
         """
         # GIVEN: Mocked setup
-        with patch('openlp.core.ui.projector.editform.QDialog.exec_'):
+        with patch('openlp.core.ui.projector.editform.QDialog.exec'):
 
             # WHEN: Calling edit form with no parameters
-            self.projector_form.exec_()
+            self.projector_form.exec()
             item = self.projector_form.projector
 
             # THEN: Should be creating a new instance
@@ -90,10 +90,10 @@ class TestProjectorEditForm(TestCase, TestMixin):
         :return:
         """
         # GIVEN: Mocked setup
-        with patch('openlp.core.ui.projector.editform.QDialog.exec_'):
+        with patch('openlp.core.ui.projector.editform.QDialog.exec'):
 
             # WHEN: Calling edit form with existing projector instance
-            self.projector_form.exec_(projector=TEST1_DATA)
+            self.projector_form.exec(projector=TEST1_DATA)
             item = self.projector_form.projector
 
             # THEN: Should be editing an existing entry

@@ -4,7 +4,7 @@ Package to test the openlp.core.lib.htmlbuilder module.
 
 from unittest import TestCase
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Settings
 from openlp.core.lib.htmlbuilder import build_html, build_background_css, build_lyrics_css, build_lyrics_outline_css, \

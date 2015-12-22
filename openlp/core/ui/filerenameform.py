@@ -23,14 +23,14 @@
 The file rename dialog.
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from .filerenamedialog import Ui_FileRenameDialog
 
 from openlp.core.common import Registry, RegistryProperties, translate
 
 
-class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog, RegistryProperties):
+class FileRenameForm(QtWidgets.QDialog, Ui_FileRenameDialog, RegistryProperties):
     """
     The file rename dialog
     """
@@ -47,7 +47,7 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog, RegistryProperties):
         """
         self.setupUi(self)
 
-    def exec_(self, copy=False):
+    def exec(self, copy=False):
         """
         Run the Dialog with correct heading.
         """
@@ -56,4 +56,4 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog, RegistryProperties):
         else:
             self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Rename'))
         self.file_name_edit.setFocus()
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)

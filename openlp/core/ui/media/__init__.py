@@ -26,7 +26,7 @@ import logging
 
 from openlp.core.common import Settings
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 log = logging.getLogger(__name__ + '.__init__')
 

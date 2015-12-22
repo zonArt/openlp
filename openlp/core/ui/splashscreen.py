@@ -23,10 +23,10 @@
 The splash screen
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class SplashScreen(QtGui.QSplashScreen):
+class SplashScreen(QtWidgets.QSplashScreen):
     """
     The splash screen
     """
