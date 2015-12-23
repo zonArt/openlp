@@ -23,12 +23,12 @@
 """
 Provide a custom widget based on QPushButton for the selection of colors
 """
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import translate
 
 
-class ColorButton(QtGui.QPushButton):
+class ColorButton(QtWidgets.QPushButton):
     """
     Subclasses QPushbutton to create a "Color Chooser" button
     """
@@ -76,7 +76,7 @@ class ColorButton(QtGui.QPushButton):
         """
         Handle the PushButton clicked signal, showing the ColorDialog and validating the input
         """
-        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self._color), self.parent)
+        new_color = QtWidgets.QColorDialog.getColor(QtGui.QColor(self._color), self.parent)
         if new_color.isValid() and self._color != new_color.name():
             self.change_color(new_color.name())
             self.colorChanged.emit(new_color.name())

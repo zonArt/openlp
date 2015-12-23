@@ -26,7 +26,7 @@ related to playing media, such as sliders.
 import logging
 import os
 import datetime
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import OpenLPMixin, Registry, RegistryMixin, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import OpenLPToolbar, ItemCapabilities
@@ -40,7 +40,7 @@ from openlp.core.ui import DisplayControllerType
 log = logging.getLogger(__name__)
 
 
-class MediaSlider(QtGui.QSlider):
+class MediaSlider(QtWidgets.QSlider):
     """
     Allows the mouse events of a slider to be overridden and extra functionality added
     """
@@ -56,22 +56,22 @@ class MediaSlider(QtGui.QSlider):
         """
         Override event to allow hover time to be displayed.
         """
-        time_value = QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
+        time_value = QtWidgets.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
         self.setToolTip('%s' % datetime.timedelta(seconds=int(time_value / 1000)))
-        QtGui.QSlider.mouseMoveEvent(self, event)
+        QtWidgets.QSlider.mouseMoveEvent(self, event)
 
     def mousePressEvent(self, event):
         """
         Mouse Press event no new functionality
         """
-        QtGui.QSlider.mousePressEvent(self, event)
+        QtWidgets.QSlider.mousePressEvent(self, event)
 
     def mouseReleaseEvent(self, event):
         """
         Set the slider position when the mouse is clicked and released on the slider.
         """
-        self.setValue(QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width()))
-        QtGui.QSlider.mouseReleaseEvent(self, event)
+        self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width()))
+        QtWidgets.QSlider.mouseReleaseEvent(self, event)
 
 
 class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
@@ -284,9 +284,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         controller.seek_slider.setObjectName('seek_slider')
         controller.mediabar.add_toolbar_widget(controller.seek_slider)
         # Build the volume_slider.
-        controller.volume_slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        controller.volume_slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         controller.volume_slider.setTickInterval(10)
-        controller.volume_slider.setTickPosition(QtGui.QSlider.TicksAbove)
+        controller.volume_slider.setTickPosition(QtWidgets.QSlider.TicksAbove)
         controller.volume_slider.setMinimum(0)
         controller.volume_slider.setMaximum(100)
         controller.volume_slider.setTracking(True)
@@ -419,7 +419,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                                            translate('MediaPlugin.MediaItem', 'Unsupported File'))
                 return False
         self.set_controls_visible(controller, True)
-        log.debug('use %s controller' % self.current_media_players[controller.controller_type])
+        log.debug('use %s controller' % self.current_media_players[controller.controller_type].display_name)
         return True
 
     def media_length(self, service_item):
@@ -476,9 +476,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             controller.media_info.media_type = MediaType.CD
         else:
             controller.media_info.media_type = MediaType.DVD
-        controller.media_info.start_time = start/1000
-        controller.media_info.end_time = end/1000
-        controller.media_info.length = (end - start)/1000
+        controller.media_info.start_time = start / 1000
+        controller.media_info.end_time = end / 1000
+        controller.media_info.length = (end - start) / 1000
         controller.media_info.title_track = title
         controller.media_info.audio_track = audio_track
         controller.media_info.subtitle_track = subtitle_track
@@ -531,6 +531,16 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 if not title:
                     continue
                 player = self.media_players[title]
+                # The system player may not return what files it can play so add it now
+                #  and check whether it can play the file later
+                if title == 'system':
+                    if not controller.media_info.is_background or controller.media_info.is_background and \
+                            player.can_background:
+                        self.resize(display, player)
+                        if player.load(display):
+                            self.current_media_players[controller.controller_type] = player
+                            controller.media_info.media_type = MediaType.Video
+                            return True
                 if suffix in player.video_extensions_list:
                     if not controller.media_info.is_background or controller.media_info.is_background and \
                             player.can_background:

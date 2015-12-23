@@ -23,14 +23,14 @@
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from .mediafilesdialog import Ui_MediaFilesDialog
 
 log = logging.getLogger(__name__)
 
 
-class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
+class MediaFilesForm(QtWidgets.QDialog, Ui_MediaFilesDialog):
     """
     Class to show a list of files from the
     """
@@ -43,7 +43,7 @@ class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
     def populate_files(self, files):
         self.file_list_widget.clear()
         for file in files:
-            item = QtGui.QListWidgetItem(os.path.split(file)[1])
+            item = QtWidgets.QListWidgetItem(os.path.split(file)[1])
             item.setData(QtCore.Qt.UserRole, file)
             self.file_list_widget.addItem(item)
 

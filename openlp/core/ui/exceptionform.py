@@ -33,13 +33,8 @@ from lxml import etree
 
 from openlp.core.common import RegistryProperties, is_linux
 
-from PyQt4 import Qt, QtCore, QtGui, QtWebKit
+from PyQt5 import Qt, QtCore, QtGui, QtWebKit, QtWidgets
 
-try:
-    from PyQt4.phonon import Phonon
-    PHONON_VERSION = Phonon.phononVersion()
-except ImportError:
-    PHONON_VERSION = '-'
 try:
     import migrate
     MIGRATE_VERSION = getattr(migrate, '__version__', '< 0.7')
@@ -86,7 +81,7 @@ from .exceptiondialog import Ui_ExceptionDialog
 log = logging.getLogger(__name__)
 
 
-class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
+class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
     """
     The exception dialog
     """
@@ -97,15 +92,21 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
         super(ExceptionForm, self).__init__()
         self.setupUi(self)
         self.settings_section = 'crashreport'
+        self.report_text = '**OpenLP Bug Report**\n' \
+            'Version: %s\n\n' \
+            '--- Details of the Exception. ---\n\n%s\n\n ' \
+            '--- Exception Traceback ---\n%s\n' \
+            '--- System information ---\n%s\n' \
+            '--- Library Versions ---\n%s\n'
 
-    def exec_(self):
+    def exec(self):
         """
         Show the dialog.
         """
         self.description_text_edit.setPlainText('')
         self.on_description_updated()
         self.file_attachment = None
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def _create_report(self):
         """
@@ -116,9 +117,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
         traceback = self.exception_text_edit.toPlainText()
         system = translate('OpenLP.ExceptionForm', 'Platform: %s\n') % platform.platform()
         libraries = 'Python: %s\n' % platform.python_version() + \
-            'Qt4: %s\n' % Qt.qVersion() + \
-            'Phonon: %s\n' % PHONON_VERSION + \
-            'PyQt4: %s\n' % Qt.PYQT_VERSION_STR + \
+            'Qt5: %s\n' % Qt.qVersion() + \
+            'PyQt5: %s\n' % Qt.PYQT_VERSION_STR + \
             'QtWebkit: %s\n' % WEBKIT_VERSION + \
             'SQLAlchemy: %s\n' % sqlalchemy.__version__ + \
             'SQLAlchemy Migrate: %s\n' % MIGRATE_VERSION + \
@@ -143,22 +143,15 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         Saving exception log and system information to a file.
         """
-        report_text = translate('OpenLP.ExceptionForm',
-                                '**OpenLP Bug Report**\n'
-                                'Version: %s\n\n'
-                                '--- Details of the Exception. ---\n\n%s\n\n '
-                                '--- Exception Traceback ---\n%s\n'
-                                '--- System information ---\n%s\n'
-                                '--- Library Versions ---\n%s\n')
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename = QtWidgets.QFileDialog.getSaveFileName(
             self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
             Settings().value(self.settings_section + '/last directory'),
-            translate('OpenLP.ExceptionForm', 'Text files (*.txt *.log *.text)'))
+            translate('OpenLP.ExceptionForm', 'Text files (*.txt *.log *.text)'))[0]
         if filename:
             filename = str(filename).replace('/', os.path.sep)
             Settings().setValue(self.settings_section + '/last directory', os.path.dirname(filename))
-            report_text = report_text % self._create_report()
+            report_text = self.report_text % self._create_report()
             try:
                 report_file = open(filename, 'w')
                 try:
@@ -178,14 +171,6 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         Opening systems default email client and inserting exception log and system information.
         """
-        body = translate('OpenLP.ExceptionForm',
-                         '*OpenLP Bug Report*\n'
-                         'Version: %s\n\n'
-                         '--- Details of the Exception. ---\n\n%s\n\n '
-                         '--- Exception Traceback ---\n%s\n'
-                         '--- System information ---\n%s\n'
-                         '--- Library Versions ---\n%s\n',
-                         'Please add the information that bug reports are favoured written in English.')
         content = self._create_report()
         source = ''
         exception = ''
@@ -195,9 +180,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
             if ':' in line:
                 exception = line.split('\n')[-1].split(':')[0]
         subject = 'Bug report: %s in %s' % (exception, source)
-        mail_to_url = QtCore.QUrl('mailto:bugs@openlp.org')
+        mail_to_url = QtCore.QUrlQuery('mailto:bugs@openlp.org')
         mail_to_url.addQueryItem('subject', subject)
-        mail_to_url.addQueryItem('body', body % content)
+        mail_to_url.addQueryItem('body', self.report_text % content)
         if self.file_attachment:
             mail_to_url.addQueryItem('attach', self.file_attachment)
         QtGui.QDesktopServices.openUrl(mail_to_url)
@@ -219,9 +204,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         Attache files to the bug report e-mail.
         """
-        files = QtGui.QFileDialog.getOpenFileName(self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
-                                                  Settings().value(self.settings_section + '/last directory'),
-                                                  '%s (*)' % UiStrings().AllFiles)
+        files, filter_used = QtWidgets.QFileDialog.getOpenFileName(self,
+                                                                   translate('ImagePlugin.ExceptionDialog',
+                                                                             'Select Attachment'),
+                                                                   Settings().value(self.settings_section +
+                                                                                    '/last directory'),
+                                                                   '%s (*)' % UiStrings().AllFiles)
         log.info('New files(s) %s', str(files))
         if files:
             self.file_attachment = str(files)

@@ -24,7 +24,7 @@ Module to test the EditCustomForm.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui, QtTest, QtCore
+from PyQt5 import QtTest, QtCore, QtWidgets
 
 from openlp.core.common import Registry
 # TODO: FIXME: Import needed due to horrible bad imports
@@ -44,7 +44,7 @@ class TestEditCustomForm(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
         media_item = MagicMock()
         manager = MagicMock()
@@ -85,8 +85,8 @@ class TestEditCustomForm(TestCase, TestMixin):
         """
         Test the on_add_button_clicked_test method / add_button button.
         """
-        # GIVEN: A mocked QDialog.exec_() method
-        with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+        # GIVEN: A mocked QDialog.exec() method
+        with patch('PyQt5.QtWidgets.QDialog.exec') as mocked_exec:
             # WHEN: Add a new slide.
             QtTest.QTest.mouseClick(self.form.add_button, QtCore.Qt.LeftButton)
 

@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
@@ -37,13 +37,13 @@ class Ui_TopicsDialog(object):
         topics_dialog.setObjectName('topics_dialog')
         topics_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         topics_dialog.resize(300, 10)
-        self.dialog_layout = QtGui.QVBoxLayout(topics_dialog)
+        self.dialog_layout = QtWidgets.QVBoxLayout(topics_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
-        self.name_layout = QtGui.QFormLayout()
+        self.name_layout = QtWidgets.QFormLayout()
         self.name_layout.setObjectName('name_layout')
-        self.name_label = QtGui.QLabel(topics_dialog)
+        self.name_label = QtWidgets.QLabel(topics_dialog)
         self.name_label.setObjectName('name_label')
-        self.name_edit = QtGui.QLineEdit(topics_dialog)
+        self.name_edit = QtWidgets.QLineEdit(topics_dialog)
         self.name_edit.setObjectName('name_edit')
         self.name_label.setBuddy(self.name_edit)
         self.name_layout.addRow(self.name_label, self.name_edit)

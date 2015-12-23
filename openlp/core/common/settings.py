@@ -26,7 +26,7 @@ import datetime
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 from openlp.core.common import ThemeLevel, SlideLimits, UiStrings, is_win, is_linux
 
@@ -57,6 +57,20 @@ def recent_files_conv(value):
     elif isinstance(value, bytes):
         return [value.decode()]
     return []
+
+
+def media_players_conv(string):
+    """
+    If phonon is in the setting string replace it with system
+    :param string: String to convert
+    :return: Converted string
+    """
+    values = string.split(',')
+    for index, value in enumerate(values):
+        if value == 'phonon':
+            values[index] = 'system'
+    string = ','.join(values)
+    return string
 
 
 class Settings(QtCore.QSettings):
@@ -146,7 +160,7 @@ class Settings(QtCore.QSettings):
         'core/override position': False,
         'core/application version': '0.0',
         'images/background color': '#000000',
-        'media/players': 'webkit',
+        'media/players': 'system,webkit',
         'media/override player': QtCore.Qt.Unchecked,
         'players/background color': '#000000',
         'servicemanager/last directory': '',
@@ -339,7 +353,9 @@ class Settings(QtCore.QSettings):
         # Changed during 2.2.x development.
         # ('advanced/stylesheet fix', '', []),
         # ('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
-        ('songs/search as type', 'advanced/search as type', [])
+        ('songs/search as type', 'advanced/search as type', []),
+        ('media/players', 'media/players_temp', [(media_players_conv, None)]),  # Convert phonon to system
+        ('media/players_temp', 'media/players', [])  # Move temp setting from above to correct setting
     ]
 
     @staticmethod
@@ -439,10 +455,6 @@ class Settings(QtCore.QSettings):
 
         **Note**, this method only converts a few types and might need to be extended if a certain type is missing!
         """
-        # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
-        # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
-        if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
-            setting = None
         # Handle 'None' type (empty value) properly.
         if setting is None:
             # An empty string saved to the settings results in a None type being returned.

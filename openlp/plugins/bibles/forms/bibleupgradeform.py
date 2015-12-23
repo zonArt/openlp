@@ -27,7 +27,7 @@ import os
 import shutil
 from tempfile import gettempdir
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, AppLocation, UiStrings, Settings, check_directory_exists, translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -87,7 +87,7 @@ class BibleUpgradeForm(OpenLPWizard):
         log.debug('Wizard cancelled by user')
         self.stop_import_flag = True
         if not self.currentPage() == self.progress_page:
-            self.done(QtGui.QDialog.Rejected)
+            self.done(QtWidgets.QDialog.Rejected)
 
     def onCurrentIdChanged(self, page_id):
         """
@@ -104,8 +104,8 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Show the file open dialog for the OSIS file.
         """
-        filename = QtGui.QFileDialog.getExistingDirectory(self, translate('BiblesPlugin.UpgradeWizardForm',
-                                                                          'Select a Backup Directory'), '')
+        filename = QtWidgets.QFileDialog.getExistingDirectory(self, translate('BiblesPlugin.UpgradeWizardForm',
+                                                                              'Select a Backup Directory'), '')
         if filename:
             self.backupDirectoryEdit.setText(filename)
 
@@ -148,53 +148,53 @@ class BibleUpgradeForm(OpenLPWizard):
         Add the bible import specific wizard pages.
         """
         # Backup Page
-        self.backup_page = QtGui.QWizardPage()
+        self.backup_page = QtWidgets.QWizardPage()
         self.backup_page.setObjectName('BackupPage')
-        self.backupLayout = QtGui.QVBoxLayout(self.backup_page)
+        self.backupLayout = QtWidgets.QVBoxLayout(self.backup_page)
         self.backupLayout.setObjectName('BackupLayout')
-        self.backupInfoLabel = QtGui.QLabel(self.backup_page)
+        self.backupInfoLabel = QtWidgets.QLabel(self.backup_page)
         self.backupInfoLabel.setOpenExternalLinks(True)
         self.backupInfoLabel.setTextFormat(QtCore.Qt.RichText)
         self.backupInfoLabel.setWordWrap(True)
         self.backupInfoLabel.setObjectName('backupInfoLabel')
         self.backupLayout.addWidget(self.backupInfoLabel)
-        self.selectLabel = QtGui.QLabel(self.backup_page)
+        self.selectLabel = QtWidgets.QLabel(self.backup_page)
         self.selectLabel.setObjectName('select_label')
         self.backupLayout.addWidget(self.selectLabel)
-        self.formLayout = QtGui.QFormLayout()
-        self.formLayout.setMargin(0)
+        self.formLayout = QtWidgets.QFormLayout()
+        self.formLayout.setContentsMargins(0, 0, 0, 0)
         self.formLayout.setObjectName('FormLayout')
-        self.backupDirectoryLabel = QtGui.QLabel(self.backup_page)
+        self.backupDirectoryLabel = QtWidgets.QLabel(self.backup_page)
         self.backupDirectoryLabel.setObjectName('backupDirectoryLabel')
-        self.backupDirectoryLayout = QtGui.QHBoxLayout()
+        self.backupDirectoryLayout = QtWidgets.QHBoxLayout()
         self.backupDirectoryLayout.setObjectName('BackupDirectoryLayout')
-        self.backupDirectoryEdit = QtGui.QLineEdit(self.backup_page)
+        self.backupDirectoryEdit = QtWidgets.QLineEdit(self.backup_page)
         self.backupDirectoryEdit.setObjectName('BackupFolderEdit')
         self.backupDirectoryLayout.addWidget(self.backupDirectoryEdit)
-        self.backupBrowseButton = QtGui.QToolButton(self.backup_page)
+        self.backupBrowseButton = QtWidgets.QToolButton(self.backup_page)
         self.backupBrowseButton.setIcon(self.open_icon)
         self.backupBrowseButton.setObjectName('BackupBrowseButton')
         self.backupDirectoryLayout.addWidget(self.backupBrowseButton)
         self.formLayout.addRow(self.backupDirectoryLabel, self.backupDirectoryLayout)
         self.backupLayout.addLayout(self.formLayout)
-        self.noBackupCheckBox = QtGui.QCheckBox(self.backup_page)
+        self.noBackupCheckBox = QtWidgets.QCheckBox(self.backup_page)
         self.noBackupCheckBox.setObjectName('NoBackupCheckBox')
         self.backupLayout.addWidget(self.noBackupCheckBox)
-        self.spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        self.spacer = QtWidgets.QSpacerItem(10, 0, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.backupLayout.addItem(self.spacer)
         self.addPage(self.backup_page)
         # Select Page
-        self.selectPage = QtGui.QWizardPage()
+        self.selectPage = QtWidgets.QWizardPage()
         self.selectPage.setObjectName('SelectPage')
-        self.pageLayout = QtGui.QVBoxLayout(self.selectPage)
+        self.pageLayout = QtWidgets.QVBoxLayout(self.selectPage)
         self.pageLayout.setObjectName('pageLayout')
-        self.scrollArea = QtGui.QScrollArea(self.selectPage)
+        self.scrollArea = QtWidgets.QScrollArea(self.selectPage)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName('scrollArea')
         self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.scrollAreaContents = QtGui.QWidget(self.scrollArea)
+        self.scrollAreaContents = QtWidgets.QWidget(self.scrollArea)
         self.scrollAreaContents.setObjectName('scrollAreaContents')
-        self.formLayout = QtGui.QVBoxLayout(self.scrollAreaContents)
+        self.formLayout = QtWidgets.QVBoxLayout(self.scrollAreaContents)
         self.formLayout.setSpacing(2)
         self.formLayout.setObjectName('formLayout')
         self.addScrollArea()
@@ -208,12 +208,12 @@ class BibleUpgradeForm(OpenLPWizard):
         self.checkBox = {}
         for number, filename in enumerate(self.files):
             bible = OldBibleDB(self.media_item, path=self.path, file=filename[0])
-            self.checkBox[number] = QtGui.QCheckBox(self.scrollAreaContents)
+            self.checkBox[number] = QtWidgets.QCheckBox(self.scrollAreaContents)
             self.checkBox[number].setObjectName('checkBox[%d]' % number)
             self.checkBox[number].setText(bible.get_name())
             self.checkBox[number].setCheckState(QtCore.Qt.Checked)
             self.formLayout.addWidget(self.checkBox[number])
-        self.spacer_item = QtGui.QSpacerItem(20, 5, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.spacer_item = QtWidgets.QSpacerItem(20, 5, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.formLayout.addItem(self.spacer_item)
         self.scrollArea.setWidget(self.scrollAreaContents)
 
@@ -547,9 +547,9 @@ class BibleUpgradeForm(OpenLPWizard):
             if self.includeWebBible:
                 self.progress_label.setText(
                     translate('BiblesPlugin.UpgradeWizardForm',
-                              'Upgrading Bible(s): %s successful%s\nPlease note that verses from Web Bibles will be '
-                              'downloaded on demand and so an Internet connection is required.') %
-                    (successful_import, failed_import_text))
+                              'Upgrading Bible(s): %(success)d successful%(failed_text)s\nPlease note that verses '
+                              'from Web Bibles will be downloaded on demand and so an Internet connection is required.')
+                    % {'success': successful_import, 'failed_text': failed_import_text})
             else:
                 self.progress_label.setText(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading Bible(s): %s successful%s') % (

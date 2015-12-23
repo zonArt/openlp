@@ -23,7 +23,7 @@
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, AppLocation, Settings, UiStrings, check_directory_exists, translate
 from openlp.core.lib import ItemCapabilities, MediaManagerItem, ServiceItemContext, StringContent, TreeWidgetWithDnD,\
@@ -41,6 +41,8 @@ class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
     """
+    images_go_live = QtCore.pyqtSignal(list)
+    images_add_to_service = QtCore.pyqtSignal(list)
     log.info('Image Media Item loaded')
 
     def __init__(self, parent, plugin):
@@ -54,6 +56,8 @@ class ImageMediaItem(MediaManagerItem):
         """
         Do some additional setup.
         """
+        self.images_go_live.connect(self.go_live_remote)
+        self.images_add_to_service.connect(self.add_to_service_remote)
         self.quick_preview_allowed = True
         self.has_search = True
         self.manager = self.plugin.manager
@@ -105,7 +109,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         # Add the List widget
         self.list_view = TreeWidgetWithDnD(self, self.plugin.name)
-        self.list_view.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.list_view.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.list_view.setAlternatingRowColors(True)
         self.list_view.setObjectName('%sTreeView' % self.plugin.name)
         # Add to pageLayout
@@ -157,7 +161,7 @@ class ImageMediaItem(MediaManagerItem):
                 can_shortcuts=True, triggers=self.on_delete_click)
         self.add_custom_context_actions()
         # Create the context menu and add all actions from the list_view.
-        self.menu = QtGui.QMenu()
+        self.menu = QtWidgets.QMenu()
         self.menu.addActions(self.list_view.actions())
         self.list_view.doubleClicked.connect(self.on_double_clicked)
         self.list_view.itemSelectionChanged.connect(self.on_selection_change)
@@ -235,14 +239,15 @@ class ImageMediaItem(MediaManagerItem):
                             row_item.parent().removeChild(row_item)
                         self.manager.delete_object(ImageFilenames, row_item.data(0, QtCore.Qt.UserRole).id)
                     elif isinstance(item_data, ImageGroups):
-                        if QtGui.QMessageBox.question(
+                        if QtWidgets.QMessageBox.question(
                                 self.list_view.parent(),
                                 translate('ImagePlugin.MediaItem', 'Remove group'),
                                 translate('ImagePlugin.MediaItem',
                                           'Are you sure you want to remove "%s" and everything in it?') %
                                 item_data.group_name,
-                                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                  QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
+                                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                      QtWidgets.QMessageBox.No)
+                        ) == QtWidgets.QMessageBox.Yes:
                             self.recursively_delete_group(item_data)
                             self.manager.delete_object(ImageGroups, row_item.data(0, QtCore.Qt.UserRole).id)
                             if item_data.parent_id == 0:
@@ -267,7 +272,7 @@ class ImageMediaItem(MediaManagerItem):
         image_groups.sort(key=lambda group_object: get_locale_key(group_object.group_name))
         folder_icon = build_icon(':/images/image_group.png')
         for image_group in image_groups:
-            group = QtGui.QTreeWidgetItem()
+            group = QtWidgets.QTreeWidgetItem()
             group.setText(0, image_group.group_name)
             group.setData(0, QtCore.Qt.UserRole, image_group)
             group.setIcon(0, folder_icon)
@@ -358,7 +363,7 @@ class ImageMediaItem(MediaManagerItem):
                     icon = build_icon(thumb)
                 else:
                     icon = create_thumb(image_file.filename, thumb)
-            item_name = QtGui.QTreeWidgetItem([filename])
+            item_name = QtWidgets.QTreeWidgetItem([filename])
             item_name.setText(0, filename)
             item_name.setIcon(0, icon)
             item_name.setToolTip(0, image_file.filename)
@@ -403,7 +408,7 @@ class ImageMediaItem(MediaManagerItem):
                 selected_item = selected_items[0]
                 if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageFilenames):
                     selected_item = selected_item.parent()
-                if isinstance(selected_item, QtGui.QTreeWidgetItem):
+                if isinstance(selected_item, QtWidgets.QTreeWidgetItem):
                     if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageGroups):
                         preselect_group = selected_item.data(0, QtCore.Qt.UserRole).id
             # Enable and disable parts of the 'choose group' form
@@ -424,7 +429,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.choose_group_form.existing_radio_button.setDisabled(False)
                 self.choose_group_form.group_combobox.setDisabled(False)
             # Ask which group the images should be saved in
-            if self.choose_group_form.exec_(selected_group=preselect_group):
+            if self.choose_group_form.exec(selected_group=preselect_group):
                 if self.choose_group_form.nogroup_radio_button.isChecked():
                     # User chose 'No group'
                     parent_group = ImageGroups()
@@ -503,7 +508,7 @@ class ImageMediaItem(MediaManagerItem):
         items_to_save = []
         for item in items_to_move:
             if isinstance(item.data(0, QtCore.Qt.UserRole), ImageFilenames):
-                if isinstance(item.parent(), QtGui.QTreeWidgetItem):
+                if isinstance(item.parent(), QtWidgets.QTreeWidgetItem):
                     item.parent().removeChild(item)
                 else:
                     self.list_view.invisibleRootItem().removeChild(item)
@@ -586,12 +591,12 @@ class ImageMediaItem(MediaManagerItem):
                     % '\n'.join(missing_items_file_names))
             return False
         # We have missing as well as existing images. We ask what to do.
-        elif missing_items_file_names and QtGui.QMessageBox.question(
+        elif missing_items_file_names and QtWidgets.QMessageBox.question(
                 self, translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
                 translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s\n'
                           'Do you want to add the other images anyway?') % '\n'.join(missing_items_file_names),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
-                QtGui.QMessageBox.No:
+                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes)) == \
+                QtWidgets.QMessageBox.No:
             return False
         # Continue with the existing images.
         for image in images:
@@ -623,11 +628,11 @@ class ImageMediaItem(MediaManagerItem):
             selected_item = selected_items[0]
             if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageFilenames):
                 selected_item = selected_item.parent()
-            if isinstance(selected_item, QtGui.QTreeWidgetItem):
+            if isinstance(selected_item, QtWidgets.QTreeWidgetItem):
                 if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageGroups):
                     preselect_group = selected_item.data(0, QtCore.Qt.UserRole).id
         # Show 'add group' dialog
-        if self.add_group_form.exec_(show_top_level_group=True, selected_group=preselect_group):
+        if self.add_group_form.exec(show_top_level_group=True, selected_group=preselect_group):
             new_group = ImageGroups.populate(parent_id=self.add_group_form.parent_group_combobox.itemData(
                 self.add_group_form.parent_group_combobox.currentIndex(), QtCore.Qt.UserRole),
                 group_name=self.add_group_form.name_edit.text())
@@ -705,7 +710,7 @@ class ImageMediaItem(MediaManagerItem):
 
         :param item_id: Id to make live
         """
-        item = QtGui.QTreeWidgetItem()
+        item = QtWidgets.QTreeWidgetItem()
         item_data = self.manager.get_object_filtered(ImageFilenames, ImageFilenames.filename == item_id)
         item.setText(0, os.path.basename(item_data.filename))
         item.setData(0, QtCore.Qt.UserRole, item_data)

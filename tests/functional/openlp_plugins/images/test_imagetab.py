@@ -23,7 +23,7 @@
 This module contains tests for the lib submodule of the Images plugin.
 """
 from unittest import TestCase
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Settings
 
@@ -54,7 +54,7 @@ class TestImageMediaItem(TestCase, TestMixin):
         self.setup_application()
         self.build_settings()
         Settings().extend_default_settings(__default_settings__)
-        self.parent = QtGui.QMainWindow()
+        self.parent = QtWidgets.QMainWindow()
         self.form = ImageTab(self.parent, 'Images', None, None)
         self.form.settings_form.register_post_process = MagicMock()
 

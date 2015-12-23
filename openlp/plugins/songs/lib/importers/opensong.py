@@ -171,12 +171,12 @@ class OpenSongImport(SongImport):
         topics = set(self.topics)
         if 'theme' in fields:
             theme = str(root.theme)
-            subthemes = theme[theme.find(':')+1:].split('/')
+            subthemes = theme[theme.find(':') + 1:].split('/')
             for topic in subthemes:
                 topics.add(topic.strip())
         if 'alttheme' in fields:
             theme = str(root.alttheme)
-            subthemes = theme[theme.find(':')+1:].split('/')
+            subthemes = theme[theme.find(':') + 1:].split('/')
             for topic in subthemes:
                 topics.add(topic.strip())
         self.topics = list(topics)

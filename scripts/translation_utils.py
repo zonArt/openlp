@@ -57,7 +57,7 @@ import glob
 
 from lxml import etree, objectify
 from optparse import OptionParser
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 SERVER_URL = 'http://www.transifex.net/api/2/project/openlp/resource/openlp-22x/'
 IGNORED_PATHS = ['scripts']

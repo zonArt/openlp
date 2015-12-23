@@ -29,9 +29,9 @@ import logging
 log = logging.getLogger(__name__)
 log.debug('projectormanager loaded')
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QObject, QThread, pyqtSlot
-from PyQt4.QtGui import QWidget
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QObject, QThread, pyqtSlot
+from PyQt5.QtWidgets import QWidget
 
 from openlp.core.common import RegistryProperties, Settings, OpenLPMixin, \
     RegistryMixin, translate
@@ -45,18 +45,18 @@ from openlp.core.ui.projector.editform import ProjectorEditForm
 from openlp.core.ui.projector.sourceselectform import SourceSelectTabs, SourceSelectSingle
 
 # Dict for matching projector status to display icon
-STATUS_ICONS = {S_NOT_CONNECTED:  ':/projector/projector_item_disconnect.png',
-                S_CONNECTING:  ':/projector/projector_item_connect.png',
-                S_CONNECTED:  ':/projector/projector_off.png',
-                S_OFF:  ':/projector/projector_off.png',
-                S_INITIALIZE:  ':/projector/projector_off.png',
-                S_STANDBY:  ':/projector/projector_off.png',
-                S_WARMUP:  ':/projector/projector_warmup.png',
-                S_ON:  ':/projector/projector_on.png',
-                S_COOLDOWN:  ':/projector/projector_cooldown.png',
-                E_ERROR:  ':/projector/projector_error.png',
-                E_NETWORK:  ':/projector/projector_not_connected_error.png',
-                E_AUTHENTICATION:  ':/projector/projector_not_connected_error.png',
+STATUS_ICONS = {S_NOT_CONNECTED: ':/projector/projector_item_disconnect.png',
+                S_CONNECTING: ':/projector/projector_item_connect.png',
+                S_CONNECTED: ':/projector/projector_off.png',
+                S_OFF: ':/projector/projector_off.png',
+                S_INITIALIZE: ':/projector/projector_off.png',
+                S_STANDBY: ':/projector/projector_off.png',
+                S_WARMUP: ':/projector/projector_warmup.png',
+                S_ON: ':/projector/projector_on.png',
+                S_COOLDOWN: ':/projector/projector_cooldown.png',
+                E_ERROR: ':/projector/projector_error.png',
+                E_NETWORK: ':/projector/projector_not_connected_error.png',
+                E_AUTHENTICATION: ':/projector/projector_not_connected_error.png',
                 E_UNKNOWN_SOCKET_ERROR: ':/projector/projector_not_connected_error.png',
                 E_NOT_CONNECTED: ':/projector/projector_not_connected_error.png'
                 }
@@ -74,9 +74,9 @@ class Ui_ProjectorManager(object):
         """
         log.debug('setup_ui()')
         # Create ProjectorManager box
-        self.layout = QtGui.QVBoxLayout(widget)
+        self.layout = QtWidgets.QVBoxLayout(widget)
         self.layout.setSpacing(0)
-        self.layout.setMargin(0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setObjectName('layout')
         # Add one selection toolbar
         self.one_toolbar = OpenLPToolbar(widget)
@@ -195,11 +195,11 @@ class Ui_ProjectorManager(object):
                                                               'Show selected projector screen'),
                                             triggers=self.on_show_projector)
         self.layout.addWidget(self.one_toolbar)
-        self.projector_one_widget = QtGui.QWidgetAction(self.one_toolbar)
+        self.projector_one_widget = QtWidgets.QWidgetAction(self.one_toolbar)
         self.projector_one_widget.setObjectName('projector_one_toolbar_widget')
         # Create projector manager list
-        self.projector_list_widget = QtGui.QListWidget(widget)
-        self.projector_list_widget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.projector_list_widget = QtWidgets.QListWidget(widget)
+        self.projector_list_widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.projector_list_widget.setAlternatingRowColors(True)
         self.projector_list_widget.setIconSize(QtCore.QSize(90, 50))
         self.projector_list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -208,7 +208,7 @@ class Ui_ProjectorManager(object):
         self.projector_list_widget.customContextMenuRequested.connect(self.context_menu)
         self.projector_list_widget.itemDoubleClicked.connect(self.on_doubleclick_item)
         # Build the context menu
-        self.menu = QtGui.QMenu()
+        self.menu = QtWidgets.QMenu()
         self.status_action = create_widget_action(self.menu,
                                                   text=translate('OpenLP.ProjectorManager',
                                                                  '&View Projector Information'),
@@ -367,7 +367,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             self.blank_action.setVisible(False)
             self.show_action.setVisible(False)
         self.menu.projector = real_projector
-        self.menu.exec_(self.projector_list_widget.mapToGlobal(point))
+        self.menu.exec(self.projector_list_widget.mapToGlobal(point))
 
     def on_edit_input(self, opt=None):
         self.on_select_input(opt=opt, edit=True)
@@ -377,7 +377,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         Builds menu for 'Select Input' option, then calls the selected projector
         item to change input source.
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         self.get_settings()  # In case the dialog interface setting was changed
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
@@ -393,7 +393,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
                 source_select_form = SourceSelectSingle(parent=self,
                                                         projectordb=self.projectordb,
                                                         edit=edit)
-            source = source_select_form.exec_(projector.link)
+            source = source_select_form.exec(projector.link)
         log.debug('(%s) source_select_form() returned %s' % (projector.link.ip, source))
         if source is not None and source > 0:
             projector.link.set_input_source(str(source))
@@ -403,15 +403,15 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Calls edit dialog to add a new projector to the database
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
-        self.projector_form.exec_()
+        self.projector_form.exec()
 
     def on_blank_projector(self, opt=None):
         """
         Calls projector thread to send blank screen command
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         try:
             ip = opt.link.ip
@@ -432,7 +432,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         When item is doubleclicked, will connect to projector.
 
         :param item: List widget item for connection.
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         projector = item.data(QtCore.Qt.UserRole)
         if projector.link.state() != projector.link.ConnectedState:
@@ -446,7 +446,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Calls projector thread to connect to projector
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         try:
             ip = opt.link.ip
@@ -466,19 +466,19 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Deletes a projector from the list and the database
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         if list_item is None:
             return
         projector = list_item.data(QtCore.Qt.UserRole)
-        msg = QtGui.QMessageBox()
+        msg = QtWidgets.QMessageBox()
         msg.setText(translate('OpenLP.ProjectorManager', 'Delete projector (%s) %s?') % (projector.link.ip,
                                                                                          projector.link.name))
         msg.setInformativeText(translate('OpenLP.ProjectorManager', 'Are you sure you want to delete this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
-        ans = msg.exec_()
+        ans = msg.exec()
         if ans == msg.Cancel:
             return
         try:
@@ -528,7 +528,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Calls projector thread to disconnect from projector
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         try:
             ip = opt.link.ip
@@ -548,7 +548,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Calls edit dialog with selected projector to edit information
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         list_item = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = list_item.data(QtCore.Qt.UserRole)
@@ -556,14 +556,14 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             return
         self.old_projector = projector
         projector.link.disconnect_from_host()
-        self.projector_form.exec_(projector.db_item)
+        self.projector_form.exec(projector.db_item)
         projector.db_item = self.projectordb.get_projector_by_id(self.old_projector.db_item.id)
 
     def on_poweroff_projector(self, opt=None):
         """
         Calls projector link to send Power Off command
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         try:
             ip = opt.link.ip
@@ -583,7 +583,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Calls projector link to send Power On command
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         try:
             ip = opt.link.ip
@@ -603,7 +603,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Calls projector thread to send open shutter command
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         try:
             ip = opt.link.ip
@@ -623,7 +623,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         Builds message box with projector status information
 
-        :param opt: Needed by PyQt4
+        :param opt: Needed by PyQt5
         """
         lwi = self.projector_list_widget.item(self.projector_list_widget.currentRow())
         projector = lwi.data(QtCore.Qt.UserRole)
@@ -674,7 +674,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
                 message = '%s<b>%s</b>' % (message, translate('OpenLP.ProjectorManager', 'Current errors/warnings'))
                 for (key, val) in projector.link.projector_errors.items():
                     message = '%s<b>%s</b>: %s<br />' % (message, key, ERROR_MSG[val])
-        QtGui.QMessageBox.information(self, translate('OpenLP.ProjectorManager', 'Projector Information'), message)
+        QtWidgets.QMessageBox.information(self, translate('OpenLP.ProjectorManager', 'Projector Information'), message)
 
     def _add_projector(self, projector):
         """
@@ -707,10 +707,10 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         item.db_item = projector
         icon = QtGui.QIcon(QtGui.QPixmap(STATUS_ICONS[S_NOT_CONNECTED]))
         item.icon = icon
-        widget = QtGui.QListWidgetItem(icon,
-                                       item.link.name,
-                                       self.projector_list_widget
-                                       )
+        widget = QtWidgets.QListWidgetItem(icon,
+                                           item.link.name,
+                                           self.projector_list_widget
+                                           )
         widget.setData(QtCore.Qt.UserRole, item)
         item.link.db_item = item.db_item
         item.widget = widget
@@ -751,7 +751,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         Add a projector from the edit dialog
 
         :param ip: IP address of new record item to find
-        :param opts: Needed by PyQt4
+        :param opts: Needed by PyQt5
         """
         log.debug('add_projector_from_wizard(ip=%s)' % ip)
         item = self.projectordb.get_projector_by_ip(ip)
@@ -831,7 +831,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             self.update_icons()
 
     def get_toolbar_item(self, name, enabled=False, hidden=False):
-        item = self.one_toolbar.findChild(QtGui.QAction, name)
+        item = self.one_toolbar.findChild(QtWidgets.QAction, name)
         if item == 0:
             log.debug('No item found with name "%s"' % name)
             return
@@ -918,11 +918,11 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
 
         :param name: Name from QListWidgetItem
         """
-        QtGui.QMessageBox.warning(self, translate('OpenLP.ProjectorManager',
-                                                  '"%s" Authentication Error' % name),
-                                  '<br />There was an authentication error while trying to connect.'
-                                  '<br /><br />Please verify your PIN setting '
-                                  'for projector item "%s"' % name)
+        QtWidgets.QMessageBox.warning(self, translate('OpenLP.ProjectorManager',
+                                                      '"%s" Authentication Error' % name),
+                                      '<br />There was an authentication error while trying to connect.'
+                                      '<br /><br />Please verify your PIN setting '
+                                      'for projector item "%s"' % name)
 
     @pyqtSlot(str)
     def no_authentication_error(self, name):
@@ -932,11 +932,11 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
 
         :param name: Name from QListWidgetItem
         """
-        QtGui.QMessageBox.warning(self, translate('OpenLP.ProjectorManager',
-                                                  '"%s" No Authentication Error' % name),
-                                  '<br />PIN is set and projector does not require authentication.'
-                                  '<br /><br />Please verify your PIN setting '
-                                  'for projector item "%s"' % name)
+        QtWidgets.QMessageBox.warning(self, translate('OpenLP.ProjectorManager',
+                                                      '"%s" No Authentication Error' % name),
+                                      '<br />PIN is set and projector does not require authentication.'
+                                      '<br /><br />Please verify your PIN setting '
+                                      'for projector item "%s"' % name)
 
 
 class ProjectorItem(QObject):
@@ -969,8 +969,8 @@ def not_implemented(function):
 
     :param func: Function name
     """
-    QtGui.QMessageBox.information(None,
-                                  translate('OpenLP.ProjectorManager', 'Not Implemented Yet'),
-                                  translate('OpenLP.ProjectorManager',
-                                            'Function "%s"<br />has not been implemented yet.'
-                                            '<br />Please check back again later.' % function))
+    QtWidgets.QMessageBox.information(None,
+                                      translate('OpenLP.ProjectorManager', 'Not Implemented Yet'),
+                                      translate('OpenLP.ProjectorManager',
+                                                'Function "%s"<br />has not been implemented yet.'
+                                                '<br />Please check back again later.' % function))

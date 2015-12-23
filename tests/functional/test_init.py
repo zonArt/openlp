@@ -25,7 +25,7 @@ Package to test the openlp.core.__init__ package.
 import os
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core import OpenLP, parse_options
 from openlp.core.common import Settings
@@ -97,9 +97,9 @@ class TestInit(TestCase, TestMixin):
         }
         Settings().setValue('core/application version', '2.2.0')
         with patch('openlp.core.get_application_version') as mocked_get_application_version,\
-                patch('openlp.core.QtGui.QMessageBox.question') as mocked_question:
+                patch('openlp.core.QtWidgets.QMessageBox.question') as mocked_question:
             mocked_get_application_version.return_value = MOCKED_VERSION
-            mocked_question.return_value = QtGui.QMessageBox.No
+            mocked_question.return_value = QtWidgets.QMessageBox.No
 
             # WHEN: We check if a backup should be created
             self.openlp.backup_on_upgrade(old_install)
@@ -121,9 +121,9 @@ class TestInit(TestCase, TestMixin):
         }
         Settings().setValue('core/application version', '2.0.5')
         with patch('openlp.core.get_application_version') as mocked_get_application_version,\
-                patch('openlp.core.QtGui.QMessageBox.question') as mocked_question:
+                patch('openlp.core.QtWidgets.QMessageBox.question') as mocked_question:
             mocked_get_application_version.return_value = MOCKED_VERSION
-            mocked_question.return_value = QtGui.QMessageBox.No
+            mocked_question.return_value = QtWidgets.QMessageBox.No
 
             # WHEN: We check if a backup should be created
             self.openlp.backup_on_upgrade(old_install)

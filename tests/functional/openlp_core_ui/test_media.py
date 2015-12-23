@@ -22,7 +22,7 @@
 """
 Package to test the openlp.core.ui package.
 """
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 from unittest import TestCase
 
 from openlp.core.ui.media import get_media_players, parse_optical_path
@@ -81,7 +81,7 @@ class TestMedia(TestCase, TestMixin):
         """
         def value_results(key):
             if key == 'media/players':
-                return '[vlc,webkit,phonon]'
+                return '[vlc,webkit,system]'
             else:
                 return False
 
@@ -93,7 +93,7 @@ class TestMedia(TestCase, TestMixin):
             used_players, overridden_player = get_media_players()
 
             # THEN: the used_players should be an empty list, and the overridden player should be an empty string
-            self.assertEqual(['vlc', 'webkit', 'phonon'], used_players, 'Used players should be correct')
+            self.assertEqual(['vlc', 'webkit', 'system'], used_players, 'Used players should be correct')
             self.assertEqual('', overridden_player, 'Overridden player should be an empty string')
 
     def test_get_media_players_with_overridden_player(self):
@@ -102,7 +102,7 @@ class TestMedia(TestCase, TestMixin):
         """
         def value_results(key):
             if key == 'media/players':
-                return '[vlc,webkit,phonon]'
+                return '[vlc,webkit,system]'
             else:
                 return QtCore.Qt.Checked
 
@@ -114,8 +114,8 @@ class TestMedia(TestCase, TestMixin):
             used_players, overridden_player = get_media_players()
 
             # THEN: the used_players should be an empty list, and the overridden player should be an empty string
-            self.assertEqual(['vlc', 'webkit', 'phonon'], used_players, 'Used players should be correct')
-            self.assertEqual('vlc,webkit,phonon', overridden_player, 'Overridden player should be a string of players')
+            self.assertEqual(['vlc', 'webkit', 'system'], used_players, 'Used players should be correct')
+            self.assertEqual('vlc,webkit,system', overridden_player, 'Overridden player should be a string of players')
 
     def test_parse_optical_path_linux(self):
         """

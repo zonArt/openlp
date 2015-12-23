@@ -48,8 +48,8 @@ class TestServiceManager(TestCase, TestMixin):
                 patch('openlp.core.ui.mainwindow.LiveController') as mocked_live_controller, \
                 patch('openlp.core.ui.mainwindow.PreviewController') as mocked_preview_controller, \
                 patch('openlp.core.ui.mainwindow.OpenLPDockWidget') as mocked_dock_widget, \
-                patch('openlp.core.ui.mainwindow.QtGui.QToolBox') as mocked_q_tool_box_class, \
-                patch('openlp.core.ui.mainwindow.QtGui.QMainWindow.addDockWidget') as mocked_add_dock_method, \
+                patch('openlp.core.ui.mainwindow.QtWidgets.QToolBox') as mocked_q_tool_box_class, \
+                patch('openlp.core.ui.mainwindow.QtWidgets.QMainWindow.addDockWidget') as mocked_add_dock_method, \
                 patch('openlp.core.ui.mainwindow.ThemeManager') as mocked_theme_manager, \
                 patch('openlp.core.ui.mainwindow.ProjectorManager') as mocked_projector_manager, \
                 patch('openlp.core.ui.mainwindow.Renderer') as mocked_renderer:
@@ -80,9 +80,9 @@ class TestServiceManager(TestCase, TestMixin):
         """
         # GIVEN: A service item added
         self.service_manager.setup_ui(self.service_manager)
-        with patch('PyQt4.QtGui.QTreeWidget.itemAt') as mocked_item_at_method, \
-                patch('PyQt4.QtGui.QWidget.mapToGlobal'), \
-                patch('PyQt4.QtGui.QMenu.exec_'):
+        with patch('PyQt5.QtWidgets.QTreeWidget.itemAt') as mocked_item_at_method, \
+                patch('PyQt5.QtWidgets.QWidget.mapToGlobal'), \
+                patch('PyQt5.QtWidgets.QMenu.exec'):
             mocked_item = MagicMock()
             mocked_item.parent.return_value = None
             mocked_item_at_method.return_value = mocked_item
@@ -122,9 +122,9 @@ class TestServiceManager(TestCase, TestMixin):
         """
         # GIVEN: A service item added
         self.service_manager.setup_ui(self.service_manager)
-        with patch('PyQt4.QtGui.QTreeWidget.itemAt') as mocked_item_at_method, \
-                patch('PyQt4.QtGui.QWidget.mapToGlobal'), \
-                patch('PyQt4.QtGui.QMenu.exec_'):
+        with patch('PyQt5.QtWidgets.QTreeWidget.itemAt') as mocked_item_at_method, \
+                patch('PyQt5.QtWidgets.QWidget.mapToGlobal'), \
+                patch('PyQt5.QtWidgets.QMenu.exec'):
             mocked_item = MagicMock()
             mocked_item.parent.return_value = None
             mocked_item_at_method.return_value = mocked_item
@@ -166,9 +166,9 @@ class TestServiceManager(TestCase, TestMixin):
         """
         # GIVEN: A service item added
         self.service_manager.setup_ui(self.service_manager)
-        with patch('PyQt4.QtGui.QTreeWidget.itemAt') as mocked_item_at_method, \
-                patch('PyQt4.QtGui.QWidget.mapToGlobal'), \
-                patch('PyQt4.QtGui.QMenu.exec_'):
+        with patch('PyQt5.QtWidgets.QTreeWidget.itemAt') as mocked_item_at_method, \
+                patch('PyQt5.QtWidgets.QWidget.mapToGlobal'), \
+                patch('PyQt5.QtWidgets.QMenu.exec'):
             mocked_item = MagicMock()
             mocked_item.parent.return_value = None
             mocked_item_at_method.return_value = mocked_item
@@ -209,9 +209,9 @@ class TestServiceManager(TestCase, TestMixin):
         """
         # GIVEN: A service item added
         self.service_manager.setup_ui(self.service_manager)
-        with patch('PyQt4.QtGui.QTreeWidget.itemAt') as mocked_item_at_method, \
-                patch('PyQt4.QtGui.QWidget.mapToGlobal'), \
-                patch('PyQt4.QtGui.QMenu.exec_'):
+        with patch('PyQt5.QtWidgets.QTreeWidget.itemAt') as mocked_item_at_method, \
+                patch('PyQt5.QtWidgets.QWidget.mapToGlobal'), \
+                patch('PyQt5.QtWidgets.QMenu.exec'):
             mocked_item = MagicMock()
             mocked_item.parent.return_value = None
             mocked_item_at_method.return_value = mocked_item
@@ -254,9 +254,9 @@ class TestServiceManager(TestCase, TestMixin):
         """
         # GIVEN: A service item added
         self.service_manager.setup_ui(self.service_manager)
-        with patch('PyQt4.QtGui.QTreeWidget.itemAt') as mocked_item_at_method, \
-                patch('PyQt4.QtGui.QWidget.mapToGlobal'), \
-                patch('PyQt4.QtGui.QMenu.exec_'):
+        with patch('PyQt5.QtWidgets.QTreeWidget.itemAt') as mocked_item_at_method, \
+                patch('PyQt5.QtWidgets.QWidget.mapToGlobal'), \
+                patch('PyQt5.QtWidgets.QMenu.exec'):
             mocked_item = MagicMock()
             mocked_item.parent.return_value = None
             mocked_item_at_method.return_value = mocked_item
@@ -297,9 +297,9 @@ class TestServiceManager(TestCase, TestMixin):
         """
         # GIVEN: A service item added
         self.service_manager.setup_ui(self.service_manager)
-        with patch('PyQt4.QtGui.QTreeWidget.itemAt') as mocked_item_at_method, \
-                patch('PyQt4.QtGui.QWidget.mapToGlobal'), \
-                patch('PyQt4.QtGui.QMenu.exec_'):
+        with patch('PyQt5.QtWidgets.QTreeWidget.itemAt') as mocked_item_at_method, \
+                patch('PyQt5.QtWidgets.QWidget.mapToGlobal'), \
+                patch('PyQt5.QtWidgets.QMenu.exec'):
             mocked_item = MagicMock()
             mocked_item.parent.return_value = None
             mocked_item_at_method.return_value = mocked_item

@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import UiStrings, translate
 from openlp.core.lib import SpellTextEdit, build_icon
@@ -32,7 +32,7 @@ class Ui_CustomSlideEditDialog(object):
         custom_slide_edit_dialog.setObjectName('custom_slide_edit_dialog')
         custom_slide_edit_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         custom_slide_edit_dialog.resize(350, 300)
-        self.dialog_layout = QtGui.QVBoxLayout(custom_slide_edit_dialog)
+        self.dialog_layout = QtWidgets.QVBoxLayout(custom_slide_edit_dialog)
         self.slide_text_edit = SpellTextEdit(self)
         self.slide_text_edit.setObjectName('slide_text_edit')
         self.dialog_layout.addWidget(self.slide_text_edit)

@@ -23,7 +23,7 @@
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, Settings, UiStrings, translate
 from openlp.core.lib import MediaManagerItem, ItemCapabilities, ServiceItemContext,\
@@ -44,6 +44,8 @@ class PresentationMediaItem(MediaManagerItem):
     This is the Presentation media manager item for Presentation Items. It can present files using Openoffice and
     Powerpoint
     """
+    presentations_go_live = QtCore.pyqtSignal(list)
+    presentations_add_to_service = QtCore.pyqtSignal(list)
     log.info('Presentations Media Item loaded')
 
     def __init__(self, parent, plugin, controllers):
@@ -66,6 +68,8 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Do some additional setup.
         """
+        self.presentations_go_live.connect(self.go_live_remote)
+        self.presentations_add_to_service.connect(self.add_to_service_remote)
         self.message_listener = MessageListener(self)
         self.has_search = True
         self.single_service_item = False
@@ -101,12 +105,13 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Display custom media manager items for presentations.
         """
-        self.presentation_widget = QtGui.QWidget(self)
+        self.presentation_widget = QtWidgets.QWidget(self)
         self.presentation_widget.setObjectName('presentation_widget')
-        self.display_layout = QtGui.QFormLayout(self.presentation_widget)
-        self.display_layout.setMargin(self.display_layout.spacing())
+        self.display_layout = QtWidgets.QFormLayout(self.presentation_widget)
+        self.display_layout.setContentsMargins(self.display_layout.spacing(), self.display_layout.spacing(),
+                                               self.display_layout.spacing(), self.display_layout.spacing())
         self.display_layout.setObjectName('display_layout')
-        self.display_type_label = QtGui.QLabel(self.presentation_widget)
+        self.display_type_label = QtWidgets.QLabel(self.presentation_widget)
         self.display_type_label.setObjectName('display_type_label')
         self.display_type_combo_box = create_horizontal_adjusting_combo_box(self.presentation_widget,
                                                                             'display_type_combo_box')
@@ -164,7 +169,7 @@ class PresentationMediaItem(MediaManagerItem):
                 continue
             filename = os.path.split(file)[1]
             if not os.path.exists(file):
-                item_name = QtGui.QListWidgetItem(filename)
+                item_name = QtWidgets.QListWidgetItem(filename)
                 item_name.setIcon(build_icon(ERROR_IMAGE))
                 item_name.setData(QtCore.Qt.UserRole, file)
                 item_name.setToolTip(file)
@@ -201,7 +206,7 @@ class PresentationMediaItem(MediaManagerItem):
                                                    translate('PresentationPlugin.MediaItem',
                                                              'This type of presentation is not supported.'))
                         continue
-                item_name = QtGui.QListWidgetItem(filename)
+                item_name = QtWidgets.QListWidgetItem(filename)
                 item_name.setData(QtCore.Qt.UserRole, file)
                 item_name.setIcon(icon)
                 item_name.setToolTip(file)

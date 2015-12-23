@@ -23,7 +23,7 @@
 import logging
 import os
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 from sqlalchemy.sql import and_
 
 from openlp.core.common import RegistryProperties, Settings, check_directory_exists, translate
@@ -34,7 +34,7 @@ from .songusagedetaildialog import Ui_SongUsageDetailDialog
 log = logging.getLogger(__name__)
 
 
-class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryProperties):
+class SongUsageDetailForm(QtWidgets.QDialog, Ui_SongUsageDetailDialog, RegistryProperties):
     """
     Class documentation goes here.
     """
@@ -60,7 +60,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryPrope
         """
         Triggered when the Directory selection button is clicked
         """
-        path = QtGui.QFileDialog.getExistingDirectory(
+        path = QtWidgets.QFileDialog.getExistingDirectory(
             self, translate('SongUsagePlugin.SongUsageDetailForm', 'Output File Location'),
             Settings().value(self.plugin.settings_section + '/last directory export'))
         if path:

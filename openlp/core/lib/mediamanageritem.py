@@ -26,7 +26,7 @@ import logging
 import os
 import re
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import FileDialog, OpenLPToolbar, ServiceItem, StringContent, ListWidgetWithDnD, \
@@ -37,7 +37,7 @@ from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 log = logging.getLogger(__name__)
 
 
-class MediaManagerItem(QtGui.QWidget, RegistryProperties):
+class MediaManagerItem(QtWidgets.QWidget, RegistryProperties):
     """
     MediaManagerItem is a helper widget for plugins.
 
@@ -96,16 +96,13 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
         self.single_service_item = True
         self.quick_preview_allowed = False
         self.has_search = False
-        self.page_layout = QtGui.QVBoxLayout(self)
+        self.page_layout = QtWidgets.QVBoxLayout(self)
         self.page_layout.setSpacing(0)
-        self.page_layout.setMargin(0)
+        self.page_layout.setContentsMargins(0, 0, 0, 0)
         self.required_icons()
         self.setupUi()
         self.retranslateUi()
         self.auto_select_id = -1
-        # Need to use event as called across threads and UI is updated
-        QtCore.QObject.connect(self, QtCore.SIGNAL('%s_go_live' % self.plugin.name), self.go_live_remote)
-        QtCore.QObject.connect(self, QtCore.SIGNAL('%s_add_to_service' % self.plugin.name), self.add_to_service_remote)
 
     def setup_item(self):
         """
@@ -200,7 +197,7 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
         # Add the List widget
         self.list_view = ListWidgetWithDnD(self, self.plugin.name)
         self.list_view.setSpacing(1)
-        self.list_view.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.list_view.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.list_view.setAlternatingRowColors(True)
         self.list_view.setObjectName('%sListView' % self.plugin.name)
         # Add to page_layout
@@ -246,7 +243,7 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
                                  triggers=self.on_add_edit_click)
         self.add_custom_context_actions()
         # Create the context menu and add all actions from the list_view.
-        self.menu = QtGui.QMenu()
+        self.menu = QtWidgets.QMenu()
         self.menu.addActions(self.list_view.actions())
         self.list_view.doubleClicked.connect(self.on_double_clicked)
         self.list_view.itemSelectionChanged.connect(self.on_selection_change)
@@ -256,23 +253,23 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
         """
         Creates a search field with button and related signal handling.
         """
-        self.search_widget = QtGui.QWidget(self)
+        self.search_widget = QtWidgets.QWidget(self)
         self.search_widget.setObjectName('search_widget')
-        self.search_layout = QtGui.QVBoxLayout(self.search_widget)
+        self.search_layout = QtWidgets.QVBoxLayout(self.search_widget)
         self.search_layout.setObjectName('search_layout')
-        self.search_text_layout = QtGui.QFormLayout()
+        self.search_text_layout = QtWidgets.QFormLayout()
         self.search_text_layout.setObjectName('search_text_layout')
-        self.search_text_label = QtGui.QLabel(self.search_widget)
+        self.search_text_label = QtWidgets.QLabel(self.search_widget)
         self.search_text_label.setObjectName('search_text_label')
         self.search_text_edit = SearchEdit(self.search_widget)
         self.search_text_edit.setObjectName('search_text_edit')
         self.search_text_label.setBuddy(self.search_text_edit)
         self.search_text_layout.addRow(self.search_text_label, self.search_text_edit)
         self.search_layout.addLayout(self.search_text_layout)
-        self.search_button_layout = QtGui.QHBoxLayout()
+        self.search_button_layout = QtWidgets.QHBoxLayout()
         self.search_button_layout.setObjectName('search_button_layout')
         self.search_button_layout.addStretch()
-        self.search_text_button = QtGui.QPushButton(self.search_widget)
+        self.search_text_button = QtWidgets.QPushButton(self.search_widget)
         self.search_text_button.setObjectName('search_text_button')
         self.search_button_layout.addWidget(self.search_text_button)
         self.search_layout.addLayout(self.search_button_layout)
@@ -395,7 +392,7 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
             return
         if not item.flags() & QtCore.Qt.ItemIsSelectable:
             return
-        self.menu.exec_(self.list_view.mapToGlobal(point))
+        self.menu.exec(self.list_view.mapToGlobal(point))
 
     def get_file_list(self):
         """
@@ -479,9 +476,9 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
         :param keep_focus: Do we keep focus (False)
         """
         if not self.list_view.selectedIndexes() and not self.remote_triggered:
-            QtGui.QMessageBox.information(self, UiStrings().NISp,
-                                          translate('OpenLP.MediaManagerItem',
-                                                    'You must select one or more items to preview.'))
+            QtWidgets.QMessageBox.information(self, UiStrings().NISp,
+                                              translate('OpenLP.MediaManagerItem',
+                                                        'You must select one or more items to preview.'))
         else:
             log.debug('%s Preview requested' % self.plugin.name)
             service_item = self.build_service_item()
@@ -496,9 +493,9 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
         Send an item live by building a service item then adding that service item to the live slide controller.
         """
         if not self.list_view.selectedIndexes():
-            QtGui.QMessageBox.information(self, UiStrings().NISp,
-                                          translate('OpenLP.MediaManagerItem',
-                                                    'You must select one or more items to send live.'))
+            QtWidgets.QMessageBox.information(self, UiStrings().NISp,
+                                              translate('OpenLP.MediaManagerItem',
+                                                        'You must select one or more items to send live.'))
         else:
             self.go_live()
 
@@ -536,7 +533,7 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
 
         :param item_id: Id to make live
         """
-        item = QtGui.QListWidgetItem()
+        item = QtWidgets.QListWidgetItem()
         item.setData(QtCore.Qt.UserRole, item_id)
         return item
 
@@ -545,9 +542,9 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
         Add a selected item to the current service
         """
         if not self.list_view.selectedIndexes():
-            QtGui.QMessageBox.information(self, UiStrings().NISp,
-                                          translate('OpenLP.MediaManagerItem',
-                                                    'You must select one or more items to add.'))
+            QtWidgets.QMessageBox.information(self, UiStrings().NISp,
+                                              translate('OpenLP.MediaManagerItem',
+                                                        'You must select one or more items to add.'))
         else:
             # Is it possible to process multiple list items to generate
             # multiple service items?
@@ -589,23 +586,24 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
         Add a selected item to an existing item in the current service.
         """
         if not self.list_view.selectedIndexes() and not self.remote_triggered:
-            QtGui.QMessageBox.information(self, UiStrings().NISp,
-                                          translate('OpenLP.MediaManagerItem', 'You must select one or more items.'))
+            QtWidgets.QMessageBox.information(self, UiStrings().NISp,
+                                              translate('OpenLP.MediaManagerItem',
+                                                        'You must select one or more items.'))
         else:
             log.debug('%s Add requested', self.plugin.name)
             service_item = self.service_manager.get_service_item()
             if not service_item:
-                QtGui.QMessageBox.information(self, UiStrings().NISs,
-                                              translate('OpenLP.MediaManagerItem',
-                                                        'You must select an existing service item to add to.'))
+                QtWidgets.QMessageBox.information(self, UiStrings().NISs,
+                                                  translate('OpenLP.MediaManagerItem',
+                                                            'You must select an existing service item to add to.'))
             elif self.plugin.name == service_item.name:
                 self.generate_slide_data(service_item)
                 self.service_manager.add_service_item(service_item, replace=True)
             else:
                 # Turn off the remote edit update message indicator
-                QtGui.QMessageBox.information(self, translate('OpenLP.MediaManagerItem', 'Invalid Service Item'),
-                                              translate('OpenLP.MediaManagerItem',
-                                                        'You must select a %s service item.') % self.title)
+                QtWidgets.QMessageBox.information(self, translate('OpenLP.MediaManagerItem', 'Invalid Service Item'),
+                                                  translate('OpenLP.MediaManagerItem',
+                                                            'You must select a %s service item.') % self.title)
 
     def build_service_item(self, item=None, xml_version=False, remote=False, context=ServiceItemContext.Live):
         """
@@ -638,7 +636,7 @@ class MediaManagerItem(QtGui.QWidget, RegistryProperties):
         if self.list_view.count():
             return
         message = translate('OpenLP.MediaManagerItem', 'No Search Results')
-        item = QtGui.QListWidgetItem(message)
+        item = QtWidgets.QListWidgetItem(message)
         item.setFlags(QtCore.Qt.NoItemFlags)
         font = QtGui.QFont()
         font.setItalic(True)
