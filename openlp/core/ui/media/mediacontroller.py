@@ -277,7 +277,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                                                icon=':/slides/media_playback_stop.png',
                                                tooltip=translate('OpenLP.SlideController', 'Stop playing media.'),
                                                triggers=controller.send_to_plugins)
-        controller.position_label = QtGui.QLabel()
+        controller.position_label = QtWidgets.QLabel()
         controller.position_label.setText(' 00:00 / 00:00')
         controller.position_label.setToolTip(translate('OpenLP.SlideController', 'Video timer.'))
         controller.position_label.setObjectName('position_label')
@@ -303,7 +303,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         controller.volume_slider.setGeometry(QtCore.QRect(90, 160, 221, 24))
         controller.volume_slider.setObjectName('volume_slider')
         controller.mediabar.add_toolbar_widget(controller.volume_slider)
-        controller.controller_layout.addWidget(controller.mediabar)
         controller.controller_layout.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
         # Signals
