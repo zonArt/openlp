@@ -1102,7 +1102,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
                                                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Close |
                                                                                       QtWidgets.QMessageBox.Cancel),
                                                 self)
-                msg_box.setButtonText(QtWidgets.QMessageBox.Close, translate('OpenLP.MainWindow', '&Exit OpenLP'))
+                close_button = msg_box.button(QtWidgets.QMessageBox.Close)
+                close_button.setText(translate('OpenLP.MainWindow', '&Exit OpenLP'))
                 msg_box.setDefaultButton(QtWidgets.QMessageBox.Close)
                 if msg_box.exec() == QtWidgets.QMessageBox.Close:
                     self.clean_up()
