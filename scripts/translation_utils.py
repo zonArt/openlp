@@ -51,6 +51,7 @@ import base64
 import glob
 import json
 import os
+import sys
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -300,6 +301,7 @@ def check_format_strings():
     This method runs through the ts-files and looks for mismatches between format strings in the original text
     and in the translations.
     """
+    is_ok = True
     path = os.path.join(os.path.abspath('..'), 'resources', 'i18n', '*.ts')
     file_list = glob.glob(path)
     for filename in file_list:
@@ -317,14 +319,17 @@ def check_format_strings():
                     print_verbose('parsed numerusform: location: %s, source: %s, translation: %s' % (
                                   location, org_text, num.text))
                     if num and org_text.count('%') != num.text.count('%'):
+                        is_ok = False
                         print_quiet(
                             'ERROR: Translation from %s at line %s has a mismatch of format input:\n%s\n%s\n' % (
                                 location, line, org_text, num.text))
             else:
                 print_verbose('parsed: location: %s, source: %s, translation: %s' % (location, org_text, translation))
                 if org_text.count('%') != translation.count('%'):
+                    is_ok = False
                     print_quiet('ERROR: Translation from %s at line %s has a mismatch of format input:\n%s\n%s\n' % (
                                 location, line, org_text, translation))
+    return is_ok
 
 
 def process_stack(command_stack):
@@ -335,6 +340,7 @@ def process_stack(command_stack):
     ``command_stack``
         The command stack to process.
     """
+    is_success = True
     if command_stack:
         print_quiet('Processing %d commands...' % len(command_stack))
         for command in command_stack:
@@ -351,10 +357,11 @@ def process_stack(command_stack):
             elif command == Command.Create:
                 create_translation()
             elif command == Command.Check:
-                check_format_strings()
+                is_success = check_format_strings()
         print_quiet('Finished processing commands.')
     else:
         print_quiet('No commands to process.')
+    return is_success
 
 
 def main():
@@ -411,11 +418,13 @@ def main():
         command_stack.append(Command.Update)
         command_stack.append(Command.Generate)
     # Process the commands
-    process_stack(command_stack)
+    return process_stack(command_stack)
+
 
 if __name__ == '__main__':
     if os.path.split(os.path.abspath('.'))[1] != 'scripts':
         print('You need to run this script from the scripts directory.')
     else:
-        main()
+        if not main():
+            sys.exit(1)
 
