@@ -45,21 +45,21 @@ This is done easily via the ``-d``, ``-p`` and ``-u`` options::
     @:~$ ./translation_utils.py -dpu
 
 """
-import os
-import urllib.request
-import urllib.error
-import urllib.parse
+from argparse import ArgumentParser
 from getpass import getpass
 import base64
-import json
-import webbrowser
 import glob
+import json
+import os
+import urllib.error
+import urllib.parse
+import urllib.request
+import webbrowser
 
-from lxml import etree, objectify
-from optparse import OptionParser
 from PyQt5 import QtCore
+from lxml import etree, objectify
 
-SERVER_URL = 'http://www.transifex.net/api/2/project/openlp/resource/openlp-22x/'
+SERVER_URL = 'http://www.transifex.net/api/2/project/openlp/resource/openlp-24x/'
 IGNORED_PATHS = ['scripts']
 IGNORED_FILES = ['setup.py']
 
@@ -360,51 +360,51 @@ def process_stack(command_stack):
 def main():
     global verbose_mode, quiet_mode, username, password
     # Set up command line options.
-    usage = '%prog [options]\nOptions are parsed in the order they are ' + \
+    usage = '%(prog)s [options]\nOptions are parsed in the order they are ' + \
         'listed below. If no options are given, "-dpug" will be used.\n\n' + \
         'This script is used to manage OpenLP\'s translation files.'
-    parser = OptionParser(usage=usage)
-    parser.add_option('-U', '--username', dest='username', metavar='USERNAME',
-                      help='Transifex username, used for authentication')
-    parser.add_option('-P', '--password', dest='password', metavar='PASSWORD',
-                      help='Transifex password, used for authentication')
-    parser.add_option('-d', '--download-ts', dest='download',
-                      action='store_true', help='download language files from Transifex')
-    parser.add_option('-c', '--create', dest='create', action='store_true',
-                      help='go to Transifex to request a new translation file')
-    parser.add_option('-p', '--prepare', dest='prepare', action='store_true',
-                      help='generate a project file, used to update the translations')
-    parser.add_option('-u', '--update', action='store_true', dest='update',
-                      help='update translation files (needs a project file)')
-    parser.add_option('-g', '--generate', dest='generate', action='store_true',
-                      help='compile .ts files into .qm files')
-    parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
-                      help='show extra information while processing translations')
-    parser.add_option('-q', '--quiet', dest='quiet', action='store_true',
-                      help='suppress all output other than errors')
-    parser.add_option('-f', '--check-format-strings', dest='check', action='store_true',
-                      help='check that format strings are matching in translations')
-    (options, args) = parser.parse_args()
+    parser = ArgumentParser(usage=usage)
+    parser.add_argument('-U', '--username', dest='username', metavar='USERNAME',
+                        help='Transifex username, used for authentication')
+    parser.add_argument('-P', '--password', dest='password', metavar='PASSWORD',
+                        help='Transifex password, used for authentication')
+    parser.add_argument('-d', '--download-ts', dest='download',
+                        action='store_true', help='download language files from Transifex')
+    parser.add_argument('-c', '--create', dest='create', action='store_true',
+                        help='go to Transifex to request a new translation file')
+    parser.add_argument('-p', '--prepare', dest='prepare', action='store_true',
+                        help='generate a project file, used to update the translations')
+    parser.add_argument('-u', '--update', action='store_true', dest='update',
+                        help='update translation files (needs a project file)')
+    parser.add_argument('-g', '--generate', dest='generate', action='store_true',
+                        help='compile .ts files into .qm files')
+    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true',
+                        help='show extra information while processing translations')
+    parser.add_argument('-q', '--quiet', dest='quiet', action='store_true',
+                        help='suppress all output other than errors')
+    parser.add_argument('-f', '--check-format-strings', dest='check', action='store_true',
+                        help='check that format strings are matching in translations')
+    args = parser.parse_args()
     # Create and populate the command stack
     command_stack = CommandStack()
-    if options.download:
+    if args.download:
         command_stack.append(Command.Download)
-    if options.create:
-        command_stack.append(Command.Create, arguments=[options.create])
-    if options.prepare:
+    if args.create:
+        command_stack.append(Command.Create, arguments=[args.create])
+    if args.prepare:
         command_stack.append(Command.Prepare)
-    if options.update:
+    if args.update:
         command_stack.append(Command.Update)
-    if options.generate:
+    if args.generate:
         command_stack.append(Command.Generate)
-    if options.check:
+    if args.check:
         command_stack.append(Command.Check)
-    verbose_mode = options.verbose
-    quiet_mode = options.quiet
-    if options.username:
-        username = options.username
-    if options.password:
-        password = options.password
+    verbose_mode = args.verbose
+    quiet_mode = args.quiet
+    if args.username:
+        username = args.username
+    if args.password:
+        password = args.password
     if not command_stack:
         command_stack.append(Command.Download)
         command_stack.append(Command.Prepare)
@@ -418,3 +418,4 @@ if __name__ == '__main__':
         print('You need to run this script from the scripts directory.')
     else:
         main()
+
