@@ -39,6 +39,13 @@ from openlp.core.lib import ServiceItem, ImageSource, ScreenList, build_html, ex
 from openlp.core.lib.theme import BackgroundType
 from openlp.core.ui import HideMode, AlertLocation
 
+if is_macosx():
+    from ctypes import pythonapi, c_void_p, c_char_p, py_object
+
+    from sip import voidptr
+    from objc import objc_object
+    from AppKit import NSMainMenuWindowLevel, NSWindowCollectionBehaviorManaged
+
 log = logging.getLogger(__name__)
 
 OPAQUE_STYLESHEET = """
@@ -154,15 +161,30 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         # regressions on other platforms.
         if is_macosx():
             window_flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window
-            # For primary screen ensure it stays above the OS X dock
-            # and menu bar
-            if self.screens.current['primary']:
-                self.setWindowState(QtCore.Qt.WindowFullScreen)
-            else:
-                window_flags |= QtCore.Qt.WindowStaysOnTopHint
         self.setWindowFlags(window_flags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.set_transparency(False)
+        if is_macosx():
+            if self.is_live:
+                # Get a pointer to the underlying NSView
+                try:
+                    nsview_pointer = self.winId().ascapsule()
+                except:
+                    nsview_pointer = voidptr(self.winId()).ascapsule()
+                # Set PyCapsule name so pyobjc will accept it
+                pythonapi.PyCapsule_SetName.restype = c_void_p
+                pythonapi.PyCapsule_SetName.argtypes = [py_object, c_char_p]
+                pythonapi.PyCapsule_SetName(nsview_pointer, c_char_p(b"objc.__object__"))
+                # Covert the NSView pointer into a pyobjc NSView object
+                self.pyobjc_nsview = objc_object(cobject=nsview_pointer)
+                # Set the window level so that the MainDisplay is above the menu bar and dock
+                self.pyobjc_nsview.window().setLevel_(NSMainMenuWindowLevel + 2)
+                # Set the collection behavior so the window is visible when Mission Control is activated
+                self.pyobjc_nsview.window().setCollectionBehavior_(NSWindowCollectionBehaviorManaged)
+                if self.screens.current['primary']:
+                    # Connect focusWindowChanged signal so we can change the window level when the display is not in
+                    # focus on the primary screen
+                    self.application.focusWindowChanged.connect(self.change_window_level)
         if self.is_live:
             Registry().register_function('live_display_hide', self.hide_display)
             Registry().register_function('live_display_show', self.show_display)
@@ -186,6 +208,12 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         Remove registered function on close.
         """
         if self.is_live:
+            if is_macosx():
+                # Block signals so signal we are disconnecting can't get called while we disconnect it
+                self.blockSignals(True)
+                if self.screens.current['primary']:
+                    self.application.focusWindowChanged.disconnect()
+                self.blockSignals(False)
             Registry().remove_function('live_display_hide', self.hide_display)
             Registry().remove_function('live_display_show', self.show_display)
             Registry().remove_function('update_display_css', self.css_changed)
@@ -499,6 +527,36 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         else:
             self.setCursor(QtCore.Qt.ArrowCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
+
+    def change_window_level(self, window):
+        """
+        Changes the display window level on Mac OS X so that the main window can be brought into focus but still allow
+        the main display to be above the menu bar and dock when it in focus.
+
+        :param window: Window from our application that focus changed to or None if outside our application
+        """
+        if is_macosx():
+            if window:
+                # Get different window ids' as int's
+                try:
+                    window_id = window.winId().__int__()
+                    main_window_id = self.main_window.winId().__int__()
+                    self_id = self.winId().__int__()
+                except:
+                    return
+                # If the passed window has the same id as our window make sure the display has the proper level and
+                # collection behavior.
+                if window_id == self_id:
+                    self.pyobjc_nsview.window().setLevel_(NSMainMenuWindowLevel + 2)
+                    self.pyobjc_nsview.window().setCollectionBehavior_(NSWindowCollectionBehaviorManaged)
+                # Else set the displays window level back to normal since we are trying to focus a window other than
+                # the display.
+                else:
+                    self.pyobjc_nsview.window().setLevel_(0)
+                    self.pyobjc_nsview.window().setCollectionBehavior_(NSWindowCollectionBehaviorManaged)
+                    # If we are trying to focus the main window raise it now to complete the focus change.
+                    if window_id == main_window_id:
+                        self.main_window.raise_()
 
 
 class AudioPlayer(OpenLPMixin, QtCore.QObject):
