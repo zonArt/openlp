@@ -427,4 +427,3 @@ if __name__ == '__main__':
     else:
         if not main():
             sys.exit(1)
-

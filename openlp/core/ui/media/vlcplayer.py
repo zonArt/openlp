@@ -65,15 +65,14 @@ def get_vlc():
     if 'openlp.core.ui.media.vendor.vlc' in sys.modules:
         # If VLC has already been imported, no need to do all the stuff below again
         return sys.modules['openlp.core.ui.media.vendor.vlc']
-
     is_vlc_available = False
     try:
         if is_macosx():
             # Newer versions of VLC on OS X need this. See https://forum.videolan.org/viewtopic.php?t=124521
             os.environ['VLC_PLUGIN_PATH'] = '/Applications/VLC.app/Contents/MacOS/plugins'
         # On Windows when frozen in PyInstaller, we need to blank SetDllDirectoryW to allow loading of the VLC dll.
-        # This is due to limitations (by desgin) in PyInstaller. SetDllDirectoryW original value is restored once 
-        # VLC has been imported. 
+        # This is due to limitations (by desgin) in PyInstaller. SetDllDirectoryW original value is restored once
+        # VLC has been imported.
         if is_win():
             buffer_size = 1024
             dll_directory = ctypes.create_unicode_buffer(buffer_size)
