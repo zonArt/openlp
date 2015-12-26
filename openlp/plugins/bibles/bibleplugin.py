@@ -22,7 +22,7 @@
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import UiStrings, create_action
@@ -107,12 +107,12 @@ class BiblePlugin(Plugin):
         """
         super(BiblePlugin, self).app_startup()
         if self.manager.old_bible_databases:
-            if QtGui.QMessageBox.information(
+            if QtWidgets.QMessageBox.information(
                     self.main_window, translate('OpenLP', 'Information'),
                     translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your '
                                         'existing Bibles.\nShould OpenLP upgrade now?'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \
-                    QtGui.QMessageBox.Yes:
+                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)) == \
+                    QtWidgets.QMessageBox.Yes:
                 self.on_tools_upgrade_item_triggered()
 
     def add_import_menu_item(self, import_menu):
@@ -157,7 +157,7 @@ class BiblePlugin(Plugin):
         if not hasattr(self, 'upgrade_wizard'):
             self.upgrade_wizard = BibleUpgradeForm(self.main_window, self.manager, self)
         # If the import was not cancelled then reload.
-        if self.upgrade_wizard.exec_():
+        if self.upgrade_wizard.exec():
             self.media_item.reload_bibles()
 
     def on_bible_import_click(self):
@@ -178,12 +178,14 @@ class BiblePlugin(Plugin):
 
     def uses_theme(self, theme):
         """
-        Called to find out if the bible plugin is currently using a theme. Returns ``True`` if the theme is being used,
-        otherwise returns ``False``.
+        Called to find out if the bible plugin is currently using a theme. Returns ``1`` if the theme is being used,
+        otherwise returns ``0``.
 
         :param theme: The theme
         """
-        return str(self.settings_tab.bible_theme) == theme
+        if str(self.settings_tab.bible_theme) == theme:
+            return 1
+        return 0
 
     def rename_theme(self, old_theme, new_theme):
         """

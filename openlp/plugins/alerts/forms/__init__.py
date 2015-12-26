@@ -24,14 +24,14 @@ Forms in OpenLP are made up of two classes. One class holds all the graphical el
 other class holds all the functional code, like slots and loading and saving.
 
 The first class, commonly known as the **Dialog** class, is typically named ``Ui_<name>Dialog``. It is a slightly
-modified version of the class that the ``pyuic4`` command produces from Qt4's .ui file. Typical modifications will be
+modified version of the class that the ``pyuic5`` command produces from Qt5's .ui file. Typical modifications will be
 converting most strings from "" to '' and using OpenLP's ``translate()`` function for translating strings.
 
 The second class, commonly known as the **Form** class, is typically named ``<name>Form``. This class is the one which
-is instantiated and used. It uses dual inheritance to inherit from (usually) QtGui.QDialog and the Ui class mentioned
-above, like so::
+is instantiated and used. It uses dual inheritance to inherit from (usually) QtWidgets.QDialog and the Ui class
+mentioned above, like so::
 
-    class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
+    class AuthorsForm(QtWidgets.QDialog, Ui_AuthorsDialog):
 
         def __init__(self, parent=None):
             super(AuthorsForm, self).__init__(parent)

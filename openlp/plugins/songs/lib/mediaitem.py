@@ -25,7 +25,7 @@ import re
 import os
 import shutil
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 from sqlalchemy.sql import or_
 
 from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
@@ -60,6 +60,8 @@ class SongMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Songs.
     """
+    songs_go_live = QtCore.pyqtSignal(list)
+    songs_add_to_service = QtCore.pyqtSignal(list)
     log.info('Song Media Item loaded')
 
     def __init__(self, parent, plugin):
@@ -70,6 +72,8 @@ class SongMediaItem(MediaManagerItem):
         """
         Do some additional setup.
         """
+        self.songs_go_live.connect(self.go_live_remote)
+        self.songs_add_to_service.connect(self.add_to_service_remote)
         self.single_service_item = False
         # Holds information about whether the edit is remotely triggered and which Song is required.
         self.remote_song = -1
@@ -97,9 +101,8 @@ class SongMediaItem(MediaManagerItem):
         # Signals and slots
         Registry().register_function('songs_load_list', self.on_song_list_load)
         Registry().register_function('songs_preview', self.on_preview_click)
-        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL('cleared()'), self.on_clear_text_button_click)
-        QtCore.QObject.connect(
-            self.search_text_edit, QtCore.SIGNAL('searchTypeChanged(int)'), self.on_search_text_button_clicked)
+        self.search_text_edit.cleared.connect(self.on_clear_text_button_click)
+        self.search_text_edit.searchTypeChanged.connect(self.on_search_text_button_clicked)
 
     def add_custom_context_actions(self):
         create_widget_action(self.list_view, separator=True)
@@ -115,7 +118,7 @@ class SongMediaItem(MediaManagerItem):
         Is triggered when the songs config is updated
         """
         log.debug('config_updated')
-        self.search_as_you_type = Settings().value(self.settings_section + '/search as type')
+        self.is_search_as_you_type_enabled = Settings().value('advanced/search as type')
         self.update_service_on_edit = Settings().value(self.settings_section + '/update service on edit')
         self.add_song_from_service = Settings().value(self.settings_section + '/add song from service')
         self.display_songbook = Settings().value(self.settings_section + '/display songbook')
@@ -230,7 +233,7 @@ class SongMediaItem(MediaManagerItem):
                 continue
             author_list = [author.display_name for author in song.authors]
             song_detail = '%s (%s)' % (song.title, create_separated_list(author_list)) if author_list else song.title
-            song_name = QtGui.QListWidgetItem(song_detail)
+            song_name = QtWidgets.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
             # Auto-select the item if name has been set
@@ -247,7 +250,7 @@ class SongMediaItem(MediaManagerItem):
                 if song.temporary:
                     continue
                 song_detail = '%s (%s)' % (author.display_name, song.title)
-                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name = QtWidgets.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
 
@@ -263,7 +266,7 @@ class SongMediaItem(MediaManagerItem):
                 if song_number and song_number not in song.song_number:
                     continue
                 song_detail = '%s - %s (%s)' % (book.name, song.song_number, song.title)
-                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name = QtWidgets.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
 
@@ -279,7 +282,7 @@ class SongMediaItem(MediaManagerItem):
         If search as type enabled invoke the search on each key press. If the Lyrics are being searched do not start
         till 7 characters have been entered.
         """
-        if self.search_as_you_type:
+        if self.is_search_as_you_type_enabled:
             search_length = 1
             if self.search_text_edit.current_search_type() == SongSearch.Entire:
                 search_length = 4
@@ -293,25 +296,25 @@ class SongMediaItem(MediaManagerItem):
     def on_import_click(self):
         if not hasattr(self, 'import_wizard'):
             self.import_wizard = SongImportForm(self, self.plugin)
-        self.import_wizard.exec_()
+        self.import_wizard.exec()
         # Run song load as list may have been cancelled but some songs loaded
         Registry().execute('songs_load_list')
 
     def on_export_click(self):
         if not hasattr(self, 'export_wizard'):
             self.export_wizard = SongExportForm(self, self.plugin)
-        self.export_wizard.exec_()
+        self.export_wizard.exec()
 
     def on_new_click(self):
         log.debug('on_new_click')
         self.edit_song_form.new_song()
-        self.edit_song_form.exec_()
+        self.edit_song_form.exec()
         self.on_clear_text_button_click()
         self.on_selection_change()
         self.auto_select_id = -1
 
     def on_song_maintenance_click(self):
-        self.song_maintenance_form.exec_()
+        self.song_maintenance_form.exec()
 
     def on_remote_edit(self, song_id, preview=False):
         """
@@ -323,7 +326,7 @@ class SongMediaItem(MediaManagerItem):
         valid = self.plugin.manager.get_object(Song, song_id)
         if valid:
             self.edit_song_form.load_song(song_id, preview)
-            if self.edit_song_form.exec_() == QtGui.QDialog.Accepted:
+            if self.edit_song_form.exec() == QtWidgets.QDialog.Accepted:
                 self.auto_select_id = -1
                 self.on_song_list_load()
                 self.remote_song = song_id
@@ -347,7 +350,7 @@ class SongMediaItem(MediaManagerItem):
             self.edit_item = self.list_view.currentItem()
             item_id = self.edit_item.data(QtCore.Qt.UserRole)
             self.edit_song_form.load_song(item_id, False)
-            self.edit_song_form.exec_()
+            self.edit_song_form.exec()
             self.auto_select_id = -1
             self.on_song_list_load()
         self.edit_item = None
@@ -358,12 +361,12 @@ class SongMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.list_view, UiStrings().SelectDelete):
             items = self.list_view.selectedIndexes()
-            if QtGui.QMessageBox.question(
+            if QtWidgets.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
                     translate('SongsPlugin.MediaItem', 'Are you sure you want to delete the %n selected song(s)?', '',
                               QtCore.QCoreApplication.CodecForTr, len(items)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                    QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
+                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                    QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
                 return
             self.application.set_busy_cursor()
             self.main_window.display_progress_bar(len(items))
@@ -590,4 +593,4 @@ class SongMediaItem(MediaManagerItem):
         :param show_error: Is this an error?
         """
         search_results = self.search_entire(string)
-        return [[song.id, song.title] for song in search_results]
+        return [[song.id, song.title, song.alternate_title] for song in search_results]

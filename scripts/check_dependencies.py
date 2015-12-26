@@ -45,8 +45,8 @@ IS_LIN = sys.platform.startswith('lin')
 
 VERS = {
     'Python': '3.0',
-    'PyQt4': '4.6',
-    'Qt4': '4.6',
+    'PyQt5': '5.0',
+    'Qt5': '5.0',
     'sqlalchemy': '0.5',
     # pyenchant 1.6 required on Windows
     'enchant': '1.6' if IS_WIN else '1.3'
@@ -68,15 +68,16 @@ LINUX_MODULES = [
 
 
 MODULES = [
-    'PyQt4',
-    'PyQt4.QtCore',
-    'PyQt4.QtGui',
-    'PyQt4.QtNetwork',
-    'PyQt4.QtOpenGL',
-    'PyQt4.QtSvg',
-    'PyQt4.QtTest',
-    'PyQt4.QtWebKit',
-    'PyQt4.phonon',
+    'PyQt5',
+    'PyQt5.QtCore',
+    'PyQt5.QtGui',
+    'PyQt5.QtWidgets',
+    'PyQt5.QtNetwork',
+    'PyQt5.QtOpenGL',
+    'PyQt5.QtSvg',
+    'PyQt5.QtTest',
+    'PyQt5.QtWebKit',
+    'PyQt5.QtMultimedia',
     'sqlalchemy',
     'alembic',
     'sqlite3',
@@ -93,7 +94,7 @@ OPTIONAL_MODULES = [
     ('mysql.connector', '(MySQL support)', True),
     ('psycopg2', '(PostgreSQL support)', True),
     ('nose', '(testing framework)', True),
-    ('mock',  '(testing module)', sys.version_info[1] < 3),
+    ('mock', '(testing module)', sys.version_info[1] < 3),
     ('jenkins', '(access jenkins api - package name: jenkins-webapi)', True),
 ]
 
@@ -162,12 +163,12 @@ def verify_python():
 def verify_versions():
     print('Verifying version of modules...')
     try:
-        from PyQt4 import QtCore
-        check_vers(QtCore.PYQT_VERSION_STR, VERS['PyQt4'], 'PyQt4')
-        check_vers(QtCore.qVersion(), VERS['Qt4'], 'Qt4')
+        from PyQt5 import QtCore
+        check_vers(QtCore.PYQT_VERSION_STR, VERS['PyQt5'], 'PyQt5')
+        check_vers(QtCore.qVersion(), VERS['Qt5'], 'Qt5')
     except ImportError:
-        print_vers_fail(VERS['PyQt4'], 'PyQt4')
-        print_vers_fail(VERS['Qt4'], 'Qt4')
+        print_vers_fail(VERS['PyQt5'], 'PyQt5')
+        print_vers_fail(VERS['Qt5'], 'Qt5')
     try:
         import sqlalchemy
         check_vers(sqlalchemy.__version__, VERS['sqlalchemy'], 'sqlalchemy')
@@ -198,11 +199,11 @@ def print_enchant_backends_and_languages():
 
 def print_qt_image_formats():
     """
-    Print out the image formats that Qt4 supports.
+    Print out the image formats that Qt5 supports.
     """
-    w('Qt4 image formats... ')
+    w('Qt5 image formats... ')
     try:
-        from PyQt4 import QtGui
+        from PyQt5 import QtGui
         read_f = ', '.join([bytes(fmt).decode().lower() for fmt in QtGui.QImageReader.supportedImageFormats()])
         write_f = ', '.join([bytes(fmt).decode().lower() for fmt in QtGui.QImageWriter.supportedImageFormats()])
         w(os.linesep)

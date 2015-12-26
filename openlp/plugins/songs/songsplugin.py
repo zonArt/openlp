@@ -29,7 +29,7 @@ import os
 from tempfile import gettempdir
 import sqlite3
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import UiStrings, Registry, translate
 from openlp.core.lib import Plugin, StringContent, build_icon
@@ -57,7 +57,6 @@ __default_settings__ = {
     'songs/last search type': SongSearch.Entire,
     'songs/last import type': SongFormat.OpenLyrics,
     'songs/update service on edit': False,
-    'songs/search as type': True,
     'songs/add song from service': True,
     'songs/display songbar': True,
     'songs/display songbook': False,
@@ -174,7 +173,7 @@ class SongsPlugin(Plugin):
         max_songs = self.manager.get_object_count(Song)
         if max_songs == 0:
             return
-        progress_dialog = QtGui.QProgressDialog(
+        progress_dialog = QtWidgets.QProgressDialog(
             translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel, 0, max_songs, self.main_window)
         progress_dialog.setWindowTitle(translate('SongsPlugin', 'Reindexing songs'))
         progress_dialog.setWindowModality(QtCore.Qt.WindowModal)
@@ -189,13 +188,13 @@ class SongsPlugin(Plugin):
         """
         Search for duplicates in the song database.
         """
-        DuplicateSongRemovalForm(self).exec_()
+        DuplicateSongRemovalForm(self).exec()
 
     def on_import_songselect_item_triggered(self):
         """
         Run the SongSelect importer.
         """
-        self.songselect_form.exec_()
+        self.songselect_form.exec()
         self.media_item.on_search_text_button_clicked()
 
     def on_song_import_item_clicked(self):
@@ -226,11 +225,9 @@ class SongsPlugin(Plugin):
         Called to find out if the song plugin is currently using a theme.
 
         :param theme: The theme to check for usage
-        :return: True if the theme is being used, otherwise returns False
+        :return: count of the number of times the theme is used.
         """
-        if self.manager.get_all_objects(Song, Song.theme_name == theme):
-            return True
-        return False
+        return len(self.manager.get_all_objects(Song, Song.theme_name == theme))
 
     def rename_theme(self, old_theme, new_theme):
         """
@@ -303,7 +300,7 @@ class SongsPlugin(Plugin):
         if not song_dbs:
             return
         self.application.process_events()
-        progress = QtGui.QProgressDialog(self.main_window)
+        progress = QtWidgets.QProgressDialog(self.main_window)
         progress.setWindowModality(QtCore.Qt.WindowModal)
         progress.setWindowTitle(translate('OpenLP.Ui', 'Importing Songs'))
         progress.setLabelText(translate('OpenLP.Ui', 'Starting import...'))

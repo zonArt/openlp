@@ -129,11 +129,6 @@ class BibleManager(RegistryProperties):
                 bible.session.close()
                 delete_file(os.path.join(self.path, filename))
                 continue
-            # Find old database versions.
-            if bible.is_old_database():
-                self.old_bible_databases.append([filename, name])
-                bible.session.close()
-                continue
             log.debug('Bible Name: "%s"', name)
             self.db_cache[name] = bible
             # Look to see if lazy load bible exists and get create getter.

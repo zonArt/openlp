@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
@@ -30,7 +29,7 @@ import os
 import time
 import queue
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry
 from openlp.core.lib import ScreenList, resize_image, image_to_byte

@@ -121,17 +121,7 @@ class SongXML(object):
         """
         self.song_xml = None
         verse_list = []
-        if not xml.startswith('<?xml') and not xml.startswith('<song'):
-            # This is an old style song, without XML. Let's handle it correctly by iterating through the verses, and
-            # then recreating the internal xml object as well.
-            self.song_xml = objectify.fromstring('<song version="1.0" />')
-            self.lyrics = etree.SubElement(self.song_xml, 'lyrics')
-            verses = xml.split('\n\n')
-            for count, verse in enumerate(verses):
-                verse_list.append([{'type': 'v', 'label': str(count)}, str(verse)])
-                self.add_verse_to_lyrics('v', str(count), verse)
-            return verse_list
-        elif xml.startswith('<?xml'):
+        if xml.startswith('<?xml'):
             xml = xml[38:]
         try:
             self.song_xml = objectify.fromstring(xml)

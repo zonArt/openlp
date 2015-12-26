@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Settings, translate
 from openlp.core.lib import SettingsTab
@@ -37,32 +37,28 @@ class SongsTab(SettingsTab):
         """
         self.setObjectName('SongsTab')
         super(SongsTab, self).setupUi()
-        self.mode_group_box = QtGui.QGroupBox(self.left_column)
+        self.mode_group_box = QtWidgets.QGroupBox(self.left_column)
         self.mode_group_box.setObjectName('mode_group_box')
-        self.mode_layout = QtGui.QVBoxLayout(self.mode_group_box)
+        self.mode_layout = QtWidgets.QVBoxLayout(self.mode_group_box)
         self.mode_layout.setObjectName('mode_layout')
-        self.search_as_type_check_box = QtGui.QCheckBox(self.mode_group_box)
-        self.search_as_type_check_box.setObjectName('SearchAsType_check_box')
-        self.mode_layout.addWidget(self.search_as_type_check_box)
-        self.tool_bar_active_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.tool_bar_active_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.tool_bar_active_check_box.setObjectName('tool_bar_active_check_box')
         self.mode_layout.addWidget(self.tool_bar_active_check_box)
-        self.update_on_edit_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.update_on_edit_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.update_on_edit_check_box.setObjectName('update_on_edit_check_box')
         self.mode_layout.addWidget(self.update_on_edit_check_box)
-        self.add_from_service_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.add_from_service_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.add_from_service_check_box.setObjectName('add_from_service_check_box')
         self.mode_layout.addWidget(self.add_from_service_check_box)
-        self.display_songbook_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.display_songbook_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.display_songbook_check_box.setObjectName('songbook_check_box')
         self.mode_layout.addWidget(self.display_songbook_check_box)
-        self.display_copyright_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.display_copyright_check_box = QtWidgets.QCheckBox(self.mode_group_box)
         self.display_copyright_check_box.setObjectName('copyright_check_box')
         self.mode_layout.addWidget(self.display_copyright_check_box)
         self.left_layout.addWidget(self.mode_group_box)
         self.left_layout.addStretch()
         self.right_layout.addStretch()
-        self.search_as_type_check_box.stateChanged.connect(self.on_search_as_type_check_box_changed)
         self.tool_bar_active_check_box.stateChanged.connect(self.on_tool_bar_active_check_box_changed)
         self.update_on_edit_check_box.stateChanged.connect(self.on_update_on_edit_check_box_changed)
         self.add_from_service_check_box.stateChanged.connect(self.on_add_from_service_check_box_changed)
@@ -71,7 +67,6 @@ class SongsTab(SettingsTab):
 
     def retranslateUi(self):
         self.mode_group_box.setTitle(translate('SongsPlugin.SongsTab', 'Songs Mode'))
-        self.search_as_type_check_box.setText(translate('SongsPlugin.SongsTab', 'Enable search as you type'))
         self.tool_bar_active_check_box.setText(translate('SongsPlugin.SongsTab',
                                                          'Display verses on live tool bar'))
         self.update_on_edit_check_box.setText(translate('SongsPlugin.SongsTab', 'Update service from song edit'))
@@ -103,13 +98,11 @@ class SongsTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        self.song_search = settings.value('search as type')
         self.tool_bar = settings.value('display songbar')
         self.update_edit = settings.value('update service on edit')
         self.update_load = settings.value('add song from service')
         self.display_songbook = settings.value('display songbook')
         self.display_copyright_symbol = settings.value('display copyright symbol')
-        self.search_as_type_check_box.setChecked(self.song_search)
         self.tool_bar_active_check_box.setChecked(self.tool_bar)
         self.update_on_edit_check_box.setChecked(self.update_edit)
         self.add_from_service_check_box.setChecked(self.update_load)
@@ -120,7 +113,6 @@ class SongsTab(SettingsTab):
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        settings.setValue('search as type', self.song_search)
         settings.setValue('display songbar', self.tool_bar)
         settings.setValue('update service on edit', self.update_edit)
         settings.setValue('add song from service', self.update_load)

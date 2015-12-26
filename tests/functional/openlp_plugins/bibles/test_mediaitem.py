@@ -22,8 +22,6 @@
 """
 This module contains tests for the lib submodule of the Presentations plugin.
 """
-from PyQt4 import QtGui
-
 from unittest import TestCase
 from openlp.plugins.bibles.lib.mediaitem import BibleMediaItem
 from tests.functional import MagicMock, patch

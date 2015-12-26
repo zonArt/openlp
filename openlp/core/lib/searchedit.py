@@ -22,7 +22,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_widget_action
@@ -30,10 +30,12 @@ from openlp.core.lib.ui import create_widget_action
 log = logging.getLogger(__name__)
 
 
-class SearchEdit(QtGui.QLineEdit):
+class SearchEdit(QtWidgets.QLineEdit):
     """
     This is a specialised QLineEdit with a "clear" button inside for searches.
     """
+    searchTypeChanged = QtCore.pyqtSignal(QtCore.QVariant)
+    cleared = QtCore.pyqtSignal()
 
     def __init__(self, parent):
         """
@@ -41,7 +43,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         super(SearchEdit, self).__init__(parent)
         self._current_search_type = -1
-        self.clear_button = QtGui.QToolButton(self)
+        self.clear_button = QtWidgets.QToolButton(self)
         self.clear_button.setIcon(build_icon(':/system/clear_shortcut.png'))
         self.clear_button.setCursor(QtCore.Qt.ArrowCursor)
         self.clear_button.setStyleSheet('QToolButton { border: none; padding: 0px; }')
@@ -56,7 +58,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         Internal method to update the stylesheet depending on which widgets are available and visible.
         """
-        frame_width = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
+        frame_width = self.style().pixelMetric(QtWidgets.QStyle.PM_DefaultFrameWidth)
         right_padding = self.clear_button.width() + frame_width
         if hasattr(self, 'menu_button'):
             left_padding = self.menu_button.width()
@@ -75,7 +77,7 @@ class SearchEdit(QtGui.QLineEdit):
         :param event: The event that happened.
         """
         size = self.clear_button.size()
-        frame_width = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
+        frame_width = self.style().pixelMetric(QtWidgets.QStyle.PM_DefaultFrameWidth)
         self.clear_button.move(self.rect().right() - frame_width - size.width(),
                                (self.rect().bottom() + 1 - size.height()) // 2)
         if hasattr(self, 'menu_button'):
@@ -105,7 +107,7 @@ class SearchEdit(QtGui.QLineEdit):
                     pass
                 self.menu_button.setDefaultAction(action)
                 self._current_search_type = identifier
-                self.emit(QtCore.SIGNAL('searchTypeChanged(int)'), identifier)
+                self.searchTypeChanged.emit(identifier)
                 return True
 
     def set_search_types(self, items):
@@ -126,7 +128,7 @@ class SearchEdit(QtGui.QLineEdit):
 
                     (2, ":/songs/authors.png", "Authors", "Search Authors...")
         """
-        menu = QtGui.QMenu(self)
+        menu = QtWidgets.QMenu(self)
         first = None
         for identifier, icon, title, placeholder in items:
             action = create_widget_action(
@@ -136,10 +138,10 @@ class SearchEdit(QtGui.QLineEdit):
                 first = action
                 self._current_search_type = identifier
         if not hasattr(self, 'menu_button'):
-            self.menu_button = QtGui.QToolButton(self)
+            self.menu_button = QtWidgets.QToolButton(self)
             self.menu_button.setIcon(build_icon(':/system/clear_shortcut.png'))
             self.menu_button.setCursor(QtCore.Qt.ArrowCursor)
-            self.menu_button.setPopupMode(QtGui.QToolButton.InstantPopup)
+            self.menu_button.setPopupMode(QtWidgets.QToolButton.InstantPopup)
             self.menu_button.setStyleSheet('QToolButton { border: none; padding: 0px 10px 0px 0px; }')
             self.menu_button.resize(QtCore.QSize(28, 18))
         self.menu_button.setMenu(menu)
@@ -152,7 +154,7 @@ class SearchEdit(QtGui.QLineEdit):
         Internally implemented slot to react to when the text in the line edit has changed so that we can show or hide
         the clear button.
 
-        :param text: A :class:`~PyQt4.QtCore.QString` instance which represents the text in the line edit.
+        :param text: A :class:`~PyQt5.QtCore.QString` instance which represents the text in the line edit.
         """
         self.clear_button.setVisible(bool(text))
 
@@ -163,7 +165,7 @@ class SearchEdit(QtGui.QLineEdit):
         line edit.
         """
         self.clear()
-        self.emit(QtCore.SIGNAL('cleared()'))
+        self.cleared.emit()
 
     def _on_menu_action_triggered(self):
         """

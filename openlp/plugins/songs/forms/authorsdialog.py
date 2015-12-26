@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
@@ -39,25 +39,25 @@ class Ui_AuthorsDialog(object):
         authors_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         authors_dialog.resize(300, 10)
         authors_dialog.setModal(True)
-        self.dialog_layout = QtGui.QVBoxLayout(authors_dialog)
+        self.dialog_layout = QtWidgets.QVBoxLayout(authors_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
-        self.author_layout = QtGui.QFormLayout()
+        self.author_layout = QtWidgets.QFormLayout()
         self.author_layout.setObjectName('author_layout')
-        self.first_name_label = QtGui.QLabel(authors_dialog)
+        self.first_name_label = QtWidgets.QLabel(authors_dialog)
         self.first_name_label.setObjectName('first_name_label')
-        self.first_name_edit = QtGui.QLineEdit(authors_dialog)
+        self.first_name_edit = QtWidgets.QLineEdit(authors_dialog)
         self.first_name_edit.setObjectName('first_name_edit')
         self.first_name_label.setBuddy(self.first_name_edit)
         self.author_layout.addRow(self.first_name_label, self.first_name_edit)
-        self.last_name_label = QtGui.QLabel(authors_dialog)
+        self.last_name_label = QtWidgets.QLabel(authors_dialog)
         self.last_name_label.setObjectName('last_name_label')
-        self.last_name_edit = QtGui.QLineEdit(authors_dialog)
+        self.last_name_edit = QtWidgets.QLineEdit(authors_dialog)
         self.last_name_edit.setObjectName('last_name_edit')
         self.last_name_label.setBuddy(self.last_name_edit)
         self.author_layout.addRow(self.last_name_label, self.last_name_edit)
-        self.display_label = QtGui.QLabel(authors_dialog)
+        self.display_label = QtWidgets.QLabel(authors_dialog)
         self.display_label.setObjectName('display_label')
-        self.display_edit = QtGui.QLineEdit(authors_dialog)
+        self.display_edit = QtWidgets.QLineEdit(authors_dialog)
         self.display_edit.setObjectName('display_edit')
         self.display_label.setBuddy(self.display_edit)
         self.author_layout.addRow(self.display_label, self.display_edit)

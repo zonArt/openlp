@@ -20,45 +20,50 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.ui.media.phononplayer package.
+Package to test the openlp.core.ui.advancedtab package.
 """
 from unittest import TestCase
-from tests.functional import patch
 
-from openlp.core.ui.media.phononplayer import PhononPlayer
+from openlp.core.common import Registry
+from openlp.core.ui.advancedtab import AdvancedTab
+from openlp.core.ui.settingsform import SettingsForm
+
+from tests.helpers.testmixin import TestMixin
 
 
-class TestPhononPlayer(TestCase):
-    """
-    Test the functions in the :mod:`phononplayer` module.
-    """
+class TestAdvancedTab(TestCase, TestMixin):
 
-    def check_available_mac_test(self):
+    def setUp(self):
         """
-        Simple test of phononplayer availability on Mac OS X
+        Set up a few things for the tests
         """
-        # GIVEN: A PhononPlayer and a mocked is_macosx
-        with patch('openlp.core.ui.media.phononplayer.is_macosx') as mocked_is_macosx:
-            mocked_is_macosx.return_value = True
-            phonon_player = PhononPlayer(None)
+        Registry.create()
 
-            # WHEN: An checking if the player is available
-            available = phonon_player.check_available()
-
-            # THEN: The player should not be available on Mac OS X
-            self.assertEqual(False, available, 'The PhononPlayer should not be available on Mac OS X.')
-
-    def check_available_non_mac_test(self):
+    def test_creation(self):
         """
-        Simple test of phononplayer availability when not on Mac OS X
+        Test that Advanced Tab is created.
         """
-        # GIVEN: A PhononPlayer and a mocked is_macosx
-        with patch('openlp.core.ui.media.phononplayer.is_macosx') as mocked_is_macosx:
-            mocked_is_macosx.return_value = False
-            phonon_player = PhononPlayer(None)
+        # GIVEN: A new Advanced Tab
+        settings_form = SettingsForm(None)
 
-            # WHEN: An checking if the player is available
-            available = phonon_player.check_available()
+        # WHEN: I create an advanced tab
+        advanced_tab = AdvancedTab(settings_form)
 
-            # THEN: The player should be available when not on Mac OS X
-            self.assertEqual(True, available, 'The PhononPlayer should be available when not on Mac OS X.')
+        # THEN:
+        self.assertEqual("Advanced", advanced_tab.tab_title, 'The tab title should be Advanced')
+
+    def test_change_search_as_type(self):
+        """
+        Test that when search as type is changed custom and song configs are updated
+        """
+        # GIVEN: A new Advanced Tab
+        settings_form = SettingsForm(None)
+        advanced_tab = AdvancedTab(settings_form)
+
+        # WHEN: I change search as type check box
+        advanced_tab.on_search_as_type_check_box_changed(True)
+
+        # THEN: we should have two post save processed to run
+        self.assertEqual(2, len(settings_form.processes), 'Two post save processes should be created')
+        self.assertTrue("songs_config_updated" in settings_form.processes, 'The songs plugin should be called')
+        self.assertTrue("custom_config_updated" in settings_form.processes, 'The custom plugin should be called')

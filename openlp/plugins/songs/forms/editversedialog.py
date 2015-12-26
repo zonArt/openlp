@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import SpellTextEdit, build_icon, translate
 from openlp.core.lib.ui import UiStrings, create_button_box
@@ -33,30 +33,30 @@ class Ui_EditVerseDialog(object):
         edit_verse_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         edit_verse_dialog.resize(400, 400)
         edit_verse_dialog.setModal(True)
-        self.dialog_layout = QtGui.QVBoxLayout(edit_verse_dialog)
+        self.dialog_layout = QtWidgets.QVBoxLayout(edit_verse_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
         self.verse_text_edit = SpellTextEdit(edit_verse_dialog)
         self.verse_text_edit.setObjectName('verse_text_edit')
         self.dialog_layout.addWidget(self.verse_text_edit)
-        self.verse_type_layout = QtGui.QHBoxLayout()
+        self.verse_type_layout = QtWidgets.QHBoxLayout()
         self.verse_type_layout.setObjectName('verse_type_layout')
-        self.split_button = QtGui.QPushButton(edit_verse_dialog)
+        self.split_button = QtWidgets.QPushButton(edit_verse_dialog)
         self.split_button.setIcon(build_icon(':/general/general_add.png'))
         self.split_button.setObjectName('split_button')
         self.verse_type_layout.addWidget(self.split_button)
-        self.verse_type_label = QtGui.QLabel(edit_verse_dialog)
+        self.verse_type_label = QtWidgets.QLabel(edit_verse_dialog)
         self.verse_type_label.setObjectName('verse_type_label')
         self.verse_type_layout.addWidget(self.verse_type_label)
-        self.verse_type_combo_box = QtGui.QComboBox(edit_verse_dialog)
+        self.verse_type_combo_box = QtWidgets.QComboBox(edit_verse_dialog)
         self.verse_type_combo_box.addItems(['', '', '', '', '', '', ''])
         self.verse_type_combo_box.setObjectName('verse_type_combo_box')
         self.verse_type_label.setBuddy(self.verse_type_combo_box)
         self.verse_type_layout.addWidget(self.verse_type_combo_box)
-        self.verse_number_box = QtGui.QSpinBox(edit_verse_dialog)
+        self.verse_number_box = QtWidgets.QSpinBox(edit_verse_dialog)
         self.verse_number_box.setMinimum(1)
         self.verse_number_box.setObjectName('verse_number_box')
         self.verse_type_layout.addWidget(self.verse_number_box)
-        self.insert_button = QtGui.QPushButton(edit_verse_dialog)
+        self.insert_button = QtWidgets.QPushButton(edit_verse_dialog)
         self.insert_button.setIcon(build_icon(':/general/general_add.png'))
         self.insert_button.setObjectName('insert_button')
         self.verse_type_layout.addWidget(self.insert_button)

@@ -25,13 +25,13 @@ own tab to the settings dialog.
 """
 
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 
 from openlp.core.common import RegistryProperties
 
 
-class SettingsTab(QtGui.QWidget, RegistryProperties):
+class SettingsTab(QtWidgets.QWidget, RegistryProperties):
     """
     SettingsTab is a helper widget for plugins to define Tabs for the settings dialog.
     """
@@ -66,18 +66,18 @@ class SettingsTab(QtGui.QWidget, RegistryProperties):
         """
         Setup the tab's interface.
         """
-        self.tab_layout = QtGui.QHBoxLayout(self)
+        self.tab_layout = QtWidgets.QHBoxLayout(self)
         self.tab_layout.setObjectName('tab_layout')
-        self.left_column = QtGui.QWidget(self)
+        self.left_column = QtWidgets.QWidget(self)
         self.left_column.setObjectName('left_column')
-        self.left_layout = QtGui.QVBoxLayout(self.left_column)
-        self.left_layout.setMargin(0)
+        self.left_layout = QtWidgets.QVBoxLayout(self.left_column)
+        self.left_layout.setContentsMargins(0, 0, 0, 0)
         self.left_layout.setObjectName('left_layout')
         self.tab_layout.addWidget(self.left_column)
-        self.right_column = QtGui.QWidget(self)
+        self.right_column = QtWidgets.QWidget(self)
         self.right_column.setObjectName('right_column')
-        self.right_layout = QtGui.QVBoxLayout(self.right_column)
-        self.right_layout.setMargin(0)
+        self.right_layout = QtWidgets.QVBoxLayout(self.right_column)
+        self.right_layout.setContentsMargins(0, 0, 0, 0)
         self.right_layout.setObjectName('right_layout')
         self.tab_layout.addWidget(self.right_column)
 
@@ -86,7 +86,7 @@ class SettingsTab(QtGui.QWidget, RegistryProperties):
         Resize the sides in two equal halves if the layout allows this.
         """
         if event:
-            QtGui.QWidget.resizeEvent(self, event)
+            QtWidgets.QWidget.resizeEvent(self, event)
         width = self.width() - self.tab_layout.spacing() - \
             self.tab_layout.contentsMargins().left() - self.tab_layout.contentsMargins().right()
         left_width = min(width - self.right_column.minimumSizeHint().width(), width // 2)

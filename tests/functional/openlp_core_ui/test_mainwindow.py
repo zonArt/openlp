@@ -52,8 +52,8 @@ class TestMainWindow(TestCase, TestMixin):
                 patch('openlp.core.ui.mainwindow.LiveController') as mocked_live_controller, \
                 patch('openlp.core.ui.mainwindow.PreviewController') as mocked_preview_controller, \
                 patch('openlp.core.ui.mainwindow.OpenLPDockWidget') as mocked_dock_widget, \
-                patch('openlp.core.ui.mainwindow.QtGui.QToolBox') as mocked_q_tool_box_class, \
-                patch('openlp.core.ui.mainwindow.QtGui.QMainWindow.addDockWidget') as mocked_add_dock_method, \
+                patch('openlp.core.ui.mainwindow.QtWidgets.QToolBox') as mocked_q_tool_box_class, \
+                patch('openlp.core.ui.mainwindow.QtWidgets.QMainWindow.addDockWidget') as mocked_add_dock_method, \
                 patch('openlp.core.ui.mainwindow.ThemeManager') as mocked_theme_manager, \
                 patch('openlp.core.ui.mainwindow.Renderer') as mocked_renderer:
             self.main_window = MainWindow()
@@ -71,7 +71,7 @@ class TestMainWindow(TestCase, TestMixin):
         with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
 
             # WHEN the argument is processed
-            self.main_window.open_cmd_line_files()
+            self.main_window.open_cmd_line_files(service)
 
             # THEN the service from the arguments is loaded
             mocked_load_path.assert_called_with(service), 'load_path should have been called with the service\'s path'
@@ -86,7 +86,7 @@ class TestMainWindow(TestCase, TestMixin):
         with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
 
             # WHEN the argument is processed
-            self.main_window.open_cmd_line_files()
+            self.main_window.open_cmd_line_files("")
 
             # THEN the file should not be opened
             assert not mocked_load_path.called, 'load_path should not have been called'

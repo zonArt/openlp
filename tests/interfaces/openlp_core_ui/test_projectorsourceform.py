@@ -29,8 +29,7 @@ log = logging.getLogger(__name__)
 log.debug('test_projectorsourceform loaded')
 
 from unittest import TestCase
-from PyQt4 import QtGui
-from PyQt4.QtGui import QDialog
+from PyQt5.QtWidgets import QDialog
 
 from tests.functional import patch
 from tests.functional.openlp_core_lib.test_projectordb import tmpfile
@@ -66,7 +65,6 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         """
         Set up anything necessary for all tests
         """
-        mocked_init_url.start()
         mocked_init_url.return_value = 'sqlite:///{}'.format(tmpfile)
         self.build_settings()
         self.setup_application()
@@ -109,7 +107,7 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         self.assertEquals(check, build_source_dict(),
                           "Source group dictionary should match test dictionary")
 
-    @patch.object(QDialog, 'exec_')
+    @patch.object(QDialog, 'exec')
     def source_select_edit_button_test(self, mocked_qdialog):
         """
         Test source select form edit has Ok, Cancel, Reset, and Revert buttons
@@ -121,7 +119,7 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         # WHEN we create a source select widget and set edit=True
         select_form = SourceSelectSingle(parent=None, projectordb=self.projectordb)
         select_form.edit = True
-        select_form.exec_(projector=self.projector)
+        select_form.exec(projector=self.projector)
         projector = select_form.projector
 
         # THEN: Verify all 4 buttons are available
@@ -129,7 +127,7 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
                           'SourceSelect dialog box should have "OK", "Cancel" '
                           '"Rest", and "Revert" buttons available')
 
-    @patch.object(QDialog, 'exec_')
+    @patch.object(QDialog, 'exec')
     def source_select_noedit_button_test(self, mocked_qdialog):
         """
         Test source select form view has OK and Cancel buttons only
@@ -141,7 +139,7 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         # WHEN we create a source select widget and set edit=False
         select_form = SourceSelectSingle(parent=None, projectordb=self.projectordb)
         select_form.edit = False
-        select_form.exec_(projector=self.projector)
+        select_form.exec(projector=self.projector)
         projector = select_form.projector
 
         # THEN: Verify only 2 buttons are available

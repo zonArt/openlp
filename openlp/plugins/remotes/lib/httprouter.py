@@ -115,7 +115,6 @@ import urllib.error
 from urllib.parse import urlparse, parse_qs
 
 from mako.template import Template
-from PyQt4 import QtCore
 
 from openlp.core.common import RegistryProperties, AppLocation, Settings, translate, UiStrings
 from openlp.core.lib import PluginStatus, StringContent, image_to_byte, ItemCapabilities, create_thumb
@@ -150,6 +149,7 @@ class HttpRouter(RegistryProperties):
         self.routes = [
             ('^/$', {'function': self.serve_file, 'secure': False}),
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
+            ('^/(stage)/(.*)$', {'function': self.stages, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
             (r'^/(\w+)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
@@ -170,6 +170,7 @@ class HttpRouter(RegistryProperties):
         self.settings_section = 'remotes'
         self.translate()
         self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), 'remotes', 'html')
+        self.config_dir = os.path.join(AppLocation.get_data_path(), 'stages')
 
     def do_post_processor(self):
         """
@@ -309,10 +310,13 @@ class HttpRouter(RegistryProperties):
         """
         Translate various strings in the mobile app.
         """
+        remote = translate('RemotePlugin.Mobile', 'Remote')
+        stage = translate('RemotePlugin.Mobile', 'Stage View')
+        live = translate('RemotePlugin.Mobile', 'Live View')
         self.template_vars = {
-            'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.2 Remote'),
-            'stage_title': translate('RemotePlugin.Mobile', 'OpenLP 2.2 Stage View'),
-            'live_title': translate('RemotePlugin.Mobile', 'OpenLP 2.2 Live View'),
+            'app_title': "%s %s" % (UiStrings().OLPV2x, remote),
+            'stage_title': "%s %s" % (UiStrings().OLPV2x, stage),
+            'live_title': "%s %s" % (UiStrings().OLPV2x, live),
             'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
             'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
@@ -337,24 +341,32 @@ class HttpRouter(RegistryProperties):
             'settings': translate('RemotePlugin.Mobile', 'Settings'),
         }
 
-    def serve_file(self, file_name=None):
+    def stages(self, url_path, file_name):
         """
-        Send a file to the socket. For now, just a subset of file types and must be top level inside the html folder.
-        If subfolders requested return 404, easier for security for the present.
+        Allow Stage view to be delivered with custom views.
 
-        Ultimately for i18n, this could first look for xx/file.html before falling back to file.html.
-        where xx is the language, e.g. 'en'
+        :param url_path: base path of the URL. Not used but passed by caller
+        :param file_name: file name with path
+        :return:
         """
         log.debug('serve file request %s' % file_name)
-        if not file_name:
-            file_name = 'index.html'
-        elif file_name == 'stage':
-            file_name = 'stage.html'
-        elif file_name == 'main':
-            file_name = 'main.html'
-        path = os.path.normpath(os.path.join(self.html_dir, file_name))
-        if not path.startswith(self.html_dir):
+        parts = file_name.split('/')
+        if len(parts) == 1:
+            file_name = os.path.join(parts[0], 'stage.html')
+        elif len(parts) == 3:
+            file_name = os.path.join(parts[1], parts[2])
+        path = os.path.normpath(os.path.join(self.config_dir, file_name))
+        if not path.startswith(self.config_dir):
             return self.do_not_found()
+        return self._process_file(path)
+
+    def _process_file(self, path):
+        """
+        Common file processing code
+
+        :param path: path to file to be loaded
+        :return: web resource to be loaded
+        """
         content = None
         ext, content_type = self.get_content_type(path)
         file_handle = None
@@ -377,10 +389,32 @@ class HttpRouter(RegistryProperties):
         self.end_headers()
         return content
 
+    def serve_file(self, file_name=None):
+        """
+        Send a file to the socket. For now, just a subset of file types and must be top level inside the html folder.
+        If subfolders requested return 404, easier for security for the present.
+
+        Ultimately for i18n, this could first look for xx/file.html before falling back to file.html.
+        where xx is the language, e.g. 'en'
+        """
+        log.debug('serve file request %s' % file_name)
+        if not file_name:
+            file_name = 'index.html'
+        elif file_name == 'stage':
+            file_name = 'stage.html'
+        elif file_name == 'main':
+            file_name = 'main.html'
+        path = os.path.normpath(os.path.join(self.html_dir, file_name))
+        if not path.startswith(self.html_dir):
+            return self.do_not_found()
+        return self._process_file(path)
+
     def get_content_type(self, file_name):
         """
         Examines the extension of the file and determines what the content_type should be, defaults to text/plain
         Returns the extension and the content_type
+
+        :param file_name: name of file
         """
         ext = os.path.splitext(file_name)[1]
         content_type = FILE_TYPES.get(ext, 'text/plain')
@@ -389,6 +423,10 @@ class HttpRouter(RegistryProperties):
     def serve_thumbnail(self, controller_name=None, dimensions=None, file_name=None):
         """
         Serve an image file. If not found return 404.
+
+        :param file_name: file name to be served
+        :param dimensions: image size
+        :param controller_name: controller to be called
         """
         log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name, dimensions, file_name))
         supported_controllers = ['presentations', 'images']
@@ -468,7 +506,7 @@ class HttpRouter(RegistryProperties):
 
         :param action: This is the action, either ``hide`` or ``show``.
         """
-        self.live_controller.emit(QtCore.SIGNAL('slidecontroller_toggle_display'), action)
+        self.live_controller.slidecontroller_toggle_display.emit(action)
         self.do_json_header()
         return json.dumps({'results': {'success': True}}).encode()
 
@@ -483,7 +521,7 @@ class HttpRouter(RegistryProperties):
             except KeyError:
                 return self.do_http_error()
             text = urllib.parse.unquote(text)
-            self.alerts_manager.emit(QtCore.SIGNAL('alerts_text'), [text])
+            self.alerts_manager.alerts_text.emit([text])
             success = True
         else:
             success = False
@@ -493,6 +531,8 @@ class HttpRouter(RegistryProperties):
     def controller_text(self, var):
         """
         Perform an action on the slide controller.
+
+        :param var: variable - not used
         """
         log.debug("controller_text var = %s" % var)
         current_item = self.live_controller.service_item
@@ -549,7 +589,7 @@ class HttpRouter(RegistryProperties):
         :param display_type: This is the type of slide controller, either ``preview`` or ``live``.
         :param action: The action to perform.
         """
-        event = 'slidecontroller_%s_%s' % (display_type, action)
+        event = getattr(self.live_controller, 'slidecontroller_%s_%s' % (display_type, action))
         if self.request_data:
             try:
                 data = json.loads(self.request_data)['request']['id']
@@ -557,9 +597,9 @@ class HttpRouter(RegistryProperties):
                 return self.do_http_error()
             log.info(data)
             # This slot expects an int within a list.
-            self.live_controller.emit(QtCore.SIGNAL(event), [data])
+            event.emit([data])
         else:
-            self.live_controller.emit(QtCore.SIGNAL(event))
+            event.emit()
         json_data = {'results': {'success': True}}
         self.do_json_header()
         return json.dumps(json_data).encode()
@@ -578,15 +618,15 @@ class HttpRouter(RegistryProperties):
 
         :param action: The action to perform.
         """
-        event = 'servicemanager_%s_item' % action
+        event = getattr(self.service_manager, 'servicemanager_%s_item' % action)
         if self.request_data:
             try:
                 data = json.loads(self.request_data)['request']['id']
             except KeyError:
                 return self.do_http_error()
-            self.service_manager.emit(QtCore.SIGNAL(event), data)
+            event.emit(data)
         else:
-            self.service_manager.emit(QtCore.SIGNAL(event))
+            event.emit()
         self.do_json_header()
         return json.dumps({'results': {'success': True}}).encode()
 
@@ -626,6 +666,8 @@ class HttpRouter(RegistryProperties):
     def go_live(self, plugin_name):
         """
         Go live on an item of type ``plugin``.
+
+        :param plugin_name: name of plugin
         """
         try:
             request_id = json.loads(self.request_data)['request']['id']
@@ -633,12 +675,14 @@ class HttpRouter(RegistryProperties):
             return self.do_http_error()
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
-            plugin.media_item.emit(QtCore.SIGNAL('%s_go_live' % plugin_name), [request_id, True])
+            getattr(plugin.media_item, '%s_go_live' % plugin_name).emit([request_id, True])
         return self.do_http_success()
 
     def add_to_service(self, plugin_name):
         """
         Add item of type ``plugin_name`` to the end of the service.
+
+        :param plugin_name: name of plugin to be called
         """
         try:
             request_id = json.loads(self.request_data)['request']['id']
@@ -647,5 +691,5 @@ class HttpRouter(RegistryProperties):
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
             item_id = plugin.media_item.create_item_from_id(request_id)
-            plugin.media_item.emit(QtCore.SIGNAL('%s_add_to_service' % plugin_name), [item_id, True])
+            getattr(plugin.media_item, '%s_add_to_service' % plugin_name).emit([item_id, True])
         self.do_http_success()

@@ -22,14 +22,14 @@
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from .editcustomslidedialog import Ui_CustomSlideEditDialog
 
 log = logging.getLogger(__name__)
 
 
-class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
+class EditCustomSlideForm(QtWidgets.QDialog, Ui_CustomSlideEditDialog):
     """
     Class documentation goes here.
     """

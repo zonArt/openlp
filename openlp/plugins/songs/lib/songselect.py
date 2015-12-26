@@ -23,11 +23,12 @@
 The :mod:`~openlp.plugins.songs.lib.songselect` module contains the SongSelect importer itself.
 """
 import logging
+import sys
 from http.cookiejar import CookieJar
 from urllib.parse import urlencode
 from urllib.request import HTTPCookieProcessor, URLError, build_opener
 from html.parser import HTMLParser
-
+from html import unescape
 
 from bs4 import BeautifulSoup, NavigableString
 
@@ -130,8 +131,8 @@ class SongSelectImport(object):
                 break
             for result in search_results:
                 song = {
-                    'title': self.html_parser.unescape(result.find('h3').string),
-                    'authors': [self.html_parser.unescape(author.string) for author in result.find_all('li')],
+                    'title': unescape(result.find('h3').string),
+                    'authors': [unescape(author.string) for author in result.find_all('li')],
                     'link': BASE_URL + result.find('a')['href']
                 }
                 if callback:
@@ -167,7 +168,7 @@ class SongSelectImport(object):
         if callback:
             callback()
         song['copyright'] = '/'.join([li.string for li in song_page.find('ul', 'copyright').find_all('li')])
-        song['copyright'] = self.html_parser.unescape(song['copyright'])
+        song['copyright'] = unescape(song['copyright'])
         song['ccli_number'] = song_page.find('ul', 'info').find('li').string.split(':')[1].strip()
         song['verses'] = []
         verses = lyrics_page.find('section', 'lyrics').find_all('p')
@@ -180,9 +181,9 @@ class SongSelectImport(object):
                 else:
                     verse['lyrics'] += '\n'
             verse['lyrics'] = verse['lyrics'].strip(' \n\r\t')
-            song['verses'].append(self.html_parser.unescape(verse))
+            song['verses'].append(unescape(verse))
         for counter, author in enumerate(song['authors']):
-            song['authors'][counter] = self.html_parser.unescape(author)
+            song['authors'][counter] = unescape(author)
         return song
 
     def save_song(self, song):
@@ -209,9 +210,14 @@ class SongSelectImport(object):
         for author_name in song['authors']:
             author = self.db_manager.get_object_filtered(Author, Author.display_name == author_name)
             if not author:
-                author = Author.populate(first_name=author_name.rsplit(' ', 1)[0],
-                                         last_name=author_name.rsplit(' ', 1)[1],
-                                         display_name=author_name)
+                name_parts = author_name.rsplit(' ', 1)
+                first_name = name_parts[0]
+                if len(name_parts) == 1:
+                    last_name = ''
+                else:
+                    last_name = name_parts[1]
+                author = Author.populate(first_name=first_name, last_name=last_name, display_name=author_name)
             db_song.add_author(author)
         self.db_manager.save_object(db_song)
         return db_song
+

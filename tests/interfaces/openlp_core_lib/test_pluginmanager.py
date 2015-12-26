@@ -28,7 +28,7 @@ import gc
 from tempfile import mkdtemp
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry, Settings
 from openlp.core.lib.pluginmanager import PluginManager
@@ -52,7 +52,7 @@ class TestPluginManager(TestCase, TestMixin):
         Registry.create()
         Registry().register('service_list', MagicMock())
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
 
     def tearDown(self):

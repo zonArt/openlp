@@ -25,14 +25,13 @@ Package to test the openlp.core.__init__ package.
 import os
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core import OpenLP, parse_options
 from openlp.core.common import Settings
 
 from tests.helpers.testmixin import TestMixin
 from tests.functional import MagicMock, patch, call
-
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
 
@@ -98,9 +97,9 @@ class TestInit(TestCase, TestMixin):
         }
         Settings().setValue('core/application version', '2.2.0')
         with patch('openlp.core.get_application_version') as mocked_get_application_version,\
-                patch('openlp.core.QtGui.QMessageBox.question') as mocked_question:
+                patch('openlp.core.QtWidgets.QMessageBox.question') as mocked_question:
             mocked_get_application_version.return_value = MOCKED_VERSION
-            mocked_question.return_value = QtGui.QMessageBox.No
+            mocked_question.return_value = QtWidgets.QMessageBox.No
 
             # WHEN: We check if a backup should be created
             self.openlp.backup_on_upgrade(old_install)
@@ -122,9 +121,9 @@ class TestInit(TestCase, TestMixin):
         }
         Settings().setValue('core/application version', '2.0.5')
         with patch('openlp.core.get_application_version') as mocked_get_application_version,\
-                patch('openlp.core.QtGui.QMessageBox.question') as mocked_question:
+                patch('openlp.core.QtWidgets.QMessageBox.question') as mocked_question:
             mocked_get_application_version.return_value = MOCKED_VERSION
-            mocked_question.return_value = QtGui.QMessageBox.No
+            mocked_question.return_value = QtWidgets.QMessageBox.No
 
             # WHEN: We check if a backup should be created
             self.openlp.backup_on_upgrade(old_install)
@@ -132,60 +131,3 @@ class TestInit(TestCase, TestMixin):
             # THEN: It should ask if we want to create a backup
             self.assertEqual(Settings().value('core/application version'), '2.2.0', 'Version should be upgraded!')
             self.assertEqual(mocked_question.call_count, 1, 'A question should have been asked!')
-
-    @patch(u'openlp.core.OptionParser')
-    def parse_options_test(self, MockedOptionParser):
-        """
-        Test that parse_options sets up OptionParser correctly and parses the options given
-        """
-        # GIVEN: A list of valid options and a mocked out OptionParser object
-        options = ['-e', '-l', 'debug', '-pd', '-s', 'style', 'extra', 'qt', 'args']
-        mocked_parser = MagicMock()
-        MockedOptionParser.return_value = mocked_parser
-        expected_calls = [
-            call('-e', '--no-error-form', dest='no_error_form', action='store_true',
-                 help='Disable the error notification form.'),
-            call('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
-                 help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".'),
-            call('-p', '--portable', dest='portable', action='store_true',
-                 help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).'),
-            call('-d', '--dev-version', dest='dev_version', action='store_true',
-                 help='Ignore the version file and pull the version directly from Bazaar'),
-            call('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
-        ]
-
-        # WHEN: Calling parse_options
-        parse_options(options)
-
-        # THEN: A tuple should be returned with the parsed options and left over options
-        MockedOptionParser.assert_called_with(usage='Usage: %prog [options] [qt-options]')
-        self.assertEquals(expected_calls, mocked_parser.add_option.call_args_list)
-        mocked_parser.parse_args.assert_called_with(options)
-
-    @patch(u'openlp.core.OptionParser')
-    def parse_options_from_sys_argv_test(self, MockedOptionParser):
-        """
-        Test that parse_options sets up OptionParser correctly and parses sys.argv
-        """
-        # GIVEN: A list of valid options and a mocked out OptionParser object
-        mocked_parser = MagicMock()
-        MockedOptionParser.return_value = mocked_parser
-        expected_calls = [
-            call('-e', '--no-error-form', dest='no_error_form', action='store_true',
-                 help='Disable the error notification form.'),
-            call('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
-                 help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".'),
-            call('-p', '--portable', dest='portable', action='store_true',
-                 help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).'),
-            call('-d', '--dev-version', dest='dev_version', action='store_true',
-                 help='Ignore the version file and pull the version directly from Bazaar'),
-            call('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
-        ]
-
-        # WHEN: Calling parse_options
-        parse_options([])
-
-        # THEN: A tuple should be returned with the parsed options and left over options
-        MockedOptionParser.assert_called_with(usage='Usage: %prog [options] [qt-options]')
-        self.assertEquals(expected_calls, mocked_parser.add_option.call_args_list)
-        mocked_parser.parse_args.assert_called_with()

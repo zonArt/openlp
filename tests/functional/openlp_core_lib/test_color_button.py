@@ -36,7 +36,7 @@ class TestColorDialog(TestCase):
         self.change_color_patcher = patch('openlp.core.lib.colorbutton.ColorButton.change_color')
         self.clicked_patcher = patch('openlp.core.lib.colorbutton.ColorButton.clicked')
         self.color_changed_patcher = patch('openlp.core.lib.colorbutton.ColorButton.colorChanged')
-        self.qt_gui_patcher = patch('openlp.core.lib.colorbutton.QtGui')
+        self.qt_gui_patcher = patch('openlp.core.lib.colorbutton.QtWidgets')
         self.translate_patcher = patch('openlp.core.lib.colorbutton.translate', **{'return_value': 'Tool Tip Text'})
         self.addCleanup(self.change_color_patcher.stop)
         self.addCleanup(self.clicked_patcher.stop)
@@ -46,7 +46,7 @@ class TestColorDialog(TestCase):
         self.mocked_change_color = self.change_color_patcher.start()
         self.mocked_clicked = self.clicked_patcher.start()
         self.mocked_color_changed = self.color_changed_patcher.start()
-        self.mocked_qt_gui = self.qt_gui_patcher.start()
+        self.mocked_qt_widgets = self.qt_gui_patcher.start()
         self.mocked_translate = self.translate_patcher.start()
 
     def constructor_test(self):
@@ -144,7 +144,7 @@ class TestColorDialog(TestCase):
         widget._color = '#000000'
 
         # WHEN: The on_clicked method is called, and the color is invalid
-        self.mocked_qt_gui.QColorDialog.getColor.return_value = MagicMock(**{'isValid.return_value': False})
+        self.mocked_qt_widgets.QColorDialog.getColor.return_value = MagicMock(**{'isValid.return_value': False})
         widget.on_clicked()
 
         # THEN: change_color should not have been called and the colorChanged signal should not have been emitted
@@ -166,7 +166,7 @@ class TestColorDialog(TestCase):
         widget._color = '#000000'
 
         # WHEN: The on_clicked method is called, and the color is valid, but the same as the existing color
-        self.mocked_qt_gui.QColorDialog.getColor.return_value = MagicMock(
+        self.mocked_qt_widgets.QColorDialog.getColor.return_value = MagicMock(
             **{'isValid.return_value': True, 'name.return_value': '#000000'})
         widget.on_clicked()
 
@@ -190,7 +190,7 @@ class TestColorDialog(TestCase):
         widget._color = '#000000'
 
         # WHEN: The on_clicked method is called, and the color is valid, and different to the existing color
-        self.mocked_qt_gui.QColorDialog.getColor.return_value = MagicMock(
+        self.mocked_qt_widgets.QColorDialog.getColor.return_value = MagicMock(
             **{'isValid.return_value': True, 'name.return_value': '#ffffff'})
         widget.on_clicked()
 
