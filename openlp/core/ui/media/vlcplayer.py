@@ -29,7 +29,7 @@ import os
 import threading
 import sys
 import ctypes
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Settings, is_win, is_macosx, is_linux
 from openlp.core.lib import translate
@@ -147,8 +147,8 @@ class VlcPlayer(MediaPlayer):
         Set up the media player
         """
         vlc = get_vlc()
-        display.vlc_widget = QtGui.QFrame(display)
-        display.vlc_widget.setFrameStyle(QtGui.QFrame.NoFrame)
+        display.vlc_widget = QtWidgets.QFrame(display)
+        display.vlc_widget.setFrameStyle(QtWidgets.QFrame.NoFrame)
         # creating a basic vlc instance
         command_line_options = '--no-video-title-show'
         if not display.has_audio:
@@ -170,7 +170,7 @@ class VlcPlayer(MediaPlayer):
         if is_win():
             display.vlc_media_player.set_hwnd(win_id)
         elif is_macosx():
-            # We have to use 'set_nsobject' since Qt4 on OSX uses Cocoa
+            # We have to use 'set_nsobject' since Qt5 on OSX uses Cocoa
             # framework and not the old Carbon.
             display.vlc_media_player.set_nsobject(win_id)
         else:

@@ -33,7 +33,7 @@ import urllib.error
 from tempfile import gettempdir
 from configparser import ConfigParser, MissingSectionHeaderError, NoSectionError, NoOptionError
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, \
     translate, clean_button_text, trace_error_handler
@@ -91,7 +91,7 @@ class ThemeScreenshotWorker(QtCore.QObject):
         self.was_download_cancelled = toggle
 
 
-class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
+class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
     """
     This is the Theme Import Wizard, which allows easy creation and editing of OpenLP themes.
     """
@@ -151,12 +151,12 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         else:
             return self.get_next_page_id()
 
-    def exec_(self):
+    def exec(self):
         """
         Run the wizard.
         """
         self.set_defaults()
-        return QtGui.QWizard.exec_(self)
+        return QtWidgets.QWizard.exec(self)
 
     def initialize(self, screens):
         """
@@ -182,14 +182,14 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         try:
             web_config = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
         except (urllib.error.URLError, ConnectionError) as err:
-            msg = QtGui.QMessageBox()
+            msg = QtWidgets.QMessageBox()
             title = translate('OpenLP.FirstTimeWizard', 'Network Error')
             msg.setText('{} {}'.format(title, err.code if hasattr(err, 'code') else ''))
             msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
                                              'There was a network error attempting to '
                                              'connect to retrieve initial configuration information'))
             msg.setStandardButtons(msg.Ok)
-            ans = msg.exec_()
+            ans = msg.exec()
             web_config = False
         if web_config:
             files = web_config.read()
@@ -226,7 +226,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 title = self.config.get('songs_%s' % song, 'title')
                 filename = self.config.get('songs_%s' % song, 'filename')
                 sha256 = self.config.get('songs_%s' % song, 'sha256', fallback='')
-                item = QtGui.QListWidgetItem(title, self.songs_list_widget)
+                item = QtWidgets.QListWidgetItem(title, self.songs_list_widget)
                 item.setData(QtCore.Qt.UserRole, (filename, sha256))
                 item.setCheckState(QtCore.Qt.Unchecked)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
@@ -235,7 +235,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             for lang in bible_languages:
                 self.application.process_events()
                 language = self.config.get('bibles_%s' % lang, 'title')
-                lang_item = QtGui.QTreeWidgetItem(self.bibles_tree_widget, [language])
+                lang_item = QtWidgets.QTreeWidgetItem(self.bibles_tree_widget, [language])
                 bibles = self.config.get('bibles_%s' % lang, 'translations')
                 bibles = bibles.split(',')
                 for bible in bibles:
@@ -243,7 +243,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     title = self.config.get('bible_%s' % bible, 'title')
                     filename = self.config.get('bible_%s' % bible, 'filename')
                     sha256 = self.config.get('bible_%s' % bible, 'sha256', fallback='')
-                    item = QtGui.QTreeWidgetItem(lang_item, [title])
+                    item = QtWidgets.QTreeWidgetItem(lang_item, [title])
                     item.setData(0, QtCore.Qt.UserRole, (filename, sha256))
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
@@ -370,7 +370,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
         :param title: The title of the theme
         :param filename: The filename of the theme
         """
-        item = QtGui.QListWidgetItem(title, self.themes_list_widget)
+        item = QtWidgets.QListWidgetItem(title, self.themes_list_widget)
         item.setData(QtCore.Qt.UserRole, (filename, sha256))
         item.setCheckState(QtCore.Qt.Unchecked)
         item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
@@ -510,7 +510,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                     size = self._get_file_size('%s%s' % (self.songs_url, filename))
                     self.max_progress += size
             # Loop through the Bibles list and increase for each selected item
-            iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
+            iterator = QtWidgets.QTreeWidgetItemIterator(self.bibles_tree_widget)
             while iterator.value():
                 self.application.process_events()
                 item = iterator.value()
@@ -562,20 +562,20 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             if self.has_run_wizard:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
                                             'Download complete. Click the %s button to return to OpenLP.') %
-                                            clean_button_text(self.buttonText(QtGui.QWizard.FinishButton)))
+                                            clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
             else:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
                                             'Download complete. Click the %s button to start OpenLP.') %
-                                            clean_button_text(self.buttonText(QtGui.QWizard.FinishButton)))
+                                            clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
         else:
             if self.has_run_wizard:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
                                             'Click the %s button to return to OpenLP.') %
-                                            clean_button_text(self.buttonText(QtGui.QWizard.FinishButton)))
+                                            clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
             else:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
                                             'Click the %s button to start OpenLP.') %
-                                            clean_button_text(self.buttonText(QtGui.QWizard.FinishButton)))
+                                            clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
         self.finish_button.setVisible(True)
         self.finish_button.setEnabled(True)
         self.cancel_button.setVisible(False)
@@ -631,7 +631,7 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
                 if not self.url_get_file('%s%s' % (self.songs_url, filename), destination, sha256):
                     missed_files.append('Song: {}'.format(filename))
         # Download Bibles
-        bibles_iterator = QtGui.QTreeWidgetItemIterator(self.bibles_tree_widget)
+        bibles_iterator = QtWidgets.QTreeWidgetItemIterator(self.bibles_tree_widget)
         while bibles_iterator.value():
             item = bibles_iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
@@ -656,15 +656,15 @@ class FirstTimeForm(QtGui.QWizard, UiFirstTimeWizard, RegistryProperties):
             file_list = ''
             for entry in missed_files:
                 file_list += '{}<br \>'.format(entry)
-            msg = QtGui.QMessageBox()
-            msg.setIcon(QtGui.QMessageBox.Warning)
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
             msg.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'Network Error'))
             msg.setText(translate('OpenLP.FirstTimeWizard', 'Unable to download some files'))
             msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
                                              'The following files were not able to be '
                                              'downloaded:<br \>{}'.format(file_list)))
             msg.setStandardButtons(msg.Ok)
-            ans = msg.exec_()
+            ans = msg.exec()
         return True
 
     def _set_plugin_status(self, field, tag):

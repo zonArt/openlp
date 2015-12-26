@@ -28,9 +28,9 @@ import logging
 log = logging.getLogger(__name__)
 log.debug('editform loaded')
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import pyqtSlot, QSize
-from PyQt4.QtGui import QDialog, QButtonGroup, QDialogButtonBox, QFormLayout, QLineEdit, QRadioButton, \
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import pyqtSlot, QSize
+from PyQt5.QtWidgets import QDialog, QButtonGroup, QDialogButtonBox, QFormLayout, QLineEdit, QRadioButton, \
     QStyle, QStylePainter, QStyleOptionTab, QTabBar, QTabWidget, QVBoxLayout, QWidget
 
 from openlp.core.common import translate, is_macosx
@@ -263,7 +263,7 @@ class SourceSelectTabs(QDialog):
         self.layout.addWidget(self.tabwidget)
         self.setLayout(self.layout)
 
-    def exec_(self, projector):
+    def exec(self, projector):
         """
         Override initial method so we can build the tabs.
 
@@ -287,10 +287,10 @@ class SourceSelectTabs(QDialog):
                 thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
                 if buttonchecked:
                     self.tabwidget.setCurrentIndex(thistab)
-            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
-                                               QtGui.QDialogButtonBox.Discard |
-                                               QtGui.QDialogButtonBox.Ok |
-                                               QtGui.QDialogButtonBox.Cancel)
+            self.button_box = QDialogButtonBox(QtWidgets.QDialogButtonBox.Reset |
+                                               QtWidgets.QDialogButtonBox.Discard |
+                                               QtWidgets.QDialogButtonBox.Ok |
+                                               QtWidgets.QDialogButtonBox.Cancel)
         else:
             for key in keys:
                 (tab, button_count, buttonchecked) = Build_Tab(group=self.button_group,
@@ -302,12 +302,12 @@ class SourceSelectTabs(QDialog):
                 thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
                 if buttonchecked:
                     self.tabwidget.setCurrentIndex(thistab)
-            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
-                                               QtGui.QDialogButtonBox.Cancel)
+            self.button_box = QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok |
+                                               QtWidgets.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         set_button_tooltip(self.button_box)
-        selected = super(SourceSelectTabs, self).exec_()
+        selected = super(SourceSelectTabs, self).exec()
         return selected
 
     @pyqtSlot(object)
@@ -333,14 +333,14 @@ class SourceSelectTabs(QDialog):
             return 100
 
     def delete_sources(self):
-        msg = QtGui.QMessageBox()
+        msg = QtWidgets.QMessageBox()
         msg.setText(translate('OpenLP.SourceSelectForm', 'Delete entries for this projector'))
         msg.setInformativeText(translate('OpenLP.SourceSelectForm',
                                          'Are you sure you want to delete ALL user-defined '
                                          'source input text for this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
-        ans = msg.exec_()
+        ans = msg.exec()
         if ans == msg.Cancel:
             return
         self.projectordb.delete_all_objects(ProjectorSource, ProjectorSource.projector_id == self.projector.db_item.id)
@@ -396,7 +396,7 @@ class SourceSelectSingle(QDialog):
         self.setModal(True)
         self.edit = edit
 
-    def exec_(self, projector, edit=False):
+    def exec(self, projector, edit=False):
         """
         Override initial method so we can build the tabs.
 
@@ -426,26 +426,26 @@ class SourceSelectSingle(QDialog):
                     item.setText(source_item.text)
                 self.layout.addRow(PJLINK_DEFAULT_CODES[key], item)
                 self.button_group.append(item)
-            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Reset |
-                                               QtGui.QDialogButtonBox.Discard |
-                                               QtGui.QDialogButtonBox.Ok |
-                                               QtGui.QDialogButtonBox.Cancel)
+            self.button_box = QDialogButtonBox(QtWidgets.QDialogButtonBox.Reset |
+                                               QtWidgets.QDialogButtonBox.Discard |
+                                               QtWidgets.QDialogButtonBox.Ok |
+                                               QtWidgets.QDialogButtonBox.Cancel)
         else:
             for key in keys:
                 source_text = self.projectordb.get_source_by_code(code=key, projector_id=self.projector.db_item.id)
                 text = self.source_text[key] if source_text is None else source_text.text
-                button = QtGui.QRadioButton(text)
+                button = QtWidgets.QRadioButton(text)
                 button.setChecked(True if key == projector.source else False)
                 self.layout.addWidget(button)
                 self.button_group.addButton(button, int(key))
                 button_list.append(key)
-            self.button_box = QDialogButtonBox(QtGui.QDialogButtonBox.Ok |
-                                               QtGui.QDialogButtonBox.Cancel)
+            self.button_box = QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok |
+                                               QtWidgets.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
-        self.setMinimumHeight(key_count*25)
+        self.setMinimumHeight(key_count * 25)
         set_button_tooltip(self.button_box)
-        selected = super(SourceSelectSingle, self).exec_()
+        selected = super(SourceSelectSingle, self).exec()
         return selected
 
     @pyqtSlot(object)
@@ -471,14 +471,14 @@ class SourceSelectSingle(QDialog):
             return 100
 
     def delete_sources(self):
-        msg = QtGui.QMessageBox()
+        msg = QtWidgets.QMessageBox()
         msg.setText(translate('OpenLP.SourceSelectForm', 'Delete entries for this projector'))
         msg.setInformativeText(translate('OpenLP.SourceSelectForm',
                                          'Are you sure you want to delete ALL user-defined '
                                          'source input text for this projector?'))
         msg.setStandardButtons(msg.Cancel | msg.Ok)
         msg.setDefaultButton(msg.Cancel)
-        ans = msg.exec_()
+        ans = msg.exec()
         if ans == msg.Cancel:
             return
         self.projectordb.delete_all_objects(ProjectorSource, ProjectorSource.projector_id == self.projector.db_item.id)

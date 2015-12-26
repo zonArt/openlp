@@ -48,7 +48,7 @@ class CCLIFileImport(SongImport):
         :param manager: The song manager for the running OpenLP installation.
         :param kwargs:  The files to be imported.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(CCLIFileImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
@@ -161,7 +161,7 @@ class CCLIFileImport(SongImport):
             elif line.startswith('Author='):
                 song_author = line[7:].strip()
             elif line.startswith('Copyright='):
-                self.copyright = line[10:].strip()
+                self.add_copyright(line[10:].strip())
             elif line.startswith('Themes='):
                 song_topics = line[7:].strip().replace(' | ', '/t')
             elif line.startswith('Fields='):
@@ -318,14 +318,14 @@ class CCLIFileImport(SongImport):
                     if line_number == 2:
                         line_number += 1
                         if clean_line.startswith('©'):
-                            self.copyright = clean_line
+                            self.add_copyright(clean_line)
                         else:
                             song_author = clean_line
                     # n=3, authors
                     elif line_number == 3:
                         line_number += 1
                         if song_author:
-                            self.copyright = clean_line
+                            self.add_copyright(clean_line)
                         else:
                             song_author = clean_line
                     # line_number=4, comments lines before last line

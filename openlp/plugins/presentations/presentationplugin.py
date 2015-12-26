@@ -26,7 +26,7 @@ formats.
 import os
 import logging
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import AppLocation, Settings, translate
 from openlp.core.lib import Plugin, StringContent, build_icon

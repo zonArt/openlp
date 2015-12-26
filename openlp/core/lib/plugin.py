@@ -25,7 +25,7 @@ Provide the generic plugin functionality for OpenLP plugins.
 import logging
 
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings
 from openlp.core.utils import get_application_version

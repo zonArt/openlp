@@ -210,9 +210,14 @@ class SongSelectImport(object):
         for author_name in song['authors']:
             author = self.db_manager.get_object_filtered(Author, Author.display_name == author_name)
             if not author:
-                author = Author.populate(first_name=author_name.rsplit(' ', 1)[0],
-                                         last_name=author_name.rsplit(' ', 1)[1],
-                                         display_name=author_name)
+                name_parts = author_name.rsplit(' ', 1)
+                first_name = name_parts[0]
+                if len(name_parts) == 1:
+                    last_name = ''
+                else:
+                    last_name = name_parts[1]
+                author = Author.populate(first_name=first_name, last_name=last_name, display_name=author_name)
             db_song.add_author(author)
         self.db_manager.save_object(db_song)
         return db_song
+

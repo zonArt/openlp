@@ -22,14 +22,14 @@
 """
 A widget representing a song in the duplicate song removal wizard review page.
 """
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib import build_icon
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.openlyricsxml import SongXML
 
 
-class SongReviewWidget(QtGui.QWidget):
+class SongReviewWidget(QtWidgets.QWidget):
     """
     A widget representing a song on the duplicate song review page.
     It displays most of the information a song contains and
@@ -47,7 +47,7 @@ class SongReviewWidget(QtGui.QWidget):
     # connect calls.
     # That's why we cheat a little and use QWidget instead of SongReviewWidget as parameter.
     # While not being entirely correct, it does work.
-    song_remove_button_clicked = QtCore.pyqtSignal(QtGui.QWidget)
+    song_remove_button_clicked = QtCore.pyqtSignal(QtWidgets.QWidget)
 
     def __init__(self, parent, song):
         """
@@ -61,87 +61,87 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_remove_button.clicked.connect(self.on_remove_button_clicked)
 
     def setupUi(self):
-        self.song_vertical_layout = QtGui.QVBoxLayout(self)
+        self.song_vertical_layout = QtWidgets.QVBoxLayout(self)
         self.song_vertical_layout.setObjectName('song_vertical_layout')
-        self.song_group_box = QtGui.QGroupBox(self)
+        self.song_group_box = QtWidgets.QGroupBox(self)
         self.song_group_box.setObjectName('song_group_box')
         self.song_group_box.setFixedWidth(300)
-        self.song_group_box_layout = QtGui.QVBoxLayout(self.song_group_box)
+        self.song_group_box_layout = QtWidgets.QVBoxLayout(self.song_group_box)
         self.song_group_box_layout.setObjectName('song_group_box_layout')
-        self.song_info_form_layout = QtGui.QFormLayout()
+        self.song_info_form_layout = QtWidgets.QFormLayout()
         self.song_info_form_layout.setObjectName('song_info_form_layout')
         # Add title widget.
-        self.song_title_label = QtGui.QLabel(self)
+        self.song_title_label = QtWidgets.QLabel(self)
         self.song_title_label.setObjectName('song_title_label')
-        self.song_info_form_layout.setWidget(0, QtGui.QFormLayout.LabelRole, self.song_title_label)
-        self.song_title_content = QtGui.QLabel(self)
+        self.song_info_form_layout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.song_title_label)
+        self.song_title_content = QtWidgets.QLabel(self)
         self.song_title_content.setObjectName('song_title_content')
         self.song_title_content.setText(self.song.title)
         self.song_title_content.setWordWrap(True)
-        self.song_info_form_layout.setWidget(0, QtGui.QFormLayout.FieldRole, self.song_title_content)
+        self.song_info_form_layout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.song_title_content)
         # Add alternate title widget.
-        self.song_alternate_title_label = QtGui.QLabel(self)
+        self.song_alternate_title_label = QtWidgets.QLabel(self)
         self.song_alternate_title_label.setObjectName('song_alternate_title_label')
-        self.song_info_form_layout.setWidget(1, QtGui.QFormLayout.LabelRole, self.song_alternate_title_label)
-        self.song_alternate_title_content = QtGui.QLabel(self)
+        self.song_info_form_layout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.song_alternate_title_label)
+        self.song_alternate_title_content = QtWidgets.QLabel(self)
         self.song_alternate_title_content.setObjectName('song_alternate_title_content')
         self.song_alternate_title_content.setText(self.song.alternate_title)
         self.song_alternate_title_content.setWordWrap(True)
-        self.song_info_form_layout.setWidget(1, QtGui.QFormLayout.FieldRole, self.song_alternate_title_content)
+        self.song_info_form_layout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.song_alternate_title_content)
         # Add CCLI number widget.
-        self.song_ccli_number_label = QtGui.QLabel(self)
+        self.song_ccli_number_label = QtWidgets.QLabel(self)
         self.song_ccli_number_label.setObjectName('song_ccli_number_label')
-        self.song_info_form_layout.setWidget(2, QtGui.QFormLayout.LabelRole, self.song_ccli_number_label)
-        self.song_ccli_number_content = QtGui.QLabel(self)
+        self.song_info_form_layout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.song_ccli_number_label)
+        self.song_ccli_number_content = QtWidgets.QLabel(self)
         self.song_ccli_number_content.setObjectName('song_ccli_number_content')
         self.song_ccli_number_content.setText(self.song.ccli_number)
         self.song_ccli_number_content.setWordWrap(True)
-        self.song_info_form_layout.setWidget(2, QtGui.QFormLayout.FieldRole, self.song_ccli_number_content)
+        self.song_info_form_layout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.song_ccli_number_content)
         # Add copyright widget.
-        self.song_copyright_label = QtGui.QLabel(self)
+        self.song_copyright_label = QtWidgets.QLabel(self)
         self.song_copyright_label.setObjectName('song_copyright_label')
-        self.song_info_form_layout.setWidget(3, QtGui.QFormLayout.LabelRole, self.song_copyright_label)
-        self.song_copyright_content = QtGui.QLabel(self)
+        self.song_info_form_layout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.song_copyright_label)
+        self.song_copyright_content = QtWidgets.QLabel(self)
         self.song_copyright_content.setObjectName('song_copyright_content')
         self.song_copyright_content.setWordWrap(True)
         self.song_copyright_content.setText(self.song.copyright)
-        self.song_info_form_layout.setWidget(3, QtGui.QFormLayout.FieldRole, self.song_copyright_content)
+        self.song_info_form_layout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.song_copyright_content)
         # Add comments widget.
-        self.song_comments_label = QtGui.QLabel(self)
+        self.song_comments_label = QtWidgets.QLabel(self)
         self.song_comments_label.setObjectName('song_comments_label')
-        self.song_info_form_layout.setWidget(4, QtGui.QFormLayout.LabelRole, self.song_comments_label)
-        self.song_comments_content = QtGui.QLabel(self)
+        self.song_info_form_layout.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.song_comments_label)
+        self.song_comments_content = QtWidgets.QLabel(self)
         self.song_comments_content.setObjectName('song_comments_content')
         self.song_comments_content.setText(self.song.comments)
         self.song_comments_content.setWordWrap(True)
-        self.song_info_form_layout.setWidget(4, QtGui.QFormLayout.FieldRole, self.song_comments_content)
+        self.song_info_form_layout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.song_comments_content)
         # Add authors widget.
-        self.song_authors_label = QtGui.QLabel(self)
+        self.song_authors_label = QtWidgets.QLabel(self)
         self.song_authors_label.setObjectName('song_authors_label')
-        self.song_info_form_layout.setWidget(5, QtGui.QFormLayout.LabelRole, self.song_authors_label)
-        self.song_authors_content = QtGui.QLabel(self)
+        self.song_info_form_layout.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.song_authors_label)
+        self.song_authors_content = QtWidgets.QLabel(self)
         self.song_authors_content.setObjectName('song_authors_content')
         self.song_authors_content.setWordWrap(True)
         authors_text = ', '.join([author.display_name for author in self.song.authors])
         self.song_authors_content.setText(authors_text)
-        self.song_info_form_layout.setWidget(5, QtGui.QFormLayout.FieldRole, self.song_authors_content)
+        self.song_info_form_layout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.song_authors_content)
         # Add verse order widget.
-        self.song_verse_order_label = QtGui.QLabel(self)
+        self.song_verse_order_label = QtWidgets.QLabel(self)
         self.song_verse_order_label.setObjectName('song_verse_order_label')
-        self.song_info_form_layout.setWidget(6, QtGui.QFormLayout.LabelRole, self.song_verse_order_label)
-        self.song_verse_order_content = QtGui.QLabel(self)
+        self.song_info_form_layout.setWidget(6, QtWidgets.QFormLayout.LabelRole, self.song_verse_order_label)
+        self.song_verse_order_content = QtWidgets.QLabel(self)
         self.song_verse_order_content.setObjectName('song_verse_order_content')
         self.song_verse_order_content.setText(self.song.verse_order)
         self.song_verse_order_content.setWordWrap(True)
-        self.song_info_form_layout.setWidget(6, QtGui.QFormLayout.FieldRole, self.song_verse_order_content)
+        self.song_info_form_layout.setWidget(6, QtWidgets.QFormLayout.FieldRole, self.song_verse_order_content)
         self.song_group_box_layout.addLayout(self.song_info_form_layout)
         # Add verses widget.
-        self.song_info_verse_list_widget = QtGui.QTableWidget(self.song_group_box)
+        self.song_info_verse_list_widget = QtWidgets.QTableWidget(self.song_group_box)
         self.song_info_verse_list_widget.setColumnCount(1)
         self.song_info_verse_list_widget.horizontalHeader().setVisible(False)
         self.song_info_verse_list_widget.setObjectName('song_info_verse_list_widget')
-        self.song_info_verse_list_widget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
-        self.song_info_verse_list_widget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.song_info_verse_list_widget.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+        self.song_info_verse_list_widget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.song_info_verse_list_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.song_info_verse_list_widget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.song_info_verse_list_widget.setAlternatingRowColors(True)
@@ -150,7 +150,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_info_verse_list_widget.setRowCount(len(verses))
         song_tags = []
         for verse_number, verse in enumerate(verses):
-            item = QtGui.QTableWidgetItem()
+            item = QtWidgets.QTableWidgetItem()
             item.setText(verse[1])
             self.song_info_verse_list_widget.setItem(verse_number, 0, item)
 
@@ -180,10 +180,10 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_group_box_layout.addWidget(self.song_info_verse_list_widget)
         self.song_group_box_layout.addStretch()
         self.song_vertical_layout.addWidget(self.song_group_box)
-        self.song_remove_button = QtGui.QPushButton(self)
+        self.song_remove_button = QtWidgets.QPushButton(self)
         self.song_remove_button.setObjectName('song_remove_button')
         self.song_remove_button.setIcon(build_icon(':/songs/song_delete.png'))
-        self.song_remove_button.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.song_remove_button.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.song_vertical_layout.addWidget(self.song_remove_button, alignment=QtCore.Qt.AlignHCenter)
 
     def retranslateUi(self):

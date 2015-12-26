@@ -24,7 +24,7 @@ Module to test the EditCustomSlideForm.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry
 from openlp.plugins.custom.forms.editcustomslideform import EditCustomSlideForm
@@ -42,7 +42,7 @@ class TestEditCustomSlideForm(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
         self.form = EditCustomSlideForm()
 
@@ -57,10 +57,10 @@ class TestEditCustomSlideForm(TestCase, TestMixin):
         """
         Test if the dialog is correctly set up.
         """
-        # GIVEN: A mocked QDialog.exec_() method
-        with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+        # GIVEN: A mocked QDialog.exec() method
+        with patch('PyQt5.QtWidgets.QDialog.exec') as mocked_exec:
             # WHEN: Show the dialog.
-            self.form.exec_()
+            self.form.exec()
 
             # THEN: The dialog should be empty.
             assert self.form.slide_text_edit.toPlainText() == '', 'There should not be any text in the text editor.'
@@ -69,14 +69,14 @@ class TestEditCustomSlideForm(TestCase, TestMixin):
         """
         Test the set_text() method.
         """
-        # GIVEN: A mocked QDialog.exec_() method
-        with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+        # GIVEN: A mocked QDialog.exec() method
+        with patch('PyQt5.QtWidgets.QDialog.exec') as mocked_exec:
             mocked_set_focus = MagicMock()
             self.form.slide_text_edit.setFocus = mocked_set_focus
             wanted_text = 'THIS TEXT SHOULD BE SHOWN.'
 
             # WHEN: Show the dialog and set the text.
-            self.form.exec_()
+            self.form.exec()
             self.form.set_text(wanted_text)
 
             # THEN: The dialog should show the text.

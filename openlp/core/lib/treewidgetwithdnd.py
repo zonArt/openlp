@@ -24,12 +24,12 @@ Extend QTreeWidget to handle drag and drop functionality
 """
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry
 
 
-class TreeWidgetWithDnD(QtGui.QTreeWidget):
+class TreeWidgetWithDnD(QtWidgets.QTreeWidget):
     """
     Provide a tree widget to store objects and handle drag and drop events
     """
@@ -50,7 +50,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         Activate DnD of widget
         """
         self.setAcceptDrops(True)
-        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         Registry().register_function(('%s_dnd' % self.mime_data_text), self.parent().load_file)
         Registry().register_function(('%s_dnd_internal' % self.mime_data_text), self.parent().dnd_move_internal)
 
@@ -71,7 +71,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         mime_data = QtCore.QMimeData()
         drag.setMimeData(mime_data)
         mime_data.setText(self.mime_data_text)
-        drag.start(QtCore.Qt.CopyAction)
+        drag.exec(QtCore.Qt.CopyAction)
 
     def dragEnterEvent(self, event):
         """
@@ -92,7 +92,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
 
         :param event: The event that occurred
         """
-        QtGui.QTreeWidget.dragMoveEvent(self, event)
+        QtWidgets.QTreeWidget.dragMoveEvent(self, event)
         if event.mimeData().hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()

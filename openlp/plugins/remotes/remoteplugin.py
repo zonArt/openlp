@@ -22,7 +22,7 @@
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import Plugin, StringContent, translate, build_icon
 from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
@@ -63,13 +63,13 @@ class RemotesPlugin(Plugin):
         super(RemotesPlugin, self).initialise()
         self.server = OpenLPServer()
         if not hasattr(self, 'remote_server_icon'):
-            self.remote_server_icon = QtGui.QLabel(self.main_window.status_bar)
-            size_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+            self.remote_server_icon = QtWidgets.QLabel(self.main_window.status_bar)
+            size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
             size_policy.setHorizontalStretch(0)
             size_policy.setVerticalStretch(0)
             size_policy.setHeightForWidth(self.remote_server_icon.sizePolicy().hasHeightForWidth())
             self.remote_server_icon.setSizePolicy(size_policy)
-            self.remote_server_icon.setFrameShadow(QtGui.QFrame.Plain)
+            self.remote_server_icon.setFrameShadow(QtWidgets.QFrame.Plain)
             self.remote_server_icon.setLineWidth(1)
             self.remote_server_icon.setScaledContents(True)
             self.remote_server_icon.setFixedSize(20, 20)
@@ -117,8 +117,9 @@ class RemotesPlugin(Plugin):
         Called when Config is changed to requests a restart with the server on new address or port
         """
         log.debug('remote config changed')
-        QtGui.QMessageBox.information(self.main_window,
-                                      translate('RemotePlugin', 'Server Config Change'),
-                                      translate('RemotePlugin', 'Server configuration changes will require a restart '
-                                                'to take effect.'),
-                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+        QtWidgets.QMessageBox.information(self.main_window,
+                                          translate('RemotePlugin', 'Server Config Change'),
+                                          translate('RemotePlugin',
+                                                    'Server configuration changes will require a restart '
+                                                    'to take effect.'),
+                                          QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))

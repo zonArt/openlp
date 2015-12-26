@@ -24,13 +24,13 @@ The :mod:`listpreviewwidget` is a widget that lists the slides in the slide cont
 It is based on a QTableWidget but represents its contents in list form.
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import RegistryProperties
 from openlp.core.lib import ImageSource, ServiceItem
 
 
-class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
+class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
     """
     A special type of QTableWidget which lists the slides in the slide controller
 
@@ -45,7 +45,7 @@ class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
         An empty ``ServiceItem`` is used by default. replace_service_manager_item() needs to be called to make this
         widget display something.
         """
-        super(QtGui.QTableWidget, self).__init__(parent)
+        super(QtWidgets.QTableWidget, self).__init__(parent)
         self._setup(screen_ratio)
 
     def _setup(self, screen_ratio):
@@ -55,9 +55,9 @@ class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
         self.setColumnCount(1)
         self.horizontalHeader().setVisible(False)
         self.setColumnWidth(0, self.parent().width())
-        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setAlternatingRowColors(True)
         # Initialize variables.
@@ -111,7 +111,7 @@ class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
         text = []
         for frame_number, frame in enumerate(self.service_item.get_frames()):
             self.setRowCount(self.slide_count() + 1)
-            item = QtGui.QTableWidgetItem()
+            item = QtWidgets.QTableWidgetItem()
             slide_height = 0
             if self.service_item.is_text():
                 if frame['verseTag']:
@@ -124,17 +124,21 @@ class ListPreviewWidget(QtGui.QTableWidget, RegistryProperties):
                     row += 1
                 item.setText(frame['text'])
             else:
-                label = QtGui.QLabel()
-                label.setMargin(4)
+                label = QtWidgets.QLabel()
+                label.setContentsMargins(4, 4, 4, 4)
                 if self.service_item.is_media():
                     label.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
                 else:
                     label.setScaledContents(True)
                 if self.service_item.is_command():
-                    label.setPixmap(QtGui.QPixmap(frame['image']))
+                    pixmap = QtGui.QPixmap(frame['image'])
+                    pixmap.setDevicePixelRatio(label.devicePixelRatio())
+                    label.setPixmap(pixmap)
                 else:
                     image = self.image_manager.get_image(frame['path'], ImageSource.ImagePlugin)
-                    label.setPixmap(QtGui.QPixmap.fromImage(image))
+                    pixmap = QtGui.QPixmap.fromImage(image)
+                    pixmap.setDevicePixelRatio(label.devicePixelRatio())
+                    label.setPixmap(pixmap)
                 self.setCellWidget(frame_number, 0, label)
                 slide_height = width // self.screen_ratio
                 row += 1

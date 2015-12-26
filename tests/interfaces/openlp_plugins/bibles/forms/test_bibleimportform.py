@@ -24,7 +24,7 @@ Package to test the openlp.plugins.bibles.forms.bibleimportform package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry
 from openlp.plugins.bibles.forms.bibleimportform import BibleImportForm, WebDownload
@@ -44,7 +44,7 @@ class TestBibleImportForm(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
         self.form = BibleImportForm(self.main_window, MagicMock(), MagicMock())
 

@@ -23,7 +23,7 @@ import logging
 import os
 import time
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import is_win
 from openlp.core.utils import get_uno_command, get_uno_instance
