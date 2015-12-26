@@ -243,6 +243,7 @@ class Settings(QtCore.QSettings):
             QtCore.QSettings.__init__(self, Settings.__file_path__, Settings.IniFormat)
         else:
             QtCore.QSettings.__init__(self, *args)
+        # Add shortcuts here so QKeySequence has a QApplication instance to use.
         Settings.__default_settings__.update({
             'shortcuts/aboutItem': [QtGui.QKeySequence(QtCore.Qt.CTRL + QtCore.Qt.Key_F1)],
             'shortcuts/addToService': [],
