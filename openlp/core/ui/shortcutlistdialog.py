@@ -56,7 +56,7 @@ class ShortcutTreeWidget(QtWidgets.QTreeWidget):
 
     def keyboardSearch(self, search):
         """
-        Prevent single letter searches from highlighting items.
+        Ignore searches to prevent single letter searches from highlighting items.
 
         :param search: Search string
         """
