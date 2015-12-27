@@ -220,4 +220,3 @@ class SongSelectImport(object):
             db_song.add_author(author)
         self.db_manager.save_object(db_song)
         return db_song
-
