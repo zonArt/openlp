@@ -317,6 +317,8 @@ class GeneralTab(SettingsTab):
             self.custom_Y_value_edit.value(),
             self.custom_width_value_edit.value(),
             self.custom_height_value_edit.value())
+        self.screens.override['number'] = self.screens.which_screen(self.screens.override['size'])
+        self.screens.override['primary'] = (self.screens.desktop.primaryScreen() == self.screens.override['number'])
         if self.override_radio_button.isChecked():
             self.screens.set_override_display()
         else:
