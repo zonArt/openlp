@@ -345,7 +345,7 @@ class PJLink1(QTcpSocket):
             # Authenticated login with salt
             log.debug('(%s) Setting hash with salt="%s"' % (self.ip, data_check[2]))
             log.debug('(%s) pin="%s"' % (self.ip, self.pin))
-            salt = qmd5_hash(salt=data_check[2].endcode('ascii'), data=self.pin.encode('ascii'))
+            salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
         else:
             salt = None
         # We're connected at this point, so go ahead and do regular I/O
