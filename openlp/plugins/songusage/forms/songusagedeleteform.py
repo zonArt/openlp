@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import RegistryProperties, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
@@ -36,7 +36,8 @@ class SongUsageDeleteForm(QtWidgets.QDialog, Ui_SongUsageDeleteDialog, RegistryP
         Constructor
         """
         self.manager = manager
-        super(SongUsageDeleteForm, self).__init__(parent)
+        super(SongUsageDeleteForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
+                | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.button_box.clicked.connect(self.on_button_box_clicked)
 

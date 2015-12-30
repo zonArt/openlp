@@ -22,7 +22,7 @@
 """
 The actual start time form.
 """
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from .starttimedialog import Ui_StartTimeDialog
 
@@ -38,7 +38,8 @@ class StartTimeForm(QtWidgets.QDialog, Ui_StartTimeDialog, RegistryProperties):
         """
         Constructor
         """
-        super(StartTimeForm, self).__init__(Registry().get('main_window'))
+        super(StartTimeForm, self).__init__(Registry().get('main_window'),
+                QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
     def exec(self):

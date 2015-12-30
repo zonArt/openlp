@@ -22,7 +22,7 @@
 """
 The :mod:`~openlp.core.ui.servicenoteform` module contains the `ServiceNoteForm` class.
 """
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, translate
 from openlp.core.lib import SpellTextEdit
@@ -37,7 +37,8 @@ class ServiceNoteForm(QtWidgets.QDialog, RegistryProperties):
         """
         Constructor
         """
-        super(ServiceNoteForm, self).__init__(Registry().get('main_window'))
+        super(ServiceNoteForm, self).__init__(Registry().get('main_window'),
+                QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi()
         self.retranslateUi()
 

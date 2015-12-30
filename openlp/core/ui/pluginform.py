@@ -24,7 +24,7 @@ The actual plugin view form
 """
 import logging
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import RegistryProperties, translate
 from openlp.core.lib import PluginStatus
@@ -41,7 +41,8 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         """
         Constructor
         """
-        super(PluginForm, self).__init__(parent)
+        super(PluginForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
+                | QtCore.Qt.WindowTitleHint)
         self.active_plugin = None
         self.programatic_change = False
         self.setupUi(self)
