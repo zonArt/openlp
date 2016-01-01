@@ -435,6 +435,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param service_item: The ServiceItem containing the details to be played.
         """
+        print('### media_length')
         controller = self.display_controllers[DisplayControllerType.Plugin]
         # stop running videos
         self.media_reset(controller)
@@ -451,8 +452,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
                                        translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
-        print("####")
-        print(controller.media_info.length)
+        print("media_length " + str(controller.media_info.length))
         service_item.set_media_length(controller.media_info.length)
         self.media_stop(controller)
         log.debug('use %s controller' % self.current_media_players[controller.controller_type])
@@ -589,6 +589,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller: The controller to be played
         :param status:
         """
+        print('### media_play')
         controller.seek_slider.blockSignals(True)
         controller.volume_slider.blockSignals(True)
         display = self._define_display(controller)
@@ -637,6 +638,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param controller:  The Controller to be processed
         """
+        print('### tick')
         if controller.media_info.playing:
             if controller.media_info.timer > controller.media_info.length:
                 controller.media_info.timer = controller.media_info.length
@@ -658,6 +660,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param controller: The Controller to be paused
         """
+        print('### media_pause')
         display = self._define_display(controller)
         self.current_media_players[controller.controller_type].pause(display)
         controller.mediabar.actions['playbackPlay'].setVisible(True)
@@ -679,6 +682,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param controller: The controller that needs to be stopped
         """
+        print('### media_stop')
         display = self._define_display(controller)
         if controller.controller_type in self.current_media_players:
             display.frame.evaluateJavaScript('show_blank("black");')

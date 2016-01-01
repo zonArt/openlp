@@ -542,6 +542,8 @@ class ServiceItem(RegistryProperties):
 
         :param length: The length of the media item
         """
+        print("set_media_length " + str(length) + " " + self.processor)
+        print("set_media_length " + str(self.start_time) + " " + str(self.end_time))
         self.media_length = length
         if length > 0:
             self.add_capability(ItemCapabilities.HasVariableStartTime)
@@ -611,6 +613,7 @@ class ServiceItem(RegistryProperties):
         if self.media_length != 0:
             end = translate('OpenLP.ServiceItem', '<strong>Length</strong>: %s') % \
                 str(datetime.timedelta(seconds=self.media_length))
+            print("get_media_time " + str(self.media_length))
         if not start and not end:
             return ''
         elif start and not end:
