@@ -96,9 +96,11 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
         key_sequence = QtGui.QKeySequence(key_string)
         if self._validiate_shortcut(self._current_item_action(), key_sequence):
             if self.primary_push_button.isChecked():
-                self._adjust_button(self.primary_push_button, False, text=key_sequence.toString())
+                self._adjust_button(self.primary_push_button, False,
+                                    text=self.get_shortcut_string(key_sequence, for_display=True))
             elif self.alternate_push_button.isChecked():
-                self._adjust_button(self.alternate_push_button, False, text=key_sequence.toString())
+                self._adjust_button(self.alternate_push_button, False,
+                                    text=self.get_shortcut_string(key_sequence, for_display=True))
 
     def exec(self):
         """
@@ -154,11 +156,11 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
                 item.setText(1, '')
                 item.setText(2, '')
             elif len(shortcuts) == 1:
-                item.setText(1, shortcuts[0].toString())
+                item.setText(1, self.get_shortcut_string(shortcuts[0], for_display=True))
                 item.setText(2, '')
             else:
-                item.setText(1, shortcuts[0].toString())
-                item.setText(2, shortcuts[1].toString())
+                item.setText(1, self.get_shortcut_string(shortcuts[0], for_display=True))
+                item.setText(2, self.get_shortcut_string(shortcuts[1], for_display=True))
         self.on_current_item_changed()
 
     def on_primary_push_button_clicked(self, toggled):
@@ -238,9 +240,9 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
             self.alternate_push_button.setChecked(False)
         else:
             if action.default_shortcuts:
-                primary_label_text = action.default_shortcuts[0].toString()
+                primary_label_text = self.get_shortcut_string(action.default_shortcuts[0], for_display=True)
                 if len(action.default_shortcuts) == 2:
-                    alternate_label_text = action.default_shortcuts[1].toString()
+                    alternate_label_text = self.get_shortcut_string(action.default_shortcuts[1], for_display=True)
             shortcuts = self._action_shortcuts(action)
             # We do not want to loose pending changes, that is why we have to keep the text when, this function has not
             # been triggered by a signal.
@@ -248,10 +250,10 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
                 primary_text = self.primary_push_button.text()
                 alternate_text = self.alternate_push_button.text()
             elif len(shortcuts) == 1:
-                primary_text = shortcuts[0].toString()
+                primary_text = self.get_shortcut_string(shortcuts[0], for_display=True)
             elif len(shortcuts) == 2:
-                primary_text = shortcuts[0].toString()
-                alternate_text = shortcuts[1].toString()
+                primary_text = self.get_shortcut_string(shortcuts[0], for_display=True)
+                alternate_text = self.get_shortcut_string(shortcuts[1], for_display=True)
         # When we are capturing a new shortcut, we do not want, the buttons to display the current shortcut.
         if self.primary_push_button.isChecked():
             primary_text = ''
@@ -305,9 +307,9 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
         primary_button_text = ''
         alternate_button_text = ''
         if temp_shortcuts:
-            primary_button_text = temp_shortcuts[0].toString()
+            primary_button_text = self.get_shortcut_string(temp_shortcuts[0], for_display=True)
         if len(temp_shortcuts) == 2:
-            alternate_button_text = temp_shortcuts[1].toString()
+            alternate_button_text = self.get_shortcut_string(temp_shortcuts[1], for_display=True)
         self.primary_push_button.setText(primary_button_text)
         self.alternate_push_button.setText(alternate_button_text)
 
@@ -335,7 +337,7 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
                 continue
             for action in category.actions:
                 if action in self.changed_actions:
-                    old_shortcuts = list(map(QtGui.QKeySequence.toString, action.shortcuts()))
+                    old_shortcuts = list(map(self.get_shortcut_string, action.shortcuts()))
                     action.setShortcuts(self.changed_actions[action])
                     self.action_list.update_shortcut_map(action, old_shortcuts)
                 settings.setValue(action.objectName(), action.shortcuts())
@@ -418,14 +420,15 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
             self.main_window.warning_message(translate('OpenLP.ShortcutListDialog', 'Duplicate Shortcut'),
                                              translate('OpenLP.ShortcutListDialog',
                                                        'The shortcut "%s" is already assigned to another action, please'
-                                                       ' use a different shortcut.') % key_sequence.toString())
+                                                       ' use a different shortcut.') %
+                                             self.get_shortcut_string(key_sequence, for_display=True))
             self.dialog_was_shown = True
         return is_valid
 
     def _action_shortcuts(self, action):
         """
         This returns the shortcuts for the given ``action``, which also includes those shortcuts which are not saved
-        yet but already assigned (as changes yre applied when closing the dialog).
+        yet but already assigned (as changes are applied when closing the dialog).
         """
         if action in self.changed_actions:
             return self.changed_actions[action]
@@ -453,3 +456,14 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
             button.setChecked(checked)
         if enabled is not None:
             button.setEnabled(enabled)
+
+    @staticmethod
+    def get_shortcut_string(shortcut, for_display=False):
+        if for_display:
+            if any(modifier in shortcut.toString() for modifier in ['Ctrl', 'Alt', 'Meta', 'Shift']):
+                sequence_format = QtGui.QKeySequence.NativeText
+            else:
+                sequence_format = QtGui.QKeySequence.PortableText
+        else:
+            sequence_format = QtGui.QKeySequence.PortableText
+        return shortcut.toString(sequence_format)

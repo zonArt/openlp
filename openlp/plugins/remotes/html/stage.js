@@ -61,7 +61,7 @@ window.OpenLP = {
           }
           else {
             if ((slide["text"] == data.results.slides[lastChange]["text"]) &&
-              (data.results.slides.length > idx + (idx - lastChange))) {
+              (data.results.slides.length >= idx + (idx - lastChange))) {
               // If the tag hasn't changed, check to see if the same verse
               // has been repeated consecutively. Note the verse may have been
               // split over several slides, so search through. If so, repeat the tag.
