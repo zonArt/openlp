@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -50,6 +50,19 @@ class CaptureShortcutButton(QtWidgets.QPushButton):
             event.ignore()
 
 
+class ShortcutTreeWidget(QtWidgets.QTreeWidget):
+    def __init__(self, *args):
+        super(ShortcutTreeWidget, self).__init__(*args)
+
+    def keyboardSearch(self, search):
+        """
+        Ignore searches to prevent single letter searches from highlighting items.
+
+        :param search: Search string
+        """
+        pass
+
+
 class Ui_ShortcutListDialog(object):
     """
     The UI widgets for the shortcut dialog.
@@ -67,7 +80,7 @@ class Ui_ShortcutListDialog(object):
         self.description_label.setObjectName('description_label')
         self.description_label.setWordWrap(True)
         self.shortcut_list_layout.addWidget(self.description_label)
-        self.tree_widget = QtWidgets.QTreeWidget(shortcutListDialog)
+        self.tree_widget = ShortcutTreeWidget(shortcutListDialog)
         self.tree_widget.setObjectName('tree_widget')
         self.tree_widget.setAlternatingRowColors(True)
         self.tree_widget.setColumnCount(3)

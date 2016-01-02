@@ -2594,10 +2594,10 @@ Końcowe podziękowania
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="270"/>
-        <source>Copyright © 2004-2015 %s
-Portions copyright © 2004-2015 %s</source>
-        <translation>Copyright © 2004-2015 %s
-Portions copyright © 2004-2015 %s</translation>
+        <source>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</source>
+        <translation>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</translation>
     </message>
 </context>
 <context>

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -298,8 +298,8 @@ class UiAboutDialog(object):
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.credits_tab),
                                        translate('OpenLP.AboutForm', 'Credits'))
         copyright_note = translate('OpenLP.AboutForm',
-                                   'Copyright \xa9 2004-2015 %s\n'
-                                   'Portions copyright \xa9 2004-2015 %s') % \
+                                   'Copyright \xa9 2004-2016 %s\n'
+                                   'Portions copyright \xa9 2004-2016 %s') % \
             ('Raoul Snyman',
              'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
              'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '

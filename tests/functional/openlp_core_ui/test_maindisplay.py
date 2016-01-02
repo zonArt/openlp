@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,13 +26,20 @@ from unittest import TestCase
 
 from PyQt5 import QtCore
 
-from openlp.core.common import Registry
+from openlp.core.common import Registry, is_macosx
 from openlp.core.lib import ScreenList
 from openlp.core.ui import MainDisplay
 from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
 
 from tests.helpers.testmixin import TestMixin
 from tests.functional import MagicMock, patch
+
+if is_macosx():
+    from ctypes import pythonapi, c_void_p, c_char_p, py_object
+
+    from sip import voidptr
+    from objc import objc_object
+    from AppKit import NSMainMenuWindowLevel, NSWindowCollectionBehaviorManaged
 
 
 class TestMainDisplay(TestCase, TestMixin):
@@ -135,31 +142,11 @@ class TestMainDisplay(TestCase, TestMixin):
         mocked_bibles_plugin.refresh_css.assert_called_with(main_display.frame)
 
     @patch('openlp.core.ui.maindisplay.is_macosx')
-    def macosx_non_primary_screen_window_flags_state_test(self, is_macosx):
+    def macosx_display_window_flags_state_test(self, is_macosx):
         """
-        Test that on Mac OS X when the current screen isn't primary we set the proper window flags and window state
+        Test that on Mac OS X we set the proper window flags
         """
-        # GIVEN: A new SlideController instance on Mac OS X with the current display not being primary.
-        is_macosx.return_value = True
-        self.screens.set_current_display(1)
-        display = MagicMock()
-
-        # WHEN: The default controller is built.
-        main_display = MainDisplay(display)
-
-        # THEN: The window flags and state should be the same as those needed on Mac OS X for the non primary display.
-        self.assertEqual(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint,
-                         main_display.windowFlags(),
-                         'The window flags should be Qt.WindowStaysOnTop, Qt.Window, and Qt.FramelessWindowHint.')
-        self.assertNotEqual(QtCore.Qt.WindowFullScreen, main_display.windowState(),
-                            'The window state should not be full screen.')
-
-    @patch('openlp.core.ui.maindisplay.is_macosx')
-    def macosx_primary_screen_window_flags_state_test(self, is_macosx):
-        """
-        Test that on Mac OS X when the current screen is primary we set the proper window flags and window state
-        """
-        # GIVEN: A new SlideController instance on Mac OS X with the current display being primary.
+        # GIVEN: A new SlideController instance on Mac OS X.
         is_macosx.return_value = True
         self.screens.set_current_display(0)
         display = MagicMock()
@@ -167,8 +154,34 @@ class TestMainDisplay(TestCase, TestMixin):
         # WHEN: The default controller is built.
         main_display = MainDisplay(display)
 
-        # THEN: The window flags and state should be the same as those needed on Mac OS X for the primary display.
-        self.assertEqual(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint, main_display.windowFlags(),
-                         'The window flags should be Qt.Window and Qt.FramelessWindowHint.')
-        self.assertEqual(QtCore.Qt.WindowFullScreen, main_display.windowState(),
-                         'The window state should be full screen.')
+        # THEN: The window flags should be the same as those needed on Mac OS X.
+        self.assertEqual(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint,
+                         main_display.windowFlags(),
+                         'The window flags should be Qt.Window, and Qt.FramelessWindowHint.')
+
+    def macosx_display_test(self):
+        """
+        Test display on Mac OS X
+        """
+        if not is_macosx():
+            self.skipTest('Can only run test on Mac OS X due to pyobjc dependency.')
+        # GIVEN: A new SlideController instance on Mac OS X.
+        self.screens.set_current_display(0)
+        display = MagicMock()
+
+        # WHEN: The default controller is built and a reference to the underlying NSView is stored.
+        main_display = MainDisplay(display)
+        try:
+            nsview_pointer = main_display.winId().ascapsule()
+        except:
+            nsview_pointer = voidptr(main_display.winId()).ascapsule()
+        pythonapi.PyCapsule_SetName.restype = c_void_p
+        pythonapi.PyCapsule_SetName.argtypes = [py_object, c_char_p]
+        pythonapi.PyCapsule_SetName(nsview_pointer, c_char_p(b"objc.__object__"))
+        pyobjc_nsview = objc_object(cobject=nsview_pointer)
+
+        # THEN: The window level and collection behavior should be the same as those needed for Mac OS X.
+        self.assertEqual(pyobjc_nsview.window().level(), NSMainMenuWindowLevel + 2,
+                         'Window level should be NSMainMenuWindowLevel + 2')
+        self.assertEqual(pyobjc_nsview.window().collectionBehavior(), NSWindowCollectionBehaviorManaged,
+                         'Window collection behavior should be NSWindowCollectionBehaviorManaged')

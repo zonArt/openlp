@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -317,6 +317,8 @@ class GeneralTab(SettingsTab):
             self.custom_Y_value_edit.value(),
             self.custom_width_value_edit.value(),
             self.custom_height_value_edit.value())
+        self.screens.override['number'] = self.screens.which_screen(self.screens.override['size'])
+        self.screens.override['primary'] = (self.screens.desktop.primaryScreen() == self.screens.override['number'])
         if self.override_radio_button.isChecked():
             self.screens.set_override_display()
         else:

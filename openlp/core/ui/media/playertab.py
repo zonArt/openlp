@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,6 +22,7 @@
 """
 The :mod:`~openlp.core.ui.media.playertab` module holds the configuration tab for the media stuff.
 """
+import platform
 from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, Settings, UiStrings, translate
@@ -250,4 +251,9 @@ class PlayerTab(SettingsTab):
             if player.available:
                 checkbox.setText(player.display_name)
             else:
-                checkbox.setText(translate('OpenLP.PlayerTab', '%s (unavailable)') % player.display_name)
+                checkbox_text = translate('OpenLP.PlayerTab', '%s (unavailable)') % player.display_name
+                if player.name == 'vlc':
+                    checkbox_text += ' ' + translate('OpenLP.PlayerTab',
+                                                     'NOTE: To use VLC you must install the %s version',
+                                                     'Will insert "32bit" or "64bit"') % platform.architecture()[0]
+                checkbox.setText(checkbox_text)
