@@ -101,7 +101,7 @@ class PJLink1(QTcpSocket):
         self.location = None
         self.notes = None
         self.dbid = None if 'dbid' not in kwargs else kwargs['dbid']
-        self.location = None if 'location' not in kwargs else kwargs['notes']
+        self.location = None if 'location' not in kwargs else kwargs['location']
         self.notes = None if 'notes' not in kwargs else kwargs['notes']
         # Poll time 20 seconds unless called with something else
         self.poll_time = 20000 if 'poll_time' not in kwargs else kwargs['poll_time'] * 1000
