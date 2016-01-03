@@ -226,8 +226,9 @@ class SongUsagePlugin(Plugin):
         """
         self.song_usage_detail_form.initialise()
         self.song_usage_detail_form.exec()
-
-    def about(self):
+    
+    @staticmethod
+    def about():
         """
         The plugin about text
 
