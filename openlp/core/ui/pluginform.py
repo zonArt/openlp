@@ -49,7 +49,7 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         self._clear_details()
         # Right, now let's put some signals and slots together!
         self.plugin_list_widget.itemSelectionChanged.connect(self.on_plugin_list_widget_selection_changed)
-        self.status_combo_box.currentIndexChanged.connect(self.on_status_combo_box_changed)
+        self.status_checkbox.stateChanged.connect(self.on_status_checkbox_changed)
 
     def load(self):
         """
@@ -86,10 +86,10 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         """
         Clear the plugin details widgets
         """
-        self.status_combo_box.setCurrentIndex(-1)
+        self.status_checkbox.setChecked(False)
         self.version_number_label.setText('')
         self.about_text_browser.setHtml('')
-        self.status_combo_box.setEnabled(False)
+        self.status_checkbox.setEnabled(False)
 
     def _set_details(self):
         """
@@ -99,11 +99,8 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         self.version_number_label.setText(self.active_plugin.version)
         self.about_text_browser.setHtml(self.active_plugin.about())
         self.programatic_change = True
-        status = PluginStatus.Active
-        if self.active_plugin.status == PluginStatus.Active:
-            status = PluginStatus.Inactive
-        self.status_combo_box.setCurrentIndex(status)
-        self.status_combo_box.setEnabled(True)
+        self.status_checkbox.setChecked(self.active_plugin.status == PluginStatus.Active)
+        self.status_checkbox.setEnabled(True)
         self.programatic_change = False
 
     def on_plugin_list_widget_selection_changed(self):
@@ -125,13 +122,13 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         else:
             self._clear_details()
 
-    def on_status_combo_box_changed(self, status):
+    def on_status_checkbox_changed(self, status):
         """
         If the status of a plugin is altered, apply the change
         """
-        if self.programatic_change or status == PluginStatus.Disabled:
+        if self.programatic_change:
             return
-        if status == PluginStatus.Inactive:
+        if status:
             self.application.set_busy_cursor()
             self.active_plugin.toggle_status(PluginStatus.Active)
             self.application.set_normal_cursor()
