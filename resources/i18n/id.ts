@@ -2599,10 +2599,10 @@ Kredit Akhir
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="270"/>
-        <source>Copyright © 2004-2015 %s
-Portions copyright © 2004-2015 %s</source>
-        <translation>Hak Cipta © 2004-2015 %s
-Bagian Hak Cipta © 2004-2015 %s</translation>
+        <source>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</source>
+        <translation>Hak Cipta © 2004-2016 %s
+Bagian Hak Cipta © 2004-2016 %s</translation>
     </message>
 </context>
 <context>
