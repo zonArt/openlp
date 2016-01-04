@@ -1026,6 +1026,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             topic = self.manager.get_object(Topic, topic_id)
             if topic is not None:
                 self.song.topics.append(topic)
+        self.song.songbookentries = []
         for row in range(self.songbooks_list_view.count()):
             item = self.songbooks_list_view.item(row)
             songbook_id = item.data(QtCore.Qt.UserRole)[0]
