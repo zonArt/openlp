@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ import logging
 import os
 import re
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import RegistryProperties, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -35,7 +35,7 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 log = logging.getLogger(__name__)
 
 
-class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog, RegistryProperties):
+class EditBibleForm(QtWidgets.QDialog, Ui_EditBibleDialog, RegistryProperties):
     """
     Class to manage the editing of a bible
     """
@@ -97,7 +97,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog, RegistryProperties):
         """
         log.debug('BibleEditForm.reject')
         self.bible = None
-        QtGui.QDialog.reject(self)
+        QtWidgets.QDialog.reject(self)
 
     def accept(self):
         """
@@ -130,7 +130,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog, RegistryProperties):
                         self.manager.update_book(self.bible, book)
         self.bible = None
         self.application.set_normal_cursor()
-        QtGui.QDialog.accept(self)
+        QtWidgets.QDialog.accept(self)
 
     def validate_meta(self, name, copyright):
         """

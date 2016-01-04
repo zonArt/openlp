@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,13 +22,14 @@
 """
 The service item edit dialog
 """
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
+
 from openlp.core.common import Registry, RegistryProperties
 
 from .serviceitemeditdialog import Ui_ServiceItemEditDialog
 
 
-class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog, RegistryProperties):
+class ServiceItemEditForm(QtWidgets.QDialog, Ui_ServiceItemEditDialog, RegistryProperties):
     """
     This is the form that is used to edit the verses of the song.
     """
@@ -71,7 +72,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog, RegistryPrope
         """
         self.list_widget.clear()
         for frame in self.item_list:
-            item_name = QtGui.QListWidgetItem(frame['title'])
+            item_name = QtWidgets.QListWidgetItem(frame['title'])
             self.list_widget.addItem(item_name)
 
     def on_delete_button_clicked(self):

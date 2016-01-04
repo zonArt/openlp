@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -184,13 +184,13 @@ class PptviewDocument(PresentationDocument):
                     # check if it is a slide
                     match = re.search("slides/slide(.+)\.xml", zip_info.filename)
                     if match:
-                        index = int(match.group(1))-1
+                        index = int(match.group(1)) - 1
                         node_type = 'ctrTitle'
                         list_to_add = titles
                     # or a note
                     match = re.search("notesSlides/notesSlide(.+)\.xml", zip_info.filename)
                     if match:
-                        index = int(match.group(1))-1
+                        index = int(match.group(1)) - 1
                         node_type = 'body'
                         list_to_add = notes
                     # if it is one of our files, index shouldn't be -1

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, Settings, UiStrings, translate
 from openlp.core.lib import MediaManagerItem, ItemCapabilities, ServiceItemContext, create_separated_list
@@ -51,6 +51,8 @@ class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
     """
+    bibles_go_live = QtCore.pyqtSignal(list)
+    bibles_add_to_service = QtCore.pyqtSignal(list)
     log.info('Bible Media Item loaded')
 
     def __init__(self, parent, plugin):
@@ -62,6 +64,8 @@ class BibleMediaItem(MediaManagerItem):
         """
         Do some additional setup.
         """
+        self.bibles_go_live.connect(self.go_live_remote)
+        self.bibles_add_to_service.connect(self.add_to_service_remote)
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
         self.quick_preview_allowed = True
@@ -89,7 +93,7 @@ class BibleMediaItem(MediaManagerItem):
             message=translate('BiblesPlugin.MediaItem',
                               'You cannot combine single and dual Bible verse search results. '
                               'Do you want to delete your search results and start a new search?'),
-                parent=self, question=True) == QtGui.QMessageBox.Yes:
+                parent=self, question=True) == QtWidgets.QMessageBox.Yes:
             self.list_view.clear()
             self.display_results(bible, second_bible)
 
@@ -111,10 +115,10 @@ class BibleMediaItem(MediaManagerItem):
 
     def add_search_tab(self, prefix, name):
         self.search_tab_bar.addTab(name)
-        tab = QtGui.QWidget()
+        tab = QtWidgets.QWidget()
         tab.setObjectName(prefix + 'Tab')
-        tab.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
-        layout = QtGui.QGridLayout(tab)
+        tab.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        layout = QtWidgets.QGridLayout(tab)
         layout.setObjectName(prefix + 'Layout')
         setattr(self, prefix + 'Tab', tab)
         setattr(self, prefix + 'Layout', layout)
@@ -132,33 +136,33 @@ class BibleMediaItem(MediaManagerItem):
             idx = 5
         tab = getattr(self, prefix + 'Tab')
         layout = getattr(self, prefix + 'Layout')
-        version_label = QtGui.QLabel(tab)
+        version_label = QtWidgets.QLabel(tab)
         version_label.setObjectName(prefix + 'VersionLabel')
         layout.addWidget(version_label, idx, 0, QtCore.Qt.AlignRight)
         version_combo_box = create_horizontal_adjusting_combo_box(tab, prefix + 'VersionComboBox')
         version_label.setBuddy(version_combo_box)
         layout.addWidget(version_combo_box, idx, 1, 1, 2)
-        second_label = QtGui.QLabel(tab)
+        second_label = QtWidgets.QLabel(tab)
         second_label.setObjectName(prefix + 'SecondLabel')
         layout.addWidget(second_label, idx + 1, 0, QtCore.Qt.AlignRight)
         second_combo_box = create_horizontal_adjusting_combo_box(tab, prefix + 'SecondComboBox')
         version_label.setBuddy(second_combo_box)
         layout.addWidget(second_combo_box, idx + 1, 1, 1, 2)
-        style_label = QtGui.QLabel(tab)
+        style_label = QtWidgets.QLabel(tab)
         style_label.setObjectName(prefix + 'StyleLabel')
         layout.addWidget(style_label, idx + 2, 0, QtCore.Qt.AlignRight)
         style_combo_box = create_horizontal_adjusting_combo_box(tab, prefix + 'StyleComboBox')
         style_combo_box.addItems(['', '', ''])
         layout.addWidget(style_combo_box, idx + 2, 1, 1, 2)
-        search_button_layout = QtGui.QHBoxLayout()
+        search_button_layout = QtWidgets.QHBoxLayout()
         search_button_layout.setObjectName(prefix + 'search_button_layout')
         search_button_layout.addStretch()
-        lock_button = QtGui.QToolButton(tab)
+        lock_button = QtWidgets.QToolButton(tab)
         lock_button.setIcon(self.unlock_icon)
         lock_button.setCheckable(True)
         lock_button.setObjectName(prefix + 'LockButton')
         search_button_layout.addWidget(lock_button)
-        search_button = QtGui.QPushButton(tab)
+        search_button = QtWidgets.QPushButton(tab)
         search_button.setObjectName(prefix + 'SearchButton')
         search_button_layout.addWidget(search_button)
         layout.addLayout(search_button_layout, idx + 3, 1, 1, 2)
@@ -177,17 +181,17 @@ class BibleMediaItem(MediaManagerItem):
         setattr(self, prefix + 'SearchButton', search_button)
 
     def add_end_header_bar(self):
-        self.search_tab_bar = QtGui.QTabBar(self)
+        self.search_tab_bar = QtWidgets.QTabBar(self)
         self.search_tab_bar.setExpanding(False)
         self.search_tab_bar.setObjectName('search_tab_bar')
         self.page_layout.addWidget(self.search_tab_bar)
         # Add the Quick Search tab.
         self.add_search_tab('quick', translate('BiblesPlugin.MediaItem', 'Quick'))
-        self.quick_search_label = QtGui.QLabel(self.quickTab)
+        self.quick_search_label = QtWidgets.QLabel(self.quickTab)
         self.quick_search_label.setObjectName('quick_search_label')
         self.quickLayout.addWidget(self.quick_search_label, 0, 0, QtCore.Qt.AlignRight)
         self.quick_search_edit = SearchEdit(self.quickTab)
-        self.quick_search_edit.setSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Fixed)
+        self.quick_search_edit.setSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Fixed)
         self.quick_search_edit.setObjectName('quick_search_edit')
         self.quick_search_label.setBuddy(self.quick_search_edit)
         self.quickLayout.addWidget(self.quick_search_edit, 0, 1, 1, 2)
@@ -195,35 +199,35 @@ class BibleMediaItem(MediaManagerItem):
         self.quickTab.setVisible(True)
         # Add the Advanced Search tab.
         self.add_search_tab('advanced', translate('BiblesPlugin.MediaItem', 'Advanced'))
-        self.advanced_book_label = QtGui.QLabel(self.advancedTab)
+        self.advanced_book_label = QtWidgets.QLabel(self.advancedTab)
         self.advanced_book_label.setObjectName('advanced_book_label')
         self.advancedLayout.addWidget(self.advanced_book_label, 0, 0, QtCore.Qt.AlignRight)
         self.advanced_book_combo_box = create_horizontal_adjusting_combo_box(self.advancedTab,
                                                                              'advanced_book_combo_box')
         self.advanced_book_label.setBuddy(self.advanced_book_combo_box)
         self.advancedLayout.addWidget(self.advanced_book_combo_box, 0, 1, 1, 2)
-        self.advanced_chapter_label = QtGui.QLabel(self.advancedTab)
+        self.advanced_chapter_label = QtWidgets.QLabel(self.advancedTab)
         self.advanced_chapter_label.setObjectName('advanced_chapter_label')
         self.advancedLayout.addWidget(self.advanced_chapter_label, 1, 1, 1, 2)
-        self.advanced_verse_label = QtGui.QLabel(self.advancedTab)
+        self.advanced_verse_label = QtWidgets.QLabel(self.advancedTab)
         self.advanced_verse_label.setObjectName('advanced_verse_label')
         self.advancedLayout.addWidget(self.advanced_verse_label, 1, 2)
-        self.advanced_from_label = QtGui.QLabel(self.advancedTab)
+        self.advanced_from_label = QtWidgets.QLabel(self.advancedTab)
         self.advanced_from_label.setObjectName('advanced_from_label')
         self.advancedLayout.addWidget(self.advanced_from_label, 3, 0, QtCore.Qt.AlignRight)
-        self.advanced_from_chapter = QtGui.QComboBox(self.advancedTab)
+        self.advanced_from_chapter = QtWidgets.QComboBox(self.advancedTab)
         self.advanced_from_chapter.setObjectName('advanced_from_chapter')
         self.advancedLayout.addWidget(self.advanced_from_chapter, 3, 1)
-        self.advanced_from_verse = QtGui.QComboBox(self.advancedTab)
+        self.advanced_from_verse = QtWidgets.QComboBox(self.advancedTab)
         self.advanced_from_verse.setObjectName('advanced_from_verse')
         self.advancedLayout.addWidget(self.advanced_from_verse, 3, 2)
-        self.advanced_to_label = QtGui.QLabel(self.advancedTab)
+        self.advanced_to_label = QtWidgets.QLabel(self.advancedTab)
         self.advanced_to_label.setObjectName('advanced_to_label')
         self.advancedLayout.addWidget(self.advanced_to_label, 4, 0, QtCore.Qt.AlignRight)
-        self.advanced_to_chapter = QtGui.QComboBox(self.advancedTab)
+        self.advanced_to_chapter = QtWidgets.QComboBox(self.advancedTab)
         self.advanced_to_chapter.setObjectName('advanced_to_chapter')
         self.advancedLayout.addWidget(self.advanced_to_chapter, 4, 1)
-        self.advanced_to_verse = QtGui.QComboBox(self.advancedTab)
+        self.advanced_to_verse = QtWidgets.QComboBox(self.advancedTab)
         self.advanced_to_verse.setObjectName('advanced_to_verse')
         self.advancedLayout.addWidget(self.advanced_to_verse, 4, 2)
         self.add_search_fields('advanced', UiStrings().Advanced)
@@ -236,8 +240,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advanced_from_chapter.activated.connect(self.on_advanced_from_chapter)
         self.advanced_from_verse.activated.connect(self.on_advanced_from_verse)
         self.advanced_to_chapter.activated.connect(self.on_advanced_to_chapter)
-        QtCore.QObject.connect(self.quick_search_edit, QtCore.SIGNAL('searchTypeChanged(int)'),
-                               self.update_auto_completer)
+        self.quick_search_edit.searchTypeChanged.connect(self.update_auto_completer)
         self.quickVersionComboBox.activated.connect(self.update_auto_completer)
         self.quickStyleComboBox.activated.connect(self.on_quick_style_combo_box_changed)
         self.advancedStyleComboBox.activated.connect(self.on_advanced_style_combo_box_changed)
@@ -472,7 +475,7 @@ class BibleMediaItem(MediaManagerItem):
         if not hasattr(self, 'import_wizard'):
             self.import_wizard = BibleImportForm(self, self.plugin.manager, self.plugin)
         # If the import was not cancelled then reload.
-        if self.import_wizard.exec_():
+        if self.import_wizard.exec():
             self.reload_bibles()
 
     def on_edit_click(self):
@@ -483,7 +486,7 @@ class BibleMediaItem(MediaManagerItem):
         if bible:
             self.edit_bible_form = EditBibleForm(self, self.main_window, self.plugin.manager)
             self.edit_bible_form.load_bible(bible)
-            if self.edit_bible_form.exec_():
+            if self.edit_bible_form.exec():
                 self.reload_bibles()
 
     def on_delete_click(self):
@@ -496,13 +499,13 @@ class BibleMediaItem(MediaManagerItem):
         elif self.advancedTab.isVisible():
             bible = self.advancedVersionComboBox.currentText()
         if bible:
-            if QtGui.QMessageBox.question(
+            if QtWidgets.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
                     translate('BiblesPlugin.MediaItem', 'Are you sure you want to completely delete "%s" Bible from '
                                                         'OpenLP?\n\nYou will need to re-import this Bible to use it '
                                                         'again.') % bible,
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                    QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
+                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                    QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
                 return
             self.plugin.manager.delete_bible(bible)
             self.reload_bibles()
@@ -682,12 +685,12 @@ class BibleMediaItem(MediaManagerItem):
                     new_search_results.append(verse)
                     text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
                 if passage_not_found:
-                    QtGui.QMessageBox.information(
+                    QtWidgets.QMessageBox.information(
                         self, translate('BiblesPlugin.MediaItem', 'Information'),
                         translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
                                   'that are in the main Bible. Only verses found in both Bibles will be shown. %d '
                                   'verses have not been included in the results.') % count,
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
                 self.search_results = new_search_results
                 self.second_search_results = bibles[second_bible].get_verses(text)
         if not self.quickLockButton.isChecked():
@@ -764,7 +767,7 @@ class BibleMediaItem(MediaManagerItem):
                                                      second_version)
             else:
                 bible_text = '%s %d%s%d (%s)' % (book, verse.chapter, verse_separator, verse.verse, version)
-            bible_verse = QtGui.QListWidgetItem(bible_text)
+            bible_verse = QtWidgets.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, data)
             items.append(bible_verse)
         return items

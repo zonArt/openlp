@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@ import os
 from unittest import TestCase
 from datetime import datetime, timedelta
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, check_item_selected, clean_tags, create_thumb, create_separated_list, \
     expand_tags, get_text_file_string, image_to_byte, resize_image, str_to_bool, validate_thumb
@@ -230,7 +230,7 @@ class TestLib(TestCase):
             # GIVEN: A set of mocked-out Qt classes
             mocked_byte_array = MagicMock()
             MockedQtCore.QByteArray.return_value = mocked_byte_array
-            mocked_byte_array.toBase64.return_value = QtCore.QByteArray('base64mock')
+            mocked_byte_array.toBase64.return_value = QtCore.QByteArray(b'base64mock')
             mocked_buffer = MagicMock()
             MockedQtCore.QBuffer.return_value = mocked_buffer
             MockedQtCore.QIODevice.WriteOnly = 'writeonly'
@@ -286,8 +286,8 @@ class TestLib(TestCase):
         """
         Test that the check_item_selected() function returns True when there are selected indexes
         """
-        # GIVEN: A mocked out QtGui module and a list widget with selected indexes
-        mocked_QtGui = patch('openlp.core.lib.QtGui')
+        # GIVEN: A mocked out QtWidgets module and a list widget with selected indexes
+        mocked_QtWidgets = patch('openlp.core.lib.QtWidgets')
         mocked_list_widget = MagicMock()
         mocked_list_widget.selectedIndexes.return_value = True
         message = 'message'
@@ -303,8 +303,8 @@ class TestLib(TestCase):
         """
         Test that the check_item_selected() function returns False when there are no selected indexes.
         """
-        # GIVEN: A mocked out QtGui module and a list widget with selected indexes
-        with patch('openlp.core.lib.QtGui') as MockedQtGui, \
+        # GIVEN: A mocked out QtWidgets module and a list widget with selected indexes
+        with patch('openlp.core.lib.QtWidgets') as MockedQtWidgets, \
                 patch('openlp.core.lib.translate') as mocked_translate:
             mocked_translate.return_value = 'mocked translate'
             mocked_list_widget = MagicMock()
@@ -317,7 +317,7 @@ class TestLib(TestCase):
 
             # THEN: The selectedIndexes function should have been called and the result should be true
             mocked_list_widget.selectedIndexes.assert_called_with()
-            MockedQtGui.QMessageBox.information.assert_called_with('parent', 'mocked translate', 'message')
+            MockedQtWidgets.QMessageBox.information.assert_called_with('parent', 'mocked translate', 'message')
             self.assertFalse(result, 'The result should be False')
 
     def clean_tags_test(self):

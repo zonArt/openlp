@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,7 +40,7 @@ import urllib.error
 import urllib.parse
 from random import randint
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore
 
 from openlp.core.common import Registry, AppLocation, Settings, is_win, is_macosx
 
@@ -117,7 +117,7 @@ class VersionThread(QtCore.QThread):
         version = check_latest_version(app_version)
         log.debug("Versions %s and %s " % (LooseVersion(str(version)), LooseVersion(str(app_version['full']))))
         if LooseVersion(str(version)) > LooseVersion(str(app_version['full'])):
-            self.main_window.emit(QtCore.SIGNAL('openlp_version_check'), '%s' % version)
+            self.main_window.openlp_version_check.emit('%s' % version)
 
 
 class HTTPRedirectHandlerFixed(urllib.request.HTTPRedirectHandler):

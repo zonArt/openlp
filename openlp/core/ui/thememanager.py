@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@ import zipfile
 import shutil
 
 from xml.etree.ElementTree import ElementTree, XML
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, OpenLPMixin, RegistryMixin, \
     check_directory_exists, UiStrings, translate, is_win
@@ -49,9 +49,9 @@ class Ui_ThemeManager(object):
         :param widget: The screen object the the dialog is to be attached to.
         """
         # start with the layout
-        self.layout = QtGui.QVBoxLayout(widget)
+        self.layout = QtWidgets.QVBoxLayout(widget)
         self.layout.setSpacing(0)
-        self.layout.setMargin(0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setObjectName('layout')
         self.toolbar = OpenLPToolbar(widget)
         self.toolbar.setObjectName('toolbar')
@@ -83,10 +83,10 @@ class Ui_ThemeManager(object):
                                         tooltip=translate('OpenLP.ThemeManager', 'Export a theme.'),
                                         triggers=self.on_export_theme)
         self.layout.addWidget(self.toolbar)
-        self.theme_widget = QtGui.QWidgetAction(self.toolbar)
+        self.theme_widget = QtWidgets.QWidgetAction(self.toolbar)
         self.theme_widget.setObjectName('theme_widget')
         # create theme manager list
-        self.theme_list_widget = QtGui.QListWidget(widget)
+        self.theme_list_widget = QtWidgets.QListWidget(widget)
         self.theme_list_widget.setAlternatingRowColors(True)
         self.theme_list_widget.setIconSize(QtCore.QSize(88, 50))
         self.theme_list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -94,7 +94,7 @@ class Ui_ThemeManager(object):
         self.layout.addWidget(self.theme_list_widget)
         self.theme_list_widget.customContextMenuRequested.connect(self.context_menu)
         # build the context menu
-        self.menu = QtGui.QMenu()
+        self.menu = QtWidgets.QMenu()
         self.edit_action = create_widget_action(self.menu,
                                                 text=translate('OpenLP.ThemeManager', '&Edit Theme'),
                                                 icon=':/themes/theme_edit.png', triggers=self.on_edit_theme)
@@ -120,7 +120,7 @@ class Ui_ThemeManager(object):
         self.theme_list_widget.currentItemChanged.connect(self.check_list_state)
 
 
-class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, RegistryProperties):
+class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManager, RegistryProperties):
     """
     Manages the orders of Theme.
     """
@@ -195,7 +195,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         self.delete_action.setVisible(visible)
         self.rename_action.setVisible(visible)
         self.global_action.setVisible(visible)
-        self.menu.exec_(self.theme_list_widget.mapToGlobal(point))
+        self.menu.exec(self.theme_list_widget.mapToGlobal(point))
 
     def change_global_from_tab(self):
         """
@@ -247,7 +247,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         theme = ThemeXML()
         theme.set_default_header_footer()
         self.theme_form.theme = theme
-        self.theme_form.exec_()
+        self.theme_form.exec()
         self.load_themes()
 
     def on_rename_theme(self, field=None):
@@ -261,7 +261,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             item = self.theme_list_widget.currentItem()
             old_theme_name = item.data(QtCore.Qt.UserRole)
             self.file_rename_form.file_name_edit.setText(old_theme_name)
-            if self.file_rename_form.exec_():
+            if self.file_rename_form.exec():
                 new_theme_name = self.file_rename_form.file_name_edit.text()
                 if old_theme_name == new_theme_name:
                     return
@@ -284,7 +284,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         old_theme_name = item.data(QtCore.Qt.UserRole)
         self.file_rename_form.file_name_edit.setText(translate('OpenLP.ThemeManager',
                                                      'Copy of %s', 'Copy of <theme name>') % old_theme_name)
-        if self.file_rename_form.exec_(True):
+        if self.file_rename_form.exec(True):
             new_theme_name = self.file_rename_form.file_name_edit.text()
             if self.check_if_theme_exists(new_theme_name):
                 theme_data = self.get_theme_data(old_theme_name)
@@ -320,7 +320,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             if theme.background_type == 'image':
                 self.old_background_image = theme.background_filename
             self.theme_form.theme = theme
-            self.theme_form.exec_(True)
+            self.theme_form.exec(True)
             self.old_background_image = None
             self.renderer.update_theme(theme.theme_name)
             self.load_themes()
@@ -374,18 +374,18 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             critical_error_message_box(message=translate('OpenLP.ThemeManager', 'You have not selected a theme.'))
             return
         theme = item.data(QtCore.Qt.UserRole)
-        path = QtGui.QFileDialog.getExistingDirectory(self,
-                                                      translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
-                                                      Settings().value(self.settings_section +
-                                                                       '/last directory export'))
+        path = QtWidgets.QFileDialog.getExistingDirectory(self,
+                                                          translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
+                                                          Settings().value(self.settings_section +
+                                                                           '/last directory export'))
         self.application.set_busy_cursor()
         if path:
             Settings().setValue(self.settings_section + '/last directory export', path)
             if self._export_theme(path, theme):
-                QtGui.QMessageBox.information(self,
-                                              translate('OpenLP.ThemeManager', 'Theme Exported'),
-                                              translate('OpenLP.ThemeManager',
-                                                        'Your theme has been successfully exported.'))
+                QtWidgets.QMessageBox.information(self,
+                                                  translate('OpenLP.ThemeManager', 'Theme Exported'),
+                                                  translate('OpenLP.ThemeManager',
+                                                            'Your theme has been successfully exported.'))
         self.application.set_normal_cursor()
 
     def _export_theme(self, path, theme):
@@ -475,7 +475,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
                 else:
                     name = text_name
                 thumb = os.path.join(self.thumb_path, '%s.png' % text_name)
-                item_name = QtGui.QListWidgetItem(name)
+                item_name = QtWidgets.QListWidgetItem(name)
                 if validate_thumb(theme, thumb):
                     icon = build_icon(thumb)
                 else:
@@ -521,14 +521,14 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
         :param theme_name: Name of the theme.
         :return: Confirm if the theme is to be overwritten.
         """
-        ret = QtGui.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
-                                         translate('OpenLP.ThemeManager',
-                                                   'Theme %s already exists. Do you want to replace it?')
-                                         .replace('%s', theme_name),
-                                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                           QtGui.QMessageBox.No),
-                                         QtGui.QMessageBox.No)
-        return ret == QtGui.QMessageBox.Yes
+        ret = QtWidgets.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
+                                             translate('OpenLP.ThemeManager',
+                                                       'Theme %s already exists. Do you want to replace it?')
+                                             .replace('%s', theme_name),
+                                             QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                   QtWidgets.QMessageBox.No),
+                                             QtWidgets.QMessageBox.No)
+        return ret == QtWidgets.QMessageBox.Yes
 
     def unzip_theme(self, file_name, directory):
         """
@@ -742,11 +742,11 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager, R
             theme = item.text()
             # confirm deletion
             if confirm:
-                answer = QtGui.QMessageBox.question(self, confirm_title, confirm_text % theme,
-                                                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                                      QtGui.QMessageBox.No),
-                                                    QtGui.QMessageBox.No)
-                if answer == QtGui.QMessageBox.No:
+                answer = QtWidgets.QMessageBox.question(
+                    self, confirm_title, confirm_text % theme,
+                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                    QtWidgets.QMessageBox.No)
+                if answer == QtWidgets.QMessageBox.No:
                     return False
             # should be the same unless default
             if theme != item.data(QtCore.Qt.UserRole):

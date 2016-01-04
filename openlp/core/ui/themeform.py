@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,7 @@ The Theme wizard
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, UiStrings, translate
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
@@ -37,7 +37,7 @@ from .themewizard import Ui_ThemeWizard
 log = logging.getLogger(__name__)
 
 
-class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
+class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
     """
     This is the Theme Import Wizard, which allows easy creation and editing of
     OpenLP themes.
@@ -158,7 +158,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         if not event:
             event = QtGui.QResizeEvent(self.size(), self.size())
-        QtGui.QWizard.resizeEvent(self, event)
+        QtWidgets.QWizard.resizeEvent(self, event)
         if self.currentPage() == self.preview_page:
             frame_width = self.preview_box_label.lineWidth()
             pixmap_width = self.preview_area.width() - 2 * frame_width
@@ -177,9 +177,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         background_image = BackgroundType.to_string(BackgroundType.Image)
         if self.page(self.currentId()) == self.background_page and \
                 self.theme.background_type == background_image and is_not_image_file(self.theme.background_filename):
-            QtGui.QMessageBox.critical(self, translate('OpenLP.ThemeWizard', 'Background Image Empty'),
-                                       translate('OpenLP.ThemeWizard', 'You have not selected a '
-                                                 'background image. Please select one before continuing.'))
+            QtWidgets.QMessageBox.critical(self, translate('OpenLP.ThemeWizard', 'Background Image Empty'),
+                                           translate('OpenLP.ThemeWizard', 'You have not selected a '
+                                                     'background image. Please select one before continuing.'))
             return False
         else:
             return True
@@ -189,10 +189,11 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         Detects Page changes and updates as appropriate.
         """
         enabled = self.page(page_id) == self.area_position_page
-        self.setOption(QtGui.QWizard.HaveCustomButton1, enabled)
+        self.setOption(QtWidgets.QWizard.HaveCustomButton1, enabled)
         if self.page(page_id) == self.preview_page:
             self.update_theme()
             frame = self.theme_manager.generate_image(self.theme)
+            frame.setDevicePixelRatio(self.devicePixelRatio())
             self.preview_box_label.setPixmap(frame)
             self.display_aspect_ratio = float(frame.width()) / frame.height()
             self.resizeEvent()
@@ -212,7 +213,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         paint.setPen(QtGui.QPen(QtCore.Qt.red, 2))
         paint.drawRect(self.renderer.get_footer_rectangle(self.theme))
         paint.end()
-        self.theme_layout_form.exec_(pixmap)
+        self.theme_layout_form.exec(pixmap)
 
     def on_outline_check_check_box_state_changed(self, state):
         """
@@ -253,7 +254,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         if self.update_theme_allowed:
             self.theme.font_footer_override = not (value == QtCore.Qt.Checked)
 
-    def exec_(self, edit=False):
+    def exec(self, edit=False):
         """
         Run the wizard.
         """
@@ -270,7 +271,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
             self.next()
         else:
             self.setWindowTitle(UiStrings().NewTheme)
-        return QtGui.QWizard.exec_(self)
+        return QtWidgets.QWizard.exec(self)
 
     def initializePage(self, page_id):
         """
@@ -428,8 +429,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         images_filter = get_images_filter()
         images_filter = '%s;;%s (*.*)' % (images_filter, UiStrings().AllFiles)
-        filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.ThemeWizard', 'Select Image'),
-                                                     self.image_file_edit.text(), images_filter)
+        filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(
+            self, translate('OpenLP.ThemeWizard', 'Select Image'),
+            self.image_file_edit.text(), images_filter)
         if filename:
             self.theme.background_filename = filename
         self.set_background_page_values()
@@ -522,4 +524,4 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard, RegistryProperties):
         if not self.edit_mode and not self.theme_manager.check_if_theme_exists(self.theme.theme_name):
             return
         self.theme_manager.save_theme(self.theme, save_from, save_to)
-        return QtGui.QDialog.accept(self)
+        return QtWidgets.QDialog.accept(self)

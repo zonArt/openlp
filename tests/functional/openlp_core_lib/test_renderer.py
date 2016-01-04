@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ Package to test the openlp.core.ui.renderer package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry
 from openlp.core.lib import Renderer, ScreenList, ServiceItem
@@ -109,7 +109,7 @@ class TestRenderer(TestCase):
         """
         # GIVEN: A line of with a space text and the logical split
         renderer = Renderer()
-        renderer.empty_height = 25
+        renderer.empty_height = 480
         given_line = 'a\n[---]\nb'
         expected_words = ['a<br>[---]<br>b']
         service_item = ServiceItem(None)
@@ -126,7 +126,7 @@ class TestRenderer(TestCase):
         """
         # GIVEN: A line of with a space before the logical split
         renderer = Renderer()
-        renderer.empty_height = 25
+        renderer.empty_height = 480
         given_line = '\n       [---]\n'
         expected_words = ['<br>       [---]']
         service_item = ServiceItem(None)
@@ -143,7 +143,7 @@ class TestRenderer(TestCase):
         """
         # GIVEN: A line of with a space after the logical split
         renderer = Renderer()
-        renderer.empty_height = 25
+        renderer.empty_height = 480
         given_line = '\n[---]  \n'
         expected_words = ['<br>[---]  ']
         service_item = ServiceItem(None)

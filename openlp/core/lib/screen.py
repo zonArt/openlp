@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@ displays.
 import logging
 import copy
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry, Settings, translate
 
@@ -149,7 +149,7 @@ class ScreenList(object):
                 {
                     'primary': True,
                     'number': 0,
-                    'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
+                    'size': PyQt5.QtCore.QRect(0, 0, 1024, 768)
                 }
         """
         log.info('Screen %d found with resolution %s' % (screen['number'], screen['size']))

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,7 @@
 """
 The UI widgets for the rename dialog
 """
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
@@ -39,12 +39,12 @@ class Ui_FileRenameDialog(object):
         file_rename_dialog.setObjectName('file_rename_dialog')
         file_rename_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         file_rename_dialog.resize(300, 10)
-        self.dialog_layout = QtGui.QGridLayout(file_rename_dialog)
+        self.dialog_layout = QtWidgets.QGridLayout(file_rename_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
-        self.file_name_label = QtGui.QLabel(file_rename_dialog)
+        self.file_name_label = QtWidgets.QLabel(file_rename_dialog)
         self.file_name_label.setObjectName('file_name_label')
         self.dialog_layout.addWidget(self.file_name_label, 0, 0)
-        self.file_name_edit = QtGui.QLineEdit(file_rename_dialog)
+        self.file_name_edit = QtWidgets.QLineEdit(file_rename_dialog)
         self.file_name_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(r'[^/\\?*|<>\[\]":+%]+'), self))
         self.file_name_edit.setObjectName('file_name_edit')
         self.dialog_layout.addWidget(self.file_name_edit, 0, 1)

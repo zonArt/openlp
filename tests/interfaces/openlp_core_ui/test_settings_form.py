@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ Package to test the openlp.core.lib.settingsform package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtTest
+from PyQt5 import QtCore, QtTest
 
 from openlp.core.common import Registry
 from openlp.core.ui import settingsform
@@ -73,7 +73,7 @@ class TestSettingsForm(TestCase, TestMixin):
         # GIVEN: An initial form
 
         # WHEN displaying the UI and pressing cancel
-        with patch('PyQt4.QtGui.QDialog.reject') as mocked_reject:
+        with patch('PyQt5.QtWidgets.QDialog.reject') as mocked_reject:
             cancel_widget = self.form.button_box.button(self.form.button_box.Cancel)
             QtTest.QTest.mouseClick(cancel_widget, QtCore.Qt.LeftButton)
 
@@ -87,7 +87,7 @@ class TestSettingsForm(TestCase, TestMixin):
         # GIVEN: An initial form
 
         # WHEN displaying the UI and pressing Ok
-        with patch('PyQt4.QtGui.QDialog.accept') as mocked_accept:
+        with patch('PyQt5.QtWidgets.QDialog.accept') as mocked_accept:
             ok_widget = self.form.button_box.button(self.form.button_box.Ok)
             QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
@@ -102,7 +102,7 @@ class TestSettingsForm(TestCase, TestMixin):
         self.form.register_post_process('function1')
 
         # WHEN displaying the UI and pressing Ok
-        with patch('PyQt4.QtGui.QDialog.accept'):
+        with patch('PyQt5.QtWidgets.QDialog.accept'):
             ok_widget = self.form.button_box.button(self.form.button_box.Ok)
             QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 

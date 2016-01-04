@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,7 +40,7 @@ class TestWebkitPlayer(TestCase):
         # GIVEN: A WebkitPlayer instance and a mocked QWebPage
         mocked_qwebpage = MagicMock()
         mocked_qwebpage.mainFrame().evaluateJavaScript.return_value = '[object HTMLUnknownElement]'
-        with patch('openlp.core.ui.media.webkitplayer.QtWebKit.QWebPage', **{'return_value': mocked_qwebpage}):
+        with patch('openlp.core.ui.media.webkitplayer.QtWebKitWidgets.QWebPage', **{'return_value': mocked_qwebpage}):
             webkit_player = WebkitPlayer(None)
 
             # WHEN: An checking if the player is available
@@ -57,7 +57,7 @@ class TestWebkitPlayer(TestCase):
         # GIVEN: A WebkitPlayer instance and a mocked QWebPage
         mocked_qwebpage = MagicMock()
         mocked_qwebpage.mainFrame().evaluateJavaScript.return_value = '[object HTMLVideoElement]'
-        with patch('openlp.core.ui.media.webkitplayer.QtWebKit.QWebPage', **{'return_value': mocked_qwebpage}):
+        with patch('openlp.core.ui.media.webkitplayer.QtWebKitWidgets.QWebPage', **{'return_value': mocked_qwebpage}):
             webkit_player = WebkitPlayer(None)
 
             # WHEN: An checking if the player is available

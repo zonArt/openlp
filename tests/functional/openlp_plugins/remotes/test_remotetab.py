@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +26,8 @@ import os
 import re
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
+
 
 from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.remotetab import RemoteTab
@@ -59,7 +60,7 @@ class TestRemoteTab(TestCase, TestMixin):
         self.setup_application()
         self.build_settings()
         Settings().extend_default_settings(__default_settings__)
-        self.parent = QtGui.QMainWindow()
+        self.parent = QtWidgets.QMainWindow()
         self.form = RemoteTab(self.parent, 'Remotes', None, None)
 
     def tearDown(self):

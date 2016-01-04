@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@ import re
 import sqlite3
 import time
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 from sqlalchemy import Column, ForeignKey, Table, or_, types, func
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import class_mapper, mapper, relation
@@ -107,7 +107,7 @@ def init_schema(url):
     return session
 
 
-class BibleDB(QtCore.QObject, Manager, RegistryProperties):
+class BibleDB(Manager, RegistryProperties):
     """
     This class represents a database-bound Bible. It is used as a base class for all the custom importers, so that
     the can implement their own import methods, but benefit from the database methods in here via inheritance,
@@ -129,7 +129,6 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
                 The name of the database. This is also used as the file name for SQLite databases.
         """
         log.info('BibleDB loaded')
-        QtCore.QObject.__init__(self)
         self.bible_plugin = parent
         self.session = None
         if 'path' not in kwargs:
@@ -315,7 +314,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         else:
             from openlp.plugins.bibles.forms import BookNameForm
             book_name = BookNameForm(self.wizard)
-            if book_name.exec_(book, self.get_books(), maxbooks):
+            if book_name.exec(book, self.get_books(), maxbooks):
                 book_id = book_name.book_id
             if book_id:
                 AlternativeBookNamesDB.create_alternative_book_name(
@@ -467,7 +466,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         from openlp.plugins.bibles.forms import LanguageForm
         language = None
         language_form = LanguageForm(self.wizard)
-        if language_form.exec_(bible_name):
+        if language_form.exec(bible_name):
             language = str(language_form.language_combo_box.currentText())
         if not language:
             return False

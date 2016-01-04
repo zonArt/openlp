@@ -14,7 +14,7 @@
 +###############################################################################
 +# OpenLP - Open Source Lyrics Projection                                      #
 +# --------------------------------------------------------------------------- #
-+# Copyright (c) 2008-2015 OpenLP Developers                                   #
++# Copyright (c) 2008-2016 OpenLP Developers                                   #
 +# --------------------------------------------------------------------------- #
 +# This program is free software; you can redistribute it and/or modify it     #
 +# under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +33,7 @@
 +The :mod:`resources` module provides application images and icons in a central
 +store for use by OpenLP.
 +"""
- from PyQt4 import QtCore
+ from PyQt5 import QtCore
 
  qt_resource_data = "\
 @@ -71953,9 +71971,14 @@

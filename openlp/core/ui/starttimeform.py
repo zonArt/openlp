@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,7 @@
 """
 The actual start time form.
 """
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from .starttimedialog import Ui_StartTimeDialog
 
@@ -30,7 +30,7 @@ from openlp.core.common import Registry, RegistryProperties, UiStrings, translat
 from openlp.core.lib.ui import critical_error_message_box
 
 
-class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog, RegistryProperties):
+class StartTimeForm(QtWidgets.QDialog, Ui_StartTimeDialog, RegistryProperties):
     """
     The start time dialog
     """
@@ -41,7 +41,7 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog, RegistryProperties):
         super(StartTimeForm, self).__init__(Registry().get('main_window'))
         self.setupUi(self)
 
-    def exec_(self):
+    def exec(self):
         """
         Run the Dialog with correct heading.
         """
@@ -58,7 +58,7 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog, RegistryProperties):
         self.hour_finish_label.setText('%s%s' % (str(hour), UiStrings().Hours))
         self.minute_finish_label.setText('%s%s' % (str(minutes), UiStrings().Minutes))
         self.second_finish_label.setText('%s%s' % (str(seconds), UiStrings().Seconds))
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def accept(self):
         """
@@ -79,7 +79,7 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog, RegistryProperties):
             return
         self.item['service_item'].start_time = start
         self.item['service_item'].end_time = end
-        return QtGui.QDialog.accept(self)
+        return QtWidgets.QDialog.accept(self)
 
     def _time_split(self, seconds):
         """

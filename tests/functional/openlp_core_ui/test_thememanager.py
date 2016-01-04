@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,7 @@ import shutil
 from unittest import TestCase
 from tempfile import mkdtemp
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 from tempfile import mkdtemp
 
 from openlp.core.ui import ThemeManager
@@ -165,8 +165,8 @@ class TestThemeManager(TestCase):
         Test that theme_manager.over_write_message_box returns True when the user clicks yes.
         """
         # GIVEN: A patched QMessageBox.question and an instance of ThemeManager
-        with patch('openlp.core.ui.thememanager.QtGui.QMessageBox.question', return_value=QtGui.QMessageBox.Yes)\
-                as mocked_qmessagebox_question,\
+        with patch('openlp.core.ui.thememanager.QtWidgets.QMessageBox.question',
+                   return_value=QtWidgets.QMessageBox.Yes) as mocked_qmessagebox_question,\
                 patch('openlp.core.ui.thememanager.translate') as mocked_translate:
             mocked_translate.side_effect = lambda context, text: text
             theme_manager = ThemeManager(None)
@@ -185,7 +185,7 @@ class TestThemeManager(TestCase):
         Test that theme_manager.over_write_message_box returns False when the user clicks no.
         """
         # GIVEN: A patched QMessageBox.question and an instance of ThemeManager
-        with patch('openlp.core.ui.thememanager.QtGui.QMessageBox.question', return_value=QtGui.QMessageBox.No)\
+        with patch('openlp.core.ui.thememanager.QtWidgets.QMessageBox.question', return_value=QtWidgets.QMessageBox.No)\
                 as mocked_qmessagebox_question,\
                 patch('openlp.core.ui.thememanager.translate') as mocked_translate:
             mocked_translate.side_effect = lambda context, text: text

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,14 +22,14 @@
 """
 The :mod:`~openlp.core.ui.servicenoteform` module contains the `ServiceNoteForm` class.
 """
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, translate
 from openlp.core.lib import SpellTextEdit
 from openlp.core.lib.ui import create_button_box
 
 
-class ServiceNoteForm(QtGui.QDialog, RegistryProperties):
+class ServiceNoteForm(QtWidgets.QDialog, RegistryProperties):
     """
     This is the form that is used to edit the verses of the song.
     """
@@ -41,19 +41,19 @@ class ServiceNoteForm(QtGui.QDialog, RegistryProperties):
         self.setupUi()
         self.retranslateUi()
 
-    def exec_(self):
+    def exec(self):
         """
         Execute the form and return the result.
         """
         self.text_edit.setFocus()
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def setupUi(self):
         """
         Set up the UI of the dialog
         """
         self.setObjectName('serviceNoteEdit')
-        self.dialog_layout = QtGui.QVBoxLayout(self)
+        self.dialog_layout = QtWidgets.QVBoxLayout(self)
         self.dialog_layout.setContentsMargins(8, 8, 8, 8)
         self.dialog_layout.setSpacing(8)
         self.dialog_layout.setObjectName('vertical_layout')

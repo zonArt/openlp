@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -43,7 +43,7 @@ class TestInitFunctions(TestMixin, TestCase):
         self.assertEquals(args.loglevel, 'warning', 'The log level should be set to warning')
         self.assertFalse(args.no_error_form, 'The no_error_form should be set to False')
         self.assertFalse(args.portable, 'The portable flag should be set to false')
-        self.assertEquals(args.style,  None, 'There are no style flags to be processed')
+        self.assertEquals(args.style, None, 'There are no style flags to be processed')
         self.assertEquals(args.rargs, [], 'The service file should be blank')
 
     def parse_options_debug_test(self):
@@ -60,7 +60,7 @@ class TestInitFunctions(TestMixin, TestCase):
         self.assertEquals(args.loglevel, ' debug', 'The log level should be set to debug')
         self.assertFalse(args.no_error_form, 'The no_error_form should be set to False')
         self.assertFalse(args.portable, 'The portable flag should be set to false')
-        self.assertEquals(args.style,  None, 'There are no style flags to be processed')
+        self.assertEquals(args.style, None, 'There are no style flags to be processed')
         self.assertEquals(args.rargs, [], 'The service file should be blank')
 
     def parse_options_debug_and_portable_test(self):
@@ -77,7 +77,7 @@ class TestInitFunctions(TestMixin, TestCase):
         self.assertEquals(args.loglevel, 'warning', 'The log level should be set to warning')
         self.assertFalse(args.no_error_form, 'The no_error_form should be set to False')
         self.assertTrue(args.portable, 'The portable flag should be set to true')
-        self.assertEquals(args.style,  None, 'There are no style flags to be processed')
+        self.assertEquals(args.style, None, 'There are no style flags to be processed')
         self.assertEquals(args.rargs, [], 'The service file should be blank')
 
     def parse_options_all_no_file_test(self):
@@ -94,7 +94,7 @@ class TestInitFunctions(TestMixin, TestCase):
         self.assertEquals(args.loglevel, ' debug', 'The log level should be set to debug')
         self.assertFalse(args.no_error_form, 'The no_error_form should be set to False')
         self.assertFalse(args.portable, 'The portable flag should be set to false')
-        self.assertEquals(args.style,  None, 'There are no style flags to be processed')
+        self.assertEquals(args.style, None, 'There are no style flags to be processed')
         self.assertEquals(args.rargs, [], 'The service file should be blank')
 
     def parse_options_file_test(self):
@@ -111,7 +111,7 @@ class TestInitFunctions(TestMixin, TestCase):
         self.assertEquals(args.loglevel, 'warning', 'The log level should be set to warning')
         self.assertFalse(args.no_error_form, 'The no_error_form should be set to False')
         self.assertFalse(args.portable, 'The portable flag should be set to false')
-        self.assertEquals(args.style,  None, 'There are no style flags to be processed')
+        self.assertEquals(args.style, None, 'There are no style flags to be processed')
         self.assertEquals(args.rargs, 'dummy_temp', 'The service file should not be blank')
 
     def parse_options_file_and_debug_test(self):
@@ -128,7 +128,7 @@ class TestInitFunctions(TestMixin, TestCase):
         self.assertEquals(args.loglevel, ' debug', 'The log level should be set to debug')
         self.assertFalse(args.no_error_form, 'The no_error_form should be set to False')
         self.assertFalse(args.portable, 'The portable flag should be set to false')
-        self.assertEquals(args.style,  None, 'There are no style flags to be processed')
+        self.assertEquals(args.style, None, 'There are no style flags to be processed')
         self.assertEquals(args.rargs, 'dummy_temp', 'The service file should not be blank')
 
     def parse_options_two_files_test(self):

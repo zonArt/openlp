@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,14 +23,14 @@
 This module contains the song book form
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.songbookdialog import Ui_SongBookDialog
 
 
-class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
+class SongBookForm(QtWidgets.QDialog, Ui_SongBookDialog):
     """
     Class documentation goes here.
     """
@@ -41,7 +41,7 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         super(SongBookForm, self).__init__(parent)
         self.setupUi(self)
 
-    def exec_(self, clear=True):
+    def exec(self, clear=True):
         """
         Execute the song book form.
 
@@ -51,7 +51,7 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
             self.name_edit.clear()
             self.publisher_edit.clear()
         self.name_edit.setFocus()
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def accept(self):
         """
@@ -63,4 +63,4 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
             self.name_edit.setFocus()
             return False
         else:
-            return QtGui.QDialog.accept(self)
+            return QtWidgets.QDialog.accept(self)

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,7 @@
 """
 The UI widgets of the settings dialog.
 """
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import translate
 from openlp.core.lib import build_icon
@@ -40,16 +40,16 @@ class Ui_SettingsDialog(object):
         settings_dialog.setObjectName('settings_dialog')
         settings_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
         settings_dialog.resize(800, 700)
-        self.dialog_layout = QtGui.QGridLayout(settings_dialog)
+        self.dialog_layout = QtWidgets.QGridLayout(settings_dialog)
         self.dialog_layout.setObjectName('dialog_layout')
-        self.dialog_layout.setMargin(8)
-        self.setting_list_widget = QtGui.QListWidget(settings_dialog)
+        self.dialog_layout.setContentsMargins(8, 8, 8, 8)
+        self.setting_list_widget = QtWidgets.QListWidget(settings_dialog)
         self.setting_list_widget.setUniformItemSizes(True)
         self.setting_list_widget.setMinimumSize(QtCore.QSize(150, 0))
         self.setting_list_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setting_list_widget.setObjectName('setting_list_widget')
         self.dialog_layout.addWidget(self.setting_list_widget, 0, 0, 1, 1)
-        self.stacked_layout = QtGui.QStackedLayout()
+        self.stacked_layout = QtWidgets.QStackedLayout()
         self.stacked_layout.setObjectName('stacked_layout')
         self.dialog_layout.addLayout(self.stacked_layout, 0, 1, 1, 1)
         self.button_box = create_button_box(settings_dialog, 'button_box', ['cancel', 'ok'])

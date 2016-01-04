@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ The :mod:`ui` module provides standard UI components for OpenLP.
 """
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, UiStrings, translate, is_macosx
 from openlp.core.lib import build_icon
@@ -41,16 +41,16 @@ def add_welcome_page(parent, image):
     :param parent: A ``QWizard`` object to add the welcome page to.
     :param image: A splash image for the wizard.
     """
-    parent.welcome_page = QtGui.QWizardPage()
-    parent.welcome_page.setPixmap(QtGui.QWizard.WatermarkPixmap, QtGui.QPixmap(image))
+    parent.welcome_page = QtWidgets.QWizardPage()
+    parent.welcome_page.setPixmap(QtWidgets.QWizard.WatermarkPixmap, QtGui.QPixmap(image))
     parent.welcome_page.setObjectName('welcome_page')
-    parent.welcome_layout = QtGui.QVBoxLayout(parent.welcome_page)
+    parent.welcome_layout = QtWidgets.QVBoxLayout(parent.welcome_page)
     parent.welcome_layout.setObjectName('WelcomeLayout')
-    parent.title_label = QtGui.QLabel(parent.welcome_page)
+    parent.title_label = QtWidgets.QLabel(parent.welcome_page)
     parent.title_label.setObjectName('title_label')
     parent.welcome_layout.addWidget(parent.title_label)
     parent.welcome_layout.addSpacing(40)
-    parent.information_label = QtGui.QLabel(parent.welcome_page)
+    parent.information_label = QtWidgets.QLabel(parent.welcome_page)
     parent.information_label.setWordWrap(True)
     parent.information_label.setObjectName('information_label')
     parent.welcome_layout.addWidget(parent.information_label)
@@ -67,30 +67,30 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
     :param name: A string which is set as object name.
     :param standard_buttons: A list of strings for the used buttons. It might contain: ``ok``, ``save``, ``cancel``,
         ``close``, and ``defaults``.
-    :param custom_buttons: A list of additional buttons. If an item is an instance of QtGui.QAbstractButton it is added
-        with QDialogButtonBox.ActionRole. Otherwise the item has to be a tuple of a Button and a ButtonRole.
+    :param custom_buttons: A list of additional buttons. If an item is an instance of QtWidgets.QAbstractButton it is
+    added with QDialogButtonBox.ActionRole. Otherwise the item has to be a tuple of a Button and a ButtonRole.
     """
     if custom_buttons is None:
         custom_buttons = []
     if standard_buttons is None:
         standard_buttons = []
-    buttons = QtGui.QDialogButtonBox.NoButton
+    buttons = QtWidgets.QDialogButtonBox.NoButton
     if 'ok' in standard_buttons:
-        buttons |= QtGui.QDialogButtonBox.Ok
+        buttons |= QtWidgets.QDialogButtonBox.Ok
     if 'save' in standard_buttons:
-        buttons |= QtGui.QDialogButtonBox.Save
+        buttons |= QtWidgets.QDialogButtonBox.Save
     if 'cancel' in standard_buttons:
-        buttons |= QtGui.QDialogButtonBox.Cancel
+        buttons |= QtWidgets.QDialogButtonBox.Cancel
     if 'close' in standard_buttons:
-        buttons |= QtGui.QDialogButtonBox.Close
+        buttons |= QtWidgets.QDialogButtonBox.Close
     if 'defaults' in standard_buttons:
-        buttons |= QtGui.QDialogButtonBox.RestoreDefaults
-    button_box = QtGui.QDialogButtonBox(dialog)
+        buttons |= QtWidgets.QDialogButtonBox.RestoreDefaults
+    button_box = QtWidgets.QDialogButtonBox(dialog)
     button_box.setObjectName(name)
     button_box.setStandardButtons(buttons)
     for button in custom_buttons:
-        if isinstance(button, QtGui.QAbstractButton):
-            button_box.addButton(button, QtGui.QDialogButtonBox.ActionRole)
+        if isinstance(button, QtWidgets.QAbstractButton):
+            button_box.addButton(button, QtWidgets.QDialogButtonBox.ActionRole)
         else:
             button_box.addButton(*button)
     button_box.accepted.connect(dialog.accept)
@@ -108,9 +108,9 @@ def critical_error_message_box(title=None, message=None, parent=None, question=F
     :param question: Should this message box question the user.
     """
     if question:
-        return QtGui.QMessageBox.critical(parent, UiStrings().Error, message,
-                                          QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                            QtGui.QMessageBox.No))
+        return QtWidgets.QMessageBox.critical(parent, UiStrings().Error, message,
+                                              QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                    QtWidgets.QMessageBox.No))
     return Registry().get('main_window').error_message(title if title else UiStrings().Error, message)
 
 
@@ -121,10 +121,10 @@ def create_horizontal_adjusting_combo_box(parent, name):
     :param parent: The parent widget.
     :param name: A string set as object name for the combo box.
     """
-    combo = QtGui.QComboBox(parent)
+    combo = QtWidgets.QComboBox(parent)
     combo.setObjectName(name)
-    combo.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
-    combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+    combo.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLength)
+    combo.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
     return combo
 
 
@@ -167,9 +167,9 @@ def create_button(parent, name, **kwargs):
         else:
             log.warning('The role "%s" is not defined in create_push_button().', role)
     if kwargs.pop('btn_class', '') == 'toolbutton':
-        button = QtGui.QToolButton(parent)
+        button = QtWidgets.QToolButton(parent)
     else:
-        button = QtGui.QPushButton(parent)
+        button = QtWidgets.QPushButton(parent)
     button.setObjectName(name)
     if kwargs.get('text'):
         button.setText(kwargs.pop('text'))
@@ -238,7 +238,7 @@ def create_action(parent, name, **kwargs):
     ``triggers``
         A slot which is connected to the actions ``triggered()`` slot.
     """
-    action = QtGui.QAction(parent)
+    action = QtWidgets.QAction(parent)
     action.setObjectName(name)
     if is_macosx():
         action.setIconVisibleInMenu(False)
@@ -292,7 +292,7 @@ def set_case_insensitive_completer(cache, widget):
     :param cache: The list of items to use as suggestions.
     :param widget: A widget to set the completer (QComboBox or QLineEdit instance)
     """
-    completer = QtGui.QCompleter(cache)
+    completer = QtWidgets.QCompleter(cache)
     completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     widget.setCompleter(completer)
 
@@ -303,9 +303,9 @@ def create_valign_selection_widgets(parent):
 
     :param parent: The parent object. This should be a ``QWidget`` descendant.
     """
-    label = QtGui.QLabel(parent)
+    label = QtWidgets.QLabel(parent)
     label.setText(translate('OpenLP.Ui', '&Vertical Align:'))
-    combo_box = QtGui.QComboBox(parent)
+    combo_box = QtWidgets.QComboBox(parent)
     combo_box.addItems([UiStrings().Top, UiStrings().Middle, UiStrings().Bottom])
     label.setBuddy(combo_box)
     return label, combo_box

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,8 @@
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
+
 
 from openlp.core.common import Settings, translate
 from openlp.core.lib import Plugin, StringContent, build_icon
@@ -188,7 +189,7 @@ class AlertsPlugin(Plugin):
         Start of the Alerts dialog triggered from the main menu.
         """
         self.alert_form.load_list()
-        self.alert_form.exec_()
+        self.alert_form.exec()
 
     def about(self):
         """

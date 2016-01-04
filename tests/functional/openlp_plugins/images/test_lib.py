@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ This module contains tests for the lib submodule of the Images plugin.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
@@ -273,7 +273,7 @@ class TestImageMediaItem(TestCase):
         item = self.media_item.create_item_from_id(1)
 
         # THEN: A QTreeWidgetItem should be created with the above model object as it's data
-        self.assertIsInstance(item, QtGui.QTreeWidgetItem)
+        self.assertIsInstance(item, QtWidgets.QTreeWidgetItem)
         self.assertEqual('test_file_1.jpg', item.text(0))
         item_data = item.data(0, QtCore.Qt.UserRole)
         self.assertIsInstance(item_data, ImageFilenames)

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -46,8 +46,8 @@ __all__ = ['PJLink1']
 
 from codecs import decode
 
-from PyQt4.QtCore import pyqtSignal, pyqtSlot
-from PyQt4.QtNetwork import QAbstractSocket, QTcpSocket
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5.QtNetwork import QAbstractSocket, QTcpSocket
 
 from openlp.core.common import translate, qmd5_hash
 from openlp.core.lib.projector.constants import *

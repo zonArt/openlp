@@ -1,6 +1,6 @@
 
 PPTVIEWLIB - Control PowerPoint Viewer 2003/2007 (for openlp.org)
-Copyright (C) 2008-2015 Jonathan Corwin (j@corwin.co.uk)
+Copyright (C) 2008-2016 Jonathan Corwin (j@corwin.co.uk)
 
 This library wrappers the free Microsoft PowerPoint Viewer (2003/2007) program,
 allowing it to be more easily controlled from another program.

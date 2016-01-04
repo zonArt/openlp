@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,14 +20,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.images.forms.addgroupdialog import Ui_AddGroupDialog
 
 
-class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
+class AddGroupForm(QtWidgets.QDialog, Ui_AddGroupDialog):
     """
     This class implements the 'Add group' form for the Images plugin.
     """
@@ -38,7 +38,7 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
         super(AddGroupForm, self).__init__(parent)
         self.setupUi(self)
 
-    def exec_(self, clear=True, show_top_level_group=False, selected_group=None):
+    def exec(self, clear=True, show_top_level_group=False, selected_group=None):
         """
         Show the form.
 
@@ -57,7 +57,7 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
             for i in range(self.parent_group_combobox.count()):
                 if self.parent_group_combobox.itemData(i) == selected_group:
                     self.parent_group_combobox.setCurrentIndex(i)
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def accept(self):
         """
@@ -69,4 +69,4 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
             self.name_edit.setFocus()
             return False
         else:
-            return QtGui.QDialog.accept(self)
+            return QtWidgets.QDialog.accept(self)

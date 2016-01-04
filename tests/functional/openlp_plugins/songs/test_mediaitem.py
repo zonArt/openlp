@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ This module contains tests for the lib submodule of the Songs plugin.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry, Settings
 from openlp.core.lib import ServiceItem
@@ -119,7 +119,7 @@ class TestMediaItem(TestCase, TestMixin):
 
         # THEN: I get the following Array returned
         self.assertEqual(service_item.raw_footer, ['My Song', 'Words: another author', 'Music: my author',
-                                                   'Translation: translator',  'My copyright'],
+                                                   'Translation: translator', 'My copyright'],
                          'The array should be returned correctly with a song, two authors and copyright')
         self.assertEqual(author_list, ['another author', 'my author', 'translator'],
                          'The author list should be returned correctly with two authors')

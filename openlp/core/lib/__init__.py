@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,8 @@ from distutils.version import LooseVersion
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui, Qt
+from PyQt5 import QtCore, QtGui, Qt, QtWidgets
+
 
 from openlp.core.common import translate
 
@@ -251,8 +252,8 @@ def check_item_selected(list_widget, message):
     :param message: The message to give the user if no item is selected
     """
     if not list_widget.selectedIndexes():
-        QtGui.QMessageBox.information(list_widget.parent(),
-                                      translate('OpenLP.MediaManagerItem', 'No Items Selected'), message)
+        QtWidgets.QMessageBox.information(list_widget.parent(),
+                                          translate('OpenLP.MediaManagerItem', 'No Items Selected'), message)
         return False
     return True
 

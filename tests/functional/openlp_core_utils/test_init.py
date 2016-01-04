@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -53,13 +53,14 @@ class TestInitFunctions(TestMixin, TestCase):
         mocked_main_window = MagicMock()
         Settings().setValue('core/last version test', '1950-04-01')
         # WHEN: We check to see if the version is different .
-        with patch('PyQt4.QtCore.QThread'),\
+        with patch('PyQt5.QtCore.QThread'),\
                 patch('openlp.core.utils.get_application_version') as mocked_get_application_version:
             mocked_get_application_version.return_value = {'version': '1.0.0', 'build': '', 'full': '2.0.4'}
             version_thread = VersionThread(mocked_main_window)
             version_thread.run()
         # THEN: If the version has changed the main window is notified
-        self.assertTrue(mocked_main_window.emit.called, 'The main windows should have been notified')
+        self.assertTrue(mocked_main_window.openlp_version_check.emit.called,
+                        'The main windows should have been notified')
 
     def get_uno_command_libreoffice_command_exists_test(self):
         """

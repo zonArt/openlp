@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,7 @@ import re
 import shutil
 import os
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry, AppLocation, check_directory_exists, translate
 from openlp.core.ui.wizard import WizardStrings
@@ -255,13 +255,13 @@ class SongImport(QtCore.QObject):
                 if author2:
                     self.add_author(author2)
 
-    def add_author(self, author):
+    def add_author(self, author, type=None):
         """
         Add an author to the list
         """
-        if author in self.authors:
+        if (author, type) in self.authors:
             return
-        self.authors.append(author)
+        self.authors.append((author, type))
 
     def add_media_file(self, filename, weight=0):
         """
@@ -360,13 +360,13 @@ class SongImport(QtCore.QObject):
         song.comments = self.comments
         song.theme_name = self.theme_name
         song.ccli_number = self.ccli_number
-        for author_text in self.authors:
+        for author_text, author_type in self.authors:
             author = self.manager.get_object_filtered(Author, Author.display_name == author_text)
             if not author:
                 author = Author.populate(display_name=author_text,
                                          last_name=author_text.split(' ')[-1],
                                          first_name=' '.join(author_text.split(' ')[:-1]))
-            song.add_author(author)
+            song.add_author(author, author_type)
         if self.song_book_name:
             song_book = self.manager.get_object_filtered(Book, Book.name == self.song_book_name)
             if song_book is None:

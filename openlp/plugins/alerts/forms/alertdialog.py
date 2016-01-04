@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import translate
 from openlp.core.lib import build_icon
@@ -40,34 +40,34 @@ class Ui_AlertDialog(object):
         alert_dialog.setObjectName('alert_dialog')
         alert_dialog.resize(400, 300)
         alert_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
-        self.alert_dialog_layout = QtGui.QGridLayout(alert_dialog)
+        self.alert_dialog_layout = QtWidgets.QGridLayout(alert_dialog)
         self.alert_dialog_layout.setObjectName('alert_dialog_layout')
-        self.alert_text_layout = QtGui.QFormLayout()
+        self.alert_text_layout = QtWidgets.QFormLayout()
         self.alert_text_layout.setObjectName('alert_text_layout')
-        self.alert_entry_label = QtGui.QLabel(alert_dialog)
+        self.alert_entry_label = QtWidgets.QLabel(alert_dialog)
         self.alert_entry_label.setObjectName('alert_entry_label')
-        self.alert_text_edit = QtGui.QLineEdit(alert_dialog)
+        self.alert_text_edit = QtWidgets.QLineEdit(alert_dialog)
         self.alert_text_edit.setObjectName('alert_text_edit')
         self.alert_entry_label.setBuddy(self.alert_text_edit)
         self.alert_text_layout.addRow(self.alert_entry_label, self.alert_text_edit)
-        self.alert_parameter = QtGui.QLabel(alert_dialog)
+        self.alert_parameter = QtWidgets.QLabel(alert_dialog)
         self.alert_parameter.setObjectName('alert_parameter')
-        self.parameter_edit = QtGui.QLineEdit(alert_dialog)
+        self.parameter_edit = QtWidgets.QLineEdit(alert_dialog)
         self.parameter_edit.setObjectName('parameter_edit')
         self.alert_parameter.setBuddy(self.parameter_edit)
         self.alert_text_layout.addRow(self.alert_parameter, self.parameter_edit)
         self.alert_dialog_layout.addLayout(self.alert_text_layout, 0, 0, 1, 2)
-        self.alert_list_widget = QtGui.QListWidget(alert_dialog)
+        self.alert_list_widget = QtWidgets.QListWidget(alert_dialog)
         self.alert_list_widget.setAlternatingRowColors(True)
         self.alert_list_widget.setObjectName('alert_list_widget')
         self.alert_dialog_layout.addWidget(self.alert_list_widget, 1, 0)
-        self.manage_button_layout = QtGui.QVBoxLayout()
+        self.manage_button_layout = QtWidgets.QVBoxLayout()
         self.manage_button_layout.setObjectName('manage_button_layout')
-        self.new_button = QtGui.QPushButton(alert_dialog)
+        self.new_button = QtWidgets.QPushButton(alert_dialog)
         self.new_button.setIcon(build_icon(':/general/general_new.png'))
         self.new_button.setObjectName('new_button')
         self.manage_button_layout.addWidget(self.new_button)
-        self.save_button = QtGui.QPushButton(alert_dialog)
+        self.save_button = QtWidgets.QPushButton(alert_dialog)
         self.save_button.setEnabled(False)
         self.save_button.setIcon(build_icon(':/general/general_save.png'))
         self.save_button.setObjectName('save_button')

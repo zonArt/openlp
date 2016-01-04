@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ Package to test the openlp.core.ui.shortcutform package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui, QtTest
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry
 from openlp.core.ui.shortcutlistform import ShortcutListForm
@@ -40,7 +40,7 @@ class TestShortcutform(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
         self.form = ShortcutListForm()
 
@@ -56,13 +56,13 @@ class TestShortcutform(TestCase, TestMixin):
         Test the _adjust_button() method
         """
         # GIVEN: A button.
-        button = QtGui.QPushButton()
+        button = QtWidgets.QPushButton()
         checked = True
         enabled = True
         text = "new!"
 
         # WHEN: Call the method.
-        with patch('PyQt4.QtGui.QPushButton.setChecked') as mocked_check_method:
+        with patch('PyQt5.QtWidgets.QPushButton.setChecked') as mocked_check_method:
             self.form._adjust_button(button, checked, enabled, text)
 
             # THEN: The button should be changed.

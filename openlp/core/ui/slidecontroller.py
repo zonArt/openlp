@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,7 @@ import copy
 from collections import deque
 from threading import Lock
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, Settings, SlideLimits, UiStrings, translate, \
     RegistryMixin, OpenLPMixin
@@ -73,7 +73,7 @@ NON_TEXT_MENU = [
 ]
 
 
-class DisplayController(QtGui.QWidget):
+class DisplayController(QtWidgets.QWidget):
     """
     Controller is a general display controller widget.
     """
@@ -98,7 +98,7 @@ class DisplayController(QtGui.QWidget):
         Registry().execute('%s' % sender, [controller, args])
 
 
-class InfoLabel(QtGui.QLabel):
+class InfoLabel(QtWidgets.QLabel):
     """
     InfoLabel is a subclassed QLabel. Created to provide the ablilty to add a ellipsis if the text is cut off. Original
     source: https://stackoverflow.com/questions/11446478/pyside-pyqt-truncate-text-in-qlabel-based-on-minimumsize
@@ -161,17 +161,17 @@ class SlideController(DisplayController, RegistryProperties):
         self.service_item = None
         self.slide_limits = None
         self.update_slide_limits()
-        self.panel = QtGui.QWidget(self.main_window.control_splitter)
+        self.panel = QtWidgets.QWidget(self.main_window.control_splitter)
         self.slide_list = {}
         self.slide_count = 0
         self.slide_image = None
         self.controller_width = -1
         # Layout for holding panel
-        self.panel_layout = QtGui.QVBoxLayout(self.panel)
+        self.panel_layout = QtWidgets.QVBoxLayout(self.panel)
         self.panel_layout.setSpacing(0)
-        self.panel_layout.setMargin(0)
+        self.panel_layout.setContentsMargins(0, 0, 0, 0)
         # Type label at the top of the slide controller
-        self.type_label = QtGui.QLabel(self.panel)
+        self.type_label = QtWidgets.QLabel(self.panel)
         self.type_label.setStyleSheet('font-weight: bold; font-size: 12pt;')
         self.type_label.setAlignment(QtCore.Qt.AlignCenter)
         if self.is_live:
@@ -181,25 +181,26 @@ class SlideController(DisplayController, RegistryProperties):
         self.panel_layout.addWidget(self.type_label)
         # Info label for the title of the current item, at the top of the slide controller
         self.info_label = InfoLabel(self.panel)
-        self.info_label.setSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Preferred)
+        self.info_label.setSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Preferred)
         self.panel_layout.addWidget(self.info_label)
         # Splitter
-        self.splitter = QtGui.QSplitter(self.panel)
+        self.splitter = QtWidgets.QSplitter(self.panel)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.panel_layout.addWidget(self.splitter)
         # Actual controller section
-        self.controller = QtGui.QWidget(self.splitter)
+        self.controller = QtWidgets.QWidget(self.splitter)
         self.controller.setGeometry(QtCore.QRect(0, 0, 100, 536))
-        self.controller.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Maximum))
-        self.controller_layout = QtGui.QVBoxLayout(self.controller)
+        self.controller.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                                            QtWidgets.QSizePolicy.Maximum))
+        self.controller_layout = QtWidgets.QVBoxLayout(self.controller)
         self.controller_layout.setSpacing(0)
-        self.controller_layout.setMargin(0)
+        self.controller_layout.setContentsMargins(0, 0, 0, 0)
         # Controller list view
         self.preview_widget = ListPreviewWidget(self, self.ratio)
         self.controller_layout.addWidget(self.preview_widget)
         # Build the full toolbar
         self.toolbar = OpenLPToolbar(self)
-        size_toolbar_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        size_toolbar_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         size_toolbar_policy.setHorizontalStretch(0)
         size_toolbar_policy.setVerticalStretch(0)
         size_toolbar_policy.setHeightForWidth(self.toolbar.sizePolicy().hasHeightForWidth())
@@ -223,11 +224,11 @@ class SlideController(DisplayController, RegistryProperties):
         if self.is_live:
             self.controller_type = DisplayControllerType.Live
             # Hide Menu
-            self.hide_menu = QtGui.QToolButton(self.toolbar)
+            self.hide_menu = QtWidgets.QToolButton(self.toolbar)
             self.hide_menu.setObjectName('hide_menu')
             self.hide_menu.setText(translate('OpenLP.SlideController', 'Hide'))
-            self.hide_menu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
-            self.hide_menu.setMenu(QtGui.QMenu(translate('OpenLP.SlideController', 'Hide'), self.toolbar))
+            self.hide_menu.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+            self.hide_menu.setMenu(QtWidgets.QMenu(translate('OpenLP.SlideController', 'Hide'), self.toolbar))
             self.toolbar.add_toolbar_widget(self.hide_menu)
             self.blank_screen = create_action(self, 'blankScreen',
                                               text=translate('OpenLP.SlideController', 'Blank Screen'),
@@ -249,25 +250,26 @@ class SlideController(DisplayController, RegistryProperties):
             self.hide_menu.menu().addAction(self.theme_screen)
             self.hide_menu.menu().addAction(self.desktop_screen)
             # Wide menu of display control buttons.
-            self.blank_screen_button = QtGui.QToolButton(self.toolbar)
+            self.blank_screen_button = QtWidgets.QToolButton(self.toolbar)
             self.blank_screen_button.setObjectName('blank_screen_button')
             self.toolbar.add_toolbar_widget(self.blank_screen_button)
             self.blank_screen_button.setDefaultAction(self.blank_screen)
-            self.theme_screen_button = QtGui.QToolButton(self.toolbar)
+            self.theme_screen_button = QtWidgets.QToolButton(self.toolbar)
             self.theme_screen_button.setObjectName('theme_screen_button')
             self.toolbar.add_toolbar_widget(self.theme_screen_button)
             self.theme_screen_button.setDefaultAction(self.theme_screen)
-            self.desktop_screen_button = QtGui.QToolButton(self.toolbar)
+            self.desktop_screen_button = QtWidgets.QToolButton(self.toolbar)
             self.desktop_screen_button.setObjectName('desktop_screen_button')
             self.toolbar.add_toolbar_widget(self.desktop_screen_button)
             self.desktop_screen_button.setDefaultAction(self.desktop_screen)
             self.toolbar.add_toolbar_action('loop_separator', separator=True)
             # Play Slides Menu
-            self.play_slides_menu = QtGui.QToolButton(self.toolbar)
+            self.play_slides_menu = QtWidgets.QToolButton(self.toolbar)
             self.play_slides_menu.setObjectName('play_slides_menu')
             self.play_slides_menu.setText(translate('OpenLP.SlideController', 'Play Slides'))
-            self.play_slides_menu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
-            self.play_slides_menu.setMenu(QtGui.QMenu(translate('OpenLP.SlideController', 'Play Slides'), self.toolbar))
+            self.play_slides_menu.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+            self.play_slides_menu.setMenu(QtWidgets.QMenu(translate('OpenLP.SlideController', 'Play Slides'),
+                                                          self.toolbar))
             self.toolbar.add_toolbar_widget(self.play_slides_menu)
             self.play_slides_loop = create_action(self, 'playSlidesLoop', text=UiStrings().PlaySlidesInLoop,
                                                   icon=':/media/media_time.png', checked=False, can_shortcuts=True,
@@ -282,7 +284,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.play_slides_menu.menu().addAction(self.play_slides_loop)
             self.play_slides_menu.menu().addAction(self.play_slides_once)
             # Loop Delay Spinbox
-            self.delay_spin_box = QtGui.QSpinBox()
+            self.delay_spin_box = QtWidgets.QSpinBox()
             self.delay_spin_box.setObjectName('delay_spin_box')
             self.delay_spin_box.setRange(1, 180)
             self.delay_spin_box.setSuffix(UiStrings().Seconds)
@@ -306,11 +308,11 @@ class SlideController(DisplayController, RegistryProperties):
         self.media_controller.register_controller(self)
         if self.is_live:
             # Build the Song Toolbar
-            self.song_menu = QtGui.QToolButton(self.toolbar)
+            self.song_menu = QtWidgets.QToolButton(self.toolbar)
             self.song_menu.setObjectName('song_menu')
             self.song_menu.setText(translate('OpenLP.SlideController', 'Go To'))
-            self.song_menu.setPopupMode(QtGui.QToolButton.InstantPopup)
-            self.song_menu.setMenu(QtGui.QMenu(translate('OpenLP.SlideController', 'Go To'), self.toolbar))
+            self.song_menu.setPopupMode(QtWidgets.QToolButton.InstantPopup)
+            self.song_menu.setMenu(QtWidgets.QMenu(translate('OpenLP.SlideController', 'Go To'), self.toolbar))
             self.toolbar.add_toolbar_widget(self.song_menu)
             # Stuff for items with background audio.
             # FIXME: object name should be changed. But this requires that we migrate the shortcut.
@@ -320,10 +322,10 @@ class SlideController(DisplayController, RegistryProperties):
                 tooltip=translate('OpenLP.SlideController', 'Pause audio.'),
                 checked=False, visible=False, category=self.category, context=QtCore.Qt.WindowShortcut,
                 can_shortcuts=True, triggers=self.set_audio_pause_clicked)
-            self.audio_menu = QtGui.QMenu(translate('OpenLP.SlideController', 'Background Audio'), self.toolbar)
+            self.audio_menu = QtWidgets.QMenu(translate('OpenLP.SlideController', 'Background Audio'), self.toolbar)
             self.audio_pause_item.setMenu(self.audio_menu)
             self.audio_pause_item.setParent(self.toolbar)
-            self.toolbar.widgetForAction(self.audio_pause_item).setPopupMode(QtGui.QToolButton.MenuButtonPopup)
+            self.toolbar.widgetForAction(self.audio_pause_item).setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
             self.next_track_item = create_action(self, 'nextTrackItem', text=UiStrings().NextTrack,
                                                  icon=':/slides/media_playback_next.png',
                                                  tooltip=translate('OpenLP.SlideController',
@@ -333,7 +335,7 @@ class SlideController(DisplayController, RegistryProperties):
                                                  triggers=self.on_next_track_clicked)
             self.audio_menu.addAction(self.next_track_item)
             self.track_menu = self.audio_menu.addMenu(translate('OpenLP.SlideController', 'Tracks'))
-            self.audio_time_label = QtGui.QLabel(' 00:00 ', self.toolbar)
+            self.audio_time_label = QtWidgets.QLabel(' 00:00 ', self.toolbar)
             self.audio_time_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignHCenter)
             self.audio_time_label.setStyleSheet(AUDIO_TIME_LABEL_STYLESHEET)
             self.audio_time_label.setObjectName('audio_time_label')
@@ -341,33 +343,34 @@ class SlideController(DisplayController, RegistryProperties):
             self.toolbar.set_widget_visible(AUDIO_LIST, False)
             self.toolbar.set_widget_visible(['song_menu'], False)
         # Screen preview area
-        self.preview_frame = QtGui.QFrame(self.splitter)
+        self.preview_frame = QtWidgets.QFrame(self.splitter)
         self.preview_frame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
         self.preview_frame.setMinimumHeight(100)
-        self.preview_frame.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Ignored,
-                                         QtGui.QSizePolicy.Label))
-        self.preview_frame.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.preview_frame.setFrameShadow(QtGui.QFrame.Sunken)
+        self.preview_frame.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored,
+                                                               QtWidgets.QSizePolicy.Ignored,
+                                         QtWidgets.QSizePolicy.Label))
+        self.preview_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.preview_frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.preview_frame.setObjectName('preview_frame')
-        self.grid = QtGui.QGridLayout(self.preview_frame)
-        self.grid.setMargin(8)
+        self.grid = QtWidgets.QGridLayout(self.preview_frame)
+        self.grid.setContentsMargins(8, 8, 8, 8)
         self.grid.setObjectName('grid')
-        self.slide_layout = QtGui.QVBoxLayout()
+        self.slide_layout = QtWidgets.QVBoxLayout()
         self.slide_layout.setSpacing(0)
-        self.slide_layout.setMargin(0)
+        self.slide_layout.setContentsMargins(0, 0, 0, 0)
         self.slide_layout.setObjectName('SlideLayout')
         self.preview_display = Display(self)
         self.slide_layout.insertWidget(0, self.preview_display)
         self.preview_display.hide()
         # Actual preview screen
-        self.slide_preview = QtGui.QLabel(self)
-        size_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.slide_preview = QtWidgets.QLabel(self)
+        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(self.slide_preview.sizePolicy().hasHeightForWidth())
         self.slide_preview.setSizePolicy(size_policy)
-        self.slide_preview.setFrameShape(QtGui.QFrame.Box)
-        self.slide_preview.setFrameShadow(QtGui.QFrame.Plain)
+        self.slide_preview.setFrameShape(QtWidgets.QFrame.Box)
+        self.slide_preview.setFrameShadow(QtWidgets.QFrame.Plain)
         self.slide_preview.setLineWidth(1)
         self.slide_preview.setScaledContents(True)
         self.slide_preview.setObjectName('slide_preview')
@@ -401,7 +404,7 @@ class SlideController(DisplayController, RegistryProperties):
         self.preview_widget.verticalHeader().sectionClicked.connect(self.on_slide_selected)
         if self.is_live:
             # Need to use event as called across threads and UI is updated
-            QtCore.QObject.connect(self, QtCore.SIGNAL('slidecontroller_toggle_display'), self.toggle_display)
+            self.slidecontroller_toggle_display.connect(self.toggle_display)
             Registry().register_function('slidecontroller_live_spin_delay', self.receive_spin_delay)
             self.toolbar.set_widget_visible(LOOP_LIST, False)
             self.toolbar.set_widget_visible(WIDE_MENU, False)
@@ -416,12 +419,9 @@ class SlideController(DisplayController, RegistryProperties):
         Registry().register_function('slidecontroller_%s_blank' % self.type_prefix, self.on_slide_blank)
         Registry().register_function('slidecontroller_%s_unblank' % self.type_prefix, self.on_slide_unblank)
         Registry().register_function('slidecontroller_update_slide_limits', self.update_slide_limits)
-        QtCore.QObject.connect(self, QtCore.SIGNAL('slidecontroller_%s_set' % self.type_prefix),
-                               self.on_slide_selected_index)
-        QtCore.QObject.connect(self, QtCore.SIGNAL('slidecontroller_%s_next' % self.type_prefix),
-                               self.on_slide_selected_next)
-        QtCore.QObject.connect(self, QtCore.SIGNAL('slidecontroller_%s_previous' % self.type_prefix),
-                               self.on_slide_selected_previous)
+        getattr(self, 'slidecontroller_%s_set' % self.type_prefix).connect(self.on_slide_selected_index)
+        getattr(self, 'slidecontroller_%s_next' % self.type_prefix).connect(self.on_slide_selected_next)
+        getattr(self, 'slidecontroller_%s_previous' % self.type_prefix).connect(self.on_slide_selected_previous)
 
     def _slide_shortcut_activated(self):
         """
@@ -581,7 +581,7 @@ class SlideController(DisplayController, RegistryProperties):
         if self.is_live:
             self.__add_actions_to_widget(self.display)
         if self.display.audio_player:
-            self.display.audio_player.connectSlot(QtCore.SIGNAL('tick(qint64)'), self.on_audio_time_remaining)
+            self.display.audio_player.position_changed.connect(self.on_audio_time_remaining)
         # The SlidePreview's ratio.
         try:
             self.ratio = self.screens.current['size'].width() / self.screens.current['size'].height()
@@ -616,13 +616,13 @@ class SlideController(DisplayController, RegistryProperties):
         """
         if self.ratio < self.preview_frame.width() / self.preview_frame.height():
             # We have to take the height as limit.
-            max_height = self.preview_frame.height() - self.grid.margin() * 2
+            max_height = self.preview_frame.height() - self.grid.contentsMargins().top() * 2
             self.slide_preview.setFixedSize(QtCore.QSize(max_height * self.ratio, max_height))
             self.preview_display.setFixedSize(QtCore.QSize(max_height * self.ratio, max_height))
             self.preview_display.screen = {'size': self.preview_display.geometry()}
         else:
             # We have to take the width as limit.
-            max_width = self.preview_frame.width() - self.grid.margin() * 2
+            max_width = self.preview_frame.width() - self.grid.contentsMargins().top() * 2
             self.slide_preview.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.screen = {'size': self.preview_display.geometry()}
@@ -1129,6 +1129,7 @@ class SlideController(DisplayController, RegistryProperties):
             QtCore.QTimer.singleShot(2.5, self.grab_maindisplay)
         else:
             self.slide_image = self.display.preview()
+            self.slide_image.setDevicePixelRatio(self.main_window.devicePixelRatio())
             self.slide_preview.setPixmap(self.slide_image)
         self.slide_count += 1
 
@@ -1136,9 +1137,10 @@ class SlideController(DisplayController, RegistryProperties):
         """
         Creates an image of the current screen and updates the preview frame.
         """
-        win_id = QtGui.QApplication.desktop().winId()
+        win_id = QtWidgets.QApplication.desktop().winId()
         rect = self.screens.current['size']
-        win_image = QtGui.QPixmap.grabWindow(win_id, rect.x(), rect.y(), rect.width(), rect.height())
+        win_image = QtGui.QScreen.grabWindow(win_id, rect.x(), rect.y(), rect.width(), rect.height())
+        win_image.setDevicePixelRatio(self.slide_preview.devicePixelRatio())
         self.slide_preview.setPixmap(win_image)
         self.slide_image = win_image
 
@@ -1435,6 +1437,10 @@ class PreviewController(RegistryMixin, OpenLPMixin, SlideController):
     """
     Set up the Preview Controller.
     """
+    slidecontroller_preview_set = QtCore.pyqtSignal(list)
+    slidecontroller_preview_next = QtCore.pyqtSignal()
+    slidecontroller_preview_previous = QtCore.pyqtSignal()
+
     def __init__(self, parent):
         """
         Set up the base Controller as a preview.
@@ -1455,6 +1461,11 @@ class LiveController(RegistryMixin, OpenLPMixin, SlideController):
     """
     Set up the Live Controller.
     """
+    slidecontroller_live_set = QtCore.pyqtSignal(list)
+    slidecontroller_live_next = QtCore.pyqtSignal()
+    slidecontroller_live_previous = QtCore.pyqtSignal()
+    slidecontroller_toggle_display = QtCore.pyqtSignal(str)
+
     def __init__(self, parent):
         """
         Set up the base Controller as a live.
