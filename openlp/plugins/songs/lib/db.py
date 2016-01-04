@@ -176,6 +176,7 @@ class Song(BaseModel):
         new_songbookentry.entry = entry
         self.songbookentries.append(new_songbookentry)
 
+
 class SongBookEntry(BaseModel):
     """
     SongBookEntry model
@@ -185,6 +186,7 @@ class SongBookEntry(BaseModel):
         if entry:
             return "%s #%s" % (songbook_name, entry)
         return songbook_name
+
 
 class Topic(BaseModel):
     """
