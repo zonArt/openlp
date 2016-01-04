@@ -37,7 +37,7 @@ from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
 from openlp.plugins.songs.forms.songexportform import SongExportForm
 from openlp.plugins.songs.lib import VerseType, clean_string, delete_song
-from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile
+from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile, SongBookEntry
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics, SongXML
 
@@ -523,8 +523,9 @@ class SongMediaItem(MediaManagerItem):
                 item.raw_footer.append("%s %s" % (SongStrings.CopyrightSymbol, song.copyright))
             else:
                 item.raw_footer.append(song.copyright)
-        if self.display_songbook and song.book:
-            item.raw_footer.append("%s #%s" % (song.book.name, song.song_number))
+        if self.display_songbook and song.songbookentries:
+            songbooks = [str(songbookentry) for songbookentry in song.songbookentries]
+            item.raw_footer.append(", ".join(songbooks))
         if Settings().value('core/ccli number'):
             item.raw_footer.append(translate('SongsPlugin.MediaItem',
                                              'CCLI License: ') + Settings().value('core/ccli number'))

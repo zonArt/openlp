@@ -181,6 +181,9 @@ class SongBookEntry(BaseModel):
     """
     SongBookEntry model
     """
+    def __repr__(self):
+        return SongBookEntry.get_display_name(self.songbook.name, self.entry)
+
     @staticmethod
     def get_display_name(songbook_name, entry):
         if entry:

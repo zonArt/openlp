@@ -414,6 +414,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.authors_list_view.clear()
         self.topics_list_view.clear()
         self.songbooks_list_view.clear()
+        self.songbook_entry_edit.clear()
         self.audio_list_widget.clear()
         self.title_edit.setFocus()
         self.load_authors()
@@ -687,7 +688,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                 self.add_songbookentry_to_list(songbook.id, songbook.name, self.songbook_entry_edit.text())
                 self.load_songbooks()
                 self.songbooks_combo_box.setCurrentIndex(0)
-                self.songbook_entry_edit.setText("")
+                self.songbook_entry_edit.clear()
             else:
                 return
         elif item > 0:
@@ -699,7 +700,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             else:
                 self.add_songbookentry_to_list(songbook.id, songbook.name, self.songbook_entry_edit.text())
             self.songbooks_combo_box.setCurrentIndex(0)
-            self.songbook_entry_edit.setText("")
+            self.songbook_entry_edit.clear()
         else:
             QtWidgets.QMessageBox.warning(
                 self, UiStrings().NISs,
