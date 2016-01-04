@@ -43,3 +43,4 @@ __pycache__
 .coverage
 cover
 *.kdev4
+coverage
