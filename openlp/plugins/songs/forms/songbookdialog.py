@@ -28,7 +28,7 @@ from openlp.core.lib.ui import create_button_box
 
 class Ui_SongBookDialog(object):
     """
-    The user interface for the song book dialog.
+    The user interface for the Songbook dialog.
     """
     def setupUi(self, song_book_dialog):
         """
@@ -63,6 +63,6 @@ class Ui_SongBookDialog(object):
         """
         Translate the UI on the fly.
         """
-        song_book_dialog.setWindowTitle(translate('SongsPlugin.SongBookForm', 'Song Book Maintenance'))
+        song_book_dialog.setWindowTitle(translate('SongsPlugin.SongBookForm', 'Songbook Maintenance'))
         self.name_label.setText(translate('SongsPlugin.SongBookForm', '&Name:'))
         self.publisher_label.setText(translate('SongsPlugin.SongBookForm', '&Publisher:'))

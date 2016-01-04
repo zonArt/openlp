@@ -151,7 +151,7 @@ class SongMediaItem(MediaManagerItem):
             (SongSearch.Authors, ':/songs/song_search_author.png', SongStrings.Authors,
                 translate('SongsPlugin.MediaItem', 'Search Authors...')),
             (SongSearch.Books, ':/songs/song_book_edit.png', SongStrings.SongBooks,
-                translate('SongsPlugin.MediaItem', 'Search Song Books...')),
+                translate('SongsPlugin.MediaItem', 'Search Songbooks...')),
             (SongSearch.Themes, ':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.search_text_edit.set_current_search_type(Settings().value('%s/last search type' % self.settings_section))
@@ -184,17 +184,8 @@ class SongMediaItem(MediaManagerItem):
                 Author, Author.display_name.like(search_string), Author.display_name.asc())
             self.display_results_author(search_results)
         elif search_type == SongSearch.Books:
-            log.debug('Books Search')
-            search_string = '%' + search_keywords + '%'
-            search_results = self.plugin.manager.get_all_objects(Book, Book.name.like(search_string), Book.name.asc())
-            song_number = False
-            if not search_results:
-                search_keywords = search_keywords.rpartition(' ')
-                search_string = '%' + search_keywords[0] + '%'
-                search_results = self.plugin.manager.get_all_objects(Book,
-                                                                     Book.name.like(search_string), Book.name.asc())
-                song_number = re.sub(r'[^0-9]', '', search_keywords[2])
-            self.display_results_book(search_results, song_number)
+            log.debug('Songbook Search')
+            self.display_results_book(search_keywords)
         elif search_type == SongSearch.Themes:
             log.debug('Theme Search')
             search_string = '%' + search_keywords + '%'
@@ -254,21 +245,29 @@ class SongMediaItem(MediaManagerItem):
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
 
-    def display_results_book(self, search_results, song_number=False):
+    def display_results_book(self, search_keywords):
         log.debug('display results Book')
         self.list_view.clear()
-        for book in search_results:
-            songs = sorted(book.songs, key=lambda song: int(re.match(r'[0-9]+', '0' + song.song_number).group()))
-            for song in songs:
-                # Do not display temporary songs
-                if song.temporary:
-                    continue
-                if song_number and song_number not in song.song_number:
-                    continue
-                song_detail = '%s - %s (%s)' % (book.name, song.song_number, song.title)
-                song_name = QtWidgets.QListWidgetItem(song_detail)
-                song_name.setData(QtCore.Qt.UserRole, song.id)
-                self.list_view.addItem(song_name)
+
+        search_keywords = search_keywords.rpartition(' ')
+        search_book = search_keywords[0]
+        search_entry = re.sub(r'[^0-9]', '', search_keywords[2])
+
+        songbookentries = (self.plugin.manager.session.query(SongBookEntry)
+                           .join(Book)
+                           .order_by(Book.name)
+                           .order_by(SongBookEntry.entry))
+        for songbookentry in songbookentries:
+            if songbookentry.song.temporary:
+                continue
+            if search_book.lower() not in songbookentry.songbook.name.lower():
+                continue
+            if search_entry not in songbookentry.entry:
+                continue
+            song_detail = '%s #%s: %s' % (songbookentry.songbook.name, songbookentry.entry, songbookentry.song.title)
+            song_name = QtWidgets.QListWidgetItem(song_detail)
+            song_name.setData(QtCore.Qt.UserRole, songbookentry.song.id)
+            self.list_view.addItem(song_name)
 
     def on_clear_text_button_click(self):
         """
