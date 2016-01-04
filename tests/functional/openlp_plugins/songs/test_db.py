@@ -27,7 +27,7 @@ import shutil
 from unittest import TestCase
 from tempfile import mkdtemp
 
-from openlp.plugins.songs.lib.db import Song, Author, AuthorType
+from openlp.plugins.songs.lib.db import Song, Author, AuthorType, Book
 from openlp.plugins.songs.lib import upgrade
 from openlp.core.lib.db import upgrade_db
 from tests.utils.constants import TEST_RESOURCES_PATH
@@ -178,6 +178,23 @@ class TestDB(TestCase):
 
         # THEN: It should return the name with the type in brackets
         self.assertEqual("John Doe (Translation)", display_name)
+
+    def test_add_songbooks(self):
+        """
+        Test that adding songbooks to a song works correctly
+        """
+        # GIVEN: A mocked song and songbook
+        song = Song()
+        song.songbookentries = []
+        songbook = Book()
+        songbook.name = "Thy Word"
+
+        # WHEN: We add two songbooks to a Song
+        song.add_songbookentry(songbook, "120")
+        song.add_songbookentry(songbook, "550A")
+
+        # THEN: The song should have two songbook entries
+        self.assertEqual(len(song.songbookentries), 2, 'There should be two Songbook entries.')
 
     def test_upgrade_old_song_db(self):
         """
