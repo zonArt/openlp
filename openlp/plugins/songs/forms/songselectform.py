@@ -155,18 +155,30 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         return QtWidgets.QDialog.done(self, r)
 
     def _update_login_progress(self):
+        """
+        Update the progress bar as the user logs in.
+        """
         self.login_progress_bar.setValue(self.login_progress_bar.value() + 1)
         self.application.process_events()
 
     def _update_song_progress(self):
+        """
+        Update the progress bar as the song is being downloaded.
+        """
         self.song_progress_bar.setValue(self.song_progress_bar.value() + 1)
         self.application.process_events()
 
     def _view_song(self, current_item):
+        """
+        Load a song into the song view.
+        """
         if not current_item:
             return
         else:
             current_item = current_item.data(QtCore.Qt.UserRole)
+        # Stop the current search, if it's running
+        self.song_select_importer.stop()
+        # Clear up the UI
         self.song_progress_bar.setVisible(True)
         self.import_button.setEnabled(False)
         self.back_button.setEnabled(False)
