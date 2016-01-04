@@ -35,8 +35,8 @@ class SongStrings(object):
     Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
     AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown')  # Used to populate the database.
     CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
-    SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
-    SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
+    SongBook = translate('OpenLP.Ui', 'Songbook', 'Singular')
+    SongBooks = translate('OpenLP.Ui', 'Songbooks', 'Plural')
     SongIncomplete = translate('OpenLP.Ui', 'Title and/or verses not found')
     SongMaintenance = translate('OpenLP.Ui', 'Song Maintenance')
     Topic = translate('OpenLP.Ui', 'Topic', 'Singular')

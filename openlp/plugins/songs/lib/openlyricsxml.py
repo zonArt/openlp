@@ -266,13 +266,12 @@ class OpenLyrics(object):
                         element.set('type', AuthorType.Music)
                     else:
                         element.set('type', author_song.author_type)
-        book = self.manager.get_object_filtered(Book, Book.id == song.song_book_id)
-        if book is not None:
-            book = book.name
+        if song.songbookentries:
             songbooks = etree.SubElement(properties, 'songbooks')
-            element = self._add_text_to_element('songbook', songbooks, None, book)
-            if song.song_number:
-                element.set('entry', song.song_number)
+            for songbookentry in song.songbookentries:
+                element = self._add_text_to_element('songbook', songbooks, None, songbookentry.songbook)
+                if songbookentry.entry:
+                    element.set('entry', songbookentry.entry)
         if song.topics:
             themes = etree.SubElement(properties, 'themes')
             for topic in song.topics:
@@ -744,8 +743,6 @@ class OpenLyrics(object):
         :param properties: The property object (lxml.objectify.ObjectifiedElement).
         :param song: The song object.
         """
-        song.song_book_id = None
-        song.song_number = ''
         if hasattr(properties, 'songbooks'):
             for songbook in properties.songbooks.songbook:
                 book_name = songbook.get('name', '')
@@ -755,10 +752,7 @@ class OpenLyrics(object):
                         # We need to create a book, because it does not exist.
                         book = Book.populate(name=book_name, publisher='')
                         self.manager.save_object(book)
-                    song.song_book_id = book.id
-                    song.song_number = songbook.get('entry', '')
-                    # We only support one song book, so take the first one.
-                    break
+                    song.add_songbookentry(book, songbook.get('entry', ''))
 
     def _process_titles(self, properties, song):
         """

@@ -35,7 +35,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, UiStri
 from openlp.core.lib import FileDialog, PluginStatus, MediaType, create_separated_list
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.lib import VerseType, clean_song
-from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorType, Topic, MediaFile
+from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorType, Topic, MediaFile, SongBookEntry
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.openlyricsxml import SongXML
 from openlp.plugins.songs.forms.editsongdialog import Ui_EditSongDialog
@@ -69,6 +69,9 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.topic_add_button.clicked.connect(self.on_topic_add_button_clicked)
         self.topic_remove_button.clicked.connect(self.on_topic_remove_button_clicked)
         self.topics_list_view.itemClicked.connect(self.on_topic_list_view_clicked)
+        self.songbook_add_button.clicked.connect(self.on_songbook_add_button_clicked)
+        self.songbook_remove_button.clicked.connect(self.on_songbook_remove_button_clicked)
+        self.songbooks_list_view.itemClicked.connect(self.on_songbook_list_view_clicked)
         self.copyright_insert_button.clicked.connect(self.on_copyright_insert_button_triggered)
         self.verse_add_button.clicked.connect(self.on_verse_add_button_clicked)
         self.verse_list_widget.doubleClicked.connect(self.on_verse_edit_button_clicked)
@@ -124,6 +127,11 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         author_item = QtWidgets.QListWidgetItem(author.get_display_name(author_type))
         author_item.setData(QtCore.Qt.UserRole, (author.id, author_type))
         self.authors_list_view.addItem(author_item)
+
+    def add_songbookentry_to_list(self, songbook_id, songbook_name, entry):
+        songbookentry_item = QtWidgets.QListWidgetItem(SongBookEntry.get_display_name(songbook_name, entry))
+        songbookentry_item.setData(QtCore.Qt.UserRole, (songbook_id, entry))
+        self.songbooks_list_view.addItem(songbookentry_item)
 
     def _extract_verse_order(self, verse_order):
         """
@@ -218,17 +226,6 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         if self.verse_order_edit.text():
             result = self._validate_verse_list(self.verse_order_edit.text(), self.verse_list_widget.rowCount())
             if not result:
-                return False
-        text = self.song_book_combo_box.currentText()
-        if self.song_book_combo_box.findText(text, QtCore.Qt.MatchExactly) < 0:
-            if QtWidgets.QMessageBox.question(
-                    self, translate('SongsPlugin.EditSongForm', 'Add Book'),
-                    translate('SongsPlugin.EditSongForm', 'This song book does not exist, do you want to add it?'),
-                    QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                    QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
-                book = Book.populate(name=text, publisher='')
-                self.manager.save_object(book)
-            else:
                 return False
         # Validate tags (lp#1199639)
         misplaced_tags = []
@@ -327,6 +324,9 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             if self.topics_combo_box.hasFocus() and self.topics_combo_box.currentText():
                 self.on_topic_add_button_clicked()
                 return
+            if self.songbooks_combo_box.hasFocus() and self.songbooks_combo_box.currentText():
+                self.on_songbook_add_button_clicked()
+                return
         QtWidgets.QDialog.keyPressEvent(self, event)
 
     def initialise(self):
@@ -367,12 +367,12 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.topics = []
         self._load_objects(Topic, self.topics_combo_box, self.topics)
 
-    def load_books(self):
+    def load_songbooks(self):
         """
-        Load the song books into the combobox
+        Load the Songbooks into the combobox
         """
-        self.books = []
-        self._load_objects(Book, self.song_book_combo_box, self.books)
+        self.songbooks = []
+        self._load_objects(Book, self.songbooks_combo_box, self.songbooks)
 
     def load_themes(self, theme_list):
         """
@@ -413,12 +413,12 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.verse_list_widget.setRowCount(0)
         self.authors_list_view.clear()
         self.topics_list_view.clear()
+        self.songbooks_list_view.clear()
         self.audio_list_widget.clear()
         self.title_edit.setFocus()
-        self.song_book_number_edit.clear()
         self.load_authors()
         self.load_topics()
-        self.load_books()
+        self.load_songbooks()
         self.load_media_files()
         self.theme_combo_box.setEditText('')
         self.theme_combo_box.setCurrentIndex(0)
@@ -437,18 +437,11 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.song_tab_widget.setCurrentIndex(0)
         self.load_authors()
         self.load_topics()
-        self.load_books()
+        self.load_songbooks()
         self.load_media_files()
         self.song = self.manager.get_object(Song, song_id)
         self.title_edit.setText(self.song.title)
-        self.alternative_edit.setText(
-            self.song.alternate_title if self.song.alternate_title else '')
-        if self.song.song_book_id != 0:
-            book_name = self.manager.get_object(Book, self.song.song_book_id)
-            find_and_set_in_combo_box(self.song_book_combo_box, str(book_name.name))
-        else:
-            self.song_book_combo_box.setEditText('')
-            self.song_book_combo_box.setCurrentIndex(0)
+        self.alternative_edit.setText(self.song.alternate_title if self.song.alternate_title else '')
         if self.song.theme_name:
             find_and_set_in_combo_box(self.theme_combo_box, str(self.song.theme_name))
         else:
@@ -458,7 +451,6 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.copyright_edit.setText(self.song.copyright if self.song.copyright else '')
         self.comments_edit.setPlainText(self.song.comments if self.song.comments else '')
         self.ccli_number_edit.setText(self.song.ccli_number if self.song.ccli_number else '')
-        self.song_book_number_edit.setText(self.song.song_number if self.song.song_number else '')
         # lazy xml migration for now
         self.verse_list_widget.clear()
         self.verse_list_widget.setRowCount(0)
@@ -520,6 +512,9 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             topic_name = QtWidgets.QListWidgetItem(str(topic.name))
             topic_name.setData(QtCore.Qt.UserRole, topic.id)
             self.topics_list_view.addItem(topic_name)
+        self.songbooks_list_view.clear()
+        for songbookentry in self.song.songbookentries:
+            self.add_songbookentry_to_list(songbookentry.songbook.id, songbookentry.songbook.name, songbookentry.entry)
         self.audio_list_widget.clear()
         for media in self.song.media_files:
             media_file = QtWidgets.QListWidgetItem(os.path.split(media.file_name)[1])
@@ -677,6 +672,48 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         item = self.topics_list_view.currentItem()
         row = self.topics_list_view.row(item)
         self.topics_list_view.takeItem(row)
+
+    def on_songbook_add_button_clicked(self):
+        item = int(self.songbooks_combo_box.currentIndex())
+        text = self.songbooks_combo_box.currentText()
+        if item == 0 and text:
+            if QtWidgets.QMessageBox.question(
+                    self, translate('SongsPlugin.EditSongForm', 'Add Songbook'),
+                    translate('SongsPlugin.EditSongForm', 'This Songbook does not exist, do you want to add it?'),
+                    QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                    QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
+                songbook = Book.populate(name=text)
+                self.manager.save_object(songbook)
+                self.add_songbookentry_to_list(songbook.id, songbook.name, self.songbook_entry_edit.text())
+                self.load_songbooks()
+                self.songbooks_combo_box.setCurrentIndex(0)
+                self.songbook_entry_edit.setText("")
+            else:
+                return
+        elif item > 0:
+            item_id = (self.songbooks_combo_box.itemData(item))
+            songbook = self.manager.get_object(Book, item_id)
+            if self.songbooks_list_view.findItems(str(songbook.name), QtCore.Qt.MatchExactly):
+                critical_error_message_box(
+                    message=translate('SongsPlugin.EditSongForm', 'This Songbook is already in the list.'))
+            else:
+                self.add_songbookentry_to_list(songbook.id, songbook.name, self.songbook_entry_edit.text())
+            self.songbooks_combo_box.setCurrentIndex(0)
+            self.songbook_entry_edit.setText("")
+        else:
+            QtWidgets.QMessageBox.warning(
+                self, UiStrings().NISs,
+                translate('SongsPlugin.EditSongForm', 'You have not selected a valid Songbook. Either select a '
+                          'Songbook from the list, or type in a new Songbook and click the "Add to Song" '
+                          'button to add the new Songbook.'))
+
+    def on_songbook_list_view_clicked(self):
+        self.songbook_remove_button.setEnabled(True)
+
+    def on_songbook_remove_button_clicked(self):
+        self.songbook_remove_button.setEnabled(False)
+        row = self.songbooks_list_view.row(self.songbooks_list_view.currentItem())
+        self.songbooks_list_view.takeItem(row)
 
     def on_verse_list_view_clicked(self):
         self.verse_edit_button.setEnabled(True)
@@ -838,17 +875,10 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Maintenance button pressed
         """
-        temp_song_book = None
-        item = int(self.song_book_combo_box.currentIndex())
-        text = self.song_book_combo_box.currentText()
-        if item == 0 and text:
-            temp_song_book = text
         self.media_item.song_maintenance_form.exec(True)
         self.load_authors()
-        self.load_books()
+        self.load_songbooks()
         self.load_topics()
-        if temp_song_book:
-            self.song_book_combo_box.setEditText(temp_song_book)
 
     def on_preview(self, button):
         """
@@ -928,7 +958,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         log.debug('SongEditForm.clearCaches')
         self.authors = []
         self.themes = []
-        self.books = []
+        self.songbooks = []
         self.topics = []
 
     def reject(self):
@@ -977,12 +1007,6 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             order.append('%s%s' % (verse_tag, verse_num))
         self.song.verse_order = ' '.join(order)
         self.song.ccli_number = self.ccli_number_edit.text()
-        self.song.song_number = self.song_book_number_edit.text()
-        book_name = self.song_book_combo_box.currentText()
-        if book_name:
-            self.song.book = self.manager.get_object_filtered(Book, Book.name == book_name)
-        else:
-            self.song.book = None
         theme_name = self.theme_combo_box.currentText()
         if theme_name:
             self.song.theme_name = theme_name
@@ -1001,6 +1025,12 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             topic = self.manager.get_object(Topic, topic_id)
             if topic is not None:
                 self.song.topics.append(topic)
+        for row in range(self.songbooks_list_view.count()):
+            item = self.songbooks_list_view.item(row)
+            songbook_id = item.data(QtCore.Qt.UserRole)[0]
+            songbook = self.manager.get_object(Book, songbook_id)
+            entry = item.data(QtCore.Qt.UserRole)[1]
+            self.song.add_songbookentry(songbook, entry)
         # Save the song here because we need a valid id for the audio files.
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
