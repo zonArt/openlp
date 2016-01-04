@@ -297,7 +297,7 @@ class SongsPlugin(Plugin):
             if sfile.startswith('songs_') and sfile.endswith('.sqlite'):
                 self.application.process_events()
                 song_dbs.append(os.path.join(db_dir, sfile))
-                song_count += self._count_songs(os.path.join(db_dir, sfile))
+                song_count += SongsPlugin._count_songs(os.path.join(db_dir, sfile))
         if not song_dbs:
             return
         self.application.process_events()

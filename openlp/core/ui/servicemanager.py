@@ -144,8 +144,8 @@ class Ui_ServiceManager(object):
         self.service_manager_list.customContextMenuRequested.connect(self.context_menu)
         self.service_manager_list.setObjectName('service_manager_list')
         # enable drop
-        self.service_manager_list.__class__.dragEnterEvent = self.drag_enter_event
-        self.service_manager_list.__class__.dragMoveEvent = self.drag_enter_event
+        self.service_manager_list.__class__.dragEnterEvent = Ui_ServiceManager.drag_enter_event
+        self.service_manager_list.__class__.dragMoveEvent = Ui_ServiceManager.drag_enter_event
         self.service_manager_list.__class__.dropEvent = self.drop_event
         self.layout.addWidget(self.service_manager_list)
         # Add the bottom toolbar
@@ -293,7 +293,8 @@ class Ui_ServiceManager(object):
         Registry().register_function('theme_update_global', self.theme_change)
         Registry().register_function('mediaitem_suffix_reset', self.reset_supported_suffixes)
 
-    def drag_enter_event(self, event):
+    @staticmethod
+    def drag_enter_event(event):
         """
         Accept Drag events
 
@@ -1585,7 +1586,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
                 if item is None:
                     end_pos = len(self.service_items)
                 else:
-                    end_pos = self._get_parent_item_data(item) - 1
+                    end_pos = ServiceManager._get_parent_item_data(item) - 1
                 service_item = self.service_items[start_pos]
                 self.service_items.remove(service_item)
                 self.service_items.insert(end_pos, service_item)
@@ -1598,21 +1599,21 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
                     self.drop_position = len(self.service_items)
                 else:
                     # we are over something so lets investigate
-                    pos = self._get_parent_item_data(item) - 1
+                    pos = ServiceManager._get_parent_item_data(item) - 1
                     service_item = self.service_items[pos]
                     if (plugin == service_item['service_item'].name and
                             service_item['service_item'].is_capable(ItemCapabilities.CanAppend)):
                         action = self.dnd_menu.exec(QtGui.QCursor.pos())
                         # New action required
                         if action == self.new_action:
-                            self.drop_position = self._get_parent_item_data(item)
+                            self.drop_position = ServiceManager._get_parent_item_data(item)
                         # Append to existing action
                         if action == self.add_to_action:
-                            self.drop_position = self._get_parent_item_data(item)
+                            self.drop_position = ServiceManager._get_parent_item_data(item)
                             item.setSelected(True)
                             replace = True
                     else:
-                        self.drop_position = self._get_parent_item_data(item) - 1
+                        self.drop_position = ServiceManager._get_parent_item_data(item) - 1
                 Registry().execute('%s_add_service_item' % plugin, replace)
 
     def update_theme_list(self, theme_list):
@@ -1656,7 +1657,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         self.service_items[item]['service_item'].update_theme(theme)
         self.regenerate_service_items(True)
 
-    def _get_parent_item_data(self, item):
+    @staticmethod
+    def _get_parent_item_data(item):
         """
         Finds and returns the parent item for any item
 
@@ -1668,7 +1670,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         else:
             return parent_item.data(0, QtCore.Qt.UserRole)
 
-    def print_service_order(self, field=None):
+    @staticmethod
+    def print_service_order(field=None):
         """
         Print a Service Order Sheet.
         """

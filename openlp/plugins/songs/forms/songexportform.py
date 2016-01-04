@@ -72,7 +72,7 @@ class SongExportForm(OpenLPWizard):
         """
         Song wizard specific signals.
         """
-        self.available_list_widget.itemActivated.connect(self.on_item_activated)
+        self.available_list_widget.itemActivated.connect(SongExportForm.on_item_activated)
         self.search_line_edit.textEdited.connect(self.on_search_line_edit_changed)
         self.uncheck_button.clicked.connect(self.on_uncheck_button_clicked)
         self.check_button.clicked.connect(self.on_check_button_clicked)
@@ -172,7 +172,7 @@ class SongExportForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.available_songs_page:
             items = [
-                item for item in self._find_list_widget_items(self.available_list_widget) if item.checkState()
+                item for item in SongExportForm._find_list_widget_items(self.available_list_widget) if item.checkState()
             ]
             if not items:
                 critical_error_message_box(
@@ -241,7 +241,7 @@ class SongExportForm(OpenLPWizard):
         """
         songs = [
             song.data(QtCore.Qt.UserRole)
-            for song in self._find_list_widget_items(self.selected_list_widget)
+            for song in SongExportForm._find_list_widget_items(self.selected_list_widget)
         ]
         exporter = OpenLyricsExport(self, songs, self.directory_line_edit.text())
         try:
@@ -255,7 +255,8 @@ class SongExportForm(OpenLPWizard):
             self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed because this '
                                                   'error occurred: %s') % ose.strerror)
 
-    def _find_list_widget_items(self, list_widget, text=''):
+    @staticmethod
+    def _find_list_widget_items(list_widget, text=''):
         """
         Returns a list of *QListWidgetItem*s of the ``list_widget``. Note, that hidden items are included.
 
@@ -266,7 +267,8 @@ class SongExportForm(OpenLPWizard):
             item for item in list_widget.findItems(text, QtCore.Qt.MatchContains)
         ]
 
-    def on_item_activated(self, item):
+    @staticmethod
+    def on_item_activated(item):
         """
         Called, when an item in the *available_list_widget* has been triggered.
         The item is check if it was not checked, whereas it is unchecked when it
@@ -286,9 +288,9 @@ class SongExportForm(OpenLPWizard):
         :param text:  The text of the *search_line_edit*.
         """
         search_result = [
-            song for song in self._find_list_widget_items(self.available_list_widget, text)
+            song for song in SongExportForm._find_list_widget_items(self.available_list_widget, text)
         ]
-        for item in self._find_list_widget_items(self.available_list_widget):
+        for item in SongExportForm._find_list_widget_items(self.available_list_widget):
             item.setHidden(item not in search_result)
 
     def on_uncheck_button_clicked(self):

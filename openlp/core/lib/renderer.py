@@ -273,7 +273,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
                             except ValueError:
                                 text_to_render = text.split('\n[---]\n')[0]
                                 text = ''
-                            text_to_render, raw_tags, html_tags = self._get_start_tags(text_to_render)
+                            text_to_render, raw_tags, html_tags = Renderer._get_start_tags(text_to_render)
                             if text:
                                 text = raw_tags + text
                         else:
@@ -441,7 +441,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
                             previous_raw = line + line_end
                             continue
                 # Figure out how many words of the line will fit on screen as the line will not fit as a whole.
-                raw_words = self._words_split(line)
+                raw_words = Renderer._words_split(line)
                 html_words = list(map(expand_tags, raw_words))
                 previous_html, previous_raw = \
                     self._binary_chop(formatted, previous_html, previous_raw, html_words, raw_words, ' ', line_end)
@@ -451,7 +451,8 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         formatted.append(previous_raw)
         return formatted
 
-    def _get_start_tags(self, raw_text):
+    @staticmethod
+    def _get_start_tags(raw_text):
         """
         Tests the given text for not closed formatting tags and returns a tuple consisting of three unicode strings::
 
@@ -521,7 +522,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
             if smallest_index == index or highest_index == index:
                 index = smallest_index
                 text = previous_raw.rstrip('<br>') + separator.join(raw_list[:index + 1])
-                text, raw_tags, html_tags = self._get_start_tags(text)
+                text, raw_tags, html_tags = Renderer._get_start_tags(text)
                 formatted.append(text)
                 previous_html = ''
                 previous_raw = ''
@@ -556,7 +557,8 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         self.web_frame.evaluateJavaScript('show_text("%s")' % text.replace('\\', '\\\\').replace('\"', '\\\"'))
         return self.web_frame.contentsSize().height() <= self.empty_height
 
-    def _words_split(self, line):
+    @staticmethod
+    def _words_split(line):
         """
         Split the slide up by word so can wrap better
 
