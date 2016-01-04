@@ -57,3 +57,11 @@ class MediaPluginTest(TestCase, TestMixin):
         mocked_settings.get_files_from_config.assert_called_with(media_plugin)
         mocked_settings.setValue.assert_called_with('media/media files', True)
         mocked_initialise.assert_called_with()
+
+    def test_about_text(self):
+        # GIVEN: The MediaPlugin
+        # WHEN: Retrieving the about text
+        # THEN: about() should return a string object
+        self.assertIsInstance(MediaPlugin.about(), str)
+        # THEN: about() should return a non-empty string
+        self.assertNotEquals(len(MediaPlugin.about()), 0)
