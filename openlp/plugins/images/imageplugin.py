@@ -53,7 +53,8 @@ class ImagePlugin(Plugin):
         self.icon_path = ':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
 
-    def about(self):
+    @staticmethod
+    def about():
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
                                '<br />The image plugin provides displaying of images.<br />One '
                                'of the distinguishing features of this plugin is the ability to '

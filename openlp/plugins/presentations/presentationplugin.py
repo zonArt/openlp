@@ -137,7 +137,8 @@ class PresentationPlugin(Plugin):
             self.register_controllers(controller)
         return bool(self.controllers)
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Return information about this plugin.
         """

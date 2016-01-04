@@ -84,7 +84,8 @@ class MediaPlugin(Plugin):
         visible_name = self.get_string(StringContent.VisibleName)
         self.settings_tab = MediaTab(parent, self.name, visible_name['title'], self.icon_path)
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Return the about text for the plugin manager
         """
