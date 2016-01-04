@@ -29,7 +29,7 @@ from PyQt5 import QtCore
 from openlp.core.common import Registry, Settings
 from openlp.core.lib import ServiceItem
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
-from openlp.plugins.songs.lib.db import AuthorType
+from openlp.plugins.songs.lib.db import AuthorType, Song
 from tests.functional import patch, MagicMock
 from tests.helpers.testmixin import TestMixin
 
@@ -155,12 +155,15 @@ class TestMediaItem(TestCase, TestMixin):
         Test build songs footer with basic song and a songbook
         """
         # GIVEN: A Song and a Service Item
-        mock_song = MagicMock()
+        mock_song = Song()
         mock_song.title = 'My Song'
         mock_song.copyright = 'My copyright'
+        mock_song.authors_songs = []
+        mock_song.ccli_number = ''
         mock_song.book = MagicMock()
         mock_song.book.name = "My songbook"
-        mock_song.song_number = 12
+        mock_song.songbookentries = []
+        mock_song.add_songbookentry(mock_song.book, '12')
         service_item = ServiceItem(None)
 
         # WHEN: I generate the Footer with default settings
