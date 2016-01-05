@@ -22,11 +22,12 @@
 """
 The :mod:`db` module provides helper functions for database related methods.
 """
+import sqlalchemy
 import logging
 
-log = logging.getLogger(__name__)
+from copy import deepcopy
 
-import sqlalchemy
+log = logging.getLogger(__name__)
 
 
 def drop_columns(op, tablename, columns):
@@ -35,9 +36,6 @@ def drop_columns(op, tablename, columns):
 
     From https://github.com/klugjohannes/alembic-sqlite
     """
-
-    # we need copy to make a deep copy of the column attributes
-    from copy import copy
 
     # get the db engine and reflect database tables
     engine = op.get_bind()
@@ -49,7 +47,7 @@ def drop_columns(op, tablename, columns):
     select = sqlalchemy.sql.select([c for c in old_table.c if c.name not in columns])
 
     # get remaining columns without table attribute attached
-    remaining_columns = [copy(c) for c in old_table.columns if c.name not in columns]
+    remaining_columns = [deepcopy(c) for c in old_table.columns if c.name not in columns]
     for column in remaining_columns:
         column.table = None
 
