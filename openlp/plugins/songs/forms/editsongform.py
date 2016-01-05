@@ -803,6 +803,8 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
 
         :param text: The text of the verse order edit (ignored).
         """
+        # First make sure that all letters entered in the verse order field are uppercase
+        self.verse_order_edit.setText(text.upper())
         # Extract all verses which were used in the order.
         verses_in_order = self._extract_verse_order(self.verse_order_edit.text())
         # Find the verses which were not used in the order.
