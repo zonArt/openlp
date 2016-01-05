@@ -451,43 +451,6 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         formatted.append(previous_raw)
         return formatted
 
-    @staticmethod
-    def _get_start_tags(raw_text):
-        """
-        Tests the given text for not closed formatting tags and returns a tuple consisting of three unicode strings::
-
-            ('{st}{r}Text text text{/r}{/st}', '{st}{r}', '<strong><span style="-webkit-text-fill-color:red">')
-
-        The first unicode string is the text, with correct closing tags. The second unicode string are OpenLP's opening
-        formatting tags and the third unicode string the html opening formatting tags.
-
-        :param raw_text: The text to test. The text must **not** contain html tags, only OpenLP formatting tags
-        are allowed::
-                {st}{r}Text text text
-        """
-        raw_tags = []
-        html_tags = []
-        for tag in FormattingTags.get_html_tags():
-            if tag['start tag'] == '{br}':
-                continue
-            if raw_text.count(tag['start tag']) != raw_text.count(tag['end tag']):
-                raw_tags.append((raw_text.find(tag['start tag']), tag['start tag'], tag['end tag']))
-                html_tags.append((raw_text.find(tag['start tag']), tag['start html']))
-        # Sort the lists, so that the tags which were opened first on the first slide (the text we are checking) will be
-        # opened first on the next slide as well.
-        raw_tags.sort(key=lambda tag: tag[0])
-        html_tags.sort(key=lambda tag: tag[0])
-        # Create a list with closing tags for the raw_text.
-        end_tags = []
-        start_tags = []
-        for tag in raw_tags:
-            start_tags.append(tag[1])
-            end_tags.append(tag[2])
-        end_tags.reverse()
-        # Remove the indexes.
-        html_tags = [tag[1] for tag in html_tags]
-        return raw_text + ''.join(end_tags), ''.join(start_tags), ''.join(html_tags)
-
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list, raw_list, separator, line_end):
         """
         This implements the binary chop algorithm for faster rendering. This algorithm works line based (line by line)
@@ -522,7 +485,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
             if smallest_index == index or highest_index == index:
                 index = smallest_index
                 text = previous_raw.rstrip('<br>') + separator.join(raw_list[:index + 1])
-                text, raw_tags, html_tags = Renderer._get_start_tags(text)
+                text, raw_tags, html_tags = _get_start_tags(text)
                 formatted.append(text)
                 previous_html = ''
                 previous_raw = ''
@@ -557,13 +520,50 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         self.web_frame.evaluateJavaScript('show_text("%s")' % text.replace('\\', '\\\\').replace('\"', '\\\"'))
         return self.web_frame.contentsSize().height() <= self.empty_height
 
-    @staticmethod
-    def _words_split(line):
-        """
-        Split the slide up by word so can wrap better
 
-        :param line: Line to be split
-        """
-        # this parse we are to be wordy
-        line = line.replace('\n', ' ')
-        return line.split(' ')
+def _words_split(line):
+    """
+    Split the slide up by word so can wrap better
+
+    :param line: Line to be split
+    """
+    # this parse we are to be wordy
+    line = line.replace('\n', ' ')
+    return line.split(' ')
+
+def _get_start_tags(raw_text):
+    """
+    Tests the given text for not closed formatting tags and returns a tuple consisting of three unicode strings::
+
+        ('{st}{r}Text text text{/r}{/st}', '{st}{r}', '<strong><span style="-webkit-text-fill-color:red">')
+
+    The first unicode string is the text, with correct closing tags. The second unicode string are OpenLP's opening
+    formatting tags and the third unicode string the html opening formatting tags.
+
+    :param raw_text: The text to test. The text must **not** contain html tags, only OpenLP formatting tags
+    are allowed::
+            {st}{r}Text text text
+    """
+    raw_tags = []
+    html_tags = []
+    for tag in FormattingTags.get_html_tags():
+        if tag['start tag'] == '{br}':
+            continue
+        if raw_text.count(tag['start tag']) != raw_text.count(tag['end tag']):
+            raw_tags.append((raw_text.find(tag['start tag']), tag['start tag'], tag['end tag']))
+            html_tags.append((raw_text.find(tag['start tag']), tag['start html']))
+    # Sort the lists, so that the tags which were opened first on the first slide (the text we are checking) will be
+    # opened first on the next slide as well.
+    raw_tags.sort(key=lambda tag: tag[0])
+    html_tags.sort(key=lambda tag: tag[0])
+    # Create a list with closing tags for the raw_text.
+    end_tags = []
+    start_tags = []
+    for tag in raw_tags:
+        start_tags.append(tag[1])
+        end_tags.append(tag[2])
+    end_tags.reverse()
+    # Remove the indexes.
+    html_tags = [tag[1] for tag in html_tags]
+    return raw_text + ''.join(end_tags), ''.join(start_tags), ''.join(html_tags)
+

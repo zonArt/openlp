@@ -50,7 +50,7 @@ class TestFoilPresenter(TestCase):
     #   _process_topics
 
     def setUp(self):
-        self.child_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._child')
+        self.child_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter._child')
         self.clean_song_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.clean_song')
         self.objectify_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.objectify')
         self.process_authors_patcher = \
