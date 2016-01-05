@@ -209,7 +209,7 @@ class TestDB(TestCase):
         # WHEN: upgrading the db
         updated_to_version, latest_version = upgrade_db(db_url, upgrade)
 
-        # Then the song db should have been upgraded to the latest version
+        # THEN: the song db should have been upgraded to the latest version
         self.assertEqual(updated_to_version, latest_version,
                          'The song DB should have been upgrade to the latest version')
 
@@ -226,6 +226,6 @@ class TestDB(TestCase):
         # WHEN: upgrading the db
         updated_to_version, latest_version = upgrade_db(db_url, upgrade)
 
-        # Then the song db should have been upgraded to the latest version without errors
+        # THEN: the song db should have been upgraded to the latest version without errors
         self.assertEqual(updated_to_version, latest_version,
                          'The song DB should have been upgrade to the latest version')

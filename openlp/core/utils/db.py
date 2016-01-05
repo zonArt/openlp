@@ -69,5 +69,5 @@ def drop_columns(op, tablename, columns):
     op.rename_table(new_tablename, tablename)
 
 
-def drop_column(tablename, columnname):
-    drop_column(tablename, [columnname])
+def drop_column(op, tablename, columnname):
+    drop_columns(op, tablename, [columnname])
