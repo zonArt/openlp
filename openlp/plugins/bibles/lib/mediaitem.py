@@ -960,7 +960,7 @@ class BibleMediaItem(MediaManagerItem):
         search_results = self.plugin.manager.get_verses(bible, string, False, showError)
         if search_results:
             verse_text = ' '.join([verse.text for verse in search_results])
-            return [[string, verse_text]]
+            return [[string, verse_text, ""]]
         return []
 
     def create_item_from_id(self, item_id):
