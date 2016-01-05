@@ -701,7 +701,7 @@ class ImageMediaItem(MediaManagerItem):
         results = []
         for file_object in files:
             filename = os.path.split(str(file_object.filename))[1]
-            results.append([file_object.filename, filename, ""])
+            results.append([file_object.filename, filename])
         return results
 
     def create_item_from_id(self, item_id):
