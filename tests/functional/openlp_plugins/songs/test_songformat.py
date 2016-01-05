@@ -28,8 +28,14 @@ from openlp.plugins.songs.lib.importer import SongFormat
 
 
 class TestSongFormat(TestCase):
+    """
+    Test the functions in the :class:`SongFormat` class.
+    """
 
     def test_get_format_list(self):
+        """
+        Test that get_format_list() returns all available formats
+        """
         # GIVEN: The SongFormat class
         # WHEN: Retrieving the format list
         # THEN: All SongFormats should be returned
@@ -37,6 +43,9 @@ class TestSongFormat(TestCase):
                 "The returned SongFormats don't match the stored ones")
 
     def test_get_attributed_no_attributes(self):
+        """
+        Test that SongFormat.get(song_format) returns all attributes associated with the given song_format
+        """
         # GIVEN: A SongFormat
         # WHEN: Retrieving all attributes of a SongFormat
         for song_format in SongFormat.get_format_list():
@@ -45,6 +54,9 @@ class TestSongFormat(TestCase):
                     "The returned attributes don't match the stored ones")
 
     def test_get_attributed_single_attribute(self):
+        """
+        Test that SongFormat.get(song_format, attribute) returns only one -and the correct- attribute
+        """
         # GIVEN: A SongFormat
         for song_format in SongFormat.get_format_list():
             # WHEN: Retrieving an attribute that overrides the default values
@@ -60,6 +72,9 @@ class TestSongFormat(TestCase):
                             "The returned attribute does not match the default values stored")
 
     def test_get_attributed_multiple_attributes(self):
+        """
+        Test that multiple attributes can be retrieved for a song_format
+        """
         # GIVEN: A SongFormat
         # WHEN: Retrieving multiple attributes at the same time
         for song_format in SongFormat.get_format_list():
