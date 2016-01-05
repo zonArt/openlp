@@ -363,8 +363,8 @@ class SongMediaItem(MediaManagerItem):
             items = self.list_view.selectedIndexes()
             if QtWidgets.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
-                    translate('SongsPlugin.MediaItem', 'Are you sure you want to delete the %n selected song(s)?', '',
-                              QtCore.QCoreApplication.CodecForTr, len(items)),
+                    translate('SongsPlugin.MediaItem',
+                        'Are you sure you want to delete the "%d" selected song(s)?') % len(items),
                     QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                     QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
                 return
