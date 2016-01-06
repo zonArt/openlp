@@ -25,12 +25,12 @@ record functions.
 
 PREREQUISITE: add_record() and get_all() functions validated.
 """
-
+import os
 from unittest import TestCase
-from tests.functional import MagicMock, patch
 
 from openlp.core.lib.projector.db import Projector, ProjectorDB, ProjectorSource
 
+from tests.functional import MagicMock, patch
 from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
 
 tmpfile = '/tmp/openlp-test-projectordb.sql'
@@ -60,15 +60,15 @@ def compare_source(one, two):
         one.text == two.text
 
 
-def add_records(self, test):
+def add_records(projector_db, test):
     """
     Add record if not in database
     """
-    record_list = self.projector.get_projector_all()
+    record_list = projector_db.get_projector_all()
     if len(record_list) < 1:
         added = False
         for record in test:
-            added = self.projector.add_projector(record) or added
+            added = projector_db.add_projector(record) or added
         return added
 
     for new_record in test:
@@ -76,7 +76,7 @@ def add_records(self, test):
         for record in record_list:
             if compare_data(record, new_record):
                 break
-            added = self.projector.add_projector(new_record)
+            added = projector_db.add_projector(new_record)
     return added
 
 
@@ -88,10 +88,11 @@ class TestProjectorDB(TestCase):
         """
         Set up anything necessary for all tests
         """
-        if not hasattr(self, 'projector'):
-            with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-                mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
-                self.projector = ProjectorDB()
+        with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
+            if os.path.exists(tmpfile):
+                os.unlink(tmpfile)
+            mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
+            self.projector = ProjectorDB()
 
     def tearDown(self):
         """
@@ -104,7 +105,7 @@ class TestProjectorDB(TestCase):
         Test find record by IP
         """
         # GIVEN: Record entries in database
-        add_records(self, [TEST1_DATA, TEST2_DATA])
+        add_records(self.projector, [TEST1_DATA, TEST2_DATA])
 
         # WHEN: Search for record using IP
         record = self.projector.get_projector_by_ip(TEST2_DATA.ip)
@@ -118,7 +119,7 @@ class TestProjectorDB(TestCase):
         Test find record by name
         """
         # GIVEN: Record entries in database
-        add_records(self, [TEST1_DATA, TEST2_DATA])
+        add_records(self.projector, [TEST1_DATA, TEST2_DATA])
 
         # WHEN: Search for record using name
         record = self.projector.get_projector_by_name(TEST2_DATA.name)
@@ -132,7 +133,7 @@ class TestProjectorDB(TestCase):
         Test record can be deleted
         """
         # GIVEN: Record in database
-        add_records(self, [TEST3_DATA, ])
+        add_records(self.projector, [TEST3_DATA, ])
         record = self.projector.get_projector_by_ip(TEST3_DATA.ip)
 
         # WHEN: Record deleted
@@ -147,7 +148,7 @@ class TestProjectorDB(TestCase):
         Test edited record returns the same record ID with different data
         """
         # GIVEN: Record entries in database
-        add_records(self, [TEST1_DATA, TEST2_DATA])
+        add_records(self.projector, [TEST1_DATA, TEST2_DATA])
 
         # WHEN: We retrieve a specific record
         record = self.projector.get_projector_by_ip(TEST1_DATA.ip)
