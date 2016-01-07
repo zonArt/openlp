@@ -139,7 +139,12 @@ def upgrade_5(session, metadata):
 
     # Migrate old data
     op.execute('INSERT INTO songs_songbooks SELECT song_book_id, id, song_number FROM songs\
-                WHERE song_book_id NOT NULL AND song_number NOT NULL')
+                WHERE song_book_id IS NOT NULL AND song_number IS NOT NULL')
 
     # Drop old columns
-    drop_columns(op, 'songs', ['song_book_id', 'song_number'])
+    if metadata.bind.url.get_dialect().name == 'sqlite':
+        drop_columns(op, 'songs', ['song_book_id', 'song_number'])
+    else:
+        op.drop_constraint('songs_ibfk_1', 'songs', 'foreignkey')
+        op.drop_column('songs', 'song_book_id')
+        op.drop_column('songs', 'song_number')

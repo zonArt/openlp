@@ -30,9 +30,12 @@ from copy import deepcopy
 log = logging.getLogger(__name__)
 
 
+def drop_column(op, tablename, columnname):
+    drop_columns(op, tablename, [columnname])
+
 def drop_columns(op, tablename, columns):
     """
-    Column dropping functionality for SQLite, as there is no native support, neither in Alembic, nor in SQLite
+    Column dropping functionality for SQLite, as there is no DROP COLUMN support in SQLite
 
     From https://github.com/klugjohannes/alembic-sqlite
     """
@@ -65,7 +68,3 @@ def drop_columns(op, tablename, columns):
     # position
     op.drop_table(tablename)
     op.rename_table(new_tablename, tablename)
-
-
-def drop_column(op, tablename, columnname):
-    drop_columns(op, tablename, [columnname])
