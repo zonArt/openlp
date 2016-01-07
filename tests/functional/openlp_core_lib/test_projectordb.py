@@ -96,6 +96,7 @@ class TestProjectorDB(TestCase):
         """
         Clean up
         """
+        self.projector.session.close()
         self.projector = None
 
     def find_record_by_ip_test(self):
