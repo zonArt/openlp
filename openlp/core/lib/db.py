@@ -231,6 +231,8 @@ class Manager(object):
         if db_file_name:
             log.debug('Manager: Creating new DB url')
             self.db_url = init_url(plugin_name, db_file_name)
+        else:
+            self.db_url = init_url(plugin_name)
         if upgrade_mod:
             try:
                 db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
