@@ -1577,7 +1577,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
                 if item is None:
                     end_pos = len(self.service_items)
                 else:
-                    end_pos = _get_parent_item_data(item) - 1
+                    end_pos = get_parent_item_data(item) - 1
                 service_item = self.service_items[start_pos]
                 self.service_items.remove(service_item)
                 self.service_items.insert(end_pos, service_item)
@@ -1590,21 +1590,21 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
                     self.drop_position = len(self.service_items)
                 else:
                     # we are over something so lets investigate
-                    pos = _get_parent_item_data(item) - 1
+                    pos = get_parent_item_data(item) - 1
                     service_item = self.service_items[pos]
                     if (plugin == service_item['service_item'].name and
                             service_item['service_item'].is_capable(ItemCapabilities.CanAppend)):
                         action = self.dnd_menu.exec(QtGui.QCursor.pos())
                         # New action required
                         if action == self.new_action:
-                            self.drop_position = _get_parent_item_data(item)
+                            self.drop_position = get_parent_item_data(item)
                         # Append to existing action
                         if action == self.add_to_action:
-                            self.drop_position = _get_parent_item_data(item)
+                            self.drop_position = get_parent_item_data(item)
                             item.setSelected(True)
                             replace = True
                     else:
-                        self.drop_position = _get_parent_item_data(item) - 1
+                        self.drop_position = get_parent_item_data(item) - 1
                 Registry().execute('%s_add_service_item' % plugin, replace)
 
     def update_theme_list(self, theme_list):
@@ -1655,7 +1655,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         return self.drop_position
 
 
-def _get_parent_item_data(item):
+def get_parent_item_data(item):
     """
     Finds and returns the parent item for any item
 
