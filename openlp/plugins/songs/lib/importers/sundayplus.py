@@ -53,8 +53,8 @@ class SundayPlusImport(SongImport):
         """
         Initialise the class.
         """
-        SongImport.__init__(self, manager, **kwargs)
-        self.encoding = 'us-ascii'
+        super(SundayPlusImport, self).__init__(manager, **kwargs)
+        self.encoding = 'cp1252'
 
     def do_import(self):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
@@ -73,7 +73,7 @@ class SundayPlusImport(SongImport):
         if not self.parse(file.read()):
             self.log_error(file.name)
             return
-        if not self.title:
+        if self.title == '':
             self.title = self.title_from_filename(file.name)
         if not self.finish():
             self.log_error(file.name)
@@ -86,39 +86,39 @@ class SundayPlusImport(SongImport):
         :param cell: ?
         :return:
         """
-        if len(data) == 0 or data[0:1] != '[' or data[-1] != ']':
-            self.log_error('File is malformed')
+        if cell == False and (len(data) == 0 or data[0:1] != b'[' or data.strip()[-1:] != b']'):
+            log.log_error('File is malformed')
             return False
         i = 1
         verse_type = VerseType.tags[VerseType.Verse]
         while i < len(data):
             # Data is held as #name: value pairs inside groups marked as [].
             # Now we are looking for the name.
-            if data[i:i + 1] == '#':
-                name_end = data.find(':', i + 1)
-                name = data[i + 1:name_end].upper()
+            if data[i:i + 1] == b'#':
+                name_end = data.find(b':', i + 1)
+                name = data[i + 1:name_end].decode(self.encoding).upper()
                 i = name_end + 1
-                while data[i:i + 1] == ' ':
+                while data[i:i + 1] == b' ':
                     i += 1
-                if data[i:i + 1] == '"':
-                    end = data.find('"', i + 1)
+                if data[i:i + 1] == b'"':
+                    end = data.find(b'"', i + 1)
                     value = data[i + 1:end]
-                elif data[i:i + 1] == '[':
+                elif data[i:i + 1] == b'[':
                     j = i
                     inside_quotes = False
                     while j < len(data):
                         char = data[j:j + 1]
-                        if char == '"':
+                        if char == b'"':
                             inside_quotes = not inside_quotes
-                        elif not inside_quotes and char == ']':
+                        elif not inside_quotes and char == b']':
                             end = j + 1
                             break
                         j += 1
                     value = data[i:end]
                 else:
-                    end = data.find(',', i + 1)
-                    if data.find('(', i, end) != -1:
-                        end = data.find(')', i) + 1
+                    end = data.find(b',', i + 1)
+                    if data.find(b'(', i, end) != -1:
+                        end = data.find(b')', i) + 1
                     value = data[i:end]
                 # If we are in the main group.
                 if not cell:
@@ -129,27 +129,29 @@ class SundayPlusImport(SongImport):
                         if len(author):
                             self.add_author(author)
                     elif name == 'COPYRIGHT':
-                        self.copyright = self.decode(self.unescape(value))
+                        self.add_copyright(self.decode(self.unescape(value)))
                     elif name[0:4] == 'CELL':
                         self.parse(value, cell=name[4:])
                 # We are in a verse group.
                 else:
                     if name == 'MARKER_NAME':
-                        value = value.strip()
+                        value = self.decode(value).strip()
                         if len(value):
                             verse_type = VerseType.tags[VerseType.from_loose_input(value[0])]
                             if len(value) >= 2 and value[-1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
                                 verse_type = "%s%s" % (verse_type, value[-1])
                     elif name == 'HOTKEY':
+                        value = self.decode(value).strip()
                         # HOTKEY always appears after MARKER_NAME, so it
                         # effectively overrides MARKER_NAME, if present.
                         if len(value) and value in list(HOTKEY_TO_VERSE_TYPE.keys()):
                             verse_type = HOTKEY_TO_VERSE_TYPE[value]
                     if name == 'RTF':
                         value = self.unescape(value)
+                        value = self.decode(value)
                         result = strip_rtf(value, self.encoding)
                         if result is None:
-                            return
+                            return False
                         verse, self.encoding = result
                         lines = verse.strip().split('\n')
                         # If any line inside any verse contains CCLI or
@@ -164,7 +166,7 @@ class SundayPlusImport(SongImport):
                                     self.ccli_number = int(m.group(0))
                                     continue
                             elif line.lower() == 'public domain':
-                                self.copyright = 'Public Domain'
+                                self.add_copyright('Public Domain')
                                 continue
                             processed_lines.append(line)
                         self.add_verse('\n'.join(processed_lines).strip(), verse_type)
@@ -192,11 +194,11 @@ class SundayPlusImport(SongImport):
     def decode(self, blob):
         while True:
             try:
-                return str(blob, self.encoding)
-            except:
+                return blob.decode(self.encoding)
+            except Exception as e:
                 self.encoding = retrieve_windows_encoding()
 
     def unescape(self, text):
-        text = text.replace('^^', '"')
-        text = text.replace('^', '\'')
+        text = text.replace(b'^^', b'"')
+        text = text.replace(b'^', b'\'')
         return text.strip()
