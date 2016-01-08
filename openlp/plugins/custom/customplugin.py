@@ -74,6 +74,7 @@ class CustomPlugin(Plugin):
         Called to find out if the custom plugin is currently using a theme.
 
         Returns count of the times the theme is used.
+        :param theme: Theme to be queried
         """
         return len(self.db_manager.get_all_objects(CustomSlide, CustomSlide.theme_name == theme))
 

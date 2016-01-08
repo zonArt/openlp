@@ -25,6 +25,7 @@ This module contains tests for the Songusage plugin.
 from unittest import TestCase
 from openlp.plugins.songusage.songusageplugin import SongUsagePlugin
 
+
 class TestSongUsage(TestCase):
 
     def test_about_text(self):
