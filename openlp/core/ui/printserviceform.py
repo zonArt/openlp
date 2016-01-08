@@ -112,7 +112,8 @@ class PrintServiceForm(QtWidgets.QDialog, Ui_PrintServiceDialog, RegistryPropert
         """
         Constructor
         """
-        super(PrintServiceForm, self).__init__(Registry().get('main_window'))
+        super(PrintServiceForm, self).__init__(Registry().get('main_window'),
+                QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.printer = QtPrintSupport.QPrinter()
         self.print_dialog = QtPrintSupport.QPrintDialog(self.printer, self)
         self.document = QtGui.QTextDocument()
