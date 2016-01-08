@@ -65,7 +65,8 @@ class EasySlidesImport(SongImport):
             self._add_unicode_attribute('song_number', song.SongNumber)
         if self.song_number == '0':
             self.song_number = ''
-        self._add_authors(song)
+        if hasattr(song, 'Writer'):
+            self._add_authors(song.Writer)
         if hasattr(song, 'Copyright'):
             self._add_copyright(song.Copyright)
         if hasattr(song, 'LicenceAdmin1'):
@@ -102,15 +103,13 @@ class EasySlidesImport(SongImport):
             if mandatory:
                 self._success = False
 
-    def _add_authors(self, song):
+    def _add_authors(self, writer):
         try:
-            authors = str(song.Writer).split(',')
-            self.authors = [author.strip() for author in authors if author.strip()]
-        except UnicodeDecodeError:
+            self.parse_author(str(writer))
+        except UnicodeDecodeError as e:
+            print(e)
             log.exception('Unicode decode error while decoding Writer')
             self._success = False
-        except AttributeError:
-            pass
 
     def _add_copyright(self, element):
         """
@@ -234,11 +233,10 @@ class EasySlidesImport(SongImport):
         for [reg, vt, vn, inst] in our_verse_order:
             if self._list_has(verses, [reg, vt, vn, inst]):
                 # this is false, but needs user input
-                lang = None
                 versetag = '%s%s' % (vt, vn)
                 versetags.append(versetag)
                 lines = '\n'.join(verses[reg][vt][vn][inst])
-                self.verses.append([versetag, lines, lang])
+                self.add_verse(lines, versetag)
         SeqTypes = {
             'p': 'P1',
             'q': 'P2',
