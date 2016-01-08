@@ -22,35 +22,3 @@
 """
 Module-level functions for the functional test suite
 """
-
-import os
-
-from openlp.core.common import is_win
-
-from tests.interfaces import patch
-from .test_projectormanager import tmpfile
-
-
-def setUp():
-    """
-    Set up this module of tests
-    """
-    if not is_win():
-        # Wine creates a sharing violation during tests. Ignore.
-        try:
-            os.remove(tmpfile)
-        except:
-            pass
-
-
-def tearDown():
-    """
-    Ensure test suite has been cleaned up after tests
-    """
-    patch.stopall()
-    if not is_win():
-        try:
-            # In case of changed schema, remove old test file
-            os.remove(tmpfile)
-        except FileNotFoundError:
-            pass
