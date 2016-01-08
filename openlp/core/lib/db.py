@@ -55,7 +55,7 @@ def init_db(url, auto_flush=True, auto_commit=False, base=None):
         metadata = MetaData(bind=engine)
     else:
         base.metadata.bind = engine
-        metadata = None
+        metadata = base.metadata
     session = scoped_session(sessionmaker(autoflush=auto_flush, autocommit=auto_commit, bind=engine))
     return session, metadata
 
@@ -227,13 +227,12 @@ class Manager(object):
         """
         self.is_dirty = False
         self.session = None
-        # See if we're using declarative_base with a pre-existing session.
-        log.debug('Manager: Testing for pre-existing session')
-        if session is not None:
-            log.debug('Manager: Using existing session')
-        else:
-            log.debug('Manager: Creating new session')
+        self.db_url = None
+        if db_file_name:
+            log.debug('Manager: Creating new DB url')
             self.db_url = init_url(plugin_name, db_file_name)
+        else:
+            self.db_url = init_url(plugin_name)
         if upgrade_mod:
             try:
                 db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
@@ -248,10 +247,13 @@ class Manager(object):
                               'not be loaded.\n\nDatabase: %s') % (db_ver, up_ver, self.db_url)
                 )
                 return
-        try:
-            self.session = init_schema(self.db_url)
-        except (SQLAlchemyError, DBAPIError):
-            handle_db_error(plugin_name, db_file_name)
+        if not session:
+            try:
+                self.session = init_schema(self.db_url)
+            except (SQLAlchemyError, DBAPIError):
+                handle_db_error(plugin_name, db_file_name)
+        else:
+            self.session = session
 
     def save_object(self, object_instance, commit=True):
         """
@@ -344,13 +346,13 @@ class Manager(object):
         for try_count in range(3):
             try:
                 return self.session.query(object_class).filter(filter_clause).first()
-            except OperationalError:
+            except OperationalError as oe:
                 # This exception clause is for users running MySQL which likes to terminate connections on its own
                 # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
                 # non-recoverable way. So we only retry 3 times.
-                log.exception('Probably a MySQL issue, "MySQL has gone away"')
-                if try_count >= 2:
+                if try_count >= 2 or 'MySQL has gone away' in str(oe):
                     raise
+                log.exception('Probably a MySQL issue, "MySQL has gone away"')
 
     def get_all_objects(self, object_class, filter_clause=None, order_by_ref=None):
         """
