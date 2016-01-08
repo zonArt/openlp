@@ -112,6 +112,7 @@ class SongMediaItem(MediaManagerItem):
 
     def on_focus(self):
         self.search_text_edit.setFocus()
+        self.search_text_edit.selectAll()
 
     def config_update(self):
         """

@@ -207,6 +207,7 @@ class CustomMediaItem(MediaManagerItem):
         Set the focus
         """
         self.search_text_edit.setFocus()
+        self.search_text_edit.selectAll()
 
     def generate_slide_data(self, service_item, item=None, xml_version=False,
                             remote=False, context=ServiceItemContext.Service):

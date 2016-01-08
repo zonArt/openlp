@@ -254,6 +254,7 @@ class BibleMediaItem(MediaManagerItem):
     def on_focus(self):
         if self.quickTab.isVisible():
             self.quick_search_edit.setFocus()
+            self.quick_search_edit.selectAll()
         else:
             self.advanced_book_combo_box.setFocus()
 
