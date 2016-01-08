@@ -272,7 +272,7 @@ window.OpenLP = {
                 value[0] = OpenLP.escapeString(value[0])
               }
               var txt = "";
-              if (value[2].length > 0) {
+              if (value.length > 2) {
                 txt = value[1] + " ( " + value[2] + " )";
               } else {
                 txt = value[1];

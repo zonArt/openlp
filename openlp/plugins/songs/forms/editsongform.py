@@ -55,7 +55,8 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Constructor
         """
-        super(EditSongForm, self).__init__(parent)
+        super(EditSongForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
+                | QtCore.Qt.WindowTitleHint)
         self.media_item = media_item
         self.song = None
         # can this be automated?
@@ -79,7 +80,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.verse_edit_all_button.clicked.connect(self.on_verse_edit_all_button_clicked)
         self.verse_delete_button.clicked.connect(self.on_verse_delete_button_clicked)
         self.verse_list_widget.itemClicked.connect(self.on_verse_list_view_clicked)
-        self.verse_order_edit.textChanged.connect(self.on_verse_order_text_changed)
+        self.verse_order_edit.textEdited.connect(self.on_verse_order_text_changed)
         self.theme_add_button.clicked.connect(self.theme_manager.on_add_theme)
         self.maintenance_button.clicked.connect(self.on_maintenance_button_clicked)
         self.from_file_button.clicked.connect(self.on_audio_add_from_file_button_clicked)
@@ -841,6 +842,8 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
 
         :param text: The text of the verse order edit (ignored).
         """
+        # First make sure that all letters entered in the verse order field are uppercase
+        self.verse_order_edit.setText(text.upper())
         # Extract all verses which were used in the order.
         verses_in_order = self._extract_verse_order(self.verse_order_edit.text())
         # Find the verses which were not used in the order.
