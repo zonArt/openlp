@@ -33,6 +33,7 @@ log = logging.getLogger(__name__)
 def drop_column(op, tablename, columnname):
     drop_columns(op, tablename, [columnname])
 
+
 def drop_columns(op, tablename, columns):
     """
     Column dropping functionality for SQLite, as there is no DROP COLUMN support in SQLite
