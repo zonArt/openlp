@@ -190,8 +190,7 @@ class CustomMediaItem(MediaManagerItem):
             if QtWidgets.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
                     translate('CustomPlugin.MediaItem',
-                              'Are you sure you want to delete the %n selected custom slide(s)?',
-                              '', QtCore.QCoreApplication.CodecForTr, len(items)),
+                              'Are you sure you want to delete the "%d" selected custom slide(s)?') %len(items),
                     QtWidgets.QMessageBox.StandardButtons(
                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                     QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
