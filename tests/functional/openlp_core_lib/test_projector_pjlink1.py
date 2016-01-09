@@ -31,16 +31,16 @@ from openlp.core.lib.projector.pjlink1 import PJLink1
 
 from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUTHENTICATE
 
-pjlink = PJLink1(name='test', ip='127.0.0.1', pin=TEST_PIN, no_poll=True)
+pjlink_test = PJLink1(name='test', ip='127.0.0.1', pin=TEST_PIN, no_poll=True)
 
 
 class TestPJLink(TestCase):
     """
     Tests for the PJLink module
     """
-    @patch.object(pjlink, 'readyRead')
-    @patch.object(pjlink, 'send_command')
-    @patch.object(pjlink, 'waitForReadyRead')
+    @patch.object(pjlink_test, 'readyRead')
+    @patch.object(pjlink_test, 'send_command')
+    @patch.object(pjlink_test, 'waitForReadyRead')
     @patch('openlp.core.common.qmd5_hash')
     def ticket_92187_test(self,
                           mock_qmd5_hash,
@@ -50,8 +50,14 @@ class TestPJLink(TestCase):
         """
         Fix for projector connect with PJLink authentication exception
         """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+
         # WHEN: Calling check_login with authentication request:
         pjlink.check_login(data=TEST_CONNECT_AUTHENTICATE)
 
         # THEN: Should have called qmd5_hash
-        mock_qmd5_hash.called_with(TEST_SALT, TEST_PIN)
+        self.assertTrue(mock_qmd5_hash.called_with(TEST_SALT,
+                                                   "Connection request should have been called with TEST_SALT"))
+        self.assertTrue(mock_qmd5_hash.called_with(TEST_PIN,
+                                                   "Connection request should have been called with TEST_PIN"))

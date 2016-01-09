@@ -30,11 +30,6 @@ from unittest import TestCase
 from openlp.core.common import verify_ip_address, md5_hash, qmd5_hash
 
 from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_HASH
-'''
-salt = '498e4a67'
-pin = 'JBMIAProjectorLink'
-test_hash = '5d8409bc1c3fa39749434aa3a5c38682'
-'''
 salt = TEST_SALT
 pin = TEST_PIN
 test_hash = TEST_HASH
