@@ -516,7 +516,8 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             self.topics_list_view.addItem(topic_name)
         self.songbooks_list_view.clear()
         for songbook_entry in self.song.songbook_entries:
-            self.add_songbook_entry_to_list(songbook_entry.songbook.id, songbook_entry.songbook.name, songbook_entry.entry)
+            self.add_songbook_entry_to_list(songbook_entry.songbook.id, songbook_entry.songbook.name, 
+                                            songbook_entry.entry)
         self.audio_list_widget.clear()
         for media in self.song.media_files:
             media_file = QtWidgets.QListWidgetItem(os.path.split(media.file_name)[1])
