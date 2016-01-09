@@ -101,7 +101,7 @@ class PJLink1(QTcpSocket):
         self.location = None
         self.notes = None
         self.dbid = None if 'dbid' not in kwargs else kwargs['dbid']
-        self.location = None if 'location' not in kwargs else kwargs['notes']
+        self.location = None if 'location' not in kwargs else kwargs['location']
         self.notes = None if 'notes' not in kwargs else kwargs['notes']
         # Poll time 20 seconds unless called with something else
         self.poll_time = 20000 if 'poll_time' not in kwargs else kwargs['poll_time'] * 1000
@@ -345,7 +345,7 @@ class PJLink1(QTcpSocket):
             # Authenticated login with salt
             log.debug('(%s) Setting hash with salt="%s"' % (self.ip, data_check[2]))
             log.debug('(%s) pin="%s"' % (self.ip, self.pin))
-            salt = qmd5_hash(salt=data_check[2].endcode('ascii'), data=self.pin.encode('ascii'))
+            salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
         else:
             salt = None
         # We're connected at this point, so go ahead and do regular I/O
