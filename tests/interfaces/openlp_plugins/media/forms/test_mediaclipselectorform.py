@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -51,7 +51,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
         # Mock VLC so we don't actually use it
-        self.vlc_patcher = patch('openlp.plugins.media.forms.mediaclipselectorform.vlc')
+        self.vlc_patcher = patch('openlp.plugins.media.forms.mediaclipselectorform.get_vlc')
         self.vlc_patcher.start()
         Registry().register('application', self.app)
         # Mock the media item

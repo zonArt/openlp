@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -242,7 +242,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == '#TextAlign':
             pass
         elif tag_val[0] == '#Title':
-            self.title = str(tag_val[1])
+            self.title = str(tag_val[1]).strip()
         elif tag_val[0] == '#TitleAlign':
             pass
         elif tag_val[0] == '#TitleFontSize':

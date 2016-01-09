@@ -5,7 +5,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,6 +41,7 @@ except ImportError:
 
 IS_WIN = sys.platform.startswith('win')
 IS_LIN = sys.platform.startswith('lin')
+IS_MAC = sys.platform.startswith('dar')
 
 
 VERS = {
@@ -64,6 +65,11 @@ WIN32_MODULES = [
 LINUX_MODULES = [
     # Optical drive detection.
     'dbus',
+]
+
+MACOSX_MODULES = [
+    'objc',
+    'AppKit'
 ]
 
 
@@ -233,6 +239,10 @@ def main():
     elif IS_LIN:
         print('Checking for Linux specific modules...')
         for m in LINUX_MODULES:
+            check_module(m)
+    elif IS_MAC:
+        print('Checking for Mac OS X specific modules...')
+        for m in MACOSX_MODULES:
             check_module(m)
     verify_versions()
     print_qt_image_formats()

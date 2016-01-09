@@ -5,7 +5,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -105,7 +105,7 @@ if target_branch not in bzr_info_output.decode():
     exit()
 
 # Find the authors email address. It is hidden in a javascript line like this:
-# conf = {"status_value": "Needs review", "source_revid": "tomasgroth@yahoo.dk-20150921204550-gxduegmcmty9rljf",
+# conf = {"status_value": "Needs review", "source_revid": "tomasgroth@yahoo.dk-20160921204550-gxduegmcmty9rljf",
 #         "user_can_edit_status": false, ...
 script_tag = soup.find('script', attrs={"id": "codereview-script"})
 content = script_tag.contents[0]

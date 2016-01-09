@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,26 +22,3 @@
 """
 Module-level functions for the functional test suite
 """
-
-import os
-from tests.functional import patch
-
-from openlp.core.common import is_win
-
-from .test_projectordb import tmpfile
-
-
-def setUp():
-    if not is_win():
-        # Wine creates a sharing violation during tests. Ignore.
-        try:
-            os.remove(tmpfile)
-        except:
-            pass
-
-
-def tearDown():
-    """
-    Ensure test suite has been cleaned up after tests
-    """
-    patch.stopall()

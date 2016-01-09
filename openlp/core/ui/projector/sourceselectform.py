@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -236,7 +236,8 @@ class SourceSelectTabs(QDialog):
         :param projectordb: ProjectorDB session to use
         """
         log.debug('Initializing SourceSelectTabs()')
-        super(SourceSelectTabs, self).__init__(parent)
+        super(SourceSelectTabs, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
+                | QtCore.Qt.WindowTitleHint)
         self.setMinimumWidth(350)
         self.projectordb = projectordb
         self.edit = edit
@@ -385,7 +386,8 @@ class SourceSelectSingle(QDialog):
         """
         log.debug('Initializing SourceSelectSingle()')
         self.projectordb = projectordb
-        super(SourceSelectSingle, self).__init__(parent)
+        super(SourceSelectSingle, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
+                | QtCore.Qt.WindowTitleHint)
         self.edit = edit
         if self.edit:
             title = translate('OpenLP.SourceSelectForm', 'Edit Projector Source Text')

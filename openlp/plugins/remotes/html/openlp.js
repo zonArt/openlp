@@ -1,7 +1,7 @@
 /******************************************************************************
  * OpenLP - Open Source Lyrics Projection                                      *
  * --------------------------------------------------------------------------- *
- * Copyright (c) 2008-2015 OpenLP Developers                                   *
+ * Copyright (c) 2008-2016 OpenLP Developers                                   *
  * --------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it     *
  * under the terms of the GNU General Public License as published by the Free  *
@@ -272,7 +272,7 @@ window.OpenLP = {
                 value[0] = OpenLP.escapeString(value[0])
               }
               var txt = "";
-              if (value[2].length > 0) {
+              if (value.length > 2) {
                 txt = value[1] + " ( " + value[2] + " )";
               } else {
                 txt = value[1];
