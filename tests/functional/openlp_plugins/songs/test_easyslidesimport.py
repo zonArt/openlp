@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -20,45 +19,27 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Mixin class with helpers
+This module contains tests for the EasySlides song importer.
 """
+
 import os
-from tempfile import mkstemp
 
-from PyQt5 import QtCore, QtWidgets
-from openlp.core.common import Settings
+from tests.helpers.songfileimport import SongImportTestHelper
+
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'easyslidessongs'))
 
 
-class TestMixin(object):
-    """
-    The :class:`TestMixin` class provides test with extra functionality
-    """
+class TestEasySlidesFileImport(SongImportTestHelper):
 
-    def setup_application(self):
-        """
-        Build or reuse the Application object
-        """
-        old_app_instance = QtCore.QCoreApplication.instance()
-        if old_app_instance is None:
-            self.app = QtWidgets.QApplication([])
-        else:
-            self.app = old_app_instance
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'EasySlidesImport'
+        self.importer_module_name = 'easyslides'
+        super(TestEasySlidesFileImport, self).__init__(*args, **kwargs)
 
-    def build_settings(self):
+    def test_song_import(self):
         """
-        Build the settings Object and initialise it
+        Test that loading an EasySlides file works correctly on various files
         """
-        self.fd, self.ini_file = mkstemp('.ini')
-        Settings.set_filename(self.ini_file)
-        Settings().setDefaultFormat(Settings.IniFormat)
-        # Needed on windows to make sure a Settings object is available during the tests
-        self.setting = Settings()
-        Settings().setValue('themes/global theme', 'my_theme')
-
-    def destroy_settings(self):
-        """
-        Destroy the Settings Object
-        """
-        del self.setting
-        os.close(self.fd)
-        os.unlink(Settings().fileName())
+        self.file_import(os.path.join(TEST_PATH, 'amazing-grace.xml'),
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
