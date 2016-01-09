@@ -29,9 +29,10 @@ from unittest import TestCase
 
 from openlp.core.common import verify_ip_address, md5_hash, qmd5_hash
 
-salt = '498e4a67'
-pin = 'JBMIAProjectorLink'
-test_hash = '5d8409bc1c3fa39749434aa3a5c38682'
+from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_HASH
+salt = TEST_SALT
+pin = TEST_PIN
+test_hash = TEST_HASH
 test_non_ascii_string = '이것은 한국어 시험 문자열'
 test_non_ascii_hash = 'fc00c7912976f6e9c19099b514ced201'
 
