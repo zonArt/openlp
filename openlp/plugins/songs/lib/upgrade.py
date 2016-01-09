@@ -29,10 +29,10 @@ from sqlalchemy import Table, Column, ForeignKey, types
 from sqlalchemy.sql.expression import func, false, null, text
 
 from openlp.core.lib.db import get_upgrade_op
-from openlp.core.common import trace_error_handler
+from openlp.core.utils.db import drop_columns
 
 log = logging.getLogger(__name__)
-__version__ = 4
+__version__ = 5
 
 
 # TODO: When removing an upgrade path the ftw-data needs updating to the minimum supported version
@@ -117,3 +117,34 @@ def upgrade_4(session, metadata):
         op.rename_table('authors_songs_tmp', 'authors_songs')
     else:
         log.warning('Skipping upgrade_4 step of upgrading the song db')
+
+
+def upgrade_5(session, metadata):
+    """
+    Version 5 upgrade.
+
+    This upgrade adds support for multiple songbooks
+    """
+    op = get_upgrade_op(session)
+    songs_table = Table('songs', metadata)
+    if 'song_book_id' in [col.name for col in songs_table.c.values()]:
+        log.warning('Skipping upgrade_5 step of upgrading the song db')
+        return
+
+    # Create the mapping table (songs <-> songbooks)
+    op.create_table('songs_songbooks',
+                    Column('songbook_id', types.Integer(), ForeignKey('song_books.id'), primary_key=True),
+                    Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
+                    Column('entry', types.Unicode(255), primary_key=True, nullable=False))
+
+    # Migrate old data
+    op.execute('INSERT INTO songs_songbooks SELECT song_book_id, id, song_number FROM songs\
+                WHERE song_book_id IS NOT NULL AND song_number IS NOT NULL')
+
+    # Drop old columns
+    if metadata.bind.url.get_dialect().name == 'sqlite':
+        drop_columns(op, 'songs', ['song_book_id', 'song_number'])
+    else:
+        op.drop_constraint('songs_ibfk_1', 'songs', 'foreignkey')
+        op.drop_column('songs', 'song_book_id')
+        op.drop_column('songs', 'song_number')
