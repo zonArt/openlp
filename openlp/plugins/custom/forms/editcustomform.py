@@ -22,7 +22,7 @@
 
 import logging
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, translate
 from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
@@ -44,7 +44,8 @@ class EditCustomForm(QtWidgets.QDialog, Ui_CustomEditDialog):
         """
         Constructor
         """
-        super(EditCustomForm, self).__init__(parent)
+        super(EditCustomForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
+                | QtCore.Qt.WindowTitleHint)
         self.manager = manager
         self.media_item = media_item
         self.setupUi(self)

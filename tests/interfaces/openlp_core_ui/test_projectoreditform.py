@@ -23,7 +23,7 @@
 Interface tests to test the openlp.core.ui.projector.editform.ProjectorEditForm()
 class and methods.
 """
-
+import os
 from unittest import TestCase
 
 from openlp.core.common import Registry, Settings
@@ -32,7 +32,7 @@ from openlp.core.ui import ProjectorEditForm
 
 from tests.functional import patch
 from tests.helpers.testmixin import TestMixin
-from tests.resources.projector.data import TEST1_DATA, TEST2_DATA
+from tests.resources.projector.data import TEST_DB, TEST1_DATA, TEST2_DATA
 
 
 class TestProjectorEditForm(TestCase, TestMixin):
@@ -49,7 +49,9 @@ class TestProjectorEditForm(TestCase, TestMixin):
         self.setup_application()
         Registry.create()
         with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-            mocked_init_url.return_value = 'sqlite://'
+            if os.path.exists(TEST_DB):
+                os.unlink(TEST_DB)
+            mocked_init_url.return_value = 'sqlite:///' + TEST_DB
             self.projectordb = ProjectorDB()
             self.projector_form = ProjectorEditForm(projectordb=self.projectordb)
 
@@ -93,11 +95,13 @@ class TestProjectorEditForm(TestCase, TestMixin):
         with patch('openlp.core.ui.projector.editform.QDialog.exec'):
 
             # WHEN: Calling edit form with existing projector instance
-            self.projector_form.exec(projector=TEST1_DATA)
+            self.projector_form.exec(projector=Projector(**TEST1_DATA))
             item = self.projector_form.projector
 
             # THEN: Should be editing an existing entry
             self.assertFalse(self.projector_form.new_projector,
                              'Projector edit form should be marked as existing entry')
-            self.assertTrue((item.ip is TEST1_DATA.ip and item.name is TEST1_DATA.name),
+            self.assertTrue((item.ip is TEST1_DATA['ip'] and item.name is TEST1_DATA['name']),
                             'Projector edit form should have TEST1_DATA() instance to edit')
+
+
