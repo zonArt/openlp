@@ -159,14 +159,15 @@ class TestMediaItem(TestCase, TestMixin):
         song.title = 'My Song'
         song.copyright = 'My copyright'
         song.authors_songs = []
+        song.songbook_entries = []
         song.ccli_number = ''
         book1 = MagicMock()
         book1.name = "My songbook"
         book2 = MagicMock()
         book2.name = "Thy songbook"
         song.songbookentries = []
-        song.add_songbookentry(book1, '12')
-        song.add_songbookentry(book2, '502A')
+        song.add_songbook_entry(book1, '12')
+        song.add_songbook_entry(book2, '502A')
         service_item = ServiceItem(None)
 
         # WHEN: I generate the Footer with default settings

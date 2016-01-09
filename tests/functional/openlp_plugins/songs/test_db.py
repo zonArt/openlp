@@ -185,16 +185,16 @@ class TestDB(TestCase):
         """
         # GIVEN: A mocked song and songbook
         song = Song()
-        song.songbookentries = []
+        song.songbook_entries = []
         songbook = Book()
         songbook.name = "Thy Word"
 
         # WHEN: We add two songbooks to a Song
-        song.add_songbookentry(songbook, "120")
-        song.add_songbookentry(songbook, "550A")
+        song.add_songbook_entry(songbook, "120")
+        song.add_songbook_entry(songbook, "550A")
 
         # THEN: The song should have two songbook entries
-        self.assertEqual(len(song.songbookentries), 2, 'There should be two Songbook entries.')
+        self.assertEqual(len(song.songbook_entries), 2, 'There should be two Songbook entries.')
 
     def test_upgrade_old_song_db(self):
         """
