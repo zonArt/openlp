@@ -43,10 +43,10 @@ class TestPJLink(TestCase):
     @patch.object(pjlink_test, 'waitForReadyRead')
     @patch('openlp.core.common.qmd5_hash')
     def authenticated_connection_call_test(self,
-                          mock_qmd5_hash,
-                          mock_waitForReadyRead,
-                          mock_send_command,
-                          mock_readyRead):
+                                           mock_qmd5_hash,
+                                           mock_waitForReadyRead,
+                                           mock_send_command,
+                                           mock_readyRead):
         """
         Fix for projector connect with PJLink authentication exception. Ticket 92187.
         """
