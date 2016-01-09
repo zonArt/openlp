@@ -20,25 +20,52 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlp.plugins.songs.lib.ui` module provides standard UI components
-for the songs plugin.
+The :mod:`db` module provides helper functions for database related methods.
 """
-from openlp.core.lib import translate
+import sqlalchemy
+import logging
+
+from copy import deepcopy
+
+log = logging.getLogger(__name__)
 
 
-class SongStrings(object):
+def drop_column(op, tablename, columnname):
+    drop_columns(op, tablename, [columnname])
+
+
+def drop_columns(op, tablename, columns):
     """
-    Provide standard strings for use throughout the songs plugin.
+    Column dropping functionality for SQLite, as there is no DROP COLUMN support in SQLite
+
+    From https://github.com/klugjohannes/alembic-sqlite
     """
-    # These strings should need a good reason to be retranslated elsewhere.
-    Author = translate('OpenLP.Ui', 'Author', 'Singular')
-    Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
-    AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown')  # Used to populate the database.
-    CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
-    SongBook = translate('OpenLP.Ui', 'Songbook', 'Singular')
-    SongBooks = translate('OpenLP.Ui', 'Songbooks', 'Plural')
-    SongIncomplete = translate('OpenLP.Ui', 'Title and/or verses not found')
-    SongMaintenance = translate('OpenLP.Ui', 'Song Maintenance')
-    Topic = translate('OpenLP.Ui', 'Topic', 'Singular')
-    Topics = translate('OpenLP.Ui', 'Topics', 'Plural')
-    XMLSyntaxError = translate('OpenLP.Ui', 'XML syntax error')
+
+    # get the db engine and reflect database tables
+    engine = op.get_bind()
+    meta = sqlalchemy.MetaData(bind=engine)
+    meta.reflect()
+
+    # create a select statement from the old table
+    old_table = meta.tables[tablename]
+    select = sqlalchemy.sql.select([c for c in old_table.c if c.name not in columns])
+
+    # get remaining columns without table attribute attached
+    remaining_columns = [deepcopy(c) for c in old_table.columns if c.name not in columns]
+    for column in remaining_columns:
+        column.table = None
+
+    # create a temporary new table
+    new_tablename = '{0}_new'.format(tablename)
+    op.create_table(new_tablename, *remaining_columns)
+    meta.reflect()
+    new_table = meta.tables[new_tablename]
+
+    # copy data from old table
+    insert = sqlalchemy.sql.insert(new_table).from_select([c.name for c in remaining_columns], select)
+    engine.execute(insert)
+
+    # drop the old table and rename the new table to take the old tables
+    # position
+    op.drop_table(tablename)
+    op.rename_table(new_tablename, tablename)
