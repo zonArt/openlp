@@ -22,7 +22,6 @@
 """
 Interface tests to test the themeManager class and related methods.
 """
-
 import os
 from unittest import TestCase
 
@@ -33,9 +32,7 @@ from tests.helpers.testmixin import TestMixin
 from openlp.core.ui import ProjectorManager, ProjectorEditForm
 from openlp.core.lib.projector.db import Projector, ProjectorDB
 
-from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
-
-tmpfile = '/tmp/openlp-test-projectormanager.sql'
+from tests.resources.projector.data import TEST_DB, TEST1_DATA, TEST2_DATA, TEST3_DATA
 
 
 class TestProjectorManager(TestCase, TestMixin):
@@ -49,12 +46,13 @@ class TestProjectorManager(TestCase, TestMixin):
         self.build_settings()
         self.setup_application()
         Registry.create()
-        if not hasattr(self, 'projector_manager'):
-            with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-                mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
-                self.projectordb = ProjectorDB()
-                if not hasattr(self, 'projector_manager'):
-                    self.projector_manager = ProjectorManager(projectordb=self.projectordb)
+        with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
+            if os.path.exists(TEST_DB):
+                os.unlink(TEST_DB)
+            mocked_init_url.return_value = 'sqlite:///%s' % TEST_DB
+            self.projectordb = ProjectorDB()
+            if not hasattr(self, 'projector_manager'):
+                self.projector_manager = ProjectorManager(projectordb=self.projectordb)
 
     def tearDown(self):
         """

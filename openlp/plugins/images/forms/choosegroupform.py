@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.plugins.images.forms.choosegroupdialog import Ui_ChooseGroupDialog
 
@@ -33,7 +33,8 @@ class ChooseGroupForm(QtWidgets.QDialog, Ui_ChooseGroupDialog):
         """
         Constructor
         """
-        super(ChooseGroupForm, self).__init__(parent)
+        super(ChooseGroupForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
+                | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
     def exec(self, selected_group=None):

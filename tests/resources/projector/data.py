@@ -24,28 +24,28 @@ The :mod:`tests.resources.projector.data file contains test data
 """
 
 import os
-from openlp.core.lib.projector.db import Projector
+from tempfile import gettempdir
 
 # Test data
-TEST_DB = os.path.join('tmp', 'openlp-test-projectordb.sql')
+TEST_DB = os.path.join(gettempdir(), 'openlp-test-projectordb.sql')
 
-TEST1_DATA = Projector(ip='111.111.111.111',
-                       port='1111',
-                       pin='1111',
-                       name='___TEST_ONE___',
-                       location='location one',
-                       notes='notes one')
+TEST1_DATA = dict(ip='111.111.111.111',
+                  port='1111',
+                  pin='1111',
+                  name='___TEST_ONE___',
+                  location='location one',
+                  notes='notes one')
 
-TEST2_DATA = Projector(ip='222.222.222.222',
-                       port='2222',
-                       pin='2222',
-                       name='___TEST_TWO___',
-                       location='location two',
-                       notes='notes two')
+TEST2_DATA = dict(ip='222.222.222.222',
+                  port='2222',
+                  pin='2222',
+                  name='___TEST_TWO___',
+                  location='location two',
+                  notes='notes two')
 
-TEST3_DATA = Projector(ip='333.333.333.333',
-                       port='3333',
-                       pin='3333',
-                       name='___TEST_THREE___',
-                       location='location three',
-                       notes='notes three')
+TEST3_DATA = dict(ip='333.333.333.333',
+                  port='3333',
+                  pin='3333',
+                  name='___TEST_THREE___',
+                  location='location three',
+                  notes='notes three')
