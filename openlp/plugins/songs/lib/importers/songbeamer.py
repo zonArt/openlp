@@ -242,7 +242,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == '#TextAlign':
             pass
         elif tag_val[0] == '#Title':
-            self.title = str(tag_val[1])
+            self.title = str(tag_val[1]).strip()
         elif tag_val[0] == '#TitleAlign':
             pass
         elif tag_val[0] == '#TitleFontSize':
