@@ -531,6 +531,7 @@ def words_split(line):
     line = line.replace('\n', ' ')
     return line.split(' ')
 
+
 def get_start_tags(raw_text):
     """
     Tests the given text for not closed formatting tags and returns a tuple consisting of three unicode strings::
@@ -566,4 +567,3 @@ def get_start_tags(raw_text):
     # Remove the indexes.
     html_tags = [tag[1] for tag in html_tags]
     return raw_text + ''.join(end_tags), ''.join(start_tags), ''.join(html_tags)
-

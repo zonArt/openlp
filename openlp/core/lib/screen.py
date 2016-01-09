@@ -224,7 +224,7 @@ class ScreenList(object):
         y = window.y() + (window.height() // 2)
         for screen in self.screen_list:
             size = screen['size']
-            if x >= size.x() and x <= (size.x() + size.width()) and y >= size.y() and y <= (size.y() + size.height()):
+            if size.x() <= x <= (size.x() + size.width()) and size.y() <= y <= (size.y() + size.height()):
                 return screen['number']
 
     def load_screen_settings(self):

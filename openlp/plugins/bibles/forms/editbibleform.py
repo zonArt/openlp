@@ -45,8 +45,7 @@ class EditBibleForm(QtWidgets.QDialog, Ui_EditBibleDialog, RegistryProperties):
         """
         Constructor
         """
-        super(EditBibleForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
-                | QtCore.Qt.WindowTitleHint)
+        super(EditBibleForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.media_item = media_item
         self.book_names = BibleStrings().BookNames
         self.setupUi(self)

@@ -38,8 +38,7 @@ class TopicsForm(QtWidgets.QDialog, Ui_TopicsDialog):
         """
         Constructor
         """
-        super(TopicsForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
-                | QtCore.Qt.WindowTitleHint)
+        super(TopicsForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
     def exec(self, clear=True):

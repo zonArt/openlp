@@ -541,4 +541,3 @@ def to_str(element):
     if element is not None:
         return str(element)
     return ''
-

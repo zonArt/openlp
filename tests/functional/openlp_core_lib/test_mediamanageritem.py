@@ -75,7 +75,6 @@ class TestMediaManagerItem(TestCase, TestMixin):
         self.assertTrue(mmi.has_delete_icon, 'By default a delete icon should be present')
         self.assertFalse(mmi.add_to_service_item, 'There should be no add_to_service icon by default')
 
-
     @patch(u'openlp.core.lib.mediamanageritem.Settings')
     @patch(u'openlp.core.lib.mediamanageritem.MediaManagerItem.on_live_click')
     def on_double_clicked_go_live_test(self, mocked_on_live_click, MockedSettings):

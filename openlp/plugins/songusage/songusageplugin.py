@@ -226,7 +226,7 @@ class SongUsagePlugin(Plugin):
         """
         self.song_usage_detail_form.initialise()
         self.song_usage_detail_form.exec()
-    
+
     @staticmethod
     def about():
         """

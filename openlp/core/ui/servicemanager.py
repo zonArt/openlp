@@ -1131,6 +1131,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         :param item: The service item to be checked
         """
         pos = item.data(0, QtCore.Qt.UserRole)
+        print('{}: {}; {}'.format(pos, len(self.service_items), item.text()))
         self.service_items[pos - 1]['expanded'] = False
 
     def on_expand_all(self, field=None):
@@ -1149,6 +1150,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         :param item: The service item to be checked
         """
         pos = item.data(0, QtCore.Qt.UserRole)
+        print('{}: {}; {}'.format(pos, len(self.service_items), item.text()))
         self.service_items[pos - 1]['expanded'] = True
 
     def on_service_top(self, field=None):
@@ -1666,4 +1668,3 @@ def get_parent_item_data(item):
         return item.data(0, QtCore.Qt.UserRole)
     else:
         return parent_item.data(0, QtCore.Qt.UserRole)
-
