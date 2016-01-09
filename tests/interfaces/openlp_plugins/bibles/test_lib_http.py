@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -130,7 +130,7 @@ class TestBibleHTTP(TestCase):
         # THEN: The list should not be None, and some known bibles should be there
         self.assertIsNotNone(bibles)
         self.assertIn(('New Int. Readers Version', 'NIRV', 'en'), bibles)
-        self.assertIn(('Българската Библия', 'BLG', 'bg'), bibles)
+        self.assertIn(('Священное Писание, Восточный перевод', 'CARS', 'ru'), bibles)
 
     def biblegateway_get_bibles_test(self):
         """

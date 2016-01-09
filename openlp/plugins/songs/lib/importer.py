@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -153,23 +153,23 @@ class SongFormat(object):
     EasyWorshipDB = 6
     EasyWorshipService = 7
     FoilPresenter = 8
-    MediaShout = 9
-    OpenSong = 10
-    PowerPraise = 11
-    PowerSong = 12
-    PresentationManager = 13
-    ProPresenter = 14
-    SongBeamer = 15
-    SongPro = 16
-    SongShowPlus = 17
-    SongsOfFellowship = 18
-    SundayPlus = 19
-    WordsOfWorship = 20
-    WorshipAssistant = 21
-    WorshipCenterPro = 22
-    ZionWorx = 23
-    Lyrix = 24
-    VideoPsalm = 25
+    Lyrix = 9
+    MediaShout = 10
+    OpenSong = 11
+    PowerPraise = 12
+    PowerSong = 13
+    PresentationManager = 14
+    ProPresenter = 15
+    SongBeamer = 16
+    SongPro = 17
+    SongShowPlus = 18
+    SongsOfFellowship = 19
+    SundayPlus = 20
+    VideoPsalm = 21
+    WordsOfWorship = 22
+    WorshipAssistant = 23
+    WorshipCenterPro = 24
+    ZionWorx = 25
 
     # Set optional attribute defaults
     __defaults__ = {

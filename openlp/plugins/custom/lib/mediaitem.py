@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -190,8 +190,7 @@ class CustomMediaItem(MediaManagerItem):
             if QtWidgets.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
                     translate('CustomPlugin.MediaItem',
-                              'Are you sure you want to delete the %n selected custom slide(s)?',
-                              '', QtCore.QCoreApplication.CodecForTr, len(items)),
+                              'Are you sure you want to delete the "%d" selected custom slide(s)?') % len(items),
                     QtWidgets.QMessageBox.StandardButtons(
                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                     QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
@@ -208,6 +207,7 @@ class CustomMediaItem(MediaManagerItem):
         Set the focus
         """
         self.search_text_edit.setFocus()
+        self.search_text_edit.selectAll()
 
     def generate_slide_data(self, service_item, item=None, xml_version=False,
                             remote=False, context=ServiceItemContext.Service):

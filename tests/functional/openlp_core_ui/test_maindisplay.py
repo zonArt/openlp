@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,7 @@
 """
 Package to test the openlp.core.ui.slidecontroller package.
 """
-from unittest import TestCase
+from unittest import TestCase, skipUnless
 
 from PyQt5 import QtCore
 
@@ -141,13 +141,14 @@ class TestMainDisplay(TestCase, TestMixin):
         mocked_songs_plugin.refresh_css.assert_called_with(main_display.frame)
         mocked_bibles_plugin.refresh_css.assert_called_with(main_display.frame)
 
-    @patch('openlp.core.ui.maindisplay.is_macosx')
+    @skipUnless(is_macosx(), 'Can only run test on Mac OS X due to pyobjc dependency.')
     def macosx_display_window_flags_state_test(self, is_macosx):
         """
         Test that on Mac OS X we set the proper window flags
         """
+        if not is_macosx():
+            self.skipTest('Can only run test on Mac OS X due to pyobjc dependency.')
         # GIVEN: A new SlideController instance on Mac OS X.
-        is_macosx.return_value = True
         self.screens.set_current_display(0)
         display = MagicMock()
 
@@ -159,12 +160,11 @@ class TestMainDisplay(TestCase, TestMixin):
                          main_display.windowFlags(),
                          'The window flags should be Qt.Window, and Qt.FramelessWindowHint.')
 
+    @skipUnless(is_macosx(), 'Can only run test on Mac OS X due to pyobjc dependency.')
     def macosx_display_test(self):
         """
         Test display on Mac OS X
         """
-        if not is_macosx():
-            self.skipTest('Can only run test on Mac OS X due to pyobjc dependency.')
         # GIVEN: A new SlideController instance on Mac OS X.
         self.screens.set_current_display(0)
         display = MagicMock()

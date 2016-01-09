@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -257,3 +257,22 @@ class TestMediaItem(TestCase, TestMixin):
 
         # THEN: They should not match
         self.assertFalse(result, "Authors should not match")
+
+    def build_remote_search_test(self):
+        """
+        Test results for the remote search api
+        """
+        # GIVEN: A Song and a search a JSON array should be returned.
+        mock_song = MagicMock()
+        mock_song.id = 123
+        mock_song.title = 'My Song'
+        mock_song.search_title = 'My Song'
+        mock_song.alternate_title = 'My alternative'
+        self.media_item.search_entire = MagicMock()
+        self.media_item.search_entire.return_value = [mock_song]
+
+        # WHEN: I process a search
+        search_results = self.media_item.search('My Song', False)
+
+        # THEN: The correct formatted results are returned
+        self.assertEqual(search_results, [[123, 'My Song', 'My alternative']])
