@@ -185,4 +185,3 @@ class TestProjectorDB(TestCase):
         # THEN: Projector should have the same source entry
         item = self.projector.get_projector_by_id(item_id)
         self.assertTrue(compare_source(item.source_list[0], source))
-

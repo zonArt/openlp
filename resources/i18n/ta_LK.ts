@@ -1,38 +1,39 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ta_LK" sourcelanguage="" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="2.0" language="ta_LK" sourcelanguage="">
 <context>
     <name>AlertsPlugin</name>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="151"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="152"/>
         <source>&amp;Alert</source>
         <translation>&amp;எச்சரிக்கை செய</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="151"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="152"/>
         <source>Show an alert message.</source>
         <translation>ஒரு எச்சரிக்கை செய்தி காட்டு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="209"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="210"/>
         <source>Alert</source>
         <comment>name singular</comment>
         <translation>எச்சரிக்கை செய</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="210"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="211"/>
         <source>Alerts</source>
         <comment>name plural</comment>
         <translation>எச்சரிக்கைகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="214"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="215"/>
         <source>Alerts</source>
         <comment>container title</comment>
         <translation>எச்சரிக்கைகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="199"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="200"/>
         <source>&lt;strong&gt;Alerts Plugin&lt;/strong&gt;&lt;br /&gt;The alert plugin controls the displaying of alerts on the display screen.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -68,7 +69,7 @@
         <translation>காட்சி &amp;&amp; அ&amp;ருகில்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="107"/>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="108"/>
         <source>New Alert</source>
         <translation>புதிய எச்சரிக்கை</translation>
     </message>
@@ -78,38 +79,38 @@
         <translation>&amp;அளவுரு:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="178"/>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="179"/>
         <source>No Parameter Found</source>
         <translation>அளவுரு காணப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="178"/>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="179"/>
         <source>You have not entered a parameter to be replaced.
 Do you want to continue anyway?</source>
         <translation>நீங்கள் பதிலாக ஒரு அளவுரு உள்ளிட்ட இல்லை. ⏎ தொடர விரும்புகிறீர்களா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="192"/>
         <source>No Placeholder Found</source>
         <translation>எந்த ஒதுக்கிட இல்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
-        <source>The alert text does not contain '&lt;&gt;'.
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="192"/>
+        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
 Do you want to continue anyway?</source>
         <translation>விழிப்பூட்டல் உரை இல்லை &apos;&lt;&gt;&apos;. ⏎ தொடர விரும்புகிறீர்களா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="107"/>
-        <source>You haven't specified any text for your alert. 
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="108"/>
+        <source>You haven&apos;t specified any text for your alert. 
 Please type in some text before clicking New.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>AlertsPlugin.AlertsManager</name>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertsmanager.py" line="63"/>
+        <location filename="openlp/plugins/alerts/lib/alertsmanager.py" line="69"/>
         <source>Alert message created and displayed.</source>
         <translation>எச்சரிக்கை செய்தி உருவாக்கப்பட்ட மற்றும் காண்பிக்கப்படும்.</translation>
     </message>
@@ -155,65 +156,65 @@ Please type in some text before clicking New.</source>
         <translation>&amp;Bible</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="206"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="208"/>
         <source>Bible</source>
         <comment>name singular</comment>
         <translation>வேதாகமம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="207"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="209"/>
         <source>Bibles</source>
         <comment>name plural</comment>
         <translation>அதிக பரிசுத்த வேதாகமம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="211"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="213"/>
         <source>Bibles</source>
         <comment>container title</comment>
         <translation>அதிக பரிசுத்த வேதாகமம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="684"/>
         <source>No Book Found</source>
         <translation>எதுவுமில்லை புத்தக இல்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="685"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="684"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
         <translation>பொருத்துதல் புத்தகத்தில் இந்த காணப்படும் முடியும் இல்லை பரிசுத்த வேதாகமம். நீங்கள் சரியாக புத்தகத்தின் பெயர் எழுத்துக்கூட்டப்பட்டுள்ளதை என்று பாருங்கள்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="216"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="218"/>
         <source>Import a Bible.</source>
         <translation>ஒரு பரிசுத்த வேதாகமம் இறக்குமதி </translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="217"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="219"/>
         <source>Add a new Bible.</source>
         <translation>ஒரு புதிய பரிசுத்த வேதாகமம் சேர்க்கவும</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="218"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="220"/>
         <source>Edit the selected Bible.</source>
         <translation>தேர்ந்தெடுத்த பரிசுத்த வேதாகமம் திருத்தி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="219"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="221"/>
         <source>Delete the selected Bible.</source>
         <translation>தேர்ந்தெடுத்த பரிசுத்த வேதாகமம் நீக்கு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="220"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="222"/>
         <source>Preview the selected Bible.</source>
         <translation>தேர்ந்தெடுத்த பரிசுத்த வேதாகமம் முன்னோட்டம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="221"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="223"/>
         <source>Send the selected Bible live.</source>
         <translation>தேர்ந்தெடுத்த பரிசுத்த வேதாகமம் அனுப்பு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="222"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="224"/>
         <source>Add the selected Bible to the service.</source>
         <translation>சேவை தேர்ந்தெடுத்த பரிசுத்த வேதாகமம் சேர்க்க</translation>
     </message>
@@ -656,37 +657,37 @@ Please type in some text before clicking New.</source>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>:</source>
         <comment>Verse identifier e.g. Genesis 1 : 1 = Genesis Chapter 1 Verse 1</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>v</source>
         <comment>Verse identifier e.g. Genesis 1 v 1 = Genesis Chapter 1 Verse 1</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>V</source>
         <comment>Verse identifier e.g. Genesis 1 V 1 = Genesis Chapter 1 Verse 1</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>verse</source>
         <comment>Verse identifier e.g. Genesis 1 verse 1 = Genesis Chapter 1 Verse 1</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="179"/>
         <source>verses</source>
         <comment>Verse identifier e.g. Genesis 1 verses 1 - 2 = Genesis Chapter 1 Verses 1 to 2</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="186"/>
         <source>-</source>
         <comment>range identifier e.g. Genesis 1 verse 1 - 2 = Genesis Chapter 1 Verses 1 To 2</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="186"/>
@@ -698,50 +699,50 @@ Please type in some text before clicking New.</source>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
         <source>,</source>
         <comment>connecting identifier e.g. Genesis 1 verse 1 - 2, 4 - 5 = Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="191"/>
         <source>and</source>
         <comment>connecting identifier e.g. Genesis 1 verse 1 - 2 and 4 - 5 = Genesis Chapter 1 Verses 1 To 2 And Verses 4 To 5</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="196"/>
         <source>end</source>
         <comment>ending identifier e.g. Genesis 1 verse 1 - end = Genesis Chapter 1 Verses 1 To The Last Verse</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>BiblesPlugin.BibleEditForm</name>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="141"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="142"/>
         <source>You need to specify a version name for your Bible.</source>
         <translation>உங்கள் பதிப்பு பைபிள் ஒரு பெயரை குறிப்பிட வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="147"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="148"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
         <translation>நீங்கள் உங்கள் வேதாகமம் ஒரு பதிப்புரிமை அமைக்க வேண்டும். பொது டொமைன் பைபிள் போன்ற குறித்தது வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="155"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="156"/>
         <source>Bible Exists</source>
         <translation>பைபிள் உள்ளது</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="155"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="156"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
         <translation>இந்த வேதாகமம் முன்பே இருக்கிறது. வேறு வேதாகமம் இறக்குமதி அல்லது முதல் இருக்கும் ஒரு நீக்கவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="169"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="170"/>
         <source>You need to specify a book name for &quot;%s&quot;.</source>
         <translation>நீங்கள் ஒரு புத்தகம் பெயரை குறிப்பிட வேண்டும்  &quot;%s&quot;.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="176"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="177"/>
         <source>The book name &quot;%s&quot; is not correct.
 Numbers can only be used at the beginning and must
 be followed by one or more non-numeric characters.</source>
@@ -749,12 +750,12 @@ be followed by one or more non-numeric characters.</source>
  எண்கள் மட்டுமே ஆரம்பத்தில் பயன்படுத்தலாம் மற்றும்  அல்லது அதற்கு மேற்பட்ட அல்லாத எண் எழுத்துகள் ஒன்று தொடர்ந்து வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="188"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="189"/>
         <source>Duplicate Book Name</source>
         <translation>புத்தக பெயர் நகல</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="188"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="189"/>
         <source>The Book Name &quot;%s&quot; has been entered more than once.</source>
         <translation>இந்த புத்தகம் பெயர் &quot;%s&quot; க்கும் மேற்பட்ட ஒருமுறை நுழைந்தது.</translation>
     </message>
@@ -762,38 +763,38 @@ be followed by one or more non-numeric characters.</source>
 <context>
     <name>BiblesPlugin.BibleManager</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="356"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="351"/>
         <source>Scripture Reference Error</source>
         <translation>நூல் குறிப்பு பிழை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="348"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="343"/>
         <source>Web Bible cannot be used</source>
         <translation>இண்டர்நெட் பரிசுத்த வேதாகமம் பயன்படுத்த முடியாது</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="348"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="343"/>
         <source>Text Search is not available with Web Bibles.</source>
         <translation>உரை தேடுதல் இண்டர்நெட் உடன் இல்லை பரிசுத்த வேதாகமம்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="356"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="351"/>
         <source>You did not enter a search keyword.
 You can separate different keywords by a space to search for all of your keywords and you can separate them by a comma to search for one of them.</source>
         <translation>நீங்கள் ஒரு தேடல் திறவுச்சொல் நுழைய முடியவில்லை. ⏎ நீங்கள் உங்கள் முக்கிய வார்த்தைகள் அனைத்து தேட ஒரு இடைவெளி மூலம் வெவ்வேறு திறவுச்சொற்களை பிரிக்க முடியாது, நீங்கள் அவர்களுக்கு ஒரு தேட ஒரு கமா மூலம் பிரிக்க முடியாது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="334"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="329"/>
         <source>There are no Bibles currently installed. Please use the Import Wizard to install one or more Bibles.</source>
         <translation>பரிசுத்த வேதாகமம் தற்போது நிறுவப்பட்ட இல்லை உள்ளன. ஒன்று அல்லது அதற்கு மேற்பட்ட பரிசுத்த வேதாகமம் நிறுவ இறக்குமதி வழிகாட்டி பயன்படுத்தவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="334"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="329"/>
         <source>No Bibles Available</source>
         <translation>எந்த பரிசுத்த வேதாகமம் கிடைக்கும் இல்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="285"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="280"/>
         <source>Your scripture reference is either not supported by OpenLP or is invalid. Please make sure your reference conforms to one of the following patterns or consult the manual:
 
 Book Chapter
@@ -925,7 +926,7 @@ search results and on display:</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="157"/>
         <source>Show verse numbers</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -974,7 +975,7 @@ search results and on display:</source>
 <context>
     <name>BiblesPlugin.BookNameForm</name>
     <message>
-        <location filename="openlp/plugins/bibles/forms/booknameform.py" line="108"/>
+        <location filename="openlp/plugins/bibles/forms/booknameform.py" line="109"/>
         <source>You need to select a book.</source>
         <translation>நீங்கள் ஒரு புத்தகத்தை தேர்ந்தெடுக்க வேண்டும்.</translation>
     </message>
@@ -1050,14 +1051,14 @@ search results and on display:</source>
         <translation>ஆங்கிலம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="73"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="74"/>
         <source>This is a Web Download Bible.
 It is not possible to customize the Book Names.</source>
         <translation>இந்த ஒரு வலை பதிவிறக்கம் வேதாகமம் உள்ளது. 
 அது புத்தக பெயர்கள் தனிப்பயனாக்க முடியாது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="78"/>
+        <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="79"/>
         <source>To use the customized book names, &quot;Bible language&quot; must be selected on the Meta Data tab or, if &quot;Global settings&quot; is selected, on the Bible page in Configure OpenLP.</source>
         <translation>தனிப்பயனாக்கப்பட்ட புத்தகம் பெயர்களை பயன்படுத்த, &quot;வேதாகமம் மொழி&quot; என்ற தேர்ந்தெடுத்த Meta Data tab அல்லது &quot;உலகளாவிய அமைப்புகள்&quot; கட்டமைத்தல் OpenLP பைபிள் பக்கத்திலும், தேர்வு.</translation>
     </message>
@@ -1065,38 +1066,38 @@ It is not possible to customize the Book Names.</source>
 <context>
     <name>BiblesPlugin.HTTPBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="610"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="609"/>
         <source>Registering Bible and loading books...</source>
         <translation>பதிவுசெய்யும் வேதாகமம் மற்றும் ஏற்றுவதில் புத்தகங்கள்...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="634"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="633"/>
         <source>Registering Language...</source>
         <translation>மொழி பதிவு செய்ய...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="645"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="644"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
         <translation>இறக்குமதி %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="791"/>
         <source>Download Error</source>
         <translation>பிழை பதிவிறக்கம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="792"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="791"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>உங்கள் வசனம் தேர்வு பதிவிறக்கும் ஒரு பிரச்சனை இருந்தது. உங்கள் இணைய இணைப்பை சரிபார்த்து, இந்த பிழை ஏற்படலாம் தொடர்ந்து ஒரு பிழை அறிக்கை கருத்தில் தயவு செய்து தயவு செய்து.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="797"/>
         <source>Parse Error</source>
         <translation>பிழை பாகுபடுத்த</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="798"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="797"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>உங்கள் வசனம் தேர்வு பிரித்தெடுப்பதில் சிக்கல் ஏற்பட்டது. இந்த பிழை ஏற்படலாம் தொடர்ந்து ஒரு பிழை அறிக்கை முயற்சியுங்கள்.</translation>
     </message>
@@ -1261,27 +1262,27 @@ It is not possible to customize the Book Names.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="636"/>
         <source>Registered Bible. Please note, that verses will be downloaded on demand and thus an internet connection is required.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="332"/>
         <source>Click to download bible list</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="333"/>
         <source>Download bible list</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
         <source>Error during download</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="517"/>
         <source>An error occurred while downloading the list of bibles from %s.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1305,7 +1306,7 @@ It is not possible to customize the Book Names.</source>
 <context>
     <name>BiblesPlugin.LanguageForm</name>
     <message>
-        <location filename="openlp/plugins/bibles/forms/languageform.py" line="62"/>
+        <location filename="openlp/plugins/bibles/forms/languageform.py" line="64"/>
         <source>You need to choose a language.</source>
         <translation>நீங்கள் ஒரு மொழி தேர்வு செய்ய வேண்டும்.</translation>
     </message>
@@ -1313,92 +1314,92 @@ It is not possible to customize the Book Names.</source>
 <context>
     <name>BiblesPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="194"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="198"/>
         <source>Quick</source>
         <translation>வேகமாக</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="278"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="282"/>
         <source>Find:</source>
         <translation>கண்டறிய:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="288"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="292"/>
         <source>Book:</source>
         <translation>புத்தகம்:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="289"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="293"/>
         <source>Chapter:</source>
         <translation>பாடம்:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="290"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="294"/>
         <source>Verse:</source>
         <translation>வசனம்:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="291"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="295"/>
         <source>From:</source>
         <translation>இருந்து:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="292"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="296"/>
         <source>To:</source>
         <translation>அந்த:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="311"/>
         <source>Text Search</source>
         <translation>உரை தேடல்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="294"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="298"/>
         <source>Second:</source>
         <translation>இரண்டாவது:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="311"/>
         <source>Scripture Reference</source>
         <translation>நூல் குறிப்பு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="299"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="303"/>
         <source>Toggle to keep or clear the previous results.</source>
         <translation>முந்தைய முடிவுகளை வைத்து அல்லது அழிக்க மாறுவதற்கு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="88"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="92"/>
         <source>You cannot combine single and dual Bible verse search results. Do you want to delete your search results and start a new search?</source>
         <translation>நீங்கள் ஒற்றை மற்றும் இரட்டை வேதாகமம் வசனம் தேடல் முடிவுகளை இணைக்க முடியாது. உங்கள் தேடல் முடிவுகளை நீக்க மற்றும் ஒரு புதிய தேடலை தொடங்க வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="411"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="415"/>
         <source>Bible not fully loaded.</source>
         <translation>வேதாகமம் முழுவதும் ஏற்ற.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="685"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="689"/>
         <source>Information</source>
         <translation>தகவல்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="685"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="689"/>
         <source>The second Bible does not contain all the verses that are in the main Bible. Only verses found in both Bibles will be shown. %d verses have not been included in the results.</source>
         <translation>இரண்டாவது வேதாகமம் முக்கிய வேதாகமத்தில் அனைத்து வசனங்கள் இல்லை. இரண்டு விவிலியங்களும் காணப்படும் மட்டுமே வசனங்கள் காண்பிக்கப்படும். %d வசனங்கள் முடிவு சேர்க்கப்பட்டுள்ளது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="311"/>
         <source>Search Scripture Reference...</source>
         <translation>தேடல் புனித குறிப்பு ...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="311"/>
         <source>Search Text...</source>
         <translation>உரை தேட ...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="499"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="503"/>
         <source>Are you sure you want to completely delete &quot;%s&quot; Bible from OpenLP?
 
 You will need to re-import this Bible to use it again.</source>
@@ -1407,7 +1408,7 @@ You will need to re-import this Bible to use it again.</source>
 நீங்கள் இந்த பைபிள் மீண்டும் பயன்படுத்த மீண்டும் இறக்குமதி செய்ய வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="197"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="201"/>
         <source>Advanced</source>
         <translation>முன்னேறிய</translation>
     </message>
@@ -1422,7 +1423,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="80"/>
         <source>Incorrect Bible file type supplied. This looks like a Zefania XML bible, please use the Zefania import option.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1430,7 +1431,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="126"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1438,12 +1439,12 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/osis.py" line="76"/>
         <source>Removing unused tags (this may take a few minutes)...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/osis.py" line="168"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1564,13 +1565,6 @@ Complete</source>
         <translation>, %s பிழை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="549"/>
-        <source>Upgrading Bible(s): %s successful%s
-Please note that verses from Web Bibles will be downloaded on demand and so an Internet connection is required.</source>
-        <translation>தரத்தை உயர்த்துதல் வேதாகமம் (கள்): %s நன்றாக முடித்து%s
-இண்டர்நெட் விவிலியங்களும் இருந்து வசனங்கள் தேவையை பதிவிறக்கப்படும் மற்றும் இணைய இணைப்பு தேவை என்பதை நினைவில் கொள்ளவும்.</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="555"/>
         <source>Upgrading Bible(s): %s successful%s</source>
         <translation>தரத்தை உயர்த்துதல் வேதாகமம் (கள்): %s நன்றாக முடித்து%s</translation>
@@ -1595,13 +1589,19 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <source>There are no Bibles that need to be upgraded.</source>
         <translation>ஒரு விவிலியங்களும் மேம்படுத்தப்பட வேண்டும் என்று இல்லை.</translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="549"/>
+        <source>Upgrading Bible(s): %(success)d successful%(failed_text)s
+Please note that verses from Web Bibles will be downloaded on demand and so an Internet connection is required.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>BiblesPlugin.ZefaniaImport</name>
     <message>
         <location filename="openlp/plugins/bibles/lib/zefania.py" line="111"/>
         <source>Incorrect Bible file type supplied. Zefania Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1609,73 +1609,73 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/bibles/lib/zefania.py" line="105"/>
         <source>Importing %(bookname)s %(chapter)s...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>CustomPlugin</name>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="99"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="97"/>
         <source>Custom Slide</source>
         <comment>name singular</comment>
         <translation>விருப்ப படவில்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="100"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="98"/>
         <source>Custom Slides</source>
         <comment>name plural</comment>
         <translation>தனிபயன் படவில்லைகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="104"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="102"/>
         <source>Custom Slides</source>
         <comment>container title</comment>
         <translation>தனிபயன் படவில்லைகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="108"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="106"/>
         <source>Load a new custom slide.</source>
         <translation>புதிய தனிப்பயன் ஸ்லைடை ஏற்ற.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="109"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="107"/>
         <source>Import a custom slide.</source>
         <translation>விருப்ப படவில்லை இறக்குமதி.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="110"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="108"/>
         <source>Add a new custom slide.</source>
         <translation>புதிய தனிப்பயன் ஸ்லைடை சேர்க்க.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="111"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="109"/>
         <source>Edit the selected custom slide.</source>
         <translation>தேர்ந்தெடுத்த விருப்ப படவில்லை திருத்த.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="112"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="110"/>
         <source>Delete the selected custom slide.</source>
         <translation>தேர்ந்தெடுத்த விருப்ப ஸ்லைடை நீக்க.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="113"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="111"/>
         <source>Preview the selected custom slide.</source>
         <translation>தேர்ந்தெடுத்த விருப்ப படவில்லை முன்னோட்டம்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="114"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="112"/>
         <source>Send the selected custom slide live.</source>
         <translation>தற்சமயம் தேர்ந்தெடுத்த விருப்ப படவில்லை அனுப்ப.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="115"/>
+        <location filename="openlp/plugins/custom/customplugin.py" line="113"/>
         <source>Add the selected custom slide to the service.</source>
         <translation>சேவைக்கு தேர்ந்தெடுத்த விருப்ப ஸ்லைடை சேர்க்க.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="66"/>
         <source>&lt;strong&gt;Custom Slide Plugin &lt;/strong&gt;&lt;br /&gt;The custom slide plugin provides the ability to set up custom text slides that can be displayed on the screen the same way songs are. This plugin provides greater freedom over the songs plugin.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1693,7 +1693,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/custom/lib/customtab.py" line="62"/>
         <source>Import missing custom slides from service files</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1739,7 +1739,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation>&amp;வரவுகளை:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="238"/>
+        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="239"/>
         <source>You need to type in a title.</source>
         <translation>நீங்கள் ஒரு தலைப்பை தட்டச்சு செய்ய வேண்டும்.</translation>
     </message>
@@ -1754,9 +1754,9 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation>படவில்லையை சேர்க்க</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="242"/>
+        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="243"/>
         <source>You need to add at least one slide.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1769,10 +1769,10 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
 </context>
 <context>
     <name>CustomPlugin.MediaItem</name>
-    <message numerus="yes">
-        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="186"/>
-        <source>Are you sure you want to delete the %n selected custom slide(s)?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
+    <message>
+        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="190"/>
+        <source>Are you sure you want to delete the &quot;%d&quot; selected custom slide(s)?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1784,55 +1784,55 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
 இந்த Plugin மேன்மையான அம்சங்கள் ஒரு சேவையை மேலாளர் ஒன்றாக படங்களை பல குழு திறன் ஆகும். பல படங்களை காண்பிக்கும் எளிதாக்கும். இந்த Plugin அந்த தானாக இயங்கும் ஒரு காட்சியை உருவாக்க OpenLP தான் &quot;காலக்கெடு வளைவு&quot; அம்சத்தை பயன்படுத்தலாம். இந்த கூடுதலாக, Plugin இருந்து படங்களை தற்போதைய தீம் பின்னணி புறக்கணிக்க பயன்படுத்த முடியும். அதற்கு பதிலாக வழங்கப்பட்ட பின்னணி ஒரு பின்னணி போன்ற தேர்ந்தெடுத்த படத்தை கொண்ட இசை போன்ற உரை சார்ந்த உருப்படிகளை வழங்குவதுமான இது</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="107"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="84"/>
         <source>Image</source>
         <comment>name singular</comment>
         <translation>படம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="108"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="85"/>
         <source>Images</source>
         <comment>name plural</comment>
         <translation>படிமங்கள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="111"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="88"/>
         <source>Images</source>
         <comment>container title</comment>
         <translation>படிமங்கள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="114"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="91"/>
         <source>Load a new image.</source>
         <translation>ஒரு புதிய படத்தை ஏற்ற.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="116"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="93"/>
         <source>Add a new image.</source>
         <translation>ஒரு புதிய படத்தை சேர்க்க.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="117"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="94"/>
         <source>Edit the selected image.</source>
         <translation>தேர்ந்தெடுத்த படத்தை திருத்த.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="118"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="95"/>
         <source>Delete the selected image.</source>
         <translation>தேர்ந்தெடுத்த படத்தை நீக்கு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="119"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="96"/>
         <source>Preview the selected image.</source>
         <translation>தேர்ந்தெடுத்த படத்தை முன்னோட்டம்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="120"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="97"/>
         <source>Send the selected image live.</source>
         <translation>தற்சமயம் தேர்ந்தெடுத்த படம் அனுப்ப.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="121"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="98"/>
         <source>Add the selected image to the service.</source>
         <translation>சேவைக்கு தேர்ந்தெடுத்த படத்தை சேர்க்க.</translation>
     </message>
@@ -1842,32 +1842,32 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/images/forms/addgroupdialog.py" line="55"/>
         <source>Add group</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/addgroupdialog.py" line="56"/>
         <source>Parent group:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/addgroupdialog.py" line="57"/>
         <source>Group name:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/forms/addgroupform.py" line="67"/>
+        <location filename="openlp/plugins/images/forms/addgroupform.py" line="68"/>
         <source>You need to type in a group name.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="642"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="647"/>
         <source>Could not add the new group.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="645"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="650"/>
         <source>This group already exists.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1875,33 +1875,33 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/images/forms/choosegroupdialog.py" line="81"/>
         <source>Select Image Group</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/choosegroupdialog.py" line="82"/>
         <source>Add images to group:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/choosegroupdialog.py" line="83"/>
         <source>No group</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/choosegroupdialog.py" line="84"/>
         <source>Existing group</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/forms/choosegroupdialog.py" line="85"/>
         <source>New group</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ImagePlugin.ExceptionDialog</name>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="224"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="210"/>
         <source>Select Attachment</source>
         <translation>இணைப்பு தேர்ந்தெடுக்கவும</translation>
     </message>
@@ -1909,61 +1909,61 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
 <context>
     <name>ImagePlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="69"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="73"/>
         <source>Select Image(s)</source>
         <translation>தேர்ந்தெடுக்கவும் படம் (கள்)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="664"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="669"/>
         <source>You must select an image to replace the background with.</source>
         <translation>நீங்கள் பின்னணி பதிலாக ஒரு படத்தை தேர்வு செய்ய வேண்டும்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="594"/>
         <source>Missing Image(s)</source>
         <translation>காணாமல் போன படம் (கள்)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="583"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="588"/>
         <source>The following image(s) no longer exist: %s</source>
         <translation>இந்த படம் (கள்) இல்லை: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="589"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="594"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>பின்வரும் படத்தை (கள்) இனி இல்லை: %s 
 இருப்பினும் மற்ற படங்களை சேர்க்கவும் வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="681"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="686"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>உங்கள் பின்னணி பதிலாக ஒரு பிரச்சனை இருந்தது, பட கோப்பு &quot;%s&quot; இல்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="677"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="682"/>
         <source>There was no display item to amend.</source>
         <translation>திருத்தும் இல்லை காட்சி பொருளாக இருந்தது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/forms/addgroupform.py" line="54"/>
+        <location filename="openlp/plugins/images/forms/addgroupform.py" line="55"/>
         <source>-- Top-level group --</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="221"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="225"/>
         <source>You must select an image or group to delete.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="242"/>
         <source>Remove group</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="238"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="242"/>
         <source>Are you sure you want to remove &quot;%s&quot; and everything in it?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1977,29 +1977,29 @@ Do you want to add the other images anyway?</source>
 <context>
     <name>Media.player</name>
     <message>
-        <location filename="openlp/core/ui/media/phononplayer.py" line="258"/>
-        <source>Phonon is a media player which interacts with the operating system to provide media capabilities.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="openlp/core/ui/media/webkitplayer.py" line="392"/>
         <source>Audio</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/webkitplayer.py" line="393"/>
         <source>Video</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/vlcplayer.py" line="359"/>
+        <location filename="openlp/core/ui/media/vlcplayer.py" line="369"/>
         <source>VLC is an external player which supports a number of different formats.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/webkitplayer.py" line="390"/>
         <source>Webkit is a media player which runs inside a web browser. This player allows text over video to be rendered.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/media/systemplayer.py" line="249"/>
+        <source>This media player uses your operating system to provide media capabilities.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2066,198 +2066,198 @@ Do you want to add the other images anyway?</source>
 <context>
     <name>MediaPlugin.MediaClipSelector</name>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="183"/>
-        <source>Select Media Clip</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="184"/>
-        <source>Source</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="185"/>
-        <source>Media path:</source>
-        <translation type="unfinished"/>
+        <source>Select Media Clip</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="186"/>
-        <source>Select drive from list</source>
-        <translation type="unfinished"/>
+        <source>Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="187"/>
+        <source>Media path:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="188"/>
-        <source>Load disc</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="189"/>
-        <source>Track Details</source>
-        <translation type="unfinished"/>
+        <source>Select drive from list</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="190"/>
+        <source>Load disc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="191"/>
+        <source>Track Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="192"/>
         <source>Title:</source>
         <translation>தலைப்பு:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="191"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="193"/>
         <source>Audio track:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="192"/>
-        <source>Subtitle track:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="200"/>
-        <source>HH:mm:ss.z</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="194"/>
-        <source>Clip Range</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="195"/>
-        <source>Start point:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="197"/>
-        <source>Set start point</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="198"/>
-        <source>Jump to start point</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="199"/>
-        <source>End point:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="201"/>
-        <source>Set end point</source>
-        <translation type="unfinished"/>
+        <source>Subtitle track:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="202"/>
+        <source>HH:mm:ss.z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="196"/>
+        <source>Clip Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="197"/>
+        <source>Start point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="199"/>
+        <source>Set start point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="200"/>
+        <source>Jump to start point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="201"/>
+        <source>End point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="203"/>
+        <source>Set end point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/forms/mediaclipselectordialog.py" line="204"/>
         <source>Jump to end point</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MediaPlugin.MediaClipSelectorForm</name>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="202"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="196"/>
         <source>No path was given</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="208"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="202"/>
         <source>Given path does not exists</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="225"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="219"/>
         <source>An error happened during initialization of VLC player</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="246"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="240"/>
         <source>VLC player failed playing the media</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="571"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="567"/>
         <source>CD not loaded correctly</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="571"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="567"/>
         <source>The CD was not loaded correctly, please re-load and try again.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="582"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="578"/>
         <source>DVD not loaded correctly</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="582"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="578"/>
         <source>The DVD was not loaded correctly, please re-load and try again.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="589"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="585"/>
         <source>Set name of mediaclip</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="589"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="585"/>
         <source>Name of mediaclip:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="599"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="595"/>
         <source>Enter a valid name or cancel</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="605"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="601"/>
         <source>Invalid character</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="605"/>
+        <location filename="openlp/plugins/media/forms/mediaclipselectorform.py" line="601"/>
         <source>The name of the mediaclip must not contain the character &quot;:&quot;</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MediaPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="99"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="103"/>
         <source>Select Media</source>
         <translation>ஊடக தேர்ந்தெடுக்கவும்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="338"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="343"/>
         <source>You must select a media file to delete.</source>
         <translation>நீங்கள் ஒரு ஊடக கோப்பு நீக்க ஒரு கோப்பை தேர்ந்தெடுக்கவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="201"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="206"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>நீங்கள் பின்னணி இடமாற்றம் செய்ய ஒரு ஊடக கோப்பு தேர்ந்தெடுக்க வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="219"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="224"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>உங்கள் பின்னணி பதிலாக ஒரு பிரச்சனை உள்ளது, ஊடக கோப்பு &quot;%s&quot; இல்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="263"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="268"/>
         <source>Missing Media File</source>
         <translation>ஊடக கோப்பு காணவில்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="263"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="268"/>
         <source>The file %s no longer exists.</source>
         <translation>கோப்பு  %s உள்ளது இல்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="300"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="305"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>வீடியோக்கள (%s);;ஆடியோ (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="215"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="220"/>
         <source>There was no display item to amend.</source>
         <translation>திருத்தும் இல்லை காட்சி பொருளாக இருந்தது.</translation>
     </message>
@@ -2267,44 +2267,44 @@ Do you want to add the other images anyway?</source>
         <translation>ஆதரிக்கப்படவில்லை கோப்பு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="108"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="112"/>
         <source>Use Player:</source>
         <translation>பயன்படுத்த பிளேயர்</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="500"/>
         <source>VLC player required</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="500"/>
         <source>VLC player required for playback of optical devices</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="136"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="140"/>
         <source>Load CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="137"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="141"/>
         <source>Load CD/DVD - only supported when VLC is installed and enabled</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="246"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="251"/>
         <source>The optical disc %s is no longer available.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="439"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="444"/>
         <source>Mediaclip already saved</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="439"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="444"/>
         <source>This mediaclip has already been saved</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2317,7 +2317,7 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/media/lib/mediatab.py" line="57"/>
         <source>Start Live items automatically</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2325,7 +2325,7 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="434"/>
         <source>&amp;Projector Manager</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2352,53 +2352,53 @@ OpenLP இப்போது மேம்படுத்த வேண்ட�
     <message>
         <location filename="openlp/core/__init__.py" line="226"/>
         <source>Backup</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/__init__.py" line="211"/>
         <source>OpenLP has been upgraded, do you want to create a backup of OpenLPs data folder?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/__init__.py" line="223"/>
         <source>Backup of the data folder failed!</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/__init__.py" line="226"/>
         <source>A backup of the data folder has been created at %s</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="653"/>
         <source>Open</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.AboutForm</name>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="265"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="298"/>
         <source>Credits</source>
         <translation>நற்பெயர்களை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="661"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="694"/>
         <source>License</source>
         <translation>உரிமம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutform.py" line="55"/>
+        <location filename="openlp/core/ui/aboutform.py" line="56"/>
         <source> build %s</source>
         <translation>கட்ட %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="279"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="312"/>
         <source>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</source>
         <translation>இந்த திட்டத்தின் ஒரு இலவச மென்பொருள்; நீங்கள் விதிகளின் கீழ் அது மறுவிநியோகம் / அல்லது அதை மாற்ற முடியாது GNU General Public License என வெளியிடப்பட்டது Free Software Foundation; version 2 of the License.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="284"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="317"/>
         <source>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</source>
         <translation>இந்த திட்டம் பயனுள்ளதாக இருக்கும் என்று நம்பிக்கையில் விநியோகிக்கப்படுகிறது, ஆனால் எந்த உத்தரவாதமும் இல்லாதது; ஒரு குறிப்பிட்ட நோக்கத்துக்கு சந்தைப்படுத்துதல் அல்லது கூட மறைமுகமான காப்புறுதிகளும் இல்லாமல். மேலும் விவரங்களுக்கு கீழே காண்க.</translation>
     </message>
@@ -2420,84 +2420,169 @@ OpenLP பற்றி மேலும் அறிய.: http://openlp.org/
 OpenLP தொண்டர்கள் எழுதி பராமரிக்கப்படுகிறது. மேலும் இலவச கிரிஸ்துவர் மென்பொருள் எழுதி பார்க்க விரும்பினால், கீழே உள்ள பொத்தானை பயன்படுத்தி தன்னார்வ முயற்சியுங்கள்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="663"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="696"/>
         <source>Volunteer</source>
         <translation>மேற்கொள்</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="157"/>
-        <source>Project Lead
-    %s
-
-Developers
-    %s
-
-Contributors
-    %s
-
-Testers
-    %s
-
-Packagers
-    %s
-
-Translators
-    Afrikaans (af)
-        %s
-    Czech (cs)
-        %s
-    Danish (da)
-        %s
-    German (de)
-        %s
-    Greek (el)
-        %s
-    English, United Kingdom (en_GB)
-        %s
-    English, South Africa (en_ZA)
-        %s
-    Spanish (es)
-        %s
-    Estonian (et)
-        %s
-    Finnish (fi)
-        %s
-    French (fr)
-        %s
-    Hungarian (hu)
-        %s
-    Indonesian (id)
-        %s
-    Japanese (ja)
-        %s
-    Norwegian Bokmål (nb)
-        %s
-    Dutch (nl)
-        %s
-    Polish (pl)
-        %s
-    Portuguese, Brazil (pt_BR)
-        %s
-    Russian (ru)
-        %s
-    Swedish (sv)
-        %s
-    Tamil(Sri-Lanka) (ta_LK)
-        %s
-    Chinese(China) (zh_CN)
-        %s
-
-Documentation
-    %s
-
-Built With
+        <source>Project Lead</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="158"/>
+        <source>Developers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="159"/>
+        <source>Contributors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="160"/>
+        <source>Packagers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="161"/>
+        <source>Testers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="162"/>
+        <source>Translators</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="163"/>
+        <source>Afrikaans (af)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="164"/>
+        <source>Czech (cs)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="165"/>
+        <source>Danish (da)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="166"/>
+        <source>German (de)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="167"/>
+        <source>Greek (el)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="168"/>
+        <source>English, United Kingdom (en_GB)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="169"/>
+        <source>English, South Africa (en_ZA)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="170"/>
+        <source>Spanish (es)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="171"/>
+        <source>Estonian (et)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="172"/>
+        <source>Finnish (fi)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="173"/>
+        <source>French (fr)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="174"/>
+        <source>Hungarian (hu)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="175"/>
+        <source>Indonesian (id)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="176"/>
+        <source>Japanese (ja)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="177"/>
+        <source>Norwegian Bokm&#xe5;l (nb)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="178"/>
+        <source>Dutch (nl)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="179"/>
+        <source>Polish (pl)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="180"/>
+        <source>Portuguese, Brazil (pt_BR)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="181"/>
+        <source>Russian (ru)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="182"/>
+        <source>Swedish (sv)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="183"/>
+        <source>Tamil(Sri-Lanka) (ta_LK)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="184"/>
+        <source>Chinese(China) (zh_CN)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="185"/>
+        <source>Documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="186"/>
+        <source>Built With
     Python: http://www.python.org/
-    Qt4: http://qt.io
-    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro
+    Qt5: http://qt.io
+    PyQt5: http://www.riverbankcomputing.co.uk/software/pyqt/intro
     Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/
     MuPDF: http://www.mupdf.com/
-
-Final Credit
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="192"/>
+        <source>Final Credit
     &quot;For God so loved the world that He gave
     His one and only Son, so that whoever
     believes in Him will not perish but inherit
@@ -2508,74 +2593,74 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="270"/>
-        <source>Copyright © 2004-2016 %s
-Portions copyright © 2004-2016 %s</source>
-        <translation type="unfinished"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="303"/>
+        <source>Copyright &#xa9; 2004-2016 %s
+Portions copyright &#xa9; 2004-2016 %s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.AdvancedTab</name>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="260"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="264"/>
         <source>UI Settings</source>
         <translation>பயனர் இடைமுக அமைப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="262"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="266"/>
         <source>Number of recent files to display:</source>
         <translation>காண்பிக்க சமீபத்திய கோப்புகளை எண்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="263"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="267"/>
         <source>Remember active media manager tab on startup</source>
         <translation>செயலில் ஊடக மேலாளர் நினைவிருக்கிறதா தொடக்கத்தில் தாவல்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="265"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="269"/>
         <source>Double-click to send items straight to live</source>
         <translation>உருப்படிகள தற்சமயம் அனுப்ப இருமடங்காக கிளிக செய</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="269"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="273"/>
         <source>Expand new service items on creation</source>
         <translation>உருவாக்கம் புதிய சேவையை உருப்படிகள் விரிவாக்கம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="271"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="275"/>
         <source>Enable application exit confirmation</source>
         <translation>பயன்பாடு வெளியேறும் உறுதி செயல்படுத்த</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="291"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="295"/>
         <source>Mouse Cursor</source>
         <translation>இடஞ்சுட்டியை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="292"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="296"/>
         <source>Hide mouse cursor when over display window</source>
         <translation>இடஞ்சுட்டியை மறைக்க போது காட்சி ஜன்னல் வழியாக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="293"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="297"/>
         <source>Default Image</source>
         <translation>இயல்பான படம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="294"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="298"/>
         <source>Background color:</source>
         <translation>பின்னணி நிறம்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="295"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="299"/>
         <source>Image file:</source>
         <translation>படம் கோப்பு:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="504"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="517"/>
         <source>Open File</source>
         <translation>திற கோப்பு</translation>
     </message>
@@ -2585,182 +2670,182 @@ Portions copyright © 2004-2016 %s</source>
         <translation>முன்னேறிய</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="267"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="271"/>
         <source>Preview items when clicked in Media Manager</source>
         <translation>முன்னோட்டம் உருப்படிகள் ஊடக மேலாளர் சொடுக்கப்படும் போது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="296"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="300"/>
         <source>Browse for an image file to display.</source>
         <translation>காண்பிக்க ஒரு படத்தை கோப்பு உலவ.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="297"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="301"/>
         <source>Revert to the default OpenLP logo.</source>
         <translation>முன்னிருப்பு OpenLP லோகோ மீட்டெடு.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="273"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="277"/>
         <source>Default Service Name</source>
         <translation>இயல்பான சேவையை பெயர</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="274"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="278"/>
         <source>Enable default service name</source>
         <translation>இயல்பான சேவை பெயர் செயல்படுத்த</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="275"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="279"/>
         <source>Date and Time:</source>
         <translation>தேதி மற்றும் நேரம்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="276"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="280"/>
         <source>Monday</source>
         <translation>திங்கட்கிழமை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="277"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="281"/>
         <source>Tuesday</source>
         <translation>செவ்வாய்க்கிழமை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="278"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="282"/>
         <source>Wednesday</source>
         <translation>புதன்கிழமை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="280"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="284"/>
         <source>Friday</source>
         <translation>வெள்ளி</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="281"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="285"/>
         <source>Saturday</source>
         <translation>சனிக்கிழமை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="282"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="286"/>
         <source>Sunday</source>
         <translation>ஞாயிற்றுக்கிழமை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="283"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="287"/>
         <source>Now</source>
         <translation>இப்பொழுது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="284"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="288"/>
         <source>Time when usual service starts.</source>
         <translation>வழக்கம்போல் சேவையை தொடங்கும்நேரம்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="285"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="289"/>
         <source>Name:</source>
         <translation>பெயர்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="286"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="290"/>
         <source>Consult the OpenLP manual for usage.</source>
         <translation>பயன்பாட்டுக்கு OpenLP கையேட்டினை.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="287"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="291"/>
         <source>Revert to the default service name &quot;%s&quot;.</source>
         <translation>இயல்பான சேவை பெயர் மாற்றியமை &quot;%s&quot;.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="290"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="294"/>
         <source>Example:</source>
         <translation>உதாரணமாக:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="314"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="318"/>
         <source>Bypass X11 Window Manager</source>
         <translation>விண்டோ மேலாளர் புறவழி X11</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="467"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="480"/>
         <source>Syntax error.</source>
         <translation>தொடரியல் பிழை.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="261"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="265"/>
         <source>Data Location</source>
         <translation>தரவு இடம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="298"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="302"/>
         <source>Current path:</source>
         <translation>இப்பொழுது பாதையை:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="299"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="303"/>
         <source>Custom path:</source>
         <translation>உங்கள் பாதையை:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="300"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="304"/>
         <source>Browse for new data file location.</source>
         <translation>புதிய தரவு கோப்பு இடத்திற்கு உலவ.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="302"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="306"/>
         <source>Set the data location to the default.</source>
         <translation>முன்னிருப்பு தரவு இடத்தில் அமைக்க.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="304"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="308"/>
         <source>Cancel</source>
         <translation>ரத்து</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="305"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="309"/>
         <source>Cancel OpenLP data directory location change.</source>
         <translation>OpenLP தரவு அடைவு இடம் மாற்றம் ரத்து.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="307"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="311"/>
         <source>Copy data to new location.</source>
         <translation>புதிய இடத்திற்கு தரவு நகலெடுக்க.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="308"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="312"/>
         <source>Copy the OpenLP data files to the new location.</source>
         <translation>புதிய இடத்திற்கு OpenLP தரவு கோப்புகளை நகலெடுக்க.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="310"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="314"/>
         <source>&lt;strong&gt;WARNING:&lt;/strong&gt; New data directory location contains OpenLP data files.  These files WILL be replaced during a copy.</source>
         <translation>&lt;strong&gt;எச்சரிக்கை:&lt;/strong&gt; புதிய தரவு அடைவு இடம் OpenLP தரவு கோப்புகளை கொண்டுள்ளது. இந்த கோப்புகள் ஒரு பிரதியை போது இடமாற்றப்படும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="370"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="377"/>
         <source>Data Directory Error</source>
         <translation>தரவு இடத்தில் பிழை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="516"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="530"/>
         <source>Select Data Directory Location</source>
         <translation>தரவு இடம் தேர்ந்தெடு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="528"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="543"/>
         <source>Confirm Data Directory Change</source>
         <translation>தரவு அடைவு மாற்றம் உறுதி</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="553"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="568"/>
         <source>Reset Data Directory</source>
         <translation>தரவு இடத்தில் மீட்டமை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="592"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="608"/>
         <source>Overwrite Existing Data</source>
         <translation>ஏற்கனவே தகவல்கள் மேலெழுதும்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="370"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="377"/>
         <source>OpenLP data directory was not found
 
 %s
@@ -2782,7 +2867,7 @@ OpenLP ஏற்றும் நிறுத்த &quot;இல்லை&quot; �
 இயல்புநிலை இருப்பிடம் தரவு அடைவு மீட்டமைக்க &quot;ஆம்&quot; கிளிக் செய்யவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="528"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="543"/>
         <source>Are you sure you want to change the location of the OpenLP data directory to:
 
 %s
@@ -2795,29 +2880,22 @@ The data directory will be changed when OpenLP is closed.</source>
 OpenLP மூடப்படும் போது தரவு அடைவு மாற்றப்படும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="279"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="283"/>
         <source>Thursday</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="313"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="317"/>
         <source>Display Workarounds</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="315"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="319"/>
         <source>Use alternating row colours in lists</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="553"/>
-        <source>Are you sure you want to change the location of the OpenLP data directory to the default location?
-
-This location will be used after OpenLP is  closed.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="592"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="608"/>
         <source>WARNING: 
 
 The location you have selected 
@@ -2825,17 +2903,26 @@ The location you have selected
 %s
 
 appears to contain OpenLP data files. Do you wish to replace these files with the current data files?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="638"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="654"/>
         <source>Restart Required</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="638"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="654"/>
         <source>This change will only take effect once OpenLP has been restarted.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="568"/>
+        <source>Are you sure you want to change the location of the OpenLP data directory to the default location?
+
+This location will be used after OpenLP is closed.</source>
+        <translation>நீங்கள் முன்னிருப்பு இடத்திற்கு OpenLP தரவு அடைவு இடம் மாற்ற வேண்டுமா? 
+
+OpenLP மூடிய பிறகு இந்த இடம் பயன்படுத்தப்படும்.</translation>
     </message>
 </context>
 <context>
@@ -2851,252 +2938,252 @@ appears to contain OpenLP data files. Do you wish to replace these files with th
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="302"/>
         <source>RGB</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="303"/>
         <source>Video</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="304"/>
         <source>Digital</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="305"/>
         <source>Storage</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="306"/>
         <source>Network</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="308"/>
         <source>RGB 1</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="309"/>
         <source>RGB 2</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="310"/>
         <source>RGB 3</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="311"/>
         <source>RGB 4</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="312"/>
         <source>RGB 5</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="313"/>
         <source>RGB 6</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="314"/>
         <source>RGB 7</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="315"/>
         <source>RGB 8</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="316"/>
         <source>RGB 9</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="317"/>
         <source>Video 1</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="318"/>
         <source>Video 2</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="319"/>
         <source>Video 3</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="320"/>
         <source>Video 4</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="321"/>
         <source>Video 5</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="322"/>
         <source>Video 6</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="323"/>
         <source>Video 7</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="324"/>
         <source>Video 8</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="325"/>
         <source>Video 9</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="326"/>
         <source>Digital 1</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="327"/>
         <source>Digital 2</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="328"/>
         <source>Digital 3</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="329"/>
         <source>Digital 4</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="330"/>
         <source>Digital 5</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="331"/>
         <source>Digital 6</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="332"/>
         <source>Digital 7</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="333"/>
         <source>Digital 8</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="334"/>
         <source>Digital 9</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="335"/>
         <source>Storage 1</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="336"/>
         <source>Storage 2</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="337"/>
         <source>Storage 3</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="338"/>
         <source>Storage 4</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="339"/>
         <source>Storage 5</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="340"/>
         <source>Storage 6</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="341"/>
         <source>Storage 7</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="342"/>
         <source>Storage 8</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="343"/>
         <source>Storage 9</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="344"/>
         <source>Network 1</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="345"/>
         <source>Network 2</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="346"/>
         <source>Network 3</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="347"/>
         <source>Network 4</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="348"/>
         <source>Network 5</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="349"/>
         <source>Network 6</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="350"/>
         <source>Network 7</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="351"/>
         <source>Network 8</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="352"/>
         <source>Network 9</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3107,125 +3194,61 @@ appears to contain OpenLP data files. Do you wish to replace these files with th
         <translation>பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="95"/>
-        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
-        <translation>அடடா! OpenLP பிரச்சனை வெற்றி, மற்றும் மீட்க முடியவில்லை. பெட்டியில் உரை கீழே OpenLP டெவலப்பர்களுக்கு பயனுள்ளதாக இருக்கும் என்று தகவல்கள், அதனால் பிரச்சனை ஏற்பட்டது போது நீங்கள் என்ன செய்கிறீர்கள் என்று ஒரு விரிவான விளக்கத்தை சேர்த்து, bugs@openlp.org மின்னஞ்சல் செய்யவும்.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="101"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="102"/>
         <source>Send E-Mail</source>
         <translation>மின்னஞ்சல் அனுப்ப</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="102"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="103"/>
         <source>Save to File</source>
         <translation>கோப்பு சேமிக்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="92"/>
-        <source>Please enter a description of what you were doing to cause this error 
-(Minimum 20 characters)</source>
-        <translation>நீங்கள் இந்த பிழை 
-ஏற்படுத்த என்ன செய்கிறீர்கள் என்று ஒரு விவரத்தை (குறைந்தது 20 எழுத்துகள்) உள்ளிடவும்</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="103"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="104"/>
         <source>Attach File</source>
         <translation>கோப்பை இணை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="217"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="203"/>
         <source>Description characters to enter : %s</source>
         <translation>விளக்கம் எழுத்துகள் நுழைய: %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="92"/>
+        <source>Please enter a description of what you were doing to cause this error. If possible, write in English.
+(Minimum 20 characters)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="96"/>
+        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred. Also attach any files that triggered the problem.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ExceptionForm</name>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="117"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="119"/>
         <source>Platform: %s
 </source>
         <translation>தளம்: %s
 </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="153"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="147"/>
         <source>Save Crash Report</source>
         <translation>க்ராஷ் அறிக்கையை சேமிக்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="153"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="147"/>
         <source>Text files (*.txt *.log *.text)</source>
         <translation>உரை கோப்புகள (*.txt *.log *.text)</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="146"/>
-        <source>**OpenLP Bug Report**
-Version: %s
-
---- Details of the Exception. ---
-
-%s
-
- --- Exception Traceback ---
-%s
---- System information ---
-%s
---- Library Versions ---
-%s
-</source>
-        <translation>**OpenLP Bug Report**
-Version: %s
-
---- Details of the Exception. ---
-
-%s
-
---- Exception Traceback ---
-%s
---- System information ---
-%s
- --- Library Versions ---
-%s
-</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="181"/>
-        <source>*OpenLP Bug Report*
-Version: %s
-
---- Details of the Exception. ---
-
-%s
-
- --- Exception Traceback ---
-%s
---- System information ---
-%s
---- Library Versions ---
-%s
-</source>
-        <comment>Please add the information that bug reports are favoured written in English.</comment>
-        <translation>*OpenLP Bug Report*
-Version: %s
-
---- Details of the Exception. ---
-
-%s
-
---- Exception Traceback ---
-%s
---- System information ---
-%s
---- Library Versions ---
-%s
-</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.FileRenameForm</name>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="57"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="58"/>
         <source>File Rename</source>
         <translation>மறுபெயரிடு தாக்கல்</translation>
     </message>
@@ -3235,7 +3258,7 @@ Version: %s
         <translation>புதிய கோப்பு பெயர்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="55"/>
+        <location filename="openlp/core/ui/filerenameform.py" line="56"/>
         <source>File Copy</source>
         <translation>கோப்பு நகல்</translation>
     </message>
@@ -3437,79 +3460,79 @@ To re-run the First Time Wizard and import this sample data at a later time, che
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="533"/>
         <source>There was a connection problem during download, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="564"/>
         <source>Download complete. Click the %s button to return to OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="568"/>
         <source>Download complete. Click the %s button to start OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="573"/>
         <source>Click the %s button to return to OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="577"/>
         <source>Click the %s button to start OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="603"/>
         <source>There was a connection problem while downloading, so further downloads will be skipped. Try to re-run the First Time Wizard later.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
         <source>This wizard will help you to configure OpenLP for initial use. Click the %s button below to start.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
         <source>
 
 To cancel the First Time Wizard completely (and not start OpenLP), click the %s button now.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="230"/>
         <source>Downloading Resource Index</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="231"/>
         <source>Please wait while the resource index is downloaded.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="233"/>
         <source>Please wait while OpenLP downloads the resource index file...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="271"/>
         <source>Downloading and Configuring</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="272"/>
         <source>Please wait while resources are downloaded and OpenLP is configured.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="663"/>
         <source>Network Error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="189"/>
         <source>There was a network error attempting to connect to retrieve initial configuration information</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="276"/>
@@ -3519,7 +3542,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="664"/>
         <source>Unable to download some files</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3552,35 +3575,35 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="115"/>
         <source>Default Formatting</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagdialog.py" line="125"/>
         <source>Custom Formatting</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.FormattingTagForm</name>
     <message>
-        <location filename="openlp/core/ui/formattingtagform.py" line="96"/>
+        <location filename="openlp/core/ui/formattingtagform.py" line="97"/>
         <source>&lt;HTML here&gt;</source>
         <translation>&lt;HTML here&gt;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/formattingtagform.py" line="200"/>
+        <location filename="openlp/core/ui/formattingtagform.py" line="201"/>
         <source>Validation Error</source>
         <translation>செல்லத்தக்கதாக்குதலும் பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/formattingtagform.py" line="180"/>
+        <location filename="openlp/core/ui/formattingtagform.py" line="181"/>
         <source>Description is missing</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/formattingtagform.py" line="183"/>
+        <location filename="openlp/core/ui/formattingtagform.py" line="184"/>
         <source>Tag is missing</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="80"/>
@@ -3590,17 +3613,17 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="82"/>
         <source>Description %s already defined.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/formattingtagcontroller.py" line="149"/>
         <source>Start tag %s is not valid HTML</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/formattingtagcontroller.py" line="169"/>
-        <source>End tag %s does not match end tag for start tag %s</source>
-        <translation type="unfinished"/>
+        <location filename="openlp/core/ui/formattingtagcontroller.py" line="168"/>
+        <source>End tag %(end)s does not match end tag for start tag %(start)s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3809,7 +3832,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
         <translation>தொடங்கு பின்னணி ஆடியோ இடைநிறுத்தப்படும்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="317"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="321"/>
         <source>Service Item Slide Limits</source>
         <translation>சேவையை பொருள் படவில்லை எல்லைகள்</translation>
     </message>
@@ -3824,22 +3847,22 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
         <translation>டிராக் பட்டியலில் மீண்டும் போட்டு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="318"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="322"/>
         <source>Behavior of next/previous on the last/first slide:</source>
         <translation>அடுத்த / முந்தைய கடைசி / முதல் ஸ்லைடு நடத்தை:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="319"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="323"/>
         <source>&amp;Remain on Slide</source>
         <translation>&amp;படவில்லை இருக்கும்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="320"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="324"/>
         <source>&amp;Wrap around</source>
         <translation>&amp;சுற்றி வளைத்துக்கொள்கின்றன</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="321"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="325"/>
         <source>&amp;Move to next/previous service item</source>
         <translation>&amp;முந்தைய / அடுத்த சேவை உருப்படியை வைக்க</translation>
     </message>
@@ -3847,12 +3870,12 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
 <context>
     <name>OpenLP.LanguageManager</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="120"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Language</source>
         <translation>மொழி</translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="120"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Please restart OpenLP to use your new language setting.</source>
         <translation>உங்கள் புதிய மொழி அமைப்பு பயன்படுத்த OpenLP மறுதொடக்கம் செய்க.</translation>
     </message>
@@ -3860,7 +3883,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
 <context>
     <name>OpenLP.MainDisplay</name>
     <message>
-        <location filename="openlp/core/ui/maindisplay.py" line="213"/>
+        <location filename="openlp/core/ui/maindisplay.py" line="249"/>
         <source>OpenLP Display</source>
         <translation>OpenLP காட்சி</translation>
     </message>
@@ -3923,34 +3946,14 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
         <translation>தீம் மேலாளர்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
-        <source>&amp;New</source>
-        <translation>&amp;புதிய</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
-        <source>&amp;Open</source>
-        <translation>&amp;திறந்த</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/mainwindow.py" line="408"/>
         <source>Open an existing service.</source>
         <translation>ஏற்கனவே சேவை திறக்க.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="409"/>
-        <source>&amp;Save</source>
-        <translation>&amp;சேமி</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/mainwindow.py" line="411"/>
         <source>Save the current service to disk.</source>
         <translation>வட்டு தற்போதைய சேவை சேமி.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
-        <source>Save &amp;As...</source>
-        <translation>இவ்வாறு &amp;சேமி...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="413"/>
@@ -4058,11 +4061,6 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
         <translation>நேரடி குழுவின் தன்மை மாறுவதற்கு.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
-        <source>&amp;Plugin List</source>
-        <translation>&amp;Plugin பட்டியல்</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/mainwindow.py" line="460"/>
         <source>List the Plugins</source>
         <translation>Plugin காண்பி</translation>
@@ -4143,7 +4141,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
         <translation>காட்சி முறையில் அமைக்கப்பட தற்சமயம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="622"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="623"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
@@ -4152,27 +4150,27 @@ You can download the latest version from http://openlp.org/.</source>
 நீங்கள் http://openlp.org/ சமீபத்திய பதிப்பை பதிவிறக்கம் செய்து கொள்ளலாம்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="625"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="626"/>
         <source>OpenLP Version Updated</source>
         <translation>OpenLP பதிப்பு புதுப்பிக்கப்பட்டது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="725"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="727"/>
         <source>OpenLP Main Display Blanked</source>
         <translation>OpenLP முக்கிய காட்சி வெற்றாக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="725"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="727"/>
         <source>The Main Display has been blanked out</source>
         <translation>முக்கிய காட்சி அவுட் வெற்றாக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1162"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1172"/>
         <source>Default Theme: %s</source>
         <translation>இயல்புநிலை தீம்: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="83"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="84"/>
         <source>English</source>
         <comment>Please add the name of your language here</comment>
         <translation>ஆங்கிலம்</translation>
@@ -4181,16 +4179,6 @@ You can download the latest version from http://openlp.org/.</source>
         <location filename="openlp/core/ui/mainwindow.py" line="424"/>
         <source>Configure &amp;Shortcuts...</source>
         <translation>உள்ளமைக்கவும் &amp;குறுக்குவழிகளை...</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1093"/>
-        <source>Close OpenLP</source>
-        <translation>OpenLP மூட</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1093"/>
-        <source>Are you sure you want to close OpenLP?</source>
-        <translation>நீங்கள் OpenLP மூடப்பட வேண்டுமா?</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="478"/>
@@ -4223,11 +4211,6 @@ You can download the latest version from http://openlp.org/.</source>
         <translation>தற்போதைய சேவையை அச்சிட்டு.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
-        <source>&amp;Recent Files</source>
-        <translation>&amp;சமீபத்திய கோப்புகள்</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/mainwindow.py" line="456"/>
         <source>L&amp;ock Panels</source>
         <translation>பலகங்கள் பாரு&amp;ங்கள்</translation>
@@ -4248,12 +4231,12 @@ You can download the latest version from http://openlp.org/.</source>
         <translation>மீண்டும் முதல் நேரம் விசார்ட் செய்ய, இசை, விவிலியங்களும் மற்றும் தீம்களை இறக்குமதி.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="679"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="680"/>
         <source>Re-run First Time Wizard?</source>
         <translation>மீண்டும் முதல் நேரம் விசார்ட் செய்வது?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="679"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="680"/>
         <source>Are you sure you want to re-run the First Time Wizard?
 
 Re-running this wizard may make changes to your current OpenLP configuration and possibly add songs to your existing songs list and change your default theme.</source>
@@ -4262,13 +4245,13 @@ Re-running this wizard may make changes to your current OpenLP configuration and
 மீண்டும் இயங்கும் இந்த வழிகாட்டி உங்கள் தற்போதைய OpenLP கட்டமைப்பு மாற்றங்கள் மற்றும் சாத்தியமான ஏற்கனவே இசை பட்டியலில் இசை சேர்க்க, உங்கள் இயல்புநிலை தீம் மாற்றலாம்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1302"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1312"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation>தெளிவான பட்டியல்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1302"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1312"/>
         <source>Clear the list of recent files.</source>
         <translation>சமீபத்திய கோப்புகளை அழிக்கவும்.</translation>
     </message>
@@ -4294,52 +4277,52 @@ Re-running this wizard may make changes to your current OpenLP configuration and
 தாக்கல் முன்னர் இந்த அல்லது மற்றொரு கணினியில் ஏற்றுமதி</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="837"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="839"/>
         <source>Import settings?</source>
         <translation>அமைப்புகள் இறக்குமதி செய்வது?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="850"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="852"/>
         <source>Open File</source>
         <translation>திற கோப்பு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="850"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="852"/>
         <source>OpenLP Export Settings Files (*.conf)</source>
         <translation>OpenLP ஏற்றுமதி அமைப்புகள் கோப்புகள் (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="925"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>Import settings</source>
         <translation>அமைப்புகள் இறக்குமதி </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="925"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="930"/>
         <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
         <translation>OpenLP இப்போது மூடிவிடும். இறக்குமதி அமைப்புகளை நீங்கள் OpenLP தொடங்க அடுத்த முறை பயன்படுத்தப்படும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="937"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="943"/>
         <source>Export Settings File</source>
         <translation> அமைப்புகள் கோப்பு ஏற்றுமதி செய்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="937"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="943"/>
         <source>OpenLP Export Settings File (*.conf)</source>
         <translation>OpenLP ஏற்றுமதி அமைப்புகள் கோப்ப (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1405"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1415"/>
         <source>New Data Directory Error</source>
         <translation>புதிய தகவல்கள் டைரக்டரி பிழை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1397"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1407"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
         <translation>புதிய தரவு அடைவு இடத்திற்கு OpenLP தரவு நகல் - %s - நகல் முடிக்க காத்திருக்கவும</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1405"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1415"/>
         <source>OpenLP Data directory copy failed
 
 %s</source>
@@ -4355,69 +4338,114 @@ Re-running this wizard may make changes to your current OpenLP configuration and
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="399"/>
         <source>Library</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="467"/>
         <source>Jump to the search box of the current active plugin.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="837"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="839"/>
         <source>Are you sure you want to import settings?
 
  Importing settings will make permanent changes to your current OpenLP configuration.
 
  Importing incorrect settings may cause erratic behaviour or OpenLP to terminate abnormally.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="885"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="889"/>
         <source>The file you have selected does not appear to be a valid OpenLP settings file.
 
 Processing has terminated and no changes have been made.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="402"/>
         <source>Projector Manager</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="435"/>
         <source>Toggle Projector Manager</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="436"/>
         <source>Toggle the visibility of the Projector Manager</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1014"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1021"/>
         <source>Export setting error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="991"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="997"/>
         <source>The key &quot;%s&quot; does not have a default value so it will be skipped in this export.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1014"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1021"/>
         <source>An error occurred while exporting the settings: %s</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
+        <source>&amp;Recent Services</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
+        <source>&amp;New Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
+        <source>&amp;Open Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="409"/>
+        <source>&amp;Save Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
+        <source>Save Service &amp;As...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
+        <source>&amp;Manage Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1100"/>
+        <source>Exit OpenLP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1100"/>
+        <source>Are you sure you want to exit OpenLP?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1107"/>
+        <source>&amp;Exit OpenLP</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.Manager</name>
     <message>
-        <location filename="openlp/core/lib/db.py" line="244"/>
+        <location filename="openlp/core/lib/db.py" line="243"/>
         <source>Database Error</source>
         <translation>தரவுத்தள பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="244"/>
+        <location filename="openlp/core/lib/db.py" line="243"/>
         <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
 
 Database: %s</source>
@@ -4439,74 +4467,74 @@ Database: %s</source>
 <context>
     <name>OpenLP.MediaManagerItem</name>
     <message>
-        <location filename="openlp/core/lib/__init__.py" line="254"/>
+        <location filename="openlp/core/lib/__init__.py" line="255"/>
         <source>No Items Selected</source>
         <translation>ஒரு உருப்படிகள் தேர்ந்தெடுக்கப்பட்ட இல்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="153"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="149"/>
         <source>&amp;Add to selected Service Item</source>
         <translation>&amp;தேர்வு சேவைகள் உருப்படி சேர்க்கவும்</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="482"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="479"/>
         <source>You must select one or more items to preview.</source>
         <translation>நீங்கள் முன்னோட்ட ஒன்று அல்லது அதற்கு மேற்பட்ட உருப்படிகள் தேர்ந்தெடுக்கவும் வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="499"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="496"/>
         <source>You must select one or more items to send live.</source>
         <translation>நீங்கள் தற்சமயம் அனுப்ப ஒன்று அல்லது அதற்கு மேற்பட்ட உருப்படிகள் தேர்ந்தெடுக்கவும் வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="592"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="589"/>
         <source>You must select one or more items.</source>
         <translation>நீங்கள் ஒன்று அல்லது அதற்கு மேற்பட்ட உருப்படிகள் தேர்ந்தெடுக்கவும் வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="598"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="596"/>
         <source>You must select an existing service item to add to.</source>
         <translation>நீங்கள் சேர்க்க ஏற்கனவே சேவையை உருப்படியை தேர்ந்தெடுக்கவும் வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="604"/>
         <source>Invalid Service Item</source>
         <translation>தவறான சேவையை உருப்படி</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="604"/>
         <source>You must select a %s service item.</source>
         <translation>நீங்கள் ஒரு %s சேவையை உருப்படியை தேர்ந்தெடுக்கவும் வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="548"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="545"/>
         <source>You must select one or more items to add.</source>
         <translation>நீங்கள் சேர்க்க ஒன்று அல்லது அதற்கு மேற்பட்ட உருப்படிகள் தேர்ந்தெடுக்கவும் வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="640"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="638"/>
         <source>No Search Results</source>
         <translation>தேடல் முடிவுகள் இல்லை</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="336"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="333"/>
         <source>Invalid File Type</source>
         <translation>தவறான கோப்பு வகை</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="336"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="333"/>
         <source>Invalid File %s.
 Suffix not supported</source>
         <translation>தவறான கோப்பு %s. 
 பின்னொட்டு ஆதரவு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="106"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="109"/>
         <source>&amp;Clone</source>
         <translation>&amp;க்ளோன் செய்வது</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="382"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="379"/>
         <source>Duplicate files were found on import and were ignored.</source>
         <translation>நகல் கோப்புகளை இறக்குமதி காணப்படும் மற்றும் புறக்கணிக்கப்பட்டனர்.</translation>
     </message>
@@ -4514,12 +4542,12 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.OpenLyricsImportError</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="714"/>
+        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="704"/>
         <source>&lt;lyrics&gt; tag is missing.</source>
         <translation>&lt;lyrics&gt; tag இல்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="719"/>
+        <location filename="openlp/plugins/songs/lib/openlyricsxml.py" line="709"/>
         <source>&lt;verse&gt; tag is missing.</source>
         <translation>&lt;verse&gt; tag இல்லை.</translation>
     </message>
@@ -4529,59 +4557,60 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="256"/>
         <source>Unknown status</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="266"/>
         <source>No message</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="523"/>
         <source>Error while sending data to projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="547"/>
         <source>Undefined command:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.PlayerTab</name>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="55"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="56"/>
         <source>Players</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="124"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="125"/>
         <source>Available Media Players</source>
         <translation>கிடைக்கும மீடியா பிளேயர்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="125"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="126"/>
         <source>Player Search Order</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="128"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="129"/>
         <source>Visible background for videos with aspect ratio different to screen.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/playertab.py" line="253"/>
+        <location filename="openlp/core/ui/media/playertab.py" line="254"/>
         <source>%s (unavailable)</source>
         <translation>%s (இல்லை)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/media/playertab.py" line="256"/>
+        <source>NOTE: To use VLC you must install the %s version</source>
+        <comment>Will insert &quot;32bit&quot; or &quot;64bit&quot;</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.PluginForm</name>
-    <message>
-        <location filename="openlp/core/ui/plugindialog.py" line="81"/>
-        <source>Plugin List</source>
-        <translation>Plugin பட்டியல்</translation>
-    </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="82"/>
         <source>Plugin Details</source>
@@ -4603,19 +4632,24 @@ Suffix not supported</source>
         <translation>ஜடமான</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/pluginform.py" line="145"/>
+        <location filename="openlp/core/ui/pluginform.py" line="146"/>
         <source>%s (Inactive)</source>
         <translation>%s (ஜடமான)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/pluginform.py" line="143"/>
+        <location filename="openlp/core/ui/pluginform.py" line="144"/>
         <source>%s (Active)</source>
         <translation>%s (செயலில்)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/pluginform.py" line="147"/>
+        <location filename="openlp/core/ui/pluginform.py" line="148"/>
         <source>%s (Disabled)</source>
         <translation>%s (முடக்கப்பட்டது)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/plugindialog.py" line="81"/>
+        <source>Manage Plugins</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4714,275 +4748,275 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="211"/>
         <source>OK</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="212"/>
         <source>General projector error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="213"/>
         <source>Not connected error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="214"/>
         <source>Lamp error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="215"/>
         <source>Fan error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="216"/>
         <source>High temperature detected</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="217"/>
         <source>Cover open detected</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="218"/>
         <source>Check filter</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="219"/>
         <source>Authentication Error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="220"/>
         <source>Undefined Command</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="221"/>
         <source>Invalid Parameter</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="222"/>
         <source>Projector Busy</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="223"/>
         <source>Projector/Display Error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="224"/>
         <source>Invalid packet received</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="225"/>
         <source>Warning condition detected</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="226"/>
         <source>Error condition detected</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="227"/>
         <source>PJLink class not supported</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="228"/>
         <source>Invalid prefix character</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="229"/>
         <source>The connection was refused by the peer (or timed out)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="231"/>
         <source>The remote host closed the connection</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="233"/>
         <source>The host address was not found</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="234"/>
         <source>The socket operation failed because the application lacked the required privileges</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="237"/>
         <source>The local system ran out of resources (e.g., too many sockets)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="239"/>
         <source>The socket operation timed out</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="241"/>
         <source>The datagram was larger than the operating system&apos;s limit</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="243"/>
         <source>An error occurred with the network (Possibly someone pulled the plug?)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="245"/>
         <source>The address specified with socket.bind() is already in use and was set to be exclusive</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="248"/>
         <source>The address specified to socket.bind() does not belong to the host</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="251"/>
         <source>The requested socket operation is not supported by the local operating system (e.g., lack of IPv6 support)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="254"/>
         <source>The socket is using a proxy, and the proxy requires authentication</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="257"/>
         <source>The SSL/TLS handshake failed</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="259"/>
         <source>The last operation attempted has not finished yet (still in progress in the background)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="262"/>
         <source>Could not contact the proxy server because the connection to that server was denied</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="265"/>
         <source>The connection to the proxy server was closed unexpectedly (before the connection to the final peer was established)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="268"/>
         <source>The connection to the proxy server timed out or the proxy server stopped responding in the authentication phase.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="271"/>
         <source>The proxy address set with setProxy() was not found</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="276"/>
         <source>An unidentified error occurred</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="277"/>
         <source>Not connected</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="278"/>
         <source>Connecting</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="279"/>
         <source>Connected</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="280"/>
         <source>Getting status</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="281"/>
         <source>Off</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="282"/>
         <source>Initialize in progress</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="283"/>
         <source>Power in standby</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="284"/>
         <source>Warmup in progress</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="285"/>
         <source>Power is on</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="286"/>
         <source>Cooldown in progress</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="287"/>
         <source>Projector Information available</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="288"/>
         <source>Sending data</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="289"/>
         <source>Received data</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/constants.py" line="273"/>
         <source>The connection negotiation with the proxy server failed because the response from the proxy server could not be understood</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ProjectorEdit</name>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="172"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="173"/>
         <source>Name Not Set</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="172"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="173"/>
         <source>You must enter a name for this entry.&lt;br /&gt;Please enter a new name for this entry.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="182"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="183"/>
         <source>Duplicate Name</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4990,37 +5024,37 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="110"/>
         <source>Add New Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="113"/>
         <source>Edit Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="115"/>
         <source>IP Address</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="118"/>
         <source>Port Number</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="120"/>
         <source>PIN</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="122"/>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="124"/>
         <source>Location</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/editform.py" line="126"/>
@@ -5028,14 +5062,14 @@ Suffix not supported</source>
         <translation>குறிப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="236"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="238"/>
         <source>Database Error</source>
         <translation>தரவுத்தள பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="236"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="238"/>
         <source>There was an error saving projector information. See the log for the error</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5043,162 +5077,162 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="83"/>
         <source>Add Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="83"/>
         <source>Add a new projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="89"/>
         <source>Edit Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="89"/>
         <source>Edit selected projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="94"/>
         <source>Delete Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="94"/>
         <source>Delete selected projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="100"/>
         <source>Select Input Source</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="100"/>
         <source>Choose input source on selected projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="106"/>
         <source>View Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="106"/>
         <source>View selected projector information</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="120"/>
         <source>Connect to selected projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="120"/>
         <source>Connect to selected projectors</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="127"/>
         <source>Disconnect from selected projectors</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="134"/>
         <source>Disconnect from selected projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="149"/>
         <source>Power on selected projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="162"/>
         <source>Standby selected projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="162"/>
         <source>Put selected projector in standby</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="176"/>
         <source>Blank selected projector screen</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="190"/>
         <source>Show selected projector screen</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="212"/>
         <source>&amp;View Projector Information</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="217"/>
         <source>&amp;Edit Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="223"/>
         <source>&amp;Connect Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="228"/>
         <source>D&amp;isconnect Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="234"/>
         <source>Power &amp;On Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="239"/>
         <source>Power O&amp;ff Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="245"/>
         <source>Select &amp;Input</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="250"/>
         <source>Edit Input Source</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="255"/>
         <source>&amp;Blank Projector Screen</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="260"/>
         <source>&amp;Show Projector Screen</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="266"/>
         <source>&amp;Delete Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="630"/>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="632"/>
         <source>IP</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="634"/>
@@ -5213,102 +5247,102 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="640"/>
         <source>Projector information not available at this time.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="643"/>
         <source>Projector Name</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="645"/>
         <source>Manufacturer</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="647"/>
         <source>Model</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="649"/>
         <source>Other info</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="651"/>
         <source>Power status</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="653"/>
         <source>Shutter is</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="653"/>
         <source>Closed</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="656"/>
         <source>Current source input is</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="661"/>
         <source>Lamp</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="661"/>
         <source>On</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="661"/>
         <source>Off</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="661"/>
         <source>Hours</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="672"/>
         <source>No current errors or warnings</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="674"/>
         <source>Current errors/warnings</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="677"/>
         <source>Projector Information</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="809"/>
         <source>No message</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="972"/>
         <source>Not Implemented Yet</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="476"/>
         <source>Delete projector (%s) %s?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/manager.py" line="478"/>
         <source>Are you sure you want to delete this projector?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5316,27 +5350,27 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="747"/>
         <source>Fan</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="751"/>
         <source>Lamp</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="755"/>
         <source>Temperature</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="759"/>
         <source>Cover</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="763"/>
         <source>Filter</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/projector/pjlink1.py" line="767"/>
@@ -5349,55 +5383,55 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="50"/>
         <source>Projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="99"/>
         <source>Communication Options</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="101"/>
         <source>Connect to projectors on startup</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="103"/>
         <source>Socket timeout (seconds)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="105"/>
         <source>Poll time (seconds)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="109"/>
         <source>Tabbed dialog box</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="111"/>
         <source>Single dialog box</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ProjectorWizard</name>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="198"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="199"/>
         <source>Duplicate IP Address</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="206"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="208"/>
         <source>Invalid IP Address</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/editform.py" line="215"/>
+        <location filename="openlp/core/ui/projector/editform.py" line="217"/>
         <source>Invalid Port Number</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5416,19 +5450,19 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ServiceItem</name>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="622"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="617"/>
         <source>&lt;strong&gt;Start&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;ஆரம்பி&lt;/strong&gt;: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="625"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="620"/>
         <source>&lt;strong&gt;Length&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;நீளம்&lt;/strong&gt;: %s</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/serviceitem.py" line="334"/>
         <source>[slide %d]</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5522,22 +5556,22 @@ Suffix not supported</source>
         <translation>&amp;உருப்படி தீம் மாற்ற</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="779"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="782"/>
         <source>File is not a valid service.</source>
         <translation>கோப்பு ஒரு செல்லுபடியாகும் சேவையை அல்ல.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1488"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1492"/>
         <source>Missing Display Handler</source>
         <translation>காட்சி ஹேண்ட்லர் காணவில்லை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1444"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1448"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation>அதை காண்பிக்க இல்லை கையாளுதல் உள்ளது போல் உங்கள் உருப்படியை காண்பிக்க முடியாது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1488"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1492"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
         <translation>உங்கள் உருப்படியை அதை காணவில்லை அல்லது செயலற்று காட்ட வேண்டும் நீட்சியாக காண்பிக்க முடியாது</translation>
     </message>
@@ -5562,7 +5596,7 @@ Suffix not supported</source>
         <translation>அனைத்து சேவையை பொருட்கள் உடைந்து.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="434"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="438"/>
         <source>Open File</source>
         <translation>திற கோப்பு</translation>
     </message>
@@ -5602,52 +5636,52 @@ Suffix not supported</source>
         <translation>காண்பி &amp;முன்னோட்டம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="452"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="455"/>
         <source>Modified Service</source>
         <translation>மாற்றப்பட்ட சேவையை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="452"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="455"/>
         <source>The current service has been modified. Would you like to save this service?</source>
         <translation>தற்போதைய சேவை மாற்றப்பட்டுள்ளது. இந்த சேவை சேமிக்க விரும்புகிறீர்களா?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/printserviceform.py" line="177"/>
+        <location filename="openlp/core/ui/printserviceform.py" line="178"/>
         <source>Custom Service Notes: </source>
         <translation>தனிபயன் சேவையை குறிப்புகள்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/printserviceform.py" line="223"/>
+        <location filename="openlp/core/ui/printserviceform.py" line="224"/>
         <source>Notes: </source>
         <translation>குறிப்புகள்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/printserviceform.py" line="231"/>
+        <location filename="openlp/core/ui/printserviceform.py" line="232"/>
         <source>Playing time: </source>
         <translation>தொடங்கி நேரம்: </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="355"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="359"/>
         <source>Untitled Service</source>
         <translation>தலைப்பிடாத சேவையை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="783"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="786"/>
         <source>File could not be opened because it is corrupt.</source>
         <translation>இது ஊழல் ஏனெனில் கோப்பு திறக்க முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="788"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="791"/>
         <source>Empty File</source>
         <translation>காலியாக கோப்பு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="788"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="791"/>
         <source>This service file does not contain any data.</source>
         <translation>இந்த சேவையை கோப்பில் தரவு ஏதும் இல்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="793"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="797"/>
         <source>Corrupt File</source>
         <translation>ஊழல் மிகுந்த கோப்பு</translation>
     </message>
@@ -5667,149 +5701,149 @@ Suffix not supported</source>
         <translation>சேவையை ஒரு தீம் தேர்வு.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1274"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1278"/>
         <source>Slide theme</source>
         <translation>ஸ்லைடு தீம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1277"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1281"/>
         <source>Notes</source>
         <translation>குறிப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1271"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1275"/>
         <source>Edit</source>
         <translation>பதிப்பி</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1271"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1275"/>
         <source>Service copy only</source>
         <translation>சேவையை நகல் மட்டுமே</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="653"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="656"/>
         <source>Error Saving File</source>
         <translation>பிழை சேமிப்பு கோப்பு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="653"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="656"/>
         <source>There was an error saving your file.</source>
         <translation>உங்கள் கோப்பை சேமிப்பதில் பிழை ஏற்பட்டது.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="535"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="538"/>
         <source>Service File(s) Missing</source>
         <translation>சேவையை கோப்பு (கள்) இல்லை</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="230"/>
         <source>&amp;Rename...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="246"/>
         <source>Create New &amp;Custom Slide</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="253"/>
         <source>&amp;Auto play slides</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="257"/>
         <source>Auto play slides &amp;Loop</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="262"/>
         <source>Auto play slides &amp;Once</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="884"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="888"/>
         <source>&amp;Delay between slides</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="434"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="438"/>
         <source>OpenLP Service Files (*.osz *.oszl)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="699"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="702"/>
         <source>OpenLP Service Files (*.osz);; OpenLP Service Files - lite (*.oszl)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="704"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="707"/>
         <source>OpenLP Service Files (*.osz);;</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="749"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="752"/>
         <source>File is not a valid service.
  The content encoding is not UTF-8.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="764"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="767"/>
         <source>The service file you are trying to open is in an old format.
  Please save it using OpenLP 2.0.2 or greater.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="793"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="797"/>
         <source>This file is either corrupt or it is not an OpenLP 2 service file.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="895"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="899"/>
         <source>&amp;Auto Start - inactive</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="897"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="901"/>
         <source>&amp;Auto Start - active</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="984"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="988"/>
         <source>Input delay</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="984"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="988"/>
         <source>Delay between slides in seconds.</source>
         <translation>நொடிகளில் ஸ்லைடுகள் இடையே தாமதம்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1516"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1520"/>
         <source>Rename item title</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1516"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1520"/>
         <source>Title:</source>
         <translation>தலைப்பு:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="606"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="609"/>
         <source>An error occurred while writing the service file: %s</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="536"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="539"/>
         <source>The following file(s) in the service are missing: %s
 
 These files will be removed if you continue to save.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ServiceNoteForm</name>
     <message>
-        <location filename="openlp/core/ui/servicenoteform.py" line="70"/>
+        <location filename="openlp/core/ui/servicenoteform.py" line="71"/>
         <source>Service Item Notes</source>
         <translation>சேவையை உருப்படி குறிப்புகள</translation>
     </message>
@@ -5825,67 +5859,67 @@ These files will be removed if you continue to save.</source>
 <context>
     <name>OpenLP.ShortcutListDialog</name>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="130"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="143"/>
         <source>Action</source>
         <translation>செயல்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="130"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="143"/>
         <source>Shortcut</source>
         <translation>குறுக்கு வழி</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistform.py" line="425"/>
+        <location filename="openlp/core/ui/shortcutlistform.py" line="429"/>
         <source>Duplicate Shortcut</source>
         <translation>குறுக்குவழி நகல்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistform.py" line="425"/>
+        <location filename="openlp/core/ui/shortcutlistform.py" line="429"/>
         <source>The shortcut &quot;%s&quot; is already assigned to another action, please use a different shortcut.</source>
         <translation>குறுக்கு வழி &quot;%s&quot; ஏற்கனவே மற்றொரு நடவடிக்கை ஒதுக்கப்படும், வேறு குறுக்குவழி பயன்படுத்தவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="130"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="143"/>
         <source>Alternate</source>
         <translation>மாறுபட்ட</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="127"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="140"/>
         <source>Select an action and click one of the buttons below to start capturing a new primary or alternate shortcut, respectively.</source>
         <translation>ஒரு நடவடிக்கை தேர்ந்தெடுத்து முறையே, ஒரு புதிய முதன்மையான அல்லது மாற்று குறுக்குவழி கைப்பற்றி தொடங்க பின்வரும் பொத்தான்களில் ஒன்றை கிளிக்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="133"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="146"/>
         <source>Default</source>
         <translation>தவறுதல்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="134"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="147"/>
         <source>Custom</source>
         <translation>வழக்கம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="136"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="149"/>
         <source>Capture shortcut.</source>
         <translation>குறுக்குவழி பிடிக்கும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="139"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="152"/>
         <source>Restore the default shortcut of this action.</source>
         <translation>இந்த நடவடிக்கை முன்னிருப்பு குறுக்குவழி மீட்க.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistform.py" line="284"/>
+        <location filename="openlp/core/ui/shortcutlistform.py" line="287"/>
         <source>Restore Default Shortcuts</source>
         <translation>இயல்புநிலை குறுக்குவழிகள் மீட்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistform.py" line="284"/>
+        <location filename="openlp/core/ui/shortcutlistform.py" line="287"/>
         <source>Do you want to restore all shortcuts to their defaults?</source>
         <translation>அவர்கள் இயல்பாக அனைத்து குறுக்குவழிகளை மீட்க வேண்டும்?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="126"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="139"/>
         <source>Configure Shortcuts</source>
         <translation>குறுக்குவழிகள் உள்ளமைக்கவும்</translation>
     </message>
@@ -5893,27 +5927,27 @@ These files will be removed if you continue to save.</source>
 <context>
     <name>OpenLP.SlideController</name>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="230"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="231"/>
         <source>Hide</source>
         <translation>மறைக்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="313"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="315"/>
         <source>Go To</source>
         <translation>செல்லுமிடம</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="232"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="233"/>
         <source>Blank Screen</source>
         <translation>வெறுமையாக திரை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="237"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="238"/>
         <source>Blank to Theme</source>
         <translation>தீம் வெறுமையான</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="242"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="243"/>
         <source>Show Desktop</source>
         <translation>டெஸ்க்டாப் காண்பி</translation>
     </message>
@@ -5933,37 +5967,37 @@ These files will be removed if you continue to save.</source>
         <translation>தப்ப உருப்படி </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="207"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="208"/>
         <source>Move to previous.</source>
         <translation>முந்தைய போக.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="214"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="215"/>
         <source>Move to next.</source>
         <translation>அடுத்த போக.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="270"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="271"/>
         <source>Play Slides</source>
         <translation>ஸ்லைடுகளை போட்டு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="289"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="291"/>
         <source>Delay between slides in seconds.</source>
         <translation>நொடிகளில் ஸ்லைடுகள் இடையே தாமதம்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="293"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="295"/>
         <source>Move to live.</source>
         <translation>தற்சமயம் போக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="296"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="298"/>
         <source>Add to Service.</source>
         <translation>சேவைகள் சேர்க்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="300"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="302"/>
         <source>Edit and reload song preview.</source>
         <translation>தொகு மற்றும் பாடல் முன்னோட்ட ஏற்றவும்.</translation>
     </message>
@@ -5973,7 +6007,7 @@ These files will be removed if you continue to save.</source>
         <translation>ஊடக போட்டு தொடங்கு.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="317"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="319"/>
         <source>Pause audio.</source>
         <translation>இடைநிறுத்து ஆடியோ.</translation>
     </message>
@@ -5998,67 +6032,67 @@ These files will be removed if you continue to save.</source>
         <translation>ஆடியோ தொகுதி.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="383"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="386"/>
         <source>Go to &quot;Verse&quot;</source>
         <translation>&quot;வசனம்&quot; போக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="384"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="387"/>
         <source>Go to &quot;Chorus&quot;</source>
         <translation>&quot;கோரஸ்&quot; போக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="385"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="388"/>
         <source>Go to &quot;Bridge&quot;</source>
         <translation>&quot;Bridge&quot; போக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="387"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="390"/>
         <source>Go to &quot;Pre-Chorus&quot;</source>
         <translation>&quot;முன் கோரஸ்&quot; போக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="388"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="391"/>
         <source>Go to &quot;Intro&quot;</source>
         <translation>&quot;இன்ட்ரோ&quot; போக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="389"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="392"/>
         <source>Go to &quot;Ending&quot;</source>
         <translation>&quot;முடிவு&quot; போக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="390"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="393"/>
         <source>Go to &quot;Other&quot;</source>
         <translation>&quot;வேறு&quot; போக</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="207"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="208"/>
         <source>Previous Slide</source>
         <translation>முந்தைய படவில்லை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="214"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="215"/>
         <source>Next Slide</source>
         <translation>அடுத்த படவில்லை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="317"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="319"/>
         <source>Pause Audio</source>
         <translation>இடைநிறுத்து ஆடியோ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="323"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="325"/>
         <source>Background Audio</source>
         <translation>பின்னணி இசை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="327"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="329"/>
         <source>Go to next audio track.</source>
         <translation>அடுத்த ஆடியோ டிராக் சென்று.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="335"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="337"/>
         <source>Tracks</source>
         <translation>தடங்கள்</translation>
     </message>
@@ -6066,44 +6100,44 @@ These files will be removed if you continue to save.</source>
 <context>
     <name>OpenLP.SourceSelectForm</name>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="393"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="395"/>
         <source>Select Projector Source</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="391"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="393"/>
         <source>Edit Projector Source Text</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="152"/>
         <source>Ignoring current changes and return to OpenLP</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="155"/>
         <source>Delete all user-defined text and revert to PJLink default text</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="158"/>
         <source>Discard changes and reset to previous user-defined text</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/projector/sourceselectform.py" line="161"/>
         <source>Save changes and return to OpenLP</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="475"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="477"/>
         <source>Delete entries for this projector</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/projector/sourceselectform.py" line="476"/>
+        <location filename="openlp/core/ui/projector/sourceselectform.py" line="478"/>
         <source>Are you sure you want to delete ALL user-defined source input text for this projector?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6180,17 +6214,17 @@ These files will be removed if you continue to save.</source>
         <translation>நீளம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/starttimeform.py" line="76"/>
+        <location filename="openlp/core/ui/starttimeform.py" line="77"/>
         <source>Time Validation Error</source>
         <translation>நேரம் செல்லத்தக்கதாக்குதலும் பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/starttimeform.py" line="71"/>
+        <location filename="openlp/core/ui/starttimeform.py" line="72"/>
         <source>Finish time is set after the end of the media item</source>
         <translation>இறுதி நேரத்தில் ஊடக உருப்படியை முடிவில் அமைக்கப்படுகிறது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/starttimeform.py" line="76"/>
+        <location filename="openlp/core/ui/starttimeform.py" line="77"/>
         <source>Start time is after the finish time of the media item</source>
         <translation>தொடக்க நேரம் ஊடக உருப்படியின் பூச்சு நேரம் கழித்து தான்</translation>
     </message>
@@ -6281,11 +6315,6 @@ These files will be removed if you continue to save.</source>
         <translation>நீங்கள் முன்னிருப்பு தீம் நீக்க முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="760"/>
-        <source>Theme %s is used in the %s plugin.</source>
-        <translation>தீம் %s பயன்படுத்தப்படுகிறது %s plugin.</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/thememanager.py" line="374"/>
         <source>You have not selected a theme.</source>
         <translation>நீங்கள் ஒரு தீம் தேர்ந்தெடுக்கவில்லை.</translation>
@@ -6366,7 +6395,7 @@ These files will be removed if you continue to save.</source>
         <translation>தீம் நீக்க %s வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="760"/>
+        <location filename="openlp/core/ui/thememanager.py" line="614"/>
         <source>Validation Error</source>
         <translation>செல்லத்தக்கதாக்குதலும் பிழை ஏற்பட்டது</translation>
     </message>
@@ -6394,268 +6423,285 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="409"/>
         <source>The theme export failed because this error occurred: %s</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="423"/>
         <source>OpenLP Themes (*.otz)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="763"/>
+        <source>%s time(s) by %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="768"/>
+        <source>Unable to delete theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="768"/>
+        <source>Theme is currently used 
+
+%s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ThemeWizard</name>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="395"/>
+        <location filename="openlp/core/ui/themewizard.py" line="382"/>
         <source>Theme Wizard</source>
         <translation>தீம் வழிகாட்டி</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="396"/>
+        <location filename="openlp/core/ui/themewizard.py" line="383"/>
         <source>Welcome to the Theme Wizard</source>
         <translation>தீம் வழிகாட்டி வரவேற்கிறோம</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="401"/>
+        <location filename="openlp/core/ui/themewizard.py" line="388"/>
         <source>Set Up Background</source>
         <translation>பின்னணி அமை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="402"/>
+        <location filename="openlp/core/ui/themewizard.py" line="389"/>
         <source>Set up your theme&apos;s background according to the parameters below.</source>
         <translation>கீழே அளவுருக்கள் ஏற்ப உங்கள் தீம் பின்னணி அமைக்க.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="404"/>
+        <location filename="openlp/core/ui/themewizard.py" line="391"/>
         <source>Background type:</source>
         <translation>பின்னணி வகை:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="407"/>
+        <location filename="openlp/core/ui/themewizard.py" line="394"/>
         <source>Gradient</source>
         <translation>சரிவு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="415"/>
+        <location filename="openlp/core/ui/themewizard.py" line="402"/>
         <source>Gradient:</source>
         <translation>சாய்வு:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="416"/>
+        <location filename="openlp/core/ui/themewizard.py" line="403"/>
         <source>Horizontal</source>
         <translation>மட்டமான</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="418"/>
+        <location filename="openlp/core/ui/themewizard.py" line="405"/>
         <source>Vertical</source>
         <translation>செங்குத்து</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="420"/>
+        <location filename="openlp/core/ui/themewizard.py" line="407"/>
         <source>Circular</source>
         <translation>சுற்றறிக்கை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="422"/>
+        <location filename="openlp/core/ui/themewizard.py" line="409"/>
         <source>Top Left - Bottom Right</source>
         <translation>மேல் இடது - கீழே வலது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="424"/>
+        <location filename="openlp/core/ui/themewizard.py" line="411"/>
         <source>Bottom Left - Top Right</source>
         <translation>கீழே இடது - மேல்வலது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="428"/>
+        <location filename="openlp/core/ui/themewizard.py" line="415"/>
         <source>Main Area Font Details</source>
         <translation>முக்கிய பகுதி எழுத்துரு விவரம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="429"/>
+        <location filename="openlp/core/ui/themewizard.py" line="416"/>
         <source>Define the font and display characteristics for the Display text</source>
         <translation>காட்சி உரை எழுத்துரு மற்றும் காட்சி பண்புகள் வரையறுக்கின்றன</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="448"/>
+        <location filename="openlp/core/ui/themewizard.py" line="435"/>
         <source>Font:</source>
         <translation>எழுத்துரு:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="450"/>
+        <location filename="openlp/core/ui/themewizard.py" line="437"/>
         <source>Size:</source>
         <translation>அளவு:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="435"/>
+        <location filename="openlp/core/ui/themewizard.py" line="422"/>
         <source>Line Spacing:</source>
         <translation>வரி இடைவெளி:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="437"/>
+        <location filename="openlp/core/ui/themewizard.py" line="424"/>
         <source>&amp;Outline:</source>
         <translation>&amp;வெளிக்கோடு:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="440"/>
+        <location filename="openlp/core/ui/themewizard.py" line="427"/>
         <source>&amp;Shadow:</source>
         <translation>&amp;நிழல்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="443"/>
+        <location filename="openlp/core/ui/themewizard.py" line="430"/>
         <source>Bold</source>
         <translation>போல்ட்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="444"/>
+        <location filename="openlp/core/ui/themewizard.py" line="431"/>
         <source>Italic</source>
         <translation>(அச்செழுத்துக்கள் வலப்பக்கம்) சாய்ந்துள்ள</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="445"/>
+        <location filename="openlp/core/ui/themewizard.py" line="432"/>
         <source>Footer Area Font Details</source>
         <translation>அடிக்குறிப்பு பகுதி எழுத்துரு விவரம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="446"/>
+        <location filename="openlp/core/ui/themewizard.py" line="433"/>
         <source>Define the font and display characteristics for the Footer text</source>
         <translation>அடிக்குறிப்பு உரை எழுத்துரு மற்றும் காட்சி பண்புகள் வரையறுக்கின்றன</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="452"/>
+        <location filename="openlp/core/ui/themewizard.py" line="439"/>
         <source>Text Formatting Details</source>
         <translation>உரை வடிவமைத்தல் விவரம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="453"/>
+        <location filename="openlp/core/ui/themewizard.py" line="440"/>
         <source>Allows additional display formatting information to be defined</source>
         <translation>கூடுதல் காட்சி வடிவமைப்பை தகவல் வரையறுக்கப்பட்ட அனுமதிக்கிறது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="455"/>
+        <location filename="openlp/core/ui/themewizard.py" line="442"/>
         <source>Horizontal Align:</source>
         <translation>சீரமை கிடைமட்ட:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="456"/>
+        <location filename="openlp/core/ui/themewizard.py" line="443"/>
         <source>Left</source>
         <translation>இடது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="457"/>
+        <location filename="openlp/core/ui/themewizard.py" line="444"/>
         <source>Right</source>
         <translation>வலது</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="458"/>
+        <location filename="openlp/core/ui/themewizard.py" line="445"/>
         <source>Center</source>
         <translation>மையம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="461"/>
+        <location filename="openlp/core/ui/themewizard.py" line="448"/>
         <source>Output Area Locations</source>
         <translation>வெளியீடு பகுதி இருப்பிடங்கள்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="464"/>
+        <location filename="openlp/core/ui/themewizard.py" line="451"/>
         <source>&amp;Main Area</source>
         <translation>&amp;முக்கிய பரப்பு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="465"/>
+        <location filename="openlp/core/ui/themewizard.py" line="452"/>
         <source>&amp;Use default location</source>
         <translation>&amp;இயல்புநிலை இருப்பிடம் பயன்படுத்த</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="475"/>
+        <location filename="openlp/core/ui/themewizard.py" line="462"/>
         <source>X position:</source>
         <translation>X நிலை:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="482"/>
+        <location filename="openlp/core/ui/themewizard.py" line="469"/>
         <source>px</source>
         <translation>px</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="477"/>
+        <location filename="openlp/core/ui/themewizard.py" line="464"/>
         <source>Y position:</source>
         <translation>Y நிலை:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="479"/>
+        <location filename="openlp/core/ui/themewizard.py" line="466"/>
         <source>Width:</source>
         <translation>அகலம்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="481"/>
+        <location filename="openlp/core/ui/themewizard.py" line="468"/>
         <source>Height:</source>
         <translation>உயரம்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="483"/>
+        <location filename="openlp/core/ui/themewizard.py" line="470"/>
         <source>Use default location</source>
         <translation>இயல்புநிலை இருப்பிடம் பயன்படுத்த</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="488"/>
+        <location filename="openlp/core/ui/themewizard.py" line="475"/>
         <source>Theme name:</source>
         <translation>தீம் பெயர்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="271"/>
+        <location filename="openlp/core/ui/themeform.py" line="272"/>
         <source>Edit Theme - %s</source>
         <translation>தீம் திருத்து - %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="398"/>
+        <location filename="openlp/core/ui/themewizard.py" line="385"/>
         <source>This wizard will help you to create and edit your themes. Click the next button below to start the process by setting up your background.</source>
         <translation>இந்த வழிகாட்டி உங்கள் கருப்பொருள்கள் உருவாக்க மற்றும் திருத்த உதவும். உங்கள் பின்னணி அமைக்க செயலாக்கத்தை தொடங்க, கீழே உள்ள அடுத்த பொத்தானை கிளிக் செய்யவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="460"/>
+        <location filename="openlp/core/ui/themewizard.py" line="447"/>
         <source>Transitions:</source>
         <translation>ட்ரான்சிஷன்ஸ்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="474"/>
+        <location filename="openlp/core/ui/themewizard.py" line="461"/>
         <source>&amp;Footer Area</source>
         <translation>அடிக்குறிப்பு பரப்பு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="413"/>
+        <location filename="openlp/core/ui/themewizard.py" line="400"/>
         <source>Starting color:</source>
         <translation>வண்ண தொடங்கி:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="414"/>
+        <location filename="openlp/core/ui/themewizard.py" line="401"/>
         <source>Ending color:</source>
         <translation>வண்ண முடியும்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="426"/>
+        <location filename="openlp/core/ui/themewizard.py" line="413"/>
         <source>Background color:</source>
         <translation>பின்னணி நிறம்:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="459"/>
+        <location filename="openlp/core/ui/themewizard.py" line="446"/>
         <source>Justify</source>
         <translation>நியாயப்படுத்த</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="485"/>
+        <location filename="openlp/core/ui/themewizard.py" line="472"/>
         <source>Layout Preview</source>
         <translation>தளவமைப்பு முன்னோட்டம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="410"/>
+        <location filename="openlp/core/ui/themewizard.py" line="397"/>
         <source>Transparent</source>
         <translation>ஒளி புகும்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="486"/>
+        <location filename="openlp/core/ui/themewizard.py" line="473"/>
         <source>Preview and Save</source>
         <translation>மாதிரிக்காட்சியை சேமிக்கவும்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="487"/>
+        <location filename="openlp/core/ui/themewizard.py" line="474"/>
         <source>Preview the theme and save it.</source>
         <translation>தீம் முன்னோட்டத்தை மற்றும் அதை காப்பாற்ற.</translation>
     </message>
@@ -6665,44 +6711,44 @@ These files will be removed if you continue to save.</source>
         <translation>வெற்று பின்னணி படம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="435"/>
+        <location filename="openlp/core/ui/themeform.py" line="436"/>
         <source>Select Image</source>
         <translation>பட தேர்ந்தெடு</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="511"/>
+        <location filename="openlp/core/ui/themeform.py" line="513"/>
         <source>Theme Name Missing</source>
         <translation>தீம் பெயர் காணவில்லை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="511"/>
+        <location filename="openlp/core/ui/themeform.py" line="513"/>
         <source>There is no name for this theme. Please enter one.</source>
         <translation>இந்த தீம் எந்த பெயர் உள்ளது. ஒரு உள்ளிடவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="516"/>
+        <location filename="openlp/core/ui/themeform.py" line="518"/>
         <source>Theme Name Invalid</source>
         <translation>தீம் பெயர் பிழை</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="516"/>
+        <location filename="openlp/core/ui/themeform.py" line="518"/>
         <source>Invalid theme name. Please enter one.</source>
         <translation>தவறான தீம் பெயர். ஒரு உள்ளிடவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="405"/>
+        <location filename="openlp/core/ui/themewizard.py" line="392"/>
         <source>Solid color</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="436"/>
+        <source>color:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="449"/>
-        <source>color:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="462"/>
         <source>Allows you to change and move the Main and Footer areas.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="181"/>
@@ -6760,12 +6806,12 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="116"/>
         <source>Universal Settings</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="117"/>
         <source>&amp;Wrap footer text</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6836,7 +6882,7 @@ These files will be removed if you continue to save.</source>
         <translation>முடிக்கப்பட்ட</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="310"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="307"/>
         <source>Starting import...</source>
         <translation>இறக்குமதி தொடங்கும்...</translation>
     </message>
@@ -6857,7 +6903,7 @@ These files will be removed if you continue to save.</source>
         <translation>பாடல் ஏற்றுமதி செய்யும் விசார்ட் வரவேற்கிறோம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="134"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="135"/>
         <source>Welcome to the Song Import Wizard</source>
         <translation>பாடல் இறக்குமதி வழிகாட்டி வரவேற்கிறோம்</translation>
     </message>
@@ -6875,7 +6921,7 @@ These files will be removed if you continue to save.</source>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="37"/>
-        <source>©</source>
+        <source>&#xa9;</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -6941,24 +6987,24 @@ These files will be removed if you continue to save.</source>
         <translation>நீங்கள் ஒரு குறிப்பிட வேண்டும் %s இருந்து இறக்குமதி செய்ய அடைவுக்கு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="309"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="306"/>
         <source>Importing Songs</source>
         <translation>இறக்குமதி பாடல்கள்</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="133"/>
         <source>Welcome to the Duplicate Song Removal Wizard</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="504"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="508"/>
         <source>Written by</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="36"/>
         <source>Author Unknown</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="52"/>
@@ -6973,7 +7019,7 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="54"/>
         <source>Add group</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="55"/>
@@ -7090,13 +7136,13 @@ See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for 
     <message>
         <location filename="openlp/core/common/uistrings.py" line="81"/>
         <source>File Not Found</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="82"/>
         <source>File %s not found.
 Please try selecting it individually.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="83"/>
@@ -7172,25 +7218,25 @@ Please try selecting it individually.</source>
         <location filename="openlp/core/common/uistrings.py" line="96"/>
         <source>Manufacturer</source>
         <comment>Singular</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="97"/>
         <source>Manufacturers</source>
         <comment>Plural</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="98"/>
         <source>Model</source>
         <comment>Singular</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="99"/>
         <source>Models</source>
         <comment>Plural</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="100"/>
@@ -7254,242 +7300,237 @@ Please try selecting it individually.</source>
         <translation>ஒரு உருப்படிகள் தேர்ந்தெடுக்கப்பட்ட இல்லை</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="111"/>
-        <source>OpenLP 2</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/core/common/uistrings.py" line="113"/>
+        <location filename="openlp/core/common/uistrings.py" line="114"/>
         <source>OpenLP is already running. Do you wish to continue?</source>
         <translation>OpenLP ஏற்கனவே இயங்கும். நீங்கள் தொடர விரும்புகிறீர்களா?</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="114"/>
+        <location filename="openlp/core/common/uistrings.py" line="115"/>
         <source>Open service.</source>
         <translation>சேவையை திறக்க.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="115"/>
+        <location filename="openlp/core/common/uistrings.py" line="116"/>
         <source>Play Slides in Loop</source>
         <translation>படவில்லைகள் சுழற்சி செய்யவேண்டும்</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="116"/>
+        <location filename="openlp/core/common/uistrings.py" line="117"/>
         <source>Play Slides to End</source>
         <translation>படவில்லைகள் முடிவுக்கு வரை செய்யவேண்டும்</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="117"/>
+        <location filename="openlp/core/common/uistrings.py" line="118"/>
         <source>Preview</source>
         <translation>முன்னோட்ட</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="119"/>
+        <location filename="openlp/core/common/uistrings.py" line="120"/>
         <source>Print Service</source>
         <translation>சேவைகள் அச்சிட</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="120"/>
+        <location filename="openlp/core/common/uistrings.py" line="121"/>
         <source>Projector</source>
         <comment>Singular</comment>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/core/common/uistrings.py" line="121"/>
-        <source>Projectors</source>
-        <comment>Plural</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="122"/>
+        <source>Projectors</source>
+        <comment>Plural</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/common/uistrings.py" line="123"/>
         <source>Replace Background</source>
         <translation>பின்னணி மாற்றவும்</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="123"/>
+        <location filename="openlp/core/common/uistrings.py" line="124"/>
         <source>Replace live background.</source>
         <translation>தற்போது பின்னணி பதிலாக.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="126"/>
+        <location filename="openlp/core/common/uistrings.py" line="127"/>
         <source>Reset Background</source>
         <translation>பின்னணி மீட்டமை</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="127"/>
+        <location filename="openlp/core/common/uistrings.py" line="128"/>
         <source>Reset live background.</source>
         <translation>தற்போது பின்னணி மீட்டமை.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="128"/>
+        <location filename="openlp/core/common/uistrings.py" line="129"/>
         <source>s</source>
         <comment>The abbreviated unit for seconds</comment>
         <translation>s</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="129"/>
+        <location filename="openlp/core/common/uistrings.py" line="130"/>
         <source>Save &amp;&amp; Preview</source>
         <translation>முன்னோட்ட &amp;&amp; சேமிக்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="130"/>
+        <location filename="openlp/core/common/uistrings.py" line="131"/>
         <source>Search</source>
         <translation>தேடல்</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="131"/>
+        <location filename="openlp/core/common/uistrings.py" line="132"/>
         <source>Search Themes...</source>
         <comment>Search bar place holder text </comment>
         <translation>தேடல் தீம்கள் ...</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="132"/>
+        <location filename="openlp/core/common/uistrings.py" line="133"/>
         <source>You must select an item to delete.</source>
         <translation>நீங்கள் நீக்க உருப்படியை வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="133"/>
+        <location filename="openlp/core/common/uistrings.py" line="134"/>
         <source>You must select an item to edit.</source>
         <translation>நீங்கள் திருத்த உருப்படியை வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="134"/>
+        <location filename="openlp/core/common/uistrings.py" line="135"/>
         <source>Settings</source>
         <translation>அமைப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="135"/>
+        <location filename="openlp/core/common/uistrings.py" line="136"/>
         <source>Save Service</source>
         <translation>சேவைகள் சேமிக்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="136"/>
+        <location filename="openlp/core/common/uistrings.py" line="137"/>
         <source>Service</source>
         <translation>சேவையை</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="137"/>
+        <location filename="openlp/core/common/uistrings.py" line="138"/>
         <source>Optional &amp;Split</source>
         <translation>விருப்ப &amp;பிரி</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="138"/>
+        <location filename="openlp/core/common/uistrings.py" line="139"/>
         <source>Split a slide into two only if it does not fit on the screen as one slide.</source>
         <translation>அது ஒரு ஸ்லைடு என திரையில் பொருந்தும் இல்லை மட்டுமே இரண்டு ஒரு ஸ்லைடு பிரிந்தது.விவரங்கள்பரிந்துரைகள்வரலாறு</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="140"/>
+        <location filename="openlp/core/common/uistrings.py" line="141"/>
         <source>Start %s</source>
         <translation>தொடங்கு %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="141"/>
+        <location filename="openlp/core/common/uistrings.py" line="142"/>
         <source>Stop Play Slides in Loop</source>
         <translation>படவில்லைகள் சுழற்சி இயக்கு நிறுத்து</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="142"/>
+        <location filename="openlp/core/common/uistrings.py" line="143"/>
         <source>Stop Play Slides to End</source>
         <translation>படவில்லைகள் முடிவில் நிறுத்து</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="143"/>
+        <location filename="openlp/core/common/uistrings.py" line="144"/>
         <source>Theme</source>
         <comment>Singular</comment>
         <translation>தீம்</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="144"/>
+        <location filename="openlp/core/common/uistrings.py" line="145"/>
         <source>Themes</source>
         <comment>Plural</comment>
         <translation>தீம்கள்</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="145"/>
+        <location filename="openlp/core/common/uistrings.py" line="146"/>
         <source>Tools</source>
         <translation>கருவிகள்</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="146"/>
+        <location filename="openlp/core/common/uistrings.py" line="147"/>
         <source>Top</source>
         <translation>மேலே</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="147"/>
+        <location filename="openlp/core/common/uistrings.py" line="148"/>
         <source>Unsupported File</source>
         <translation>ஆதரிக்கப்படவில்லை கோப்பு</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="148"/>
+        <location filename="openlp/core/common/uistrings.py" line="149"/>
         <source>Verse Per Slide</source>
         <translation>ஒவ்வொரு செய்யுள்கள் ஒரு ஸ்லைடு </translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="149"/>
+        <location filename="openlp/core/common/uistrings.py" line="150"/>
         <source>Verse Per Line</source>
         <translation>ஒவ்வொரு செய்யுள்கள் ஒர வரிசை</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="150"/>
+        <location filename="openlp/core/common/uistrings.py" line="151"/>
         <source>Version</source>
         <translation>பதிப்பை</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="151"/>
+        <location filename="openlp/core/common/uistrings.py" line="152"/>
         <source>View</source>
         <translation>பார்க்க</translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="152"/>
+        <location filename="openlp/core/common/uistrings.py" line="153"/>
         <source>View Mode</source>
         <translation>பார்க்க முறை </translation>
     </message>
     <message>
         <location filename="openlp/core/common/uistrings.py" line="63"/>
         <source>CCLI song number:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="112"/>
-        <source>OpenLP 2.2</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/core/common/uistrings.py" line="118"/>
+        <location filename="openlp/core/common/uistrings.py" line="119"/>
         <source>Preview Toolbar</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/common/uistrings.py" line="124"/>
+        <location filename="openlp/core/common/uistrings.py" line="125"/>
         <source>Replace live background is not available on this platform in this version of OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/common/uistrings.py" line="111"/>
+        <source>OpenLP</source>
+        <translation>OpenLp</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.core.lib</name>
     <message>
-        <location filename="openlp/core/lib/__init__.py" line="305"/>
+        <location filename="openlp/core/lib/__init__.py" line="306"/>
         <source>%s and %s</source>
         <comment>Locale list separator: 2 items</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/__init__.py" line="308"/>
+        <location filename="openlp/core/lib/__init__.py" line="309"/>
         <source>%s, and %s</source>
         <comment>Locale list separator: end</comment>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/__init__.py" line="311"/>
-        <source>%s, %s</source>
-        <comment>Locale list separator: middle</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/__init__.py" line="312"/>
         <source>%s, %s</source>
+        <comment>Locale list separator: middle</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/__init__.py" line="313"/>
+        <source>%s, %s</source>
         <comment>Locale list separator: start</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7497,57 +7538,57 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/core/ui/projector/tab.py" line="107"/>
         <source>Source select dialog interface</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PresentationPlugin</name>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="160"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="144"/>
         <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
         <translation>&lt;strong&gt;விளக்கக்காட்சி Plugin&lt;/strong&gt;&lt;br /&gt;
 வழங்கல் plugin பல்வேறு திட்டங்கள் பல பயன்படுத்தி விளக்கக்காட்சிகள் காட்ட உதவுகிறது. இன்னும் வழங்கல் திட்டங்கள் தேர்வு பெட்டியை கீழே ஒரு துளி பயனர் கிடைக்கும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="157"/>
         <source>Presentation</source>
         <comment>name singular</comment>
         <translation>விளக்கக்காட்சி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="174"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="158"/>
         <source>Presentations</source>
         <comment>name plural</comment>
         <translation>விளக்கக்காட்சிகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="178"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="162"/>
         <source>Presentations</source>
         <comment>container title</comment>
         <translation>விளக்கக்காட்சிகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="182"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="166"/>
         <source>Load a new presentation.</source>
         <translation>ஒரு புதிய விளக்கக்காட்சியை ஏற்ற.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="186"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="170"/>
         <source>Delete the selected presentation.</source>
         <translation>தேர்ந்தெடுக்கப்பட்ட விளக்கக்காட்சியை நீக்கு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="187"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="171"/>
         <source>Preview the selected presentation.</source>
         <translation>தேர்ந்தெடுக்கப்பட்ட வழங்கல் முன்னோட்டத்தை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="188"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="172"/>
         <source>Send the selected presentation live.</source>
         <translation>தற்போது தேர்ந்தெடுக்கப்பட்ட வழங்கல் அனுப்ப.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="189"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="173"/>
         <source>Add the selected presentation to the service.</source>
         <translation>சேவை தேர்ந்தெடுக்கப்பட்ட வழங்கல் சேர்க்கலாம்.</translation>
     </message>
@@ -7555,52 +7596,52 @@ Please try selecting it individually.</source>
 <context>
     <name>PresentationPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="61"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="63"/>
         <source>Select Presentation(s)</source>
         <translation>தேர்ந்தெடுக்கப்பட்ட வழங்கல் (கள்)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="62"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="64"/>
         <source>Automatic</source>
         <translation>தானாக</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="63"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="65"/>
         <source>Present using:</source>
         <translation>பயன்படுத்தி முன்வைக்க:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="176"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="181"/>
         <source>File Exists</source>
         <translation>கோப்பு உள்ளது</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="176"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="181"/>
         <source>A presentation with that filename already exists.</source>
         <translation>அந்த கோப்பு ஒரு காட்சி ஏற்கனவே உள்ளது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="201"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="206"/>
         <source>This type of presentation is not supported.</source>
         <translation>இப்போது இந்த வகை ஆதரிக்கவில்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="90"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="94"/>
         <source>Presentations (%s)</source>
         <translation>விளக்கக்காட்சிகள்  (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="379"/>
         <source>Missing Presentation</source>
         <translation>விளக்கக்காட்சி காணவில்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="365"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="370"/>
         <source>The presentation %s is incomplete, please reload.</source>
         <translation>விளக்கக்காட்சி %s முழுமையானதாக இல்லை, மீண்டும் ஏற்றுக.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="374"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="379"/>
         <source>The presentation %s no longer exists.</source>
         <translation>விளக்கக்காட்சி %s இல்லை.</translation>
     </message>
@@ -7610,7 +7651,7 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/presentations/lib/powerpointcontroller.py" line="517"/>
         <source>An error occurred in the Powerpoint integration and the presentation will be stopped. Restart the presentation if you wish to present it.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7633,37 +7674,37 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="122"/>
         <source>PDF options</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="133"/>
         <source>Use given full path for mudraw or ghostscript binary:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="234"/>
         <source>Select mudraw or ghostscript binary.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="240"/>
         <source>The program is not ghostscript or mudraw which is required.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="123"/>
         <source>PowerPoint options</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="126"/>
         <source>Clicking on a selected slide in the slidecontroller advances to next effect.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="129"/>
         <source>Let PowerPoint control the size and position of the presentation window (workaround for Windows 8 scaling issue).</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7694,140 +7735,140 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="120"/>
         <source>Server Config Change</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="120"/>
         <source>Server configuration changes will require a restart to take effect.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>RemotePlugin.Mobile</name>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="316"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="320"/>
         <source>Service Manager</source>
         <translation>சேவையை மேலாளர்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="317"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="321"/>
         <source>Slide Controller</source>
         <translation>ஸ்லைடு கட்டுப்பாட்டாளர்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="318"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="322"/>
         <source>Alerts</source>
         <translation>எச்சரிக்கைகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="319"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="323"/>
         <source>Search</source>
         <translation>தேடல்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="320"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="324"/>
         <source>Home</source>
         <translation>வீட்டு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="321"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="325"/>
         <source>Refresh</source>
         <translation>புதுப்பி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="322"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="326"/>
         <source>Blank</source>
         <translation>காலியான</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="323"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="327"/>
         <source>Theme</source>
         <translation>தீம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="324"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="328"/>
         <source>Desktop</source>
         <translation>டெஸ்க்டாப்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="325"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="329"/>
         <source>Show</source>
         <translation>காண்பி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="326"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="330"/>
         <source>Prev</source>
         <translation>முந்தைய</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="327"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="331"/>
         <source>Next</source>
         <translation>அடுத்து</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="328"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="332"/>
         <source>Text</source>
         <translation>உரை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="329"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="333"/>
         <source>Show Alert</source>
         <translation>விழிப்பூட்டல் காண்பி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="330"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="334"/>
         <source>Go Live</source>
         <translation>தற்போது போக</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="331"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="335"/>
         <source>Add to Service</source>
         <translation>சேவைகள் சேர்க்க</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="332"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="336"/>
         <source>Add &amp;amp; Go to Service</source>
         <translation>சேர் &amp;ஆம்ப்; சேவைகள் போ</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="333"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="337"/>
         <source>No Results</source>
         <translation>முடிவு இல்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="334"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="338"/>
         <source>Options</source>
         <translation>விருப்பங்கள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="335"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="339"/>
         <source>Service</source>
         <translation>சேவையை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="336"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="340"/>
         <source>Slides</source>
         <translation>ஸ்லைடுகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="337"/>
+        <location filename="openlp/plugins/remotes/lib/httprouter.py" line="341"/>
         <source>Settings</source>
         <translation>அமைப்புகள்</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="313"/>
-        <source>OpenLP 2.2 Remote</source>
-        <translation type="unfinished"/>
+        <source>Remote</source>
+        <translation>தொலை</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="314"/>
-        <source>OpenLP 2.2 Stage View</source>
-        <translation type="unfinished"/>
+        <source>Stage View</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httprouter.py" line="315"/>
-        <source>OpenLP 2.2 Live View</source>
-        <translation type="unfinished"/>
+        <source>Live View</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7870,27 +7911,27 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="174"/>
         <source>Live view URL:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="183"/>
         <source>HTTPS Server</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="184"/>
         <source>Could not find an SSL certificate. The HTTPS server will not be available unless an SSL certificate is found. Please see the manual for more information.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="191"/>
         <source>User Authentication</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="192"/>
         <source>User id:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="193"/>
@@ -7900,12 +7941,12 @@ Please try selecting it individually.</source>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="176"/>
         <source>Show thumbnails of non-text slides in remote and stage view.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="179"/>
         <source>Scan the QR code or click &lt;a href=&quot;%s&quot;&gt;download&lt;/a&gt; to install the Android app from Google Play.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7946,50 +7987,50 @@ Please try selecting it individually.</source>
         <translation>பாடல் பயன்பாட்டு டிராக்கிங் நிலைமாற்று.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="238"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="237"/>
         <source>&lt;strong&gt;SongUsage Plugin&lt;/strong&gt;&lt;br /&gt;This plugin tracks the usage of songs in services.</source>
         <translation>&lt;strong&gt;SongUsage Plugin&lt;/strong&gt;&lt;br /&gt; இந்த plugin சேவைகளை பாடல்களில் பயன்பாடு டிராக்குகள்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="249"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="248"/>
         <source>SongUsage</source>
         <comment>name singular</comment>
         <translation>SongUsage</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="250"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="249"/>
         <source>SongUsage</source>
         <comment>name plural</comment>
         <translation>SongUsage</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="254"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="253"/>
         <source>SongUsage</source>
         <comment>container title</comment>
         <translation>SongUsage</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="155"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="154"/>
         <source>Song Usage</source>
         <translation>பாடல் பயன்பாடு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="179"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="178"/>
         <source>Song usage tracking is active.</source>
         <translation>பாடல் பயன்பாடு கண்காணிப்பு தீவிரமாக உள்ளது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="184"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="183"/>
         <source>Song usage tracking is inactive.</source>
         <translation>பாடல் பயன்பாட்டு டிராக்கிங் முடக்கப்பட்டுள்ளது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="194"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="193"/>
         <source>display</source>
         <translation>காட்டு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="202"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="201"/>
         <source>printed</source>
         <translation>அச்சிடப்பட்ட</translation>
     </message>
@@ -8002,17 +8043,17 @@ Please try selecting it individually.</source>
         <translation>பாடல் பயன்பாடு தரவு நீக்கு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="50"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="51"/>
         <source>Delete Selected Song Usage Events?</source>
         <translation>தேர்ந்தெடுத்த பாடல் பயன்பாடு நிகழ்வுகள் நீக்க வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="50"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="51"/>
         <source>Are you sure you want to delete selected Song Usage data?</source>
         <translation>நீங்கள் தேர்ந்தெடுத்த பாடல் பயன்பாடு தரவு நீக்க வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="59"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="61"/>
         <source>Deletion Successful</source>
         <translation>நீக்கியதை முடிந்த</translation>
     </message>
@@ -8020,12 +8061,12 @@ Please try selecting it individually.</source>
         <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="67"/>
         <source>Select the date up to which the song usage data should be deleted. 
 All data recorded before this date will be permanently deleted.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="59"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="61"/>
         <source>All requested data has been deleted successfully.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8051,22 +8092,22 @@ All data recorded before this date will be permanently deleted.</source>
         <translation>இடம் சொல்ல</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="63"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="64"/>
         <source>Output File Location</source>
         <translation>வெளியீடு கோப்பு இடம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="85"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="86"/>
         <source>usage_detail_%s_%s.txt</source>
         <translation>usage_detail_%s_%s.txt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="103"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="104"/>
         <source>Report Creation</source>
         <translation>அறிக்கை உருவாக்கம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="103"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="104"/>
         <source>Report 
 %s 
 has been successfully created. </source>
@@ -8075,56 +8116,56 @@ has been successfully created. </source>
 உருவாக்கிய முடிந்தது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="77"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="78"/>
         <source>Output Path Not Selected</source>
         <translation>வெளியீடு பாதை தேர்வாகவில்லை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="77"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="78"/>
         <source>You have not set a valid output location for your song usage report. 
 Please select an existing path on your computer.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="111"/>
         <source>Report Creation Failed</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="110"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="111"/>
         <source>An error occurred while creating the report: %s</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin</name>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="143"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="142"/>
         <source>&amp;Song</source>
         <translation>&amp;பாட்டு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="123"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="122"/>
         <source>Import songs using the import wizard.</source>
         <translation>இறக்குமதி வழிகாட்டியை பயன்படுத்தி இசை இறக்குமதி.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="222"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="221"/>
         <source>&lt;strong&gt;Songs Plugin&lt;/strong&gt;&lt;br /&gt;The songs plugin provides the ability to display and manage songs.</source>
         <translation>strong&gt;பாட்டு Plugin&lt;/strong&gt;&lt;br /&gt; இசை plugin இசை காண்பிக்க மற்றும் மேலாண்மை திறன் வழங்குகிறது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="157"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="156"/>
         <source>&amp;Re-index Songs</source>
         <translation>&amp;மீண்டும் குறியீட்டு பாடல்கள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="157"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="156"/>
         <source>Re-index the songs database to improve searching and ordering.</source>
         <translation>தேடி மற்றும் வரிசைப்படுத்தும் மேம்படுத்த மறு குறியீட்டு இசை தொகுப்பு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="178"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="177"/>
         <source>Reindexing songs...</source>
         <translation>ட்டவணையிடுதல் இசை மீண்டும் ...</translation>
     </message>
@@ -8220,82 +8261,82 @@ The encoding is responsible for the correct character representation.</source>
 குறியீட்டு சரியான தன்மை பிரதிநிதித்துவம் பொறுப்பு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="267"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="264"/>
         <source>Song</source>
         <comment>name singular</comment>
         <translation>பாட்டு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="268"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="265"/>
         <source>Songs</source>
         <comment>name plural</comment>
         <translation>பாடல்கள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="272"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="269"/>
         <source>Songs</source>
         <comment>container title</comment>
         <translation>பாடல்கள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="143"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="142"/>
         <source>Exports songs using the export wizard.</source>
         <translation>ஏற்றுமதி ஏற்றுமதி வழிகாட்டியை பயன்படுத்தி பாடல்கள்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="278"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="275"/>
         <source>Add a new song.</source>
         <translation>ஒரு புதிய பாடல் சேர்க்க.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="279"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="276"/>
         <source>Edit the selected song.</source>
         <translation>தேர்ந்தெடுக்கப்பட்ட பாடல் பதிப்பி.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="280"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="277"/>
         <source>Delete the selected song.</source>
         <translation>தேர்ந்தெடுக்கப்பட்ட பாடல் நீக்கு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="281"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="278"/>
         <source>Preview the selected song.</source>
         <translation>தேர்ந்தெடுக்கப்பட்ட பாடல் மாதிரி.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="282"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="279"/>
         <source>Send the selected song live.</source>
         <translation>தற்போது தேர்ந்தெடுக்கப்பட்ட பாடல் அனுப்ப.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="283"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="280"/>
         <source>Add the selected song to the service.</source>
         <translation>சேவை தேர்ந்தெடுக்கப்பட்ட பாடல் சேர்க்கலாம்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="180"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="179"/>
         <source>Reindexing songs</source>
         <translation>அட்டவணையிடுதல் பாடல்கள் மீண்டும்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="129"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="128"/>
         <source>CCLI SongSelect</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="129"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="128"/>
         <source>Import songs from CCLI&apos;s SongSelect service.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="163"/>
         <source>Find &amp;Duplicate Songs</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="163"/>
         <source>Find and remove duplicate songs in the song database.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8304,25 +8345,25 @@ The encoding is responsible for the correct character representation.</source>
         <location filename="openlp/plugins/songs/lib/db.py" line="71"/>
         <source>Words</source>
         <comment>Author who wrote the lyrics of a song</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/db.py" line="72"/>
         <source>Music</source>
         <comment>Author who wrote the music of a song</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/db.py" line="73"/>
         <source>Words and Music</source>
         <comment>Author who wrote both lyrics and music of a song</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/db.py" line="75"/>
         <source>Translation</source>
         <comment>Author who translated the song</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8348,17 +8389,17 @@ The encoding is responsible for the correct character representation.</source>
         <translation>கடைசி பெயர்:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/authorsform.py" line="92"/>
+        <location filename="openlp/plugins/songs/forms/authorsform.py" line="93"/>
         <source>You need to type in the first name of the author.</source>
         <translation>நீங்கள் நூலாசிரியர் முதல் பெயரை தட்டச்சு செய்ய வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/authorsform.py" line="97"/>
+        <location filename="openlp/plugins/songs/forms/authorsform.py" line="98"/>
         <source>You need to type in the last name of the author.</source>
         <translation>நீங்கள் நூலாசிரியர் கடைசி பெயர் தட்டச்சு செய்ய வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/authorsform.py" line="102"/>
+        <location filename="openlp/plugins/songs/forms/authorsform.py" line="103"/>
         <source>You have not set a display name for the author, combine the first and last names?</source>
         <translation>நீங்கள் நூலாசிரியர் ஒரு காட்சி பெயரை அமைக்க வேண்டும், முதல் மற்றும் கடைசி பெயர்களை சேர்த்து?</translation>
     </message>
@@ -8376,7 +8417,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/dreambeam.py" line="100"/>
         <source>Invalid DreamBeam song file. Missing DreamSong tag.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8389,43 +8430,43 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="323"/>
         <source>&quot;%s&quot; could not be imported. %s</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="357"/>
         <source>Unexpected data formatting.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="362"/>
         <source>No song text found.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="399"/>
         <source>
 [above are Song Tags with notes imported from EasyWorship]</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="199"/>
         <source>This file does not exist.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="203"/>
         <source>Could not find the &quot;Songs.MB&quot; file. It must be in the same folder as the &quot;Songs.DB&quot; file.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="219"/>
         <source>This file is not a valid EasyWorship database.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/easyworship.py" line="248"/>
         <source>Could not retrieve encoding.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8539,67 +8580,67 @@ The encoding is responsible for the correct character representation.</source>
         <translation>தீம், பதிப்புரிமை தகவல் &amp;&amp; கருத்துரைகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="561"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="563"/>
         <source>Add Author</source>
         <translation>படைப்பாளர் சேர்க்கலாம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="561"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="563"/>
         <source>This author does not exist, do you want to add them?</source>
         <translation>இந்த நூலாசிரியர் இல்லை, நீங்கள் அவர்களை சேர்க்க வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="581"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="584"/>
         <source>This author is already in the list.</source>
         <translation>இந்த நூலாசிரியர் பட்டியலில் ஏற்கனவே உள்ளது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="587"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="590"/>
         <source>You have not selected a valid author. Either select an author from the list, or type in a new author and click the &quot;Add Author to Song&quot; button to add the new author.</source>
         <translation>நீங்கள் சரியான நூலாசிரியர் தேர்ந்தெடுத்த இல்லை. அல்லது ஒரு புதிய நூலாசிரியர் பட்டியல், அல்லது வகை இருந்து ஒரு நூலாசிரியர் தேர்ந்தெடுக்கவும் மற்றும் புதிய நூலாசிரியர் சேர்க்க &quot;பாடல் என ஆசிரியர் சேர்க்கவும்&quot; பொத்தானை கிளிக் செய்யவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="637"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="641"/>
         <source>Add Topic</source>
         <translation>தலைப்பு சேர்க்கலாம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="637"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="641"/>
         <source>This topic does not exist, do you want to add it?</source>
         <translation>இந்த தலைப்பை இல்லை, நீங்கள் இதை சேர்க்க வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="654"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="659"/>
         <source>This topic is already in the list.</source>
         <translation>இந்த தலைப்பை பட்டியலில் ஏற்கனவே உள்ளது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="662"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="667"/>
         <source>You have not selected a valid topic. Either select a topic from the list, or type in a new topic and click the &quot;Add Topic to Song&quot; button to add the new topic.</source>
         <translation>நீங்கள் சரியான தலைப்பு தேர்ந்தெடுக்கவில்லை. அல்லது ஒரு புதிய தலைப்பில் ஒரு பட்டியலில் இருந்து தலைப்பை, அல்லது வகை தேர்ந்தெடுக்கவும் மற்றும் புதிய தலைப்பை சேர்க்க &quot;பாடல் என்று தலைப்பு சேர்க்கவும்&quot; பொத்தானை கிளிக் செய்யவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="203"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="204"/>
         <source>You need to type in a song title.</source>
         <translation>நீங்கள் ஒரு பாடலான பெயர் தட்டச்சு செய்ய வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="209"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="210"/>
         <source>You need to type in at least one verse.</source>
         <translation>நீங்கள் குறைந்தது ஒரு வசனம் தட்டச்சு செய்ய வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="225"/>
         <source>Add Book</source>
         <translation>புத்தக சேர்க்கலாம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="224"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="225"/>
         <source>This song book does not exist, do you want to add it?</source>
         <translation>இந்த பாடல் புத்தகம் இல்லை, நீங்கள் இதை சேர்க்க வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="215"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="216"/>
         <source>You need to have an author for this song.</source>
         <translation>இந்த பாடல் ஒரு நூலாசிரியர் இருக்க வேண்டும்.</translation>
     </message>
@@ -8624,7 +8665,7 @@ The encoding is responsible for the correct character representation.</source>
         <translation>அனைத்து &amp;நீக்க</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="868"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="875"/>
         <source>Open File(s)</source>
         <translation>கோப்பு (கள்) திற </translation>
     </message>
@@ -8637,39 +8678,39 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="332"/>
         <source>&lt;strong&gt;Warning:&lt;/strong&gt; You have not entered a verse order.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="181"/>
-        <source>There are no verses corresponding to &quot;%(invalid)s&quot;.Valid entries are %(valid)s.
-Please enter the verses separated by spaces.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="185"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="186"/>
         <source>There is no verse corresponding to &quot;%(invalid)s&quot;.Valid entries are %(valid)s.
 Please enter the verses separated by spaces.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="188"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="189"/>
         <source>Invalid Verse Order</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="304"/>
         <source>&amp;Edit Author Type</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="611"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="614"/>
         <source>Edit Author Type</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="611"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="614"/>
         <source>Choose type for this author</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="182"/>
+        <source>There are no verses corresponding to &quot;%(invalid)s&quot;. Valid entries are %(valid)s.
+Please enter the verses separated by spaces.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8775,7 +8816,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="148"/>
         <source>This wizard will help to export your songs to the open and free &lt;strong&gt;OpenLyrics &lt;/strong&gt; worship song format.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8783,220 +8824,261 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/foilpresenter.py" line="407"/>
         <source>Invalid Foilpresenter song file. No verses found.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SongsPlugin.GeneralTab</name>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="326"/>
+        <source>Enable search as you type</source>
+        <translation>நீங்கள் தட்டச்சு தேடல் செயல்படுத்த</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="206"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="210"/>
         <source>Select Document/Presentation Files</source>
         <translation>ஆவண / வழங்கல் கோப்புகள் தேர்வு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="133"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="134"/>
         <source>Song Import Wizard</source>
         <translation>பாடல் இறக்குமதி வழிகாட்டி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="136"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="137"/>
         <source>This wizard will help you to import songs from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
         <translation>இந்த வழிகாட்டி நீங்கள் பல வடிவமைப்புகளில் இருந்து இசை இறக்குமதி செய்ய உதவும். இருந்து இறக்குமதி செய்ய ஒரு வடிவம் தேர்ந்தெடுத்து துவங்கும் கீழே உள்ள அடுத்த பொத்தானை கிளிக் செய்யவும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="200"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="204"/>
         <source>Generic Document/Presentation</source>
         <translation>பொதுவான ஆவண / வழங்கல்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="151"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="152"/>
         <source>Add Files...</source>
         <translation>கோப்புகள் சேர்க்கலாம்...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="153"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="154"/>
         <source>Remove File(s)</source>
         <translation>கோப்பு (கள்) நீக்க </translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="165"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="166"/>
         <source>Please wait while your songs are imported.</source>
         <translation>உங்கள் இசை இறக்குமதி காத்திருங்கள்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="197"/>
-        <source>OpenLP 2.0 Databases</source>
-        <translation>OpenLP 2.0 Databases</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="331"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="352"/>
         <source>Words Of Worship Song Files</source>
         <translation>வழிபாடு பாடல் கோப்புகளை வார்த்தைகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="316"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="327"/>
         <source>Songs Of Fellowship Song Files</source>
         <translation>Songs Of Fellowship பாடல் கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="294"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="305"/>
         <source>SongBeamer Files</source>
         <translation>SongBeamer கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="310"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="321"/>
         <source>SongShow Plus Song Files</source>
         <translation>SongShow Plus பாடல் கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="245"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="249"/>
         <source>Foilpresenter Song Files</source>
         <translation>Foilpresenter பாடல் கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="169"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="170"/>
         <source>Copy</source>
         <translation>நகலெடுக்க</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="170"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="171"/>
         <source>Save to File</source>
         <translation>கோப்பு சேமிக்க</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="317"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="328"/>
         <source>The Songs of Fellowship importer has been disabled because OpenLP cannot access OpenOffice or LibreOffice.</source>
         <translation> Fellowship importer பாடல்கள் முடக்கப்பட்டுள்ளதால், OpenLP ஏனெனில் OpenOffice அல்லது LibreOffice திறக்க முடியாது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="203"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="207"/>
         <source>The generic document/presentation importer has been disabled because OpenLP cannot access OpenOffice or LibreOffice.</source>
         <translation>OpenLP இப்பொழுது OpenOffice அல்லது LibreOffice திறக்க முடியாது, ஏனெனில் generic ஆவணம் / விளக்கக்காட்சி இறக்குமதியாளர் முடக்கப்பட்டுள்ளது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="190"/>
-        <source>OpenLyrics or OpenLP 2.0 Exported Song</source>
-        <translation>OpenLyrics அல்லது OpenLP 2.0 ஏற்றுமதி பாடல் </translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="189"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="193"/>
         <source>OpenLyrics Files</source>
         <translation>OpenLyrics கோப்ப</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="212"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="216"/>
         <source>CCLI SongSelect Files</source>
         <translation>CCLI SongSelect கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="225"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="229"/>
         <source>EasySlides XML File</source>
         <translation>EasySlides XML கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="232"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="236"/>
         <source>EasyWorship Song Database</source>
         <translation>பாடல் தரவுத்தளம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="218"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="222"/>
         <source>DreamBeam Song Files</source>
         <translation>DreamBeam பாடல் கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="275"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="286"/>
         <source>You need to specify a valid PowerSong 1.0 database folder.</source>
         <translation>நீங்கள் சரியான குறிப்பிட வேண்டும் PowerSong 1.0 database அடைவை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="359"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="380"/>
         <source>ZionWorx (CSV)</source>
         <translation>ZionWorx (CSV)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="360"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="381"/>
         <source>First convert your ZionWorx database to a CSV text file, as explained in the &lt;a href=&quot;http://manual.openlp.org/songs.html#importing-from-zionworx&quot;&gt;User Manual&lt;/a&gt;.</source>
         <translation>முதலில் உங்கள் மாற்ற ZionWorx ஒரு CSV உரை கோப்பில் தரவுத்தள, என விளக்கினார் &lt;a href=&quot;http://manual.openlp.org/songs.html#importing-from-zionworx&quot;&gt;User Manual&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="325"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="336"/>
         <source>SundayPlus Song Files</source>
         <translation>SundayPlus பாடல் கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="177"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="181"/>
         <source>This importer has been disabled.</source>
         <translation>இந்த இறக்குமதியாளர் முடக்கப்பட்டுள்ளது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="252"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="263"/>
         <source>MediaShout Database</source>
         <translation>MediaShout தரவுத்தளம்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="253"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="264"/>
         <source>The MediaShout importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
         <translation>MediaShout இறக்குமதியாளர் இது விண்டோஸ் இல் மட்டுமே துணைபுரிகிறது. அது ஒரு விடுபட்ட Python தொகுதி காரணமாக முடக்கப்பட்டுள்ளது. இந்த இறக்குமதியாளர் பயன்படுத்த விரும்பினால், நீங்கள் &quot;pyodbc&quot; தொகுதி நிறுவ வேண்டும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="301"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="312"/>
         <source>SongPro Text Files</source>
         <translation>SongPro உரை கோப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="302"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="313"/>
         <source>SongPro (Export File)</source>
         <translation>SongPro (ஏற்றுமதி கோப்பு)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="303"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="314"/>
         <source>In SongPro, export your songs using the File -&gt; Export menu</source>
         <translation>SongPro உள்ள, கோப்பு பயன்படுத்தி உங்கள் பாடல்கள் ஏற்றுமதி -&gt; ஏற்றுமதி பட்டி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="239"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="243"/>
         <source>EasyWorship Service File</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="348"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="369"/>
         <source>WorshipCenter Pro Song Files</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="349"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="370"/>
         <source>The WorshipCenter Pro importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="268"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="279"/>
         <source>PowerPraise Song Files</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="282"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="293"/>
         <source>PresentationManager Song Files</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="288"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="299"/>
         <source>ProPresenter 4 Song Files</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="338"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="359"/>
         <source>Worship Assistant Files</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="339"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="360"/>
         <source>Worship Assistant (CSV)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importer.py" line="340"/>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="361"/>
         <source>In Worship Assistant, export your Database to a CSV file.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="194"/>
+        <source>OpenLyrics or OpenLP 2 Exported Song</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="201"/>
+        <source>OpenLP 2 Databases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="255"/>
+        <source>LyriX Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="256"/>
+        <source>LyriX (Exported TXT-files)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="343"/>
+        <source>VideoPsalm Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="344"/>
+        <source>VideoPsalm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/importer.py" line="345"/>
+        <source>The VideoPsalm songbooks are normally located in %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SongsPlugin.LyrixImport</name>
+    <message>
+        <location filename="openlp/plugins/songs/lib/importers/lyrix.py" line="109"/>
+        <source>Error: %s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9015,65 +9097,65 @@ Please enter the verses separated by spaces.</source>
 <context>
     <name>SongsPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Titles</source>
         <translation>தலைப்புகள்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Lyrics</source>
         <translation>பாடல்வரிகளை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="526"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="530"/>
         <source>CCLI License: </source>
         <translation>CCLI உரிமம்:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Entire Song</source>
         <translation>முழு பாடல்</translation>
     </message>
-    <message numerus="yes">
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="361"/>
-        <source>Are you sure you want to delete the %n selected song(s)?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
-    </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="128"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="132"/>
         <source>Maintain the lists of authors, topics and books.</source>
         <translation>ஆசிரியர்கள், தலைப்புகள் மற்றும் புத்தகங்கள் பட்டியலை பராமரிக்க.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="390"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="394"/>
         <source>copy</source>
         <comment>For song cloning</comment>
         <translation>நகலெடுக்க</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Titles...</source>
         <translation>தேடல் தலைப்புகள் ...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Entire Song...</source>
         <translation>முழு பாடல் தேட ...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Lyrics...</source>
         <translation>தேடல் பாடல்வரிகளை ...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Authors...</source>
         <translation>தேடல் ஆசிரியர்களையும் ...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="138"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Song Books...</source>
         <translation>தேடல் பாடல் புத்தகங்கள் ...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="365"/>
+        <source>Are you sure you want to delete the &quot;%d&quot; selected song(s)?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9088,8 +9170,8 @@ Please enter the verses separated by spaces.</source>
     <name>SongsPlugin.OpenLPSongImport</name>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/openlp.py" line="96"/>
-        <source>Not a valid OpenLP 2.0 song database.</source>
-        <translation>ஒரு செல்லுபடியாகும் OpenLP 2.0 பாடல் தொகுப்பு.</translation>
+        <source>Not a valid OpenLP 2 song database.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9105,7 +9187,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/opensong.py" line="139"/>
         <source>Invalid OpenSong song file. Missing song tag.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9159,7 +9241,7 @@ Please enter the verses separated by spaces.</source>
         <translation>&amp;வெளியீட்டாளர்:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songbookform.py" line="61"/>
+        <location filename="openlp/plugins/songs/forms/songbookform.py" line="62"/>
         <source>You need to type in a name for the book.</source>
         <translation>நீங்கள் புத்தகத்தை ஒரு பெயரை தட்டச்சு செய்ய வேண்டும்.</translation>
     </message>
@@ -9180,7 +9262,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="255"/>
         <source>Your song export failed because this error occurred: %s</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9214,107 +9296,107 @@ Please enter the verses separated by spaces.</source>
 <context>
     <name>SongsPlugin.SongMaintenanceForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="229"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="230"/>
         <source>Could not add your author.</source>
         <translation>உங்கள் நூலாசிரியர் சேர்க்க முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="232"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="233"/>
         <source>This author already exists.</source>
         <translation>இந்த நூலாசிரியர் முன்பே இருக்கிறது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="245"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="246"/>
         <source>Could not add your topic.</source>
         <translation>உங்கள் தலைப்பை சேர்க்க முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="248"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="249"/>
         <source>This topic already exists.</source>
         <translation>இந்த தலைப்பு ஏற்கனவே உள்ளது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="262"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="263"/>
         <source>Could not add your book.</source>
         <translation>உங்கள் புத்தகத்தில் சேர்க்க முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="265"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="266"/>
         <source>This book already exists.</source>
         <translation>இந்த புத்தகம் முன்பே இருக்கிறது.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="369"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="370"/>
         <source>Could not save your changes.</source>
         <translation>உங்கள் மாற்றங்களை சேமிக்க முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="309"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="310"/>
         <source>Could not save your modified author, because the author already exists.</source>
         <translation>நூலாசிரியர் ஏற்கனவே உள்ளது, ஏனெனில், உங்கள் மணிக்கு நூலாசிரியர் காப்பாற்ற முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="341"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="342"/>
         <source>Could not save your modified topic, because it already exists.</source>
         <translation>இது ஏற்கனவே உள்ளது, ஏனெனில், உங்கள் மணிக்கு தலைப்பை சேமிக்க முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="466"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="467"/>
         <source>Delete Author</source>
         <translation>படைப்பாளர் நீக்கு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="466"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="467"/>
         <source>Are you sure you want to delete the selected author?</source>
         <translation>நீங்கள் தேர்ந்தெடுத்த நூலாசிரியர் நீக்க வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="466"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="467"/>
         <source>This author cannot be deleted, they are currently assigned to at least one song.</source>
         <translation>இந்த நூலாசிரியர் நீக்க முடியாது, அவர்கள் தற்சமயம் குறைந்தபட்சம் ஒரு பாடல் ஒதுக்கப்படும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="478"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="479"/>
         <source>Delete Topic</source>
         <translation>தலைப்பு நீக்கு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="478"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="479"/>
         <source>Are you sure you want to delete the selected topic?</source>
         <translation>நீங்கள் தேர்ந்தெடுத்த தலைப்பு நீக்க வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="478"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="479"/>
         <source>This topic cannot be deleted, it is currently assigned to at least one song.</source>
         <translation>இந்த தலைப்பை நீக்க முடியாது, அது தற்சமயம் குறைந்தது ஒரு பாடல் ஒதுக்கப்படும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="489"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="490"/>
         <source>Delete Book</source>
         <translation>புத்தக நீக்கு</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="489"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="490"/>
         <source>Are you sure you want to delete the selected book?</source>
         <translation>நீங்கள் தேர்ந்தெடுத்த புத்தகம் நீக்க வேண்டுமா?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="489"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="490"/>
         <source>This book cannot be deleted, it is currently assigned to at least one song.</source>
         <translation>இந்த புத்தகம் நீக்க முடியாது, அது தற்சமயம் குறைந்தது ஒரு பாடல் ஒதுக்கப்படும்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="297"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="298"/>
         <source>The author %s already exists. Would you like to make songs with author %s use the existing author %s?</source>
         <translation>இந்த நூலாசிரியர் %s முன்பே இருக்கிறது. நீங்கள் நூலாசிரியர் என்ற இசை செய்ய விரும்புகிறேன் %s ஏற்கனவே இருக்கும் நூலாசிரியர் பயன்படுத்தும்%s?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="332"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="333"/>
         <source>The topic %s already exists. Would you like to make songs with topic %s use the existing topic %s?</source>
         <translation>இந்த தலைப்பை %s முன்பே இருக்கிறது. நீங்கள் தலைப்பை கொண்ட இசை செய்ய விரும்புகிறேன் %s ஏற்கனவே தலைப்பை பயன்படுத்த %s?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="371"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="372"/>
         <source>The book %s already exists. Would you like to make songs with book %s use the existing book %s?</source>
         <translation>இந்த புத்தகம் %s ஏற்கனவே உள்ளது. நீங்கள் புத்தகம் இசை செய்ய விரும்புகிறேன் %s ஏற்கனவே புத்தகத்தில் பயன்படுத்த %s?</translation>
     </message>
@@ -9322,187 +9404,182 @@ Please enter the verses separated by spaces.</source>
 <context>
     <name>SongsPlugin.SongSelectForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="225"/>
-        <source>CCLI SongSelect Importer</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="226"/>
-        <source>&lt;strong&gt;Note:&lt;/strong&gt; An Internet connection is required in order to import songs from CCLI SongSelect.</source>
-        <translation type="unfinished"/>
+        <source>CCLI SongSelect Importer</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="230"/>
+        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="227"/>
+        <source>&lt;strong&gt;Note:&lt;/strong&gt; An Internet connection is required in order to import songs from CCLI SongSelect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="231"/>
         <source>Username:</source>
         <translation>பெயர்:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="231"/>
+        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="232"/>
         <source>Password:</source>
         <translation>கடவுச்சொல்லை:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="232"/>
-        <source>Save username and password</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="233"/>
-        <source>Login</source>
-        <translation type="unfinished"/>
+        <source>Save username and password</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="234"/>
-        <source>Search Text:</source>
-        <translation type="unfinished"/>
+        <source>Login</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="235"/>
+        <source>Search Text:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="236"/>
         <source>Search</source>
         <translation>தேடல்</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="324"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="326"/>
         <source>Found %s song(s)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="237"/>
-        <source>Logout</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="238"/>
+        <source>Logout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="239"/>
         <source>View</source>
         <translation>பார்க்க</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="239"/>
+        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="240"/>
         <source>Title:</source>
         <translation>தலைப்பு:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="240"/>
+        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="241"/>
         <source>Author(s):</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="241"/>
+        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="242"/>
         <source>Copyright:</source>
         <translation>காப்புரிமை:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="242"/>
-        <source>CCLI Number:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="243"/>
-        <source>Lyrics:</source>
-        <translation type="unfinished"/>
+        <source>CCLI Number:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
-        <source>Back</source>
-        <translation type="unfinished"/>
+        <source>Lyrics:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="245"/>
+        <source>Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songselectdialog.py" line="246"/>
         <source>Import</source>
         <translation>இறக்குமதி</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="61"/>
         <source>More than 1000 results</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songselectform.py" line="61"/>
         <source>Your search has returned more than 1000 results, it has been stopped. Please refine your search to fetch better results.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="140"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="141"/>
         <source>Logging out...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="233"/>
         <source>Save Username and Password</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="232"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="233"/>
         <source>WARNING: Saving your username and password is INSECURE, your password is stored in PLAIN TEXT. Click Yes to save your password or No to cancel this.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="258"/>
         <source>Error Logging In</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="256"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="258"/>
         <source>There was a problem logging in, perhaps your username or password is incorrect?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="371"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="373"/>
         <source>Song Imported</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="192"/>
         <source>Incomplete song</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="191"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="192"/>
         <source>This song is missing some information, like the lyrics, and cannot be imported.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songselectform.py" line="371"/>
+        <location filename="openlp/plugins/songs/forms/songselectform.py" line="373"/>
         <source>Your song has been imported, would you like to import more songs?</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.SongsTab</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="73"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="69"/>
         <source>Songs Mode</source>
         <translation>பாடல்கள் முறை</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="74"/>
-        <source>Enable search as you type</source>
-        <translation>நீங்கள் தட்டச்சு தேடல் செயல்படுத்த</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="75"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="70"/>
         <source>Display verses on live tool bar</source>
         <translation>நேரடி கருவி பட்டியில் வசனங்கள் காண்பிக்க</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="77"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="72"/>
         <source>Update service from song edit</source>
         <translation>பாடல் தொகு இருந்து சேவையை மேம்படுத்த</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="78"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="73"/>
         <source>Import missing songs from service files</source>
         <translation>சேவை கோப்புகளை காணவில்லை பாடல்கள் இறக்குமதி</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="80"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="75"/>
         <source>Display songbook in footer</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="81"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="76"/>
         <source>Display &quot;%s&quot; symbol before copyright info</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9518,7 +9595,7 @@ Please enter the verses separated by spaces.</source>
         <translation>தலைப்பு பெயர்:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/topicsform.py" line="58"/>
+        <location filename="openlp/plugins/songs/forms/topicsform.py" line="59"/>
         <source>You need to type in a topic name.</source>
         <translation>நீங்கள் ஒரு தலைப்பை பெயரை தட்டச்சு செய்ய வேண்டும்.</translation>
     </message>
@@ -9562,16 +9639,24 @@ Please enter the verses separated by spaces.</source>
     </message>
 </context>
 <context>
+    <name>SongsPlugin.VideoPsalmImport</name>
+    <message>
+        <location filename="openlp/plugins/songs/lib/importers/videopsalm.py" line="122"/>
+        <source>Error: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SongsPlugin.WordsofWorshipSongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/wordsofworship.py" line="119"/>
-        <source>Invalid Words of Worship song file. Missing &quot;CSongDoc::CBlock&quot; string.</source>
-        <translation type="unfinished"/>
+        <location filename="openlp/plugins/songs/lib/importers/wordsofworship.py" line="109"/>
+        <source>Invalid Words of Worship song file. Missing &quot;%s&quot; header.WoW File\nSong Words</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/wordsofworship.py" line="109"/>
-        <source>Invalid Words of Worship song file. Missing &quot;WoW File\nSong Words&quot; header.</source>
-        <translation type="unfinished"/>
+        <location filename="openlp/plugins/songs/lib/importers/wordsofworship.py" line="119"/>
+        <source>Invalid Words of Worship song file. Missing &quot;%s&quot; string.CSongDoc::CBlock</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9594,7 +9679,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="129"/>
         <source>File not valid WorshipAssistant CSV format.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/worshipassistant.py" line="185"/>
@@ -9607,33 +9692,33 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/importers/worshipcenterpro.py" line="56"/>
         <source>Unable to connect the WorshipCenter Pro database.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.ZionWorxImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="85"/>
+        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="86"/>
         <source>Error reading CSV file.</source>
         <translation>படிப்பதில் பிழை CSV கோப்பு.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="107"/>
+        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="108"/>
         <source>File not valid ZionWorx CSV format.</source>
         <translation>செல்லாத ZionWorx CSV வடிவத்தில் தாக்கல்.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="85"/>
+        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="86"/>
         <source>Line %d: %s</source>
         <translation>வரிசை %d: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="103"/>
+        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="104"/>
         <source>Decoding error: %s</source>
         <translation>நீக்கத்திற்கு பிழை: %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="123"/>
+        <location filename="openlp/plugins/songs/lib/importers/zionworx.py" line="124"/>
         <source>Record %d</source>
         <translation>சாதனையை %d</translation>
     </message>
@@ -9643,32 +9728,32 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="132"/>
         <source>Wizard</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="135"/>
         <source>This wizard will help you to remove duplicate songs from the song database. You will have a chance to review every potential duplicate song before it is deleted. So no songs will be deleted without your explicit approval.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="140"/>
         <source>Searching for duplicate songs.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="141"/>
         <source>Please wait while your songs database is analyzed.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="143"/>
         <source>Here you can decide which songs to remove and which ones to keep.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="150"/>
         <source>Review duplicate songs (%s/%s)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="216"/>
@@ -9678,7 +9763,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/duplicatesongremovalform.py" line="216"/>
         <source>No duplicate songs have been found in the database.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

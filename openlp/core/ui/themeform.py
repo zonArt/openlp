@@ -159,7 +159,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         if not event:
             event = QtGui.QResizeEvent(self.size(), self.size())
         QtWidgets.QWizard.resizeEvent(self, event)
-        if self.currentPage() == self.preview_page:
+        if hasattr(self, 'preview_page') and self.currentPage() == self.preview_page:
             frame_width = self.preview_box_label.lineWidth()
             pixmap_width = self.preview_area.width() - 2 * frame_width
             pixmap_height = self.preview_area.height() - 2 * frame_width
