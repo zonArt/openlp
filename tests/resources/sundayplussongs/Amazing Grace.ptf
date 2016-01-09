@@ -1,0 +1,43 @@
+[#GLOBAL_RECT: rect(100, 150, 900, 1024), #Opacity: 100, #SHADOW_ON: 1, #SHADOW_COLOR: rgb( 0, 0, 0 ), #SHADOW_OPACITY: 100, #SHADOW_POSITION: "RB", #SHADOW_OFFSET: [4, 4], #FILE_TYPE: "Song", #title: "", #Author: "John Newton", #Copyright: "Public Domain", #CCLI: "1234", #Cell1: [#rtf: "{\rtf1\ansi\deff0 {\fonttbl{\f0\fswiss Arial;}{\f1\fmodern Monotype Corsiva;}{\f2\fswiss MS Serif;}{\f3\fnil Verdana;}}{\colortbl
+\red0\green0\blue0;\red0\green0\blue224;\red224\green0\blue0;\red224\green0\blue224;\red102\green102\blue153;\red51\green153\blue102;
+\red0\green255\blue0;\red255\green255\blue0;\red248\green248\blue248;}{\stylesheet{\s0\fs24\ql\li0\ri0\fi0\sb0\sa0\sl0 Normal;}{\s2
+\fs24\ql\li0\ri0\fi0\sb0\sa0\sl0 Normal Text;}{\s3\fs24\ql\li0\ri0\fi0\sb0\sa0\sl0 Plain Text;}{\s4\fs130\cf4\ql\li0\ri0\fi0\sb0\sa0
+\sl0 heading 1;}{\s5\fs192\cf5\ql\li0\ri0\fi0\sb0\sa0\sl0 heading 2;}{\s6\fs96\cf4\ql\li0\ri0\fi0\sb0\sa0\sl0 Body Text;}{\s7\b\fs96
+\cf6\ql\li0\ri0\fi0\sb0\sa0\sl0 Author;}{\s8\b\fs40\ql\li0\ri0\fi0\sb0\sa0\sl0 CCLI;}{\s9\b\fs40\ql\li0\ri0\fi0\sb0\sa0\sl0 Copyright;}
+{\s10\fs120\cf7\ql\li0\ri0\fi0\sb0\sa0\sl0 Lyrics;}{\s11\b\f1\fs144\ql\li0\ri0\fi0\sb0\sa0\sl0 Title;}{\s12\f2\fs16 02 VERSES;}{\s13
+\f2\fs16 03 CHORUS (itals);}{\s14\f2\fs12 01a ATTRIBUTION (1 fig);}{\s15\f2\fs12 01b ATTRIBUTION (2 fig);}{\s16\f2\fs12 01c ATTRIBUTION (3 fig);}
+{\s17\f2\fs12 01d ATTRIBUTION (4 fig);}}\margl1800 \margr1800 \margt1440 \margb1440 \pard \f0\fs24{\pard \s12\b\f3\fs96\cf8\ql\li0
+\ri0\fi0\sb0\sa0\sl0 Amazing grace how sweet the sound\par
+That saved a wretch like me;\par
+I once was lost, but now am found,\par
+Was blind, but now I see.\par
+\par
+}}", #Align: #left, #MARKER_NAME: "AMAZING GRACE", #Hotkey: "1"], #Cell2: [#rtf: "{\rtf1\ansi\deff0 {\fonttbl{\f0\fswiss Arial;}{\f1\fmodern Monotype Corsiva;}{\f2\fswiss MS Serif;}{\f3\fnil Verdana;}}{\colortbl
+\red0\green0\blue0;\red0\green0\blue224;\red224\green0\blue0;\red224\green0\blue224;\red102\green102\blue153;\red51\green153\blue102;
+\red0\green255\blue0;\red255\green255\blue0;\red248\green248\blue248;}{\stylesheet{\s0\fs24\ql\li0\ri0\fi0\sb0\sa0\sl0 Normal Text;}
+{\s2\fs24\ql\li0\ri0\fi0\sb0\sa0\sl0 Normal;}{\s3\fs24\ql\li0\ri0\fi0\sb0\sa0\sl0 Plain Text;}{\s4\fs130\cf4\ql\li0\ri0\fi0\sb0\sa0
+\sl0 heading 1;}{\s5\fs192\cf5\ql\li0\ri0\fi0\sb0\sa0\sl0 heading 2;}{\s6\fs96\cf4\ql\li0\ri0\fi0\sb0\sa0\sl0 Body Text;}{\s7\b\fs96
+\cf6 Author;}{\s8\b\fs40 CCLI;}{\s9\b\fs40 Copyright;}{\s10\fs120\cf7 Lyrics;}{\s11\b\f1\fs144 Title;}{\s12\f2\fs16 02 VERSES;}}\margl1800 
+\margr1800 \margt1440 \margb1440 \pard \f0\fs24{\b\f3\fs96\cf8 \^92Twas grace that taught my heart to fear,\par
+And grace my fears relieved;\par
+How precious did that grace appear,\par
+The hour I first believed!\par
+\par
+}}", #Align: #left, #MARKER_NAME: "AMAZING GRACE", #Hotkey: "2"], #Cell3: [#rtf: "{\rtf1\ansi\deff0 {\fonttbl{\f0\fswiss Arial;}{\f1\fmodern Monotype Corsiva;}{\f2\fswiss MS Serif;}{\f3\fnil Verdana;}}{\colortbl
+\red0\green0\blue0;\red0\green0\blue224;\red224\green0\blue0;\red224\green0\blue224;\red102\green102\blue153;\red51\green153\blue102;
+\red0\green255\blue0;\red255\green255\blue0;\red248\green248\blue248;}{\stylesheet{\s0\fs24\ql\li0\ri0\fi0\sb0\sa0\sl0 Normal Text;}
+{\s2\fs24\ql\li0\ri0\fi0\sb0\sa0\sl0 Normal;}{\s3\fs24\ql\li0\ri0\fi0\sb0\sa0\sl0 Plain Text;}{\s4\fs130\cf4\ql\li0\ri0\fi0\sb0\sa0
+\sl0 heading 1;}{\s5\fs192\cf5\ql\li0\ri0\fi0\sb0\sa0\sl0 heading 2;}{\s6\fs96\cf4\ql\li0\ri0\fi0\sb0\sa0\sl0 Body Text;}{\s7\b\fs96
+\cf6 Author;}{\s8\b\fs40 CCLI;}{\s9\b\fs40 Copyright;}{\s10\fs120\cf7 Lyrics;}{\s11\b\f1\fs144 Title;}{\s12\f2\fs16 02 VERSES;}}\margl1800 
+\margr1800 \margt1440 \margb1440 \pard \f0\fs24{\b\f3\fs96\cf8 Through many dangers, toils and snares\par
+I have already come;\par
+\^92Tis grace hath brought me safe thus far,\par
+And grace will lead me home.\par
+\par
+}}", #Align: #left, #MARKER_NAME: "AMAZING GRACE", #Hotkey: "3"], #CELL4: [#rtf: "{\rtf1\ansi\deff0 {\fonttbl{\f0\fswiss Arial;}{\f1\fnil Verdana;}}{\colortbl\red0\green0\blue0;\red0\green0\blue224;\red224\green0
+\blue0;\red224\green0\blue224;\red248\green248\blue248;}{\stylesheet{\s0\fs24 Normal Text;}}\margl1800 \margr1800 \margt1440 \margb1440 
+\pard \f0\fs24{\b\f1\fs96\cf4 When we\^92ve been there ten thousand years,\par
+Bright shining as the sun,\par
+We\^92ve no less days to sing God\^92s praise\par
+Than when we first begun.\par
+}}", #Align: #left, #MARKER_NAME: "AMAZING GRACE", #Hotkey: "4"], #CELL5: [:]]

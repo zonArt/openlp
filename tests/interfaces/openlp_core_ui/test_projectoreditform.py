@@ -103,5 +103,3 @@ class TestProjectorEditForm(TestCase, TestMixin):
                              'Projector edit form should be marked as existing entry')
             self.assertTrue((item.ip is TEST1_DATA['ip'] and item.name is TEST1_DATA['name']),
                             'Projector edit form should have TEST1_DATA() instance to edit')
-
-
