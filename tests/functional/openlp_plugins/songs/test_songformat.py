@@ -81,4 +81,3 @@ class TestSongFormat(TestCase):
             # THEN: Return all attributes that were specified
             self.assertEquals(len(SongFormat.get(song_format, 'canDisable', 'availability')), 2,
                     "Did not return the correct number of attributes when retrieving multiple attributes at once")
-
