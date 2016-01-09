@@ -52,7 +52,7 @@ class TestMixin(object):
         Settings.set_filename(self.ini_file)
         Settings().setDefaultFormat(Settings.IniFormat)
         # Needed on windows to make sure a Settings object is available during the tests
-        self.setting = Settings()        
+        self.setting = Settings()
         Settings().setValue('themes/global theme', 'my_theme')
 
     def destroy_settings(self):

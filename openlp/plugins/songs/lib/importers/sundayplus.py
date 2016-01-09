@@ -22,6 +22,8 @@
 
 import os
 import re
+import logging
+
 
 from openlp.plugins.songs.lib import VerseType, retrieve_windows_encoding
 from openlp.plugins.songs.lib import strip_rtf
@@ -86,8 +88,8 @@ class SundayPlusImport(SongImport):
         :param cell: ?
         :return:
         """
-        if cell == False and (len(data) == 0 or data[0:1] != b'[' or data.strip()[-1:] != b']'):
-            log.log_error('File is malformed')
+        if not cell and (len(data) == 0 or data[0:1] != b'[' or data.strip()[-1:] != b']'):
+            self.log_error('File is malformed')
             return False
         i = 1
         verse_type = VerseType.tags[VerseType.Verse]
