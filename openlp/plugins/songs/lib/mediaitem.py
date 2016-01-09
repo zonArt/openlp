@@ -254,20 +254,20 @@ class SongMediaItem(MediaManagerItem):
         search_book = search_keywords[0]
         search_entry = re.sub(r'[^0-9]', '', search_keywords[2])
 
-        songbookentries = (self.plugin.manager.session.query(SongBookEntry)
+        songbook_entries = (self.plugin.manager.session.query(SongBookEntry)
                            .join(Book)
                            .order_by(Book.name)
                            .order_by(SongBookEntry.entry))
-        for songbookentry in songbookentries:
-            if songbookentry.song.temporary:
+        for songbook_entry in songbook_entries:
+            if songbook_entry.song.temporary:
                 continue
-            if search_book.lower() not in songbookentry.songbook.name.lower():
+            if search_book.lower() not in songbook_entry.songbook.name.lower():
                 continue
-            if search_entry not in songbookentry.entry:
+            if search_entry not in songbook_entry.entry:
                 continue
-            song_detail = '%s #%s: %s' % (songbookentry.songbook.name, songbookentry.entry, songbookentry.song.title)
+            song_detail = '%s #%s: %s' % (songbook_entry.songbook.name, songbook_entry.entry, songbook_entry.song.title)
             song_name = QtWidgets.QListWidgetItem(song_detail)
-            song_name.setData(QtCore.Qt.UserRole, songbookentry.song.id)
+            song_name.setData(QtCore.Qt.UserRole, songbook_entry.song.id)
             self.list_view.addItem(song_name)
 
     def on_clear_text_button_click(self):
@@ -523,8 +523,8 @@ class SongMediaItem(MediaManagerItem):
                 item.raw_footer.append("%s %s" % (SongStrings.CopyrightSymbol, song.copyright))
             else:
                 item.raw_footer.append(song.copyright)
-        if self.display_songbook and song.songbookentries:
-            songbooks = [str(songbookentry) for songbookentry in song.songbookentries]
+        if self.display_songbook and song.songbook_entries:
+            songbooks = [str(songbook_entry) for songbook_entry in song.songbook_entries]
             item.raw_footer.append(", ".join(songbooks))
         if Settings().value('core/ccli number'):
             item.raw_footer.append(translate('SongsPlugin.MediaItem',

@@ -155,29 +155,29 @@ class TestMediaItem(TestCase, TestMixin):
         Test build songs footer with basic song and multiple songbooks
         """
         # GIVEN: A Song and a Service Item
-        mock_song = Song()
-        mock_song.title = 'My Song'
-        mock_song.copyright = 'My copyright'
-        mock_song.authors_songs = []
-        mock_song.ccli_number = ''
+        song = Song()
+        song.title = 'My Song'
+        song.copyright = 'My copyright'
+        song.authors_songs = []
+        song.ccli_number = ''
         book1 = MagicMock()
         book1.name = "My songbook"
         book2 = MagicMock()
         book2.name = "Thy songbook"
-        mock_song.songbookentries = []
-        mock_song.add_songbookentry(book1, '12')
-        mock_song.add_songbookentry(book2, '502A')
+        song.songbookentries = []
+        song.add_songbookentry(book1, '12')
+        song.add_songbookentry(book2, '502A')
         service_item = ServiceItem(None)
 
         # WHEN: I generate the Footer with default settings
-        self.media_item.generate_footer(service_item, mock_song)
+        self.media_item.generate_footer(service_item, song)
 
         # THEN: The songbook should not be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright'])
 
         # WHEN: I activate the "display songbook" option
         self.media_item.display_songbook = True
-        self.media_item.generate_footer(service_item, mock_song)
+        self.media_item.generate_footer(service_item, song)
 
         # THEN: The songbook should be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12, Thy songbook #502A'])

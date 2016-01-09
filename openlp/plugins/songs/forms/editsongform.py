@@ -129,10 +129,10 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         author_item.setData(QtCore.Qt.UserRole, (author.id, author_type))
         self.authors_list_view.addItem(author_item)
 
-    def add_songbookentry_to_list(self, songbook_id, songbook_name, entry):
-        songbookentry_item = QtWidgets.QListWidgetItem(SongBookEntry.get_display_name(songbook_name, entry))
-        songbookentry_item.setData(QtCore.Qt.UserRole, (songbook_id, entry))
-        self.songbooks_list_view.addItem(songbookentry_item)
+    def add_songbook_entry_to_list(self, songbook_id, songbook_name, entry):
+        songbook_entry_item = QtWidgets.QListWidgetItem(SongBookEntry.get_display_name(songbook_name, entry))
+        songbook_entry_item.setData(QtCore.Qt.UserRole, (songbook_id, entry))
+        self.songbooks_list_view.addItem(songbook_entry_item)
 
     def _extract_verse_order(self, verse_order):
         """
@@ -515,8 +515,8 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             topic_name.setData(QtCore.Qt.UserRole, topic.id)
             self.topics_list_view.addItem(topic_name)
         self.songbooks_list_view.clear()
-        for songbookentry in self.song.songbookentries:
-            self.add_songbookentry_to_list(songbookentry.songbook.id, songbookentry.songbook.name, songbookentry.entry)
+        for songbook_entry in self.song.songbook_entries:
+            self.add_songbook_entry_to_list(songbook_entry.songbook.id, songbook_entry.songbook.name, songbook_entry.entry)
         self.audio_list_widget.clear()
         for media in self.song.media_files:
             media_file = QtWidgets.QListWidgetItem(os.path.split(media.file_name)[1])
@@ -686,7 +686,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                     QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
                 songbook = Book.populate(name=text)
                 self.manager.save_object(songbook)
-                self.add_songbookentry_to_list(songbook.id, songbook.name, self.songbook_entry_edit.text())
+                self.add_songbook_entry_to_list(songbook.id, songbook.name, self.songbook_entry_edit.text())
                 self.load_songbooks()
                 self.songbooks_combo_box.setCurrentIndex(0)
                 self.songbook_entry_edit.clear()
@@ -699,7 +699,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                 critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm', 'This Songbook is already in the list.'))
             else:
-                self.add_songbookentry_to_list(songbook.id, songbook.name, self.songbook_entry_edit.text())
+                self.add_songbook_entry_to_list(songbook.id, songbook.name, self.songbook_entry_edit.text())
             self.songbooks_combo_box.setCurrentIndex(0)
             self.songbook_entry_edit.clear()
         else:
@@ -1029,13 +1029,13 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             topic = self.manager.get_object(Topic, topic_id)
             if topic is not None:
                 self.song.topics.append(topic)
-        self.song.songbookentries = []
+        self.song.songbook_entries = []
         for row in range(self.songbooks_list_view.count()):
             item = self.songbooks_list_view.item(row)
             songbook_id = item.data(QtCore.Qt.UserRole)[0]
             songbook = self.manager.get_object(Book, songbook_id)
             entry = item.data(QtCore.Qt.UserRole)[1]
-            self.song.add_songbookentry(songbook, entry)
+            self.song.add_songbook_entry(songbook, entry)
         # Save the song here because we need a valid id for the audio files.
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)

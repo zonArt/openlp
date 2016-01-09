@@ -160,21 +160,21 @@ class Song(BaseModel):
                 self.authors_songs.remove(author_song)
                 return
 
-    def add_songbookentry(self, songbook, entry):
+    def add_songbook_entry(self, songbook, entry):
         """
         Add a Songbook Entry to the song if it not yet exists
 
         :param songbook_name: Name of the Songbook.
         :param entry: Entry in the Songbook (usually a number)
         """
-        for songbookentry in self.songbookentries:
-            if songbookentry.songbook.name == songbook.name and songbookentry.entry == entry:
+        for songbook_entry in self.songbook_entries:
+            if songbook_entry.songbook.name == songbook.name and songbook_entry.entry == entry:
                 return
 
-        new_songbookentry = SongBookEntry()
-        new_songbookentry.songbook = songbook
-        new_songbookentry.entry = entry
-        self.songbookentries.append(new_songbookentry)
+        new_songbook_entry = SongBookEntry()
+        new_songbook_entry.songbook = songbook
+        new_songbook_entry.entry = entry
+        self.songbook_entries.append(new_songbook_entry)
 
 
 class SongBookEntry(BaseModel):
@@ -383,7 +383,7 @@ def init_schema(url):
         # Use lazy='joined' to always load authors when the song is fetched from the database (bug 1366198)
         'authors': relation(Author, secondary=authors_songs_table, viewonly=True, lazy='joined'),
         'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
-        'songbookentries': relation(SongBookEntry, backref='song', cascade="all, delete-orphan"),
+        'songbook_entries': relation(SongBookEntry, backref='song', cascade="all, delete-orphan"),
         'topics': relation(Topic, backref='songs', secondary=songs_topics_table)
     })
     mapper(Topic, topics_table)

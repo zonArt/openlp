@@ -266,12 +266,12 @@ class OpenLyrics(object):
                         element.set('type', AuthorType.Music)
                     else:
                         element.set('type', author_song.author_type)
-        if song.songbookentries:
+        if song.songbook_entries:
             songbooks = etree.SubElement(properties, 'songbooks')
-            for songbookentry in song.songbookentries:
-                element = self._add_text_to_element('songbook', songbooks, None, songbookentry.songbook.name)
-                if songbookentry.entry:
-                    element.set('entry', songbookentry.entry)
+            for songbook_entry in song.songbook_entries:
+                element = self._add_text_to_element('songbook', songbooks, None, songbook_entry.songbook.name)
+                if songbook_entry.entry:
+                    element.set('entry', songbook_entry.entry)
         if song.topics:
             themes = etree.SubElement(properties, 'themes')
             for topic in song.topics:
@@ -752,7 +752,7 @@ class OpenLyrics(object):
                         # We need to create a book, because it does not exist.
                         book = Book.populate(name=book_name, publisher='')
                         self.manager.save_object(book)
-                    song.add_songbookentry(book, songbook.get('entry', ''))
+                    song.add_songbook_entry(book, songbook.get('entry', ''))
 
     def _process_titles(self, properties, song):
         """
