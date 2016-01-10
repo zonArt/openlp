@@ -390,7 +390,7 @@ class SongFormat(object):
         """
         Return a list of the supported song formats.
         """
-        return [
+        return sorted([
             SongFormat.OpenLyrics,
             SongFormat.OpenLP2,
             SongFormat.Generic,
@@ -400,6 +400,7 @@ class SongFormat(object):
             SongFormat.EasyWorshipDB,
             SongFormat.EasyWorshipService,
             SongFormat.FoilPresenter,
+            SongFormat.Lyrix,
             SongFormat.MediaShout,
             SongFormat.OpenSong,
             SongFormat.PowerPraise,
@@ -411,13 +412,12 @@ class SongFormat(object):
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,
             SongFormat.SundayPlus,
+            SongFormat.VideoPsalm,
             SongFormat.WordsOfWorship,
             SongFormat.WorshipAssistant,
             SongFormat.WorshipCenterPro,
             SongFormat.ZionWorx,
-            SongFormat.Lyrix,
-            SongFormat.VideoPsalm
-        ]
+        ])
 
     @staticmethod
     def get(song_format, *attributes):

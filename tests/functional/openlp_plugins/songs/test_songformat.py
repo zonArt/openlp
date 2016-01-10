@@ -81,3 +81,14 @@ class TestSongFormat(TestCase):
             # THEN: Return all attributes that were specified
             self.assertEquals(len(SongFormat.get(song_format, 'canDisable', 'availability')), 2,
                     "Did not return the correct number of attributes when retrieving multiple attributes at once")
+
+    def test_get_format_list_returns_ordered_list(self):
+        """
+        Test that get_format_list() returns a list that is ordered
+        according to the order specified in SongFormat
+        """
+        # GIVEN: The SongFormat class
+        # WHEN: Retrieving all formats
+        # THEN: The returned list should be sorted according to the ordering defined in SongFormat
+        self.assertEquals(sorted(SongFormat.get_format_list()), SongFormat.get_format_list(),
+                          "The list returned should be sorted according to the ordering in SongFormat")
