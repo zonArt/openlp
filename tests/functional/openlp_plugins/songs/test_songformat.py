@@ -87,5 +87,8 @@ class TestSongFormat(TestCase):
         Test that get_format_list() returns a list that is ordered
         according to the order specified in SongFormat
         """
+        # GIVEN: The SongFormat class
+        # WHEN: Retrieving all formats
+        # THEN: The returned list should be sorted according to the ordering defined in SongFormat
         self.assertEquals(sorted(SongFormat.get_format_list()), SongFormat.get_format_list(),
-                         "The list returned should be sorted according to the ordering in SongFormat")
+                          "The list returned should be sorted according to the ordering in SongFormat")
