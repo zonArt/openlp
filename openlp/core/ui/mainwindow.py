@@ -154,8 +154,7 @@ class Ui_MainWindow(object):
         # Create the MediaManager
         self.media_manager_dock = OpenLPDockWidget(main_window, 'media_manager_dock',
                                                    ':/system/system_mediamanager.png')
-        # TODO: Figure out how to fix the stylesheet and add it back in
-        # self.media_manager_dock.setStyleSheet(MEDIA_MANAGER_STYLE)
+        self.media_manager_dock.setStyleSheet(MEDIA_MANAGER_STYLE)
         # Create the media toolbox
         self.media_tool_box = QtWidgets.QToolBox(self.media_manager_dock)
         self.media_tool_box.setObjectName('media_tool_box')

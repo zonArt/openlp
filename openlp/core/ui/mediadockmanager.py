@@ -39,23 +39,12 @@ class MediaDockManager(object):
         """
         self.media_dock = media_dock
 
-    def add_dock(self, media_item, icon, weight):
+    def add_item_to_dock(self, media_item):
         """
         Add a MediaManagerItem to the dock
+        If the item has been added before, it's silently skipped
 
-        :param media_item:  The item to add to the dock
-        :param icon: An icon for this dock item
-        :param weight:
-        """
-        visible_title = media_item.plugin.get_string(StringContent.VisibleName)
-        log.info('Adding %s dock' % visible_title)
-        self.media_dock.addItem(media_item, icon, visible_title['title'])
-
-    def insert_dock(self, media_item, icon, weight):
-        """
-        This should insert a dock item at a given location
-        This does not work as it gives a Segmentation error.
-        For now add at end of stack if not present
+        :param media_item: The item to add to the dock
         """
         visible_title = media_item.plugin.get_string(StringContent.VisibleName)
         log.debug('Inserting %s dock' % visible_title['title'])
@@ -65,7 +54,7 @@ class MediaDockManager(object):
                 match = True
                 break
         if not match:
-            self.media_dock.addItem(media_item, icon, visible_title['title'])
+            self.media_dock.addItem(media_item, visible_title['title'])
 
     def remove_dock(self, media_item):
         """
