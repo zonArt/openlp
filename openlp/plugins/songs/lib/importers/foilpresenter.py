@@ -234,16 +234,6 @@ class FoilPresenter(object):
             clean_song(self.manager, song)
             self.manager.save_object(song)
 
-    def _child(self, element):
-        """
-        This returns the text of an element as unicode string.
-
-        :param element: The element
-        """
-        if element is not None:
-            return str(element)
-        return ''
-
     def _process_authors(self, foilpresenterfolie, song):
         """
         Adds the authors specified in the XML to the song.
@@ -253,7 +243,7 @@ class FoilPresenter(object):
         """
         authors = []
         try:
-            copyright = self._child(foilpresenterfolie.copyright.text_)
+            copyright = to_str(foilpresenterfolie.copyright.text_)
         except AttributeError:
             copyright = None
         if copyright:
@@ -346,7 +336,7 @@ class FoilPresenter(object):
         :param song: The song object.
         """
         try:
-            song.ccli_number = self._child(foilpresenterfolie.ccliid)
+            song.ccli_number = to_str(foilpresenterfolie.ccliid)
         except AttributeError:
             song.ccli_number = ''
 
@@ -358,7 +348,7 @@ class FoilPresenter(object):
         :param song: The song object.
         """
         try:
-            song.comments = self._child(foilpresenterfolie.notiz)
+            song.comments = to_str(foilpresenterfolie.notiz)
         except AttributeError:
             song.comments = ''
 
@@ -370,7 +360,7 @@ class FoilPresenter(object):
         :param song: The song object.
         """
         try:
-            song.copyright = self._child(foilpresenterfolie.copyright.text_)
+            song.copyright = to_str(foilpresenterfolie.copyright.text_)
         except AttributeError:
             song.copyright = ''
 
@@ -396,19 +386,19 @@ class FoilPresenter(object):
             VerseType.tags[VerseType.PreChorus]: 1
         }
         if not hasattr(foilpresenterfolie.strophen, 'strophe'):
-            self.importer.log_error(self._child(foilpresenterfolie.titel),
+            self.importer.log_error(to_str(foilpresenterfolie.titel),
                                     str(translate('SongsPlugin.FoilPresenterSongImport',
                                                   'Invalid Foilpresenter song file. No verses found.')))
             self.save_song = False
             return
         for strophe in foilpresenterfolie.strophen.strophe:
-            text = self._child(strophe.text_) if hasattr(strophe, 'text_') else ''
-            verse_name = self._child(strophe.key)
+            text = to_str(strophe.text_) if hasattr(strophe, 'text_') else ''
+            verse_name = to_str(strophe.key)
             children = strophe.getchildren()
             sortnr = False
             for child in children:
                 if child.tag == 'sortnr':
-                    verse_sortnr = self._child(strophe.sortnr)
+                    verse_sortnr = to_str(strophe.sortnr)
                     sortnr = True
                 # In older Version there is no sortnr, but we need one
             if not sortnr:
@@ -484,7 +474,7 @@ class FoilPresenter(object):
         song.song_number = ''
         try:
             for bucheintrag in foilpresenterfolie.buch.bucheintrag:
-                book_name = self._child(bucheintrag.name)
+                book_name = to_str(bucheintrag.name)
                 if book_name:
                     book = self.manager.get_object_filtered(Book, Book.name == book_name)
                     if book is None:
@@ -493,8 +483,8 @@ class FoilPresenter(object):
                         self.manager.save_object(book)
                     song.song_book_id = book.id
                     try:
-                        if self._child(bucheintrag.nummer):
-                            song.song_number = self._child(bucheintrag.nummer)
+                        if to_str(bucheintrag.nummer):
+                            song.song_number = to_str(bucheintrag.nummer)
                     except AttributeError:
                         pass
                     # We only support one song book, so take the first one.
@@ -512,13 +502,13 @@ class FoilPresenter(object):
         try:
             for title_string in foilpresenterfolie.titel.titelstring:
                 if not song.title:
-                    song.title = self._child(title_string)
+                    song.title = to_str(title_string)
                     song.alternate_title = ''
                 else:
-                    song.alternate_title = self._child(title_string)
+                    song.alternate_title = to_str(title_string)
         except AttributeError:
             # Use first line of first verse
-            first_line = self._child(foilpresenterfolie.strophen.strophe.text_)
+            first_line = to_str(foilpresenterfolie.strophen.strophe.text_)
             song.title = first_line.split('\n')[0]
 
     def _process_topics(self, foilpresenterfolie, song):
@@ -530,7 +520,7 @@ class FoilPresenter(object):
         """
         try:
             for name in foilpresenterfolie.kategorien.name:
-                topic_text = self._child(name)
+                topic_text = to_str(name)
                 if topic_text:
                     topic = self.manager.get_object_filtered(Topic, Topic.name == topic_text)
                     if topic is None:
@@ -540,3 +530,14 @@ class FoilPresenter(object):
                     song.topics.append(topic)
         except AttributeError:
             pass
+
+
+def to_str(element):
+    """
+    This returns the text of an element as unicode string.
+
+    :param element: The element
+    """
+    if element is not None:
+        return str(element)
+    return ''

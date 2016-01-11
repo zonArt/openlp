@@ -142,12 +142,10 @@ class TestMainDisplay(TestCase, TestMixin):
         mocked_bibles_plugin.refresh_css.assert_called_with(main_display.frame)
 
     @skipUnless(is_macosx(), 'Can only run test on Mac OS X due to pyobjc dependency.')
-    def macosx_display_window_flags_state_test(self, is_macosx):
+    def macosx_display_window_flags_state_test(self):
         """
         Test that on Mac OS X we set the proper window flags
         """
-        if not is_macosx():
-            self.skipTest('Can only run test on Mac OS X due to pyobjc dependency.')
         # GIVEN: A new SlideController instance on Mac OS X.
         self.screens.set_current_display(0)
         display = MagicMock()

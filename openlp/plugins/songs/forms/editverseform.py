@@ -41,8 +41,7 @@ class EditVerseForm(QtWidgets.QDialog, Ui_EditVerseDialog):
         """
         Constructor
         """
-        super(EditVerseForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
-                | QtCore.Qt.WindowTitleHint)
+        super(EditVerseForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.has_single_verse = False
         self.insert_button.clicked.connect(self.on_insert_button_clicked)

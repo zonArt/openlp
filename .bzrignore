@@ -43,5 +43,4 @@ __pycache__
 .coverage
 cover
 *.kdev4
-./.coveragerc
-./coverage
+coverage

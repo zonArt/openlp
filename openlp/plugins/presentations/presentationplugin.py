@@ -28,7 +28,7 @@ import logging
 
 from PyQt5 import QtCore
 
-from openlp.core.common import AppLocation, Settings, translate
+from openlp.core.common import AppLocation, translate
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 
@@ -71,6 +71,7 @@ class PresentationPlugin(Plugin):
     def create_settings_tab(self, parent):
         """
         Create the settings Tab.
+        :param parent: parent UI Element
         """
         visible_name = self.get_string(StringContent.VisibleName)
         self.settings_tab = PresentationTab(parent, self.name, visible_name['title'], self.controllers, self.icon_path)
@@ -112,6 +113,7 @@ class PresentationPlugin(Plugin):
     def register_controllers(self, controller):
         """
         Register each presentation controller (Impress, PPT etc) and store for later use.
+        :param controller: controller to register
         """
         self.controllers[controller.name] = controller
 
@@ -137,7 +139,8 @@ class PresentationPlugin(Plugin):
             self.register_controllers(controller)
         return bool(self.controllers)
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Return information about this plugin.
         """

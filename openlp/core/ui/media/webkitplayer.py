@@ -326,10 +326,10 @@ class WebkitPlayer(MediaPlayer):
         controller = display.controller
         if controller.media_info.is_flash:
             seek = seek_value
-            display.frame.evaluateJavaScript('show_flash("seek", null, null, "%s");' % (seek))
+            display.frame.evaluateJavaScript('show_flash("seek", null, null, "%s");' % seek)
         else:
             seek = float(seek_value) / 1000
-            display.frame.evaluateJavaScript('show_video("seek", null, null, null, "%f");' % (seek))
+            display.frame.evaluateJavaScript('show_video("seek", null, null, null, "%f");' % seek)
 
     def reset(self, display):
         """

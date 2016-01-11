@@ -89,8 +89,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         Constructor.
         """
-        super(ExceptionForm, self).__init__(None, QtCore.Qt.WindowSystemMenuHint
-                | QtCore.Qt.WindowTitleHint)
+        super(ExceptionForm, self).__init__(None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.settings_section = 'crashreport'
         self.report_text = '**OpenLP Bug Report**\n' \

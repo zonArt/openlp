@@ -20,41 +20,19 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The file rename dialog.
+This module contains tests for the Songusage plugin.
 """
-
-from PyQt5 import QtCore, QtWidgets
-
-from .filerenamedialog import Ui_FileRenameDialog
-
-from openlp.core.common import Registry, RegistryProperties, translate
+from unittest import TestCase
+from openlp.plugins.songusage.songusageplugin import SongUsagePlugin
 
 
-class FileRenameForm(QtWidgets.QDialog, Ui_FileRenameDialog, RegistryProperties):
-    """
-    The file rename dialog
-    """
-    def __init__(self):
-        """
-        Constructor
-        """
-        super(FileRenameForm, self).__init__(Registry().get('main_window'),
-                                             QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
-        self._setup()
+class TestSongUsage(TestCase):
 
-    def _setup(self):
-        """
-        Set up the class. This method is mocked out by the tests.
-        """
-        self.setupUi(self)
-
-    def exec(self, copy=False):
-        """
-        Run the Dialog with correct heading.
-        """
-        if copy:
-            self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Copy'))
-        else:
-            self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Rename'))
-        self.file_name_edit.setFocus()
-        return QtWidgets.QDialog.exec(self)
+    def test_about_text(self):
+        # GIVEN: The SongUsagePlugin
+        # WHEN: Retrieving the about text
+        # THEN: about() should return a string object
+        self.assertIsInstance(SongUsagePlugin.about(), str)
+        # THEN: about() should return a non-empty string
+        self.assertNotEquals(len(SongUsagePlugin.about()), 0)
+        self.assertNotEquals(len(SongUsagePlugin.about()), 0)

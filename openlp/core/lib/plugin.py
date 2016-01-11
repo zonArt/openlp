@@ -263,7 +263,8 @@ class Plugin(QtCore.QObject, RegistryProperties):
         else:
             self.media_item.on_add_click()
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Show a dialog when the user clicks on the 'About' button in the plugin manager.
         """

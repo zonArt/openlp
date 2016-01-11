@@ -25,10 +25,9 @@ Package to test the openlp.core.lib.projector.pjlink1 package.
 
 from unittest import TestCase
 
-from mock import MagicMock, patch
-
 from openlp.core.lib.projector.pjlink1 import PJLink1
 
+from tests.functional import patch
 from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUTHENTICATE
 
 pjlink_test = PJLink1(name='test', ip='127.0.0.1', pin=TEST_PIN, no_poll=True)
