@@ -276,7 +276,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         if self.media_item:
             self.media_item.initialise()
-            self.main_window.media_dock_manager.insert_dock(self.media_item, self.icon, self.weight)
+            self.main_window.media_dock_manager.add_item_to_dock(self.media_item)
 
     def finalise(self):
         """
