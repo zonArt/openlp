@@ -167,7 +167,8 @@ class BiblePlugin(Plugin):
         if self.media_item:
             self.media_item.on_import_click()
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Return the about text for the plugin manager
         """

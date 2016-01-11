@@ -38,8 +38,7 @@ class SongBookForm(QtWidgets.QDialog, Ui_SongBookDialog):
         """
         Constructor
         """
-        super(SongBookForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint
-                | QtCore.Qt.WindowTitleHint)
+        super(SongBookForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
     def exec(self, clear=True):
