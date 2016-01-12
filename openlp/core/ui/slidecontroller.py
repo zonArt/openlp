@@ -828,13 +828,13 @@ class SlideController(DisplayController, RegistryProperties):
         self.selected_row = 0
         # take a copy not a link to the servicemanager copy.
         self.service_item = copy.copy(service_item)
+        if self.service_item.is_command():
+            Registry().execute(
+                '%s_start' % service_item.name.lower(), [self.service_item, self.is_live, self.hide_mode(), slide_no])
         # Reset blanking if needed
         if old_item and self.is_live and (old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay) or
                                           self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay)):
             self._reset_blank(self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay))
-        if service_item.is_command():
-            Registry().execute(
-                '%s_start' % service_item.name.lower(), [self.service_item, self.is_live, self.hide_mode(), slide_no])
         self.info_label.setText(self.service_item.title)
         self.slide_list = {}
         if self.is_live:
@@ -886,28 +886,28 @@ class SlideController(DisplayController, RegistryProperties):
                     self.service_item.bg_image_bytes = \
                         self.image_manager.get_image_bytes(frame['path'], ImageSource.ImagePlugin)
         self.preview_widget.replace_service_item(self.service_item, width, slide_no)
-        self.enable_tool_bar(service_item)
+        self.enable_tool_bar(self.service_item)
         # Pass to display for viewing.
         # Postpone image build, we need to do this later to avoid the theme
         # flashing on the screen
         if not self.service_item.is_image():
             self.display.build_html(self.service_item)
-        if service_item.is_media():
-            self.on_media_start(service_item)
+        if self.service_item.is_media():
+            self.on_media_start(self.service_item)
         self.slide_selected(True)
-        if service_item.from_service:
+        if self.service_item.from_service:
             self.preview_widget.setFocus()
         if old_item:
             # Close the old item after the new one is opened
             # This avoids the service theme/desktop flashing on screen
             # However opening a new item of the same type will automatically
             # close the previous, so make sure we don't close the new one.
-            if old_item.is_command() and not service_item.is_command() or \
-                    old_item.is_command() and not old_item.is_media() and service_item.is_media():
+            if old_item.is_command() and not self.service_item.is_command() or \
+                    old_item.is_command() and not old_item.is_media() and self.service_item.is_media():
                 Registry().execute('%s_stop' % old_item.name.lower(), [old_item, self.is_live])
-            if old_item.is_media() and not service_item.is_media():
+            if old_item.is_media() and not self.service_item.is_media():
                 self.on_media_close()
-        Registry().execute('slidecontroller_%s_started' % self.type_prefix, [service_item])
+        Registry().execute('slidecontroller_%s_started' % self.type_prefix, [self.service_item])
 
     def on_slide_selected_index(self, message):
         """
