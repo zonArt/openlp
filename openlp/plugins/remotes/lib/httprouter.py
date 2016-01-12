@@ -621,7 +621,7 @@ class HttpRouter(RegistryProperties):
         event = getattr(self.service_manager, 'servicemanager_%s_item' % action)
         if self.request_data:
             try:
-                data = json.loads(self.request_data)['request']['id']
+                data = int(json.loads(self.request_data)['request']['id'])
             except KeyError:
                 return self.do_http_error()
             event.emit(data)
