@@ -1140,7 +1140,7 @@ class SlideController(DisplayController, RegistryProperties):
         win_id = QtWidgets.QApplication.desktop().winId()
         screen = QtWidgets.QApplication.primaryScreen()
         rect = self.screens.current['size']
-        win_image = screen.grabWindow(win_id, rect.x(), rect.y(),rect.width(), rect.height())
+        win_image = screen.grabWindow(win_id, rect.x(), rect.y(), rect.width(), rect.height())
         win_image.setDevicePixelRatio(self.slide_preview.devicePixelRatio())
         self.slide_preview.setPixmap(win_image)
         self.slide_image = win_image

@@ -363,9 +363,8 @@ class Htmbuilder(TestCase, TestMixin):
         """
         Test the webkit_version() function
         """
-        # GIVEN: Webkit 
+        # GIVEN: Webkit
         webkit_ver = float(QtWebKit.qWebKitVersion())
         # WHEN: Retrieving the webkit version
         # THEN: Webkit versions should match
         self.assertEquals(webkit_version(), webkit_ver, "The returned webkit version doesn't match the installed one")
-
