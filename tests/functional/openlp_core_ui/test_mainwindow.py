@@ -189,5 +189,3 @@ class TestMainWindow(TestCase, TestMixin):
             # THEN: The media manager dock is made visible
             self.assertEqual(0, mocked_media_manager_dock.setVisible.call_count)
             mocked_widget.on_focus.assert_called_with()
-
-
