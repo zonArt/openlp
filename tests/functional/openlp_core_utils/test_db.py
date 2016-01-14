@@ -27,6 +27,7 @@ import shutil
 import sqlalchemy
 from unittest import TestCase
 from tempfile import mkdtemp
+import time
 
 from openlp.core.utils.db import drop_column, drop_columns
 from openlp.core.lib.db import init_db, get_upgrade_op
@@ -52,6 +53,7 @@ class TestUtilsDBFunctions(TestCase):
         Clean up
         """
         self.session.close()
+        time.sleep(1)
         shutil.rmtree(self.tmp_folder)
 
     def delete_column_test(self):
