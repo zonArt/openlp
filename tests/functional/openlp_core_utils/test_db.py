@@ -103,4 +103,3 @@ class TestUtilsDBFunctions(TestCase):
         for column in columns:
             if column.name == 'song_book_id' or column.name == 'song_number':
                 self.fail("The column '%s' should have been deleted." % column.name)
-

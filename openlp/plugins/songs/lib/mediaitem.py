@@ -255,9 +255,9 @@ class SongMediaItem(MediaManagerItem):
         search_entry = re.sub(r'[^0-9]', '', search_keywords[2])
 
         songbook_entries = (self.plugin.manager.session.query(SongBookEntry)
-                           .join(Book)
-                           .order_by(Book.name)
-                           .order_by(SongBookEntry.entry))
+                            .join(Book)
+                            .order_by(Book.name)
+                            .order_by(SongBookEntry.entry))
         for songbook_entry in songbook_entries:
             if songbook_entry.song.temporary:
                 continue
