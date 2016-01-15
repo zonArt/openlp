@@ -96,6 +96,7 @@ class TestProjectorDB(TestCase):
         """
         self.projector.session.close()
         self.projector = None
+        retries = 0
         while retries < 5:
             try:
                 if os.path.exists(TEST_DB):

@@ -88,6 +88,7 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         self.projectordb.session.close()
         del(self.projectordb)
         del(self.projector)
+        retries = 0
         while retries < 5:
             try:
                 if os.path.exists(TEST_DB):
