@@ -60,13 +60,12 @@ class TestUtilsDBFunctions(TestCase):
         retries = 0
         while retries < 5:
             try:
-                shutil.rmtree(self.tmp_folder)
-                # os.unlink(self.db_tmp_path)
+                if os.path.exists(self.tmp_folder):
+                    shutil.rmtree(self.tmp_folder)
                 break
-            except Exception as e:
+            except:
                 time.sleep(1)
                 retries += 1
-                print(e)
 
     def delete_column_test(self):
         """
