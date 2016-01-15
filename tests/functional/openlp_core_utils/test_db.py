@@ -57,8 +57,14 @@ class TestUtilsDBFunctions(TestCase):
         self.session.close()
         self.session = None
         gc.collect()
-        time.sleep(1)
-        os.unlink(self.db_tmp_path)
+        retries = 0
+        while retries < 5:
+            try:
+                os.unlink(self.db_tmp_path)
+                break
+            except:
+                time.sleep(1)
+                retries += 1
         shutil.rmtree(self.tmp_folder)
 
     def delete_column_test(self):
