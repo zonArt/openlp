@@ -53,6 +53,7 @@ class TestUtilsDBFunctions(TestCase):
         Clean up
         """
         self.session.close()
+        self.session = None
         time.sleep(1)
         shutil.rmtree(self.tmp_folder)
 
