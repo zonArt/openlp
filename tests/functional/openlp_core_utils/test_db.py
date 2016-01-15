@@ -22,15 +22,17 @@
 """
 Package to test the openlp.core.utils.db package.
 """
+from tempfile import mkdtemp
+from unittest import TestCase
+import gc
 import os
 import shutil
 import sqlalchemy
-from unittest import TestCase
-from tempfile import mkdtemp
 import time
 
 from openlp.core.utils.db import drop_column, drop_columns
 from openlp.core.lib.db import init_db, get_upgrade_op
+
 from tests.utils.constants import TEST_RESOURCES_PATH
 
 
@@ -42,9 +44,9 @@ class TestUtilsDBFunctions(TestCase):
         """
         self.tmp_folder = mkdtemp()
         db_path = os.path.join(TEST_RESOURCES_PATH, 'songs', 'songs-1.9.7.sqlite')
-        db_tmp_path = os.path.join(self.tmp_folder, 'songs-1.9.7.sqlite')
-        shutil.copyfile(db_path, db_tmp_path)
-        db_url = 'sqlite:///' + db_tmp_path
+        self.db_tmp_path = os.path.join(self.tmp_folder, 'songs-1.9.7.sqlite')
+        shutil.copyfile(db_path, self.db_tmp_path)
+        db_url = 'sqlite:///' + self.db_tmp_path
         self.session, metadata = init_db(db_url)
         self.op = get_upgrade_op(self.session)
 
@@ -54,7 +56,9 @@ class TestUtilsDBFunctions(TestCase):
         """
         self.session.close()
         self.session = None
+        gc.collect()
         time.sleep(1)
+        os.unlink(self.db_tmp_path)
         shutil.rmtree(self.tmp_folder)
 
     def delete_column_test(self):
