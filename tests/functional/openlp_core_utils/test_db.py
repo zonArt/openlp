@@ -22,14 +22,17 @@
 """
 Package to test the openlp.core.utils.db package.
 """
+from tempfile import mkdtemp
+from unittest import TestCase
+import gc
 import os
 import shutil
 import sqlalchemy
-from unittest import TestCase
-from tempfile import mkdtemp
+import time
 
 from openlp.core.utils.db import drop_column, drop_columns
 from openlp.core.lib.db import init_db, get_upgrade_op
+
 from tests.utils.constants import TEST_RESOURCES_PATH
 
 
@@ -40,30 +43,41 @@ class TestUtilsDBFunctions(TestCase):
         Create temp folder for keeping db file
         """
         self.tmp_folder = mkdtemp()
+        db_path = os.path.join(TEST_RESOURCES_PATH, 'songs', 'songs-1.9.7.sqlite')
+        self.db_tmp_path = os.path.join(self.tmp_folder, 'songs-1.9.7.sqlite')
+        shutil.copyfile(db_path, self.db_tmp_path)
+        db_url = 'sqlite:///' + self.db_tmp_path
+        self.session, metadata = init_db(db_url)
+        self.op = get_upgrade_op(self.session)
 
     def tearDown(self):
         """
         Clean up
         """
-        shutil.rmtree(self.tmp_folder)
+        self.session.close()
+        self.session = None
+        gc.collect()
+        retries = 0
+        while retries < 5:
+            try:
+                if os.path.exists(self.tmp_folder):
+                    shutil.rmtree(self.tmp_folder)
+                break
+            except:
+                time.sleep(1)
+                retries += 1
 
     def delete_column_test(self):
         """
         Test deleting a single column in a table
         """
         # GIVEN: A temporary song db
-        db_path = os.path.join(TEST_RESOURCES_PATH, 'songs', 'songs-1.9.7.sqlite')
-        db_tmp_path = os.path.join(self.tmp_folder, 'songs-1.9.7.sqlite')
-        shutil.copyfile(db_path, db_tmp_path)
-        db_url = 'sqlite:///' + db_tmp_path
-        session, metadata = init_db(db_url)
-        op = get_upgrade_op(session)
 
         # WHEN: Deleting a columns in a table
-        drop_column(op, 'songs', 'song_book_id')
+        drop_column(self.op, 'songs', 'song_book_id')
 
         # THEN: The column should have been deleted
-        meta = sqlalchemy.MetaData(bind=op.get_bind())
+        meta = sqlalchemy.MetaData(bind=self.op.get_bind())
         meta.reflect()
         columns = meta.tables['songs'].columns
 
@@ -76,18 +90,12 @@ class TestUtilsDBFunctions(TestCase):
         Test deleting multiple columns in a table
         """
         # GIVEN: A temporary song db
-        db_path = os.path.join(TEST_RESOURCES_PATH, 'songs', 'songs-1.9.7.sqlite')
-        db_tmp_path = os.path.join(self.tmp_folder, 'songs-1.9.7.sqlite')
-        shutil.copyfile(db_path, db_tmp_path)
-        db_url = 'sqlite:///' + db_tmp_path
-        session, metadata = init_db(db_url)
-        op = get_upgrade_op(session)
 
         # WHEN: Deleting a columns in a table
-        drop_columns(op, 'songs', ['song_book_id', 'song_number'])
+        drop_columns(self.op, 'songs', ['song_book_id', 'song_number'])
 
         # THEN: The columns should have been deleted
-        meta = sqlalchemy.MetaData(bind=op.get_bind())
+        meta = sqlalchemy.MetaData(bind=self.op.get_bind())
         meta.reflect()
         columns = meta.tables['songs'].columns
 

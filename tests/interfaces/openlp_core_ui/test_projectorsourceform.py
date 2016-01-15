@@ -65,8 +65,6 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         """
         Set up anything necessary for all tests
         """
-        if os.path.exists(TEST_DB):
-            os.unlink(TEST_DB)
         mocked_init_url.return_value = 'sqlite:///{}'.format(TEST_DB)
         self.build_settings()
         self.setup_application()
@@ -90,6 +88,15 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         self.projectordb.session.close()
         del(self.projectordb)
         del(self.projector)
+        retries = 0
+        while retries < 5:
+            try:
+                if os.path.exists(TEST_DB):
+                    os.unlink(TEST_DB)
+                break
+            except:
+                time.sleep(1)
+                retries += 1
         self.destroy_settings()
 
     def source_dict_test(self):
