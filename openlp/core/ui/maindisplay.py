@@ -576,6 +576,7 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         self.player = QtMultimedia.QMediaPlayer()
         self.playlist = QtMultimedia.QMediaPlaylist(self.player)
         self.volume_slider = None
+        self.player.setPlaylist(self.playlist)
         self.player.positionChanged.connect(self._on_position_changed)
 
     def __del__(self):
@@ -643,7 +644,7 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         if not isinstance(file_names, list):
             file_names = [file_names]
         for file_name in file_names:
-            self.playlist.addMedia(QtCore.QUrl(file_name))
+            self.playlist.addMedia(QtMultimedia.QMediaContent(QtCore.QUrl.fromLocalFile(file_name)))
 
     def next(self):
         """

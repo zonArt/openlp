@@ -1420,7 +1420,7 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param time: the time remaining
         """
-        seconds = self.display.audio_player.media_object.remainingTime() // 1000
+        seconds = (self.display.audio_player.player.duration() - self.display.audio_player.player.position()) // 1000
         minutes = seconds // 60
         seconds %= 60
         self.audio_time_label.setText(' %02d:%02d ' % (minutes, seconds))
