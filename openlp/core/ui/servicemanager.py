@@ -212,6 +212,7 @@ class Ui_ServiceManager(object):
         # Connect up our signals and slots
         self.theme_combo_box.activated.connect(self.on_theme_combo_box_selected)
         self.service_manager_list.doubleClicked.connect(self.on_make_live)
+        self.service_manager_list.clicked.connect(self.on_single_click_preview)
         self.service_manager_list.itemCollapsed.connect(self.collapsed)
         self.service_manager_list.itemExpanded.connect(self.expanded)
         # Last little bits of setting up
@@ -1460,6 +1461,14 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         :param field:
         """
         self.make_live()
+
+    def on_single_click_preview(self, field=None):
+        """
+        If single click previewing is enabled, send the current item to the Preview slide controller but triggered by a tablewidget click event.
+        :param field:
+        """
+        if Settings().value('advanced/single click service preview'):
+            self.make_preview()
 
     def make_live(self, row=-1):
         """
