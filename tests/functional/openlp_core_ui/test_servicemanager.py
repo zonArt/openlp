@@ -540,21 +540,35 @@ class TestServiceManager(TestCase):
         self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 0, 'Should not be called')
         self.assertEquals(service_manager.theme_menu.menuAction().setVisible.call_count, 1,
                           'Should have be called once')
-
-    @patch(u'openlp.core.lib.mediamanageritem.Settings')
+        
+    @patch(u'openlp.core.ui.servicemanager.Settings')
     @patch(u'openlp.core.ui.servicemanager.ServiceManager.make_preview')
-    def single_click_preview_test(self, mocked_make_preview, MockedSettings):
+    def single_click_preview_test_true(self, mocked_make_preview, MockedSettings):
         """
         Test that when "Preview items when clicked in Service Manager" is enabled that the item goes to preview
         """
         # GIVEN: A setting to enable "Preview items when clicked in Service Manager" and a service manager.
         mocked_settings = MagicMock()
-        mocked_settings.value.side_effect = lambda x: x == 'advanced/single click service preview'
+        mocked_settings.value.return_value = True
         MockedSettings.return_value = mocked_settings
         service_manager = ServiceManager(None)
-
-        # WHEN: on_double_clicked() is called
+        # WHEN: on_single_click_preview() is called
         service_manager.on_single_click_preview()
-
-        # THEN: on_live_click() should have been called
-        mocked_make_preview.assert_called_with()
+        # THEN: make_preview() should have been called
+        self.assertEquals(mocked_make_preview.call_count, 1, 'Should have been called once')
+        
+    @patch(u'openlp.core.ui.servicemanager.Settings')
+    @patch(u'openlp.core.ui.servicemanager.ServiceManager.make_preview')
+    def single_click_preview_test_false(self, mocked_make_preview, MockedSettings):
+        """
+        Test that when "Preview items when clicked in Service Manager" is disabled that the item does not goes to preview
+        """
+        # GIVEN: A setting to enable "Preview items when clicked in Service Manager" and a service manager.
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        service_manager = ServiceManager(None)
+        # WHEN: on_single_click_preview() is called
+        service_manager.on_single_click_preview()
+        # THEN: make_preview() should have been called
+        self.assertEquals(mocked_make_preview.call_count, 0, 'Should not be called')
