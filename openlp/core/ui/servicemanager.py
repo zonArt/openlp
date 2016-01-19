@@ -1466,17 +1466,19 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
 
     def on_single_click_preview(self, field=None):
         """
-        If single click previewing is enabled, and triggered by a tablewidget click event, start a timeout to verify a double-click hasn't triggered.
+        If single click previewing is enabled, and triggered by a tablewidget click event,
+        start a timeout to verify a double-click hasn't triggered.
         :param field:
         """
         if Settings().value('advanced/single click service preview'):
             if not self.list_double_clicked:
                 # If a double click has not registered start a timer, otherwise wait for the existing timer to finish.
-                QtCore.QTimer.singleShot(QtWidgets.QApplication.instance().doubleClickInterval(), self.on_single_click_preview_timeout)
-            
+                QtCore.QTimer.singleShot(QtWidgets.QApplication.instance().doubleClickInterval(),
+                                         self.on_single_click_preview_timeout)
+
     def on_single_click_preview_timeout(self):
         """
-        If a single click, but not a double click has been triggered, send the current item to the Preview slide controller.
+        If a single click ok, but double click not triggered, send the current item to the Preview slide controller.
         :param field:
         """
         if self.list_double_clicked:
