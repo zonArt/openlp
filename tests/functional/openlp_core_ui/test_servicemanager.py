@@ -556,7 +556,8 @@ class TestServiceManager(TestCase):
         # WHEN: on_single_click_preview() is called
         service_manager.on_single_click_preview()
         # THEN: timer should have been started
-        mocked_singleShot.assert_called_with(PyQt5.QtWidgets.QApplication.instance().doubleClickInterval(),service_manager.on_single_click_preview_timeout)
+        mocked_singleShot.assert_called_with(PyQt5.QtWidgets.QApplication.instance().doubleClickInterval(),
+                                             service_manager.on_single_click_preview_timeout)
 
     @patch(u'openlp.core.ui.servicemanager.Settings')
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
