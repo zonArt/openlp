@@ -274,7 +274,7 @@ class AdvancedTab(SettingsTab):
         self.single_click_preview_check_box.setText(translate('OpenLP.AdvancedTab',
                                                               'Preview items when clicked in Media Manager'))
         self.single_click_service_preview_check_box.setText(translate('OpenLP.AdvancedTab',
-                                                              'Preview items when clicked in Service Manager'))
+                                                                      'Preview items when clicked in Service Manager'))
         self.expand_service_item_check_box.setText(translate('OpenLP.AdvancedTab',
                                                              'Expand new service items on creation'))
         self.enable_auto_close_check_box.setText(translate('OpenLP.AdvancedTab',
