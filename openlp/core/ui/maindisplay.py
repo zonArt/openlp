@@ -90,7 +90,7 @@ class Display(QtWidgets.QGraphicsView):
         # OpenGL. Only white blank screen is shown on the 2nd monitor all the
         # time. We need to investigate more how to use OpenGL properly on Mac OS
         # X.
-        if not is_macosx():
+        if not is_macosx() and not is_win():
             self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
