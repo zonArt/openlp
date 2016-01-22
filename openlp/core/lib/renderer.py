@@ -20,6 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import re
 
 from PyQt5 import QtGui, QtCore, QtWebKitWidgets
 
@@ -441,7 +442,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
                             previous_raw = line + line_end
                             continue
                 # Figure out how many words of the line will fit on screen as the line will not fit as a whole.
-                raw_words = Renderer.words_split(line)
+                raw_words = words_split(line)
                 html_words = list(map(expand_tags, raw_words))
                 previous_html, previous_raw = \
                     self._binary_chop(formatted, previous_html, previous_raw, html_words, raw_words, ' ', line_end)
@@ -528,8 +529,7 @@ def words_split(line):
     :param line: Line to be split
     """
     # this parse we are to be wordy
-    line = line.replace('\n', ' ')
-    return line.split(' ')
+    return re.split('\s+', line)
 
 
 def get_start_tags(raw_text):
@@ -548,11 +548,15 @@ def get_start_tags(raw_text):
     raw_tags = []
     html_tags = []
     for tag in FormattingTags.get_html_tags():
+        print('looking at tag...')
         if tag['start tag'] == '{br}':
             continue
         if raw_text.count(tag['start tag']) != raw_text.count(tag['end tag']):
+            print('should append')
             raw_tags.append((raw_text.find(tag['start tag']), tag['start tag'], tag['end tag']))
             html_tags.append((raw_text.find(tag['start tag']), tag['start html']))
+    print(raw_tags)
+    print(html_tags)
     # Sort the lists, so that the tags which were opened first on the first slide (the text we are checking) will be
     # opened first on the next slide as well.
     raw_tags.sort(key=lambda tag: tag[0])
