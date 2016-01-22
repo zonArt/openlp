@@ -607,7 +607,10 @@ class SlideController(DisplayController, RegistryProperties):
         widget.addActions([
             self.previous_item, self.next_item,
             self.previous_service, self.next_service,
-            self.escape_item])
+            self.escape_item,
+            self.desktop_screen,
+            self.theme_screen,
+            self.blank_screen])
 
     def preview_size_changed(self):
         """
