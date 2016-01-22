@@ -555,9 +555,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
 
     def shake_web_view(self):
         """
-        Resizes the web_view a bit to force an update. Workaround for bug #1531319, should not be needed with PyQt 5.6. 
+        Resizes the web_view a bit to force an update. Workaround for bug #1531319, should not be needed with PyQt 5.6.
         """
-        self.web_view.setGeometry(0, 0, self.width(), self.height()-1)
+        self.web_view.setGeometry(0, 0, self.width(), self.height() - 1)
         self.web_view.setGeometry(0, 0, self.width(), self.height())
 
 
