@@ -59,4 +59,3 @@ TEST3_DATA = dict(ip='333.333.333.333',
                   name='___TEST_THREE___',
                   location='location three',
                   notes='notes three')
-

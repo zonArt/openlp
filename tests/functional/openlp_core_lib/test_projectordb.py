@@ -87,8 +87,6 @@ class TestProjectorDB(TestCase):
         Set up anything necessary for all tests
         """
         with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-            if os.path.exists(TEST_DB):
-                os.unlink(TEST_DB)
             mocked_init_url.return_value = 'sqlite:///%s' % TEST_DB
             self.projector = ProjectorDB()
 
@@ -98,6 +96,15 @@ class TestProjectorDB(TestCase):
         """
         self.projector.session.close()
         self.projector = None
+        retries = 0
+        while retries < 5:
+            try:
+                if os.path.exists(TEST_DB):
+                    os.unlink(TEST_DB)
+                break
+            except:
+                time.sleep(1)
+                retries += 1
 
     def find_record_by_ip_test(self):
         """
