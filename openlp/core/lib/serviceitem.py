@@ -543,7 +543,6 @@ class ServiceItem(RegistryProperties):
         :param length: The length of the media item
         """
         print("set_media_length " + str(length) + " " + self.processor)
-        print("set_media_length " + str(self.start_time) + " " + str(self.end_time))
         self.media_length = length
         if length > 0:
             self.add_capability(ItemCapabilities.HasVariableStartTime)

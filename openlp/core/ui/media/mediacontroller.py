@@ -452,8 +452,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                                        translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         media_data = MediaInfoWrapper.parse(service_item.get_frame_path())
+        print(media_data.to_data())
         # duration returns in nano seconds
-        service_item.set_media_length(media_data.tracks[0].duration // 1000)
+        service_item.set_media_length(media_data.tracks[0].duration)
         log.debug('use %s controller' % self.current_media_players[controller.controller_type])
         return True
 
@@ -537,7 +538,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 if not title:
                     continue
                 player = self.media_players[title]
-                print(player)
                 # The system player may not return what files it can play so add it now
                 #  and check whether it can play the file later
                 if title == 'system':
