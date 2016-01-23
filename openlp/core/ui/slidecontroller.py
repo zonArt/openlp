@@ -603,6 +603,9 @@ class SlideController(DisplayController, RegistryProperties):
         Add actions to the widget specified by `widget`
 
         :param widget: The UI widget for the actions
+        This defines the controls available when Live display has stolen focus.
+        Examples of this happening: Clicking anything in the live window or certain single screen mode scenarios.
+        Needles to say, blank to modes should not be removed from here.
         """
         widget.addActions([
             self.previous_item, self.next_item,
