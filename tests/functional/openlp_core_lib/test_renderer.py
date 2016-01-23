@@ -30,7 +30,7 @@ from openlp.core.common import Registry
 from openlp.core.lib import Renderer, ScreenList, ServiceItem, FormattingTags
 from openlp.core.lib.renderer import words_split, get_start_tags
 
-from tests.functional import MagicMock
+from tests.functional import MagicMock, patch
 
 SCREEN = {
     'primary': False,
@@ -72,7 +72,8 @@ class TestRenderer(TestCase):
         self.assertEqual(renderer.screen_ratio, 0.75, 'The base renderer should be a live controller')
         self.assertEqual(renderer.footer_start, 691, 'The base renderer should be a live controller')
 
-    def get_start_tags_test(self):
+    @patch('openlp.core.lib.renderer.FormattingTags.get_html_tags')
+    def get_start_tags_test(self, mocked_get_html_tags):
         """
         Test the get_start_tags() method
         """
@@ -80,7 +81,12 @@ class TestRenderer(TestCase):
         given_raw_text = '{st}{r}Text text text'
         expected_tuple = ('{st}{r}Text text text{/r}{/st}', '{st}{r}',
                           '<strong><span style="-webkit-text-fill-color:red">')
-        FormattingTags.load_tags()
+        mocked_get_html_tags.return_value = [{'temporary': False, 'end tag': '{/r}', 'desc': 'Red',
+                                              'start html': '<span style="-webkit-text-fill-color:red">',
+                                              'end html': '</span>', 'start tag': '{r}', 'protected': True},
+                                             {'temporary': False, 'end tag': '{/st}', 'desc': 'Bold',
+                                              'start html': '<strong>', 'end html': '</strong>', 'start tag': '{st}',
+                                              'protected': True}]
 
         # WHEN: The renderer converts the start tags
         result = get_start_tags(given_raw_text)
