@@ -363,6 +363,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         """
         is_valid = False
         controller = self.display_controllers[source]
+        print(controller)
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
@@ -437,6 +438,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         """
         print('### media_length')
         controller = self.display_controllers[DisplayControllerType.Plugin]
+        print(controller)
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
@@ -538,6 +540,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 if not title:
                     continue
                 player = self.media_players[title]
+                print(player)
                 # The system player may not return what files it can play so add it now
                 #  and check whether it can play the file later
                 if title == 'system':
@@ -638,8 +641,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param controller:  The Controller to be processed
         """
-        print('### tick')
-        if controller.media_info.playing:
+        if controller.media_info.playing and controller.media_info.length > 0:
             if controller.media_info.timer > controller.media_info.length:
                 controller.media_info.timer = controller.media_info.length
                 controller.media_info.timer = controller.media_info.length
