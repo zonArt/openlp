@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -266,13 +266,12 @@ class OpenLyrics(object):
                         element.set('type', AuthorType.Music)
                     else:
                         element.set('type', author_song.author_type)
-        book = self.manager.get_object_filtered(Book, Book.id == song.song_book_id)
-        if book is not None:
-            book = book.name
+        if song.songbook_entries:
             songbooks = etree.SubElement(properties, 'songbooks')
-            element = self._add_text_to_element('songbook', songbooks, None, book)
-            if song.song_number:
-                element.set('entry', song.song_number)
+            for songbook_entry in song.songbook_entries:
+                element = self._add_text_to_element('songbook', songbooks, None, songbook_entry.songbook.name)
+                if songbook_entry.entry:
+                    element.set('entry', songbook_entry.entry)
         if song.topics:
             themes = etree.SubElement(properties, 'themes')
             for topic in song.topics:
@@ -744,8 +743,6 @@ class OpenLyrics(object):
         :param properties: The property object (lxml.objectify.ObjectifiedElement).
         :param song: The song object.
         """
-        song.song_book_id = None
-        song.song_number = ''
         if hasattr(properties, 'songbooks'):
             for songbook in properties.songbooks.songbook:
                 book_name = songbook.get('name', '')
@@ -755,10 +752,7 @@ class OpenLyrics(object):
                         # We need to create a book, because it does not exist.
                         book = Book.populate(name=book_name, publisher='')
                         self.manager.save_object(book)
-                    song.song_book_id = book.id
-                    song.song_number = songbook.get('entry', '')
-                    # We only support one song book, so take the first one.
-                    break
+                    song.add_songbook_entry(book, songbook.get('entry', ''))
 
     def _process_titles(self, properties, song):
         """

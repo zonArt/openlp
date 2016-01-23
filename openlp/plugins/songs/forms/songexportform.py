@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -72,7 +72,7 @@ class SongExportForm(OpenLPWizard):
         """
         Song wizard specific signals.
         """
-        self.available_list_widget.itemActivated.connect(self.on_item_activated)
+        self.available_list_widget.itemActivated.connect(on_item_activated)
         self.search_line_edit.textEdited.connect(self.on_search_line_edit_changed)
         self.uncheck_button.clicked.connect(self.on_uncheck_button_clicked)
         self.check_button.clicked.connect(self.on_check_button_clicked)
@@ -172,7 +172,7 @@ class SongExportForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.available_songs_page:
             items = [
-                item for item in self._find_list_widget_items(self.available_list_widget) if item.checkState()
+                item for item in find_list_widget_items(self.available_list_widget) if item.checkState()
             ]
             if not items:
                 critical_error_message_box(
@@ -241,7 +241,7 @@ class SongExportForm(OpenLPWizard):
         """
         songs = [
             song.data(QtCore.Qt.UserRole)
-            for song in self._find_list_widget_items(self.selected_list_widget)
+            for song in find_list_widget_items(self.selected_list_widget)
         ]
         exporter = OpenLyricsExport(self, songs, self.directory_line_edit.text())
         try:
@@ -255,28 +255,6 @@ class SongExportForm(OpenLPWizard):
             self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed because this '
                                                   'error occurred: %s') % ose.strerror)
 
-    def _find_list_widget_items(self, list_widget, text=''):
-        """
-        Returns a list of *QListWidgetItem*s of the ``list_widget``. Note, that hidden items are included.
-
-        :param list_widget: The widget to get all items from. (QListWidget)
-        :param text: The text to search for. (unicode string)
-        """
-        return [
-            item for item in list_widget.findItems(text, QtCore.Qt.MatchContains)
-        ]
-
-    def on_item_activated(self, item):
-        """
-        Called, when an item in the *available_list_widget* has been triggered.
-        The item is check if it was not checked, whereas it is unchecked when it
-        was checked.
-
-        :param item:  The *QListWidgetItem* which was triggered.
-        """
-        item.setCheckState(
-            QtCore.Qt.Unchecked if item.checkState() else QtCore.Qt.Checked)
-
     def on_search_line_edit_changed(self, text):
         """
         The *search_line_edit*'s text has been changed. Update the list of
@@ -286,9 +264,9 @@ class SongExportForm(OpenLPWizard):
         :param text:  The text of the *search_line_edit*.
         """
         search_result = [
-            song for song in self._find_list_widget_items(self.available_list_widget, text)
+            song for song in find_list_widget_items(self.available_list_widget, text)
         ]
-        for item in self._find_list_widget_items(self.available_list_widget):
+        for item in find_list_widget_items(self.available_list_widget):
             item.setHidden(item not in search_result)
 
     def on_uncheck_button_clicked(self):
@@ -317,3 +295,26 @@ class SongExportForm(OpenLPWizard):
         self.get_folder(
             translate('SongsPlugin.ExportWizardForm', 'Select Destination Folder'),
             self.directory_line_edit, 'last directory export')
+
+
+def find_list_widget_items(list_widget, text=''):
+    """
+    Returns a list of *QListWidgetItem*s of the ``list_widget``. Note, that hidden items are included.
+
+    :param list_widget: The widget to get all items from. (QListWidget)
+    :param text: The text to search for. (unicode string)
+    """
+    return [
+        item for item in list_widget.findItems(text, QtCore.Qt.MatchContains)
+    ]
+
+
+def on_item_activated(item):
+    """
+    Called, when an item in the *available_list_widget* has been triggered.
+    The item is check if it was not checked, whereas it is unchecked when it
+    was checked.
+
+    :param item:  The *QListWidgetItem* which was triggered.
+    """
+    item.setCheckState(QtCore.Qt.Unchecked if item.checkState() else QtCore.Qt.Checked)

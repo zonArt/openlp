@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -211,7 +211,8 @@ class SongsPlugin(Plugin):
         if self.media_item:
             self.media_item.on_export_click()
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Provides information for the plugin manager to display.
 
@@ -296,7 +297,7 @@ class SongsPlugin(Plugin):
             if sfile.startswith('songs_') and sfile.endswith('.sqlite'):
                 self.application.process_events()
                 song_dbs.append(os.path.join(db_dir, sfile))
-                song_count += self._count_songs(os.path.join(db_dir, sfile))
+                song_count += SongsPlugin._count_songs(os.path.join(db_dir, sfile))
         if not song_dbs:
             return
         self.application.process_events()
@@ -343,7 +344,8 @@ class SongsPlugin(Plugin):
         for song in songs:
             self.manager.delete_object(Song, song.id)
 
-    def _count_songs(self, db_file):
+    @staticmethod
+    def _count_songs(db_file):
         """
         Provide a count of the songs in the database
 

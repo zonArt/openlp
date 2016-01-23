@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -47,6 +47,7 @@ from openlp.core.utils import LanguageManager, add_actions, get_application_vers
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.projector.manager import ProjectorManager
+from openlp.core.ui.printserviceform import PrintServiceForm
 
 log = logging.getLogger(__name__)
 
@@ -197,7 +198,7 @@ class Ui_MainWindow(object):
                                                triggers=self.service_manager_contents.save_file_as)
         self.print_service_order_item = create_action(main_window, 'printServiceItem', can_shortcuts=True,
                                                       category=UiStrings().File,
-                                                      triggers=self.service_manager_contents.print_service_order)
+                                                      triggers=lambda x: PrintServiceForm().exec())
         self.file_exit_item = create_action(main_window, 'fileExitItem', icon=':/system/system_exit.png',
                                             can_shortcuts=True,
                                             category=UiStrings().File, triggers=main_window.close)

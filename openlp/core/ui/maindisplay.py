@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,7 +34,7 @@ import logging
 
 from PyQt5 import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets, QtOpenGL, QtGui, QtMultimedia
 
-from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx
+from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx, is_win
 from openlp.core.lib import ServiceItem, ImageSource, ScreenList, build_html, expand_tags, image_to_byte
 from openlp.core.lib.theme import BackgroundType
 from openlp.core.ui import HideMode, AlertLocation
@@ -90,7 +90,7 @@ class Display(QtWidgets.QGraphicsView):
         # OpenGL. Only white blank screen is shown on the 2nd monitor all the
         # time. We need to investigate more how to use OpenGL properly on Mac OS
         # X.
-        if not is_macosx():
+        if not is_macosx() and not is_win():
             self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
@@ -121,7 +121,8 @@ class Display(QtWidgets.QGraphicsView):
 
         :param event: The event to be handled
         """
-        self.web_view.setGeometry(0, 0, self.width(), self.height())
+        if hasattr(self, 'web_view'):
+            self.web_view.setGeometry(0, 0, self.width(), self.height())
 
     def is_web_loaded(self, field=None):
         """

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -349,16 +349,17 @@ class MessageListener(object):
             # When presenting PDF/XPS/OXPS, we are using the image presentation code,
             # so handler & processor is set to None, and we skip adding the handler.
             self.handler = None
-        if self.handler == self.media_item.automatic:
-            self.handler = self.media_item.find_controller_by_type(file)
-            if not self.handler:
-                return
         else:
-            # the saved handler is not present so need to use one based on file suffix.
-            if not self.controllers[self.handler].available:
+            if self.handler == self.media_item.automatic:
                 self.handler = self.media_item.find_controller_by_type(file)
                 if not self.handler:
                     return
+            else:
+                # the saved handler is not present so need to use one based on file suffix.
+                if not self.controllers[self.handler].available:
+                    self.handler = self.media_item.find_controller_by_type(file)
+                    if not self.handler:
+                        return
         if is_live:
             controller = self.live_handler
         else:

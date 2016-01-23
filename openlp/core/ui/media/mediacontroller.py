@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,6 +33,7 @@ from openlp.core.lib import OpenLPToolbar, ItemCapabilities
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players,\
     parse_optical_path
+from openlp.core.ui.media.vendor.mediainfoWrapper import MediaInfoWrapper
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.common import AppLocation
 from openlp.core.ui import DisplayControllerType
@@ -450,13 +451,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
                                        translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
-        if not self.media_play(controller):
-            critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                                       translate('MediaPlugin.MediaItem', 'Unsupported File'))
-            return False
-        print("media_length " + str(controller.media_info.length))
-        service_item.set_media_length(controller.media_info.length)
-        self.media_stop(controller)
+        media_data = MediaInfoWrapper.parse(service_item.get_frame_path())
+        # duration returns in nano seconds
+        service_item.set_media_length(media_data.tracks[0].duration // 1000)
         log.debug('use %s controller' % self.current_media_players[controller.controller_type])
         return True
 

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -61,6 +61,7 @@ class SongSelectImport(object):
         self.html_parser = HTMLParser()
         self.opener = build_opener(HTTPCookieProcessor(CookieJar()))
         self.opener.addheaders = [('User-Agent', USER_AGENT)]
+        self.run_search = True
 
     def login(self, username, password, callback=None):
         """
@@ -115,10 +116,11 @@ class SongSelectImport(object):
         :param callback: A method which is called when each song is found, with the song as a parameter.
         :return: List of songs
         """
+        self.run_search = True
         params = {'allowredirect': 'false', 'SearchTerm': search_text}
         current_page = 1
         songs = []
-        while True:
+        while self.run_search:
             if current_page > 1:
                 params['page'] = current_page
             try:
@@ -220,3 +222,9 @@ class SongSelectImport(object):
             db_song.add_author(author)
         self.db_manager.save_object(db_song)
         return db_song
+
+    def stop(self):
+        """
+        Stop the search.
+        """
+        self.run_search = False

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,10 +36,11 @@ class AlertForm(QtWidgets.QDialog, Ui_AlertDialog):
         """
         Initialise the alert form
         """
+        super(AlertForm, self).__init__(Registry().get('main_window'),
+                                        QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.manager = plugin.manager
         self.plugin = plugin
         self.item_id = None
-        super(AlertForm, self).__init__(Registry().get('main_window'))
         self.setupUi(self)
         self.display_button.clicked.connect(self.on_display_clicked)
         self.display_close_button.clicked.connect(self.on_display_close_clicked)

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,10 +22,13 @@
 """
 This module contains tests for the OpenOffice/LibreOffice importer.
 """
-from unittest import TestCase
+from unittest import TestCase, SkipTest
 
 from openlp.core.common import Registry
-from openlp.plugins.songs.lib.importers.openoffice import OpenOfficeImport
+try:
+    from openlp.plugins.songs.lib.importers.openoffice import OpenOfficeImport
+except ImportError:
+    raise SkipTest('Could not import OpenOfficeImport probably due to unavailability of uno')
 
 from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin

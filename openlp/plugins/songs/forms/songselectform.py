@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -81,7 +81,7 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
     """
 
     def __init__(self, parent=None, plugin=None, db_manager=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.plugin = plugin
         self.db_manager = db_manager
         self.setup_ui(self)
@@ -94,11 +94,13 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         self.worker = None
         self.song_count = 0
         self.song = None
+        self.set_progress_visible(False)
         self.song_select_importer = SongSelectImport(self.db_manager)
         self.save_password_checkbox.toggled.connect(self.on_save_password_checkbox_toggled)
         self.login_button.clicked.connect(self.on_login_button_clicked)
         self.search_button.clicked.connect(self.on_search_button_clicked)
         self.search_combobox.returnPressed.connect(self.on_search_button_clicked)
+        self.stop_button.clicked.connect(self.on_stop_button_clicked)
         self.logout_button.clicked.connect(self.done)
         self.search_results_widget.itemDoubleClicked.connect(self.on_search_results_widget_double_clicked)
         self.search_results_widget.itemSelectionChanged.connect(self.on_search_results_widget_selection_changed)
@@ -153,18 +155,30 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         return QtWidgets.QDialog.done(self, r)
 
     def _update_login_progress(self):
+        """
+        Update the progress bar as the user logs in.
+        """
         self.login_progress_bar.setValue(self.login_progress_bar.value() + 1)
         self.application.process_events()
 
     def _update_song_progress(self):
+        """
+        Update the progress bar as the song is being downloaded.
+        """
         self.song_progress_bar.setValue(self.song_progress_bar.value() + 1)
         self.application.process_events()
 
     def _view_song(self, current_item):
+        """
+        Load a song into the song view.
+        """
         if not current_item:
             return
         else:
             current_item = current_item.data(QtCore.Qt.UserRole)
+        # Stop the current search, if it's running
+        self.song_select_importer.stop()
+        # Clear up the UI
         self.song_progress_bar.setVisible(True)
         self.import_button.setEnabled(False)
         self.back_button.setEnabled(False)
@@ -288,7 +302,7 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         self.search_progress_bar.setMinimum(0)
         self.search_progress_bar.setMaximum(0)
         self.search_progress_bar.setValue(0)
-        self.search_progress_bar.setVisible(True)
+        self.set_progress_visible(True)
         self.search_results_widget.clear()
         self.result_count_label.setText(translate('SongsPlugin.SongSelectForm', 'Found %s song(s)') % self.song_count)
         self.application.process_events()
@@ -307,6 +321,12 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         self.worker.quit.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.thread.start()
+
+    def on_stop_button_clicked(self):
+        """
+        Stop the search when the stop button is clicked.
+        """
+        self.song_select_importer.stop()
 
     def on_search_show_info(self, title, message):
         """
@@ -332,7 +352,7 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         Slot which is called when the search is completed.
         """
         self.application.process_events()
-        self.search_progress_bar.setVisible(False)
+        self.set_progress_visible(False)
         self.search_button.setEnabled(True)
         self.application.process_events()
 
@@ -379,6 +399,13 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         else:
             self.application.process_events()
             self.done(QtWidgets.QDialog.Accepted)
+
+    def set_progress_visible(self, is_visible):
+        """
+        Show or hide the search progress, including the stop button.
+        """
+        self.search_progress_bar.setVisible(is_visible)
+        self.stop_button.setVisible(is_visible)
 
     @property
     def application(self):

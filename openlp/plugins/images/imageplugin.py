@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,9 +23,8 @@
 from PyQt5 import QtGui
 
 import logging
-import os
 
-from openlp.core.common import Registry, Settings, translate
+from openlp.core.common import Settings, translate
 from openlp.core.lib import Plugin, StringContent, ImageSource, build_icon
 from openlp.core.lib.db import Manager
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
@@ -53,7 +52,8 @@ class ImagePlugin(Plugin):
         self.icon_path = ':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
 
-    def about(self):
+    @staticmethod
+    def about():
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
                                '<br />The image plugin provides displaying of images.<br />One '
                                'of the distinguishing features of this plugin is the ability to '

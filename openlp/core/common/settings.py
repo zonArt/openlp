@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -252,7 +252,8 @@ class Settings(QtCore.QSettings):
             'shortcuts/blankScreen': [QtGui.QKeySequence(QtCore.Qt.Key_Period)],
             'shortcuts/collapse': [QtGui.QKeySequence(QtCore.Qt.Key_Minus)],
             'shortcuts/desktopScreen': [QtGui.QKeySequence(QtCore.Qt.Key_D)],
-            'shortcuts/delete': [QtGui.QKeySequence(QtGui.QKeySequence.Delete), QtGui.QKeySequence(QtCore.Qt.Key_Delete)],
+            'shortcuts/delete': [QtGui.QKeySequence(QtGui.QKeySequence.Delete),
+                                 QtGui.QKeySequence(QtCore.Qt.Key_Delete)],
             'shortcuts/down': [QtGui.QKeySequence(QtCore.Qt.Key_Down)],
             'shortcuts/editSong': [],
             'shortcuts/escapeItem': [QtGui.QKeySequence(QtCore.Qt.Key_Escape)],
@@ -329,7 +330,8 @@ class Settings(QtCore.QSettings):
             'shortcuts/moveBottom': [QtGui.QKeySequence(QtCore.Qt.Key_End)],
             'shortcuts/moveDown': [QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
             'shortcuts/nextTrackItem': [],
-            'shortcuts/nextItem_live': [QtGui.QKeySequence(QtCore.Qt.Key_Down), QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
+            'shortcuts/nextItem_live': [QtGui.QKeySequence(QtCore.Qt.Key_Down),
+                                        QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
             'shortcuts/nextItem_preview': [QtGui.QKeySequence(QtCore.Qt.Key_Down),
                                            QtGui.QKeySequence(QtCore.Qt.Key_PageDown)],
             'shortcuts/nextService': [QtGui.QKeySequence(QtCore.Qt.Key_Right)],
@@ -339,7 +341,8 @@ class Settings(QtCore.QSettings):
                                          QtGui.QKeySequence(QtCore.Qt.ALT + QtCore.Qt.Key_F1)],
             'shortcuts/openService': [],
             'shortcuts/saveService': [],
-            'shortcuts/previousItem_live': [QtGui.QKeySequence(QtCore.Qt.Key_Up), QtGui.QKeySequence(QtCore.Qt.Key_PageUp)],
+            'shortcuts/previousItem_live': [QtGui.QKeySequence(QtCore.Qt.Key_Up),
+                                            QtGui.QKeySequence(QtCore.Qt.Key_PageUp)],
             'shortcuts/playbackPause': [],
             'shortcuts/playbackPlay': [],
             'shortcuts/playbackStop': [],

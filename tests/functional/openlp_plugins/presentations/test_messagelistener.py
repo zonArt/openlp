@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -104,3 +104,23 @@ class TestMessageListener(TestCase, TestMixin):
 
         # THEN: The controllers will be setup.
         self.assertTrue(len(controllers), 'We have loaded a controller')
+
+    @patch('openlp.plugins.presentations.lib.mediaitem.MessageListener._setup')
+    def start_pdf_presentation_test(self, media_mock):
+        """
+        Test the startup of pdf presentation succeed.
+        """
+        # GIVEN: A sservice item with a pdf
+        mock_item = MagicMock()
+        mock_item.processor = 'Pdf'
+        mock_item.get_frame_path.return_value = "test.pdf"
+        self.media_item.generate_slide_data = MagicMock()
+        ml = MessageListener(self.media_item)
+        ml.media_item = self.media_item
+        ml.preview_handler = MagicMock()
+
+        # WHEN: request the presentation to start
+        ml.startup([mock_item, False, False, False])
+
+        # THEN: The handler should be set to None
+        self.assertIsNone(ml.handler, 'The handler should be None')

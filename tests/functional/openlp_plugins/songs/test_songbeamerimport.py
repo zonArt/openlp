@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,7 @@ from unittest import TestCase
 
 from tests.helpers.songfileimport import SongImportTestHelper
 from tests.functional import MagicMock, patch
-from openlp.plugins.songs.lib.importers.songbeamer import SongBeamerImport
+from openlp.plugins.songs.lib.importers.songbeamer import SongBeamerImport, SongBeamerTypes
 from openlp.core.common import Registry
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -131,22 +131,22 @@ class TestSongBeamerImport(TestCase):
         self.assertEqual(self.current_verse_type, 'c', '<Refrain> should be interpreted as <c>')
 
         # GIVEN: line with unnumbered verse-type and trailing space
-        line = 'Refrain '
+        line = 'ReFrain '
         self.current_verse_type = None
         # WHEN: line is being checked for verse marks
         result = SongBeamerImport.check_verse_marks(self, line)
         # THEN: we should get back true and c as self.current_verse_type
-        self.assertTrue(result, 'Versemark for <Refrain > should be found, value true')
-        self.assertEqual(self.current_verse_type, 'c', '<Refrain > should be interpreted as <c>')
+        self.assertTrue(result, 'Versemark for <ReFrain > should be found, value true')
+        self.assertEqual(self.current_verse_type, 'c', '<ReFrain > should be interpreted as <c>')
 
         # GIVEN: line with numbered verse-type
-        line = 'Verse 1'
+        line = 'VersE 1'
         self.current_verse_type = None
         # WHEN: line is being checked for verse marks
         result = SongBeamerImport.check_verse_marks(self, line)
         # THEN: we should get back true and v1 as self.current_verse_type
-        self.assertTrue(result, 'Versemark for <Verse 1> should be found, value true')
-        self.assertEqual(self.current_verse_type, 'v1', u'<Verse 1> should be interpreted as <v1>')
+        self.assertTrue(result, 'Versemark for <VersE 1> should be found, value true')
+        self.assertEqual(self.current_verse_type, 'v1', u'<VersE 1> should be interpreted as <v1>')
 
         # GIVEN: line with special unnumbered verse-mark (used in Songbeamer to allow usage of non-supported tags)
         line = '$$M=special'
@@ -192,3 +192,12 @@ class TestSongBeamerImport(TestCase):
         # THEN: we should get back false and none as self.current_verse_type
         self.assertFalse(result, 'No versemark for <> should be found, value false')
         self.assertIsNone(self.current_verse_type, '<> should be interpreted as none versemark')
+
+    def test_verse_marks_defined_in_lowercase(self):
+        """
+        Test that the verse marks are all defined in lowercase
+        """
+        # GIVEN: SongBeamber MarkTypes
+        for tag in SongBeamerTypes.MarkTypes.keys():
+            # THEN: tag should be defined in lowercase
+            self.assertEquals(tag, tag.lower(), 'Tags should be defined in lowercase')

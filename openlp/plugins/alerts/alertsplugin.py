@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -191,7 +191,8 @@ class AlertsPlugin(Plugin):
         self.alert_form.load_list()
         self.alert_form.exec()
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Plugin Alerts about method
 
@@ -215,7 +216,8 @@ class AlertsPlugin(Plugin):
             'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
 
-    def get_display_javascript(self):
+    @staticmethod
+    def get_display_javascript():
         """
         Add Javascript to the main display.
         """
@@ -229,7 +231,8 @@ class AlertsPlugin(Plugin):
         return CSS % (align, self.settings_tab.font_face, self.settings_tab.font_size, self.settings_tab.font_color,
                       self.settings_tab.background_color)
 
-    def get_display_html(self):
+    @staticmethod
+    def get_display_html():
         """
         Add HTML to the main display.
         """
