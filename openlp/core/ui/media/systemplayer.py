@@ -209,7 +209,8 @@ class SystemPlayer(MediaPlayer):
 
     @staticmethod
     def set_duration(controller, duration):
-        controller.media_info.length = int(duration / 1000)
+        print("system set duration", controller.media_info.length, duration)
+        #controller.media_info.length = int(duration / 1000)
         controller.seek_slider.setMaximum(controller.media_info.length * 1000)
 
     def update_ui(self, display):

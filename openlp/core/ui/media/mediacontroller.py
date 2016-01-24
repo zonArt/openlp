@@ -362,6 +362,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param hidden: The player which is doing the playing
         :param video_behind_text: Is the video to be played behind text.
         """
+        print("### video", source)
         is_valid = False
         controller = self.display_controllers[source]
         print(controller)
@@ -382,6 +383,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                                                     controller)
             else:
                 log.debug('video is not optical and live')
+                controller.media_info.length = service_item.media_length
                 is_valid = self._check_file_type(controller, display, service_item)
             display.override['theme'] = ''
             display.override['video'] = True
@@ -401,6 +403,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                                                     controller)
             else:
                 log.debug('video is not optical and preview')
+                controller.media_info.length = service_item.media_length
                 is_valid = self._check_file_type(controller, display, service_item)
         if not is_valid:
             # Media could not be loaded correctly
@@ -453,7 +456,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return False
         media_data = MediaInfoWrapper.parse(service_item.get_frame_path())
         print(media_data.to_data())
-        # duration returns in nano seconds
+        # duration returns in milli seconds
         service_item.set_media_length(media_data.tracks[0].duration)
         log.debug('use %s controller' % self.current_media_players[controller.controller_type])
         return True
@@ -639,6 +642,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller:  The Controller to be processed
         """
         if controller.media_info.playing and controller.media_info.length > 0:
+            print("tick", controller.media_info.timer, controller.media_info.length)
             if controller.media_info.timer > controller.media_info.length:
                 controller.media_info.timer = controller.media_info.length
                 controller.media_info.timer = controller.media_info.length
@@ -647,7 +651,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             seconds = controller.media_info.timer // 1000
             minutes = seconds // 60
             seconds %= 60
-            total_seconds = controller.media_info.length // 1000
+            total_seconds = controller.media_info.length
             total_minutes = total_seconds // 60
             total_seconds %= 60
             controller.position_label.setText(' %02d:%02d / %02d:%02d' %

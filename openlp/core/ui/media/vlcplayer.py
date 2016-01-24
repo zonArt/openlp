@@ -225,7 +225,7 @@ class VlcPlayer(MediaPlayer):
         # and once to just get media length.
         #
         # Media plugin depends on knowing media length before playback.
-        controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
+        #controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
         return True
 
     def media_state_wait(self, display, media_state):
@@ -296,11 +296,12 @@ class VlcPlayer(MediaPlayer):
                 start_time = controller.media_info.start_time
             controller.media_info.length = controller.media_info.end_time - controller.media_info.start_time
         else:
-            controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
+            print("vlc len", controller.media_info.length)
+            #controller.media_info.length = int(display.vlc_media_player.get_media().get_duration())
         self.volume(display, controller.media_info.volume)
         if start_time > 0 and display.vlc_media_player.is_seekable():
-            display.vlc_media_player.set_time(int(start_time * 1000))
-        controller.seek_slider.setMaximum(controller.media_info.length * 1000)
+            display.vlc_media_player.set_time(int(start_time))
+        controller.seek_slider.setMaximum(controller.media_info.length)
         print("VLC play " + str(controller.media_info.length))
         self.state = MediaState.Playing
         display.vlc_widget.raise_()

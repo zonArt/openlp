@@ -272,6 +272,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             service_item.title = name
             service_item.processor = self.display_type_combo_box.currentText()
             service_item.add_from_command(path, name, CLAPPERBOARD)
+            print("building service item")
             # Only get start and end times if going to a service
             if not self.media_controller.media_length(service_item):
                 return False
