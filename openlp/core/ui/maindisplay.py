@@ -86,12 +86,6 @@ class Display(QtWidgets.QGraphicsView):
         super(Display, self).__init__()
         self.controller = parent
         self.screen = {}
-        # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
-        # OpenGL. Only white blank screen is shown on the 2nd monitor all the
-        # time. We need to investigate more how to use OpenGL properly on Mac OS
-        # X.
-        if not is_macosx() and not is_win():
-            self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
@@ -559,6 +553,13 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                     if window_id == main_window_id:
                         self.main_window.raise_()
 
+    def shake_web_view(self):
+        """
+        Resizes the web_view a bit to force an update. Workaround for bug #1531319, should not be needed with PyQt 5.6.
+        """
+        self.web_view.setGeometry(0, 0, self.width(), self.height() - 1)
+        self.web_view.setGeometry(0, 0, self.width(), self.height())
+
 
 class AudioPlayer(OpenLPMixin, QtCore.QObject):
     """
@@ -576,6 +577,7 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         self.player = QtMultimedia.QMediaPlayer()
         self.playlist = QtMultimedia.QMediaPlaylist(self.player)
         self.volume_slider = None
+        self.player.setPlaylist(self.playlist)
         self.player.positionChanged.connect(self._on_position_changed)
 
     def __del__(self):
@@ -643,7 +645,7 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         if not isinstance(file_names, list):
             file_names = [file_names]
         for file_name in file_names:
-            self.playlist.addMedia(QtCore.QUrl(file_name))
+            self.playlist.addMedia(QtMultimedia.QMediaContent(QtCore.QUrl.fromLocalFile(file_name)))
 
     def next(self):
         """

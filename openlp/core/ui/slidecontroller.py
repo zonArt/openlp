@@ -31,7 +31,7 @@ from threading import Lock
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, Settings, SlideLimits, UiStrings, translate, \
-    RegistryMixin, OpenLPMixin
+    RegistryMixin, OpenLPMixin, is_win
 from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, \
     ScreenList, build_icon, build_html
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
@@ -1101,6 +1101,9 @@ class SlideController(DisplayController, RegistryProperties):
                         self.display.image(to_display)
                     # reset the store used to display first image
                     self.service_item.bg_image_bytes = None
+                # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+                if self.is_live and is_win():
+                    self.display.shake_web_view()
             self.selected_row = row
             self.update_preview()
             self.preview_widget.change_slide(row)
@@ -1421,7 +1424,7 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param time: the time remaining
         """
-        seconds = self.display.audio_player.media_object.remainingTime() // 1000
+        seconds = (self.display.audio_player.player.duration() - self.display.audio_player.player.position()) // 1000
         minutes = seconds // 60
         seconds %= 60
         self.audio_time_label.setText(' %02d:%02d ' % (minutes, seconds))

@@ -20,6 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import re
 
 from PyQt5 import QtGui, QtCore, QtWebKitWidgets
 
@@ -441,7 +442,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
                             previous_raw = line + line_end
                             continue
                 # Figure out how many words of the line will fit on screen as the line will not fit as a whole.
-                raw_words = Renderer.words_split(line)
+                raw_words = words_split(line)
                 html_words = list(map(expand_tags, raw_words))
                 previous_html, previous_raw = \
                     self._binary_chop(formatted, previous_html, previous_raw, html_words, raw_words, ' ', line_end)
@@ -528,8 +529,7 @@ def words_split(line):
     :param line: Line to be split
     """
     # this parse we are to be wordy
-    line = line.replace('\n', ' ')
-    return line.split(' ')
+    return re.split('\s+', line)
 
 
 def get_start_tags(raw_text):
