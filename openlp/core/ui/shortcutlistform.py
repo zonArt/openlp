@@ -379,7 +379,6 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
         """
         Restore the defaults of this action.
         """
-        print('Alternate button clicked')
         self.alternate_push_button.setChecked(False)
         action = self._current_item_action()
         if action is None:

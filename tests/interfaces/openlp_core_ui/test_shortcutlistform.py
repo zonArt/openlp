@@ -137,9 +137,63 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_event.accept.assert_called_with()
             mocked_close.assert_called_with()
 
+    def on_default_radio_button_not_toggled_test(self):
+        """
+        Test that the default radio button method exits early when the button is not toggled
+        """
+        # GIVEN: A not-toggled custom radio button
+        with patch.object(self.form, '_current_item_action') as mocked_current_item_action:
+
+            # WHEN: The clicked method is called
+            self.form.on_default_radio_button_clicked(False)
+
+            # THEN: The method should exit early (i.e. the rest of the methods are not called)
+            self.assertEqual(0, mocked_current_item_action.call_count)
+
+    def on_default_radio_button_clicked_no_action_test(self):
+        """
+        Test that nothing happens when an action hasn't been selected and you click the default radio button
+        """
+        # GIVEN: Some mocked out methods, a current action, and some shortcuts
+        with patch.object(self.form, '_current_item_action') as mocked_current_item_action, \
+                patch.object(self.form, '_action_shortcuts') as mocked_action_shortcuts:
+            mocked_current_item_action.return_value = None
+
+            # WHEN: The form is called
+            self.form.on_default_radio_button_clicked(True)
+
+            # THEN:
+            mocked_current_item_action.assert_called_with()
+            self.assertEqual(0, mocked_action_shortcuts.call_count)
+
+    def on_default_radio_button_clicked_test(self):
+        """
+        Test that the values are copied across correctly when the default radio button is selected
+        """
+        # GIVEN: Some mocked out methods, a current action, and some shortcuts
+        with patch.object(self.form, '_current_item_action') as mocked_current_item_action, \
+                patch.object(self.form, '_action_shortcuts') as mocked_action_shortcuts, \
+                patch.object(self.form, 'refresh_shortcut_list') as mocked_refresh_shortcut_list, \
+                patch.object(self.form, 'get_shortcut_string') as mocked_get_shortcut_string, \
+                patch.object(self.form.primary_push_button, 'setText') as mocked_set_text:
+            mocked_action = MagicMock()
+            mocked_action.default_shortcuts = [QtCore.Qt.Key_Escape]
+            mocked_current_item_action.return_value = mocked_action
+            mocked_action_shortcuts.return_value = [QtCore.Qt.Key_Escape]
+            mocked_get_shortcut_string.return_value = 'Esc'
+
+            # WHEN: The form is called
+            self.form.on_default_radio_button_clicked(True)
+
+            # THEN:
+            mocked_current_item_action.assert_called_with()
+            mocked_action_shortcuts.assert_called_with(mocked_action)
+            mocked_refresh_shortcut_list.assert_called_with()
+            mocked_set_text.assert_called_with('Esc')
+
     def on_custom_radio_button_not_toggled_test(self):
         """
-        Test that the method exits early when the button is not toggled
+        Test that the custom radio button method exits early when the button is not toggled
         """
         # GIVEN: A not-toggled custom radio button
         with patch.object(self.form, '_current_item_action') as mocked_current_item_action:
@@ -161,7 +215,6 @@ class TestShortcutform(TestCase, TestMixin):
                 patch.object(self.form, 'get_shortcut_string') as mocked_get_shortcut_string, \
                 patch.object(self.form.primary_push_button, 'setText') as mocked_set_text:
             mocked_action = MagicMock()
-            mocked_action.default_shortcuts = [QtCore.Qt.Key_Escape]
             mocked_current_item_action.return_value = mocked_action
             mocked_action_shortcuts.return_value = [QtCore.Qt.Key_Escape]
             mocked_get_shortcut_string.return_value = 'Esc'
@@ -174,3 +227,4 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_action_shortcuts.assert_called_with(mocked_action)
             mocked_refresh_shortcut_list.assert_called_with()
             mocked_set_text.assert_called_with('Esc')
+
