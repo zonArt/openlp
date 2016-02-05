@@ -79,7 +79,7 @@ class TestShortcutform(TestCase, TestMixin):
         mocked_event = MagicMock()
         mocked_event.key.return_value = QtCore.Qt.Key_Space
 
-        # WHEN: The even is handled
+        # WHEN: The event is handled
         with patch.object(self.form, 'keyReleaseEvent') as mocked_key_release_event:
             self.form.keyPressEvent(mocked_event)
 
@@ -97,7 +97,7 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_is_checked.return_value = True
             mocked_event = MagicMock()
 
-            # WHEN: The even is handled
+            # WHEN: The event is handled
             self.form.keyPressEvent(mocked_event)
 
             # THEN: The key should be released
@@ -114,7 +114,7 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_is_checked.return_value = True
             mocked_event = MagicMock()
 
-            # WHEN: The even is handled
+            # WHEN: The event is handled
             self.form.keyPressEvent(mocked_event)
 
             # THEN: The key should be released
@@ -129,7 +129,7 @@ class TestShortcutform(TestCase, TestMixin):
         mocked_event = MagicMock()
         mocked_event.key.return_value = QtCore.Qt.Key_Escape
 
-        # WHEN: The even is handled
+        # WHEN: The event is handled
         with patch.object(self.form, 'close') as mocked_close:
             self.form.keyPressEvent(mocked_event)
 
@@ -159,10 +159,10 @@ class TestShortcutform(TestCase, TestMixin):
                 patch.object(self.form, '_action_shortcuts') as mocked_action_shortcuts:
             mocked_current_item_action.return_value = None
 
-            # WHEN: The form is called
+            # WHEN: The default radio button is clicked
             self.form.on_default_radio_button_clicked(True)
 
-            # THEN:
+            # THEN: The method should exit early (i.e. the rest of the methods are not called)
             mocked_current_item_action.assert_called_with()
             self.assertEqual(0, mocked_action_shortcuts.call_count)
 
@@ -182,10 +182,10 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_action_shortcuts.return_value = [QtCore.Qt.Key_Escape]
             mocked_get_shortcut_string.return_value = 'Esc'
 
-            # WHEN: The form is called
+            # WHEN: The default radio button is clicked
             self.form.on_default_radio_button_clicked(True)
 
-            # THEN:
+            # THEN: The shorcuts should be copied across
             mocked_current_item_action.assert_called_with()
             mocked_action_shortcuts.assert_called_with(mocked_action)
             mocked_refresh_shortcut_list.assert_called_with()
@@ -219,10 +219,10 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_action_shortcuts.return_value = [QtCore.Qt.Key_Escape]
             mocked_get_shortcut_string.return_value = 'Esc'
 
-            # WHEN: The form is called
+            # WHEN: The custom radio button is clicked
             self.form.on_custom_radio_button_clicked(True)
 
-            # THEN:
+            # THEN: The shorcuts should be copied across
             mocked_current_item_action.assert_called_with()
             mocked_action_shortcuts.assert_called_with(mocked_action)
             mocked_refresh_shortcut_list.assert_called_with()
