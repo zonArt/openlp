@@ -63,6 +63,7 @@ class Controller(object):
         if not self.doc.load_presentation():
             # Display error message to user
             # Inform slidecontroller that the action failed?
+            self.doc.slidenumber = 0
             return
         self.doc.slidenumber = slide_no
         self.hide_mode = hide_mode
