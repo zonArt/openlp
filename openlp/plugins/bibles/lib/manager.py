@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -128,11 +128,6 @@ class BibleManager(RegistryProperties):
             if name is None:
                 bible.session.close()
                 delete_file(os.path.join(self.path, filename))
-                continue
-            # Find old database versions.
-            if bible.is_old_database():
-                self.old_bible_databases.append([filename, name])
-                bible.session.close()
                 continue
             log.debug('Bible Name: "%s"', name)
             self.db_cache[name] = bible

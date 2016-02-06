@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,8 @@ from distutils.version import LooseVersion
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui, Qt
+from PyQt5 import QtCore, QtGui, Qt, QtWidgets
+
 
 from openlp.core.common import translate
 
@@ -83,7 +84,7 @@ def get_text_file_string(text_file):
     None.
 
     :param text_file: The name of the file.
-    :return The file as a single string
+    :return: The file as a single string
     """
     if not os.path.isfile(text_file):
         return False
@@ -108,7 +109,7 @@ def str_to_bool(string_value):
     Convert a string version of a boolean into a real boolean.
 
     :param string_value: The string value to examine and convert to a boolean type.
-    :return The correct boolean value
+    :return: The correct boolean value
     """
     if isinstance(string_value, bool):
         return string_value
@@ -123,7 +124,7 @@ def build_icon(icon):
     :param icon:
         The icon to build. This can be a QIcon, a resource string in the form ``:/resource/file.png``, or a file
         location like ``/path/to/file.png``. However, the **recommended** way is to specify a resource string.
-    :return The build icon.
+    :return: The build icon.
     """
     button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):
@@ -168,7 +169,7 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     :param return_icon: States if an icon should be build and returned from the thumb. Defaults to ``True``.
     :param size: Allows to state a own size (QtCore.QSize) to use. Defaults to ``None``, which means that a default
      height of 88 is used.
-    :return The final icon.
+    :return: The final icon.
     """
     ext = os.path.splitext(thumb_path)[1].lower()
     reader = QtGui.QImageReader(image_path)
@@ -194,7 +195,7 @@ def validate_thumb(file_path, thumb_path):
 
     :param file_path: The path to the file. The file **must** exist!
     :param thumb_path: The path to the thumb.
-    :return True, False if the image has changed since the thumb was created.
+    :return: True, False if the image has changed since the thumb was created.
     """
     if not os.path.exists(thumb_path):
         return False
@@ -251,8 +252,8 @@ def check_item_selected(list_widget, message):
     :param message: The message to give the user if no item is selected
     """
     if not list_widget.selectedIndexes():
-        QtGui.QMessageBox.information(list_widget.parent(),
-                                      translate('OpenLP.MediaManagerItem', 'No Items Selected'), message)
+        QtWidgets.QMessageBox.information(list_widget.parent(),
+                                          translate('OpenLP.MediaManagerItem', 'No Items Selected'), message)
         return False
     return True
 

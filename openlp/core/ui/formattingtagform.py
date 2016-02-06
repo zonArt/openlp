@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,7 @@ Custom tags can be defined and saved. The Custom Tag arrays are saved in a json 
 Base Tags cannot be changed.
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import translate
 from openlp.core.lib import FormattingTags
@@ -43,7 +43,7 @@ class EditColumn(object):
     EndHtml = 3
 
 
-class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagController):
+class FormattingTagForm(QtWidgets.QDialog, Ui_FormattingTagDialog, FormattingTagController):
     """
     The :class:`FormattingTagForm` manages the settings tab .
     """
@@ -51,7 +51,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         Constructor
         """
-        super(FormattingTagForm, self).__init__(parent)
+        super(FormattingTagForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self._setup()
 
@@ -70,13 +70,13 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         self.is_deleting = False
         self.reloading = False
 
-    def exec_(self):
+    def exec(self):
         """
         Load Display and set field state.
         """
         # Create initial copy from master
         self._reloadTable()
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def on_row_selected(self):
         """
@@ -90,12 +90,12 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         new_row = self.tag_table_widget.rowCount()
         self.tag_table_widget.insertRow(new_row)
-        self.tag_table_widget.setItem(new_row, 0, QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm',
-                                                                                   'New Tag %d' % new_row)))
-        self.tag_table_widget.setItem(new_row, 1, QtGui.QTableWidgetItem('n%d' % new_row))
+        self.tag_table_widget.setItem(new_row, 0, QtWidgets.QTableWidgetItem(translate('OpenLP.FormattingTagForm',
+                                                                                       'New Tag %d' % new_row)))
+        self.tag_table_widget.setItem(new_row, 1, QtWidgets.QTableWidgetItem('n%d' % new_row))
         self.tag_table_widget.setItem(new_row, 2,
-                                      QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', '<HTML here>')))
-        self.tag_table_widget.setItem(new_row, 3, QtGui.QTableWidgetItem(''))
+                                      QtWidgets.QTableWidgetItem(translate('OpenLP.FormattingTagForm', '<HTML here>')))
+        self.tag_table_widget.setItem(new_row, 3, QtWidgets.QTableWidgetItem(''))
         self.tag_table_widget.resizeRowsToContents()
         self.tag_table_widget.scrollToBottom()
         self.tag_table_widget.selectRow(new_row)
@@ -121,13 +121,13 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                                                     self.tag_table_widget.item(count, 2).text(),
                                                     self.tag_table_widget.item(count, 3).text())
             if error:
-                QtGui.QMessageBox.warning(self, translate('OpenLP.FormattingTagForm', 'Validation Error'), error,
-                                          QtGui.QMessageBox.Ok)
+                QtWidgets.QMessageBox.warning(self, translate('OpenLP.FormattingTagForm', 'Validation Error'), error,
+                                              QtWidgets.QMessageBox.Ok)
                 self.tag_table_widget.selectRow(count)
                 return
             count += 1
         self.services.save_tags()
-        QtGui.QDialog.accept(self)
+        QtWidgets.QDialog.accept(self)
 
     def _reloadTable(self):
         """
@@ -144,18 +144,18 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
             if html['protected']:
                 line = self.tag_table_widget_read.rowCount()
                 self.tag_table_widget_read.setRowCount(line + 1)
-                self.tag_table_widget_read.setItem(line, 0, QtGui.QTableWidgetItem(html['desc']))
-                self.tag_table_widget_read.setItem(line, 1, QtGui.QTableWidgetItem(self._strip(html['start tag'])))
-                self.tag_table_widget_read.setItem(line, 2, QtGui.QTableWidgetItem(html['start html']))
-                self.tag_table_widget_read.setItem(line, 3, QtGui.QTableWidgetItem(html['end html']))
+                self.tag_table_widget_read.setItem(line, 0, QtWidgets.QTableWidgetItem(html['desc']))
+                self.tag_table_widget_read.setItem(line, 1, QtWidgets.QTableWidgetItem(self._strip(html['start tag'])))
+                self.tag_table_widget_read.setItem(line, 2, QtWidgets.QTableWidgetItem(html['start html']))
+                self.tag_table_widget_read.setItem(line, 3, QtWidgets.QTableWidgetItem(html['end html']))
                 self.tag_table_widget_read.resizeRowsToContents()
             else:
                 line = self.tag_table_widget.rowCount()
                 self.tag_table_widget.setRowCount(line + 1)
-                self.tag_table_widget.setItem(line, 0, QtGui.QTableWidgetItem(html['desc']))
-                self.tag_table_widget.setItem(line, 1, QtGui.QTableWidgetItem(self._strip(html['start tag'])))
-                self.tag_table_widget.setItem(line, 2, QtGui.QTableWidgetItem(html['start html']))
-                self.tag_table_widget.setItem(line, 3, QtGui.QTableWidgetItem(html['end html']))
+                self.tag_table_widget.setItem(line, 0, QtWidgets.QTableWidgetItem(html['desc']))
+                self.tag_table_widget.setItem(line, 1, QtWidgets.QTableWidgetItem(self._strip(html['start tag'])))
+                self.tag_table_widget.setItem(line, 2, QtWidgets.QTableWidgetItem(html['start html']))
+                self.tag_table_widget.setItem(line, 3, QtWidgets.QTableWidgetItem(html['end html']))
                 self.tag_table_widget.resizeRowsToContents()
                 # Permanent (persistent) tags do not have this key
                 html['temporary'] = False
@@ -187,7 +187,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                 end_html = item.text()
                 errors, tag = self.services.start_tag_changed(text, end_html)
                 if tag:
-                    self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
+                    self.tag_table_widget.setItem(pre_row, 3, QtWidgets.QTableWidgetItem(tag))
                 self.tag_table_widget.resizeRowsToContents()
             elif pre_col is EditColumn.EndHtml:
                 # HTML edited
@@ -195,8 +195,8 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                 start_html = item.text()
                 errors, tag = self.services.end_tag_changed(start_html, text)
                 if tag:
-                    self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
+                    self.tag_table_widget.setItem(pre_row, 3, QtWidgets.QTableWidgetItem(tag))
             if errors:
-                QtGui.QMessageBox.warning(self, translate('OpenLP.FormattingTagForm', 'Validation Error'), errors,
-                                          QtGui.QMessageBox.Ok)
+                QtWidgets.QMessageBox.warning(self, translate('OpenLP.FormattingTagForm', 'Validation Error'), errors,
+                                              QtWidgets.QMessageBox.Ok)
             self.tag_table_widget.resizeRowsToContents()

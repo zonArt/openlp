@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,14 +20,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import RegistryProperties, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from .songusagedeletedialog import Ui_SongUsageDeleteDialog
 
 
-class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog, RegistryProperties):
+class SongUsageDeleteForm(QtWidgets.QDialog, Ui_SongUsageDeleteDialog, RegistryProperties):
     """
     Class documentation goes here.
     """
@@ -36,7 +36,8 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog, RegistryPrope
         Constructor
         """
         self.manager = manager
-        super(SongUsageDeleteForm, self).__init__(parent)
+        super(SongUsageDeleteForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint |
+                                                  QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.button_box.clicked.connect(self.on_button_box_clicked)
 
@@ -46,14 +47,16 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog, RegistryPrope
 
         :param button: The button pressed
         """
-        if self.button_box.standardButton(button) == QtGui.QDialogButtonBox.Ok:
-            ret = QtGui.QMessageBox.question(
-                self,
-                translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Selected Song Usage Events?'),
-                translate('SongUsagePlugin.SongUsageDeleteForm',
-                          'Are you sure you want to delete selected Song Usage data?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)
-            if ret == QtGui.QMessageBox.Yes:
+        if self.button_box.standardButton(button) == QtWidgets.QDialogButtonBox.Ok:
+            ret = QtWidgets.QMessageBox.question(self,
+                                                 translate('SongUsagePlugin.SongUsageDeleteForm',
+                                                           'Delete Selected Song Usage Events?'),
+                                                 translate('SongUsagePlugin.SongUsageDeleteForm',
+                                                           'Are you sure you want to delete selected Song Usage data?'),
+                                                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                       QtWidgets.QMessageBox.No),
+                                                 QtWidgets.QMessageBox.No)
+            if ret == QtWidgets.QMessageBox.Yes:
                 delete_date = self.delete_calendar.selectedDate().toPyDate()
                 self.manager.delete_all_objects(SongUsageItem, SongUsageItem.usagedate <= delete_date)
                 self.main_window.information_message(

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,8 +35,8 @@ class SongStrings(object):
     Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
     AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown')  # Used to populate the database.
     CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
-    SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
-    SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
+    SongBook = translate('OpenLP.Ui', 'Songbook', 'Singular')
+    SongBooks = translate('OpenLP.Ui', 'Songbooks', 'Plural')
     SongIncomplete = translate('OpenLP.Ui', 'Title and/or verses not found')
     SongMaintenance = translate('OpenLP.Ui', 'Song Maintenance')
     Topic = translate('OpenLP.Ui', 'Topic', 'Singular')

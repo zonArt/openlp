@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,10 +23,12 @@
 The :mod:`~openlp.plugins.songs.lib.songselect` module contains the SongSelect importer itself.
 """
 import logging
+import sys
 from http.cookiejar import CookieJar
 from urllib.parse import urlencode
-from urllib.request import HTTPCookieProcessor, HTTPError, build_opener
+from urllib.request import HTTPCookieProcessor, URLError, build_opener
 from html.parser import HTMLParser
+from html import unescape
 
 from bs4 import BeautifulSoup, NavigableString
 
@@ -59,6 +61,7 @@ class SongSelectImport(object):
         self.html_parser = HTMLParser()
         self.opener = build_opener(HTTPCookieProcessor(CookieJar()))
         self.opener.addheaders = [('User-Agent', USER_AGENT)]
+        self.run_search = True
 
     def login(self, username, password, callback=None):
         """
@@ -72,7 +75,11 @@ class SongSelectImport(object):
         """
         if callback:
             callback()
-        login_page = BeautifulSoup(self.opener.open(LOGIN_URL).read(), 'lxml')
+        try:
+            login_page = BeautifulSoup(self.opener.open(LOGIN_URL).read(), 'lxml')
+        except (TypeError, URLError) as e:
+            log.exception('Could not login to SongSelect, %s', e)
+            return False
         if callback:
             callback()
         token_input = login_page.find('input', attrs={'name': '__RequestVerificationToken'})
@@ -82,7 +89,11 @@ class SongSelectImport(object):
             'Password': password,
             'RememberMe': 'false'
         })
-        posted_page = BeautifulSoup(self.opener.open(LOGIN_URL, data.encode('utf-8')).read(), 'lxml')
+        try:
+            posted_page = BeautifulSoup(self.opener.open(LOGIN_URL, data.encode('utf-8')).read(), 'lxml')
+        except (TypeError, URLError) as e:
+            log.exception('Could not login to SongSelect, %s', e)
+            return False
         if callback:
             callback()
         return not posted_page.find('input', attrs={'name': '__RequestVerificationToken'})
@@ -91,7 +102,10 @@ class SongSelectImport(object):
         """
         Log the user out of SongSelect
         """
-        self.opener.open(LOGOUT_URL)
+        try:
+            self.opener.open(LOGOUT_URL)
+        except (TypeError, URLError) as e:
+            log.exception('Could not log of SongSelect, %s', e)
 
     def search(self, search_text, max_results, callback=None):
         """
@@ -102,20 +116,25 @@ class SongSelectImport(object):
         :param callback: A method which is called when each song is found, with the song as a parameter.
         :return: List of songs
         """
+        self.run_search = True
         params = {'allowredirect': 'false', 'SearchTerm': search_text}
         current_page = 1
         songs = []
-        while True:
+        while self.run_search:
             if current_page > 1:
                 params['page'] = current_page
-            results_page = BeautifulSoup(self.opener.open(SEARCH_URL + '?' + urlencode(params)).read(), 'lxml')
-            search_results = results_page.find_all('li', 'result pane')
+            try:
+                results_page = BeautifulSoup(self.opener.open(SEARCH_URL + '?' + urlencode(params)).read(), 'lxml')
+                search_results = results_page.find_all('li', 'result pane')
+            except (TypeError, URLError) as e:
+                log.exception('Could not search SongSelect, %s', e)
+                search_results = None
             if not search_results:
                 break
             for result in search_results:
                 song = {
-                    'title': self.html_parser.unescape(result.find('h3').string),
-                    'authors': [self.html_parser.unescape(author.string) for author in result.find_all('li')],
+                    'title': unescape(result.find('h3').string),
+                    'authors': [unescape(author.string) for author in result.find_all('li')],
                     'link': BASE_URL + result.find('a')['href']
                 }
                 if callback:
@@ -138,20 +157,20 @@ class SongSelectImport(object):
             callback()
         try:
             song_page = BeautifulSoup(self.opener.open(song['link']).read(), 'lxml')
-        except (TypeError, HTTPError) as e:
+        except (TypeError, URLError) as e:
             log.exception('Could not get song from SongSelect, %s', e)
             return None
         if callback:
             callback()
         try:
             lyrics_page = BeautifulSoup(self.opener.open(song['link'] + '/lyrics').read(), 'lxml')
-        except (TypeError, HTTPError):
+        except (TypeError, URLError):
             log.exception('Could not get lyrics from SongSelect')
             return None
         if callback:
             callback()
         song['copyright'] = '/'.join([li.string for li in song_page.find('ul', 'copyright').find_all('li')])
-        song['copyright'] = self.html_parser.unescape(song['copyright'])
+        song['copyright'] = unescape(song['copyright'])
         song['ccli_number'] = song_page.find('ul', 'info').find('li').string.split(':')[1].strip()
         song['verses'] = []
         verses = lyrics_page.find('section', 'lyrics').find_all('p')
@@ -164,9 +183,9 @@ class SongSelectImport(object):
                 else:
                     verse['lyrics'] += '\n'
             verse['lyrics'] = verse['lyrics'].strip(' \n\r\t')
-            song['verses'].append(self.html_parser.unescape(verse))
+            song['verses'].append(unescape(verse))
         for counter, author in enumerate(song['authors']):
-            song['authors'][counter] = self.html_parser.unescape(author)
+            song['authors'][counter] = unescape(author)
         return song
 
     def save_song(self, song):
@@ -193,9 +212,19 @@ class SongSelectImport(object):
         for author_name in song['authors']:
             author = self.db_manager.get_object_filtered(Author, Author.display_name == author_name)
             if not author:
-                author = Author.populate(first_name=author_name.rsplit(' ', 1)[0],
-                                         last_name=author_name.rsplit(' ', 1)[1],
-                                         display_name=author_name)
+                name_parts = author_name.rsplit(' ', 1)
+                first_name = name_parts[0]
+                if len(name_parts) == 1:
+                    last_name = ''
+                else:
+                    last_name = name_parts[1]
+                author = Author.populate(first_name=first_name, last_name=last_name, display_name=author_name)
             db_song.add_author(author)
         self.db_manager.save_object(db_song)
         return db_song
+
+    def stop(self):
+        """
+        Stop the search.
+        """
+        self.run_search = False

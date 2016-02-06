@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +26,8 @@ import logging
 import re
 import sys
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
+
 
 from openlp.core.common import AppLocation, Settings, translate, is_win, is_macosx
 
@@ -117,10 +118,10 @@ class LanguageManager(object):
         Settings().setValue('core/language', language)
         log.info('Language file: \'%s\' written to conf file' % language)
         if message:
-            QtGui.QMessageBox.information(None,
-                                          translate('OpenLP.LanguageManager', 'Language'),
-                                          translate('OpenLP.LanguageManager', 'Please restart OpenLP to use your new '
-                                                                              'language setting.'))
+            QtWidgets.QMessageBox.information(None,
+                                              translate('OpenLP.LanguageManager', 'Language'),
+                                              translate('OpenLP.LanguageManager',
+                                                        'Please restart OpenLP to use your new language setting.'))
 
     @staticmethod
     def init_qm_list():

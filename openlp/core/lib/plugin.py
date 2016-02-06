@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,7 @@ Provide the generic plugin functionality for OpenLP plugins.
 import logging
 
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings
 from openlp.core.utils import get_application_version
@@ -263,7 +263,8 @@ class Plugin(QtCore.QObject, RegistryProperties):
         else:
             self.media_item.on_add_click()
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Show a dialog when the user clicks on the 'About' button in the plugin manager.
         """
@@ -275,7 +276,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         if self.media_item:
             self.media_item.initialise()
-            self.main_window.media_dock_manager.insert_dock(self.media_item, self.icon, self.weight)
+            self.main_window.media_dock_manager.add_item_to_dock(self.media_item)
 
     def finalise(self):
         """
@@ -288,13 +289,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         Perform tasks on application startup
         """
-        # FIXME: Remove after 2.2 release.
-        # This is needed to load the list of media/presentation from the config saved before the settings rewrite.
-        if self.media_item_class is not None and self.name != 'images':
-            loaded_list = Settings().get_files_from_config(self)
-            # Now save the list to the config using our Settings class.
-            if loaded_list:
-                Settings().setValue('%s/%s files' % (self.settings_section, self.name), loaded_list)
+        pass
 
     def uses_theme(self, theme):
         """

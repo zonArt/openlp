@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import UiStrings, translate
 from openlp.core.lib import build_icon
@@ -40,37 +40,37 @@ class UiAboutDialog(object):
         """
         about_dialog.setObjectName('about_dialog')
         about_dialog.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
-        self.about_dialog_layout = QtGui.QVBoxLayout(about_dialog)
+        self.about_dialog_layout = QtWidgets.QVBoxLayout(about_dialog)
         self.about_dialog_layout.setObjectName('about_dialog_layout')
-        self.logo_label = QtGui.QLabel(about_dialog)
+        self.logo_label = QtWidgets.QLabel(about_dialog)
         self.logo_label.setPixmap(QtGui.QPixmap(':/graphics/openlp-about-logo.png'))
         self.logo_label.setObjectName('logo_label')
         self.about_dialog_layout.addWidget(self.logo_label)
-        self.about_notebook = QtGui.QTabWidget(about_dialog)
+        self.about_notebook = QtWidgets.QTabWidget(about_dialog)
         self.about_notebook.setObjectName('about_notebook')
-        self.about_tab = QtGui.QWidget()
+        self.about_tab = QtWidgets.QWidget()
         self.about_tab.setObjectName('about_tab')
-        self.about_tab_layout = QtGui.QVBoxLayout(self.about_tab)
+        self.about_tab_layout = QtWidgets.QVBoxLayout(self.about_tab)
         self.about_tab_layout.setObjectName('about_tab_layout')
-        self.about_text_edit = QtGui.QPlainTextEdit(self.about_tab)
+        self.about_text_edit = QtWidgets.QPlainTextEdit(self.about_tab)
         self.about_text_edit.setReadOnly(True)
         self.about_text_edit.setObjectName('about_text_edit')
         self.about_tab_layout.addWidget(self.about_text_edit)
         self.about_notebook.addTab(self.about_tab, '')
-        self.credits_tab = QtGui.QWidget()
+        self.credits_tab = QtWidgets.QWidget()
         self.credits_tab.setObjectName('credits_tab')
-        self.credits_tab_layout = QtGui.QVBoxLayout(self.credits_tab)
+        self.credits_tab_layout = QtWidgets.QVBoxLayout(self.credits_tab)
         self.credits_tab_layout.setObjectName('credits_tab_layout')
-        self.credits_text_edit = QtGui.QPlainTextEdit(self.credits_tab)
+        self.credits_text_edit = QtWidgets.QPlainTextEdit(self.credits_tab)
         self.credits_text_edit.setReadOnly(True)
         self.credits_text_edit.setObjectName('credits_text_edit')
         self.credits_tab_layout.addWidget(self.credits_text_edit)
         self.about_notebook.addTab(self.credits_tab, '')
-        self.license_tab = QtGui.QWidget()
+        self.license_tab = QtWidgets.QWidget()
         self.license_tab.setObjectName('license_tab')
-        self.license_tab_layout = QtGui.QVBoxLayout(self.license_tab)
+        self.license_tab_layout = QtWidgets.QVBoxLayout(self.license_tab)
         self.license_tab_layout.setObjectName('license_tab_layout')
-        self.license_text_edit = QtGui.QPlainTextEdit(self.license_tab)
+        self.license_text_edit = QtWidgets.QPlainTextEdit(self.license_tab)
         self.license_text_edit.setReadOnly(True)
         self.license_text_edit.setObjectName('license_text_edit')
         self.license_tab_layout.addWidget(self.license_text_edit)
@@ -154,119 +154,152 @@ class UiAboutDialog(object):
             'zh_CN': [' "executor" ']
         }
         documentors = ['Wesley "wrst" Stout', 'John "jseagull1" Cegalis (lead)']
+        project_lead = translate('OpenLP.AboutForm', 'Project Lead')
+        devs = translate('OpenLP.AboutForm', 'Developers')
+        cons = translate('OpenLP.AboutForm', 'Contributors')
+        packs = translate('OpenLP.AboutForm', 'Packagers')
+        tests = translate('OpenLP.AboutForm', 'Testers')
+        laters = translate('OpenLP.AboutForm', 'Translators')
+        af = translate('OpenLP.AboutForm', 'Afrikaans (af)')
+        cs = translate('OpenLP.AboutForm', 'Czech (cs)')
+        da = translate('OpenLP.AboutForm', 'Danish (da)')
+        de = translate('OpenLP.AboutForm', 'German (de)')
+        el = translate('OpenLP.AboutForm', 'Greek (el)')
+        gb = translate('OpenLP.AboutForm', 'English, United Kingdom (en_GB)')
+        enza = translate('OpenLP.AboutForm', 'English, South Africa (en_ZA)')
+        es = translate('OpenLP.AboutForm', 'Spanish (es)')
+        et = translate('OpenLP.AboutForm', 'Estonian (et)')
+        fi = translate('OpenLP.AboutForm', 'Finnish (fi)')
+        fr = translate('OpenLP.AboutForm', 'French (fr)')
+        hu = translate('OpenLP.AboutForm', 'Hungarian (hu)')
+        ind = translate('OpenLP.AboutForm', 'Indonesian (id)')
+        ja = translate('OpenLP.AboutForm', 'Japanese (ja)')
+        nb = translate('OpenLP.AboutForm', 'Norwegian Bokm\xe5l (nb)')
+        nl = translate('OpenLP.AboutForm', 'Dutch (nl)')
+        pl = translate('OpenLP.AboutForm', 'Polish (pl)')
+        ptbr = translate('OpenLP.AboutForm', 'Portuguese, Brazil (pt_BR)')
+        ru = translate('OpenLP.AboutForm', 'Russian (ru)')
+        sv = translate('OpenLP.AboutForm', 'Swedish (sv)')
+        talk = translate('OpenLP.AboutForm', 'Tamil(Sri-Lanka) (ta_LK)')
+        zhcn = translate('OpenLP.AboutForm', 'Chinese(China) (zh_CN)')
+        documentation = translate('OpenLP.AboutForm', 'Documentation')
+        built_with = translate('OpenLP.AboutForm', 'Built With\n'
+                               '    Python: http://www.python.org/\n'
+                               '    Qt5: http://qt.io\n'
+                               '    PyQt5: http://www.riverbankcomputing.co.uk/software/pyqt/intro\n'
+                               '    Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/\n'
+                               '    MuPDF: http://www.mupdf.com/\n')
+        final_credit = translate('OpenLP.AboutForm', 'Final Credit\n'
+                                 '    "For God so loved the world that He gave\n'
+                                 '    His one and only Son, so that whoever\n'
+                                 '    believes in Him will not perish but inherit\n'
+                                 '    eternal life."  -- John 3:16\n\n'
+                                 '    And last but not least, final credit goes to\n'
+                                 '    God our Father, for sending His Son to die\n'
+                                 '    on the cross, setting us free from sin. We\n'
+                                 '    bring this software to you for free because\n'
+                                 '    He has set us free.')
         self.credits_text_edit.setPlainText(
-            translate('OpenLP.AboutForm',
-                      'Project Lead\n'
-                      '    %s\n'
-                      '\n'
-                      'Developers\n'
-                      '    %s\n'
-                      '\n'
-                      'Contributors\n'
-                      '    %s\n'
-                      '\n'
-                      'Testers\n'
-                      '    %s\n'
-                      '\n'
-                      'Packagers\n'
-                      '    %s\n'
-                      '\n'
-                      'Translators\n'
-                      '    Afrikaans (af)\n'
-                      '        %s\n'
-                      '    Czech (cs)\n'
-                      '        %s\n'
-                      '    Danish (da)\n'
-                      '        %s\n'
-                      '    German (de)\n'
-                      '        %s\n'
-                      '    Greek (el)\n'
-                      '        %s\n'
-                      '    English, United Kingdom (en_GB)\n'
-                      '        %s\n'
-                      '    English, South Africa (en_ZA)\n'
-                      '        %s\n'
-                      '    Spanish (es)\n'
-                      '        %s\n'
-                      '    Estonian (et)\n'
-                      '        %s\n'
-                      '    Finnish (fi)\n'
-                      '        %s\n'
-                      '    French (fr)\n'
-                      '        %s\n'
-                      '    Hungarian (hu)\n'
-                      '        %s\n'
-                      '    Indonesian (id)\n'
-                      '        %s\n'
-                      '    Japanese (ja)\n'
-                      '        %s\n'
-                      '    Norwegian Bokm\xe5l (nb)\n'
-                      '        %s\n'
-                      '    Dutch (nl)\n'
-                      '        %s\n'
-                      '    Polish (pl)\n'
-                      '        %s\n'
-                      '    Portuguese, Brazil (pt_BR)\n'
-                      '        %s\n'
-                      '    Russian (ru)\n'
-                      '        %s\n'
-                      '    Swedish (sv)\n'
-                      '        %s\n'
-                      '    Tamil(Sri-Lanka) (ta_LK)\n'
-                      '        %s\n'
-                      '    Chinese(China) (zh_CN)\n'
-                      '        %s\n'
-                      '\n'
-                      'Documentation\n'
-                      '    %s\n'
-                      '\n'
-                      'Built With\n'
-                      '    Python: http://www.python.org/\n'
-                      '    Qt4: http://qt.io\n'
-                      '    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro\n'
-                      '    Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/\n'
-                      '    MuPDF: http://www.mupdf.com/\n'
-                      '\n'
-                      'Final Credit\n'
-                      '    "For God so loved the world that He gave\n'
-                      '    His one and only Son, so that whoever\n'
-                      '    believes in Him will not perish but inherit\n'
-                      '    eternal life."  -- John 3:16\n\n'
-                      '    And last but not least, final credit goes to\n'
-                      '    God our Father, for sending His Son to die\n'
-                      '    on the cross, setting us free from sin. We\n'
-                      '    bring this software to you for free because\n'
-                      '    He has set us free.') %
-            (lead, '\n    '.join(developers),
-                   '\n    '.join(contributors), '\n    '.join(testers),
-                   '\n    '.join(packagers), '\n        '.join(translators['af']),
-                   '\n        '.join(translators['cs']),
-                   '\n        '.join(translators['da']),
-                   '\n        '.join(translators['de']),
-                   '\n        '.join(translators['el']),
-                   '\n        '.join(translators['en_GB']),
-                   '\n        '.join(translators['en_ZA']),
-                   '\n        '.join(translators['es']),
-                   '\n        '.join(translators['et']),
-                   '\n        '.join(translators['fi']),
-                   '\n        '.join(translators['fr']),
-                   '\n        '.join(translators['hu']),
-                   '\n        '.join(translators['id']),
-                   '\n        '.join(translators['ja']),
-                   '\n        '.join(translators['nb']),
-                   '\n        '.join(translators['nl']),
-                   '\n        '.join(translators['pl']),
-                   '\n        '.join(translators['pt_BR']),
-                   '\n        '.join(translators['ru']),
-                   '\n        '.join(translators['sv']),
-                   '\n        '.join(translators['ta_LK']),
-                   '\n        '.join(translators['zh_CN']),
-                   '\n    '.join(documentors)))
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '    %s\n'
+            '        %s\n'
+            '\n'
+            '%s\n'
+            '    %s\n'
+            '\n'
+            '%s\n%s' %
+            (project_lead, lead,
+             devs, '\n    '.join(developers),
+             cons, '\n    '.join(contributors),
+             tests, '\n    '.join(testers),
+             packs, '\n    '.join(packagers),
+             laters,
+             af, '\n        '.join(translators['af']),
+             cs, '\n        '.join(translators['cs']),
+             da, '\n        '.join(translators['da']),
+             de, '\n        '.join(translators['de']),
+             el, '\n        '.join(translators['el']),
+             gb, '\n        '.join(translators['en_GB']),
+             enza, '\n        '.join(translators['en_ZA']),
+             es, '\n        '.join(translators['es']),
+             et, '\n        '.join(translators['et']),
+             fi, '\n        '.join(translators['fi']),
+             fr, '\n        '.join(translators['fr']),
+             hu, '\n        '.join(translators['hu']),
+             ind, '\n        '.join(translators['id']),
+             ja, '\n        '.join(translators['ja']),
+             nb, '\n        '.join(translators['nb']),
+             nl, '\n        '.join(translators['nl']),
+             pl, '\n        '.join(translators['pl']),
+             ptbr, '\n        '.join(translators['pt_BR']),
+             ru, '\n        '.join(translators['ru']),
+             sv, '\n        '.join(translators['sv']),
+             talk, '\n        '.join(translators['ta_LK']),
+             zhcn, '\n        '.join(translators['zh_CN']),
+             documentation, '\n    '.join(documentors),
+             built_with, final_credit))
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.credits_tab),
                                        translate('OpenLP.AboutForm', 'Credits'))
         copyright_note = translate('OpenLP.AboutForm',
-                                   'Copyright \xa9 2004-2015 %s\n'
-                                   'Portions copyright \xa9 2004-2015 %s') % \
+                                   'Copyright \xa9 2004-2016 %s\n'
+                                   'Portions copyright \xa9 2004-2016 %s') % \
             ('Raoul Snyman',
              'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
              'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '

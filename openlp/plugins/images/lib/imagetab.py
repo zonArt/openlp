@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.lib import ColorButton, SettingsTab
@@ -36,25 +36,25 @@ class ImageTab(SettingsTab):
     def setupUi(self):
         self.setObjectName('ImagesTab')
         super(ImageTab, self).setupUi()
-        self.background_color_group_box = QtGui.QGroupBox(self.left_column)
+        self.background_color_group_box = QtWidgets.QGroupBox(self.left_column)
         self.background_color_group_box.setObjectName('background_color_group_box')
-        self.form_layout = QtGui.QFormLayout(self.background_color_group_box)
+        self.form_layout = QtWidgets.QFormLayout(self.background_color_group_box)
         self.form_layout.setObjectName('form_layout')
-        self.color_layout = QtGui.QHBoxLayout()
-        self.background_color_label = QtGui.QLabel(self.background_color_group_box)
+        self.color_layout = QtWidgets.QHBoxLayout()
+        self.background_color_label = QtWidgets.QLabel(self.background_color_group_box)
         self.background_color_label.setObjectName('background_color_label')
         self.color_layout.addWidget(self.background_color_label)
         self.background_color_button = ColorButton(self.background_color_group_box)
         self.background_color_button.setObjectName('background_color_button')
         self.color_layout.addWidget(self.background_color_button)
         self.form_layout.addRow(self.color_layout)
-        self.information_label = QtGui.QLabel(self.background_color_group_box)
+        self.information_label = QtWidgets.QLabel(self.background_color_group_box)
         self.information_label.setObjectName('information_label')
         self.information_label.setWordWrap(True)
         self.form_layout.addRow(self.information_label)
         self.left_layout.addWidget(self.background_color_group_box)
         self.left_layout.addStretch()
-        self.right_column.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.right_column.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         self.right_layout.addStretch()
         # Signals and slots
         self.background_color_button.colorChanged.connect(self.on_background_color_changed)

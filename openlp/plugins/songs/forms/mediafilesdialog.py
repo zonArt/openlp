@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
@@ -39,17 +39,17 @@ class Ui_MediaFilesDialog(object):
         media_files_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
         media_files_dialog.resize(400, 300)
         media_files_dialog.setModal(True)
-        self.files_vertical_layout = QtGui.QVBoxLayout(media_files_dialog)
+        self.files_vertical_layout = QtWidgets.QVBoxLayout(media_files_dialog)
         self.files_vertical_layout.setSpacing(8)
-        self.files_vertical_layout.setMargin(8)
+        self.files_vertical_layout.setContentsMargins(8, 8, 8, 8)
         self.files_vertical_layout.setObjectName('files_vertical_layout')
-        self.select_label = QtGui.QLabel(media_files_dialog)
+        self.select_label = QtWidgets.QLabel(media_files_dialog)
         self.select_label.setWordWrap(True)
         self.select_label.setObjectName('select_label')
         self.files_vertical_layout.addWidget(self.select_label)
-        self.file_list_widget = QtGui.QListWidget(media_files_dialog)
+        self.file_list_widget = QtWidgets.QListWidget(media_files_dialog)
         self.file_list_widget.setAlternatingRowColors(True)
-        self.file_list_widget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.file_list_widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.file_list_widget.setObjectName('file_list_widget')
         self.files_vertical_layout.addWidget(self.file_list_widget)
         self.button_box = create_button_box(media_files_dialog, 'button_box', ['cancel', 'ok'])

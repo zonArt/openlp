@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,7 +30,7 @@ from openlp.core.ui.media.vlcplayer import get_vlc
 if os.name == 'nt' and not get_vlc():
     raise SkipTest('Windows without VLC, skipping this test since it cannot run without vlc')
 
-from PyQt4 import QtGui, QtTest, QtCore
+from PyQt5 import QtTest, QtCore, QtWidgets
 
 from openlp.core.common import Registry
 from openlp.plugins.media.forms.mediaclipselectorform import MediaClipSelectorForm
@@ -48,10 +48,10 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
         # Mock VLC so we don't actually use it
-        self.vlc_patcher = patch('openlp.plugins.media.forms.mediaclipselectorform.vlc')
+        self.vlc_patcher = patch('openlp.plugins.media.forms.mediaclipselectorform.get_vlc')
         self.vlc_patcher.start()
         Registry().register('application', self.app)
         # Mock the media item
@@ -77,10 +77,10 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         """
         Test if the dialog is correctly set up.
         """
-        # GIVEN: A mocked QDialog.exec_() method
-        with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+        # GIVEN: A mocked QDialog.exec() method
+        with patch('PyQt5.QtWidgets.QDialog.exec') as mocked_exec:
             # WHEN: Show the dialog.
-            self.form.exec_()
+            self.form.exec()
 
             # THEN: The media path should be empty.
             assert self.form.media_path_combobox.currentText() == '', 'There should not be any text in the media path.'
@@ -93,8 +93,8 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         with patch('openlp.plugins.media.forms.mediaclipselectorform.critical_error_message_box') as \
                 mocked_critical_error_message_box,\
                 patch('openlp.plugins.media.forms.mediaclipselectorform.os.path.exists') as mocked_os_path_exists,\
-                patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
-            self.form.exec_()
+                patch('PyQt5.QtWidgets.QDialog.exec') as mocked_exec:
+            self.form.exec()
 
             # WHEN: The load button is clicked with no path set
             QtTest.QTest.mouseClick(self.form.load_disc_button, QtCore.Qt.LeftButton)
@@ -131,8 +131,8 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         Test the behavior when the title combobox is updated
         """
         # GIVEN: Mocked methods and some entries in the title combobox.
-        with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
-            self.form.exec_()
+        with patch('PyQt5.QtWidgets.QDialog.exec') as mocked_exec:
+            self.form.exec()
             self.form.vlc_media_player.get_length.return_value = 1000
             self.form.audio_tracks_combobox.itemData = MagicMock()
             self.form.subtitle_tracks_combobox.itemData = MagicMock()
@@ -160,8 +160,8 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         # GIVEN: Mocked methods.
         with patch('openlp.plugins.media.forms.mediaclipselectorform.critical_error_message_box') as \
                 mocked_critical_error_message_box,\
-                patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
-            self.form.exec_()
+                patch('PyQt5.QtWidgets.QDialog.exec') as mocked_exec:
+            self.form.exec()
 
             # WHEN: The save button is clicked with a NoneType in start_time_ms or end_time_ms
             self.form.accept()

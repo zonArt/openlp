@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ import logging
 import copy
 import os
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry
 from openlp.core.ui import HideMode
@@ -290,6 +290,13 @@ class MessageListener(object):
     log.info('Message Listener loaded')
 
     def __init__(self, media_item):
+        self._setup(media_item)
+
+    def _setup(self, media_item):
+        """
+        Start up code moved out to make mocking easier
+        :param media_item: The plugin media item handing Presentations
+        """
         self.controllers = media_item.controllers
         self.media_item = media_item
         self.preview_handler = Controller(False)
@@ -342,10 +349,17 @@ class MessageListener(object):
             # When presenting PDF/XPS/OXPS, we are using the image presentation code,
             # so handler & processor is set to None, and we skip adding the handler.
             self.handler = None
-        if self.handler == self.media_item.automatic:
-            self.handler = self.media_item.find_controller_by_type(file)
-            if not self.handler:
-                return
+        else:
+            if self.handler == self.media_item.automatic:
+                self.handler = self.media_item.find_controller_by_type(file)
+                if not self.handler:
+                    return
+            else:
+                # the saved handler is not present so need to use one based on file suffix.
+                if not self.controllers[self.handler].available:
+                    self.handler = self.media_item.find_controller_by_type(file)
+                    if not self.handler:
+                        return
         if is_live:
             controller = self.live_handler
         else:

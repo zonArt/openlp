@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,7 +23,7 @@
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, UiStrings,\
     translate
@@ -43,34 +43,43 @@ log = logging.getLogger(__name__)
 
 
 CLAPPERBOARD = ':/media/slidecontroller_multimedia.png'
-OPTICAL = ':/media/media_optical.png'
-VIDEO_ICON = build_icon(':/media/media_video.png')
-AUDIO_ICON = build_icon(':/media/media_audio.png')
-OPTICAL_ICON = build_icon(OPTICAL)
-ERROR_ICON = build_icon(':/general/general_delete.png')
 
 
 class MediaMediaItem(MediaManagerItem, RegistryProperties):
     """
     This is the custom media manager item for Media Slides.
     """
+    media_go_live = QtCore.pyqtSignal(list)
+    media_add_to_service = QtCore.pyqtSignal(list)
     log.info('%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, plugin):
+        self.setup()
+        super(MediaMediaItem, self).__init__(parent, plugin)
+
+    def setup(self):
+        """
+        Allow early setup to be mocked.
+        """
         self.icon_path = 'images/image'
         self.background = False
         self.automatic = ''
-        super(MediaMediaItem, self).__init__(parent, plugin)
+        self.optical_icon = build_icon(':/media/media_optical.png')
+        self.video_icon = build_icon(':/media/media_video.png')
+        self.audio_icon = build_icon(':/media/media_audio.png')
+        self.error_icon = build_icon(':/general/general_delete.png')
 
     def setup_item(self):
         """
         Do some additional setup.
         """
+        self.media_go_live.connect(self.go_live_remote)
+        self.media_add_to_service.connect(self.add_to_service_remote)
         self.single_service_item = False
         self.has_search = True
         self.media_object = None
         self.display_controller = DisplayController(self.parent())
-        self.display_controller.controller_layout = QtGui.QVBoxLayout()
+        self.display_controller.controller_layout = QtWidgets.QVBoxLayout()
         self.media_controller.register_controller(self.display_controller)
         self.media_controller.set_controls_visible(self.display_controller, False)
         self.display_controller.preview_display = Display(self.display_controller)
@@ -130,7 +139,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             optical_button_text = translate('MediaPlugin.MediaItem', 'Load CD/DVD')
             optical_button_tooltip = translate('MediaPlugin.MediaItem',
                                                'Load CD/DVD - only supported when VLC is installed and enabled')
-        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=OPTICAL_ICON, text=optical_button_text,
+        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=self.optical_icon,
+                                                            text=optical_button_text,
                                                             tooltip=optical_button_tooltip,
                                                             triggers=self.on_load_optical)
         if disable_optical_button_text:
@@ -147,12 +157,13 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             self.replace_action.setDisabled(True)
         self.reset_action = self.toolbar.add_toolbar_action('reset_action', icon=':/system/system_close.png',
                                                             visible=False, triggers=self.on_reset_click)
-        self.media_widget = QtGui.QWidget(self)
+        self.media_widget = QtWidgets.QWidget(self)
         self.media_widget.setObjectName('media_widget')
-        self.display_layout = QtGui.QFormLayout(self.media_widget)
-        self.display_layout.setMargin(self.display_layout.spacing())
+        self.display_layout = QtWidgets.QFormLayout(self.media_widget)
+        self.display_layout.setContentsMargins(self.display_layout.spacing(), self.display_layout.spacing(),
+                                               self.display_layout.spacing(), self.display_layout.spacing())
         self.display_layout.setObjectName('display_layout')
-        self.display_type_label = QtGui.QLabel(self.media_widget)
+        self.display_type_label = QtWidgets.QLabel(self.media_widget)
         self.display_type_label.setObjectName('display_type_label')
         self.display_type_combo_box = create_horizontal_adjusting_combo_box(
             self.media_widget, 'display_type_combo_box')
@@ -350,25 +361,25 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             if track.startswith('optical:'):
                 # Handle optical based item
                 (file_name, title, audio_track, subtitle_track, start, end, clip_name) = parse_optical_path(track)
-                item_name = QtGui.QListWidgetItem(clip_name)
-                item_name.setIcon(OPTICAL_ICON)
+                item_name = QtWidgets.QListWidgetItem(clip_name)
+                item_name.setIcon(self.optical_icon)
                 item_name.setData(QtCore.Qt.UserRole, track)
                 item_name.setToolTip('%s@%s-%s' % (file_name, format_milliseconds(start), format_milliseconds(end)))
             elif not os.path.exists(track):
                 # File doesn't exist, mark as error.
                 file_name = os.path.split(str(track))[1]
-                item_name = QtGui.QListWidgetItem(file_name)
-                item_name.setIcon(ERROR_ICON)
+                item_name = QtWidgets.QListWidgetItem(file_name)
+                item_name.setIcon(self.error_icon)
                 item_name.setData(QtCore.Qt.UserRole, track)
                 item_name.setToolTip(track)
             elif track_info.isFile():
                 # Normal media file handling.
                 file_name = os.path.split(str(track))[1]
-                item_name = QtGui.QListWidgetItem(file_name)
+                item_name = QtWidgets.QListWidgetItem(file_name)
                 if '*.%s' % (file_name.split('.')[-1].lower()) in self.media_controller.audio_extensions_list:
-                    item_name.setIcon(AUDIO_ICON)
+                    item_name.setIcon(self.audio_icon)
                 else:
-                    item_name.setIcon(VIDEO_ICON)
+                    item_name.setIcon(self.video_icon)
                 item_name.setData(QtCore.Qt.UserRole, track)
                 item_name.setToolTip(track)
             if item_name:
@@ -412,13 +423,13 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         When the load optical button is clicked, open the clip selector window.
         """
-        # self.media_clip_selector_form.exec_()
+        # self.media_clip_selector_form.exec()
         if get_vlc():
             media_clip_selector_form = MediaClipSelectorForm(self, self.main_window, None)
-            media_clip_selector_form.exec_()
+            media_clip_selector_form.exec()
             del media_clip_selector_form
         else:
-            QtGui.QMessageBox.critical(self, 'VLC is not available', 'VLC is not available')
+            QtWidgets.QMessageBox.critical(self, 'VLC is not available', 'VLC is not available')
 
     def add_optical_clip(self, optical):
         """

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,7 @@
 """
 Package to test the openlp.core.ui.settingsform package.
 """
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 from unittest import TestCase
 
 from openlp.core.common import Registry
@@ -83,14 +83,14 @@ class TestSettingsForm(TestCase):
         """
         # GIVEN: A visible general tab and an invisible theme tab in a Settings Form
         settings_form = SettingsForm(None)
-        general_tab = QtGui.QWidget(None)
+        general_tab = QtWidgets.QWidget(None)
         general_tab.tab_title = 'mock-general'
         general_tab.tab_title_visible = 'Mock General'
         general_tab.icon_path = ':/icon/openlp-logo-16x16.png'
         mocked_general_save = MagicMock()
         general_tab.save = mocked_general_save
         settings_form.insert_tab(general_tab, is_visible=True)
-        themes_tab = QtGui.QWidget(None)
+        themes_tab = QtWidgets.QWidget(None)
         themes_tab.tab_title = 'mock-themes'
         themes_tab.tab_title_visible = 'Mock Themes'
         themes_tab.icon_path = ':/icon/openlp-logo-16x16.png'
@@ -111,7 +111,7 @@ class TestSettingsForm(TestCase):
         """
         # GIVEN: A mocked tab inserted into a Settings Form
         settings_form = SettingsForm(None)
-        general_tab = QtGui.QWidget(None)
+        general_tab = QtWidgets.QWidget(None)
         general_tab.tab_title = 'mock'
         general_tab.tab_title_visible = 'Mock'
         general_tab.icon_path = ':/icon/openlp-logo-16x16.png'
@@ -130,14 +130,14 @@ class TestSettingsForm(TestCase):
         """
         # GIVEN: A visible general tab and an invisible theme tab in a Settings Form
         settings_form = SettingsForm(None)
-        general_tab = QtGui.QWidget(None)
+        general_tab = QtWidgets.QWidget(None)
         general_tab.tab_title = 'mock-general'
         general_tab.tab_title_visible = 'Mock General'
         general_tab.icon_path = ':/icon/openlp-logo-16x16.png'
         mocked_general_cancel = MagicMock()
         general_tab.cancel = mocked_general_cancel
         settings_form.insert_tab(general_tab, is_visible=True)
-        themes_tab = QtGui.QWidget(None)
+        themes_tab = QtWidgets.QWidget(None)
         themes_tab.tab_title = 'mock-themes'
         themes_tab.tab_title_visible = 'Mock Themes'
         themes_tab.icon_path = ':/icon/openlp-logo-16x16.png'

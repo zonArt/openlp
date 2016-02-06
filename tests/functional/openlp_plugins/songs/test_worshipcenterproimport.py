@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -67,6 +67,10 @@ class WorshipCenterProImportLogger(WorshipCenterProImport):
 
 
 RECORDSET_TEST_DATA = [TestRecord(1, 'TITLE', 'Amazing Grace'),
+                       TestRecord(1, 'AUTHOR', 'John Newton'),
+                       TestRecord(1, 'CCLISONGID', '12345'),
+                       TestRecord(1, 'COMMENTS', 'The original version'),
+                       TestRecord(1, 'COPY', 'Public Domain'),
                        TestRecord(
                            1, 'LYRICS',
                            'Amazing grace! How&crlf;sweet the sound&crlf;That saved a wretch like me!&crlf;'
@@ -113,7 +117,10 @@ SONG_TEST_DATA = [{'title': 'Amazing Grace',
                        ('The earth shall soon\ndissolve like snow,\nThe sun forbear to shine;\nBut God, Who called\n'
                         'me here below,\nShall be forever mine.'),
                        ('When we\'ve been there\nten thousand years,\nBright shining as the sun,\n'
-                        'We\'ve no less days to\nsing God\'s praise\nThan when we\'d first begun.')]},
+                        'We\'ve no less days to\nsing God\'s praise\nThan when we\'d first begun.')],
+                   'author': 'John Newton',
+                   'comments': 'The original version',
+                   'copyright': 'Public Domain'},
                   {'title': 'Beautiful Garden Of Prayer, The',
                    'verses': [
                        ('There\'s a garden where\nJesus is waiting,\nThere\'s a place that\nis wondrously fair,\n'
@@ -191,6 +198,9 @@ class TestWorshipCenterProSongImport(TestCase):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             mocked_add_verse = MagicMock()
+            mocked_parse_author = MagicMock()
+            mocked_add_comment = MagicMock()
+            mocked_add_copyright = MagicMock()
             mocked_finish = MagicMock()
             mocked_pyodbc.connect().cursor().fetchall.return_value = RECORDSET_TEST_DATA
             mocked_translate.return_value = 'Translated Text'
@@ -198,6 +208,9 @@ class TestWorshipCenterProSongImport(TestCase):
             importer.import_source = 'import_source'
             importer.import_wizard = mocked_import_wizard
             importer.add_verse = mocked_add_verse
+            importer.parse_author = mocked_parse_author
+            importer.add_comment = mocked_add_comment
+            importer.add_copyright = mocked_add_copyright
             importer.stop_import_flag = False
             importer.finish = mocked_finish
 
@@ -220,6 +233,12 @@ class TestWorshipCenterProSongImport(TestCase):
                 verse_calls = song_data['verses']
                 add_verse_call_count += len(verse_calls)
                 for call in verse_calls:
-                    mocked_add_verse.assert_any_call(call)
+                    mocked_add_verse.assert_any_call(call, 'v')
+                if 'author' in song_data:
+                    mocked_parse_author.assert_any_call(song_data['author'])
+                if 'comments' in song_data:
+                    mocked_add_comment.assert_any_call(song_data['comments'])
+                if 'copyright' in song_data:
+                    mocked_add_copyright.assert_any_call(song_data['copyright'])
             self.assertEqual(mocked_add_verse.call_count, add_verse_call_count,
                              'Incorrect number of calls made to add_verse')

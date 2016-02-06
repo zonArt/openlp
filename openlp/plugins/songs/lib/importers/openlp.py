@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -94,7 +94,7 @@ class OpenLPSongImport(SongImport):
         # Check the file type
         if not self.import_source.endswith('.sqlite'):
             self.log_error(self.import_source, translate('SongsPlugin.OpenLPSongImport',
-                                                         'Not a valid OpenLP 2.0 song database.'))
+                                                         'Not a valid OpenLP 2 song database.'))
             return
         self.import_source = 'sqlite:///%s' % self.import_source
         # Load the db file

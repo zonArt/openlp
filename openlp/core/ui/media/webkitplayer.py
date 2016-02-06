@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,7 @@
 """
 The :mod:`~openlp.core.ui.media.webkit` module contains our WebKit video player
 """
-from PyQt4 import QtGui, QtWebKit
+from PyQt5 import QtGui, QtWebKitWidgets
 
 import logging
 
@@ -226,7 +226,7 @@ class WebkitPlayer(MediaPlayer):
 
         :return: boolean. True if available
         """
-        web = QtWebKit.QWebPage()
+        web = QtWebKitWidgets.QWebPage()
         # This script should return '[object HTMLVideoElement]' if the html5 video is available in webkit. Otherwise it
         # should return '[object HTMLUnknownElement]'
         return web.mainFrame().evaluateJavaScript(
@@ -326,10 +326,10 @@ class WebkitPlayer(MediaPlayer):
         controller = display.controller
         if controller.media_info.is_flash:
             seek = seek_value
-            display.frame.evaluateJavaScript('show_flash("seek", null, null, "%s");' % (seek))
+            display.frame.evaluateJavaScript('show_flash("seek", null, null, "%s");' % seek)
         else:
             seek = float(seek_value) / 1000
-            display.frame.evaluateJavaScript('show_video("seek", null, null, null, "%f");' % (seek))
+            display.frame.evaluateJavaScript('show_video("seek", null, null, null, "%f");' % seek)
 
     def reset(self, display):
         """

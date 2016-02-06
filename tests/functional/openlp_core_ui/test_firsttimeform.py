@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -217,7 +217,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
             self.assertFalse(first_time_form.web_access, 'There should not be web access with an invalid config file')
 
     @patch('openlp.core.ui.firsttimeform.get_web_page')
-    @patch('openlp.core.ui.firsttimeform.QtGui.QMessageBox')
+    @patch('openlp.core.ui.firsttimeform.QtWidgets.QMessageBox')
     def network_error_test(self, mocked_message_box, mocked_get_web_page):
         """
         Test we catch a network error in First Time Wizard - bug 1409627

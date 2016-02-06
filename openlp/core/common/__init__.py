@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,8 +32,8 @@ import traceback
 from ipaddress import IPv4Address, IPv6Address, AddressValueError
 from codecs import decode, encode
 
-from PyQt4 import QtCore
-from PyQt4.QtCore import QCryptographicHash as QHash
+from PyQt5 import QtCore
+from PyQt5.QtCore import QCryptographicHash as QHash
 
 log = logging.getLogger(__name__ + '.__init__')
 
@@ -92,20 +92,17 @@ class ThemeLevel(object):
     Song = 3
 
 
-def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
-              qt_translate=QtCore.QCoreApplication.translate):
+def translate(context, text, comment=None, qt_translate=QtCore.QCoreApplication.translate):
     """
-    A special shortcut method to wrap around the Qt4 translation functions. This abstracts the translation procedure so
+    A special shortcut method to wrap around the Qt5 translation functions. This abstracts the translation procedure so
     that we can change it if at a later date if necessary, without having to redo the whole of OpenLP.
 
     :param context: The translation context, used to give each string a context or a namespace.
     :param text: The text to put into the translation tables for translation.
     :param comment: An identifying string for when the same text is used in different roles within the same context.
-    :param encoding:
-    :param n:
     :param qt_translate:
     """
-    return qt_translate(context, text, comment, encoding, n)
+    return qt_translate(context, text, comment)
 
 
 class SlideLimits(object):
@@ -213,7 +210,7 @@ def md5_hash(salt, data=None):
 def qmd5_hash(salt, data=None):
     """
     Returns the hashed output of MD5Sum on salt, data
-    using PyQt4.QCryptographicHash.
+    using PyQt5.QCryptographicHash.
 
     :param salt: Initial salt
     :param data: OPTIONAL Data to hash

@@ -1,11 +1,10 @@
-
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,7 +29,7 @@ import os
 import time
 import queue
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry
 from openlp.core.lib import ScreenList, resize_image, image_to_byte

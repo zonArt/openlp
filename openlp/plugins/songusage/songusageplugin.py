@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,7 +23,7 @@
 import logging
 from datetime import datetime
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, Settings, translate
 from openlp.core.lib import Plugin, StringContent, build_icon
@@ -83,7 +83,7 @@ class SongUsagePlugin(Plugin):
         """
         log.info('add tools menu')
         self.tools_menu = tools_menu
-        self.song_usage_menu = QtGui.QMenu(tools_menu)
+        self.song_usage_menu = QtWidgets.QMenu(tools_menu)
         self.song_usage_menu.setObjectName('song_usage_menu')
         self.song_usage_menu.setTitle(translate('SongUsagePlugin', '&Song Usage Tracking'))
         # SongUsage Delete
@@ -110,7 +110,7 @@ class SongUsagePlugin(Plugin):
         self.song_usage_menu.addSeparator()
         self.song_usage_menu.addAction(self.song_usage_report)
         self.song_usage_menu.addAction(self.song_usage_delete)
-        self.song_usage_active_button = QtGui.QToolButton(self.main_window.status_bar)
+        self.song_usage_active_button = QtWidgets.QToolButton(self.main_window.status_bar)
         self.song_usage_active_button.setCheckable(True)
         self.song_usage_active_button.setAutoRaise(True)
         self.song_usage_active_button.setStatusTip(translate('SongUsagePlugin', 'Toggle the tracking of song usage.'))
@@ -118,8 +118,7 @@ class SongUsagePlugin(Plugin):
         self.main_window.status_bar.insertPermanentWidget(1, self.song_usage_active_button)
         self.song_usage_active_button.hide()
         # Signals and slots
-        QtCore.QObject.connect(self.song_usage_status, QtCore.SIGNAL('visibilityChanged(bool)'),
-                               self.song_usage_status.setChecked)
+        self.song_usage_status.changed.connect(self.toggle_song_usage_state)
         self.song_usage_active_button.toggled.connect(self.toggle_song_usage_state)
         self.song_usage_menu.menuAction().setVisible(False)
 
@@ -218,7 +217,7 @@ class SongUsagePlugin(Plugin):
         """
         Request the delete form to be displayed
         """
-        self.song_usage_delete_form.exec_()
+        self.song_usage_delete_form.exec()
 
     def on_song_usage_report(self):
         """
@@ -226,9 +225,10 @@ class SongUsagePlugin(Plugin):
 
         """
         self.song_usage_detail_form.initialise()
-        self.song_usage_detail_form.exec_()
+        self.song_usage_detail_form.exec()
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         The plugin about text
 

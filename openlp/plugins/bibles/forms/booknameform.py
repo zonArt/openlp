@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,8 +26,8 @@ Module implementing BookNameForm.
 import logging
 import re
 
-from PyQt4.QtGui import QDialog
-from PyQt4 import QtCore
+from PyQt5.QtWidgets import QDialog
+from PyQt5 import QtCore
 
 from openlp.core.common import translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -49,7 +49,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         """
         Constructor
         """
-        super(BookNameForm, self).__init__(parent)
+        super(BookNameForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.custom_signals()
         self.book_names = BibleStrings().BookNames
@@ -90,7 +90,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             if add_book:
                 self.corresponding_combo_box.addItem(self.book_names[item['abbreviation']])
 
-    def exec_(self, name, books, max_books):
+    def exec(self, name, books, max_books):
         self.books = books
         log.debug(max_books)
         if max_books <= 27:
@@ -101,7 +101,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         self.reload_combo_box()
         self.current_book_label.setText(str(name))
         self.corresponding_combo_box.setFocus()
-        return QDialog.exec_(self)
+        return QDialog.exec(self)
 
     def accept(self):
         if not self.corresponding_combo_box.currentText():

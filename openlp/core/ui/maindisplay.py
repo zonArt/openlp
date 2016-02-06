@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,18 +32,19 @@ Some of the code for this form is based on the examples at:
 import html
 import logging
 
-from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
+from PyQt5 import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets, QtOpenGL, QtGui, QtMultimedia
 
-PHONON_AVAILABLE = True
-try:
-    from PyQt4.phonon import Phonon
-except ImportError:
-    PHONON_AVAILABLE = False
-
-from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx
+from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx, is_win
 from openlp.core.lib import ServiceItem, ImageSource, ScreenList, build_html, expand_tags, image_to_byte
 from openlp.core.lib.theme import BackgroundType
 from openlp.core.ui import HideMode, AlertLocation
+
+if is_macosx():
+    from ctypes import pythonapi, c_void_p, c_char_p, py_object
+
+    from sip import voidptr
+    from objc import objc_object
+    from AppKit import NSMainMenuWindowLevel, NSWindowCollectionBehaviorManaged
 
 log = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ QGraphicsView {
 """
 
 
-class Display(QtGui.QGraphicsView):
+class Display(QtWidgets.QGraphicsView):
     """
     This is a general display screen class. Here the general display settings will done. It will be used as
     specialized classes by Main Display and Preview display.
@@ -85,19 +86,13 @@ class Display(QtGui.QGraphicsView):
         super(Display, self).__init__()
         self.controller = parent
         self.screen = {}
-        # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
-        # OpenGL. Only white blank screen is shown on the 2nd monitor all the
-        # time. We need to investigate more how to use OpenGL properly on Mac OS
-        # X.
-        if not is_macosx():
-            self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
         Set up and build the screen base
         """
         self.setGeometry(self.screen['size'])
-        self.web_view = QtWebKit.QWebView(self)
+        self.web_view = QtWebKitWidgets.QWebView(self)
         self.web_view.setGeometry(0, 0, self.screen['size'].width(), self.screen['size'].height())
         self.web_view.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
         palette = self.web_view.palette()
@@ -120,7 +115,8 @@ class Display(QtGui.QGraphicsView):
 
         :param event: The event to be handled
         """
-        self.web_view.setGeometry(0, 0, self.width(), self.height())
+        if hasattr(self, 'web_view'):
+            self.web_view.setGeometry(0, 0, self.width(), self.height())
 
     def is_web_loaded(self, field=None):
         """
@@ -144,7 +140,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         self.override = {}
         self.retranslateUi()
         self.media_object = None
-        if self.is_live and PHONON_AVAILABLE:
+        if self.is_live:
             self.audio_player = AudioPlayer(self)
         else:
             self.audio_player = None
@@ -160,28 +156,63 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         # regressions on other platforms.
         if is_macosx():
             window_flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window
-            # For primary screen ensure it stays above the OS X dock
-            # and menu bar
-            if self.screens.current['primary']:
-                self.setWindowState(QtCore.Qt.WindowFullScreen)
-            else:
-                window_flags |= QtCore.Qt.WindowStaysOnTopHint
         self.setWindowFlags(window_flags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.set_transparency(False)
+        if is_macosx():
+            if self.is_live:
+                # Get a pointer to the underlying NSView
+                try:
+                    nsview_pointer = self.winId().ascapsule()
+                except:
+                    nsview_pointer = voidptr(self.winId()).ascapsule()
+                # Set PyCapsule name so pyobjc will accept it
+                pythonapi.PyCapsule_SetName.restype = c_void_p
+                pythonapi.PyCapsule_SetName.argtypes = [py_object, c_char_p]
+                pythonapi.PyCapsule_SetName(nsview_pointer, c_char_p(b"objc.__object__"))
+                # Covert the NSView pointer into a pyobjc NSView object
+                self.pyobjc_nsview = objc_object(cobject=nsview_pointer)
+                # Set the window level so that the MainDisplay is above the menu bar and dock
+                self.pyobjc_nsview.window().setLevel_(NSMainMenuWindowLevel + 2)
+                # Set the collection behavior so the window is visible when Mission Control is activated
+                self.pyobjc_nsview.window().setCollectionBehavior_(NSWindowCollectionBehaviorManaged)
+                if self.screens.current['primary']:
+                    # Connect focusWindowChanged signal so we can change the window level when the display is not in
+                    # focus on the primary screen
+                    self.application.focusWindowChanged.connect(self.change_window_level)
         if self.is_live:
             Registry().register_function('live_display_hide', self.hide_display)
             Registry().register_function('live_display_show', self.show_display)
             Registry().register_function('update_display_css', self.css_changed)
+        self.close_display = False
+
+    def closeEvent(self, event):
+        """
+        Catch the close event, and check that the close event is triggered by OpenLP closing the display.
+        On Windows this event can be triggered by pressing ALT+F4, which we want to ignore.
+
+        :param event: The triggered event
+        """
+        if self.close_display:
+            super().closeEvent(event)
+        else:
+            event.ignore()
 
     def close(self):
         """
         Remove registered function on close.
         """
         if self.is_live:
+            if is_macosx():
+                # Block signals so signal we are disconnecting can't get called while we disconnect it
+                self.blockSignals(True)
+                if self.screens.current['primary']:
+                    self.application.focusWindowChanged.disconnect()
+                self.blockSignals(False)
             Registry().remove_function('live_display_hide', self.hide_display)
             Registry().remove_function('live_display_show', self.show_display)
             Registry().remove_function('update_display_css', self.css_changed)
+        self.close_display = True
         super().close()
 
     def set_transparency(self, enabled):
@@ -320,7 +351,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         cache.
 
         :param path: The path to the image to be displayed. **Note**, the path is only passed to identify the image.
-        If the image has changed it has to be re-added to the image manager.
+            If the image has changed it has to be re-added to the image manager.
         """
         image = self.image_manager.get_image_bytes(path, ImageSource.ImagePlugin)
         self.controller.media_controller.media_reset(self.controller)
@@ -383,7 +414,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
-        return QtGui.QPixmap.grabWidget(self)
+        return self.grab()
 
     def build_html(self, service_item, image_path=''):
         """
@@ -492,11 +523,49 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             self.setCursor(QtCore.Qt.ArrowCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
+    def change_window_level(self, window):
+        """
+        Changes the display window level on Mac OS X so that the main window can be brought into focus but still allow
+        the main display to be above the menu bar and dock when it in focus.
+
+        :param window: Window from our application that focus changed to or None if outside our application
+        """
+        if is_macosx():
+            if window:
+                # Get different window ids' as int's
+                try:
+                    window_id = window.winId().__int__()
+                    main_window_id = self.main_window.winId().__int__()
+                    self_id = self.winId().__int__()
+                except:
+                    return
+                # If the passed window has the same id as our window make sure the display has the proper level and
+                # collection behavior.
+                if window_id == self_id:
+                    self.pyobjc_nsview.window().setLevel_(NSMainMenuWindowLevel + 2)
+                    self.pyobjc_nsview.window().setCollectionBehavior_(NSWindowCollectionBehaviorManaged)
+                # Else set the displays window level back to normal since we are trying to focus a window other than
+                # the display.
+                else:
+                    self.pyobjc_nsview.window().setLevel_(0)
+                    self.pyobjc_nsview.window().setCollectionBehavior_(NSWindowCollectionBehaviorManaged)
+                    # If we are trying to focus the main window raise it now to complete the focus change.
+                    if window_id == main_window_id:
+                        self.main_window.raise_()
+
+    def shake_web_view(self):
+        """
+        Resizes the web_view a bit to force an update. Workaround for bug #1531319, should not be needed with PyQt 5.6.
+        """
+        self.web_view.setGeometry(0, 0, self.width(), self.height() - 1)
+        self.web_view.setGeometry(0, 0, self.width(), self.height())
+
 
 class AudioPlayer(OpenLPMixin, QtCore.QObject):
     """
     This Class will play audio only allowing components to work with a soundtrack independent of the user interface.
     """
+    position_changed = QtCore.pyqtSignal(int)
 
     def __init__(self, parent):
         """
@@ -505,78 +574,67 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         :param parent:  The parent widget.
         """
         super(AudioPlayer, self).__init__(parent)
-        self.current_index = -1
-        self.playlist = []
-        self.repeat = False
-        self.media_object = Phonon.MediaObject()
-        self.media_object.setTickInterval(100)
-        self.audio_object = Phonon.AudioOutput(Phonon.VideoCategory)
-        Phonon.createPath(self.media_object, self.audio_object)
-        self.media_object.aboutToFinish.connect(self.on_about_to_finish)
-        self.media_object.finished.connect(self.on_finished)
+        self.player = QtMultimedia.QMediaPlayer()
+        self.playlist = QtMultimedia.QMediaPlaylist(self.player)
+        self.volume_slider = None
+        self.player.setPlaylist(self.playlist)
+        self.player.positionChanged.connect(self._on_position_changed)
 
     def __del__(self):
         """
         Shutting down so clean up connections
         """
         self.stop()
-        for path in self.media_object.outputPaths():
-            path.disconnect()
 
-    def on_about_to_finish(self):
+    def _on_position_changed(self, position):
         """
-        Just before the audio player finishes the current track, queue the next
-        item in the playlist, if there is one.
+        Emit a signal when the position of the media player updates
         """
-        self.current_index += 1
-        if len(self.playlist) > self.current_index:
-            self.media_object.enqueue(self.playlist[self.current_index])
+        self.position_changed.emit(position)
 
-    def on_finished(self):
+    def set_volume_slider(self, slider):
         """
-        When the audio track finishes.
+        Connect the volume slider to the media player
+        :param slider:
         """
-        if self.repeat:
-            self.log_debug('Repeat is enabled... here we go again!')
-            self.media_object.clearQueue()
-            self.media_object.clear()
-            self.current_index = -1
-            self.play()
+        self.volume_slider = slider
+        self.volume_slider.setMinimum(0)
+        self.volume_slider.setMaximum(100)
+        self.volume_slider.setValue(self.player.volume())
+        self.volume_slider.valueChanged.connect(self.set_volume)
 
-    def connectVolumeSlider(self, slider):
+    def set_volume(self, volume):
         """
-        Connect the volume slider to the output channel.
+        Set the volume of the media player
+
+        :param volume:
         """
-        slider.setAudioOutput(self.audio_object)
+        self.player.setVolume(volume)
 
     def reset(self):
         """
         Reset the audio player, clearing the playlist and the queue.
         """
-        self.current_index = -1
-        self.playlist = []
         self.stop()
-        self.media_object.clear()
+        self.playlist.clear()
 
     def play(self):
         """
         We want to play the file so start it
         """
-        if self.current_index == -1:
-            self.on_about_to_finish()
-        self.media_object.play()
+        self.player.play()
 
     def pause(self):
         """
         Pause the Audio
         """
-        self.media_object.pause()
+        self.player.pause()
 
     def stop(self):
         """
         Stop the Audio and clean up
         """
-        self.media_object.stop()
+        self.player.stop()
 
     def add_to_playlist(self, file_names):
         """
@@ -586,23 +644,14 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         """
         if not isinstance(file_names, list):
             file_names = [file_names]
-        self.playlist.extend(list(map(Phonon.MediaSource, file_names)))
+        for file_name in file_names:
+            self.playlist.addMedia(QtMultimedia.QMediaContent(QtCore.QUrl.fromLocalFile(file_name)))
 
     def next(self):
         """
         Skip forward to the next track in the list
         """
-        if not self.repeat and self.current_index + 1 >= len(self.playlist):
-            return
-        is_playing = self.media_object.state() == Phonon.PlayingState
-        self.current_index += 1
-        if self.repeat and self.current_index == len(self.playlist):
-            self.current_index = 0
-        self.media_object.clearQueue()
-        self.media_object.clear()
-        self.media_object.enqueue(self.playlist[self.current_index])
-        if is_playing:
-            self.media_object.play()
+        self.player.next()
 
     def go_to(self, index):
         """
@@ -610,19 +659,6 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
 
         :param index: The track to go to
         """
-        is_playing = self.media_object.state() == Phonon.PlayingState
-        self.media_object.clearQueue()
-        self.media_object.clear()
-        self.current_index = index
-        self.media_object.enqueue(self.playlist[self.current_index])
-        if is_playing:
-            self.media_object.play()
-
-    def connectSlot(self, signal, slot):
-        """
-        Connect a slot to a signal on the media object.  Used by slidecontroller to connect to audio object.
-
-        :param slot: The slot the signal is attached to.
-        :param signal: The signal to be fired
-        """
-        QtCore.QObject.connect(self.media_object, signal, slot)
+        self.playlist.setCurrentIndex(index)
+        if self.player.state() == QtMultimedia.QMediaPlayer.PlayingState:
+            self.player.play()

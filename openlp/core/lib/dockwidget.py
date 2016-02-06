@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,14 +26,14 @@ Provide additional functionality required by OpenLP from the inherited QDockWidg
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.lib import ScreenList, build_icon
 
 log = logging.getLogger(__name__)
 
 
-class OpenLPDockWidget(QtGui.QDockWidget):
+class OpenLPDockWidget(QtWidgets.QDockWidget):
     """
     Custom DockWidget class to handle events
     """

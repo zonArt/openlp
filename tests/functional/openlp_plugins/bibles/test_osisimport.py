@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -143,6 +143,36 @@ class TestOsisImport(TestCase):
             importer.session = MagicMock()
             importer.get_language = MagicMock()
             importer.get_language.return_value = 'English'
+
+            # WHEN: Importing bible file
+            importer.filename = os.path.join(TEST_PATH, bible_file)
+            importer.do_import()
+
+            # THEN: The create_verse() method should have been called with each verse in the file.
+            self.assertTrue(importer.create_verse.called)
+            for verse_tag, verse_text in test_data['verses']:
+                importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
+
+    def file_import_empty_verse_tags_test(self):
+        """
+        Test the actual import of OSIS Bible file, with an empty verse tags.
+        """
+        # GIVEN: Test files with a mocked out "manager", "import_wizard", and mocked functions
+        #        get_book_ref_id_by_name, create_verse, create_book, session and get_language.
+        result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
+        test_data = json.loads(result_file.read().decode())
+        bible_file = 'osis-dk1933-empty-verse.xml'
+        with patch('openlp.plugins.bibles.lib.osis.OSISBible.application'):
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            importer = OSISBible(mocked_manager, path='.', name='.', filename='')
+            importer.wizard = mocked_import_wizard
+            importer.get_book_ref_id_by_name = MagicMock()
+            importer.create_verse = MagicMock()
+            importer.create_book = MagicMock()
+            importer.session = MagicMock()
+            importer.get_language = MagicMock()
+            importer.get_language.return_value = 'Danish'
 
             # WHEN: Importing bible file
             importer.filename = os.path.join(TEST_PATH, bible_file)

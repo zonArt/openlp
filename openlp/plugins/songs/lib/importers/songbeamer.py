@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,28 +36,28 @@ log = logging.getLogger(__name__)
 
 class SongBeamerTypes(object):
     MarkTypes = {
-        'Refrain': VerseType.tags[VerseType.Chorus],
-        'Chorus': VerseType.tags[VerseType.Chorus],
-        'Vers': VerseType.tags[VerseType.Verse],
-        'Verse': VerseType.tags[VerseType.Verse],
-        'Strophe': VerseType.tags[VerseType.Verse],
-        'Intro': VerseType.tags[VerseType.Intro],
-        'Coda': VerseType.tags[VerseType.Ending],
-        'Ending': VerseType.tags[VerseType.Ending],
-        'Bridge': VerseType.tags[VerseType.Bridge],
-        'Interlude': VerseType.tags[VerseType.Bridge],
-        'Zwischenspiel': VerseType.tags[VerseType.Bridge],
-        'Pre-Chorus': VerseType.tags[VerseType.PreChorus],
-        'Pre-Refrain': VerseType.tags[VerseType.PreChorus],
-        'Misc': VerseType.tags[VerseType.Other],
-        'Pre-Bridge': VerseType.tags[VerseType.Other],
-        'Pre-Coda': VerseType.tags[VerseType.Other],
-        'Part': VerseType.tags[VerseType.Other],
-        'Teil': VerseType.tags[VerseType.Other],
-        'Unbekannt': VerseType.tags[VerseType.Other],
-        'Unknown': VerseType.tags[VerseType.Other],
-        'Unbenannt': VerseType.tags[VerseType.Other],
-        '$$M=': VerseType.tags[VerseType.Other]
+        'refrain': VerseType.tags[VerseType.Chorus],
+        'chorus': VerseType.tags[VerseType.Chorus],
+        'vers': VerseType.tags[VerseType.Verse],
+        'verse': VerseType.tags[VerseType.Verse],
+        'strophe': VerseType.tags[VerseType.Verse],
+        'intro': VerseType.tags[VerseType.Intro],
+        'coda': VerseType.tags[VerseType.Ending],
+        'ending': VerseType.tags[VerseType.Ending],
+        'bridge': VerseType.tags[VerseType.Bridge],
+        'interlude': VerseType.tags[VerseType.Bridge],
+        'zwischenspiel': VerseType.tags[VerseType.Bridge],
+        'pre-chorus': VerseType.tags[VerseType.PreChorus],
+        'pre-refrain': VerseType.tags[VerseType.PreChorus],
+        'misc': VerseType.tags[VerseType.Other],
+        'pre-bridge': VerseType.tags[VerseType.Other],
+        'pre-coda': VerseType.tags[VerseType.Other],
+        'part': VerseType.tags[VerseType.Other],
+        'teil': VerseType.tags[VerseType.Other],
+        'unbekannt': VerseType.tags[VerseType.Other],
+        'unknown': VerseType.tags[VerseType.Other],
+        'unbenannt': VerseType.tags[VerseType.Other],
+        '$$m=': VerseType.tags[VerseType.Other]
     }
 
 
@@ -242,7 +242,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == '#TextAlign':
             pass
         elif tag_val[0] == '#Title':
-            self.title = str(tag_val[1])
+            self.title = str(tag_val[1]).strip()
         elif tag_val[0] == '#TitleAlign':
             pass
         elif tag_val[0] == '#TitleFontSize':
@@ -267,20 +267,20 @@ class SongBeamerImport(SongImport):
 
     def check_verse_marks(self, line):
         """
-        Check and add the verse's MarkType. Returns ``True`` if the given linE contains a correct verse mark otherwise
+        Check and add the verse's MarkType. Returns ``True`` if the given line contains a correct verse mark otherwise
         ``False``.
 
         :param line: The line to check for marks (unicode).
         """
         marks = line.split(' ')
-        if len(marks) <= 2 and marks[0] in SongBeamerTypes.MarkTypes:
-            self.current_verse_type = SongBeamerTypes.MarkTypes[marks[0]]
+        if len(marks) <= 2 and marks[0].lower() in SongBeamerTypes.MarkTypes:
+            self.current_verse_type = SongBeamerTypes.MarkTypes[marks[0].lower()]
             if len(marks) == 2:
                 # If we have a digit, we append it to current_verse_type.
                 if marks[1].isdigit():
                     self.current_verse_type += marks[1]
             return True
-        elif marks[0].startswith('$$M='):  # this verse-mark cannot be numbered
-            self.current_verse_type = SongBeamerTypes.MarkTypes['$$M=']
+        elif marks[0].lower().startswith('$$m='):  # this verse-mark cannot be numbered
+            self.current_verse_type = SongBeamerTypes.MarkTypes['$$m=']
             return True
         return False

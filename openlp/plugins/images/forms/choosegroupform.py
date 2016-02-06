@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,12 +20,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.plugins.images.forms.choosegroupdialog import Ui_ChooseGroupDialog
 
 
-class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
+class ChooseGroupForm(QtWidgets.QDialog, Ui_ChooseGroupDialog):
     """
     This class implements the 'Choose group' form for the Images plugin.
     """
@@ -33,10 +33,10 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
         """
         Constructor
         """
-        super(ChooseGroupForm, self).__init__(parent)
+        super(ChooseGroupForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
-    def exec_(self, selected_group=None):
+    def exec(self, selected_group=None):
         """
         Show the form
 
@@ -47,4 +47,4 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
             for index in range(self.group_combobox.count()):
                 if self.group_combobox.itemData(index) == selected_group:
                     self.group_combobox.setCurrentIndex(index)
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)

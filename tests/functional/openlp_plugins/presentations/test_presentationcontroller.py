@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -49,10 +49,16 @@ class TestPresentationController(TestCase):
     #       _get_plugin_manager
 
     def setUp(self):
+        self.get_thumbnail_folder_patcher = \
+            patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder')
+        self.get_thumbnail_folder_patcher.start()
         mocked_plugin = MagicMock()
         mocked_plugin.settings_section = 'presentations'
         self.presentation = PresentationController(mocked_plugin)
         self.document = PresentationDocument(self.presentation, '')
+
+    def tearDown(self):
+        self.get_thumbnail_folder_patcher.stop()
 
     def constructor_test(self):
         """
@@ -86,8 +92,8 @@ class TestPresentationController(TestCase):
             mocked_open.assert_any_call(os.path.join('test', 'slideNotes2.txt'), mode='wt', encoding='utf-8')
             self.assertEqual(mocked_open.call_count, 3, 'There should be exactly three files opened')
             mocked_open().writelines.assert_called_once_with(['uno', 'dos'])
-            mocked_open().write.assert_called_any('one')
-            mocked_open().write.assert_called_any('two')
+            mocked_open().write.assert_any_call('one')
+            mocked_open().write.assert_any_call('two')
 
     def save_titles_and_notes_with_None_test(self):
         """

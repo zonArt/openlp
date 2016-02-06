@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -59,6 +59,21 @@ class TestMediaManagerItem(TestCase, TestMixin):
 
         # THEN: on_preview_click() should have been called
         mocked_on_preview_click.assert_called_with()
+
+    def required_icons_test(self):
+        """
+        Test the default icons for plugins
+        """
+        # GIVEN: A MediaManagerItem
+        mmi = MediaManagerItem(None)
+        # WHEN: Object is created
+        mmi.required_icons()
+        # THEN: Default icons should be populated
+        self.assertFalse(mmi.has_import_icon, 'There should be no import icon by default')
+        self.assertTrue(mmi.has_new_icon, 'By default a new icon should be present')
+        self.assertFalse(mmi.has_file_icon, 'There should be no file icon by default')
+        self.assertTrue(mmi.has_delete_icon, 'By default a delete icon should be present')
+        self.assertFalse(mmi.add_to_service_item, 'There should be no add_to_service icon by default')
 
     @patch(u'openlp.core.lib.mediamanageritem.Settings')
     @patch(u'openlp.core.lib.mediamanageritem.MediaManagerItem.on_live_click')

@@ -14,7 +14,7 @@ class TestFileDialog(TestCase):
     """
     def setUp(self):
         self.os_patcher = patch('openlp.core.lib.filedialog.os')
-        self.qt_gui_patcher = patch('openlp.core.lib.filedialog.QtGui')
+        self.qt_gui_patcher = patch('openlp.core.lib.filedialog.QtWidgets')
         self.ui_strings_patcher = patch('openlp.core.lib.filedialog.UiStrings')
         self.mocked_os = self.os_patcher.start()
         self.mocked_qt_gui = self.qt_gui_patcher.start()
@@ -34,7 +34,7 @@ class TestFileDialog(TestCase):
         self.mocked_os.reset_mock()
 
         # GIVEN: An empty QStringList as a return value from QFileDialog.getOpenFileNames
-        self.mocked_qt_gui.QFileDialog.getOpenFileNames.return_value = []
+        self.mocked_qt_gui.QFileDialog.getOpenFileNames.return_value = ([], [])
 
         # WHEN: FileDialog.getOpenFileNames is called
         result = FileDialog.getOpenFileNames(self.mocked_parent)
@@ -55,8 +55,8 @@ class TestFileDialog(TestCase):
 
         # GIVEN: A List of known values as a return value from QFileDialog.getOpenFileNames and a list of valid file
         # names.
-        self.mocked_qt_gui.QFileDialog.getOpenFileNames.return_value = [
-            '/Valid File', '/url%20encoded%20file%20%231', '/non-existing']
+        self.mocked_qt_gui.QFileDialog.getOpenFileNames.return_value = ([
+            '/Valid File', '/url%20encoded%20file%20%231', '/non-existing'], [])
         self.mocked_os.path.exists.side_effect = lambda file_name: file_name in [
             '/Valid File', '/url encoded file #1']
         self.mocked_ui_strings().FileNotFound = 'File Not Found'

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -152,7 +152,7 @@ class TestBSExtract(TestCase):
         self.test_html = '<ul><li><a href="/overlay/selectChapter?tocBook=1">Genesis</a></li>' \
             '<li><a href="/overlay/selectChapter?tocBook=2"></a></li>' \
             '<li><a href="/overlay/selectChapter?tocBook=3">Leviticus</a></li></ul>'
-        self.test_soup = BeautifulSoup(self.test_html)
+        self.test_soup = BeautifulSoup(self.test_html, 'lxml')
         instance = BSExtract()
         self.mock_log.reset_mock()
         self.mock_urllib.reset_mock()

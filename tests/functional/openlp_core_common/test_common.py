@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -123,15 +123,13 @@ class TestCommonFunctions(TestCase):
         context = 'OpenLP.Tests'
         text = 'Untranslated string'
         comment = 'A comment'
-        encoding = 1
-        n = 1
         mocked_translate = MagicMock(return_value='Translated string')
 
         # WHEN: we call the translate function
-        result = translate(context, text, comment, encoding, n, mocked_translate)
+        result = translate(context, text, comment, mocked_translate)
 
         # THEN: the translated string should be returned, and the mocked function should have been called
-        mocked_translate.assert_called_with(context, text, comment, encoding, n)
+        mocked_translate.assert_called_with(context, text, comment)
         self.assertEqual('Translated string', result, 'The translated string should have been returned')
 
     def is_win_test(self):

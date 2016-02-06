@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -166,5 +166,6 @@ class FormattingTagController(object):
             return None, end
         if end and end != end_html:
             return translate('OpenLP.FormattingTagForm',
-                             'End tag %s does not match end tag for start tag %s') % (end, start_html), None
+                             'End tag %(end)s does not match end tag for start tag %(start)s') % \
+                {'end': end, 'start': start_html}, None
         return None, None

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,15 +25,13 @@ record functions.
 
 PREREQUISITE: add_record() and get_all() functions validated.
 """
-
+import os
 from unittest import TestCase
-from tests.functional import MagicMock, patch
 
 from openlp.core.lib.projector.db import Projector, ProjectorDB, ProjectorSource
 
-from tests.resources.projector.data import TEST1_DATA, TEST2_DATA, TEST3_DATA
-
-tmpfile = '/tmp/openlp-test-projectordb.sql'
+from tests.functional import MagicMock, patch
+from tests.resources.projector.data import TEST_DB, TEST1_DATA, TEST2_DATA, TEST3_DATA
 
 
 def compare_data(one, two):
@@ -60,15 +58,15 @@ def compare_source(one, two):
         one.text == two.text
 
 
-def add_records(self, test):
+def add_records(projector_db, test):
     """
     Add record if not in database
     """
-    record_list = self.projector.get_projector_all()
+    record_list = projector_db.get_projector_all()
     if len(record_list) < 1:
         added = False
         for record in test:
-            added = self.projector.add_projector(record) or added
+            added = projector_db.add_projector(record) or added
         return added
 
     for new_record in test:
@@ -76,7 +74,7 @@ def add_records(self, test):
         for record in record_list:
             if compare_data(record, new_record):
                 break
-            added = self.projector.add_projector(new_record)
+            added = projector_db.add_projector(new_record)
     return added
 
 
@@ -88,24 +86,38 @@ class TestProjectorDB(TestCase):
         """
         Set up anything necessary for all tests
         """
-        if not hasattr(self, 'projector'):
-            with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-                mocked_init_url.start()
-                mocked_init_url.return_value = 'sqlite:///%s' % tmpfile
-                self.projector = ProjectorDB()
+        with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
+            mocked_init_url.return_value = 'sqlite:///%s' % TEST_DB
+            self.projector = ProjectorDB()
+
+    def tearDown(self):
+        """
+        Clean up
+        """
+        self.projector.session.close()
+        self.projector = None
+        retries = 0
+        while retries < 5:
+            try:
+                if os.path.exists(TEST_DB):
+                    os.unlink(TEST_DB)
+                break
+            except:
+                time.sleep(1)
+                retries += 1
 
     def find_record_by_ip_test(self):
         """
         Test find record by IP
         """
         # GIVEN: Record entries in database
-        add_records(self, [TEST1_DATA, TEST2_DATA])
+        add_records(self.projector, [Projector(**TEST1_DATA), Projector(**TEST2_DATA)])
 
         # WHEN: Search for record using IP
-        record = self.projector.get_projector_by_ip(TEST2_DATA.ip)
+        record = self.projector.get_projector_by_ip(TEST2_DATA['ip'])
 
         # THEN: Verify proper record returned
-        self.assertTrue(compare_data(TEST2_DATA, record),
+        self.assertTrue(compare_data(Projector(**TEST2_DATA), record),
                         'Record found should have been test_2 data')
 
     def find_record_by_name_test(self):
@@ -113,13 +125,13 @@ class TestProjectorDB(TestCase):
         Test find record by name
         """
         # GIVEN: Record entries in database
-        add_records(self, [TEST1_DATA, TEST2_DATA])
+        add_records(self.projector, [Projector(**TEST1_DATA), Projector(**TEST2_DATA)])
 
         # WHEN: Search for record using name
-        record = self.projector.get_projector_by_name(TEST2_DATA.name)
+        record = self.projector.get_projector_by_name(TEST2_DATA['name'])
 
         # THEN: Verify proper record returned
-        self.assertTrue(compare_data(TEST2_DATA, record),
+        self.assertTrue(compare_data(Projector(**TEST2_DATA), record),
                         'Record found should have been test_2 data')
 
     def record_delete_test(self):
@@ -127,14 +139,14 @@ class TestProjectorDB(TestCase):
         Test record can be deleted
         """
         # GIVEN: Record in database
-        add_records(self, [TEST3_DATA, ])
-        record = self.projector.get_projector_by_ip(TEST3_DATA.ip)
+        add_records(self.projector, [Projector(**TEST3_DATA), ])
+        record = self.projector.get_projector_by_ip(TEST3_DATA['ip'])
 
         # WHEN: Record deleted
         self.projector.delete_projector(record)
 
         # THEN: Verify record not retrievable
-        found = self.projector.get_projector_by_ip(TEST3_DATA.ip)
+        found = self.projector.get_projector_by_ip(TEST3_DATA['ip'])
         self.assertFalse(found, 'test_3 record should have been deleted')
 
     def record_edit_test(self):
@@ -142,34 +154,35 @@ class TestProjectorDB(TestCase):
         Test edited record returns the same record ID with different data
         """
         # GIVEN: Record entries in database
-        add_records(self, [TEST1_DATA, TEST2_DATA])
+        add_records(self.projector, [Projector(**TEST1_DATA), Projector(**TEST2_DATA)])
 
         # WHEN: We retrieve a specific record
-        record = self.projector.get_projector_by_ip(TEST1_DATA.ip)
+        record = self.projector.get_projector_by_ip(TEST1_DATA['ip'])
         record_id = record.id
 
         # WHEN: Data is changed
-        record.ip = TEST3_DATA.ip
-        record.port = TEST3_DATA.port
-        record.pin = TEST3_DATA.pin
-        record.name = TEST3_DATA.name
-        record.location = TEST3_DATA.location
-        record.notes = TEST3_DATA.notes
+        record.ip = TEST3_DATA['ip']
+        record.port = TEST3_DATA['port']
+        record.pin = TEST3_DATA['pin']
+        record.name = TEST3_DATA['name']
+        record.location = TEST3_DATA['location']
+        record.notes = TEST3_DATA['notes']
         updated = self.projector.update_projector(record)
         self.assertTrue(updated, 'Save updated record should have returned True')
-        record = self.projector.get_projector_by_ip(TEST3_DATA.ip)
+        record = self.projector.get_projector_by_ip(TEST3_DATA['ip'])
 
         # THEN: Record ID should remain the same, but data should be changed
         self.assertEqual(record_id, record.id, 'Edited record should have the same ID')
-        self.assertTrue(compare_data(TEST3_DATA, record), 'Edited record should have new data')
+        self.assertTrue(compare_data(Projector(**TEST3_DATA), record), 'Edited record should have new data')
 
     def source_add_test(self):
         """
         Test source entry for projector item
         """
         # GIVEN: Record entries in database
-        self.projector.add_projector(TEST1_DATA)
-        item = self.projector.get_projector_by_id(TEST1_DATA.id)
+        projector1 = Projector(**TEST1_DATA)
+        self.projector.add_projector(projector1)
+        item = self.projector.get_projector_by_id(projector1.id)
         item_id = item.id
 
         # WHEN: A source entry is saved for item

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -37,10 +37,10 @@
 mv openlp/core/resources.py openlp/core/resources.py.old
 
 # Create the new data from the updated qrc
-pyrcc4 -py3 -o openlp/core/resources.py.new resources/images/openlp-2.qrc
+pyrcc5 -o openlp/core/resources.py.new resources/images/openlp-2.qrc
 
 # Remove patch breaking lines
-cat openlp/core/resources.py.new | sed '/# Created: /d;/#      by: /d' > openlp/core/resources.py
+cat openlp/core/resources.py.new | sed '/# Created by: /d' > openlp/core/resources.py
 
 # Patch resources.py to OpenLP coding style
 patch --posix -s openlp/core/resources.py scripts/resources.patch

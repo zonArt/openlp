@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,7 +30,7 @@ from openlp.core.ui.formattingtagform import FormattingTagForm
 
 # TODO: Tests Still TODO
 # __init__
-# exec_
+# exec
 # on_saved_clicked
 # _reloadTable
 
@@ -76,7 +76,7 @@ class TestFormattingTagForm(TestCase):
         form.tag_table_widget.rowCount.return_value = row_count
 
         # WHEN: on_new_clicked is run (i.e. the Add new button was clicked)
-        with patch('openlp.core.ui.formattingtagform.QtGui.QTableWidgetItem') as MockedQTableWidgetItem:
+        with patch('openlp.core.ui.formattingtagform.QtWidgets.QTableWidgetItem') as MockedQTableWidgetItem:
             mocked_table_widget = MagicMock()
             MockedQTableWidgetItem.return_value = mocked_table_widget
             form.on_new_clicked()

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -153,7 +153,8 @@ class OSISBible(BibleDB):
                             # Verse-tags contains the text
                             for verse in chapter:
                                 verse_number = verse.get("osisID").split('.')[2]
-                                self.create_verse(db_book.id, chapter_number, verse_number, verse.text.strip())
+                                if verse.text:
+                                    self.create_verse(db_book.id, chapter_number, verse_number, verse.text.strip())
                         self.wizard.increment_progress_bar(
                             translate('BiblesPlugin.OsisImport', 'Importing %(bookname)s %(chapter)s...') %
                             {'bookname': db_book.name, 'chapter': chapter_number})

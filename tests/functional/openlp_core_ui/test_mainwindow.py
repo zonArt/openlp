@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -52,10 +52,19 @@ class TestMainWindow(TestCase, TestMixin):
                 patch('openlp.core.ui.mainwindow.LiveController') as mocked_live_controller, \
                 patch('openlp.core.ui.mainwindow.PreviewController') as mocked_preview_controller, \
                 patch('openlp.core.ui.mainwindow.OpenLPDockWidget') as mocked_dock_widget, \
-                patch('openlp.core.ui.mainwindow.QtGui.QToolBox') as mocked_q_tool_box_class, \
-                patch('openlp.core.ui.mainwindow.QtGui.QMainWindow.addDockWidget') as mocked_add_dock_method, \
+                patch('openlp.core.ui.mainwindow.QtWidgets.QToolBox') as mocked_q_tool_box_class, \
+                patch('openlp.core.ui.mainwindow.QtWidgets.QMainWindow.addDockWidget') as mocked_add_dock_method, \
                 patch('openlp.core.ui.mainwindow.ThemeManager') as mocked_theme_manager, \
                 patch('openlp.core.ui.mainwindow.Renderer') as mocked_renderer:
+            self.mocked_settings_form = mocked_settings_form
+            self.mocked_image_manager = mocked_image_manager
+            self.mocked_live_controller = mocked_live_controller
+            self.mocked_preview_controller = mocked_preview_controller
+            self.mocked_dock_widget = mocked_dock_widget
+            self.mocked_q_tool_box_class = mocked_q_tool_box_class
+            self.mocked_add_dock_method = mocked_add_dock_method
+            self.mocked_theme_manager = mocked_theme_manager
+            self.mocked_renderer = mocked_renderer
             self.main_window = MainWindow()
 
     def tearDown(self):
@@ -71,7 +80,7 @@ class TestMainWindow(TestCase, TestMixin):
         with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
 
             # WHEN the argument is processed
-            self.main_window.open_cmd_line_files()
+            self.main_window.open_cmd_line_files(service)
 
             # THEN the service from the arguments is loaded
             mocked_load_path.assert_called_with(service), 'load_path should have been called with the service\'s path'
@@ -86,7 +95,7 @@ class TestMainWindow(TestCase, TestMixin):
         with patch('openlp.core.ui.servicemanager.ServiceManager.load_file') as mocked_load_path:
 
             # WHEN the argument is processed
-            self.main_window.open_cmd_line_files()
+            self.main_window.open_cmd_line_files("")
 
             # THEN the file should not be opened
             assert not mocked_load_path.called, 'load_path should not have been called'
@@ -146,3 +155,37 @@ class TestMainWindow(TestCase, TestMixin):
                                                                           'registered.')
         self.assertTrue('plugin_manager' in self.registry.service_list,
                         'The plugin_manager should have been registered.')
+
+    def on_search_shortcut_triggered_shows_media_manager_test(self):
+        """
+        Test that the media manager is made visible when the search shortcut is triggered
+        """
+        # GIVEN: A build main window set up for testing
+        with patch.object(self.main_window, 'media_manager_dock') as mocked_media_manager_dock, \
+                patch.object(self.main_window, 'media_tool_box') as mocked_media_tool_box:
+            mocked_media_manager_dock.isVisible.return_value = False
+            mocked_media_tool_box.currentWidget.return_value = None
+
+            # WHEN: The search shortcut is triggered
+            self.main_window.on_search_shortcut_triggered()
+
+            # THEN: The media manager dock is made visible
+            mocked_media_manager_dock.setVisible.assert_called_with(True)
+
+    def on_search_shortcut_triggered_focuses_widget_test(self):
+        """
+        Test that the focus is set on the widget when the search shortcut is triggered
+        """
+        # GIVEN: A build main window set up for testing
+        with patch.object(self.main_window, 'media_manager_dock') as mocked_media_manager_dock, \
+                patch.object(self.main_window, 'media_tool_box') as mocked_media_tool_box:
+            mocked_media_manager_dock.isVisible.return_value = True
+            mocked_widget = MagicMock()
+            mocked_media_tool_box.currentWidget.return_value = mocked_widget
+
+            # WHEN: The search shortcut is triggered
+            self.main_window.on_search_shortcut_triggered()
+
+            # THEN: The media manager dock is made visible
+            self.assertEqual(0, mocked_media_manager_dock.setVisible.call_count)
+            mocked_widget.on_focus.assert_called_with()

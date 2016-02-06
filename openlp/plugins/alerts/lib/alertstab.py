@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.lib import ColorButton, SettingsTab
@@ -37,38 +37,38 @@ class AlertsTab(SettingsTab):
     def setupUi(self):
         self.setObjectName('AlertsTab')
         super(AlertsTab, self).setupUi()
-        self.font_group_box = QtGui.QGroupBox(self.left_column)
+        self.font_group_box = QtWidgets.QGroupBox(self.left_column)
         self.font_group_box.setObjectName('font_group_box')
-        self.font_layout = QtGui.QFormLayout(self.font_group_box)
+        self.font_layout = QtWidgets.QFormLayout(self.font_group_box)
         self.font_layout.setObjectName('font_layout')
-        self.font_label = QtGui.QLabel(self.font_group_box)
+        self.font_label = QtWidgets.QLabel(self.font_group_box)
         self.font_label.setObjectName('font_label')
-        self.font_combo_box = QtGui.QFontComboBox(self.font_group_box)
+        self.font_combo_box = QtWidgets.QFontComboBox(self.font_group_box)
         self.font_combo_box.setObjectName('font_combo_box')
         self.font_layout.addRow(self.font_label, self.font_combo_box)
-        self.font_color_label = QtGui.QLabel(self.font_group_box)
+        self.font_color_label = QtWidgets.QLabel(self.font_group_box)
         self.font_color_label.setObjectName('font_color_label')
-        self.color_layout = QtGui.QHBoxLayout()
+        self.color_layout = QtWidgets.QHBoxLayout()
         self.color_layout.setObjectName('color_layout')
         self.font_color_button = ColorButton(self.font_group_box)
         self.font_color_button.setObjectName('font_color_button')
         self.color_layout.addWidget(self.font_color_button)
         self.color_layout.addSpacing(20)
-        self.background_color_label = QtGui.QLabel(self.font_group_box)
+        self.background_color_label = QtWidgets.QLabel(self.font_group_box)
         self.background_color_label.setObjectName('background_color_label')
         self.color_layout.addWidget(self.background_color_label)
         self.background_color_button = ColorButton(self.font_group_box)
         self.background_color_button.setObjectName('background_color_button')
         self.color_layout.addWidget(self.background_color_button)
         self.font_layout.addRow(self.font_color_label, self.color_layout)
-        self.font_size_label = QtGui.QLabel(self.font_group_box)
+        self.font_size_label = QtWidgets.QLabel(self.font_group_box)
         self.font_size_label.setObjectName('font_size_label')
-        self.font_size_spin_box = QtGui.QSpinBox(self.font_group_box)
+        self.font_size_spin_box = QtWidgets.QSpinBox(self.font_group_box)
         self.font_size_spin_box.setObjectName('font_size_spin_box')
         self.font_layout.addRow(self.font_size_label, self.font_size_spin_box)
-        self.timeout_label = QtGui.QLabel(self.font_group_box)
+        self.timeout_label = QtWidgets.QLabel(self.font_group_box)
         self.timeout_label.setObjectName('timeout_label')
-        self.timeout_spin_box = QtGui.QSpinBox(self.font_group_box)
+        self.timeout_spin_box = QtWidgets.QSpinBox(self.font_group_box)
         self.timeout_spin_box.setMaximum(180)
         self.timeout_spin_box.setObjectName('timeout_spin_box')
         self.font_layout.addRow(self.timeout_label, self.timeout_spin_box)
@@ -78,11 +78,11 @@ class AlertsTab(SettingsTab):
         self.font_layout.addRow(self.vertical_label, self.vertical_combo_box)
         self.left_layout.addWidget(self.font_group_box)
         self.left_layout.addStretch()
-        self.preview_group_box = QtGui.QGroupBox(self.right_column)
+        self.preview_group_box = QtWidgets.QGroupBox(self.right_column)
         self.preview_group_box.setObjectName('preview_group_box')
-        self.preview_layout = QtGui.QVBoxLayout(self.preview_group_box)
+        self.preview_layout = QtWidgets.QVBoxLayout(self.preview_group_box)
         self.preview_layout.setObjectName('preview_layout')
-        self.font_preview = QtGui.QLineEdit(self.preview_group_box)
+        self.font_preview = QtWidgets.QLineEdit(self.preview_group_box)
         self.font_preview.setObjectName('font_preview')
         self.preview_layout.addWidget(self.font_preview)
         self.right_layout.addWidget(self.preview_group_box)

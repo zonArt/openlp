@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,10 +23,10 @@
 The :mod:`~openlp.core.common.historycombobox` module contains the HistoryComboBox widget
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 
-class HistoryComboBox(QtGui.QComboBox):
+class HistoryComboBox(QtWidgets.QComboBox):
     """
     The :class:`~openlp.core.common.historycombobox.HistoryComboBox` widget emulates the QLineEdit ``returnPressed``
     signal for when the :kbd:`Enter` or :kbd:`Return` keys are pressed, and saves anything that is typed into the edit
@@ -43,8 +43,8 @@ class HistoryComboBox(QtGui.QComboBox):
         super().__init__(parent)
         self.setDuplicatesEnabled(False)
         self.setEditable(True)
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
-        self.setInsertPolicy(QtGui.QComboBox.InsertAtTop)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        self.setInsertPolicy(QtWidgets.QComboBox.InsertAtTop)
 
     def keyPressEvent(self, event):
         """

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -160,6 +160,36 @@ class Song(BaseModel):
                 self.authors_songs.remove(author_song)
                 return
 
+    def add_songbook_entry(self, songbook, entry):
+        """
+        Add a Songbook Entry to the song if it not yet exists
+
+        :param songbook_name: Name of the Songbook.
+        :param entry: Entry in the Songbook (usually a number)
+        """
+        for songbook_entry in self.songbook_entries:
+            if songbook_entry.songbook.name == songbook.name and songbook_entry.entry == entry:
+                return
+
+        new_songbook_entry = SongBookEntry()
+        new_songbook_entry.songbook = songbook
+        new_songbook_entry.entry = entry
+        self.songbook_entries.append(new_songbook_entry)
+
+
+class SongBookEntry(BaseModel):
+    """
+    SongBookEntry model
+    """
+    def __repr__(self):
+        return SongBookEntry.get_display_name(self.songbook.name, self.entry)
+
+    @staticmethod
+    def get_display_name(songbook_name, entry):
+        if entry:
+            return "%s #%s" % (songbook_name, entry)
+        return songbook_name
+
 
 class Topic(BaseModel):
     """
@@ -173,6 +203,7 @@ def init_schema(url):
     Setup the songs database connection and initialise the database schema.
 
     :param url: The database to setup
+
     The song database contains the following tables:
 
         * authors
@@ -181,6 +212,7 @@ def init_schema(url):
         * media_files_songs
         * song_books
         * songs
+        * songs_songbooks
         * songs_topics
         * topics
 
@@ -221,7 +253,6 @@ def init_schema(url):
         The *songs* table has the following columns:
 
         * id
-        * song_book_id
         * title
         * alternate_title
         * lyrics
@@ -229,10 +260,16 @@ def init_schema(url):
         * copyright
         * comments
         * ccli_number
-        * song_number
         * theme_name
         * search_title
         * search_lyrics
+
+    **songs_songsbooks Table**
+        This is a mapping table between the *songs* and the *song_books* tables. It has the following columns:
+
+        * songbook_id
+        * song_id
+        * entry  # The song number, like 120 or 550A
 
     **songs_topics Table**
         This is a bridging table between the *songs* and *topics* tables, which
@@ -283,7 +320,6 @@ def init_schema(url):
     songs_table = Table(
         'songs', metadata,
         Column('id', types.Integer(), primary_key=True),
-        Column('song_book_id', types.Integer(), ForeignKey('song_books.id'), default=None),
         Column('title', types.Unicode(255), nullable=False),
         Column('alternate_title', types.Unicode(255)),
         Column('lyrics', types.UnicodeText, nullable=False),
@@ -291,7 +327,6 @@ def init_schema(url):
         Column('copyright', types.Unicode(255)),
         Column('comments', types.UnicodeText),
         Column('ccli_number', types.Unicode(64)),
-        Column('song_number', types.Unicode(64)),
         Column('theme_name', types.Unicode(128)),
         Column('search_title', types.Unicode(255), index=True, nullable=False),
         Column('search_lyrics', types.UnicodeText, nullable=False),
@@ -315,6 +350,14 @@ def init_schema(url):
         Column('author_type', types.Unicode(255), primary_key=True, nullable=False, server_default=text('""'))
     )
 
+    # Definition of the "songs_songbooks" table
+    songs_songbooks_table = Table(
+        'songs_songbooks', metadata,
+        Column('songbook_id', types.Integer(), ForeignKey('song_books.id'), primary_key=True),
+        Column('song_id', types.Integer(), ForeignKey('songs.id'), primary_key=True),
+        Column('entry', types.Unicode(255), primary_key=True, nullable=False)
+    )
+
     # Definition of the "songs_topics" table
     songs_topics_table = Table(
         'songs_topics', metadata,
@@ -328,6 +371,9 @@ def init_schema(url):
     mapper(AuthorSong, authors_songs_table, properties={
         'author': relation(Author)
     })
+    mapper(SongBookEntry, songs_songbooks_table, properties={
+        'songbook': relation(Book)
+    })
     mapper(Book, song_books_table)
     mapper(MediaFile, media_files_table)
     mapper(Song, songs_table, properties={
@@ -336,8 +382,8 @@ def init_schema(url):
         'authors_songs': relation(AuthorSong, cascade="all, delete-orphan"),
         # Use lazy='joined' to always load authors when the song is fetched from the database (bug 1366198)
         'authors': relation(Author, secondary=authors_songs_table, viewonly=True, lazy='joined'),
-        'book': relation(Book, backref='songs'),
         'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
+        'songbook_entries': relation(SongBookEntry, backref='song', cascade="all, delete-orphan"),
         'topics': relation(Topic, backref='songs', secondary=songs_topics_table)
     })
     mapper(Topic, topics_table)

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,11 +30,11 @@ logging and a plugin framework are contained within the openlp.core module.
 import os
 import sys
 import logging
-from optparse import OptionParser
+import argparse
 from traceback import format_exception
 import shutil
 import time
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, OpenLPMixin, AppLocation, Settings, UiStrings, check_directory_exists, \
     is_macosx, is_win, translate
@@ -76,7 +76,7 @@ QToolBar
 """
 
 
-class OpenLP(OpenLPMixin, QtGui.QApplication):
+class OpenLP(OpenLPMixin, QtWidgets.QApplication):
     """
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
@@ -84,12 +84,12 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
 
     args = []
 
-    def exec_(self):
+    def exec(self):
         """
         Override exec method to allow the shared memory to be released on exit
         """
         self.is_event_loop_active = True
-        result = QtGui.QApplication.exec_()
+        result = QtWidgets.QApplication.exec()
         self.shared_memory.detach()
         return result
 
@@ -113,7 +113,7 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
         if not has_run_wizard:
             ftw = FirstTimeForm()
             ftw.initialize(screens)
-            if ftw.exec_() == QtGui.QDialog.Accepted:
+            if ftw.exec() == QtWidgets.QDialog.Accepted:
                 Settings().setValue('core/has run wizard', True)
             elif ftw.was_cancelled:
                 QtCore.QCoreApplication.exit()
@@ -153,13 +153,13 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
         self.processEvents()
         if not has_run_wizard:
             self.main_window.first_time()
-        update_check = Settings().value('core/update check')
-        if update_check:
-            version = VersionThread(self.main_window)
-            version.start()
+        # update_check = Settings().value('core/update check')
+        # if update_check:
+        #     version = VersionThread(self.main_window)
+        #     version.start()
         self.main_window.is_display_blank()
         self.main_window.app_startup()
-        return self.exec_()
+        return self.exec()
 
     def is_already_running(self):
         """
@@ -167,10 +167,10 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
         """
         self.shared_memory = QtCore.QSharedMemory('OpenLP')
         if self.shared_memory.attach():
-            status = QtGui.QMessageBox.critical(None, UiStrings().Error, UiStrings().OpenLPStart,
-                                                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                                  QtGui.QMessageBox.No))
-            if status == QtGui.QMessageBox.No:
+            status = QtWidgets.QMessageBox.critical(None, UiStrings().Error, UiStrings().OpenLPStart,
+                                                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                          QtWidgets.QMessageBox.No))
+            if status == QtWidgets.QMessageBox.No:
                 return True
             return False
         else:
@@ -192,7 +192,7 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
             self.exception_form = ExceptionForm()
         self.exception_form.exception_text_edit.setPlainText(''.join(format_exception(exc_type, value, traceback)))
         self.set_normal_cursor()
-        self.exception_form.exec_()
+        self.exception_form.exec()
 
     def backup_on_upgrade(self, has_run_wizard):
         """
@@ -207,11 +207,11 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
             Settings().setValue('core/application version', openlp_version)
         # If data_version is different from the current version ask if we should backup the data folder
         elif data_version != openlp_version:
-            if QtGui.QMessageBox.question(None, translate('OpenLP', 'Backup'),
-                                          translate('OpenLP', 'OpenLP has been upgraded, '
-                                                              'do you want to create a backup of OpenLPs data folder?'),
-                                          QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                                          QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
+            if QtWidgets.QMessageBox.question(None, translate('OpenLP', 'Backup'),
+                                              translate('OpenLP', 'OpenLP has been upgraded, do you want to create '
+                                                                  'a backup of OpenLPs data folder?'),
+                                              QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                              QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
                 # Create copy of data folder
                 data_folder_path = AppLocation.get_data_path()
                 timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -219,12 +219,13 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
                 try:
                     shutil.copytree(data_folder_path, data_folder_backup_path)
                 except OSError:
-                    QtGui.QMessageBox.warning(None, translate('OpenLP', 'Backup'),
-                                              translate('OpenLP', 'Backup of the data folder failed!'))
+                    QtWidgets.QMessageBox.warning(None, translate('OpenLP', 'Backup'),
+                                                  translate('OpenLP', 'Backup of the data folder failed!'))
                     return
-                QtGui.QMessageBox.information(None, translate('OpenLP', 'Backup'),
-                                              translate('OpenLP', 'A backup of the data folder has been created at %s')
-                                              % data_folder_backup_path)
+                QtWidgets.QMessageBox.information(None, translate('OpenLP', 'Backup'),
+                                                  translate('OpenLP',
+                                                            'A backup of the data folder has been created at %s')
+                                                  % data_folder_backup_path)
             # Update the version in the settings
             Settings().setValue('core/application version', openlp_version)
 
@@ -271,7 +272,7 @@ class OpenLP(OpenLPMixin, QtGui.QApplication):
                     self.main_window.setWindowState(self.main_window.windowState() & ~QtCore.Qt.WindowMinimized |
                                                     QtCore.Qt.WindowActive)
                     return True
-        return QtGui.QApplication.event(self, event)
+        return QtWidgets.QApplication.event(self, event)
 
 
 def parse_options(args):
@@ -282,17 +283,18 @@ def parse_options(args):
     :return: a tuple of parsed options of type optparse.Value and a list of remaining argsZ
     """
     # Set up command line options.
-    usage = 'Usage: %prog [options] [qt-options]'
-    parser = OptionParser(usage=usage)
-    parser.add_option('-e', '--no-error-form', dest='no_error_form', action='store_true',
-                      help='Disable the error notification form.')
-    parser.add_option('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
-                      help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".')
-    parser.add_option('-p', '--portable', dest='portable', action='store_true',
-                      help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).')
-    parser.add_option('-d', '--dev-version', dest='dev_version', action='store_true',
-                      help='Ignore the version file and pull the version directly from Bazaar')
-    parser.add_option('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
+    parser = argparse.ArgumentParser(prog='openlp.py')
+    parser.add_argument('-e', '--no-error-form', dest='no_error_form', action='store_true',
+                        help='Disable the error notification form.')
+    parser.add_argument('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
+                        help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".')
+    parser.add_argument('-p', '--portable', dest='portable', action='store_true',
+                        help='Specify if this should be run as a portable app, '
+                             'off a USB flash drive (not implemented).')
+    parser.add_argument('-d', '--dev-version', dest='dev_version', action='store_true',
+                        help='Ignore the version file and pull the version directly from Bazaar')
+    parser.add_argument('-s', '--style', dest='style', help='Set the Qt5 style (passed directly to Qt5).')
+    parser.add_argument('rargs', nargs='?', default=[])
     # Parse command line options and deal with them. Use args supplied pragmatically if possible.
     return parser.parse_args(args) if args else parser.parse_args()
 
@@ -318,18 +320,18 @@ def main(args=None):
 
     :param args: Some args
     """
-    (options, args) = parse_options(args)
+    args = parse_options(args)
     qt_args = []
-    if options.loglevel.lower() in ['d', 'debug']:
+    if args and args.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
-    elif options.loglevel.lower() in ['w', 'warning']:
+    elif args and args.loglevel.lower() in ['w', 'warning']:
         log.setLevel(logging.WARNING)
     else:
         log.setLevel(logging.INFO)
-    if options.style:
-        qt_args.extend(['-style', options.style])
+    if args and args.style:
+        qt_args.extend(['-style', args.style])
     # Throw the rest of the arguments at Qt, just in case.
-    qt_args.extend(args)
+    qt_args.extend(args.rargs)
     # Bug #1018855: Set the WM_CLASS property in X11
     if not is_win() and not is_macosx():
         qt_args.append('OpenLP')
@@ -339,7 +341,8 @@ def main(args=None):
     application = OpenLP(qt_args)
     application.setOrganizationName('OpenLP')
     application.setOrganizationDomain('openlp.org')
-    if options.portable:
+    application.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+    if args and args.portable:
         application.setApplicationName('OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
@@ -371,7 +374,7 @@ def main(args=None):
     Settings().remove_obsolete_settings()
     # First time checks in settings
     if not Settings().value('core/has run wizard'):
-        if not FirstTimeLanguageForm().exec_():
+        if not FirstTimeLanguageForm().exec():
             # if cancel then stop processing
             sys.exit()
     # i18n Set Language
@@ -383,6 +386,6 @@ def main(args=None):
         application.installTranslator(default_translator)
     else:
         log.debug('Could not find default_translator.')
-    if not options.no_error_form:
+    if args and not args.no_error_form:
         sys.excepthook = application.hook_exception
     sys.exit(application.run(qt_args))
