@@ -328,6 +328,7 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Topic')
         self.list_view.clear()
+        search_results = sorted(search_results, key=lambda topic: self._natural_sort_key(topic.name))
         for topic in search_results:
             songs = sorted(topic.songs, key=lambda song: song.sort_key)
             for song in songs:
@@ -693,23 +694,13 @@ class SongMediaItem(MediaManagerItem):
         # List must be empty at the end
         return not author_list
 
-    def _try_int(self, s):
-        """
-        Convert string s to an integer if possible. Fail silently and return
-        the string as-is if it isn't an integer.
-        :param s: The string to try to convert.
-        """
-        try:
-            return int(s)
-        except (TypeError, ValueError):
-            return s
-
     def _natural_sort_key(self, s):
         """
         Return a tuple by which s is sorted.
         :param s: A string value from the list we want to sort.
         """
-        return list(map(self._try_int, re.findall(r'(\d+|\D+)', s)))
+        return [int(text) if text.isdecimal() else text
+            for text in re.split('(\d+)', s)]
 
     def search(self, string, show_error):
         """
