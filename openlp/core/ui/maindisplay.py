@@ -408,7 +408,10 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                     self.application.process_events()
                 # Workaround for bug #1531319, should not be needed with PyQt 5.6.
                 if is_win():
+                    # Workaround for bug #1531319, should not be needed with PyQt 5.6.
                     fade_shake_timer.stop()
+            elif is_win():
+                self.shake_web_view()
         # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !
         while not self.web_loaded:
