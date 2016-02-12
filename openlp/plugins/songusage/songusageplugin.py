@@ -118,7 +118,6 @@ class SongUsagePlugin(Plugin):
         self.main_window.status_bar.insertPermanentWidget(1, self.song_usage_active_button)
         self.song_usage_active_button.hide()
         # Signals and slots
-        self.song_usage_status.changed.connect(self.toggle_song_usage_state)
         self.song_usage_active_button.toggled.connect(self.toggle_song_usage_state)
         self.song_usage_menu.menuAction().setVisible(False)
 
