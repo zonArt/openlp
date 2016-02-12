@@ -44,3 +44,4 @@ __pycache__
 cover
 *.kdev4
 coverage
+tags
