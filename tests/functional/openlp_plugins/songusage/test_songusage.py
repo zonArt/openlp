@@ -65,4 +65,19 @@ class TestSongUsage(TestCase):
         self.assertEqual(mocked_manager, song_usage.manager)
         self.assertFalse(song_usage.song_usage_active)
 
+    @patch('openlp.plugins.songusage.songusageplugin.Manager')
+    def check_pre_conditions_test(self, MockedManager):
+        """
+        Test that check_pre_condition returns true for valid manager session
+        """
+        # GIVEN: A mocked database manager
+        mocked_manager = MagicMock()
+        mocked_manager.session = MagicMock()
+        MockedManager.return_value = mocked_manager
+        song_usage = SongUsagePlugin()
 
+        # WHEN: The calling check_pre_conditions
+        ret = song_usage.check_pre_conditions()
+
+        # THEN: It should return True
+        self.assertTrue(ret)
