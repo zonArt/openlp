@@ -227,4 +227,3 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_action_shortcuts.assert_called_with(mocked_action)
             mocked_refresh_shortcut_list.assert_called_with()
             mocked_set_text.assert_called_with('Esc')
-

@@ -326,6 +326,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             else:
                 self.setVisible(False)
                 self.setGeometry(self.screen['size'])
+        # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+        if is_win():
+            self.shake_web_view()
 
     def direct_image(self, path, background):
         """
@@ -395,8 +398,20 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
             if self.service_item.theme_data and self.service_item.theme_data.display_slide_transition:
+                # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+                if is_win():
+                    fade_shake_timer = QtCore.QTimer(self)
+                    fade_shake_timer.setInterval(25)
+                    fade_shake_timer.timeout.connect(self.shake_web_view)
+                    fade_shake_timer.start()
                 while not self.frame.evaluateJavaScript('show_text_completed()'):
                     self.application.process_events()
+                # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+                if is_win():
+                    # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+                    fade_shake_timer.stop()
+            elif is_win():
+                self.shake_web_view()
         # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !
         while not self.web_loaded:
@@ -493,6 +508,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             if self.isHidden():
                 self.setVisible(True)
                 self.web_view.setVisible(True)
+            # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+            if is_win():
+                self.shake_web_view()
         self.hide_mode = mode
 
     def show_display(self):
@@ -511,6 +529,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         # Trigger actions when display is active again.
         if self.is_live:
             Registry().execute('live_display_active')
+            # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+            if is_win():
+                self.shake_web_view()
 
     def _hide_mouse(self):
         """

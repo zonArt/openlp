@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="nb" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="nb" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -97,14 +96,14 @@ Vil du fortsette?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="192"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
         <translation>Meldingsteksten inneholder ikke &apos;&lt;&gt;&apos;.
 Vil du fortsette likevel?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="108"/>
-        <source>You haven&apos;t specified any text for your alert. 
+        <source>You haven't specified any text for your alert. 
 Please type in some text before clicking New.</source>
         <translation>Du har ikke spesifisert noen tekst for meldingen.
 Vennligst skriv inn tekst før du klikker Ny.</translation>
@@ -2531,7 +2530,7 @@ OpenLP er skrevet og vedlikeholdt av frivillige. Hvis du ønsker at det blir skr
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="177"/>
-        <source>Norwegian Bokm&#xe5;l (nb)</source>
+        <source>Norwegian Bokmål (nb)</source>
         <translation>Norsk bokmål (nb)</translation>
     </message>
     <message>
@@ -2618,8 +2617,8 @@ OpenLP er skrevet og vedlikeholdt av frivillige. Hvis du ønsker at det blir skr
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="303"/>
-        <source>Copyright &#xa9; 2004-2016 %s
-Portions copyright &#xa9; 2004-2016 %s</source>
+        <source>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</source>
         <translation>Copyright © 2004-2016 %s
 Delvis copyright © 2004-2016 %s</translation>
     </message>
@@ -6961,7 +6960,7 @@ Disse filene vil bli fjernet hvis du fortsetter til lagre.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="37"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -7532,19 +7531,19 @@ Vennligst prøv å velge den individuelt.</translation>
     <message>
         <location filename="../../openlp/core/common/uistrings.py" line="125"/>
         <source>Replace live background is not available when the WebKit player is disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>En kan ikke bytte fremvist bakgrunnsbilde når WebKit spilleren er deaktivert.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="38"/>
         <source>Songbook</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Sangbok</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="39"/>
         <source>Songbooks</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Sangbøker</translation>
     </message>
 </context>
 <context>
@@ -8564,7 +8563,7 @@ Innstillingen er avgjørende for riktige tegn.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="314"/>
         <source>&amp;Add to Song</source>
-        <translation>&amp;Tilføye sangen</translation>
+        <translation>&amp;Tilføye sang</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="338"/>
@@ -8728,42 +8727,42 @@ Fyll inn versene adskilt med mellomrom.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>&amp;Manage Authors, Topics, Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Behandle forfattere, emner og sangbøker</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="322"/>
         <source>Add &amp;to Song</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tilføye sang</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="323"/>
         <source>Re&amp;move</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fjern</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="324"/>
         <source>Authors, Topics &amp;&amp; Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>Forfattere, emner &amp;&amp; sangbøker</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>Add Songbook</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til sangbok</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>This Songbook does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Denne sangboken eksisterer ikke, skal den opprettes?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="700"/>
         <source>This Songbook is already in the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Denne sangboken finnes allerede i listen.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="707"/>
         <source>You have not selected a valid Songbook. Either select a Songbook from the list, or type in a new Songbook and click the &quot;Add to Song&quot; button to add the new Songbook.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du har ikke valgt en gyldig sangbok. Du kan enten velge en sangbok fra listen, eller lag en ny sangbok og klikk på &quot;Tilføye sang&quot; knappen for å legge til den nye sangboken.</translation>
     </message>
 </context>
 <context>
@@ -9208,7 +9207,7 @@ Fyll inn versene adskilt med mellomrom.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Songbooks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Søk i sangbøker</translation>
     </message>
 </context>
 <context>
@@ -9296,7 +9295,7 @@ Fyll inn versene adskilt med mellomrom.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songbookdialog.py" line="66"/>
         <source>Songbook Maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Vedlikehold av sangbøker</translation>
     </message>
 </context>
 <context>
@@ -9603,7 +9602,7 @@ Fyll inn versene adskilt med mellomrom.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopp</translation>
     </message>
 </context>
 <context>
