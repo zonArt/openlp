@@ -282,7 +282,6 @@ class WebkitPlayer(MediaPlayer):
             self.seek(display, controller.media_info.start_time * 1000)
         # TODO add playing check and get the correct media length
         print("Webkit play " + str(length))
-        #controller.media_info.length = length
         self.state = MediaState.Playing
         display.web_view.raise_()
         return True
