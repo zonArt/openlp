@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="sk" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="sk" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -97,14 +96,14 @@ Chcete napriek tomu pokračovat?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="192"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
         <translation>Text upozornenia neobsahuje &apos;&lt;&gt;&apos;. 
 Chcete napriek tomu pokračovat?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="108"/>
-        <source>You haven&apos;t specified any text for your alert. 
+        <source>You haven't specified any text for your alert. 
 Please type in some text before clicking New.</source>
         <translation>Nebol zadaný žiadny text upozornenia. 
 Pred kliknutím na Nový prosím zadajte nejaký text.</translation>
@@ -1772,7 +1771,7 @@ Upozornenie: Verše z www Biblie budú stiahnuté na vyžiadanie a preto je potr
     <message>
         <location filename="../../openlp/plugins/custom/lib/mediaitem.py" line="190"/>
         <source>Are you sure you want to delete the &quot;%d&quot; selected custom slide(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ste si istý, že chcete zmazať &quot;%d&quot; vybraných užívateľských snímkov(y)?</translation>
     </message>
 </context>
 <context>
@@ -2525,7 +2524,7 @@ OpenLP je tvorený a spravovaný dobrovoľníkmi. Ak by ste chceli vidieť viac 
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="177"/>
-        <source>Norwegian Bokm&#xe5;l (nb)</source>
+        <source>Norwegian Bokmål (nb)</source>
         <translation>Nórčina Bokmål (nb)</translation>
     </message>
     <message>
@@ -2611,9 +2610,10 @@ On nás oslobodil.</translation>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="303"/>
-        <source>Copyright &#xa9; 2004-2016 %s
-Portions copyright &#xa9; 2004-2016 %s</source>
-        <translation type="unfinished"></translation>
+        <source>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</source>
+        <translation>Autorské práva © 2004-2016 %s
+Čiastočné autorská práva © 2004-2016 %s</translation>
     </message>
 </context>
 <context>
@@ -4628,7 +4628,7 @@ Prípona nie je podporovaná</translation>
         <location filename="../../openlp/core/ui/media/playertab.py" line="256"/>
         <source>NOTE: To use VLC you must install the %s version</source>
         <comment>Will insert &quot;32bit&quot; or &quot;64bit&quot;</comment>
-        <translation type="unfinished"></translation>
+        <translation>Poznámka: Aby sa dalo použiť VLC je potrebné nainštalovať verziu %s</translation>
     </message>
 </context>
 <context>
@@ -6459,7 +6459,7 @@ Tieto súbory budú vymazané ak budeťe pokračovať v ukladaní.</translation>
     <message>
         <location filename="../../openlp/core/ui/thememanager.py" line="763"/>
         <source>%s time(s) by %s</source>
-        <translation type="unfinished"></translation>
+        <translation>%s krát použité v %s</translation>
     </message>
     <message>
         <location filename="../../openlp/core/ui/thememanager.py" line="768"/>
@@ -6949,7 +6949,7 @@ Tieto súbory budú vymazané ak budeťe pokračovať v ukladaní.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="37"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -7520,19 +7520,19 @@ Skúste to prosím výberom individuálne.</translation>
     <message>
         <location filename="../../openlp/core/common/uistrings.py" line="125"/>
         <source>Replace live background is not available when the WebKit player is disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahradiť živé pozadie (live background) nie je dostupné keď je prehrávač WebKit zakázaný.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="38"/>
         <source>Songbook</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Spevník</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="39"/>
         <source>Songbooks</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Spevníky</translation>
     </message>
 </context>
 <context>
@@ -8711,42 +8711,42 @@ Prosím vložte verše oddelené medzerou.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>&amp;Manage Authors, Topics, Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Správa autorov, tém a spevníkov</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="322"/>
         <source>Add &amp;to Song</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pridať k piesni</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="323"/>
         <source>Re&amp;move</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Odstrániť</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="324"/>
         <source>Authors, Topics &amp;&amp; Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>Autori, témy a spevníky</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>Add Songbook</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridať spevník</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>This Songbook does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tento spevník neexistuje. Chcete ho pridať?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="700"/>
         <source>This Songbook is already in the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tento spevník je už v zozname.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="707"/>
         <source>You have not selected a valid Songbook. Either select a Songbook from the list, or type in a new Songbook and click the &quot;Add to Song&quot; button to add the new Songbook.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie je vybraný platný spevník. Buď vyberiete spevník zo zoznamu, alebo zadáte nový spevník a pre pridanie nového spevníku kliknete na tlačidlo &quot;Pridať k piesni&quot;.</translation>
     </message>
 </context>
 <context>
@@ -9186,12 +9186,12 @@ Prosím vložte verše oddelené medzerou.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="364"/>
         <source>Are you sure you want to delete the &quot;%d&quot; selected song(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ste si istý, že chcete zmazať &quot;%d&quot; vybraných piesní(e)?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Songbooks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyhľadávať spevníky...</translation>
     </message>
 </context>
 <context>
@@ -9279,7 +9279,7 @@ Prosím vložte verše oddelené medzerou.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songbookdialog.py" line="66"/>
         <source>Songbook Maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Údržba spevníku</translation>
     </message>
 </context>
 <context>
@@ -9586,7 +9586,7 @@ Prosím vložte verše oddelené medzerou.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Zastaviť</translation>
     </message>
 </context>
 <context>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="ru" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ru" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -97,14 +96,14 @@ Do you want to continue anyway?</source>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="192"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
         <translation>В тексте оповещения не указано место для вставки параметра (&lt;&gt;).
 Все равно продолжить?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="108"/>
-        <source>You haven&apos;t specified any text for your alert. 
+        <source>You haven't specified any text for your alert. 
 Please type in some text before clicking New.</source>
         <translation>Вы не указали текст оповещения. 
 Пожалуйста введите текст перед добавлением.</translation>
@@ -2533,7 +2532,7 @@ OpenLP разрабатывается и поддерживается добро
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="177"/>
-        <source>Norwegian Bokm&#xe5;l (nb)</source>
+        <source>Norwegian Bokmål (nb)</source>
         <translation>Норвежский (nb)</translation>
     </message>
     <message>
@@ -2590,7 +2589,8 @@ OpenLP разрабатывается и поддерживается добро
     Qt5: http://qt.io
     PyQt5: http://www.riverbankcomputing.co.uk/software/pyqt/intro
     Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/
-    MuPDF: http://www.mupdf.com/</translation>
+    MuPDF: http://www.mupdf.com/
+</translation>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="192"/>
@@ -2610,16 +2610,17 @@ OpenLP разрабатывается и поддерживается добро
     Единородного, дабы всякий, верующий в Него,
     не погиб, но имел жизнь вечную» (Ин 3:16)
 
-    И в завершение, выражаем нашу главную благодарность
-    Богу нашему Отцу за то, что Он отправил Своего Сына
-    умереть на кресте и освободить нас от греха.
-    Мы предоставляем это программное обеспечение даром,
+    И в завершение, выражаем нашу главную
+    благодарность Богу нашему Отцу за то, что
+    Он отправил Своего Сына умереть на кресте
+    и освободить нас от греха. Мы предоставляем
+    это программное обеспечение даром,
     потому что Бог освободил нас даром.</translation>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="303"/>
-        <source>Copyright &#xa9; 2004-2016 %s
-Portions copyright &#xa9; 2004-2016 %s</source>
+        <source>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</source>
         <translation>Copyright © 2004-2016 %s
 Portions copyright © 2004-2016 %s</translation>
     </message>
@@ -3478,7 +3479,7 @@ This location will be used after OpenLP is closed.</source>
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.  Click the Finish button now to start OpenLP with initial settings and no sample data.
 
 To re-run the First Time Wizard and import this sample data at a later time, check your Internet connection and re-run this wizard by selecting &quot;Tools/Re-run First Time Wizard&quot; from OpenLP.</source>
-        <translation>Не удалось обнаружить подключение к Интернету. Мастеру первого запуска необходимо подключение к Интернету, чтобы скачать образцы песен, Библии и темы. Нажмите на кнопку «Завершить» сейчас, чтобы запустить OpenLP с начальными настройками и без скачивания данных. 
+        <translation>Не удалось обнаружить подключение к Интернету. Мастеру первого запуска необходимо подключение к Интернету, чтобы скачать образцы песен, Библии и темы. Нажмите на кнопку «Завершить» сейчас, чтобы запустить OpenLP с начальными настройками и без скачивания данных.
 
 Скачать эти данные можно позже. Для этого проверьте подключение к Интернету и повторно запустите мастер первого запуска, выбрав в меню OpenLP пункт «Инструменты / Запуск мастера первого запуска».</translation>
     </message>
@@ -4488,7 +4489,7 @@ Processing has terminated and no changes have been made.</source>
 Database: %s</source>
         <translation>Загружаемая база данных была создана в более ранней версии OpenLP.
 База данных имеет версию %d (требуется версия %d).
-База данных не будет загружена 
+База данных не будет загружена
 
 База данных: %s</translation>
     </message>
@@ -6965,7 +6966,7 @@ These files will be removed if you continue to save.</source>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="37"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -7536,19 +7537,19 @@ Please try selecting it individually.</source>
     <message>
         <location filename="../../openlp/core/common/uistrings.py" line="125"/>
         <source>Replace live background is not available when the WebKit player is disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Замена фона недоступна при отключенном плеере WebKit.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="38"/>
         <source>Songbook</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Сборник</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="39"/>
         <source>Songbooks</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Сборники</translation>
     </message>
 </context>
 <context>
@@ -8569,7 +8570,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="314"/>
         <source>&amp;Add to Song</source>
-        <translation>Д&amp;обавить к песне</translation>
+        <translation>&amp;Добавить к песне</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="338"/>
@@ -8733,42 +8734,42 @@ Please enter the verses separated by spaces.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>&amp;Manage Authors, Topics, Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Редактировать списки</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="322"/>
         <source>Add &amp;to Song</source>
-        <translation type="unfinished"></translation>
+        <translation>До&amp;бавить к песне</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="323"/>
         <source>Re&amp;move</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Удалить</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="324"/>
         <source>Authors, Topics &amp;&amp; Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>Add Songbook</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить сборник</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>This Songbook does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить сборник?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="700"/>
         <source>This Songbook is already in the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сборник уже в списке.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="707"/>
         <source>You have not selected a valid Songbook. Either select a Songbook from the list, or type in a new Songbook and click the &quot;Add to Song&quot; button to add the new Songbook.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не выбран сборник. Необходимо выбрать сборник из списка или ввести название нового сборник и нажать &quot;Добавить к песне&quot;.</translation>
     </message>
 </context>
 <context>
@@ -9213,7 +9214,7 @@ Please enter the verses separated by spaces.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Songbooks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск сборников...</translation>
     </message>
 </context>
 <context>
@@ -9301,7 +9302,7 @@ Please enter the verses separated by spaces.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songbookdialog.py" line="66"/>
         <source>Songbook Maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Списки</translation>
     </message>
 </context>
 <context>
@@ -9608,7 +9609,7 @@ Please enter the verses separated by spaces.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Остановить</translation>
     </message>
 </context>
 <context>
