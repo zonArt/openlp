@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@ import shutil
 from unittest import TestCase
 from tempfile import mkdtemp
 
-from openlp.plugins.songs.lib.db import Song, Author, AuthorType
+from openlp.plugins.songs.lib.db import Song, Author, AuthorType, Book
 from openlp.plugins.songs.lib import upgrade
 from openlp.core.lib.db import upgrade_db
 from tests.utils.constants import TEST_RESOURCES_PATH
@@ -179,6 +179,23 @@ class TestDB(TestCase):
         # THEN: It should return the name with the type in brackets
         self.assertEqual("John Doe (Translation)", display_name)
 
+    def test_add_songbooks(self):
+        """
+        Test that adding songbooks to a song works correctly
+        """
+        # GIVEN: A mocked song and songbook
+        song = Song()
+        song.songbook_entries = []
+        songbook = Book()
+        songbook.name = "Thy Word"
+
+        # WHEN: We add two songbooks to a Song
+        song.add_songbook_entry(songbook, "120")
+        song.add_songbook_entry(songbook, "550A")
+
+        # THEN: The song should have two songbook entries
+        self.assertEqual(len(song.songbook_entries), 2, 'There should be two Songbook entries.')
+
     def test_upgrade_old_song_db(self):
         """
         Test that we can upgrade an old song db to the current schema
@@ -192,7 +209,7 @@ class TestDB(TestCase):
         # WHEN: upgrading the db
         updated_to_version, latest_version = upgrade_db(db_url, upgrade)
 
-        # Then the song db should have been upgraded to the latest version
+        # THEN: the song db should have been upgraded to the latest version
         self.assertEqual(updated_to_version, latest_version,
                          'The song DB should have been upgrade to the latest version')
 
@@ -209,6 +226,6 @@ class TestDB(TestCase):
         # WHEN: upgrading the db
         updated_to_version, latest_version = upgrade_db(db_url, upgrade)
 
-        # Then the song db should have been upgraded to the latest version without errors
+        # THEN: the song db should have been upgraded to the latest version without errors
         self.assertEqual(updated_to_version, latest_version,
                          'The song DB should have been upgrade to the latest version')

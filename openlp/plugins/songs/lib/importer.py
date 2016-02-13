@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -46,6 +46,8 @@ from .importers.propresenter import ProPresenterImport
 from .importers.worshipassistant import WorshipAssistantImport
 from .importers.powerpraise import PowerPraiseImport
 from .importers.presentationmanager import PresentationManagerImport
+from .importers.lyrix import LyrixImport
+from .importers.videopsalm import VideoPsalmImport
 
 log = logging.getLogger(__name__)
 
@@ -151,21 +153,23 @@ class SongFormat(object):
     EasyWorshipDB = 6
     EasyWorshipService = 7
     FoilPresenter = 8
-    MediaShout = 9
-    OpenSong = 10
-    PowerPraise = 11
-    PowerSong = 12
-    PresentationManager = 13
-    ProPresenter = 14
-    SongBeamer = 15
-    SongPro = 16
-    SongShowPlus = 17
-    SongsOfFellowship = 18
-    SundayPlus = 19
-    WordsOfWorship = 20
-    WorshipAssistant = 21
-    WorshipCenterPro = 22
-    ZionWorx = 23
+    Lyrix = 9
+    MediaShout = 10
+    OpenSong = 11
+    PowerPraise = 12
+    PowerSong = 13
+    PresentationManager = 14
+    ProPresenter = 15
+    SongBeamer = 16
+    SongPro = 17
+    SongShowPlus = 18
+    SongsOfFellowship = 19
+    SundayPlus = 20
+    VideoPsalm = 21
+    WordsOfWorship = 22
+    WorshipAssistant = 23
+    WorshipCenterPro = 24
+    ZionWorx = 25
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -187,14 +191,14 @@ class SongFormat(object):
             'name': 'OpenLyrics',
             'prefix': 'openLyrics',
             'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
-            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2.0 Exported Song')
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2 Exported Song')
         },
         OpenLP2: {
             'class': OpenLPSongImport,
             'name': UiStrings().OLPV2,
             'prefix': 'openLP2',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.sqlite)' % (translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0 Databases'))
+            'filter': '%s (*.sqlite)' % (translate('SongsPlugin.ImportWizardForm', 'OpenLP 2 Databases'))
         },
         Generic: {
             'name': translate('SongsPlugin.ImportWizardForm', 'Generic Document/Presentation'),
@@ -243,6 +247,13 @@ class SongFormat(object):
             'name': 'Foilpresenter',
             'prefix': 'foilPresenter',
             'filter': '%s (*.foil)' % translate('SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
+        },
+        Lyrix: {
+            'class': LyrixImport,
+            'name': 'LyriX',
+            'prefix': 'lyrix',
+            'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'LyriX Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'LyriX (Exported TXT-files)')
         },
         MediaShout: {
             'name': 'MediaShout',
@@ -324,6 +335,16 @@ class SongFormat(object):
             'prefix': 'sundayPlus',
             'filter': '%s (*.ptf)' % translate('SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
         },
+        VideoPsalm: {
+            'class': VideoPsalmImport,
+            'name': 'VideoPsalm',
+            'prefix': 'videopsalm',
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.json)' % translate('SongsPlugin.ImportWizardForm', 'VideoPsalm Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'VideoPsalm'),
+            'descriptionText': translate('SongsPlugin.ImportWizardForm', 'The VideoPsalm songbooks are normally located'
+                                         ' in %s') % 'C:\\Users\\Public\\Documents\\VideoPsalm\\SongBooks\\'
+        },
         WordsOfWorship: {
             'class': WordsOfWorshipImport,
             'name': 'Words of Worship',
@@ -369,7 +390,7 @@ class SongFormat(object):
         """
         Return a list of the supported song formats.
         """
-        return [
+        return sorted([
             SongFormat.OpenLyrics,
             SongFormat.OpenLP2,
             SongFormat.Generic,
@@ -379,6 +400,7 @@ class SongFormat(object):
             SongFormat.EasyWorshipDB,
             SongFormat.EasyWorshipService,
             SongFormat.FoilPresenter,
+            SongFormat.Lyrix,
             SongFormat.MediaShout,
             SongFormat.OpenSong,
             SongFormat.PowerPraise,
@@ -390,11 +412,12 @@ class SongFormat(object):
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,
             SongFormat.SundayPlus,
+            SongFormat.VideoPsalm,
             SongFormat.WordsOfWorship,
             SongFormat.WorshipAssistant,
             SongFormat.WorshipCenterPro,
-            SongFormat.ZionWorx
-        ]
+            SongFormat.ZionWorx,
+        ])
 
     @staticmethod
     def get(song_format, *attributes):

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -84,7 +84,7 @@ class CustomXMLBuilder(object):
         Add a verse to the ``<lyrics>`` tag.
 
         :param verse_type: A string denoting the type of verse. Possible values are "Chorus", "Verse", "Bridge",
-        and "Custom".
+            and "Custom".
         :param number:  An integer denoting the number of the item, for example: verse 1.
         :param content: The actual text of the verse to be stored.
 

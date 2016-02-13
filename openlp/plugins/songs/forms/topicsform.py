@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,14 +23,14 @@
 This module contains the topic edit form.
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
 
 
-class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
+class TopicsForm(QtWidgets.QDialog, Ui_TopicsDialog):
     """
     Class documentation goes here.
     """
@@ -38,17 +38,17 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         """
         Constructor
         """
-        super(TopicsForm, self).__init__(parent)
+        super(TopicsForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
-    def exec_(self, clear=True):
+    def exec(self, clear=True):
         """
         Execute the dialog.
         """
         if clear:
             self.name_edit.clear()
         self.name_edit.setFocus()
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def accept(self):
         """
@@ -60,7 +60,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
             self.name_edit.setFocus()
             return False
         else:
-            return QtGui.QDialog.accept(self)
+            return QtWidgets.QDialog.accept(self)
 
     def _get_name(self):
         """

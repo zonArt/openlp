@@ -1,0 +1,21 @@
+{
+    "authors": [
+        "Author One",
+        "Author Two"
+    ],
+    "ccli_number": "0000000",
+    "song_number": 0,
+    "title": "Test Song",
+    "copyright": "© 2011 OpenLP Programmer One (Admin. by OpenLP One)",
+    "verse_order_list": [],
+    "verses": [
+        [
+            "Line One Verse One\nLine Two Verse One\nLine Three Verse One\nLine Four Verse One\n",
+            "v"
+        ],
+        [
+            "Line One Verse Two\nLine Two Verse Two\nLine Three Verse Two\nLine Four Verse Two\n",
+            "v"
+        ]
+    ]
+}

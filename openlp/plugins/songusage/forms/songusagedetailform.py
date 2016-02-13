@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,7 +23,7 @@
 import logging
 import os
 
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 from sqlalchemy.sql import and_
 
 from openlp.core.common import RegistryProperties, Settings, check_directory_exists, translate
@@ -34,7 +34,7 @@ from .songusagedetaildialog import Ui_SongUsageDetailDialog
 log = logging.getLogger(__name__)
 
 
-class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryProperties):
+class SongUsageDetailForm(QtWidgets.QDialog, Ui_SongUsageDetailDialog, RegistryProperties):
     """
     Class documentation goes here.
     """
@@ -44,7 +44,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryPrope
         """
         Initialise the form
         """
-        super(SongUsageDetailForm, self).__init__(parent)
+        super(SongUsageDetailForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.plugin = plugin
         self.setupUi(self)
 
@@ -60,7 +60,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog, RegistryPrope
         """
         Triggered when the Directory selection button is clicked
         """
-        path = QtGui.QFileDialog.getExistingDirectory(
+        path = QtWidgets.QFileDialog.getExistingDirectory(
             self, translate('SongUsagePlugin.SongUsageDetailForm', 'Output File Location'),
             Settings().value(self.plugin.settings_section + '/last directory export'))
         if path:

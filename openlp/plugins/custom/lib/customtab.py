@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ The :mod:`~openlp.plugins.custom.lib.customtab` module contains the settings tab
 for the Custom Slides plugin, which is inserted into the configuration dialog.
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Settings, translate
 from openlp.core.lib import SettingsTab
@@ -40,14 +40,14 @@ class CustomTab(SettingsTab):
     def setupUi(self):
         self.setObjectName('CustomTab')
         super(CustomTab, self).setupUi()
-        self.custom_mode_group_box = QtGui.QGroupBox(self.left_column)
+        self.custom_mode_group_box = QtWidgets.QGroupBox(self.left_column)
         self.custom_mode_group_box.setObjectName('custom_mode_group_box')
-        self.custom_mode_layout = QtGui.QFormLayout(self.custom_mode_group_box)
+        self.custom_mode_layout = QtWidgets.QFormLayout(self.custom_mode_group_box)
         self.custom_mode_layout.setObjectName('custom_mode_layout')
-        self.display_footer_check_box = QtGui.QCheckBox(self.custom_mode_group_box)
+        self.display_footer_check_box = QtWidgets.QCheckBox(self.custom_mode_group_box)
         self.display_footer_check_box.setObjectName('display_footer_check_box')
         self.custom_mode_layout.addRow(self.display_footer_check_box)
-        self.add_from_service_checkbox = QtGui.QCheckBox(self.custom_mode_group_box)
+        self.add_from_service_checkbox = QtWidgets.QCheckBox(self.custom_mode_group_box)
         self.add_from_service_checkbox.setObjectName('add_from_service_checkbox')
         self.custom_mode_layout.addRow(self.add_from_service_checkbox)
         self.left_layout.addWidget(self.custom_mode_group_box)

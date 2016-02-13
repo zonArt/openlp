@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,12 +20,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 
 import logging
-import os
 
-from openlp.core.common import Registry, Settings, translate
+from openlp.core.common import Settings, translate
 from openlp.core.lib import Plugin, StringContent, ImageSource, build_icon
 from openlp.core.lib.db import Manager
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
@@ -53,7 +52,8 @@ class ImagePlugin(Plugin):
         self.icon_path = ':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
 
-    def about(self):
+    @staticmethod
+    def about():
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
                                '<br />The image plugin provides displaying of images.<br />One '
                                'of the distinguishing features of this plugin is the ability to '
@@ -67,36 +67,13 @@ class ImagePlugin(Plugin):
                                'provided by the theme.')
         return about_text
 
-    def app_startup(self):
-        """
-        Perform tasks on application startup.
-        """
-        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
-        Plugin.app_startup(self)
-        # Convert old settings-based image list to the database.
-        files_from_config = Settings().get_files_from_config(self)
-        if files_from_config:
-            for file in files_from_config:
-                filename = os.path.split(file)[1]
-                thumb = os.path.join(self.media_item.service_path, filename)
-                try:
-                    os.remove(thumb)
-                except:
-                    pass
-            log.debug('Importing images list from old config: %s' % files_from_config)
-            self.media_item.save_new_images_list(files_from_config)
-
     def upgrade_settings(self, settings):
         """
         Upgrade the settings of this plugin.
 
         :param settings: The Settings object containing the old settings.
         """
-        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
-        files_from_config = settings.get_files_from_config(self)
-        if files_from_config:
-            log.debug('Importing images list from old config: %s' % files_from_config)
-            self.media_item.save_new_images_list(files_from_config)
+        pass
 
     def set_plugin_text_strings(self):
         """

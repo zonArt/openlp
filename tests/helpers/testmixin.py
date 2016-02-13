@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,7 @@ Mixin class with helpers
 import os
 from tempfile import mkstemp
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 from openlp.core.common import Settings
 
 
@@ -40,7 +40,7 @@ class TestMixin(object):
         """
         old_app_instance = QtCore.QCoreApplication.instance()
         if old_app_instance is None:
-            self.app = QtGui.QApplication([])
+            self.app = QtWidgets.QApplication([])
         else:
             self.app = old_app_instance
 
@@ -48,13 +48,17 @@ class TestMixin(object):
         """
         Build the settings Object and initialise it
         """
-        Settings.setDefaultFormat(Settings.IniFormat)
         self.fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
+        Settings.set_filename(self.ini_file)
+        Settings().setDefaultFormat(Settings.IniFormat)
+        # Needed on windows to make sure a Settings object is available during the tests
+        self.setting = Settings()
+        Settings().setValue('themes/global theme', 'my_theme')
 
     def destroy_settings(self):
         """
         Destroy the Settings Object
         """
+        del self.setting
         os.close(self.fd)
         os.unlink(Settings().fileName())

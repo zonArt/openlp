@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,14 +23,14 @@
 The file rename dialog.
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from .filerenamedialog import Ui_FileRenameDialog
 
 from openlp.core.common import Registry, RegistryProperties, translate
 
 
-class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog, RegistryProperties):
+class FileRenameForm(QtWidgets.QDialog, Ui_FileRenameDialog, RegistryProperties):
     """
     The file rename dialog
     """
@@ -38,7 +38,8 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog, RegistryProperties):
         """
         Constructor
         """
-        super(FileRenameForm, self).__init__(Registry().get('main_window'))
+        super(FileRenameForm, self).__init__(Registry().get('main_window'),
+                                             QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self._setup()
 
     def _setup(self):
@@ -47,7 +48,7 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog, RegistryProperties):
         """
         self.setupUi(self)
 
-    def exec_(self, copy=False):
+    def exec(self, copy=False):
         """
         Run the Dialog with correct heading.
         """
@@ -56,4 +57,4 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog, RegistryProperties):
         else:
             self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Rename'))
         self.file_name_edit.setFocus()
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ The actual plugin view form
 """
 import logging
 
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import RegistryProperties, translate
 from openlp.core.lib import PluginStatus
@@ -33,7 +33,7 @@ from .plugindialog import Ui_PluginViewDialog
 log = logging.getLogger(__name__)
 
 
-class PluginForm(QtGui.QDialog, Ui_PluginViewDialog, RegistryProperties):
+class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
     """
     The plugin form provides user control over the plugins OpenLP uses.
     """
@@ -41,7 +41,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog, RegistryProperties):
         """
         Constructor
         """
-        super(PluginForm, self).__init__(parent)
+        super(PluginForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.active_plugin = None
         self.programatic_change = False
         self.setupUi(self)
@@ -61,7 +61,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog, RegistryProperties):
         self.programatic_change = True
         plugin_list_width = 0
         for plugin in self.plugin_manager.plugins:
-            item = QtGui.QListWidgetItem(self.plugin_list_widget)
+            item = QtWidgets.QListWidgetItem(self.plugin_list_widget)
             # We do this just to make 100% sure the status is an integer as
             # sometimes when it's loaded from the config, it isn't cast to int.
             plugin.status = int(plugin.status)

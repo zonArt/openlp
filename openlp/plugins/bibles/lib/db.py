@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@ import re
 import sqlite3
 import time
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 from sqlalchemy import Column, ForeignKey, Table, or_, types, func
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import class_mapper, mapper, relation
@@ -37,7 +37,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, transl
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import clean_filename
-from . import upgrade
+from openlp.plugins.bibles.lib import upgrade
 
 log = logging.getLogger(__name__)
 
@@ -107,7 +107,7 @@ def init_schema(url):
     return session
 
 
-class BibleDB(QtCore.QObject, Manager, RegistryProperties):
+class BibleDB(Manager, RegistryProperties):
     """
     This class represents a database-bound Bible. It is used as a base class for all the custom importers, so that
     the can implement their own import methods, but benefit from the database methods in here via inheritance,
@@ -129,7 +129,6 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
                 The name of the database. This is also used as the file name for SQLite databases.
         """
         log.info('BibleDB loaded')
-        QtCore.QObject.__init__(self)
         self.bible_plugin = parent
         self.session = None
         if 'path' not in kwargs:
@@ -219,7 +218,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         :param book_id: The id of the book being appended.
         :param chapter: The chapter number.
         :param text_list: A dict of the verses to be inserted. The key is the verse number, and the value is the
-        verse text.
+            verse text.
         """
         log.debug('BibleDBcreate_chapter("%s", "%s")' % (book_id, chapter))
         # Text list has book and chapter as first two elements of the array.
@@ -315,7 +314,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         else:
             from openlp.plugins.bibles.forms import BookNameForm
             book_name = BookNameForm(self.wizard)
-            if book_name.exec_(book, self.get_books(), maxbooks):
+            if book_name.exec(book, self.get_books(), maxbooks):
                 book_id = book_name.book_id
             if book_id:
                 AlternativeBookNamesDB.create_alternative_book_name(
@@ -467,7 +466,7 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         from openlp.plugins.bibles.forms import LanguageForm
         language = None
         language_form = LanguageForm(self.wizard)
-        if language_form.exec_(bible_name):
+        if language_form.exec(bible_name):
             language = str(language_form.language_combo_box.currentText())
         if not language:
             return False
@@ -475,16 +474,6 @@ class BibleDB(QtCore.QObject, Manager, RegistryProperties):
         language_id = language['id']
         self.save_meta('language_id', language_id)
         return language_id
-
-    def is_old_database(self):
-        """
-        Returns ``True`` if it is a bible database, which has been created prior to 1.9.6.
-        """
-        try:
-            self.session.query(Book).all()
-        except:
-            return True
-        return False
 
     def dump_bible(self):
         """

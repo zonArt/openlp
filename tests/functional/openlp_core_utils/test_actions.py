@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ Package to test the openlp.core.utils.actions package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 
 from openlp.core.common import Settings
 from openlp.core.utils import ActionList
@@ -157,14 +157,15 @@ class TestActionList(TestCase, TestMixin):
         """
         # GIVEN: Two actions with the same shortcuts.
         parent = QtCore.QObject()
-        action1 = QtGui.QAction(parent)
+        action1 = QtWidgets.QAction(parent)
         action1.setObjectName('action1')
-        action_with_same_shortcuts1 = QtGui.QAction(parent)
+        action_with_same_shortcuts1 = QtWidgets.QAction(parent)
         action_with_same_shortcuts1.setObjectName('action_with_same_shortcuts1')
         # Add default shortcuts to Settings class.
         default_shortcuts = {
-            'shortcuts/action1': [QtGui.QKeySequence('a'), QtGui.QKeySequence('b')],
-            'shortcuts/action_with_same_shortcuts1': [QtGui.QKeySequence('b'), QtGui.QKeySequence('a')]
+            'shortcuts/action1': [QtGui.QKeySequence(QtCore.Qt.Key_A), QtGui.QKeySequence(QtCore.Qt.Key_B)],
+            'shortcuts/action_with_same_shortcuts1': [QtGui.QKeySequence(QtCore.Qt.Key_B),
+                                                      QtGui.QKeySequence(QtCore.Qt.Key_A)]
         }
         Settings.extend_default_settings(default_shortcuts)
 
@@ -186,15 +187,16 @@ class TestActionList(TestCase, TestMixin):
         """
         # GIVEN: Two actions with the same shortcuts.
         parent = QtCore.QObject()
-        action2 = QtGui.QAction(parent)
+        action2 = QtWidgets.QAction(parent)
         action2.setObjectName('action2')
         second_parent = QtCore.QObject()
-        action_with_same_shortcuts2 = QtGui.QAction(second_parent)
+        action_with_same_shortcuts2 = QtWidgets.QAction(second_parent)
         action_with_same_shortcuts2.setObjectName('action_with_same_shortcuts2')
         # Add default shortcuts to Settings class.
         default_shortcuts = {
-            'shortcuts/action2': [QtGui.QKeySequence('c'), QtGui.QKeySequence('d')],
-            'shortcuts/action_with_same_shortcuts2': [QtGui.QKeySequence('d'), QtGui.QKeySequence('c')]
+            'shortcuts/action2': [QtGui.QKeySequence(QtCore.Qt.Key_C), QtGui.QKeySequence(QtCore.Qt.Key_D)],
+            'shortcuts/action_with_same_shortcuts2': [QtGui.QKeySequence(QtCore.Qt.Key_D),
+                                                      QtGui.QKeySequence(QtCore.Qt.Key_C)]
         }
         Settings.extend_default_settings(default_shortcuts)
 
@@ -216,17 +218,18 @@ class TestActionList(TestCase, TestMixin):
         """
         # GIVEN: Two actions with the same shortcuts.
         parent = QtCore.QObject()
-        action3 = QtGui.QAction(parent)
+        action3 = QtWidgets.QAction(parent)
         action3.setObjectName('action3')
         action3.setShortcutContext(QtCore.Qt.WidgetShortcut)
         second_parent = QtCore.QObject()
-        action_with_same_shortcuts3 = QtGui.QAction(second_parent)
+        action_with_same_shortcuts3 = QtWidgets.QAction(second_parent)
         action_with_same_shortcuts3.setObjectName('action_with_same_shortcuts3')
         action_with_same_shortcuts3.setShortcutContext(QtCore.Qt.WidgetShortcut)
         # Add default shortcuts to Settings class.
         default_shortcuts = {
-            'shortcuts/action3': [QtGui.QKeySequence('e'), QtGui.QKeySequence('f')],
-            'shortcuts/action_with_same_shortcuts3': [QtGui.QKeySequence('e'), QtGui.QKeySequence('f')]
+            'shortcuts/action3': [QtGui.QKeySequence(QtCore.Qt.Key_E), QtGui.QKeySequence(QtCore.Qt.Key_F)],
+            'shortcuts/action_with_same_shortcuts3': [QtGui.QKeySequence(QtCore.Qt.Key_E),
+                                                      QtGui.QKeySequence(QtCore.Qt.Key_F)]
         }
         Settings.extend_default_settings(default_shortcuts)
 

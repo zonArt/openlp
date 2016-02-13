@@ -1,7 +1,7 @@
 /******************************************************************************
  * OpenLP - Open Source Lyrics Projection                                      *
  * --------------------------------------------------------------------------- *
- * Copyright (c) 2008-2015 OpenLP Developers                                   *
+ * Copyright (c) 2008-2016 OpenLP Developers                                   *
  * --------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it     *
  * under the terms of the GNU General Public License as published by the Free  *
@@ -61,7 +61,7 @@ window.OpenLP = {
           }
           else {
             if ((slide["text"] == data.results.slides[lastChange]["text"]) &&
-              (data.results.slides.length > idx + (idx - lastChange))) {
+              (data.results.slides.length >= idx + (idx - lastChange))) {
               // If the tag hasn't changed, check to see if the same verse
               // has been repeated consecutively. Note the verse may have been
               // split over several slides, so search through. If so, repeat the tag.

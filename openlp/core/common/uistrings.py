@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -108,8 +108,9 @@ class UiStrings(object):
         self.NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
         self.NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
-        self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2')
-        self.OLPV2x = translate('OpenLP.Ui', 'OpenLP 2.2')
+        self.OLP = translate('OpenLP.Ui', 'OpenLP')
+        self.OLPV2 = "%s %s" % (self.OLP, "2")
+        self.OLPV2x = "%s %s" % (self.OLP, "2.4")
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. Do you wish to continue?')
         self.OpenService = translate('OpenLP.Ui', 'Open service.')
         self.PlaySlidesInLoop = translate('OpenLP.Ui', 'Play Slides in Loop')
@@ -121,8 +122,8 @@ class UiStrings(object):
         self.Projectors = translate('OpenLP.Ui', 'Projectors', 'Plural')
         self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
         self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace live background.')
-        self.ReplaceLiveBGDisabled = translate('OpenLP.Ui', 'Replace live background is not available on this '
-                                                            'platform in this version of OpenLP.')
+        self.ReplaceLiveBGDisabled = translate('OpenLP.Ui', 'Replace live background is not available when the WebKit '
+                                                            'player is disabled.')
         self.ResetBG = translate('OpenLP.Ui', 'Reset Background')
         self.ResetLiveBG = translate('OpenLP.Ui', 'Reset live background.')
         self.Seconds = translate('OpenLP.Ui', 's', 'The abbreviated unit for seconds')

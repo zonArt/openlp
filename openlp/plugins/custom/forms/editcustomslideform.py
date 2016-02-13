@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,14 +22,14 @@
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from .editcustomslidedialog import Ui_CustomSlideEditDialog
 
 log = logging.getLogger(__name__)
 
 
-class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
+class EditCustomSlideForm(QtWidgets.QDialog, Ui_CustomSlideEditDialog):
     """
     Class documentation goes here.
     """
@@ -39,7 +39,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         Constructor
         """
-        super(EditCustomSlideForm, self).__init__(parent)
+        super(EditCustomSlideForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         # Connecting signals and slots
         self.insert_button.clicked.connect(self.on_insert_button_clicked)

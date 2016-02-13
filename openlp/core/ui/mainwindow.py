@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,7 +32,7 @@ from tempfile import gettempdir
 import time
 from datetime import datetime
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, check_directory_exists, translate, \
     is_win, is_macosx
@@ -47,6 +47,7 @@ from openlp.core.utils import LanguageManager, add_actions, get_application_vers
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.projector.manager import ProjectorManager
+from openlp.core.ui.printserviceform import PrintServiceForm
 
 log = logging.getLogger(__name__)
 
@@ -89,14 +90,14 @@ class Ui_MainWindow(object):
         if is_macosx():
             main_window.setDocumentMode(True)
         # Set up the main container, which contains all the other form widgets.
-        self.main_content = QtGui.QWidget(main_window)
+        self.main_content = QtWidgets.QWidget(main_window)
         self.main_content.setObjectName('main_content')
-        self.main_content_layout = QtGui.QHBoxLayout(self.main_content)
+        self.main_content_layout = QtWidgets.QHBoxLayout(self.main_content)
         self.main_content_layout.setSpacing(0)
-        self.main_content_layout.setMargin(0)
+        self.main_content_layout.setContentsMargins(0, 0, 0, 0)
         self.main_content_layout.setObjectName('main_content_layout')
         main_window.setCentralWidget(self.main_content)
-        self.control_splitter = QtGui.QSplitter(self.main_content)
+        self.control_splitter = QtWidgets.QSplitter(self.main_content)
         self.control_splitter.setOrientation(QtCore.Qt.Horizontal)
         self.control_splitter.setObjectName('control_splitter')
         self.main_content_layout.addWidget(self.control_splitter)
@@ -107,47 +108,47 @@ class Ui_MainWindow(object):
         live_visible = Settings().value('user interface/live panel')
         panel_locked = Settings().value('user interface/lock panel')
         # Create menu
-        self.menu_bar = QtGui.QMenuBar(main_window)
+        self.menu_bar = QtWidgets.QMenuBar(main_window)
         self.menu_bar.setObjectName('menu_bar')
-        self.file_menu = QtGui.QMenu(self.menu_bar)
+        self.file_menu = QtWidgets.QMenu(self.menu_bar)
         self.file_menu.setObjectName('fileMenu')
-        self.recent_files_menu = QtGui.QMenu(self.file_menu)
+        self.recent_files_menu = QtWidgets.QMenu(self.file_menu)
         self.recent_files_menu.setObjectName('recentFilesMenu')
-        self.file_import_menu = QtGui.QMenu(self.file_menu)
+        self.file_import_menu = QtWidgets.QMenu(self.file_menu)
         if not is_macosx():
             self.file_import_menu.setIcon(build_icon(u':/general/general_import.png'))
         self.file_import_menu.setObjectName('file_import_menu')
-        self.file_export_menu = QtGui.QMenu(self.file_menu)
+        self.file_export_menu = QtWidgets.QMenu(self.file_menu)
         if not is_macosx():
             self.file_export_menu.setIcon(build_icon(u':/general/general_export.png'))
         self.file_export_menu.setObjectName('file_export_menu')
         # View Menu
-        self.view_menu = QtGui.QMenu(self.menu_bar)
+        self.view_menu = QtWidgets.QMenu(self.menu_bar)
         self.view_menu.setObjectName('viewMenu')
-        self.view_mode_menu = QtGui.QMenu(self.view_menu)
+        self.view_mode_menu = QtWidgets.QMenu(self.view_menu)
         self.view_mode_menu.setObjectName('viewModeMenu')
         # Tools Menu
-        self.tools_menu = QtGui.QMenu(self.menu_bar)
+        self.tools_menu = QtWidgets.QMenu(self.menu_bar)
         self.tools_menu.setObjectName('tools_menu')
         # Settings Menu
-        self.settings_menu = QtGui.QMenu(self.menu_bar)
+        self.settings_menu = QtWidgets.QMenu(self.menu_bar)
         self.settings_menu.setObjectName('settingsMenu')
-        self.settings_language_menu = QtGui.QMenu(self.settings_menu)
+        self.settings_language_menu = QtWidgets.QMenu(self.settings_menu)
         self.settings_language_menu.setObjectName('settingsLanguageMenu')
         # Help Menu
-        self.help_menu = QtGui.QMenu(self.menu_bar)
+        self.help_menu = QtWidgets.QMenu(self.menu_bar)
         self.help_menu.setObjectName('helpMenu')
         main_window.setMenuBar(self.menu_bar)
-        self.status_bar = QtGui.QStatusBar(main_window)
+        self.status_bar = QtWidgets.QStatusBar(main_window)
         self.status_bar.setObjectName('status_bar')
         main_window.setStatusBar(self.status_bar)
-        self.load_progress_bar = QtGui.QProgressBar(self.status_bar)
+        self.load_progress_bar = QtWidgets.QProgressBar(self.status_bar)
         self.load_progress_bar.setObjectName('load_progress_bar')
         self.status_bar.addPermanentWidget(self.load_progress_bar)
         self.load_progress_bar.hide()
         self.load_progress_bar.setValue(0)
         self.load_progress_bar.setStyleSheet(PROGRESSBAR_STYLE)
-        self.default_theme_label = QtGui.QLabel(self.status_bar)
+        self.default_theme_label = QtWidgets.QLabel(self.status_bar)
         self.default_theme_label.setObjectName('default_theme_label')
         self.status_bar.addPermanentWidget(self.default_theme_label)
         # Create the MediaManager
@@ -155,7 +156,7 @@ class Ui_MainWindow(object):
                                                    ':/system/system_mediamanager.png')
         self.media_manager_dock.setStyleSheet(MEDIA_MANAGER_STYLE)
         # Create the media toolbox
-        self.media_tool_box = QtGui.QToolBox(self.media_manager_dock)
+        self.media_tool_box = QtWidgets.QToolBox(self.media_manager_dock)
         self.media_tool_box.setObjectName('media_tool_box')
         self.media_manager_dock.setWidget(self.media_tool_box)
         main_window.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.media_manager_dock)
@@ -197,12 +198,12 @@ class Ui_MainWindow(object):
                                                triggers=self.service_manager_contents.save_file_as)
         self.print_service_order_item = create_action(main_window, 'printServiceItem', can_shortcuts=True,
                                                       category=UiStrings().File,
-                                                      triggers=self.service_manager_contents.print_service_order)
+                                                      triggers=lambda x: PrintServiceForm().exec())
         self.file_exit_item = create_action(main_window, 'fileExitItem', icon=':/system/system_exit.png',
                                             can_shortcuts=True,
                                             category=UiStrings().File, triggers=main_window.close)
         # Give QT Extra Hint that this is the Exit Menu Item
-        self.file_exit_item.setMenuRole(QtGui.QAction.QuitRole)
+        self.file_exit_item.setMenuRole(QtWidgets.QAction.QuitRole)
         action_list.add_category(UiStrings().Import, CategoryOrder.standard_menu)
         self.import_theme_item = create_action(main_window, 'importThemeItem', category=UiStrings().Import,
                                                can_shortcuts=True)
@@ -249,7 +250,7 @@ class Ui_MainWindow(object):
                                              can_shortcuts=True)
         self.mode_live_item = create_action(main_window, 'modeLiveItem', checked=True, category=UiStrings().ViewMode,
                                             can_shortcuts=True)
-        self.mode_group = QtGui.QActionGroup(main_window)
+        self.mode_group = QtWidgets.QActionGroup(main_window)
         self.mode_group.addAction(self.mode_default_item)
         self.mode_group.addAction(self.mode_setup_item)
         self.mode_group.addAction(self.mode_live_item)
@@ -275,7 +276,7 @@ class Ui_MainWindow(object):
                                                        triggers=self.on_plugin_item_clicked)
         # i18n Language Items
         self.auto_language_item = create_action(main_window, 'autoLanguageItem', checked=LanguageManager.auto_language)
-        self.language_group = QtGui.QActionGroup(main_window)
+        self.language_group = QtWidgets.QActionGroup(main_window)
         self.language_group.setExclusive(True)
         self.language_group.setObjectName('languageGroup')
         add_actions(self.language_group, [self.auto_language_item])
@@ -295,7 +296,7 @@ class Ui_MainWindow(object):
                                                      icon=':/system/system_settings.png', can_shortcuts=True,
                                                      category=UiStrings().Settings)
         # Give QT Extra Hint that this is the Preferences Menu Item
-        self.settings_configure_item.setMenuRole(QtGui.QAction.PreferencesRole)
+        self.settings_configure_item.setMenuRole(QtWidgets.QAction.PreferencesRole)
         self.settings_import_item = create_action(main_window, 'settingsImportItem',
                                                   category=UiStrings().Import, can_shortcuts=True)
         self.settings_export_item = create_action(main_window, 'settingsExportItem',
@@ -305,9 +306,16 @@ class Ui_MainWindow(object):
                                         can_shortcuts=True, category=UiStrings().Help,
                                         triggers=self.on_about_item_clicked)
         # Give QT Extra Hint that this is an About Menu Item
-        self.about_item.setMenuRole(QtGui.QAction.AboutRole)
+        self.about_item.setMenuRole(QtWidgets.QAction.AboutRole)
         if is_win():
             self.local_help_file = os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
+            self.offline_help_item = create_action(main_window, 'offlineHelpItem',
+                                                   icon=':/system/system_help_contents.png',
+                                                   can_shortcuts=True,
+                                                   category=UiStrings().Help, triggers=self.on_offline_help_clicked)
+        elif is_macosx():
+            self.local_help_file = os.path.join(AppLocation.get_directory(AppLocation.AppDir),
+                                                '..', 'Resources', 'OpenLP.help')
             self.offline_help_item = create_action(main_window, 'offlineHelpItem',
                                                    icon=':/system/system_help_contents.png',
                                                    can_shortcuts=True,
@@ -346,15 +354,15 @@ class Ui_MainWindow(object):
         # menu. If we are running on Mac OS X the menu items whose title contains those keywords but don't belong in the
         # main menu need to be marked as such with QAction.NoRole.
         if is_macosx():
-            self.settings_shortcuts_item.setMenuRole(QtGui.QAction.NoRole)
-            self.formatting_tag_item.setMenuRole(QtGui.QAction.NoRole)
+            self.settings_shortcuts_item.setMenuRole(QtWidgets.QAction.NoRole)
+            self.formatting_tag_item.setMenuRole(QtWidgets.QAction.NoRole)
         add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
                     None, self.formatting_tag_item, self.settings_shortcuts_item, self.settings_configure_item))
         add_actions(self.tools_menu, (self.tools_add_tool_item, None))
         add_actions(self.tools_menu, (self.tools_open_data_folder, None))
         add_actions(self.tools_menu, (self.tools_first_time_wizard, None))
         add_actions(self.tools_menu, [self.update_theme_images])
-        if is_win():
+        if (is_win() or is_macosx()) and (hasattr(sys, 'frozen') and sys.frozen == 1):
             add_actions(self.help_menu, (self.offline_help_item, self.on_line_help_item, None, self.web_site_item,
                         self.about_item))
         else:
@@ -382,7 +390,7 @@ class Ui_MainWindow(object):
         self.file_menu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.file_import_menu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.file_export_menu.setTitle(translate('OpenLP.MainWindow', '&Export'))
-        self.recent_files_menu.setTitle(translate('OpenLP.MainWindow', '&Recent Files'))
+        self.recent_files_menu.setTitle(translate('OpenLP.MainWindow', '&Recent Services'))
         self.view_menu.setTitle(translate('OpenLP.MainWindow', '&View'))
         self.view_mode_menu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
         self.tools_menu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
@@ -393,16 +401,16 @@ class Ui_MainWindow(object):
         self.service_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Service Manager'))
         self.theme_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Theme Manager'))
         self.projector_manager_dock.setWindowTitle(translate('OpenLP.MainWindow', 'Projector Manager'))
-        self.file_new_item.setText(translate('OpenLP.MainWindow', '&New'))
+        self.file_new_item.setText(translate('OpenLP.MainWindow', '&New Service'))
         self.file_new_item.setToolTip(UiStrings().NewService)
         self.file_new_item.setStatusTip(UiStrings().CreateService)
-        self.file_open_item.setText(translate('OpenLP.MainWindow', '&Open'))
+        self.file_open_item.setText(translate('OpenLP.MainWindow', '&Open Service'))
         self.file_open_item.setToolTip(UiStrings().OpenService)
         self.file_open_item.setStatusTip(translate('OpenLP.MainWindow', 'Open an existing service.'))
-        self.file_save_item.setText(translate('OpenLP.MainWindow', '&Save'))
+        self.file_save_item.setText(translate('OpenLP.MainWindow', '&Save Service'))
         self.file_save_item.setToolTip(UiStrings().SaveService)
         self.file_save_item.setStatusTip(translate('OpenLP.MainWindow', 'Save the current service to disk.'))
-        self.file_save_as_item.setText(translate('OpenLP.MainWindow', 'Save &As...'))
+        self.file_save_as_item.setText(translate('OpenLP.MainWindow', 'Save Service &As...'))
         self.file_save_as_item.setToolTip(translate('OpenLP.MainWindow', 'Save Service As'))
         self.file_save_as_item.setStatusTip(translate('OpenLP.MainWindow',
                                             'Save the current service under a new name.'))
@@ -449,11 +457,11 @@ class Ui_MainWindow(object):
         self.lock_panel.setText(translate('OpenLP.MainWindow', 'L&ock Panels'))
         self.lock_panel.setStatusTip(translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
         self.view_live_panel.setStatusTip(translate('OpenLP.MainWindow', 'Toggle the visibility of the live panel.'))
-        self.settings_plugin_list_item.setText(translate('OpenLP.MainWindow', '&Plugin List'))
+        self.settings_plugin_list_item.setText(translate('OpenLP.MainWindow', '&Manage Plugins'))
         self.settings_plugin_list_item.setStatusTip(translate('OpenLP.MainWindow', 'List the Plugins'))
         self.about_item.setText(translate('OpenLP.MainWindow', '&About'))
         self.about_item.setStatusTip(translate('OpenLP.MainWindow', 'More information about OpenLP'))
-        if is_win():
+        if is_win() or is_macosx():
             self.offline_help_item.setText(translate('OpenLP.MainWindow', '&User Guide'))
         self.on_line_help_item.setText(translate('OpenLP.MainWindow', '&Online Help'))
         self.search_shortcut_action.setText(UiStrings().Search)
@@ -485,10 +493,11 @@ class Ui_MainWindow(object):
         self.mode_live_item.setStatusTip(translate('OpenLP.MainWindow', 'Set the view mode to Live.'))
 
 
-class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
+class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
     """
     The main window.
     """
+    openlp_version_check = QtCore.pyqtSignal(QtCore.QVariant)
     log.info('MainWindow loaded')
 
     def __init__(self):
@@ -498,7 +507,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         super(MainWindow, self).__init__()
         Registry().register('main_window', self)
         self.clipboard = self.application.clipboard()
-        self.arguments = self.application.args
+        self.arguments = ''.join(self.application.args)
         # Set up settings sections for the main application (not for use by plugins).
         self.ui_settings_section = 'user interface'
         self.general_settings_section = 'core'
@@ -559,7 +568,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.application.set_busy_cursor()
         # Simple message boxes
         Registry().register_function('theme_update_global', self.default_theme_changed)
-        QtCore.QObject.connect(self, QtCore.SIGNAL('openlp_version_check'),  self.version_notice)
+        self.openlp_version_check.connect(self.version_notice)
         Registry().register_function('config_screen_changed', self.screen_changed)
         Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
         # Reset the cursor
@@ -615,19 +624,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         version_text = translate('OpenLP.MainWindow', 'Version %s of OpenLP is now available for download (you are '
                                  'currently running version %s). \n\nYou can download the latest version from '
                                  'http://openlp.org/.')
-        QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
-                                   version_text % (version, get_application_version()[u'full']))
+        QtWidgets.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
+                                       version_text % (version, get_application_version()[u'full']))
 
     def show(self):
         """
         Show the main form, as well as the display form
         """
-        QtGui.QWidget.show(self)
+        QtWidgets.QWidget.show(self)
         if self.live_controller.display.isVisible():
             self.live_controller.display.setFocus()
         self.activateWindow()
         if self.arguments:
-            self.open_cmd_line_files()
+            self.open_cmd_line_files(self.arguments)
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_last_file()
         view_mode = Settings().value('%s/view mode' % self.general_settings_section)
@@ -669,20 +678,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         themes are imported.  The default theme is changed (if necessary).  The plugins in pluginmanager are
         set active/in-active to match the selection in the wizard.
         """
-        answer = QtGui.QMessageBox.warning(self,
-                                           translate('OpenLP.MainWindow', 'Re-run First Time Wizard?'),
-                                           translate('OpenLP.MainWindow', 'Are you sure you want to re-run the First '
-                                                     'Time Wizard?\n\nRe-running this wizard may make changes to your '
-                                                     'current OpenLP configuration and possibly add songs to your '
-                                                     'existing songs list and change your default theme.'),
-                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                             QtGui.QMessageBox.No),
-                                           QtGui.QMessageBox.No)
-        if answer == QtGui.QMessageBox.No:
+        answer = QtWidgets.QMessageBox.warning(self,
+                                               translate('OpenLP.MainWindow', 'Re-run First Time Wizard?'),
+                                               translate('OpenLP.MainWindow',
+                                                         'Are you sure you want to re-run the First '
+                                                         'Time Wizard?\n\nRe-running this wizard may make changes to '
+                                                         'your current OpenLP configuration and possibly add songs to '
+                                                         'your existing songs list and change your default theme.'),
+                                               QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                     QtWidgets.QMessageBox.No),
+                                               QtWidgets.QMessageBox.No)
+        if answer == QtWidgets.QMessageBox.No:
             return
         first_run_wizard = FirstTimeForm(self)
         first_run_wizard.initialize(ScreenList())
-        first_run_wizard.exec_()
+        first_run_wizard.exec()
         if first_run_wizard.was_cancelled:
             return
         self.application.set_busy_cursor()
@@ -715,8 +725,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.live_controller.main_display_set_background()
         if settings.value('%s/screen blank' % self.general_settings_section):
             if settings.value('%s/blank warning' % self.general_settings_section):
-                QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Main Display Blanked'),
-                                           translate('OpenLP.MainWindow', 'The Main Display has been blanked out'))
+                QtWidgets.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Main Display Blanked'),
+                                               translate('OpenLP.MainWindow', 'The Main Display has been blanked out'))
 
     def error_message(self, title, message):
         """
@@ -727,7 +737,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         if hasattr(self.application, 'splash'):
             self.application.splash.close()
-        QtGui.QMessageBox.critical(self, title, message)
+        QtWidgets.QMessageBox.critical(self, title, message)
 
     def warning_message(self, title, message):
         """
@@ -738,7 +748,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         if hasattr(self.application, 'splash'):
             self.application.splash.close()
-        QtGui.QMessageBox.warning(self, title, message)
+        QtWidgets.QMessageBox.warning(self, title, message)
 
     def information_message(self, title, message):
         """
@@ -749,7 +759,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         if hasattr(self.application, 'splash'):
             self.application.splash.close()
-        QtGui.QMessageBox.information(self, title, message)
+        QtWidgets.QMessageBox.information(self, title, message)
 
     def on_help_web_site_clicked(self):
         """
@@ -762,7 +772,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Load the local OpenLP help file
         """
-        os.startfile(self.local_help_file)
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + self.local_help_file))
 
     def on_online_help_clicked(self):
         """
@@ -775,14 +785,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Show the About form
         """
-        self.about_form.exec_()
+        self.about_form.exec()
 
     def on_plugin_item_clicked(self):
         """
         Show the Plugin form
         """
         self.plugin_form.load()
-        self.plugin_form.exec_()
+        self.plugin_form.exec()
 
     def on_tools_open_data_folder_clicked(self):
         """
@@ -801,13 +811,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Show the Settings dialog
         """
-        self.formatting_tag_form.exec_()
+        self.formatting_tag_form.exec()
 
     def on_settings_configure_iem_clicked(self):
         """
         Show the Settings dialog
         """
-        self.settings_form.exec_()
+        self.settings_form.exec()
 
     def paintEvent(self, event):
         """
@@ -820,29 +830,31 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Show the shortcuts dialog
         """
-        if self.shortcut_form.exec_():
+        if self.shortcut_form.exec():
             self.shortcut_form.save()
 
     def on_settings_import_item_clicked(self):
         """
         Import settings from an export INI file
         """
-        answer = QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings?'),
-                                            translate('OpenLP.MainWindow', 'Are you sure you want to import '
-                                                                           'settings?\n\n Importing settings will '
-                                                                           'make permanent changes to your current '
-                                                                           'OpenLP configuration.\n\n Importing '
-                                                                           'incorrect settings may cause erratic '
-                                                                           'behaviour or OpenLP to terminate '
-                                                                           'abnormally.'),
-                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                              QtGui.QMessageBox.No),
-                                            QtGui.QMessageBox.No)
-        if answer == QtGui.QMessageBox.No:
+        answer = QtWidgets.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings?'),
+                                                translate('OpenLP.MainWindow', 'Are you sure you want to import '
+                                                                               'settings?\n\n Importing settings will '
+                                                                               'make permanent changes to your current '
+                                                                               'OpenLP configuration.\n\n Importing '
+                                                                               'incorrect settings may cause erratic '
+                                                                               'behaviour or OpenLP to terminate '
+                                                                               'abnormally.'),
+                                                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                      QtWidgets.QMessageBox.No),
+                                                QtWidgets.QMessageBox.No)
+        if answer == QtWidgets.QMessageBox.No:
             return
-        import_file_name = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.MainWindow', 'Open File'), '',
-                                                             translate('OpenLP.MainWindow', 'OpenLP Export Settings '
-                                                                                            'Files (*.conf)'))
+        import_file_name, filter_used = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            translate('OpenLP.MainWindow', 'Open File'),
+            '',
+            translate('OpenLP.MainWindow', 'OpenLP Export Settings Files (*.conf)'))
         if not import_file_name:
             return
         setting_sections = []
@@ -875,11 +887,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         # Lets do a basic sanity check. If it contains this string we can assume it was created by OpenLP and so we'll
         # load what we can from it, and just silently ignore anything we don't recognise.
         if import_settings.value('SettingsImport/type') != 'OpenLP_settings_export':
-            QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings'),
-                                       translate('OpenLP.MainWindow', 'The file you have selected does not appear to '
-                                                 'be a valid OpenLP settings file.\n\nProcessing has terminated and '
-                                                 'no changes have been made.'),
-                                       QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            QtWidgets.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings'),
+                                           translate('OpenLP.MainWindow', 'The file you have selected does not appear '
+                                                                          'to be a valid OpenLP settings file.\n\n'
+                                                                          'Processing has terminated and '
+                                                                          'no changes have been made.'),
+                                           QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
             return
         import_keys = import_settings.allKeys()
         for section_key in import_keys:
@@ -914,10 +927,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         settings.sync()
         # We must do an immediate restart or current configuration will overwrite what was just imported when
         # application terminates normally.   We need to exit without saving configuration.
-        QtGui.QMessageBox.information(self, translate('OpenLP.MainWindow', 'Import settings'),
-                                      translate('OpenLP.MainWindow', 'OpenLP will now close.  Imported settings will '
-                                                'be applied the next time you start OpenLP.'),
-                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+        QtWidgets.QMessageBox.information(self, translate('OpenLP.MainWindow', 'Import settings'),
+                                          translate('OpenLP.MainWindow',
+                                                    'OpenLP will now close.  Imported settings will '
+                                                    'be applied the next time you start OpenLP.'),
+                                          QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
         self.settings_imported = True
         self.clean_up()
         QtCore.QCoreApplication.exit()
@@ -926,11 +940,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Export settings to a .conf file in INI format
         """
-        export_file_name = QtGui.QFileDialog.getSaveFileName(self,
-                                                             translate('OpenLP.MainWindow', 'Export Settings File'),
-                                                             '',
-                                                             translate('OpenLP.MainWindow', 'OpenLP Export Settings '
-                                                                                            'File (*.conf)'))
+        export_file_name, filter_used = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            translate('OpenLP.MainWindow', 'Export Settings File'),
+            '',
+            translate('OpenLP.MainWindow', 'OpenLP Export Settings File (*.conf)'))
         if not export_file_name:
             return
             # Make sure it's a .conf file.
@@ -980,10 +994,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             try:
                 key_value = settings.value(section_key)
             except KeyError:
-                QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
-                                           translate('OpenLP.MainWindow', 'The key "%s" does not have a default value '
-                                                     'so it will be skipped in this export.') % section_key,
-                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                QtWidgets.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
+                                               translate('OpenLP.MainWindow', 'The key "%s" does not have a default '
+                                                                              'value so it will be skipped in this '
+                                                                              'export.') % section_key,
+                                               QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
                 key_value = None
             if key_value is not None:
                 export_settings.setValue(section_key, key_value)
@@ -1003,10 +1018,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             export_conf.close()
             os.remove(temp_file)
         except OSError as ose:
-                QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
-                                           translate('OpenLP.MainWindow', 'An error occurred while exporting the '
-                                                                          'settings: %s') % ose.strerror,
-                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                QtWidgets.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
+                                               translate('OpenLP.MainWindow', 'An error occurred while exporting the '
+                                                                              'settings: %s') % ose.strerror,
+                                               QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
 
     def on_mode_default_item_clicked(self):
         """
@@ -1069,26 +1084,29 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             event.accept()
         if self.service_manager_contents.is_modified():
             ret = self.service_manager_contents.save_modified_service()
-            if ret == QtGui.QMessageBox.Save:
+            if ret == QtWidgets.QMessageBox.Save:
                 if self.service_manager_contents.decide_save_method():
                     self.clean_up()
                     event.accept()
                 else:
                     event.ignore()
-            elif ret == QtGui.QMessageBox.Discard:
+            elif ret == QtWidgets.QMessageBox.Discard:
                 self.clean_up()
                 event.accept()
             else:
                 event.ignore()
         else:
             if Settings().value('advanced/enable exit confirmation'):
-                ret = QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'Close OpenLP'),
-                                                 translate('OpenLP.MainWindow', 'Are you sure you want to close '
-                                                                                'OpenLP?'),
-                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                                                                                   QtGui.QMessageBox.No),
-                                                 QtGui.QMessageBox.Yes)
-                if ret == QtGui.QMessageBox.Yes:
+                msg_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question,
+                                                translate('OpenLP.MainWindow', 'Exit OpenLP'),
+                                                translate('OpenLP.MainWindow', 'Are you sure you want to exit OpenLP?'),
+                                                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Close |
+                                                                                      QtWidgets.QMessageBox.Cancel),
+                                                self)
+                close_button = msg_box.button(QtWidgets.QMessageBox.Close)
+                close_button.setText(translate('OpenLP.MainWindow', '&Exit OpenLP'))
+                msg_box.setDefaultButton(QtWidgets.QMessageBox.Close)
+                if msg_box.exec() == QtWidgets.QMessageBox.Close:
                     self.clean_up()
                     event.accept()
                 else:
@@ -1196,10 +1214,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
         Sets the ability to stop the toolbars being changed.
         """
         if lock:
-            self.theme_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
-            self.service_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
-            self.media_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
-            self.projector_manager_dock.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
+            self.theme_manager_dock.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
+            self.service_manager_dock.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
+            self.media_manager_dock.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
+            self.projector_manager_dock.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
             self.view_media_manager_item.setEnabled(False)
             self.view_service_manager_item.setEnabled(False)
             self.view_theme_manager_item.setEnabled(False)
@@ -1207,10 +1225,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.view_preview_panel.setEnabled(False)
             self.view_live_panel.setEnabled(False)
         else:
-            self.theme_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
-            self.service_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
-            self.media_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
-            self.projector_manager_dock.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
+            self.theme_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
+            self.service_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
+            self.media_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
+            self.projector_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
             self.view_media_manager_item.setEnabled(True)
             self.view_service_manager_item.setEnabled(True)
             self.view_theme_manager_item.setEnabled(True)
@@ -1394,10 +1412,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             except (IOError, os.error, DistutilsFileError) as why:
                 self.application.set_normal_cursor()
                 log.exception('Data copy failed %s' % str(why))
-                QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
-                                           translate('OpenLP.MainWindow', 'OpenLP Data directory copy failed\n\n%s').
-                                           replace('%s', str(why)),
-                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                QtWidgets.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
+                                               translate('OpenLP.MainWindow',
+                                                         'OpenLP Data directory copy failed\n\n%s').
+                                               replace('%s', str(why)),
+                                               QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
                 return False
         else:
             log.info('No data copy requested')
@@ -1409,15 +1428,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, RegistryProperties):
             settings.remove('advanced/data path')
         self.application.set_normal_cursor()
 
-    def open_cmd_line_files(self):
+    def open_cmd_line_files(self, filename):
         """
         Open files passed in through command line arguments
         """
-        args = []
-        for a in self.arguments:
-            args.extend([a])
-        for filename in args:
-            if not isinstance(filename, str):
-                filename = str(filename, sys.getfilesystemencoding())
-            if filename.endswith(('.osz', '.oszl')):
-                self.service_manager_contents.load_file(filename)
+        if not isinstance(filename, str):
+            filename = str(filename, sys.getfilesystemencoding())
+        if filename.endswith(('.osz', '.oszl')):
+            self.service_manager_contents.load_file(filename)

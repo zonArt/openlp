@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,7 +23,7 @@ import logging
 import os
 import time
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from openlp.core.common import is_win
 from openlp.core.utils import get_uno_command, get_uno_instance
@@ -38,6 +38,7 @@ if is_win():
 else:
     import uno
     from com.sun.star.connection import NoConnectException
+    from com.sun.star.beans import PropertyValue
 try:
     from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
 except ImportError:
@@ -54,7 +55,7 @@ class OpenOfficeImport(SongImport):
         """
         Initialise the class. Requires a songmanager class which is passed to SongImport for writing song to disk
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(OpenOfficeImport, self).__init__(manager, **kwargs)
         self.document = None
         self.process_started = False
 
@@ -151,6 +152,7 @@ class OpenOfficeImport(SongImport):
         else:
             url = uno.systemPathToFileUrl(file_path)
         properties = []
+        properties.append(self.create_property('Hidden', True))
         properties = tuple(properties)
         try:
             self.document = self.desktop.loadComponentFromURL(url, '_blank', 0, properties)
@@ -163,11 +165,27 @@ class OpenOfficeImport(SongImport):
             log.exception("open_ooo_file failed: %s", url)
         return
 
+    def create_property(self, name, value):
+        """
+        Create an OOo style property object which are passed into some Uno methods.
+        """
+        log.debug('create property OpenOffice')
+        if is_win():
+            property_object = self.ooo_manager.Bridge_GetStruct('com.sun.star.beans.PropertyValue')
+        else:
+            property_object = PropertyValue()
+        property_object.Name = name
+        property_object.Value = value
+        return property_object
+
     def close_ooo_file(self):
         """
         Close file.
         """
-        self.document.close(True)
+        try:
+            self.document.close(True)
+        except:
+            log.exception('Exception in close_ooo_file - trying to ignore it.')
         self.document = None
 
     def close_ooo(self):
@@ -175,7 +193,10 @@ class OpenOfficeImport(SongImport):
         Close OOo. But only if we started it and not on windows
         """
         if self.process_started:
-            self.desktop.terminate()
+            try:
+                self.desktop.terminate()
+            except:
+                log.exception('Exception in close_ooo - trying to ignore it.')
 
     def process_presentation(self):
         """

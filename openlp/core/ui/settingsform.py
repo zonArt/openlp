@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ The :mod:`settingsform` provides a user interface for the OpenLP settings
 """
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties
 from openlp.core.lib import build_icon
@@ -36,7 +36,7 @@ from openlp.core.ui.projector.tab import ProjectorTab
 log = logging.getLogger(__name__)
 
 
-class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
+class SettingsForm(QtWidgets.QDialog, Ui_SettingsDialog, RegistryProperties):
     """
     Provide the form to manipulate the settings for OpenLP
     """
@@ -46,7 +46,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         """
         Registry().register('settings_form', self)
         Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
-        super(SettingsForm, self).__init__(parent)
+        super(SettingsForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.processes = []
         self.setupUi(self)
         self.setting_list_widget.currentRowChanged.connect(self.list_item_changed)
@@ -56,7 +56,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         self.advanced_tab = None
         self.player_tab = None
 
-    def exec_(self):
+    def exec(self):
         """
         Execute the form
         """
@@ -74,7 +74,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
             if plugin.settings_tab:
                 self.insert_tab(plugin.settings_tab, plugin.is_active())
         self.setting_list_widget.setCurrentRow(0)
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def insert_tab(self, tab_widget, is_visible=True):
         """
@@ -87,7 +87,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         # add the tab to get it to display in the correct part of the screen
         self.stacked_layout.addWidget(tab_widget)
         if is_visible:
-            list_item = QtGui.QListWidgetItem(build_icon(tab_widget.icon_path), tab_widget.tab_title_visible)
+            list_item = QtWidgets.QListWidgetItem(build_icon(tab_widget.icon_path), tab_widget.tab_title_visible)
             list_item.setData(QtCore.Qt.UserRole, tab_widget.tab_title)
             self.setting_list_widget.addItem(list_item)
 
@@ -116,7 +116,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
         # Now lets process all the post save handlers
         while self.processes:
             Registry().execute(self.processes.pop(0))
-        return QtGui.QDialog.accept(self)
+        return QtWidgets.QDialog.accept(self)
 
     def reject(self):
         """
@@ -135,7 +135,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog, RegistryProperties):
                 tab_widget = self.stacked_layout.widget(tab_index)
                 if tab_widget.tab_title == plugin_name:
                     tab_widget.cancel()
-        return QtGui.QDialog.reject(self)
+        return QtWidgets.QDialog.reject(self)
 
     def bootstrap_post_set_up(self):
         """

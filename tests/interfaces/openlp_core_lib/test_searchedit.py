@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ Module to test the EditCustomForm.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui, QtTest
+from PyQt5 import QtCore, QtGui, QtTest, QtWidgets
 
 from openlp.core.common import Registry
 from openlp.core.lib.searchedit import SearchEdit
@@ -55,7 +55,7 @@ class TestSearchEdit(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
 
         self.search_edit = SearchEdit(self.main_window)

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,12 +24,12 @@ Extend QListWidget to handle drag and drop functionality
 """
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry
 
 
-class ListWidgetWithDnD(QtGui.QListWidget):
+class ListWidgetWithDnD(QtWidgets.QListWidget):
     """
     Provide a list widget to store objects and handle drag and drop events
     """
@@ -45,7 +45,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         Activate DnD of widget
         """
         self.setAcceptDrops(True)
-        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         Registry().register_function(('%s_dnd' % self.mime_data_text), self.parent().load_file)
 
     def mouseMoveEvent(self, event):
@@ -63,7 +63,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         mime_data = QtCore.QMimeData()
         drag.setMimeData(mime_data)
         mime_data.setText(self.mime_data_text)
-        drag.start(QtCore.Qt.CopyAction)
+        drag.exec(QtCore.Qt.CopyAction)
 
     def dragEnterEvent(self, event):
         """

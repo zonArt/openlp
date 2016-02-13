@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.lib import SettingsTab, build_icon
@@ -47,55 +47,55 @@ class PresentationTab(SettingsTab):
         """
         self.setObjectName('PresentationTab')
         super(PresentationTab, self).setupUi()
-        self.controllers_group_box = QtGui.QGroupBox(self.left_column)
+        self.controllers_group_box = QtWidgets.QGroupBox(self.left_column)
         self.controllers_group_box.setObjectName('controllers_group_box')
-        self.controllers_layout = QtGui.QVBoxLayout(self.controllers_group_box)
+        self.controllers_layout = QtWidgets.QVBoxLayout(self.controllers_group_box)
         self.controllers_layout.setObjectName('ccontrollers_layout')
         self.presenter_check_boxes = {}
         for key in self.controllers:
             controller = self.controllers[key]
-            checkbox = QtGui.QCheckBox(self.controllers_group_box)
+            checkbox = QtWidgets.QCheckBox(self.controllers_group_box)
             checkbox.setObjectName(controller.name + 'CheckBox')
             self.presenter_check_boxes[controller.name] = checkbox
             self.controllers_layout.addWidget(checkbox)
         self.left_layout.addWidget(self.controllers_group_box)
         # Advanced
-        self.advanced_group_box = QtGui.QGroupBox(self.left_column)
+        self.advanced_group_box = QtWidgets.QGroupBox(self.left_column)
         self.advanced_group_box.setObjectName('advanced_group_box')
-        self.advanced_layout = QtGui.QVBoxLayout(self.advanced_group_box)
+        self.advanced_layout = QtWidgets.QVBoxLayout(self.advanced_group_box)
         self.advanced_layout.setObjectName('advanced_layout')
-        self.override_app_check_box = QtGui.QCheckBox(self.advanced_group_box)
+        self.override_app_check_box = QtWidgets.QCheckBox(self.advanced_group_box)
         self.override_app_check_box.setObjectName('override_app_check_box')
         self.advanced_layout.addWidget(self.override_app_check_box)
         self.left_layout.addWidget(self.advanced_group_box)
         # PowerPoint
-        self.powerpoint_group_box = QtGui.QGroupBox(self.left_column)
+        self.powerpoint_group_box = QtWidgets.QGroupBox(self.left_column)
         self.powerpoint_group_box.setObjectName('powerpoint_group_box')
-        self.powerpoint_layout = QtGui.QVBoxLayout(self.powerpoint_group_box)
+        self.powerpoint_layout = QtWidgets.QVBoxLayout(self.powerpoint_group_box)
         self.powerpoint_layout.setObjectName('powerpoint_layout')
-        self.ppt_slide_click_check_box = QtGui.QCheckBox(self.powerpoint_group_box)
+        self.ppt_slide_click_check_box = QtWidgets.QCheckBox(self.powerpoint_group_box)
         self.ppt_slide_click_check_box.setObjectName('ppt_slide_click_check_box')
         self.powerpoint_layout.addWidget(self.ppt_slide_click_check_box)
-        self.ppt_window_check_box = QtGui.QCheckBox(self.powerpoint_group_box)
+        self.ppt_window_check_box = QtWidgets.QCheckBox(self.powerpoint_group_box)
         self.ppt_window_check_box.setObjectName('ppt_window_check_box')
         self.powerpoint_layout.addWidget(self.ppt_window_check_box)
         self.left_layout.addWidget(self.powerpoint_group_box)
         # Pdf options
-        self.pdf_group_box = QtGui.QGroupBox(self.left_column)
+        self.pdf_group_box = QtWidgets.QGroupBox(self.left_column)
         self.pdf_group_box.setObjectName('pdf_group_box')
-        self.pdf_layout = QtGui.QFormLayout(self.pdf_group_box)
+        self.pdf_layout = QtWidgets.QFormLayout(self.pdf_group_box)
         self.pdf_layout.setObjectName('pdf_layout')
-        self.pdf_program_check_box = QtGui.QCheckBox(self.pdf_group_box)
+        self.pdf_program_check_box = QtWidgets.QCheckBox(self.pdf_group_box)
         self.pdf_program_check_box.setObjectName('pdf_program_check_box')
         self.pdf_layout.addRow(self.pdf_program_check_box)
-        self.pdf_program_path_layout = QtGui.QHBoxLayout()
+        self.pdf_program_path_layout = QtWidgets.QHBoxLayout()
         self.pdf_program_path_layout.setObjectName('pdf_program_path_layout')
-        self.pdf_program_path = QtGui.QLineEdit(self.pdf_group_box)
+        self.pdf_program_path = QtWidgets.QLineEdit(self.pdf_group_box)
         self.pdf_program_path.setObjectName('pdf_program_path')
         self.pdf_program_path.setReadOnly(True)
         self.pdf_program_path.setPalette(self.get_grey_text_palette(True))
         self.pdf_program_path_layout.addWidget(self.pdf_program_path)
-        self.pdf_program_browse_button = QtGui.QToolButton(self.pdf_group_box)
+        self.pdf_program_browse_button = QtWidgets.QToolButton(self.pdf_group_box)
         self.pdf_program_browse_button.setObjectName('pdf_program_browse_button')
         self.pdf_program_browse_button.setIcon(build_icon(':/general/general_open.png'))
         self.pdf_program_browse_button.setEnabled(False)
@@ -103,7 +103,7 @@ class PresentationTab(SettingsTab):
         self.pdf_layout.addRow(self.pdf_program_path_layout)
         self.left_layout.addWidget(self.pdf_group_box)
         self.left_layout.addStretch()
-        self.right_column.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.right_column.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         self.right_layout.addStretch()
         # Signals and slots
         self.pdf_program_browse_button.clicked.connect(self.on_pdf_program_browse_button_clicked)
@@ -231,9 +231,9 @@ class PresentationTab(SettingsTab):
         """
         Select the mudraw or ghostscript binary that should be used.
         """
-        filename = QtGui.QFileDialog.getOpenFileName(self, translate('PresentationPlugin.PresentationTab',
-                                                                     'Select mudraw or ghostscript binary.'),
-                                                     self.pdf_program_path.text())
+        filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(
+            self, translate('PresentationPlugin.PresentationTab', 'Select mudraw or ghostscript binary.'),
+            self.pdf_program_path.text())
         if filename:
             program_type = PdfController.check_binary(filename)
             if not program_type:

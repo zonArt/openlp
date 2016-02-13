@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +29,7 @@ import logging
 log = logging.getLogger(__name__)
 log.debug('projectortab module loaded')
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtWidgets
 
 from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.lib import SettingsTab
@@ -56,35 +56,35 @@ class ProjectorTab(SettingsTab):
         """
         self.setObjectName('ProjectorTab')
         super(ProjectorTab, self).setupUi()
-        self.connect_box = QtGui.QGroupBox(self.left_column)
+        self.connect_box = QtWidgets.QGroupBox(self.left_column)
         self.connect_box.setObjectName('connect_box')
-        self.connect_box_layout = QtGui.QFormLayout(self.connect_box)
+        self.connect_box_layout = QtWidgets.QFormLayout(self.connect_box)
         self.connect_box_layout.setObjectName('connect_box_layout')
         # Start comms with projectors on startup
-        self.connect_on_startup = QtGui.QCheckBox(self.connect_box)
+        self.connect_on_startup = QtWidgets.QCheckBox(self.connect_box)
         self.connect_on_startup.setObjectName('connect_on_startup')
         self.connect_box_layout.addRow(self.connect_on_startup)
         # Socket timeout
-        self.socket_timeout_label = QtGui.QLabel(self.connect_box)
+        self.socket_timeout_label = QtWidgets.QLabel(self.connect_box)
         self.socket_timeout_label.setObjectName('socket_timeout_label')
-        self.socket_timeout_spin_box = QtGui.QSpinBox(self.connect_box)
+        self.socket_timeout_spin_box = QtWidgets.QSpinBox(self.connect_box)
         self.socket_timeout_spin_box.setObjectName('socket_timeout_spin_box')
         self.socket_timeout_spin_box.setMinimum(2)
         self.socket_timeout_spin_box.setMaximum(10)
         self.connect_box_layout.addRow(self.socket_timeout_label, self.socket_timeout_spin_box)
         # Poll interval
-        self.socket_poll_label = QtGui.QLabel(self.connect_box)
+        self.socket_poll_label = QtWidgets.QLabel(self.connect_box)
         self.socket_poll_label.setObjectName('socket_poll_label')
-        self.socket_poll_spin_box = QtGui.QSpinBox(self.connect_box)
+        self.socket_poll_spin_box = QtWidgets.QSpinBox(self.connect_box)
         self.socket_poll_spin_box.setObjectName('socket_timeout_spin_box')
         self.socket_poll_spin_box.setMinimum(5)
         self.socket_poll_spin_box.setMaximum(60)
         self.connect_box_layout.addRow(self.socket_poll_label, self.socket_poll_spin_box)
         self.left_layout.addWidget(self.connect_box)
         # Source input select dialog box type
-        self.dialog_type_label = QtGui.QLabel(self.connect_box)
+        self.dialog_type_label = QtWidgets.QLabel(self.connect_box)
         self.dialog_type_label.setObjectName('dialog_type_label')
-        self.dialog_type_combo_box = QtGui.QComboBox(self.connect_box)
+        self.dialog_type_combo_box = QtWidgets.QComboBox(self.connect_box)
         self.dialog_type_combo_box.setObjectName('dialog_type_combo_box')
         self.dialog_type_combo_box.addItems(['', ''])
         self.connect_box_layout.addRow(self.dialog_type_label, self.dialog_type_combo_box)

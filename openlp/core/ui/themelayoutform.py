@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,12 +22,12 @@
 """
 The form layout
 """
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtWidgets
 
 from .themelayoutdialog import Ui_ThemeLayoutDialog
 
 
-class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
+class ThemeLayoutForm(QtWidgets.QDialog, Ui_ThemeLayoutDialog):
     """
     The exception dialog
     """
@@ -38,12 +38,13 @@ class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
         super(ThemeLayoutForm, self).__init__(parent)
         self.setupUi(self)
 
-    def exec_(self, image):
+    def exec(self, image):
         """
         Run the Dialog with correct heading.
         """
         pixmap = image.scaledToHeight(400, QtCore.Qt.SmoothTransformation)
+        pixmap.setDevicePixelRatio(self.theme_display_label.devicePixelRatio())
         self.theme_display_label.setPixmap(pixmap)
         display_aspect_ratio = float(image.width()) / image.height()
         self.theme_display_label.setFixedSize(400, 400 / display_aspect_ratio)
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)

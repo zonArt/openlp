@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,8 +26,9 @@ import os
 from unittest import TestCase
 from urllib.error import URLError
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
+from tests.helpers.songfileimport import SongImportTestHelper
 from openlp.core import Registry
 from openlp.plugins.songs.forms.songselectform import SongSelectForm, SearchWorker
 from openlp.plugins.songs.lib import Song
@@ -36,6 +37,9 @@ from openlp.plugins.songs.lib.importers.cclifile import CCLIFileImport
 
 from tests.functional import MagicMock, patch, call
 from tests.helpers.testmixin import TestMixin
+
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'songselect'))
 
 
 class TestSongSelectImport(TestCase, TestMixin):
@@ -79,6 +83,23 @@ class TestSongSelectImport(TestCase, TestMixin):
         self.assertEqual(3, mock_callback.call_count, 'callback should have been called 3 times')
         self.assertEqual(2, mocked_login_page.find.call_count, 'find should have been called twice')
         self.assertEqual(2, mocked_opener.open.call_count, 'opener should have been called twice')
+        self.assertFalse(result, 'The login method should have returned False')
+
+    @patch('openlp.plugins.songs.lib.songselect.build_opener')
+    def login_except_test(self, mocked_build_opener):
+        """
+        Test that when logging in to SongSelect fails, the login method raises URLError
+        """
+        # GIVEN: A bunch of mocked out stuff and an importer object
+        mocked_build_opener.open.side_effect = URLError('Fake URLError')
+        mock_callback = MagicMock()
+        importer = SongSelectImport(None)
+
+        # WHEN: The login method is called after being rigged to fail
+        result = importer.login('username', 'password', mock_callback)
+
+        # THEN: callback was called 1 time and False was returned
+        self.assertEqual(1, mock_callback.call_count, 'callback should have been called 1 times')
         self.assertFalse(result, 'The login method should have returned False')
 
     @patch('openlp.plugins.songs.lib.songselect.build_opener')
@@ -171,7 +192,7 @@ class TestSongSelectImport(TestCase, TestMixin):
         mock_callback = MagicMock()
         importer = SongSelectImport(None)
 
-        # WHEN: The login method is called after being rigged to fail
+        # WHEN: The search method is called
         results = importer.search('text', 1000, mock_callback)
 
         # THEN: callback was never called, open was called once, find_all was called once, an empty list returned
@@ -213,10 +234,10 @@ class TestSongSelectImport(TestCase, TestMixin):
         mock_callback = MagicMock()
         importer = SongSelectImport(None)
 
-        # WHEN: The login method is called after being rigged to fail
+        # WHEN: The search method is called
         results = importer.search('text', 2, mock_callback)
 
-        # THEN: callback was never called, open was called once, find_all was called once, an empty list returned
+        # THEN: callback was called twice, open was called twice, find_all was called twice, max results returned
         self.assertEqual(2, mock_callback.call_count, 'callback should have been called twice')
         self.assertEqual(2, mocked_opener.open.call_count, 'open should have been called twice')
         self.assertEqual(2, mocked_results_page.find_all.call_count, 'find_all should have been called twice')
@@ -224,6 +245,22 @@ class TestSongSelectImport(TestCase, TestMixin):
         expected_list = [{'title': 'Title 1', 'authors': ['Author 1-1', 'Author 1-2'], 'link': BASE_URL + '/url1'},
                          {'title': 'Title 2', 'authors': ['Author 2-1', 'Author 2-2'], 'link': BASE_URL + '/url2'}]
         self.assertListEqual(expected_list, results, 'The search method should have returned two songs')
+
+    @patch('openlp.plugins.songs.lib.songselect.build_opener')
+    @patch('openlp.plugins.songs.lib.songselect.BeautifulSoup')
+    def stop_called_test(self, MockedBeautifulSoup, mocked_build_opener):
+        """
+        Test that the search is stopped with stop() is called
+        """
+        # GIVEN: An importer object that is currently "searching"
+        importer = SongSelectImport(None)
+        importer.run_search = True
+
+        # WHEN: The stop method is called
+        results = importer.stop()
+
+        # THEN: Searching should have stopped
+        self.assertFalse(importer.run_search, 'Searching should have been stopped')
 
     @patch('openlp.plugins.songs.lib.songselect.build_opener')
     def get_song_page_raises_exception_test(self, mocked_build_opener):
@@ -381,6 +418,42 @@ class TestSongSelectImport(TestCase, TestMixin):
         self.assertEqual(0, MockedAuthor.populate.call_count, 'A new author should not have been instantiated')
         self.assertEqual(1, len(result.authors_songs), 'There should only be one author')
 
+    @patch('openlp.plugins.songs.lib.songselect.clean_song')
+    @patch('openlp.plugins.songs.lib.songselect.Author')
+    def save_song_unknown_author_test(self, MockedAuthor, mocked_clean_song):
+        """
+        Test that saving a song with an author name of only one word performs the correct actions
+        """
+        # GIVEN: A song to save, and some mocked out objects
+        song_dict = {
+            'title': 'Arky Arky',
+            'authors': ['Unknown'],
+            'verses': [
+                {'label': 'Verse 1', 'lyrics': 'The Lord told Noah: there\'s gonna be a floody, floody'},
+                {'label': 'Chorus 1', 'lyrics': 'So, rise and shine, and give God the glory, glory'},
+                {'label': 'Verse 2', 'lyrics': 'The Lord told Noah to build him an arky, arky'}
+            ],
+            'copyright': 'Public Domain',
+            'ccli_number': '123456'
+        }
+        MockedAuthor.display_name.__eq__.return_value = False
+        mocked_db_manager = MagicMock()
+        mocked_db_manager.get_object_filtered.return_value = None
+        importer = SongSelectImport(mocked_db_manager)
+
+        # WHEN: The song is saved to the database
+        result = importer.save_song(song_dict)
+
+        # THEN: The return value should be a Song class and the mocked_db_manager should have been called
+        self.assertIsInstance(result, Song, 'The returned value should be a Song object')
+        mocked_clean_song.assert_called_with(mocked_db_manager, result)
+        self.assertEqual(2, mocked_db_manager.save_object.call_count,
+                         'The save_object() method should have been called twice')
+        mocked_db_manager.get_object_filtered.assert_called_with(MockedAuthor, False)
+        MockedAuthor.populate.assert_called_with(first_name='Unknown', last_name='',
+                                                 display_name='Unknown')
+        self.assertEqual(1, len(result.authors_songs), 'There should only be one author')
+
 
 class TestSongSelectForm(TestCase, TestMixin):
     """
@@ -412,7 +485,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         self.assertEqual(mocked_db_manager, ssform.db_manager, 'The correct db_manager should have been assigned')
 
     @patch('openlp.plugins.songs.forms.songselectform.SongSelectImport')
-    @patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.critical')
+    @patch('openlp.plugins.songs.forms.songselectform.QtWidgets.QMessageBox.critical')
     @patch('openlp.plugins.songs.forms.songselectform.translate')
     def login_fails_test(self, mocked_translate, mocked_critical, MockedSongSelectImport):
         """
@@ -465,7 +538,7 @@ class TestSongSelectForm(TestCase, TestMixin):
                                                                            'perhaps your username or password is '
                                                                            'incorrect?')
 
-    @patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.question')
+    @patch('openlp.plugins.songs.forms.songselectform.QtWidgets.QMessageBox.question')
     @patch('openlp.plugins.songs.forms.songselectform.translate')
     def on_import_yes_clicked_test(self, mocked_translate, mocked_question):
         """
@@ -473,7 +546,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         """
         # GIVEN: A valid SongSelectForm with a mocked out QMessageBox.question() method
         mocked_translate.side_effect = lambda *args: args[1]
-        mocked_question.return_value = QtGui.QMessageBox.Yes
+        mocked_question.return_value = QtWidgets.QMessageBox.Yes
         ssform = SongSelectForm(None, MagicMock(), MagicMock())
         mocked_song_select_importer = MagicMock()
         ssform.song_select_importer = mocked_song_select_importer
@@ -487,11 +560,12 @@ class TestSongSelectForm(TestCase, TestMixin):
         mocked_song_select_importer.save_song.assert_called_with(None)
         mocked_question.assert_called_with(ssform, 'Song Imported',
                                            'Your song has been imported, would you like to import more songs?',
-                                           QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
+                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                           QtWidgets.QMessageBox.Yes)
         mocked_on_back_button_clicked.assert_called_with()
         self.assertIsNone(ssform.song)
 
-    @patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.question')
+    @patch('openlp.plugins.songs.forms.songselectform.QtWidgets.QMessageBox.question')
     @patch('openlp.plugins.songs.forms.songselectform.translate')
     def on_import_no_clicked_test(self, mocked_translate, mocked_question):
         """
@@ -499,7 +573,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         """
         # GIVEN: A valid SongSelectForm with a mocked out QMessageBox.question() method
         mocked_translate.side_effect = lambda *args: args[1]
-        mocked_question.return_value = QtGui.QMessageBox.No
+        mocked_question.return_value = QtWidgets.QMessageBox.No
         ssform = SongSelectForm(None, MagicMock(), MagicMock())
         mocked_song_select_importer = MagicMock()
         ssform.song_select_importer = mocked_song_select_importer
@@ -513,8 +587,9 @@ class TestSongSelectForm(TestCase, TestMixin):
         mocked_song_select_importer.save_song.assert_called_with(None)
         mocked_question.assert_called_with(ssform, 'Song Imported',
                                            'Your song has been imported, would you like to import more songs?',
-                                           QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-        mocked_done.assert_called_with(QtGui.QDialog.Accepted)
+                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                           QtWidgets.QMessageBox.Yes)
+        mocked_done.assert_called_with(QtWidgets.QDialog.Accepted)
         self.assertIsNone(ssform.song)
 
     def on_back_button_clicked_test(self):
@@ -533,7 +608,7 @@ class TestSongSelectForm(TestCase, TestMixin):
         mocked_stacked_widget.setCurrentIndex.assert_called_with(1)
         mocked_search_combobox.setFocus.assert_called_with()
 
-    @patch('openlp.plugins.songs.forms.songselectform.QtGui.QMessageBox.information')
+    @patch('openlp.plugins.songs.forms.songselectform.QtWidgets.QMessageBox.information')
     def on_search_show_info_test(self, mocked_information):
         """
         Test that when the search_show_info signal is emitted, the on_search_show_info() method shows a dialog
@@ -627,69 +702,39 @@ class TestSongSelectForm(TestCase, TestMixin):
         # THEN: The view button should be enabled
         mocked_view_button.setEnabled.assert_called_with(True)
 
-
-class TestSongSelectFileImport(TestCase, TestMixin):
-    """
-    Test SongSelect file import
-    """
-    def setUp(self):
+    @patch('openlp.plugins.songs.forms.songselectform.SongSelectImport')
+    def on_stop_button_clicked_test(self, MockedSongSelectImport):
         """
-        Initial setups
+        Test that the search is stopped when the stop button is clicked
         """
-        Registry.create()
-        test_song_name = 'TestSong'
-        self.file_name = os.path.join('tests', 'resources', 'songselect', test_song_name)
-        self.title = 'Test Song'
-        self.ccli_number = '0000000'
-        self.authors = ['Author One', 'Author Two']
-        self.topics = ['Adoration', 'Praise']
+        # GIVEN: A mocked SongSelectImporter and a SongSelect form
+        mocked_song_select_importer = MagicMock()
+        MockedSongSelectImport.return_value = mocked_song_select_importer
+        ssform = SongSelectForm(None, MagicMock(), MagicMock())
+        ssform.initialise()
 
-    def songselect_import_bin_file_test(self):
+        # WHEN: The stop button is clicked
+        ssform.on_stop_button_clicked()
+
+        # THEN: The view button should be enabled
+        mocked_song_select_importer.stop.assert_called_with()
+
+
+class TestSongSelectFileImport(SongImportTestHelper):
+
+    def __init__(self, *args, **kwargs):
+        self.importer_class_name = 'CCLIFileImport'
+        self.importer_module_name = 'cclifile'
+        super(TestSongSelectFileImport, self).__init__(*args, **kwargs)
+
+    def test_song_import(self):
         """
-        Verify import SongSelect BIN file parses file properly
+        Test that loading an OpenSong file works correctly on various files
         """
-        # GIVEN: Text file to import and mocks
-        copyright_bin = '2011 OpenLP Programmer One (Admin. by OpenLP One) | ' \
-                        'Openlp Programmer Two (Admin. by OpenLP Two)'
-        verses_bin = [
-            ['v1', 'Line One Verse One\nLine Two Verse One\nLine Three Verse One\nLine Four Verse One', None],
-            ['v2', 'Line One Verse Two\nLine Two Verse Two\nLine Three Verse Two\nLine Four Verse Two', None]
-        ]
-        song_import = CCLIFileImport(manager=None, filename=['{}.bin'.format(self.file_name)])
-
-        with patch.object(song_import, 'import_wizard'), patch.object(song_import, 'finish'):
-            # WHEN: We call the song importer
-            song_import.do_import()
-            # THEN: Song values should be equal to test values in setUp
-            self.assertEquals(song_import.title, self.title, 'Song title should match')
-            self.assertEquals(song_import.ccli_number, self.ccli_number, 'CCLI Song Number should match')
-            self.assertEquals(song_import.authors, self.authors, 'Author(s) should match')
-            self.assertEquals(song_import.copyright, copyright_bin, 'Copyright should match')
-            self.assertEquals(song_import.topics, self.topics, 'Theme(s) should match')
-            self.assertEquals(song_import.verses, verses_bin, 'Verses should match with test verses')
-
-    def songselect_import_text_file_test(self):
-        """
-        Verify import SongSelect TEXT file parses file properly
-        """
-        # GIVEN: Text file to import and mocks
-        copyright_txt = '© 2011 OpenLP Programmer One (Admin. by OpenLP One)'
-        verses_txt = [
-            ['v1', 'Line One Verse One\r\nLine Two Verse One\r\nLine Three Verse One\r\nLine Four Verse One', None],
-            ['v2', 'Line One Verse Two\r\nLine Two Verse Two\r\nLine Three Verse Two\r\nLine Four Verse Two', None]
-        ]
-        song_import = CCLIFileImport(manager=None, filename=['{}.txt'.format(self.file_name)])
-
-        with patch.object(song_import, 'import_wizard'), patch.object(song_import, 'finish'):
-            # WHEN: We call the song importer
-            song_import.do_import()
-
-            # THEN: Song values should be equal to test values in setUp
-            self.assertEquals(song_import.title, self.title, 'Song title should match')
-            self.assertEquals(song_import.ccli_number, self.ccli_number, 'CCLI Song Number should match')
-            self.assertEquals(song_import.authors, self.authors, 'Author(s) should match')
-            self.assertEquals(song_import.copyright, copyright_txt, 'Copyright should match')
-            self.assertEquals(song_import.verses, verses_txt, 'Verses should match with test verses')
+        self.file_import([os.path.join(TEST_PATH, 'TestSong.bin')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'TestSong-bin.json')))
+        self.file_import([os.path.join(TEST_PATH, 'TestSong.txt')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'TestSong-txt.json')))
 
 
 class TestSearchWorker(TestCase, TestMixin):

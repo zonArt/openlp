@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,10 +25,10 @@ This module contains tests for the lib submodule of the Remotes plugin.
 import os
 import urllib.request
 from unittest import TestCase
+
 from openlp.core.common import Settings, Registry
 from openlp.core.ui import ServiceManager
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
-from urllib.parse import urlparse
 from tests.functional import MagicMock, patch, mock_open
 from tests.helpers.testmixin import TestMixin
 
@@ -272,7 +272,6 @@ class TestRouter(TestCase, TestMixin):
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
         mocked_image_manager = MagicMock()
-        Registry.create()
         Registry().register('image_manager', mocked_image_manager)
         file_name = 'another%20test/slide1.png'
         full_path = os.path.normpath(os.path.join('thumbnails', file_name))
@@ -295,9 +294,12 @@ class TestRouter(TestCase, TestMixin):
             self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
             mocked_exists.assert_called_with(urllib.parse.unquote(full_path))
             self.assertEqual(mocked_image_to_byte.call_count, 1, 'Called once')
-            mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'),
-                                                   'slide1.png', None, '120x90')
-            mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'), 'slide1.png', '120x90')
+            mocked_image_manager.add_image.assert_any_call(os.path.normpath(os.path.join('thumbnails', 'another test',
+                                                                                         'slide1.png')),
+                                                           'slide1.png', None, width, height)
+            mocked_image_manager.get_image.assert_any_call(os.path.normpath(os.path.join('thumbnails', 'another test',
+                                                                                         'slide1.png')),
+                                                           'slide1.png', width, height)
 
     def remote_next_test(self):
         """
@@ -340,3 +342,39 @@ class TestRouter(TestCase, TestMixin):
 
             # THEN: service_manager.next_item() should have been called
             self.assertTrue(mocked_previous_item.called, 'previous_item() should have been called in service_manager')
+
+    def remote_stage_personal_html_test(self):
+        """
+        Test the stage url with a parameter after loaded a url/stage.html file
+        """
+        # GIVEN: initial route
+        self.router.config_dir = ''
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        self.router._process_file = MagicMock()
+
+        # WHEN: I call stage with a suffix
+        self.router.stages('stages', 'trb')
+
+        # THEN: we should use the specific stage file instance
+        self.router._process_file.assert_called_with(os.path.join('trb', 'stage.html'))
+
+    def remote_stage_personal_css_test(self):
+        """
+        Test the html with reference stages/trb/trb.css then loaded a stages/trb/trb.css file
+        """
+        # GIVEN: initial route
+        self.router.config_dir = ''
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        self.router._process_file = MagicMock()
+
+        # WHEN: I call stage with a suffix
+        self.router.stages('stages', 'stages/trb/trb.css')
+
+        # THEN: we should use the specific stage file instance
+        self.router._process_file.assert_called_with(os.path.join('trb', 'trb.css'))

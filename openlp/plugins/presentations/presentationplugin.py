@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,9 +26,9 @@ formats.
 import os
 import logging
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
-from openlp.core.common import AppLocation, Settings, translate
+from openlp.core.common import AppLocation, translate
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 
@@ -71,6 +71,7 @@ class PresentationPlugin(Plugin):
     def create_settings_tab(self, parent):
         """
         Create the settings Tab.
+        :param parent: parent UI Element
         """
         visible_name = self.get_string(StringContent.VisibleName)
         self.settings_tab = PresentationTab(parent, self.name, visible_name['title'], self.controllers, self.icon_path)
@@ -112,6 +113,7 @@ class PresentationPlugin(Plugin):
     def register_controllers(self, controller):
         """
         Register each presentation controller (Impress, PPT etc) and store for later use.
+        :param controller: controller to register
         """
         self.controllers[controller.name] = controller
 
@@ -137,23 +139,8 @@ class PresentationPlugin(Plugin):
             self.register_controllers(controller)
         return bool(self.controllers)
 
-    def app_startup(self):
-        """
-        Perform tasks on application startup.
-        """
-        # TODO: Can be removed when the upgrade path from 2.0.x to 2.2.x is no longer needed
-        super().app_startup()
-        files_from_config = Settings().value('presentations/presentations files')
-        for file in files_from_config:
-            try:
-                self.media_item.clean_up_thumbnails(file, True)
-            except AttributeError:
-                pass
-        self.media_item.list_view.clear()
-        Settings().setValue('presentations/thumbnail_scheme', 'md5')
-        self.media_item.validate_and_load(files_from_config)
-
-    def about(self):
+    @staticmethod
+    def about():
         """
         Return information about this plugin.
         """

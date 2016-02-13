@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -51,8 +51,8 @@ class TestMainWindow(TestCase, TestMixin):
                 patch('openlp.core.ui.mainwindow.LiveController') as mocked_live_controller, \
                 patch('openlp.core.ui.mainwindow.PreviewController') as mocked_preview_controller, \
                 patch('openlp.core.ui.mainwindow.OpenLPDockWidget') as mocked_dock_widget, \
-                patch('openlp.core.ui.mainwindow.QtGui.QToolBox') as mocked_q_tool_box_class, \
-                patch('openlp.core.ui.mainwindow.QtGui.QMainWindow.addDockWidget') as mocked_add_dock_method, \
+                patch('openlp.core.ui.mainwindow.QtWidgets.QToolBox') as mocked_q_tool_box_class, \
+                patch('openlp.core.ui.mainwindow.QtWidgets.QMainWindow.addDockWidget') as mocked_add_dock_method, \
                 patch('openlp.core.ui.mainwindow.ServiceManager') as mocked_service_manager, \
                 patch('openlp.core.ui.mainwindow.ThemeManager') as mocked_theme_manager, \
                 patch('openlp.core.ui.mainwindow.ProjectorManager') as mocked_projector_manager, \

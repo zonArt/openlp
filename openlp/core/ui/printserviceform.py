@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@ import os
 import html
 import lxml.html
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets, QtPrintSupport
 
 from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import get_text_file_string
@@ -104,7 +104,7 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 """
 
 
-class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties):
+class PrintServiceForm(QtWidgets.QDialog, Ui_PrintServiceDialog, RegistryProperties):
     """
     The :class:`~openlp.core.ui.printserviceform.PrintServiceForm` class displays a dialog for printing the service.
     """
@@ -112,9 +112,10 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties)
         """
         Constructor
         """
-        super(PrintServiceForm, self).__init__(Registry().get('main_window'))
-        self.printer = QtGui.QPrinter()
-        self.print_dialog = QtGui.QPrintDialog(self.printer, self)
+        super(PrintServiceForm, self).__init__(Registry().get('main_window'),
+                                               QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
+        self.printer = QtPrintSupport.QPrinter()
+        self.print_dialog = QtPrintSupport.QPrintDialog(self.printer, self)
         self.document = QtGui.QTextDocument()
         self.zoom = 0
         self.setupUi(self)
@@ -162,7 +163,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties)
         html_data = self._add_element('html')
         self._add_element('head', parent=html_data)
         self._add_element('title', self.title_line_edit.text(), html_data.head)
-        css_path = os.path.join(AppLocation.get_data_path(), 'service_print.css')
+        css_path = os.path.join(AppLocation.get_data_path(), 'serviceprint', 'service_print.css')
         custom_css = get_text_file_string(css_path)
         if not custom_css:
             custom_css = DEFAULT_CSS
@@ -324,7 +325,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog, RegistryProperties)
         """
         Called, when the *print_button* is clicked. Opens the *print_dialog*.
         """
-        if not self.print_dialog.exec_():
+        if not self.print_dialog.exec():
             return
         self.update_song_usage()
         # Print the document.

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,7 @@
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, translate
 from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
@@ -34,7 +34,7 @@ from .editcustomslideform import EditCustomSlideForm
 log = logging.getLogger(__name__)
 
 
-class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
+class EditCustomForm(QtWidgets.QDialog, Ui_CustomEditDialog):
     """
     Class documentation goes here.
     """
@@ -44,7 +44,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Constructor
         """
-        super(EditCustomForm, self).__init__(parent)
+        super(EditCustomForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.manager = manager
         self.media_item = media_item
         self.setupUi(self)
@@ -101,7 +101,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         log.debug('accept')
         if self.save_custom():
-            QtGui.QDialog.accept(self)
+            QtWidgets.QDialog.accept(self)
 
     def save_custom(self):
         """
@@ -146,7 +146,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Add a new blank slide.
         """
         self.edit_slide_form.set_text('')
-        if self.edit_slide_form.exec_():
+        if self.edit_slide_form.exec():
             self.slide_list_view.addItems(self.edit_slide_form.get_text())
 
     def on_edit_button_clicked(self):
@@ -154,7 +154,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Edit the currently selected slide.
         """
         self.edit_slide_form.set_text(self.slide_list_view.currentItem().text())
-        if self.edit_slide_form.exec_():
+        if self.edit_slide_form.exec():
             self.update_slide_list(self.edit_slide_form.get_text())
 
     def on_edit_all_button_clicked(self):
@@ -168,7 +168,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             if row != self.slide_list_view.count() - 1:
                 slide_text += '\n[===]\n'
         self.edit_slide_form.set_text(slide_text)
-        if self.edit_slide_form.exec_():
+        if self.edit_slide_form.exec():
             self.update_slide_list(self.edit_slide_form.get_text(), True)
 
     def on_preview_button_clicked(self):

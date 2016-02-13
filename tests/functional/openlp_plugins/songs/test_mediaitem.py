@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,12 +24,12 @@ This module contains tests for the lib submodule of the Songs plugin.
 """
 from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore
 
 from openlp.core.common import Registry, Settings
 from openlp.core.lib import ServiceItem
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
-from openlp.plugins.songs.lib.db import AuthorType
+from openlp.plugins.songs.lib.db import AuthorType, Song
 from tests.functional import patch, MagicMock
 from tests.helpers.testmixin import TestMixin
 
@@ -154,7 +154,7 @@ class TestMediaItem(TestCase, TestMixin):
 
         # THEN: I get the following Array returned
         self.assertEqual(service_item.raw_footer, ['My Song', 'Words: another author', 'Music: my author',
-                                                   'Translation: translator',  'My copyright'],
+                                                   'Translation: translator', 'My copyright'],
                          'The array should be returned correctly with a song, two authors and copyright')
         self.assertEqual(author_list, ['another author', 'my author', 'translator'],
                          'The author list should be returned correctly with two authors')
@@ -187,29 +187,36 @@ class TestMediaItem(TestCase, TestMixin):
 
     def build_song_footer_base_songbook_test(self):
         """
-        Test build songs footer with basic song and a songbook
+        Test build songs footer with basic song and multiple songbooks
         """
         # GIVEN: A Song and a Service Item
-        mock_song = MagicMock()
-        mock_song.title = 'My Song'
-        mock_song.copyright = 'My copyright'
-        mock_song.book = MagicMock()
-        mock_song.book.name = "My songbook"
-        mock_song.song_number = 12
+        song = Song()
+        song.title = 'My Song'
+        song.copyright = 'My copyright'
+        song.authors_songs = []
+        song.songbook_entries = []
+        song.ccli_number = ''
+        book1 = MagicMock()
+        book1.name = "My songbook"
+        book2 = MagicMock()
+        book2.name = "Thy songbook"
+        song.songbookentries = []
+        song.add_songbook_entry(book1, '12')
+        song.add_songbook_entry(book2, '502A')
         service_item = ServiceItem(None)
 
         # WHEN: I generate the Footer with default settings
-        self.media_item.generate_footer(service_item, mock_song)
+        self.media_item.generate_footer(service_item, song)
 
         # THEN: The songbook should not be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright'])
 
         # WHEN: I activate the "display songbook" option
         self.media_item.display_songbook = True
-        self.media_item.generate_footer(service_item, mock_song)
+        self.media_item.generate_footer(service_item, song)
 
         # THEN: The songbook should be in the footer
-        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12'])
+        self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12, Thy songbook #502A'])
 
     def build_song_footer_copyright_enabled_test(self):
         """
@@ -293,43 +300,34 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: They should not match
         self.assertFalse(result, "Authors should not match")
 
-    def try_int_with_string_integer_test(self):
-        """
-        Test the _try_int function with a string containing an integer
-        """
-        # GIVEN: A string that is an integer
-        string_integer = '123'
- 
-        # WHEN: We "convert" it to an integer
-        integer_result = self.media_item._try_int(string_integer)
- 
-        # THEN: We should get back an integer
-        self.assertIsInstance(integer_result, int, 'The result should be an integer')
-        self.assertEqual(integer_result, 123, 'The result should be 123')
-
-    def try_int_with_string_noninteger_test(self):
-        """
-        Test the _try_int function with a string not containing an integer
-        """
-        # GIVEN: A string that is not an integer
-        string_noninteger = 'abc'
- 
-        # WHEN: We "convert" it to an integer
-        noninteger_result = self.media_item._try_int(string_noninteger)
- 
-        # THEN: We should get back the original string
-        self.assertIsInstance(noninteger_result, type(string_noninteger), 'The result type should be the same')
-        self.assertEqual(noninteger_result, string_noninteger, 'The result value should be the same')
-
     def natural_sort_key_test(self):
         """
         Test the _natural_sort_key function
         """
         # GIVEN: A string to be converted into a sort key
-        string_sort_key = 'A1B12C123'
+        string_sort_key = 'A1B12C'
  
         # WHEN: We attempt to create a sort key
         sort_key_result = self.media_item._natural_sort_key(string_sort_key)
  
         # THEN: We should get back a tuple split on integers
-        self.assertEqual(sort_key_result, ['A', 1, 'B', 12, 'C', 123])
+        self.assertEqual(sort_key_result, ['a', 1, 'b', 12, 'c'])
+
+    def build_remote_search_test(self):
+        """
+        Test results for the remote search api
+        """
+        # GIVEN: A Song and a search a JSON array should be returned.
+        mock_song = MagicMock()
+        mock_song.id = 123
+        mock_song.title = 'My Song'
+        mock_song.search_title = 'My Song'
+        mock_song.alternate_title = 'My alternative'
+        self.media_item.search_entire = MagicMock()
+        self.media_item.search_entire.return_value = [mock_song]
+
+        # WHEN: I process a search
+        search_results = self.media_item.search('My Song', False)
+
+        # THEN: The correct formatted results are returned
+        self.assertEqual(search_results, [[123, 'My Song', 'My alternative']])

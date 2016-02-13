@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,7 @@
 
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import Registry
 from openlp.core.lib import ServiceItem
@@ -43,7 +43,7 @@ class TestListPreviewWidget(TestCase, TestMixin):
         """
         Registry.create()
         self.setup_application()
-        self.main_window = QtGui.QMainWindow()
+        self.main_window = QtWidgets.QMainWindow()
         self.image = QtGui.QImage(1, 1, QtGui.QImage.Format_RGB32)
         self.image_manager = MagicMock()
         self.image_manager.get_image.return_value = self.image

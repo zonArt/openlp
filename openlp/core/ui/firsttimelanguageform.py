@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,14 +22,14 @@
 """
 The language selection dialog.
 """
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib.ui import create_action
 from openlp.core.utils import LanguageManager
 from .firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
 
 
-class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
+class FirstTimeLanguageForm(QtWidgets.QDialog, Ui_FirstTimeLanguageDialog):
     """
     The language selection dialog.
     """
@@ -37,17 +37,17 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         """
         Constructor
         """
-        super(FirstTimeLanguageForm, self).__init__(parent)
+        super(FirstTimeLanguageForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.qm_list = LanguageManager.get_qm_list()
         self.language_combo_box.addItem('Autodetect')
         self.language_combo_box.addItems(sorted(self.qm_list.keys()))
 
-    def exec_(self):
+    def exec(self):
         """
         Run the Dialog with correct heading.
         """
-        return QtGui.QDialog.exec_(self)
+        return QtWidgets.QDialog.exec(self)
 
     def accept(self):
         """
@@ -61,7 +61,7 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
             LanguageManager.auto_language = False
             action = create_action(None, self.language_combo_box.currentText())
             LanguageManager.set_language(action, False)
-        return QtGui.QDialog.accept(self)
+        return QtWidgets.QDialog.accept(self)
 
     def reject(self):
         """
@@ -69,4 +69,4 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         """
         LanguageManager.auto_language = True
         LanguageManager.set_language(False, False)
-        return QtGui.QDialog.reject(self)
+        return QtWidgets.QDialog.reject(self)

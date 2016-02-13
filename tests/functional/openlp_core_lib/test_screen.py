@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@ Package to test the openlp.core.lib.screenlist package.
 """
 from unittest import TestCase
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry
 from openlp.core.lib import ScreenList
@@ -49,7 +49,7 @@ class TestScreenList(TestCase):
         self.desktop.screenCount.return_value = SCREEN['number']
         self.desktop.screenGeometry.return_value = SCREEN['size']
 
-        self.application = QtGui.QApplication.instance()
+        self.application = QtWidgets.QApplication.instance()
         Registry.create()
         self.application.setOrganizationName('OpenLP-tests')
         self.application.setOrganizationDomain('openlp.org')

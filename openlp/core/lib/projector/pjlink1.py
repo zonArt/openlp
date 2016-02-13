@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,9 @@
 
     See PJLink Class 1 Specifications for details.
     http://pjlink.jbmia.or.jp/english/dl.html
+
         Section 5-1 PJLink Specifications
+
         Section 5-5 Guidelines for Input Terminals
 
     NOTE:
@@ -44,8 +46,8 @@ __all__ = ['PJLink1']
 
 from codecs import decode
 
-from PyQt4.QtCore import pyqtSignal, pyqtSlot
-from PyQt4.QtNetwork import QAbstractSocket, QTcpSocket
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5.QtNetwork import QAbstractSocket, QTcpSocket
 
 from openlp.core.common import translate, qmd5_hash
 from openlp.core.lib.projector.constants import *
@@ -99,7 +101,7 @@ class PJLink1(QTcpSocket):
         self.location = None
         self.notes = None
         self.dbid = None if 'dbid' not in kwargs else kwargs['dbid']
-        self.location = None if 'location' not in kwargs else kwargs['notes']
+        self.location = None if 'location' not in kwargs else kwargs['location']
         self.notes = None if 'notes' not in kwargs else kwargs['notes']
         # Poll time 20 seconds unless called with something else
         self.poll_time = 20000 if 'poll_time' not in kwargs else kwargs['poll_time'] * 1000
@@ -343,7 +345,7 @@ class PJLink1(QTcpSocket):
             # Authenticated login with salt
             log.debug('(%s) Setting hash with salt="%s"' % (self.ip, data_check[2]))
             log.debug('(%s) pin="%s"' % (self.ip, self.pin))
-            salt = qmd5_hash(salt=data_check[2].endcode('ascii'), data=self.pin.encode('ascii'))
+            salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
         else:
             salt = None
         # We're connected at this point, so go ahead and do regular I/O

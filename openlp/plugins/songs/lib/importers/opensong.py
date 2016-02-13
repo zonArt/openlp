@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -157,6 +157,7 @@ class OpenSongImport(SongImport):
                 if isinstance(fn_or_string, str):
                     if attr in ['ccli']:
                         if ustring:
+                            ustring = ''.join(re.findall('\d+', ustring))
                             setattr(self, fn_or_string, int(ustring))
                         else:
                             setattr(self, fn_or_string, None)
@@ -171,12 +172,12 @@ class OpenSongImport(SongImport):
         topics = set(self.topics)
         if 'theme' in fields:
             theme = str(root.theme)
-            subthemes = theme[theme.find(':')+1:].split('/')
+            subthemes = theme[theme.find(':') + 1:].split('/')
             for topic in subthemes:
                 topics.add(topic.strip())
         if 'alttheme' in fields:
             theme = str(root.alttheme)
-            subthemes = theme[theme.find(':')+1:].split('/')
+            subthemes = theme[theme.find(':') + 1:].split('/')
             for topic in subthemes:
                 topics.add(topic.strip())
         self.topics = list(topics)

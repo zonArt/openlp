@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,7 @@ by the shortcuts system.
 """
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Settings
 
@@ -238,10 +238,10 @@ class ActionList(object):
 
         :param action: The action to add (QAction). **Note**, the action must not have an empty ``objectName``.
         :param category: The category this action belongs to. The category has to be a python string. . **Note**,
-        if the category is ``None``, the category and its actions are being hidden in the shortcut dialog. However,
-        if they are added, it is possible to avoid assigning shortcuts twice, which is important.
+            if the category is ``None``, the category and its actions are being hidden in the shortcut dialog. However,
+            if they are added, it is possible to avoid assigning shortcuts twice, which is important.
         :param weight: The weight specifies how important a category is. However, this only has an impact on the order
-        the categories are displayed.
+            the categories are displayed.
         """
         if category not in self.categories:
             self.categories.append(category)
@@ -357,7 +357,8 @@ class ActionList(object):
         global_context = action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
         affected_actions = []
         if global_context:
-            affected_actions = [a for a in self.get_all_child_objects(action.parent()) if isinstance(a, QtGui.QAction)]
+            affected_actions = [a for a in self.get_all_child_objects(action.parent()) if isinstance(a,
+                                                                                                     QtWidgets.QAction)]
         for existing_action in existing_actions:
             if action is existing_action:
                 continue

@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,6 @@ import re
 import socket
 import urllib.parse
 import urllib.error
-from html.parser import HTMLParseError
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
@@ -289,8 +288,8 @@ class BGExtract(RegistryProperties):
         except UnicodeDecodeError:
             page_source = str(page_source, 'cp1251')
         try:
-            soup = BeautifulSoup(page_source)
-        except HTMLParseError:
+            soup = BeautifulSoup(page_source, 'lxml')
+        except Exception:
             log.error('BeautifulSoup could not parse the Bible page.')
             send_error_message('parse')
             return None
@@ -743,7 +742,7 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre
     :param reference_url: The URL to obtain the soup from.
     :param header: An optional HTTP header to pass to the bible web server.
     :param pre_parse_regex: A regular expression to run on the webpage. Allows manipulation of the webpage before
-    passing to BeautifulSoup for parsing.
+        passing to BeautifulSoup for parsing.
     :param pre_parse_substitute: The text to replace any matches to the regular expression with.
     """
     if not reference_url:
@@ -760,9 +759,9 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre
         page_source = re.sub(pre_parse_regex, pre_parse_substitute, page_source.decode())
     soup = None
     try:
-        soup = BeautifulSoup(page_source)
+        soup = BeautifulSoup(page_source, 'lxml')
         CLEANER_REGEX.sub('', str(soup))
-    except HTMLParseError:
+    except Exception:
         log.exception('BeautifulSoup could not parse the bible page.')
     if not soup:
         send_error_message('parse')

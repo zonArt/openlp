@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 from sqlalchemy.sql import or_, func, and_
 
 from openlp.core.common import Registry, Settings, UiStrings, translate
@@ -47,6 +47,8 @@ class CustomMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Custom Slides.
     """
+    custom_go_live = QtCore.pyqtSignal(list)
+    custom_add_to_service = QtCore.pyqtSignal(list)
     log.info('Custom Media Item loaded')
 
     def __init__(self, parent, plugin):
@@ -57,6 +59,8 @@ class CustomMediaItem(MediaManagerItem):
         """
         Do some additional setup.
         """
+        self.custom_go_live.connect(self.go_live_remote)
+        self.custom_add_to_service.connect(self.add_to_service_remote)
         self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.db_manager)
         self.single_service_item = False
         self.quick_preview_allowed = True
@@ -72,9 +76,8 @@ class CustomMediaItem(MediaManagerItem):
         self.toolbar.addSeparator()
         self.add_search_to_toolbar()
         # Signals and slots
-        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL('cleared()'), self.on_clear_text_button_click)
-        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL('searchTypeChanged(int)'),
-                               self.on_search_text_button_clicked)
+        self.search_text_edit.cleared.connect(self.on_clear_text_button_click)
+        self.search_text_edit.searchTypeChanged.connect(self.on_search_text_button_clicked)
         Registry().register_function('custom_load_list', self.load_list)
         Registry().register_function('custom_preview', self.on_preview_click)
         Registry().register_function('custom_create_from_service', self.create_from_service_item)
@@ -85,6 +88,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         log.debug('Config loaded')
         self.add_custom_from_service = Settings().value(self.settings_section + '/add custom from service')
+        self.is_search_as_you_type_enabled = Settings().value('advanced/search as type')
 
     def retranslateUi(self):
         """
@@ -116,7 +120,7 @@ class CustomMediaItem(MediaManagerItem):
         self.list_view.clear()
         custom_slides.sort()
         for custom_slide in custom_slides:
-            custom_name = QtGui.QListWidgetItem(custom_slide.title)
+            custom_name = QtWidgets.QListWidgetItem(custom_slide.title)
             custom_name.setData(QtCore.Qt.UserRole, custom_slide.id)
             self.list_view.addItem(custom_name)
             # Auto-select the custom.
@@ -133,7 +137,7 @@ class CustomMediaItem(MediaManagerItem):
         Handle the New item event
         """
         self.edit_custom_form.load_custom(0)
-        self.edit_custom_form.exec_()
+        self.edit_custom_form.exec()
         self.on_clear_text_button_click()
         self.on_selection_change()
 
@@ -149,7 +153,7 @@ class CustomMediaItem(MediaManagerItem):
         valid = self.plugin.db_manager.get_object(CustomSlide, custom_id)
         if valid:
             self.edit_custom_form.load_custom(custom_id, preview)
-            if self.edit_custom_form.exec_() == QtGui.QDialog.Accepted:
+            if self.edit_custom_form.exec() == QtWidgets.QDialog.Accepted:
                 self.remote_triggered = True
                 self.remote_custom = custom_id
                 self.auto_select_id = -1
@@ -173,7 +177,7 @@ class CustomMediaItem(MediaManagerItem):
             item = self.list_view.currentItem()
             item_id = item.data(QtCore.Qt.UserRole)
             self.edit_custom_form.load_custom(item_id, False)
-            self.edit_custom_form.exec_()
+            self.edit_custom_form.exec()
             self.auto_select_id = -1
             self.on_search_text_button_clicked()
 
@@ -183,13 +187,13 @@ class CustomMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.list_view, UiStrings().SelectDelete):
             items = self.list_view.selectedIndexes()
-            if QtGui.QMessageBox.question(self, UiStrings().ConfirmDelete,
-                                          translate('CustomPlugin.MediaItem',
-                                                    'Are you sure you want to delete the %n selected custom slide(s)?',
-                                                    '', QtCore.QCoreApplication.CodecForTr, len(items)),
-                                          QtGui.QMessageBox.StandardButtons(
-                                              QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                                          QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
+            if QtWidgets.QMessageBox.question(
+                    self, UiStrings().ConfirmDelete,
+                    translate('CustomPlugin.MediaItem',
+                              'Are you sure you want to delete the "%d" selected custom slide(s)?') % len(items),
+                    QtWidgets.QMessageBox.StandardButtons(
+                        QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
+                    QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
                 return
             row_list = [item.row() for item in self.list_view.selectedIndexes()]
             row_list.sort(reverse=True)
@@ -203,6 +207,7 @@ class CustomMediaItem(MediaManagerItem):
         Set the focus
         """
         self.search_text_edit.setFocus()
+        self.search_text_edit.selectAll()
 
     def generate_slide_data(self, service_item, item=None, xml_version=False,
                             remote=False, context=ServiceItemContext.Service):
@@ -269,11 +274,12 @@ class CustomMediaItem(MediaManagerItem):
 
         :param text: The search text
         """
-        search_length = 2
-        if len(text) > search_length:
-            self.on_search_text_button_clicked()
-        elif not text:
-            self.on_clear_text_button_click()
+        if self.is_search_as_you_type_enabled:
+            search_length = 2
+            if len(text) > search_length:
+                self.on_search_text_button_clicked()
+            elif not text:
+                self.on_clear_text_button_click()
 
     def service_load(self, item):
         """

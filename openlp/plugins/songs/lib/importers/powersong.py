@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -71,7 +71,7 @@ class PowerSongImport(SongImport):
         """
         Checks if source is a PowerSong 1.0 folder:
             * is a directory
-            * contains at least one *.song file
+            * contains at least one \*.song file
         """
         if os.path.isdir(import_source):
             for file in os.listdir(import_source):

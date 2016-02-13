@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,50 +36,49 @@ class SongProImport(SongImport):
 
     **SongPro Song File Format:**
 
-    SongPro has the option to export under its File menu
-    This produces files containing single or multiple songs
-    The file is text with lines tagged with # followed by an identifier.
-    This is documented here: http://creationsoftware.com/ImportIdentifiers.php
-    An example here: http://creationsoftware.com/ExampleImportingManySongs.txt
-
-    #A - next line is the Song Author
-    #B - the lines following until next tagged line are the "Bridge" words
-        (can be in rtf or plain text) which we map as B1
-    #C - the lines following until next tagged line are the chorus words
-        (can be in rtf or plain text)
-        which we map as C1
-    #D - the lines following until next tagged line are the "Ending" words
-        (can be in rtf or plain text) which we map as E1
-    #E - this song ends here, so we process the song -
-        and start again at the next line
-    #G - next line is the Group
-    #M - next line is the Song Number
-    #N - next line are Notes
-    #R - next line is the SongCopyright
-    #O - next line is the Verse Sequence
-    #T - next line is the Song Title
-    #1 - #7 the lines following until next tagged line are the verse x words
-        (can be in rtf or plain text)
+        | SongPro has the option to export under its File menu
+        | This produces files containing single or multiple songs
+        | The file is text with lines tagged with # followed by an identifier.
+        | This is documented here: http://creationsoftware.com/ImportIdentifiers.php
+        | An example here: http://creationsoftware.com/ExampleImportingManySongs.txt
+        |
+        | #A - next line is the Song Author
+        | #B - the lines following until next tagged line are the "Bridge" words
+        |     (can be in rtf or plain text) which we map as B1
+        | #C - the lines following until next tagged line are the chorus words
+        |     (can be in rtf or plain text)
+        |     which we map as C1
+        | #D - the lines following until next tagged line are the "Ending" words
+        |     (can be in rtf or plain text) which we map as E1
+        | #E - this song ends here, so we process the song -
+        |     and start again at the next line
+        | #G - next line is the Group
+        | #M - next line is the Song Number
+        | #N - next line are Notes
+        | #R - next line is the SongCopyright
+        | #O - next line is the Verse Sequence
+        | #T - next line is the Song Title
+        | #1 - #7 the lines following until next tagged line are the verse x words
+        |     (can be in rtf or plain text)
     """
     def __init__(self, manager, **kwargs):
         """
         Initialise the SongPro importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(SongProImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
         Receive a single file or a list of files to import.
         """
         self.encoding = None
-        with open(self.import_source, 'r') as songs_file:
+        with open(self.import_source, 'rt') as songs_file:
             self.import_wizard.progress_bar.setMaximum(0)
             tag = ''
             text = ''
             for file_line in songs_file:
                 if self.stop_import_flag:
                     break
-                file_line = str(file_line, 'cp1252')
                 file_text = file_line.rstrip()
                 if file_text and file_text[0] == '#':
                     self.process_section(tag, text.rstrip())
@@ -87,6 +86,7 @@ class SongProImport(SongImport):
                     text = ''
                 else:
                     text += file_line
+            self.finish()
 
     def process_section(self, tag, text):
         """

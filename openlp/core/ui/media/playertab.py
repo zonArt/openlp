@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +22,8 @@
 """
 The :mod:`~openlp.core.ui.media.playertab` module holds the configuration tab for the media stuff.
 """
-from PyQt4 import QtCore, QtGui
+import platform
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, Settings, UiStrings, translate
 from openlp.core.lib import ColorButton, SettingsTab
@@ -30,7 +31,7 @@ from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 
 
-class MediaQCheckBox(QtGui.QCheckBox):
+class MediaQCheckBox(QtWidgets.QCheckBox):
     """
     MediaQCheckBox adds an extra property, player_name to the QCheckBox class.
     """
@@ -61,46 +62,46 @@ class PlayerTab(SettingsTab):
         """
         self.setObjectName('MediaTab')
         super(PlayerTab, self).setupUi()
-        self.background_color_group_box = QtGui.QGroupBox(self.left_column)
+        self.background_color_group_box = QtWidgets.QGroupBox(self.left_column)
         self.background_color_group_box.setObjectName('background_color_group_box')
-        self.form_layout = QtGui.QFormLayout(self.background_color_group_box)
+        self.form_layout = QtWidgets.QFormLayout(self.background_color_group_box)
         self.form_layout.setObjectName('form_layout')
-        self.color_layout = QtGui.QHBoxLayout()
-        self.background_color_label = QtGui.QLabel(self.background_color_group_box)
+        self.color_layout = QtWidgets.QHBoxLayout()
+        self.background_color_label = QtWidgets.QLabel(self.background_color_group_box)
         self.background_color_label.setObjectName('background_color_label')
         self.color_layout.addWidget(self.background_color_label)
         self.background_color_button = ColorButton(self.background_color_group_box)
         self.background_color_button.setObjectName('background_color_button')
         self.color_layout.addWidget(self.background_color_button)
         self.form_layout.addRow(self.color_layout)
-        self.information_label = QtGui.QLabel(self.background_color_group_box)
+        self.information_label = QtWidgets.QLabel(self.background_color_group_box)
         self.information_label.setObjectName('information_label')
         self.information_label.setWordWrap(True)
         self.form_layout.addRow(self.information_label)
         self.left_layout.addWidget(self.background_color_group_box)
-        self.right_column.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
-        self.media_player_group_box = QtGui.QGroupBox(self.left_column)
+        self.right_column.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        self.media_player_group_box = QtWidgets.QGroupBox(self.left_column)
         self.media_player_group_box.setObjectName('media_player_group_box')
-        self.media_player_layout = QtGui.QVBoxLayout(self.media_player_group_box)
+        self.media_player_layout = QtWidgets.QVBoxLayout(self.media_player_group_box)
         self.media_player_layout.setObjectName('media_player_layout')
         self.player_check_boxes = {}
         self.left_layout.addWidget(self.media_player_group_box)
-        self.player_order_group_box = QtGui.QGroupBox(self.left_column)
+        self.player_order_group_box = QtWidgets.QGroupBox(self.left_column)
         self.player_order_group_box.setObjectName('player_order_group_box')
-        self.player_order_layout = QtGui.QHBoxLayout(self.player_order_group_box)
+        self.player_order_layout = QtWidgets.QHBoxLayout(self.player_order_group_box)
         self.player_order_layout.setObjectName('player_order_layout')
-        self.player_order_list_widget = QtGui.QListWidget(self.player_order_group_box)
-        size_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.player_order_list_widget = QtWidgets.QListWidget(self.player_order_group_box)
+        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(self.player_order_list_widget.sizePolicy().hasHeightForWidth())
         self.player_order_list_widget.setSizePolicy(size_policy)
         self.player_order_list_widget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.player_order_list_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.player_order_list_widget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.player_order_list_widget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.player_order_list_widget.setObjectName('player_order_list_widget')
         self.player_order_layout.addWidget(self.player_order_list_widget)
-        self.ordering_button_layout = QtGui.QVBoxLayout()
+        self.ordering_button_layout = QtWidgets.QVBoxLayout()
         self.ordering_button_layout.setObjectName('ordering_button_layout')
         self.ordering_button_layout.addStretch(1)
         self.ordering_up_button = create_button(self, 'ordering_up_button', role='up',
@@ -250,4 +251,9 @@ class PlayerTab(SettingsTab):
             if player.available:
                 checkbox.setText(player.display_name)
             else:
-                checkbox.setText(translate('OpenLP.PlayerTab', '%s (unavailable)') % player.display_name)
+                checkbox_text = translate('OpenLP.PlayerTab', '%s (unavailable)') % player.display_name
+                if player.name == 'vlc':
+                    checkbox_text += ' ' + translate('OpenLP.PlayerTab',
+                                                     'NOTE: To use VLC you must install the %s version',
+                                                     'Will insert "32bit" or "64bit"') % platform.architecture()[0]
+                checkbox.setText(checkbox_text)

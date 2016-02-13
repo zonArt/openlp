@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2015 OpenLP Developers                                   #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -164,29 +164,29 @@ class FormattingTags(object):
         Add a list of tags to the list.
 
         :param tags: The list with tags to add.
-        Each **tag** has to be a ``dict`` and should have the following keys:
+            Each **tag** has to be a ``dict`` and should have the following keys:
 
-        * desc
-            The formatting tag's description, e. g. **Red**
+            * desc
+                The formatting tag's description, e. g. **Red**
 
-        * start tag
-            The start tag, e. g. ``{r}``
+            * start tag
+                The start tag, e. g. ``{r}``
 
-        * end tag
-            The end tag, e. g. ``{/r}``
+            * end tag
+                The end tag, e. g. ``{/r}``
 
-        * start html
-            The start html tag. For instance ``<span style="-webkit-text-fill-color:red">``
+            * start html
+                The start html tag. For instance ``<span style="-webkit-text-fill-color:red">``
 
-        * end html
-            The end html tag. For example ``</span>``
+            * end html
+                The end html tag. For example ``</span>``
 
-        * protected
-            A boolean stating whether this is a build-in tag or not. Should be ``True`` in most cases.
+            * protected
+                A boolean stating whether this is a build-in tag or not. Should be ``True`` in most cases.
 
-        * temporary
-            A temporary tag will not be saved, but is also considered when displaying text containing the tag. It has
-            to be a ``boolean``.
+            * temporary
+                A temporary tag will not be saved, but is also considered when displaying text containing the tag. It
+                has to be a ``boolean``.
         """
         FormattingTags.html_expands.extend(tags)
 
