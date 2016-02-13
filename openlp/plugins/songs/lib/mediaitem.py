@@ -253,7 +253,7 @@ class SongMediaItem(MediaManagerItem):
         search_keywords = search_keywords.rpartition(' ')
         search_book = search_keywords[0]
         search_entry = re.sub(r'[^0-9]', '', search_keywords[2])
-		
+
         songbook_entries = (self.plugin.manager.session.query(SongBookEntry)
                             .join(Book))
         songbook_entries = sorted(songbook_entries, key=lambda songbook_entry: (songbook_entry.songbook.name, self._natural_sort_key(songbook_entry.entry)))
