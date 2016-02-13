@@ -427,7 +427,7 @@ class TestMediaItem(TestCase, TestMixin):
         sort_key_result = self.media_item._natural_sort_key(string_sort_key)
  
         # THEN: We should get back a tuple split on integers
-        self.assertEqual(sort_key_result, ['A', 1, 'B', 12, 'C'])
+        self.assertEqual(sort_key_result, ['a', 1, 'b', 12, 'c'])
 
     def build_remote_search_test(self):
         """

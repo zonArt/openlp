@@ -699,7 +699,7 @@ class SongMediaItem(MediaManagerItem):
         Return a tuple by which s is sorted.
         :param s: A string value from the list we want to sort.
         """
-        return [int(text) if text.isdecimal() else text
+        return [int(text) if text.isdecimal() else text.lower()
             for text in re.split('(\d+)', s)]
 
     def search(self, string, show_error):
