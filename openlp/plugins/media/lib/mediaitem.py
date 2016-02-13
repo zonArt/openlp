@@ -79,15 +79,15 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.has_search = True
         self.media_object = None
         self.display_controller = DisplayController(self.parent())
-        self.display_controller.controller_layout = QtWidgets.QVBoxLayout()
-        self.media_controller.register_controller(self.display_controller)
-        self.media_controller.set_controls_visible(self.display_controller, False)
-        self.display_controller.preview_display = Display(self.display_controller)
-        self.display_controller.preview_display.hide()
-        self.display_controller.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
-        self.display_controller.preview_display.screen = {'size': self.display_controller.preview_display.geometry()}
-        self.display_controller.preview_display.setup()
-        self.media_controller.setup_display(self.display_controller.preview_display, False)
+        # self.display_controller.controller_layout = QtWidgets.QVBoxLayout()
+        # self.media_controller.register_controller(self.display_controller)
+        # self.media_controller.set_controls_visible(self.display_controller, False)
+        # self.display_controller.preview_display = Display(self.display_controller)
+        # self.display_controller.preview_display.hide()
+        # self.display_controller.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
+        # self.display_controller.preview_display.screen = {'size': self.display_controller.preview_display.geometry()}
+        # self.display_controller.preview_display.setup()
+        # self.media_controller.setup_display(self.display_controller.preview_display, False)
         Registry().register_function('video_background_replaced', self.video_background_replaced)
         Registry().register_function('mediaitem_media_rebuild', self.rebuild_players)
         Registry().register_function('config_screen_changed', self.display_setup)

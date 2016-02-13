@@ -441,24 +441,33 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param service_item: The ServiceItem containing the details to be played.
         """
         print('### media_length')
-        controller = self.display_controllers[DisplayControllerType.Plugin]
-        print(controller)
+        # controller = self.display_controllers[DisplayControllerType.Plugin]
+        # print(controller)
         # stop running videos
-        self.media_reset(controller)
-        controller.media_info = MediaInfo()
-        controller.media_info.volume = 0
-        controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
-        display = controller.preview_display
-        if not self._check_file_type(controller, display, service_item):
+        #self.media_reset(controller)
+        media_info = MediaInfo()
+        media_info.volume = 0
+        media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
+        # display = controller.preview_display
+        suffix = '*.%s' % media_info.file_info.suffix().lower()
+        used_players = get_media_players()[0]
+        print(used_players)
+        print(used_players[0])
+        player = self.media_players[used_players[0]]
+        print(suffix)
+        print(suffix in player.video_extensions_list)
+        print(suffix in player.audio_extensions_list)
+        print(suffix in player.video_extensions_list or suffix in player.audio_extensions_list)
+        if not suffix in player.video_extensions_list and not suffix in player.audio_extensions_list:
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                                       translate('MediaPlugin.MediaItem', 'Unsupported File'))
+                                       translate('MediaPlugin.MediaItem', 'File %s not supported using player %s') %
+                                       (service_item.get_frame_path(), used_players[0]))
             return False
         media_data = MediaInfoWrapper.parse(service_item.get_frame_path())
         print(media_data.to_data())
         # duration returns in milli seconds
         service_item.set_media_length(media_data.tracks[0].duration)
-        log.debug('use %s controller' % self.current_media_players[controller.controller_type])
         return True
 
     def media_setup_optical(self, filename, title, audio_track, subtitle_track, start, end, display, controller):
@@ -516,14 +525,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             controller.media_info.media_type = MediaType.DVD
         return True
 
-    def _check_file_type(self, controller, display, service_item):
-        """
-        Select the correct media Player type from the prioritized Player list
-
-        :param controller: First element is the controller which should be used
-        :param display: Which display to use
-        :param service_item: The ServiceItem containing the details to be played.
-        """
+    @staticmethod
+    def _get_used_players(service_item):
         used_players = get_media_players()[0]
         # If no player, we can't play
         if not used_players:
@@ -535,6 +538,17 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 used_players = default_player
             else:
                 used_players = [service_item.processor.lower()]
+        return used_players
+
+    def _check_file_type(self, controller, display, service_item):
+        """
+        Select the correct media Player type from the prioritized Player list
+
+        :param controller: First element is the controller which should be used
+        :param display: Which display to use
+        :param service_item: The ServiceItem containing the details to be played.
+        """
+        used_players = self._get_used_players(service_item)
         if controller.media_info.file_info.isFile():
             suffix = '*.%s' % controller.media_info.file_info.suffix().lower()
             for title in used_players:
