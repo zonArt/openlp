@@ -48,10 +48,6 @@ class TestMediaItem(TestCase, TestMixin):
         with patch('openlp.core.lib.mediamanageritem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
             self.media_item = SongMediaItem(None, MagicMock())
-            self.media_item.list_view = MagicMock()
-            self.media_item.list_view.save_auto_select_id = MagicMock()
-            self.media_item.list_view.clear = MagicMock()
-            self.media_item.list_view.addItem = MagicMock()
             self.media_item.display_songbook = False
             self.media_item.display_copyright_symbol = False
         self.setup_application()
@@ -63,37 +59,6 @@ class TestMediaItem(TestCase, TestMixin):
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         self.destroy_settings()
-
-    def display_results_book_test(self):
-        """
-        Test displaying song search results grouped by book with basic song
-        """
-        # GIVEN: Search results grouped by book, plus a mocked QtListWidgetItem
-        with patch('openlp.core.lib.QtGui.QListWidgetItem') as MockedQListWidgetItem, \
-                patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
-            mock_search_results = []
-            mock_book = MagicMock()
-            mock_song = MagicMock()
-            mock_book.name = 'My Book'
-            mock_book.songs = []
-            mock_song.id = 1
-            mock_song.title = 'My Song'
-            mock_song.sort_key = 'My Song'
-            mock_song.song_number = '123'
-            mock_song.temporary = False
-            mock_book.songs.append(mock_song)
-            mock_search_results.append(mock_book)
-            mock_qlist_widget = MagicMock()
-            MockedQListWidgetItem.return_value = mock_qlist_widget
-
-            # WHEN: I display song search results grouped by book
-            self.media_item.display_results_book(mock_search_results)
-
-            # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
-            self.media_item.list_view.clear.assert_called_with()
-            MockedQListWidgetItem.assert_called_with('My Book - 123 (My Song)')
-            mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_song.id)
-            self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
 
     def build_song_footer_one_author_test(self):
         """
