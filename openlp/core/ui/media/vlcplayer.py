@@ -144,6 +144,9 @@ class VlcPlayer(MediaPlayer):
     def setup(self, display):
         """
         Set up the media player
+
+        :param display: The display where the media is
+        :return:
         """
         vlc = get_vlc()
         display.vlc_widget = QtWidgets.QFrame(display)
@@ -186,6 +189,9 @@ class VlcPlayer(MediaPlayer):
     def load(self, display):
         """
         Load a video into VLC
+
+        :param display: The display where the media is
+        :return:
         """
         vlc = get_vlc()
         log.debug('load vid in Vlc Controller')
@@ -219,13 +225,17 @@ class VlcPlayer(MediaPlayer):
         # and once to just get media length.
         #
         # Media plugin depends on knowing media length before playback.
-        controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
+        #controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
         return True
 
     def media_state_wait(self, display, media_state):
         """
         Wait for the video to change its state
         Wait no longer than 60 seconds. (loading an iso file needs a long time)
+
+        :param media_state: The state of the playing media
+        :param display: The display where the media is
+        :return:
         """
         vlc = get_vlc()
         start = datetime.now()
@@ -240,12 +250,18 @@ class VlcPlayer(MediaPlayer):
     def resize(self, display):
         """
         Resize the player
+
+        :param display: The display where the media is
+        :return:
         """
         display.vlc_widget.resize(display.size())
 
     def play(self, display):
         """
         Play the current item
+
+        :param display: The display where the media is
+        :return:
         """
         vlc = get_vlc()
         controller = display.controller
@@ -280,11 +296,13 @@ class VlcPlayer(MediaPlayer):
                 start_time = controller.media_info.start_time
             controller.media_info.length = controller.media_info.end_time - controller.media_info.start_time
         else:
-            controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
+            print("vlc len", controller.media_info.length)
+            #controller.media_info.length = int(display.vlc_media_player.get_media().get_duration())
         self.volume(display, controller.media_info.volume)
         if start_time > 0 and display.vlc_media_player.is_seekable():
-            display.vlc_media_player.set_time(int(start_time * 1000))
-        controller.seek_slider.setMaximum(controller.media_info.length * 1000)
+            display.vlc_media_player.set_time(int(start_time))
+        controller.seek_slider.setMaximum(controller.media_info.length)
+        print("VLC play " + str(controller.media_info.length))
         self.state = MediaState.Playing
         display.vlc_widget.raise_()
         return True
@@ -292,6 +310,9 @@ class VlcPlayer(MediaPlayer):
     def pause(self, display):
         """
         Pause the current item
+
+        :param display: The display where the media is
+        :return:
         """
         vlc = get_vlc()
         if display.vlc_media.get_state() != vlc.State.Playing:
@@ -303,6 +324,9 @@ class VlcPlayer(MediaPlayer):
     def stop(self, display):
         """
         Stop the current item
+
+        :param display: The display where the media is
+        :return:
         """
         threading.Thread(target=display.vlc_media_player.stop).start()
         self.state = MediaState.Stopped
@@ -310,6 +334,10 @@ class VlcPlayer(MediaPlayer):
     def volume(self, display, vol):
         """
         Set the volume
+
+        :param vol: The volume to be sets
+        :param display: The display where the media is
+        :return:
         """
         if display.has_audio:
             display.vlc_media_player.audio_set_volume(vol)
@@ -317,6 +345,9 @@ class VlcPlayer(MediaPlayer):
     def seek(self, display, seek_value):
         """
         Go to a particular position
+
+        :param seek_value: The position of where a seek goes to
+        :param display: The display where the media is
         """
         if display.controller.media_info.media_type == MediaType.CD \
                 or display.controller.media_info.media_type == MediaType.DVD:
@@ -327,6 +358,8 @@ class VlcPlayer(MediaPlayer):
     def reset(self, display):
         """
         Reset the player
+
+        :param display: The display where the media is
         """
         display.vlc_media_player.stop()
         display.vlc_widget.setVisible(False)
@@ -335,6 +368,9 @@ class VlcPlayer(MediaPlayer):
     def set_visible(self, display, status):
         """
         Set the visibility
+
+        :param display: The display where the media is
+        :param status: The visibility status
         """
         if self.has_own_widget:
             display.vlc_widget.setVisible(status)
@@ -342,6 +378,8 @@ class VlcPlayer(MediaPlayer):
     def update_ui(self, display):
         """
         Update the UI
+
+        :param display: The display where the media is
         """
         vlc = get_vlc()
         # Stop video if playback is finished.

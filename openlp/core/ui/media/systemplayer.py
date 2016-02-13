@@ -4,14 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
-# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -216,7 +209,8 @@ class SystemPlayer(MediaPlayer):
 
     @staticmethod
     def set_duration(controller, duration):
-        controller.media_info.length = int(duration / 1000)
+        print("system set duration", controller.media_info.length, duration)
+        #controller.media_info.length = int(duration / 1000)
         controller.seek_slider.setMaximum(controller.media_info.length * 1000)
 
     def update_ui(self, display):

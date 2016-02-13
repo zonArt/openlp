@@ -33,11 +33,14 @@ from openlp.core.lib import OpenLPToolbar, ItemCapabilities
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players,\
     parse_optical_path
+from openlp.core.ui.media.vendor.mediainfoWrapper import MediaInfoWrapper
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.common import AppLocation
 from openlp.core.ui import DisplayControllerType
 
 log = logging.getLogger(__name__)
+
+TICK_TIME = 200
 
 
 class MediaSlider(QtWidgets.QSlider):
@@ -97,7 +100,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         self.current_media_players = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(200)
+        self.timer.setInterval(TICK_TIME)
         # Signals
         self.timer.timeout.connect(self.media_state)
         Registry().register_function('playbackPlay', self.media_play_msg)
@@ -202,6 +205,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 self.current_media_players[source].update_ui(display)
                 if self.current_media_players[source].state == MediaState.Playing:
                     any_active = True
+                    self.tick(self.display_controllers[source])
         # There are still any active players - no need to stop timer.
             if any_active:
                 return
@@ -274,6 +278,11 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                                                icon=':/slides/media_playback_stop.png',
                                                tooltip=translate('OpenLP.SlideController', 'Stop playing media.'),
                                                triggers=controller.send_to_plugins)
+        controller.position_label = QtWidgets.QLabel()
+        controller.position_label.setText(' 00:00 / 00:00')
+        controller.position_label.setToolTip(translate('OpenLP.SlideController', 'Video timer.'))
+        controller.position_label.setObjectName('position_label')
+        controller.mediabar.add_toolbar_widget(controller.position_label)
         # Build the seek_slider.
         controller.seek_slider = MediaSlider(QtCore.Qt.Horizontal, self, controller)
         controller.seek_slider.setMaximum(1000)
@@ -353,9 +362,10 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param hidden: The player which is doing the playing
         :param video_behind_text: Is the video to be played behind text.
         """
-        log.debug('video')
+        print("### video", source)
         is_valid = False
         controller = self.display_controllers[source]
+        print(controller)
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
@@ -373,6 +383,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                                                     controller)
             else:
                 log.debug('video is not optical and live')
+                controller.media_info.length = service_item.media_length
                 is_valid = self._check_file_type(controller, display, service_item)
             display.override['theme'] = ''
             display.override['video'] = True
@@ -392,6 +403,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                                                     controller)
             else:
                 log.debug('video is not optical and preview')
+                controller.media_info.length = service_item.media_length
                 is_valid = self._check_file_type(controller, display, service_item)
         if not is_valid:
             # Media could not be loaded correctly
@@ -428,8 +440,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param service_item: The ServiceItem containing the details to be played.
         """
+        print('### media_length')
         controller = self.display_controllers[DisplayControllerType.Plugin]
-        log.debug('media_length')
+        print(controller)
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
@@ -441,12 +454,10 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
                                        translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
-        if not self.media_play(controller):
-            critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                                       translate('MediaPlugin.MediaItem', 'Unsupported File'))
-            return False
-        service_item.set_media_length(controller.media_info.length)
-        self.media_stop(controller)
+        media_data = MediaInfoWrapper.parse(service_item.get_frame_path())
+        print(media_data.to_data())
+        # duration returns in milli seconds
+        service_item.set_media_length(media_data.tracks[0].duration)
         log.debug('use %s controller' % self.current_media_players[controller.controller_type])
         return True
 
@@ -464,7 +475,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller: The media contraoller.
         :return: True if setup succeded else False.
         """
-        log.debug('media_setup_optical')
         if controller is None:
             controller = self.display_controllers[DisplayControllerType.Plugin]
         # stop running videos
@@ -573,7 +583,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param msg: First element is the controller which should be used
         :param status:
         """
-        log.debug('media_play_msg')
         self.media_play(msg[0], status)
 
     def media_play(self, controller, status=True):
@@ -583,7 +592,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller: The controller to be played
         :param status:
         """
-        log.debug('media_play')
+        print('### media_play')
         controller.seek_slider.blockSignals(True)
         controller.volume_slider.blockSignals(True)
         display = self._define_display(controller)
@@ -615,6 +624,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             self.timer.start()
         controller.seek_slider.blockSignals(False)
         controller.volume_slider.blockSignals(False)
+        controller.media_info.playing = True
         return True
 
     def media_pause_msg(self, msg):
@@ -623,8 +633,29 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param msg: First element is the controller which should be used
         """
-        log.debug('media_pause_msg')
         self.media_pause(msg[0])
+
+    def tick(self, controller):
+        """
+        Add a tick while the media is playing but only count if not paused
+
+        :param controller:  The Controller to be processed
+        """
+        if controller.media_info.playing and controller.media_info.length > 0:
+            print("tick", controller.media_info.timer, controller.media_info.length)
+            if controller.media_info.timer > controller.media_info.length:
+                controller.media_info.timer = controller.media_info.length
+                controller.media_info.timer = controller.media_info.length
+                self.media_stop(controller)
+            controller.media_info.timer += TICK_TIME
+            seconds = controller.media_info.timer // 1000
+            minutes = seconds // 60
+            seconds %= 60
+            total_seconds = controller.media_info.length
+            total_minutes = total_seconds // 60
+            total_seconds %= 60
+            controller.position_label.setText(' %02d:%02d / %02d:%02d' %
+                                              (minutes, seconds, total_minutes, total_seconds))
 
     def media_pause(self, controller):
         """
@@ -632,12 +663,13 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param controller: The Controller to be paused
         """
-        log.debug('media_pause')
+        print('### media_pause')
         display = self._define_display(controller)
         self.current_media_players[controller.controller_type].pause(display)
         controller.mediabar.actions['playbackPlay'].setVisible(True)
         controller.mediabar.actions['playbackStop'].setDisabled(False)
         controller.mediabar.actions['playbackPause'].setVisible(False)
+        controller.media_info.playing = False
 
     def media_stop_msg(self, msg):
         """
@@ -645,7 +677,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param msg: First element is the controller which should be used
         """
-        log.debug('media_stop_msg')
         self.media_stop(msg[0])
 
     def media_stop(self, controller):
@@ -654,7 +685,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param controller: The controller that needs to be stopped
         """
-        log.debug('media_stop')
+        print('### media_stop')
         display = self._define_display(controller)
         if controller.controller_type in self.current_media_players:
             display.frame.evaluateJavaScript('show_blank("black");')
@@ -664,6 +695,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             controller.mediabar.actions['playbackPlay'].setVisible(True)
             controller.mediabar.actions['playbackStop'].setDisabled(True)
             controller.mediabar.actions['playbackPause'].setVisible(False)
+            controller.media_info.playing = False
+            controller.media_info.timer = 1000
+            controller.media_timer = 0
 
     def media_volume_msg(self, msg):
         """
@@ -694,7 +728,6 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param msg: First element is the controller which should be used
             Second element is a list with the seek value as first element
         """
-        log.debug('media_seek')
         controller = msg[0]
         seek_value = msg[1][0]
         self.media_seek(controller, seek_value)
@@ -706,15 +739,15 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller: The controller to use.
         :param seek_value: The value to set.
         """
-        log.debug('media_seek')
         display = self._define_display(controller)
         self.current_media_players[controller.controller_type].seek(display, seek_value)
+        controller.media_info.timer = seek_value
 
     def media_reset(self, controller):
         """
         Responds to the request to reset a loaded video
+        :param controller: The controller to use.
         """
-        log.debug('media_reset')
         self.set_controls_visible(controller, False)
         display = self._define_display(controller)
         if controller.controller_type in self.current_media_players:

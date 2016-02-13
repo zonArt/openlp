@@ -281,7 +281,7 @@ class WebkitPlayer(MediaPlayer):
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         # TODO add playing check and get the correct media length
-        controller.media_info.length = length
+        print("Webkit play " + str(length))
         self.state = MediaState.Playing
         display.web_view.raise_()
         return True
@@ -376,6 +376,7 @@ class WebkitPlayer(MediaPlayer):
             if length and length != float('inf'):
                 length = int(length * 1000)
         if current_time and length:
+            print("webkit update_ui", controller.media_info.length)
             controller.media_info.length = length
             controller.seek_slider.setMaximum(length)
             if not controller.seek_slider.isSliderDown():

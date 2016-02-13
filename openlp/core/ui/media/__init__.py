@@ -66,6 +66,8 @@ class MediaInfo(object):
     start_time = 0
     end_time = 0
     title_track = 0
+    playing = False
+    timer = 1000
     audio_track = 0
     subtitle_track = 0
     media_type = MediaType()
