@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fi" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fi" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -99,7 +98,7 @@ Do you want to continue anyway?</source>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="192"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
         <translation>Viestissä ei ole &lt;&gt; muuttujaa.
 Haluatko jatkaa siitä huolimatta?
@@ -113,7 +112,7 @@ Näytetään: Auto ABC-123 tukkii pelastustien.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="108"/>
-        <source>You haven&apos;t specified any text for your alert. 
+        <source>You haven't specified any text for your alert. 
 Please type in some text before clicking New.</source>
         <translation>Tyhjää pohjaa ei voida luoda,
 viesti ei voi olla tyhjä.
@@ -965,17 +964,17 @@ hakutuloksissa ja näytöllä.</translation>
     <message>
         <location filename="../../openlp/plugins/bibles/forms/booknamedialog.py" line="89"/>
         <source>Current name:</source>
-        <translation>&lt;font size=&quot;4”&gt;Kirjan nimi:&lt;/font&gt;</translation>
+        <translation>Kirjan nimi:</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/bibles/forms/booknamedialog.py" line="90"/>
         <source>Corresponding name:</source>
-        <translation>&lt;font size=&quot;4”&gt;Vastaava nimi:&lt;/font&gt;</translation>
+        <translation>Vastaava nimi:</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/bibles/forms/booknamedialog.py" line="91"/>
         <source>Show Books From</source>
-        <translation>&lt;font size=&quot;4”&gt;Näytä nimilistassa&lt;/font&gt;</translation>
+        <translation>Näytä nimilistassa</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/bibles/forms/booknamedialog.py" line="92"/>
@@ -995,8 +994,8 @@ hakutuloksissa ja näytöllä.</translation>
     <message>
         <location filename="../../openlp/plugins/bibles/forms/booknamedialog.py" line="86"/>
         <source>The following book name cannot be matched up internally. Please select the corresponding name from the list.</source>
-        <translation>&lt;font size=&quot;4&quot;&gt;Kirjanimeä ei tunnistettu, ole hyvä ja valitse &lt;br&gt;
-listasta vastaava suomenkielinen käännös&lt;/font&gt;</translation>
+        <translation>Kirjanimeä ei tunnistettu, ole hyvä ja valitse &lt;br&gt;
+listasta vastaava suomenkielinen käännös</translation>
     </message>
 </context>
 <context>
@@ -1817,7 +1816,8 @@ tiettyjä tarkoituksia varten.</translation>
     <message>
         <location filename="../../openlp/plugins/custom/lib/mediaitem.py" line="190"/>
         <source>Are you sure you want to delete the &quot;%d&quot; selected custom slide(s)?</source>
-        <translation>Haluatko varmasti poistaa valitut tekstidiat?</translation>
+        <translation>Haluatko varmasti poistaa valitut tekstidiat?
+Valittuna poistettavaksi on: %d dia/diaa</translation>
     </message>
 </context>
 <context>
@@ -2409,7 +2409,7 @@ Pitäisikö OpenLP:n päivittää ne nyt?</translation>
     <message>
         <location filename="../../openlp/core/__init__.py" line="226"/>
         <source>Backup</source>
-        <translation>Varmuuskopioi</translation>
+        <translation>Varmuuskopinti</translation>
     </message>
     <message>
         <location filename="../../openlp/core/__init__.py" line="211"/>
@@ -2598,7 +2598,7 @@ ottaa selvää eri tavoista olla mukana. (Sivusto Englanniksi.)</translation>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="177"/>
-        <source>Norwegian Bokm&#xe5;l (nb)</source>
+        <source>Norwegian Bokmål (nb)</source>
         <translation>Norja (nb)</translation>
     </message>
     <message>
@@ -2688,8 +2688,8 @@ Kuolihan Jeesus puolestamme vaikkemme sitä ansainneet.</translation>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="303"/>
-        <source>Copyright &#xa9; 2004-2016 %s
-Portions copyright &#xa9; 2004-2016 %s</source>
+        <source>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</source>
         <translation>Tekijäinoikeudet © 2004-2016 %s
 Osittaiset tekijäinoikeudet © 2004-2016 %s</translation>
     </message>
@@ -4474,12 +4474,12 @@ Ole hyvä ja odota kopioinnin loppumista.</translation>
  Importing settings will make permanent changes to your current OpenLP configuration.
 
  Importing incorrect settings may cause erratic behaviour or OpenLP to terminate abnormally.</source>
-        <translation>&lt;font size=&quot;4&quot;&gt;Haluatko varmasti tuoda asetukset?&lt;br&gt;&lt;br&gt;
+        <translation>Haluatko varmasti tuoda asetukset?&lt;br&gt;&lt;br&gt;
 
 Asetusten tuominen muuttaa sovelluksen käyttämiä asetuksia.&lt;br&gt;&lt;br&gt;
 
 Viallinen asetustiedosto voi aiheuttaa virheellistä&lt;br&gt;
-toimintaa ja ohjelma saattaa sulkeutua yllättäen..&lt;/font&gt;</translation>
+toimintaa ja ohjelma saattaa sulkeutua yllättäen.</translation>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="890"/>
@@ -7091,7 +7091,7 @@ sillä kohdekohtaiset ja Listan teemat.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="37"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -7662,19 +7662,20 @@ Ole hyvä ja yritä valita se erikseen.</translation>
     <message>
         <location filename="../../openlp/core/common/uistrings.py" line="125"/>
         <source>Replace live background is not available when the WebKit player is disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustakuvan korvaaminen ei ole käytettävissä jos WebKit
+mediasoitinta ei ole otettu käyttöön asetuksista.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="38"/>
         <source>Songbook</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Laulukirja</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="39"/>
         <source>Songbooks</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Laulukirjat</translation>
     </message>
 </context>
 <context>
@@ -8888,42 +8889,43 @@ Ole hyvä ja syötä jaeviitteet välilyönnein erotettuina.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>&amp;Manage Authors, Topics, Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Muokkaa Tekijöitä, Aiheita ja Laulukirjoja</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="322"/>
         <source>Add &amp;to Song</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää &amp;Lauluun</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="323"/>
         <source>Re&amp;move</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Poista</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="324"/>
         <source>Authors, Topics &amp;&amp; Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekijät - Aiheet - Laulukirjat</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>Add Songbook</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää Laulukirja</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>This Songbook does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Laulukirjaa ei ole olemassa, haluatko luoda sen?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="700"/>
         <source>This Songbook is already in the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Laulukirja on jo listassa</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="707"/>
         <source>You have not selected a valid Songbook. Either select a Songbook from the list, or type in a new Songbook and click the &quot;Add to Song&quot; button to add the new Songbook.</source>
-        <translation type="unfinished"></translation>
+        <translation>Et ole valinnut kelvollista laulukirjaa.  Valitse laulukirja listasta tai lisää 
+uusi laulukirja painamalla ”Lisää lauluun” painiketta.</translation>
     </message>
 </context>
 <context>
@@ -9366,12 +9368,13 @@ Paina ”Seuraava” aloittaaksesi.&lt;/font&gt;</translation>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="364"/>
         <source>Are you sure you want to delete the &quot;%d&quot; selected song(s)?</source>
-        <translation>Haluatko varmasti poistaa valitut laulut?</translation>
+        <translation>Haluatko varmasti poistaa valitut laulut?
+Valittuna poistettavaksi on: %d laulu/laulua</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Songbooks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hae Laulukirjan mukaan...</translation>
     </message>
 </context>
 <context>
@@ -9459,7 +9462,7 @@ Paina ”Seuraava” aloittaaksesi.&lt;/font&gt;</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songbookdialog.py" line="66"/>
         <source>Songbook Maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Laulukirjan ylläpito</translation>
     </message>
 </context>
 <context>
@@ -9766,7 +9769,7 @@ Paina ”Seuraava” aloittaaksesi.&lt;/font&gt;</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Lopeta</translation>
     </message>
 </context>
 <context>

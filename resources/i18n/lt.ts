@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="lt" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="lt" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -97,14 +96,14 @@ Ar vistiek norite tęsti?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="192"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
         <translation>Įspėjimo tekste nėra &apos;&lt;&gt;&apos;.
 Ar vistiek norite tęsti?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="108"/>
-        <source>You haven&apos;t specified any text for your alert. 
+        <source>You haven't specified any text for your alert. 
 Please type in some text before clicking New.</source>
         <translation>Savo įspėjamajam pranešimui nenurodėte jokio teksto.
 Prašome prieš spustelėjant Naujas, įrašyti tekstą.</translation>
@@ -1599,7 +1598,7 @@ Atlikta</translation>
         <location filename="../../openlp/plugins/bibles/forms/bibleupgradeform.py" line="549"/>
         <source>Upgrading Bible(s): %(success)d successful%(failed_text)s
 Please note that verses from Web Bibles will be downloaded on demand and so an Internet connection is required.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1778,7 +1777,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="../../openlp/plugins/custom/lib/mediaitem.py" line="190"/>
         <source>Are you sure you want to delete the &quot;%d&quot; selected custom slide(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2004,7 +2003,7 @@ Ar vistiek norite pridėti kitus paveikslus?</translation>
     <message>
         <location filename="../../openlp/core/ui/media/systemplayer.py" line="249"/>
         <source>This media player uses your operating system to provide media capabilities.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2462,7 +2461,7 @@ OpenLP yra savanorių sukurta ir palaikoma programa. Jeigu jūs norėtumėte mat
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="163"/>
         <source>Afrikaans (af)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="164"/>
@@ -2522,7 +2521,7 @@ OpenLP yra savanorių sukurta ir palaikoma programa. Jeigu jūs norėtumėte mat
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="175"/>
         <source>Indonesian (id)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="176"/>
@@ -2531,7 +2530,7 @@ OpenLP yra savanorių sukurta ir palaikoma programa. Jeigu jūs norėtumėte mat
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="177"/>
-        <source>Norwegian Bokm&#xe5;l (nb)</source>
+        <source>Norwegian Bokmål (nb)</source>
         <translation>Norvegų Bokmål (nb)</translation>
     </message>
     <message>
@@ -2562,7 +2561,7 @@ OpenLP yra savanorių sukurta ir palaikoma programa. Jeigu jūs norėtumėte mat
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="183"/>
         <source>Tamil(Sri-Lanka) (ta_LK)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="184"/>
@@ -2604,12 +2603,12 @@ OpenLP yra savanorių sukurta ir palaikoma programa. Jeigu jūs norėtumėte mat
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="303"/>
-        <source>Copyright &#xa9; 2004-2016 %s
-Portions copyright &#xa9; 2004-2016 %s</source>
+        <source>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</source>
         <translation>Autorių Teisės © 2004-2016 %s
 Autorių Teisių dalys © 2004-2016 %s</translation>
     </message>
@@ -2937,7 +2936,7 @@ yra OpenLP duomenų failai. Ar norėtumėte pakeisti tuos failus esamais duomen�
         <source>Are you sure you want to change the location of the OpenLP data directory to the default location?
 
 This location will be used after OpenLP is closed.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -3641,7 +3640,7 @@ Kad visiškai atšauktumėte Pirmojo Karto Vedlį (ir nepaleistumėte OpenLP), s
     <message>
         <location filename="../../openlp/core/ui/formattingtagcontroller.py" line="168"/>
         <source>End tag %(end)s does not match end tag for start tag %(start)s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -4417,27 +4416,27 @@ Apdorojimas buvo nutrauktas ir nepadaryta jokių pokyčių.</translation>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="393"/>
         <source>&amp;Recent Services</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="404"/>
         <source>&amp;New Service</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="407"/>
         <source>&amp;Open Service</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="410"/>
         <source>&amp;Save Service</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="413"/>
         <source>Save Service &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="460"/>
@@ -6459,12 +6458,12 @@ Jei tęsite išsaugojimą, šie failai bus pašalinti.</translation>
     <message>
         <location filename="../../openlp/core/ui/thememanager.py" line="763"/>
         <source>%s time(s) by %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/thememanager.py" line="768"/>
         <source>Unable to delete theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko ištrinti temos</translation>
     </message>
     <message>
         <location filename="../../openlp/core/ui/thememanager.py" line="768"/>
@@ -6949,7 +6948,7 @@ Jei tęsite išsaugojimą, šie failai bus pašalinti.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="37"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -7520,19 +7519,19 @@ Prašome jūsų pasirinkti jį patiems.</translation>
     <message>
         <location filename="../../openlp/core/common/uistrings.py" line="125"/>
         <source>Replace live background is not available when the WebKit player is disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="38"/>
         <source>Songbook</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="39"/>
         <source>Songbooks</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -8711,47 +8710,47 @@ Prašome įvesti tarpais atskirtus posmelius.</translation>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="189"/>
         <source>There are no verses corresponding to &quot;%(invalid)s&quot;. Valid entries are %(valid)s.
 Please enter the verses separated by spaces.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>&amp;Manage Authors, Topics, Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tvarkyti Autorius, Temas, Giesmynus</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="322"/>
         <source>Add &amp;to Song</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="323"/>
         <source>Re&amp;move</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="324"/>
         <source>Authors, Topics &amp;&amp; Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>Add Songbook</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>This Songbook does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tokio giesmyno nėra, ar norite jį pridėti?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="700"/>
         <source>This Songbook is already in the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šis giesmynas jau yra sąraše.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="707"/>
         <source>You have not selected a valid Songbook. Either select a Songbook from the list, or type in a new Songbook and click the &quot;Add to Song&quot; button to add the new Songbook.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9081,7 +9080,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importer.py" line="194"/>
         <source>OpenLyrics or OpenLP 2 Exported Song</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importer.py" line="201"/>
@@ -9191,12 +9190,12 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="364"/>
         <source>Are you sure you want to delete the &quot;%d&quot; selected song(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Songbooks...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9284,7 +9283,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songbookdialog.py" line="66"/>
         <source>Songbook Maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9591,7 +9590,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9696,12 +9695,12 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importers/wordsofworship.py" line="109"/>
         <source>Invalid Words of Worship song file. Missing &quot;%s&quot; header.WoW File\nSong Words</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importers/wordsofworship.py" line="119"/>
         <source>Invalid Words of Worship song file. Missing &quot;%s&quot; string.CSongDoc::CBlock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

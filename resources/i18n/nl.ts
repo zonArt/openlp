@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="nl" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="nl" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -97,14 +96,14 @@ Toch doorgaan?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="192"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
         <translation>De waarschuwingstekst bevat geen &apos;&lt;&gt;&apos;.
 Wilt u toch doorgaan?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="108"/>
-        <source>You haven&apos;t specified any text for your alert. 
+        <source>You haven't specified any text for your alert. 
 Please type in some text before clicking New.</source>
         <translation>De waarschuwingstekst is leeg.
 Voer eerst tekst in voordat u op Nieuw klikt. </translation>
@@ -2533,7 +2532,7 @@ OpenLP wordt gemaakt en onderhouden door vrijwilligers. Als je meer gratis Chris
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="177"/>
-        <source>Norwegian Bokm&#xe5;l (nb)</source>
+        <source>Norwegian Bokmål (nb)</source>
         <translation>Noors, Bokmål (nb)</translation>
     </message>
     <message>
@@ -2613,8 +2612,8 @@ Tenslotte gaat onze laatste dankbetuiging naar God onze Vader, omdat hij Zijn Zo
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="303"/>
-        <source>Copyright &#xa9; 2004-2016 %s
-Portions copyright &#xa9; 2004-2016 %s</source>
+        <source>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</source>
         <translation>Copyright © 2004-2016 %s
 Gedeelten copyright © 2004-2016 %s</translation>
     </message>
@@ -6957,7 +6956,7 @@ Deze bestanden worden verwijderd als u doorgaat met opslaan.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="37"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -7528,19 +7527,19 @@ Probeer elk bestand individueel te selecteren.</translation>
     <message>
         <location filename="../../openlp/core/common/uistrings.py" line="125"/>
         <source>Replace live background is not available when the WebKit player is disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vervang live achtergrond is niet beschikbaar wanneer de WebKit-speler uitgeschakeld is.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="38"/>
         <source>Songbook</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Liedboek</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="39"/>
         <source>Songbooks</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Liedboeken</translation>
     </message>
 </context>
 <context>
@@ -8724,42 +8723,42 @@ Geef de verzen op gescheiden door spaties.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>&amp;Manage Authors, Topics, Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Beheer auteurs, onderwerpen, liedboeken</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="322"/>
         <source>Add &amp;to Song</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg toe &amp;aan lied</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="323"/>
         <source>Re&amp;move</source>
-        <translation type="unfinished"></translation>
+        <translation>Ver&amp;wijderen</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="324"/>
         <source>Authors, Topics &amp;&amp; Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation>Auteurs, onderwerpen &amp;&amp; liedboeken</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>Add Songbook</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg liedboek toe</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>This Songbook does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit liedboek bestaat nog niet, toevoegen?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="700"/>
         <source>This Songbook is already in the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit liedboek staat al in de lijst.</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="707"/>
         <source>You have not selected a valid Songbook. Either select a Songbook from the list, or type in a new Songbook and click the &quot;Add to Song&quot; button to add the new Songbook.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen geldig liedboek geselecteerd. Kies een liedboek uit de lijst of type de naam van een liedboek en klik op &quot;Nieuw liedboek toevoegen&quot;.</translation>
     </message>
 </context>
 <context>
@@ -9204,7 +9203,7 @@ Geef de verzen op gescheiden door spaties.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Songbooks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek liedboek...</translation>
     </message>
 </context>
 <context>
@@ -9292,7 +9291,7 @@ Geef de verzen op gescheiden door spaties.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songbookdialog.py" line="66"/>
         <source>Songbook Maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Liedboekbeheer</translation>
     </message>
 </context>
 <context>
@@ -9599,7 +9598,7 @@ Geef de verzen op gescheiden door spaties.</translation>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop</translation>
     </message>
 </context>
 <context>
