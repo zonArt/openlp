@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="ja" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ja" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -97,14 +96,14 @@ Do you want to continue anyway?</source>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="192"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
         <translation>警告テキストは、&apos;&lt;&gt;&apos;を含みません。
 処理を続けてもよろしいですか?</translation>
     </message>
     <message>
         <location filename="../../openlp/plugins/alerts/forms/alertform.py" line="108"/>
-        <source>You haven&apos;t specified any text for your alert. 
+        <source>You haven't specified any text for your alert. 
 Please type in some text before clicking New.</source>
         <translation>警告テキストが何も指定されていません。
 新規作成をクリックする前にテキストを入力してください。</translation>
@@ -1597,7 +1596,7 @@ Complete</source>
         <location filename="../../openlp/plugins/bibles/forms/bibleupgradeform.py" line="549"/>
         <source>Upgrading Bible(s): %(success)d successful%(failed_text)s
 Please note that verses from Web Bibles will be downloaded on demand and so an Internet connection is required.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1776,7 +1775,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="../../openlp/plugins/custom/lib/mediaitem.py" line="190"/>
         <source>Are you sure you want to delete the &quot;%d&quot; selected custom slide(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2002,7 +2001,7 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="../../openlp/core/ui/media/systemplayer.py" line="249"/>
         <source>This media player uses your operating system to provide media capabilities.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2426,147 +2425,147 @@ OpenLP は、教会専用のフリーのプレゼンテーション及び賛美�
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="157"/>
         <source>Project Lead</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="158"/>
         <source>Developers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="159"/>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="160"/>
         <source>Packagers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="161"/>
         <source>Testers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="162"/>
         <source>Translators</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="163"/>
         <source>Afrikaans (af)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="164"/>
         <source>Czech (cs)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="165"/>
         <source>Danish (da)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="166"/>
         <source>German (de)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="167"/>
         <source>Greek (el)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="168"/>
         <source>English, United Kingdom (en_GB)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="169"/>
         <source>English, South Africa (en_ZA)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="170"/>
         <source>Spanish (es)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="171"/>
         <source>Estonian (et)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="172"/>
         <source>Finnish (fi)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="173"/>
         <source>French (fr)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="174"/>
         <source>Hungarian (hu)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="175"/>
         <source>Indonesian (id)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="176"/>
         <source>Japanese (ja)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="177"/>
-        <source>Norwegian Bokm&#xe5;l (nb)</source>
-        <translation type="unfinished"></translation>
+        <source>Norwegian Bokmål (nb)</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="178"/>
         <source>Dutch (nl)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="179"/>
         <source>Polish (pl)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="180"/>
         <source>Portuguese, Brazil (pt_BR)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="181"/>
         <source>Russian (ru)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="182"/>
         <source>Swedish (sv)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="183"/>
         <source>Tamil(Sri-Lanka) (ta_LK)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="184"/>
         <source>Chinese(China) (zh_CN)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="185"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="186"/>
@@ -2577,7 +2576,7 @@ OpenLP は、教会専用のフリーのプレゼンテーション及び賛美�
     Oxygen Icons: http://techbase.kde.org/Projects/Oxygen/
     MuPDF: http://www.mupdf.com/
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="192"/>
@@ -2592,13 +2591,13 @@ OpenLP は、教会専用のフリーのプレゼンテーション及び賛美�
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/aboutdialog.py" line="303"/>
-        <source>Copyright &#xa9; 2004-2016 %s
-Portions copyright &#xa9; 2004-2016 %s</source>
-        <translation type="unfinished"></translation>
+        <source>Copyright © 2004-2016 %s
+Portions copyright © 2004-2016 %s</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -3218,12 +3217,12 @@ This location will be used after OpenLP is closed.</source>
         <location filename="../../openlp/core/ui/exceptiondialog.py" line="92"/>
         <source>Please enter a description of what you were doing to cause this error. If possible, write in English.
 (Minimum 20 characters)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/exceptiondialog.py" line="96"/>
         <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred. Also attach any files that triggered the problem.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -3626,7 +3625,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the %s 
     <message>
         <location filename="../../openlp/core/ui/formattingtagcontroller.py" line="168"/>
         <source>End tag %(end)s does not match end tag for start tag %(start)s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -4402,47 +4401,47 @@ Processing has terminated and no changes have been made.</source>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="393"/>
         <source>&amp;Recent Services</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="404"/>
         <source>&amp;New Service</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="407"/>
         <source>&amp;Open Service</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="410"/>
         <source>&amp;Save Service</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="413"/>
         <source>Save Service &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="460"/>
         <source>&amp;Manage Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="1101"/>
         <source>Exit OpenLP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="1101"/>
         <source>Are you sure you want to exit OpenLP?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/mainwindow.py" line="1108"/>
         <source>&amp;Exit OpenLP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -4613,7 +4612,7 @@ Suffix not supported</source>
         <location filename="../../openlp/core/ui/media/playertab.py" line="256"/>
         <source>NOTE: To use VLC you must install the %s version</source>
         <comment>Will insert &quot;32bit&quot; or &quot;64bit&quot;</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -4656,7 +4655,7 @@ Suffix not supported</source>
     <message>
         <location filename="../../openlp/core/ui/plugindialog.py" line="81"/>
         <source>Manage Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -5344,12 +5343,12 @@ Suffix not supported</source>
     <message>
         <location filename="../../openlp/core/ui/projector/manager.py" line="476"/>
         <source>Delete projector (%s) %s?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/projector/manager.py" line="478"/>
         <source>Are you sure you want to delete this projector?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -6444,19 +6443,19 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="../../openlp/core/ui/thememanager.py" line="763"/>
         <source>%s time(s) by %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/thememanager.py" line="768"/>
         <source>Unable to delete theme</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/core/ui/thememanager.py" line="768"/>
         <source>Theme is currently used 
 
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -6932,7 +6931,7 @@ These files will be removed if you continue to save.</source>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="37"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -7503,19 +7502,19 @@ Please try selecting it individually.</source>
     <message>
         <location filename="../../openlp/core/common/uistrings.py" line="125"/>
         <source>Replace live background is not available when the WebKit player is disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="38"/>
         <source>Songbook</source>
         <comment>Singular</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/ui.py" line="39"/>
         <source>Songbooks</source>
         <comment>Plural</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -7874,12 +7873,12 @@ Please try selecting it individually.</source>
     <message>
         <location filename="../../openlp/plugins/remotes/lib/httprouter.py" line="314"/>
         <source>Stage View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/remotes/lib/httprouter.py" line="315"/>
         <source>Live View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -7957,7 +7956,7 @@ Please try selecting it individually.</source>
     <message>
         <location filename="../../openlp/plugins/remotes/lib/remotetab.py" line="179"/>
         <source>Scan the QR code or click &lt;a href=&quot;%s&quot;&gt;download&lt;/a&gt; to install the Android app from Google Play.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -8690,47 +8689,47 @@ Please enter the verses separated by spaces.</source>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="189"/>
         <source>There are no verses corresponding to &quot;%(invalid)s&quot;. Valid entries are %(valid)s.
 Please enter the verses separated by spaces.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>&amp;Manage Authors, Topics, Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="322"/>
         <source>Add &amp;to Song</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="323"/>
         <source>Re&amp;move</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongdialog.py" line="324"/>
         <source>Authors, Topics &amp;&amp; Songbooks</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>Add Songbook</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="683"/>
         <source>This Songbook does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="700"/>
         <source>This Songbook is already in the list.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/forms/editsongform.py" line="707"/>
         <source>You have not selected a valid Songbook. Either select a Songbook from the list, or type in a new Songbook and click the &quot;Add to Song&quot; button to add the new Songbook.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9060,37 +9059,37 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importer.py" line="194"/>
         <source>OpenLyrics or OpenLP 2 Exported Song</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importer.py" line="201"/>
         <source>OpenLP 2 Databases</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importer.py" line="255"/>
         <source>LyriX Files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importer.py" line="256"/>
         <source>LyriX (Exported TXT-files)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importer.py" line="343"/>
         <source>VideoPsalm Files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importer.py" line="344"/>
         <source>VideoPsalm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importer.py" line="345"/>
         <source>The VideoPsalm songbooks are normally located in %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9098,7 +9097,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importers/lyrix.py" line="109"/>
         <source>Error: %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9170,12 +9169,12 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="364"/>
         <source>Are you sure you want to delete the &quot;%d&quot; selected song(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/mediaitem.py" line="142"/>
         <source>Search Songbooks...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9191,7 +9190,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importers/openlp.py" line="96"/>
         <source>Not a valid OpenLP 2 song database.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9263,7 +9262,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songbookdialog.py" line="66"/>
         <source>Songbook Maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9570,7 +9569,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/forms/songselectdialog.py" line="244"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9603,7 +9602,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/songstab.py" line="76"/>
         <source>Display &quot;%s&quot; symbol before copyright info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9667,7 +9666,7 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importers/videopsalm.py" line="121"/>
         <source>Error: %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -9675,12 +9674,12 @@ Please enter the verses separated by spaces.</source>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importers/wordsofworship.py" line="109"/>
         <source>Invalid Words of Worship song file. Missing &quot;%s&quot; header.WoW File\nSong Words</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../../openlp/plugins/songs/lib/importers/wordsofworship.py" line="119"/>
         <source>Invalid Words of Worship song file. Missing &quot;%s&quot; string.CSongDoc::CBlock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

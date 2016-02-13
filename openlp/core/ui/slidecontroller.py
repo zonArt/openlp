@@ -1101,9 +1101,6 @@ class SlideController(DisplayController, RegistryProperties):
                         self.display.image(to_display)
                     # reset the store used to display first image
                     self.service_item.bg_image_bytes = None
-                # Workaround for bug #1531319, should not be needed with PyQt 5.6.
-                if self.is_live and is_win():
-                    self.display.shake_web_view()
             self.selected_row = row
             self.update_preview()
             self.preview_widget.change_slide(row)
@@ -1128,8 +1125,8 @@ class SlideController(DisplayController, RegistryProperties):
         self.log_debug('update_preview %s ' % self.screens.current['primary'])
         if self.service_item and self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change is slow
-            QtCore.QTimer.singleShot(0.5, self.grab_maindisplay)
-            QtCore.QTimer.singleShot(2.5, self.grab_maindisplay)
+            QtCore.QTimer.singleShot(500, self.grab_maindisplay)
+            QtCore.QTimer.singleShot(2500, self.grab_maindisplay)
         else:
             self.slide_image = self.display.preview()
             self.slide_image.setDevicePixelRatio(self.main_window.devicePixelRatio())
