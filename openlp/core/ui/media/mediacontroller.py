@@ -686,8 +686,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             controller.position_label.setText(' %02d:%02d / %02d:%02d' %
                                               (minutes, seconds, total_minutes, total_seconds))
         if start_again:
-            print("Looooooppppppeeeedd")
-            self.media_play(controller, False)
+            self.media_play(controller, True)
 
     def media_pause(self, controller):
         """

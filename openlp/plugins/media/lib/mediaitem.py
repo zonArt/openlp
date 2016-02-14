@@ -29,8 +29,8 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, Settin
     translate
 from openlp.core.lib import ItemCapabilities, MediaManagerItem, MediaType, ServiceItem, ServiceItemContext, \
     build_icon, check_item_selected
-from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
-from openlp.core.ui import DisplayController, Display, DisplayControllerType
+from openlp.core.lib.ui import create_widget_action, critical_error_message_box, create_horizontal_adjusting_combo_box
+from openlp.core.ui import DisplayController, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path, format_milliseconds
 from openlp.core.utils import get_locale_key
 from openlp.core.ui.media.vlcplayer import get_vlc
@@ -79,15 +79,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.has_search = True
         self.media_object = None
         self.display_controller = DisplayController(self.parent())
-        # self.display_controller.controller_layout = QtWidgets.QVBoxLayout()
-        # self.media_controller.register_controller(self.display_controller)
-        # self.media_controller.set_controls_visible(self.display_controller, False)
-        # self.display_controller.preview_display = Display(self.display_controller)
-        # self.display_controller.preview_display.hide()
-        # self.display_controller.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
-        # self.display_controller.preview_display.screen = {'size': self.display_controller.preview_display.geometry()}
-        # self.display_controller.preview_display.setup()
-        # self.media_controller.setup_display(self.display_controller.preview_display, False)
         Registry().register_function('video_background_replaced', self.video_background_replaced)
         Registry().register_function('mediaitem_media_rebuild', self.rebuild_players)
         Registry().register_function('config_screen_changed', self.display_setup)
@@ -101,12 +92,17 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         self.on_new_prompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.replace_action.setText(UiStrings().ReplaceBG)
+        self.replace_action_context.setText(UiStrings().ReplaceBG)
         if 'webkit' in get_media_players()[0]:
             self.replace_action.setToolTip(UiStrings().ReplaceLiveBG)
+            self.replace_action_context.setToolTip(UiStrings().ReplaceLiveBG)
         else:
             self.replace_action.setToolTip(UiStrings().ReplaceLiveBGDisabled)
+            self.replace_action_context.setToolTip(UiStrings().ReplaceLiveBGDisabled)
         self.reset_action.setText(UiStrings().ResetBG)
         self.reset_action.setToolTip(UiStrings().ResetLiveBG)
+        self.reset_action_context.setText(UiStrings().ResetBG)
+        self.reset_action_context.setToolTip(UiStrings().ResetLiveBG)
         self.automatic = UiStrings().Automatic
         self.display_type_label.setText(translate('MediaPlugin.MediaItem', 'Use Player:'))
 
@@ -155,6 +151,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                                                               triggers=self.on_replace_click)
         if 'webkit' not in get_media_players()[0]:
             self.replace_action.setDisabled(True)
+            self.replace_action_context.setDisabled(True)
         self.reset_action = self.toolbar.add_toolbar_action('reset_action', icon=':/system/system_close.png',
                                                             visible=False, triggers=self.on_reset_click)
         self.media_widget = QtWidgets.QWidget(self)
@@ -172,6 +169,15 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         # Add the Media widget to the page layout.
         self.page_layout.addWidget(self.media_widget)
         self.display_type_combo_box.currentIndexChanged.connect(self.override_player_changed)
+
+    def add_custom_context_actions(self):
+        create_widget_action(self.list_view, separator=True)
+        self.replace_action_context = create_widget_action(
+            self.list_view, text=UiStrings().ReplaceBG, icon=':/slides/slide_blank.png',
+            triggers=self.on_replace_click)
+        self.reset_action_context = create_widget_action(
+            self.list_view, text=UiStrings().ReplaceLiveBG, icon=':/system/system_close.png',
+            visible=False, triggers=self.on_reset_click)
 
     @staticmethod
     def override_player_changed(index):
@@ -192,12 +198,14 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         self.media_controller.media_reset(self.live_controller)
         self.reset_action.setVisible(False)
+        self.reset_action_context.setVisible(False)
 
     def video_background_replaced(self):
         """
         Triggered by main display on change of serviceitem.
         """
         self.reset_action.setVisible(False)
+        self.reset_action_context.setVisible(False)
 
     def on_replace_click(self):
         """
@@ -216,6 +224,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 service_item.add_from_command(path, name, CLAPPERBOARD)
                 if self.media_controller.video(DisplayControllerType.Live, service_item, video_behind_text=True):
                     self.reset_action.setVisible(True)
+                    self.reset_action_context.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
                                                translate('MediaPlugin.MediaItem',
