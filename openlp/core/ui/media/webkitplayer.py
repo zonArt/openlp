@@ -249,11 +249,7 @@ class WebkitPlayer(MediaPlayer):
         else:
             loop = 'false'
         display.web_view.setVisible(True)
-        if controller.media_info.file_info.suffix() == 'swf':
-            controller.media_info.is_flash = True
-            js = 'show_flash("load","%s");' % (path.replace('\\', '\\\\'))
-        else:
-            js = 'show_video("load", "%s", %s, %s);' % (path.replace('\\', '\\\\'), str(vol), loop)
+        js = 'show_video("load", "%s", %s, %s);' % (path.replace('\\', '\\\\'), str(vol), loop)
         display.frame.evaluateJavaScript(js)
         return True
 
@@ -274,10 +270,7 @@ class WebkitPlayer(MediaPlayer):
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         self.set_visible(display, True)
-        if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript('show_flash("play");')
-        else:
-            display.frame.evaluateJavaScript('show_video("play");')
+        display.frame.evaluateJavaScript('show_video("play");')
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         # TODO add playing check and get the correct media length
@@ -291,10 +284,7 @@ class WebkitPlayer(MediaPlayer):
         Pause a video
         """
         controller = display.controller
-        if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript('show_flash("pause");')
-        else:
-            display.frame.evaluateJavaScript('show_video("pause");')
+        display.frame.evaluateJavaScript('show_video("pause");')
         self.state = MediaState.Paused
 
     def stop(self, display):
@@ -302,10 +292,7 @@ class WebkitPlayer(MediaPlayer):
         Stop a video
         """
         controller = display.controller
-        if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript('show_flash("stop");')
-        else:
-            display.frame.evaluateJavaScript('show_video("stop");')
+        display.frame.evaluateJavaScript('show_video("stop");')
         self.state = MediaState.Stopped
 
     def volume(self, display, volume):
@@ -316,30 +303,20 @@ class WebkitPlayer(MediaPlayer):
         # 1.0 is the highest value
         if display.has_audio:
             vol = float(volume) / float(100)
-            if not controller.media_info.is_flash:
-                display.frame.evaluateJavaScript('show_video(null, null, %s);' % str(vol))
+            display.frame.evaluateJavaScript('show_video(null, null, %s);' % str(vol))
 
     def seek(self, display, seek_value):
         """
         Go to a position in the video
         """
-        controller = display.controller
-        if controller.media_info.is_flash:
-            seek = seek_value
-            display.frame.evaluateJavaScript('show_flash("seek", null, null, "%s");' % seek)
-        else:
-            seek = float(seek_value) / 1000
-            display.frame.evaluateJavaScript('show_video("seek", null, null, null, "%f");' % seek)
+        seek = float(seek_value) / 1000
+        display.frame.evaluateJavaScript('show_video("seek", null, null, null, "%f");' % seek)
 
     def reset(self, display):
         """
         Reset the player
         """
-        controller = display.controller
-        if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript('show_flash("close");')
-        else:
-            display.frame.evaluateJavaScript('show_video("close");')
+        display.frame.evaluateJavaScript('show_video("close");')
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
@@ -351,30 +328,23 @@ class WebkitPlayer(MediaPlayer):
             is_visible = "visible"
         else:
             is_visible = "hidden"
-        if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript('show_flash("setVisible", null, null, "%s");' % is_visible)
-        else:
-            display.frame.evaluateJavaScript('show_video("setVisible", null, null, null, "%s");' % is_visible)
+        display.frame.evaluateJavaScript('show_video("setVisible", null, null, null, "%s");' % is_visible)
 
     def update_ui(self, display):
         """
         Update the UI
         """
         controller = display.controller
-        if controller.media_info.is_flash:
-            current_time = display.frame.evaluateJavaScript('show_flash("current_time");')
-            length = display.frame.evaluateJavaScript('show_flash("length");')
-        else:
-            if display.frame.evaluateJavaScript('show_video("isEnded");'):
-                self.stop(display)
-            current_time = display.frame.evaluateJavaScript('show_video("current_time");')
-            # check if conversion was ok and value is not 'NaN'
-            if current_time and current_time != float('inf'):
-                current_time = int(current_time * 1000)
-            length = display.frame.evaluateJavaScript('show_video("length");')
-            # check if conversion was ok and value is not 'NaN'
-            if length and length != float('inf'):
-                length = int(length * 1000)
+        if display.frame.evaluateJavaScript('show_video("isEnded");'):
+            self.stop(display)
+        current_time = display.frame.evaluateJavaScript('show_video("current_time");')
+        # check if conversion was ok and value is not 'NaN'
+        if current_time and current_time != float('inf'):
+            current_time = int(current_time * 1000)
+        length = display.frame.evaluateJavaScript('show_video("length");')
+        # check if conversion was ok and value is not 'NaN'
+        if length and length != float('inf'):
+            length = int(length * 1000)
         if current_time and length:
             print("webkit update_ui", controller.media_info.length)
             controller.media_info.length = length

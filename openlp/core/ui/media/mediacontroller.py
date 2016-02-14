@@ -107,6 +107,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         Registry().register_function('playbackPlay', self.media_play_msg)
         Registry().register_function('playbackPause', self.media_pause_msg)
         Registry().register_function('playbackStop', self.media_stop_msg)
+        Registry().register_function('playbackLoop', self.media_loop_msg)
         Registry().register_function('seek_slider', self.media_seek_msg)
         Registry().register_function('volume_slider', self.media_volume_msg)
         Registry().register_function('media_hide', self.media_hide)
@@ -278,6 +279,10 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         controller.mediabar.add_toolbar_action('playbackStop', text='media_playback_stop',
                                                icon=':/slides/media_playback_stop.png',
                                                tooltip=translate('OpenLP.SlideController', 'Stop playing media.'),
+                                               triggers=controller.send_to_plugins)
+        controller.mediabar.add_toolbar_action('playbackLoop', text='media_playback_loop',
+                                               icon=':/slides/media_playback_stop.png',
+                                               tooltip=translate('OpenLP.SlideController', 'Loop playing media.'),
                                                triggers=controller.send_to_plugins)
         controller.position_label = QtWidgets.QLabel()
         controller.position_label.setText(' 00:00 / 00:00')
@@ -623,13 +628,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             if not controller.media_info.is_background:
                 display.frame.evaluateJavaScript('show_blank("desktop");')
             self.current_media_players[controller.controller_type].set_visible(display, True)
-            # Flash needs to be played and will not AutoPlay
-            if controller.media_info.is_flash:
-                controller.mediabar.actions['playbackPlay'].setVisible(True)
-                controller.mediabar.actions['playbackPause'].setVisible(False)
-            else:
-                controller.mediabar.actions['playbackPlay'].setVisible(False)
-                controller.mediabar.actions['playbackPause'].setVisible(True)
+            controller.mediabar.actions['playbackPlay'].setVisible(False)
+            controller.mediabar.actions['playbackPause'].setVisible(True)
             controller.mediabar.actions['playbackStop'].setDisabled(False)
             if controller.is_live:
                 if controller.hide_menu.defaultAction().isChecked() and not controller.media_info.is_background:

@@ -60,8 +60,8 @@ class MediaInfo(object):
     """
     file_info = None
     volume = 100
-    is_flash = False
     is_background = False
+    loop_playback = False
     length = 0
     start_time = 0
     end_time = 0
