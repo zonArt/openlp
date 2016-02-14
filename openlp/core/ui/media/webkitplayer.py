@@ -99,74 +99,6 @@ VIDEO_HTML = """
 <video id="video" class="size" style="visibility:hidden" autobuffer preload></video>
 """
 
-FLASH_CSS = """
-#flash {
-    z-index:5;
-}
-"""
-
-FLASH_JS = """
-    function getFlashMovieObject(movieName)
-    {
-        if (window.document[movieName]){
-            return window.document[movieName];
-        }
-        if (document.embeds && document.embeds[movieName]){
-            return document.embeds[movieName];
-        }
-    }
-
-    function show_flash(state, path, volume, variable_value){
-        var text = document.getElementById('flash');
-        var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
-        var src = "src = 'file:///" + path + "'";
-        var view_parm = " wmode='opaque'" + " width='100%%'" + " height='100%%'";
-        var swf_parm = " name='OpenLPFlashMovie'" + " autostart='true' loop='false' play='true'" +
-            " hidden='false' swliveconnect='true' allowscriptaccess='always'" + " volume='" + volume + "'";
-
-        switch(state){
-            case 'load':
-                text.innerHTML = "<embed " + src + view_parm + swf_parm + "/>";
-                flashMovie = getFlashMovieObject("OpenLPFlashMovie");
-                flashMovie.Play();
-                break;
-            case 'play':
-                flashMovie.Play();
-                break;
-            case 'pause':
-                flashMovie.StopPlay();
-                break;
-            case 'stop':
-                flashMovie.StopPlay();
-                tempHtml = text.innerHTML;
-                text.innerHTML = '';
-                text.innerHTML = tempHtml;
-                break;
-            case 'close':
-                flashMovie.StopPlay();
-                text.innerHTML = '';
-                break;
-            case 'length':
-                return flashMovie.TotalFrames();
-            case 'current_time':
-                return flashMovie.CurrentFrame();
-            case 'seek':
-//                flashMovie.GotoFrame(variable_value);
-                break;
-            case 'isEnded':
-                //TODO check flash end
-                return false;
-            case 'setVisible':
-                text.style.visibility = variable_value;
-                break;
-        }
-    }
-"""
-
-FLASH_HTML = """
-<div id="flash" class="size" style="visibility:hidden"></div>
-"""
-
 VIDEO_EXT = ['*.3gp', '*.3gpp', '*.3g2', '*.3gpp2', '*.aac', '*.flv', '*.f4a', '*.f4b', '*.f4p', '*.f4v', '*.mov',
              '*.m4a', '*.m4b', '*.m4p', '*.m4v', '*.mkv', '*.mp4', '*.ogv', '*.webm', '*.mpg', '*.wmv', '*.mpeg',
              '*.avi', '*.swf']
@@ -198,23 +130,25 @@ class WebkitPlayer(MediaPlayer):
         """
         background = QtGui.QColor(Settings().value('players/background color')).name()
         css = VIDEO_CSS % {'bgcolor': background}
-        return css + FLASH_CSS
+        return css
 
     def get_media_display_javascript(self):
         """
         Add javascript functions to htmlbuilder
         """
-        return VIDEO_JS + FLASH_JS
+        return VIDEO_JS
 
     def get_media_display_html(self):
         """
         Add html code to htmlbuilder
         """
-        return VIDEO_HTML + FLASH_HTML
+        return VIDEO_HTML
 
     def setup(self, display):
         """
         Set up the player
+
+        :param display: The display to be updated.
         """
         display.web_view.resize(display.size())
         display.web_view.raise_()
@@ -235,6 +169,8 @@ class WebkitPlayer(MediaPlayer):
     def load(self, display):
         """
         Load a video
+
+        :param display: The display to be updated.
         """
         log.debug('load vid in Webkit Controller')
         controller = display.controller
@@ -256,24 +192,28 @@ class WebkitPlayer(MediaPlayer):
     def resize(self, display):
         """
         Resize the player
+
+        :param display: The display to be updated.
         """
         display.web_view.resize(display.size())
 
     def play(self, display):
         """
         Play a video
+
+        :param display: The display to be updated.
         """
         controller = display.controller
         display.web_loaded = True
         length = 0
         start_time = 0
+        print(self.state, controller.media_info.start_time)
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         self.set_visible(display, True)
         display.frame.evaluateJavaScript('show_video("play");')
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
-        # TODO add playing check and get the correct media length
         print("Webkit play " + str(length))
         self.state = MediaState.Playing
         display.web_view.raise_()
@@ -282,24 +222,28 @@ class WebkitPlayer(MediaPlayer):
     def pause(self, display):
         """
         Pause a video
+
+        :param display: The display to be updated.
         """
-        controller = display.controller
         display.frame.evaluateJavaScript('show_video("pause");')
         self.state = MediaState.Paused
 
     def stop(self, display):
         """
         Stop a video
+
+        :param display: The display to be updated.
         """
-        controller = display.controller
         display.frame.evaluateJavaScript('show_video("stop");')
         self.state = MediaState.Stopped
 
     def volume(self, display, volume):
         """
         Set the volume
+
+        :param display: The display to be updated.
+        :param volume: The volume to be set.
         """
-        controller = display.controller
         # 1.0 is the highest value
         if display.has_audio:
             vol = float(volume) / float(100)
@@ -308,6 +252,9 @@ class WebkitPlayer(MediaPlayer):
     def seek(self, display, seek_value):
         """
         Go to a position in the video
+
+        :param display: The display to be updated.
+        :param seek_value: The value to be set.
         """
         seek = float(seek_value) / 1000
         display.frame.evaluateJavaScript('show_video("seek", null, null, null, "%f");' % seek)
@@ -315,16 +262,20 @@ class WebkitPlayer(MediaPlayer):
     def reset(self, display):
         """
         Reset the player
+
+        :param display: The display to be updated.
         """
         display.frame.evaluateJavaScript('show_video("close");')
         self.state = MediaState.Off
 
-    def set_visible(self, display, status):
+    def set_visible(self, display, visibility):
         """
         Set the visibility
+
+        :param display: The display to be updated.
+        :param visibility: The visibility to be set.
         """
-        controller = display.controller
-        if status:
+        if visibility:
             is_visible = "visible"
         else:
             is_visible = "hidden"
@@ -333,6 +284,8 @@ class WebkitPlayer(MediaPlayer):
     def update_ui(self, display):
         """
         Update the UI
+
+        :param display: The display to be updated.
         """
         controller = display.controller
         if display.frame.evaluateJavaScript('show_video("isEnded");'):
@@ -346,7 +299,6 @@ class WebkitPlayer(MediaPlayer):
         if length and length != float('inf'):
             length = int(length * 1000)
         if current_time and length:
-            print("webkit update_ui", controller.media_info.length)
             controller.media_info.length = length
             controller.seek_slider.setMaximum(length)
             if not controller.seek_slider.isSliderDown():

@@ -173,7 +173,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.page_layout.addWidget(self.media_widget)
         self.display_type_combo_box.currentIndexChanged.connect(self.override_player_changed)
 
-    def override_player_changed(self, index):
+    @staticmethod
+    def override_player_changed(index):
         """
         The Player has been overridden
 
