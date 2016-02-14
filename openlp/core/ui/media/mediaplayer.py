@@ -55,12 +55,16 @@ class MediaPlayer(RegistryProperties):
     def setup(self, display):
         """
         Create the related widgets for the current display
+
+        :param display: The display to be updated.
         """
         pass
 
     def load(self, display):
         """
         Load a new media file and check if it is valid
+
+        :param display: The display to be updated.
         """
         return True
 
@@ -68,54 +72,75 @@ class MediaPlayer(RegistryProperties):
         """
         If the main display size or position is changed, the media widgets
         should also resized
+
+        :param display: The display to be updated.
         """
         pass
 
     def play(self, display):
         """
         Starts playing of current Media File
+
+        :param display: The display to be updated.
         """
         pass
 
     def pause(self, display):
         """
         Pause of current Media File
+
+        :param display: The display to be updated.
         """
         pass
 
     def stop(self, display):
         """
         Stop playing of current Media File
+
+        :param display: The display to be updated.
         """
         pass
 
-    def volume(self, display, vol):
+    def volume(self, display, volume):
         """
         Change volume of current Media File
+
+        :param display: The display to be updated.
+        :param volume: The volume to set.
         """
         pass
 
     def seek(self, display, seek_value):
         """
         Change playing position of current Media File
+
+        :param display: The display to be updated.
+        :param seek_value: The where to seek to.
         """
         pass
 
     def reset(self, display):
         """
         Remove the current loaded video
+
+        :param display: The display to be updated.
         """
         pass
 
     def set_visible(self, display, status):
         """
         Show/Hide the media widgets
+
+        :param display: The display to be updated.
+        :param status: The status to be set.
         """
         pass
 
     def update_ui(self, display):
         """
         Do some ui related stuff (e.g. update the seek slider)
+
+        :param display: The display to be updated.
         """
         pass
 

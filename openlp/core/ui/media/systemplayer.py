@@ -117,7 +117,8 @@ class SystemPlayer(MediaPlayer):
     def load(self, display):
         """
         Load a video into the display
-        :param display:
+
+        :param display: The display where the media is
         """
         log.debug('load vid in System Controller')
         controller = display.controller
@@ -134,14 +135,16 @@ class SystemPlayer(MediaPlayer):
     def resize(self, display):
         """
         Resize the display
-        :param display:
+
+        :param display: The display where the media is
         """
         display.video_widget.resize(display.size())
 
     def play(self, display):
         """
         Play the current media item
-        :param display:
+
+        :param display: The display where the media is
         """
         log.info('Play the current item')
         controller = display.controller
@@ -161,6 +164,8 @@ class SystemPlayer(MediaPlayer):
     def pause(self, display):
         """
         Pause the current media item
+
+        :param display: The display where the media is
         """
         display.media_player.pause()
         if display.media_player.state() == QtMultimedia.QMediaPlayer.PausedState:
@@ -169,6 +174,8 @@ class SystemPlayer(MediaPlayer):
     def stop(self, display):
         """
         Stop the current media item
+
+        :param display: The display where the media is
         """
         display.media_player.blockSignals(True)
         display.media_player.durationChanged.disconnect()
@@ -177,22 +184,29 @@ class SystemPlayer(MediaPlayer):
         self.set_visible(display, False)
         self.state = MediaState.Stopped
 
-    def volume(self, display, vol):
+    def volume(self, display, volume):
         """
         Set the volume
+
+        :param display: The display where the media is
+        :param volume: The volume to be set
         """
         if display.has_audio:
-            display.media_player.setVolume(vol)
+            display.media_player.setVolume(volume)
 
     def seek(self, display, seek_value):
         """
         Go to a particular point in the current media item
+
+        :param display: The display where the media is
         """
         display.media_player.setPosition(seek_value)
 
     def reset(self, display):
         """
         Reset the media player
+
+        :param display: The display where the media is
         """
         display.media_player.stop()
         display.media_player.setMedia(QtMultimedia.QMediaContent())
@@ -203,17 +217,28 @@ class SystemPlayer(MediaPlayer):
     def set_visible(self, display, status):
         """
         Set the visibility of the widget
+
+        :param display: The display where the media is
+        :param status: The visibility status to be set
         """
         if self.has_own_widget:
             display.video_widget.setVisible(status)
 
     @staticmethod
     def set_duration(controller, duration):
+        """
+
+        :param controller: the controller displaying the media
+        :param duration: how long is the media
+        :return:
+        """
         controller.seek_slider.setMaximum(controller.media_info.length)
 
     def update_ui(self, display):
         """
         Update the UI
+
+        :param display: The display where the media is
         """
         if display.media_player.state() == QtMultimedia.QMediaPlayer.PausedState and self.state != MediaState.Paused:
             self.stop(display)
