@@ -209,9 +209,7 @@ class SystemPlayer(MediaPlayer):
 
     @staticmethod
     def set_duration(controller, duration):
-        print("system set duration", controller.media_info.length, duration)
-        #controller.media_info.length = int(duration / 1000)
-        controller.seek_slider.setMaximum(controller.media_info.length * 1000)
+        controller.seek_slider.setMaximum(controller.media_info.length)
 
     def update_ui(self, display):
         """
@@ -221,7 +219,7 @@ class SystemPlayer(MediaPlayer):
             self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
-            if display.media_player.position() > controller.media_info.end_time * 1000:
+            if display.media_player.position() > controller.media_info.end_time:
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seek_slider.isSliderDown():

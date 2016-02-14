@@ -220,12 +220,6 @@ class VlcPlayer(MediaPlayer):
         # parse the metadata of the file
         display.vlc_media.parse()
         self.volume(display, volume)
-        # We need to set media_info.length during load because we want
-        # to avoid start and stop the video twice. Once for real playback
-        # and once to just get media length.
-        #
-        # Media plugin depends on knowing media length before playback.
-        #controller.media_info.length = int(display.vlc_media_player.get_media().get_duration() / 1000)
         return True
 
     def media_state_wait(self, display, media_state):
@@ -273,7 +267,7 @@ class VlcPlayer(MediaPlayer):
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
-            log.debug('vlc play, starttime set')
+            log.debug('vlc play, start time set')
             start_time = controller.media_info.start_time
         log.debug('mediatype: ' + str(controller.media_info.media_type))
         # Set tracks for the optical device
@@ -295,14 +289,10 @@ class VlcPlayer(MediaPlayer):
                 log.debug('vlc play, starttime set: ' + str(controller.media_info.start_time))
                 start_time = controller.media_info.start_time
             controller.media_info.length = controller.media_info.end_time - controller.media_info.start_time
-        else:
-            print("vlc len", controller.media_info.length)
-            #controller.media_info.length = int(display.vlc_media_player.get_media().get_duration())
         self.volume(display, controller.media_info.volume)
         if start_time > 0 and display.vlc_media_player.is_seekable():
             display.vlc_media_player.set_time(int(start_time))
         controller.seek_slider.setMaximum(controller.media_info.length)
-        print("VLC play " + str(controller.media_info.length))
         self.state = MediaState.Playing
         display.vlc_widget.raise_()
         return True

@@ -54,6 +54,7 @@ class MediaSlider(QtWidgets.QSlider):
         super(MediaSlider, self).__init__(direction)
         self.manager = manager
         self.controller = controller
+        self.no_matching_player = translate('MediaPlugin.MediaItem', 'File %s not supported using player %s')
 
     def mouseMoveEvent(self, event):
         """
@@ -460,7 +461,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         print(suffix in player.video_extensions_list or suffix in player.audio_extensions_list)
         if not suffix in player.video_extensions_list and not suffix in player.audio_extensions_list:
             # Media could not be loaded correctly
-            critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
+            critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported Media File'),
                                        translate('MediaPlugin.MediaItem', 'File %s not supported using player %s') %
                                        (service_item.get_frame_path(), used_players[0]))
             return False
@@ -495,9 +496,9 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             controller.media_info.media_type = MediaType.CD
         else:
             controller.media_info.media_type = MediaType.DVD
-        controller.media_info.start_time = start / 1000
-        controller.media_info.end_time = end / 1000
-        controller.media_info.length = (end - start) / 1000
+        controller.media_info.start_time = start // 1000
+        controller.media_info.end_time = end // 1000
+        controller.media_info.length = (end - start) // 1000
         controller.media_info.title_track = title
         controller.media_info.audio_track = audio_track
         controller.media_info.subtitle_track = subtitle_track
@@ -665,7 +666,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             seconds = controller.media_info.timer // 1000
             minutes = seconds // 60
             seconds %= 60
-            total_seconds = controller.media_info.length
+            total_seconds = controller.media_info.length // 1000
             total_minutes = total_seconds // 60
             total_seconds %= 60
             controller.position_label.setText(' %02d:%02d / %02d:%02d' %
