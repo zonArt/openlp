@@ -207,14 +207,12 @@ class WebkitPlayer(MediaPlayer):
         display.web_loaded = True
         length = 0
         start_time = 0
-        print(self.state, controller.media_info.start_time)
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         self.set_visible(display, True)
         display.frame.evaluateJavaScript('show_video("play");')
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
-        print("Webkit play " + str(length))
         self.state = MediaState.Playing
         display.web_view.raise_()
         return True
