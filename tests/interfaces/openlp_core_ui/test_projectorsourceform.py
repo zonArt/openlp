@@ -28,6 +28,7 @@ import logging
 log = logging.getLogger(__name__)
 log.debug('test_projectorsourceform loaded')
 import os
+import time
 from unittest import TestCase
 
 from PyQt5.QtWidgets import QDialog
