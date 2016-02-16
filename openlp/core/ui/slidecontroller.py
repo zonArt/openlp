@@ -84,7 +84,7 @@ class DisplayController(QtWidgets.QWidget):
         super(DisplayController, self).__init__(parent)
         self.is_live = False
         self.display = None
-        self.controller_type = DisplayControllerType.Plugin
+        self.controller_type = None
 
     def send_to_plugins(self, *args):
         """

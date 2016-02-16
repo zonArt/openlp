@@ -78,10 +78,10 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.single_service_item = False
         self.has_search = True
         self.media_object = None
-        self.display_controller = DisplayController(self.parent())
+        # self.display_controller = DisplayController(self.parent())
         Registry().register_function('video_background_replaced', self.video_background_replaced)
         Registry().register_function('mediaitem_media_rebuild', self.rebuild_players)
-        Registry().register_function('config_screen_changed', self.display_setup)
+        # Registry().register_function('config_screen_changed', self.display_setup)
         # Allow DnD from the desktop
         self.list_view.activateDnD()
 
@@ -317,7 +317,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         """
         Setup media controller display.
         """
-        self.media_controller.setup_display(self.display_controller.preview_display, False)
+        # self.media_controller.setup_display(self.display_controller.preview_display, False)
+        pass
 
     def populate_display_types(self):
         """
