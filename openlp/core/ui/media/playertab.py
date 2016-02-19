@@ -165,7 +165,7 @@ class PlayerTab(SettingsTab):
                     self.player_check_boxes['%s' % player].setEnabled(False)
                 else:
                     self.player_check_boxes['%s' % player].setEnabled(True)
-                self.player_order_list_widget.addItem(self.media_players[str(player)].original_name)
+                self.player_order_list_widget.addItem(self.media_players[player][0].original_name)
 
     def on_up_button_clicked(self):
         """
@@ -230,14 +230,14 @@ class PlayerTab(SettingsTab):
         for key, player in self.media_players.items():
             player = self.media_players[key]
             checkbox = MediaQCheckBox(self.media_player_group_box)
-            checkbox.setEnabled(player.available)
-            checkbox.setObjectName(player.name + '_check_box')
-            checkbox.setToolTip(player.get_info())
-            checkbox.set_player_name(player.name)
-            self.player_check_boxes[player.name] = checkbox
+            checkbox.setEnabled(player[0].available)
+            checkbox.setObjectName(player[0].name + '_check_box')
+            checkbox.setToolTip(player[0].get_info())
+            checkbox.set_player_name(player[0].name)
+            self.player_check_boxes[player[0].name] = checkbox
             checkbox.stateChanged.connect(self.on_player_check_box_changed)
             self.media_player_layout.addWidget(checkbox)
-            if player.available and player.name in self.used_players:
+            if player[0].available and player[0].name in self.used_players:
                 checkbox.setChecked(True)
             else:
                 checkbox.setChecked(False)
@@ -250,13 +250,13 @@ class PlayerTab(SettingsTab):
          """
         for key in self.media_players and self.player_check_boxes:
             player = self.media_players[key]
-            checkbox = self.player_check_boxes[player.name]
-            checkbox.set_player_name(player.name)
-            if player.available:
-                checkbox.setText(player.display_name)
+            checkbox = self.player_check_boxes[player[0].name]
+            checkbox.set_player_name(player[0].name)
+            if player[0].available:
+                checkbox.setText(player[0].display_name)
             else:
-                checkbox_text = translate('OpenLP.PlayerTab', '%s (unavailable)') % player.display_name
-                if player.name == 'vlc':
+                checkbox_text = translate('OpenLP.PlayerTab', '%s (unavailable)') % player[0].display_name
+                if player[0].name == 'vlc':
                     checkbox_text += ' ' + translate('OpenLP.PlayerTab',
                                                      'NOTE: To use VLC you must install the %s version',
                                                      'Will insert "32bit" or "64bit"') % platform.architecture()[0]
