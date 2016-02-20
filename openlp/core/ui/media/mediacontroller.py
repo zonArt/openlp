@@ -590,7 +590,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 if title == 'system':
                     if not controller.media_info.is_background or controller.media_info.is_background and \
                             player.can_background:
-                        self.resize(display, player)
+                        self.resize(display, player[controller.controller_type])
                         if player.load(display):
                             self.current_media_players[controller.controller_type] = player
                             controller.media_info.media_type = MediaType.Video
