@@ -30,7 +30,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, Settin
 from openlp.core.lib import ItemCapabilities, MediaManagerItem, MediaType, ServiceItem, ServiceItemContext, \
     build_icon, check_item_selected
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box, create_horizontal_adjusting_combo_box
-from openlp.core.ui import DisplayControllerType
+from openlp.core.ui import DisplayController, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path, format_milliseconds
 from openlp.core.utils import get_locale_key
 from openlp.core.ui.media.vlcplayer import get_vlc
@@ -81,6 +81,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         # self.display_controller = DisplayController(self.parent())
         Registry().register_function('video_background_replaced', self.video_background_replaced)
         Registry().register_function('mediaitem_media_rebuild', self.rebuild_players)
+        # Registry().register_function('config_screen_changed', self.display_setup)
         # Allow DnD from the desktop
         self.list_view.activateDnD()
 
@@ -281,6 +282,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             service_item.title = name
             service_item.processor = self.display_type_combo_box.currentText()
             service_item.add_from_command(path, name, CLAPPERBOARD)
+            # Only get start and end times if going to a service
             if not self.media_controller.media_length(service_item):
                 return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
@@ -288,7 +290,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         if Settings().value(self.settings_section + '/media auto start') == QtCore.Qt.Checked:
             service_item.will_auto_start = True
-        # force a non-existent theme
+            # force a non-existent theme
         service_item.theme = -1
         return True
 
@@ -311,6 +313,13 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             ' '.join(self.media_controller.video_extensions_list),
             ' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
 
+    def display_setup(self):
+        """
+        Setup media controller display.
+        """
+        # self.media_controller.setup_display(self.display_controller.preview_display, False)
+        pass
+
     def populate_display_types(self):
         """
         Load the combobox with the enabled media players,  allowing user to select a specific player if settings allow.
@@ -323,7 +332,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         current_index = 0
         for player in used_players:
             # load the drop down selection
-            self.display_type_combo_box.addItem(media_players[player][0].original_name)
+            self.display_type_combo_box.addItem(media_players[player].original_name)
             if override_player == player:
                 current_index = len(self.display_type_combo_box)
         if self.display_type_combo_box.count() > 1:
@@ -385,16 +394,16 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             if item_name:
                 self.list_view.addItem(item_name)
 
-    def get_list(self, media_type=MediaType.Audio):
+    def get_list(self, type=MediaType.Audio):
         """
         Get the list of media, optional select media type.
 
-        :param media_type: Type to get, defaults to audio.
+        :param type: Type to get, defaults to audio.
         :return: The media list
         """
         media = Settings().value(self.settings_section + '/media files')
         media.sort(key=lambda filename: get_locale_key(os.path.split(str(filename))[1]))
-        if media_type == MediaType.Audio:
+        if type == MediaType.Audio:
             extension = self.media_controller.audio_extensions_list
         else:
             extension = self.media_controller.video_extensions_list
