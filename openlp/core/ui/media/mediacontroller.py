@@ -186,8 +186,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                         log.warning('Failed to import %s on path %s', module_name, path)
         player_classes = MediaPlayer.__subclasses__()
         for player_class in player_classes:
-            player = player_class(self)
-            self.register_players(player)
+            self.register_players(player_class(self))
         if not self.media_players:
             return False
         saved_players, overridden_player = get_media_players()
@@ -203,20 +202,28 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         return True
 
     def media_state_live(self):
+        """
+        Check if there is a running Live media Player and do updating stuff (e.g. update the UI)
+        """
         self.tick(self.display_controllers[DisplayControllerType.Live])
         display = self._define_display(self.display_controllers[DisplayControllerType.Live])
-        self.current_media_players[DisplayControllerType.Live].resize(display)
-        self.current_media_players[DisplayControllerType.Live].update_ui(display)
-        if self.current_media_players[DisplayControllerType.Live].state is not MediaState.Playing:
-            self.live_timer.stop()
+        if len(self.current_media_players):
+            self.current_media_players[DisplayControllerType.Live].resize(display)
+            self.current_media_players[DisplayControllerType.Live].update_ui(display)
+            if self.current_media_players[DisplayControllerType.Live].state is not MediaState.Playing:
+                self.live_timer.stop()
 
     def media_state_preview(self):
+        """
+        Check if there is a running Preview media Player and do updating stuff (e.g. update the UI)
+        """
         self.tick(self.display_controllers[DisplayControllerType.Preview])
         display = self._define_display(self.display_controllers[DisplayControllerType.Preview])
-        self.current_media_players[DisplayControllerType.Preview].resize(display)
-        self.current_media_players[DisplayControllerType.Preview].update_ui(display)
-        if self.current_media_players[DisplayControllerType.Preview].state is not MediaState.Playing:
-            self.preview_timer.stop()
+        if len(self.current_media_players):
+            self.current_media_players[DisplayControllerType.Preview].resize(display)
+            self.current_media_players[DisplayControllerType.Preview].update_ui(display)
+            if self.current_media_players[DisplayControllerType.Preview].state is not MediaState.Playing:
+                self.preview_timer.stop()
 
     def media_state(self):
         """

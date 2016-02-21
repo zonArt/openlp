@@ -30,7 +30,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, Settin
 from openlp.core.lib import ItemCapabilities, MediaManagerItem, MediaType, ServiceItem, ServiceItemContext, \
     build_icon, check_item_selected
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box, create_horizontal_adjusting_combo_box
-from openlp.core.ui import DisplayController, DisplayControllerType
+from openlp.core.ui import DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path, format_milliseconds
 from openlp.core.utils import get_locale_key
 from openlp.core.ui.media.vlcplayer import get_vlc
@@ -81,7 +81,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         # self.display_controller = DisplayController(self.parent())
         Registry().register_function('video_background_replaced', self.video_background_replaced)
         Registry().register_function('mediaitem_media_rebuild', self.rebuild_players)
-        # Registry().register_function('config_screen_changed', self.display_setup)
         # Allow DnD from the desktop
         self.list_view.activateDnD()
 
@@ -290,7 +289,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         if Settings().value(self.settings_section + '/media auto start') == QtCore.Qt.Checked:
             service_item.will_auto_start = True
-            # force a non-existent theme
+        # force a non-existent theme
         service_item.theme = -1
         return True
 
@@ -312,13 +311,6 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         self.on_new_file_masks = translate('MediaPlugin.MediaItem', 'Videos (%s);;Audio (%s);;%s (*)') % (
             ' '.join(self.media_controller.video_extensions_list),
             ' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
-
-    def display_setup(self):
-        """
-        Setup media controller display.
-        """
-        # self.media_controller.setup_display(self.display_controller.preview_display, False)
-        pass
 
     def populate_display_types(self):
         """
@@ -394,16 +386,16 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
             if item_name:
                 self.list_view.addItem(item_name)
 
-    def get_list(self, type=MediaType.Audio):
+    def get_list(self, media_type=MediaType.Audio):
         """
         Get the list of media, optional select media type.
 
-        :param type: Type to get, defaults to audio.
+        :param media_type: Type to get, defaults to audio.
         :return: The media list
         """
         media = Settings().value(self.settings_section + '/media files')
         media.sort(key=lambda filename: get_locale_key(os.path.split(str(filename))[1]))
-        if type == MediaType.Audio:
+        if media_type == MediaType.Audio:
             extension = self.media_controller.audio_extensions_list
         else:
             extension = self.media_controller.video_extensions_list
