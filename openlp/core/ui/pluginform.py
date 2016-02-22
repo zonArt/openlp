@@ -87,7 +87,6 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         Clear the plugin details widgets
         """
         self.status_checkbox.setChecked(False)
-        self.version_number_label.setText('')
         self.about_text_browser.setHtml('')
         self.status_checkbox.setEnabled(False)
 
@@ -96,7 +95,6 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         Set the details of the currently selected plugin
         """
         log.debug('PluginStatus: %s', str(self.active_plugin.status))
-        self.version_number_label.setText(self.active_plugin.version)
         self.about_text_browser.setHtml(self.active_plugin.about())
         self.programatic_change = True
         if self.active_plugin.status != PluginStatus.Disabled:
