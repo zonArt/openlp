@@ -99,8 +99,12 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         self.version_number_label.setText(self.active_plugin.version)
         self.about_text_browser.setHtml(self.active_plugin.about())
         self.programatic_change = True
-        self.status_checkbox.setChecked(self.active_plugin.status == PluginStatus.Active)
-        self.status_checkbox.setEnabled(True)
+        if self.active_plugin.status != PluginStatus.Disabled:
+            self.status_checkbox.setChecked(self.active_plugin.status == PluginStatus.Active)
+            self.status_checkbox.setEnabled(True)
+        else:
+            self.status_checkbox.setChecked(False)
+            self.status_checkbox.setEnabled(False)
         self.programatic_change = False
 
     def on_plugin_list_widget_selection_changed(self):
@@ -113,10 +117,9 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         plugin_name_singular = self.plugin_list_widget.currentItem().text().split('(')[0][:-1]
         self.active_plugin = None
         for plugin in self.plugin_manager.plugins:
-            if plugin.status != PluginStatus.Disabled:
-                if plugin.name_strings['singular'] == plugin_name_singular:
-                    self.active_plugin = plugin
-                    break
+            if plugin.name_strings['singular'] == plugin_name_singular:
+                self.active_plugin = plugin
+                break
         if self.active_plugin:
             self._set_details()
         else:
