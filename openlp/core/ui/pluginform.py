@@ -126,7 +126,7 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         """
         If the status of a plugin is altered, apply the change
         """
-        if self.programatic_change:
+        if self.programatic_change or self.active_plugin is None:
             return
         if status:
             self.application.set_busy_cursor()
