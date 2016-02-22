@@ -23,7 +23,7 @@
 import re
 import logging
 
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.plugins.songs.lib import VerseType
 from .editversedialog import Ui_EditVerseDialog
@@ -41,7 +41,7 @@ class EditVerseForm(QtWidgets.QDialog, Ui_EditVerseDialog):
         """
         Constructor
         """
-        super(EditVerseForm, self).__init__(parent)
+        super(EditVerseForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.has_single_verse = False
         self.insert_button.clicked.connect(self.on_insert_button_clicked)

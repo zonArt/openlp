@@ -288,7 +288,7 @@ class BGExtract(RegistryProperties):
         except UnicodeDecodeError:
             page_source = str(page_source, 'cp1251')
         try:
-            soup = BeautifulSoup(page_source)
+            soup = BeautifulSoup(page_source, 'lxml')
         except Exception:
             log.error('BeautifulSoup could not parse the Bible page.')
             send_error_message('parse')
@@ -759,7 +759,7 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre
         page_source = re.sub(pre_parse_regex, pre_parse_substitute, page_source.decode())
     soup = None
     try:
-        soup = BeautifulSoup(page_source)
+        soup = BeautifulSoup(page_source, 'lxml')
         CLEANER_REGEX.sub('', str(soup))
     except Exception:
         log.exception('BeautifulSoup could not parse the bible page.')

@@ -44,7 +44,7 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         """
         Constructor
         """
-        super(SongMaintenanceForm, self).__init__(parent)
+        super(SongMaintenanceForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.manager = manager
         self.author_form = AuthorsForm(self)

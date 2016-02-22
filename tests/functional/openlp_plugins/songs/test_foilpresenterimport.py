@@ -39,7 +39,7 @@ class TestFoilPresenter(TestCase):
     """
     # TODO: The following modules still need tests written for
     #   xml_to_song
-    #   _child
+    #   to_str
     #   _process_authors
     #   _process_cclinumber
     #   _process_comments
@@ -50,7 +50,7 @@ class TestFoilPresenter(TestCase):
     #   _process_topics
 
     def setUp(self):
-        self.child_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.FoilPresenter._child')
+        self.to_str_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.to_str')
         self.clean_song_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.clean_song')
         self.objectify_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.objectify')
         self.process_authors_patcher = \
@@ -72,7 +72,7 @@ class TestFoilPresenter(TestCase):
         self.song_xml_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.SongXML')
         self.translate_patcher = patch('openlp.plugins.songs.lib.importers.foilpresenter.translate')
 
-        self.mocked_child = self.child_patcher.start()
+        self.mocked_child = self.to_str_patcher.start()
         self.mocked_clean_song = self.clean_song_patcher.start()
         self.mocked_objectify = self.objectify_patcher.start()
         self.mocked_process_authors = self.process_authors_patcher.start()
@@ -92,7 +92,7 @@ class TestFoilPresenter(TestCase):
         self.mocked_song_import = MagicMock()
 
     def tearDown(self):
-        self.child_patcher.stop()
+        self.to_str_patcher.stop()
         self.clean_song_patcher.stop()
         self.objectify_patcher.stop()
         self.process_authors_patcher.stop()

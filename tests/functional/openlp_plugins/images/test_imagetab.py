@@ -80,12 +80,14 @@ class TestImageMediaItem(TestCase, TestMixin):
 
     def save_tab_change_test_test(self):
         """
-        Test a change triggers post processing.
+        Test a color change is applied and triggers post processing.
         """
         # GIVEN: Apply a change to the form.
-        self.form.background_color = '#999999'
+        self.form.on_background_color_changed('#999999')
         # WHEN: the save is invoked
         self.form.save()
         # THEN: the post process should be requested
         self.assertEqual(1, self.form.settings_form.register_post_process.call_count,
                          'Image Post processing should have been requested')
+        # THEN: The color should be set
+        self.assertEqual(self.form.background_color, '#999999', 'The updated color should have been saved')

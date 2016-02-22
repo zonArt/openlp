@@ -263,7 +263,8 @@ class Plugin(QtCore.QObject, RegistryProperties):
         else:
             self.media_item.on_add_click()
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Show a dialog when the user clicks on the 'About' button in the plugin manager.
         """
@@ -275,7 +276,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         if self.media_item:
             self.media_item.initialise()
-            self.main_window.media_dock_manager.insert_dock(self.media_item, self.icon, self.weight)
+            self.main_window.media_dock_manager.add_item_to_dock(self.media_item)
 
     def finalise(self):
         """

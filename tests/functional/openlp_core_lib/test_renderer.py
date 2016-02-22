@@ -27,9 +27,10 @@ from unittest import TestCase
 from PyQt5 import QtCore
 
 from openlp.core.common import Registry
-from openlp.core.lib import Renderer, ScreenList, ServiceItem
+from openlp.core.lib import Renderer, ScreenList, ServiceItem, FormattingTags
+from openlp.core.lib.renderer import words_split, get_start_tags
 
-from tests.functional import MagicMock
+from tests.functional import MagicMock, patch
 
 SCREEN = {
     'primary': False,
@@ -71,34 +72,39 @@ class TestRenderer(TestCase):
         self.assertEqual(renderer.screen_ratio, 0.75, 'The base renderer should be a live controller')
         self.assertEqual(renderer.footer_start, 691, 'The base renderer should be a live controller')
 
-    def _get_start_tags_test(self):
+    @patch('openlp.core.lib.renderer.FormattingTags.get_html_tags')
+    def get_start_tags_test(self, mocked_get_html_tags):
         """
-        Test the _get_start_tags() method
+        Test the get_start_tags() method
         """
         # GIVEN: A new renderer instance. Broken raw_text (missing closing tags).
-        renderer = Renderer()
         given_raw_text = '{st}{r}Text text text'
         expected_tuple = ('{st}{r}Text text text{/r}{/st}', '{st}{r}',
                           '<strong><span style="-webkit-text-fill-color:red">')
+        mocked_get_html_tags.return_value = [{'temporary': False, 'end tag': '{/r}', 'desc': 'Red',
+                                              'start html': '<span style="-webkit-text-fill-color:red">',
+                                              'end html': '</span>', 'start tag': '{r}', 'protected': True},
+                                             {'temporary': False, 'end tag': '{/st}', 'desc': 'Bold',
+                                              'start html': '<strong>', 'end html': '</strong>', 'start tag': '{st}',
+                                              'protected': True}]
 
         # WHEN: The renderer converts the start tags
-        result = renderer._get_start_tags(given_raw_text)
+        result = get_start_tags(given_raw_text)
 
         # THEN: Check if the correct tuple is returned.
         self.assertEqual(result, expected_tuple), 'A tuple should be returned containing the text with correct ' \
             'tags, the opening tags, and the opening html tags.'
 
-    def _word_split_test(self):
+    def word_split_test(self):
         """
-        Test the _word_split() method
+        Test the word_split() method
         """
         # GIVEN: A line of text
-        renderer = Renderer()
         given_line = 'beginning asdf \n end asdf'
         expected_words = ['beginning', 'asdf', 'end', 'asdf']
 
         # WHEN: Split the line based on word split rules
-        result_words = renderer._words_split(given_line)
+        result_words = words_split(given_line)
 
         # THEN: The word lists should be the same.
         self.assertListEqual(result_words, expected_words)

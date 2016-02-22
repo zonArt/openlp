@@ -23,7 +23,7 @@
 This module contains the topic edit form.
 """
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -38,7 +38,7 @@ class TopicsForm(QtWidgets.QDialog, Ui_TopicsDialog):
         """
         Constructor
         """
-        super(TopicsForm, self).__init__(parent)
+        super(TopicsForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
     def exec(self, clear=True):

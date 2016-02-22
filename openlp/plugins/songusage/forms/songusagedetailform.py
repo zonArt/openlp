@@ -23,7 +23,7 @@
 import logging
 import os
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from sqlalchemy.sql import and_
 
 from openlp.core.common import RegistryProperties, Settings, check_directory_exists, translate
@@ -44,7 +44,7 @@ class SongUsageDetailForm(QtWidgets.QDialog, Ui_SongUsageDetailDialog, RegistryP
         """
         Initialise the form
         """
-        super(SongUsageDetailForm, self).__init__(parent)
+        super(SongUsageDetailForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.plugin = plugin
         self.setupUi(self)
 

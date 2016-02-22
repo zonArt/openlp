@@ -22,7 +22,7 @@
 """
 The service item edit dialog
 """
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties
 
@@ -37,7 +37,8 @@ class ServiceItemEditForm(QtWidgets.QDialog, Ui_ServiceItemEditDialog, RegistryP
         """
         Constructor
         """
-        super(ServiceItemEditForm, self).__init__(Registry().get('main_window'))
+        super(ServiceItemEditForm, self).__init__(Registry().get('main_window'),
+                                                  QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.item_list = []
         self.list_widget.currentRowChanged.connect(self.on_current_row_changed)

@@ -74,6 +74,13 @@ author_xml = '<properties>\
                   </authors>\
             </properties>'
 
+songbook_xml = '<properties>\
+                    <songbooks>\
+                        <songbook name="Collection 1" entry="48"/>\
+                        <songbook name="Collection 2" entry="445 A"/>\
+                    </songbooks>\
+                </properties>'
+
 
 class TestOpenLyricsImport(TestCase, TestMixin):
     """
@@ -166,3 +173,22 @@ class TestOpenLyricsImport(TestCase, TestMixin):
             # THEN: add_author should have been called twice
             self.assertEquals(mocked_song.method_calls[0][1][1], 'words+music')
             self.assertEquals(mocked_song.method_calls[1][1][1], 'words')
+
+    def process_songbooks_test(self):
+        """
+        Test that _process_songbooks works
+        """
+        # GIVEN: A OpenLyric XML with songbooks and a mocked out manager
+        with patch('openlp.plugins.songs.lib.openlyricsxml.Book'):
+            mocked_manager = MagicMock()
+            mocked_manager.get_object_filtered.return_value = None
+            ol = OpenLyrics(mocked_manager)
+            properties_xml = objectify.fromstring(songbook_xml)
+            mocked_song = MagicMock()
+
+            # WHEN: processing the songbook xml
+            ol._process_songbooks(properties_xml, mocked_song)
+
+            # THEN: add_songbook_entry should have been called twice
+            self.assertEquals(mocked_song.method_calls[0][1][1], '48')
+            self.assertEquals(mocked_song.method_calls[1][1][1], '445 A')

@@ -4,11 +4,11 @@ Package to test the openlp.core.lib.htmlbuilder module.
 
 from unittest import TestCase
 
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtWebKit
 
 from openlp.core.common import Settings
 from openlp.core.lib.htmlbuilder import build_html, build_background_css, build_lyrics_css, build_lyrics_outline_css, \
-    build_lyrics_format_css, build_footer_css
+    build_lyrics_format_css, build_footer_css, webkit_version
 from openlp.core.lib.theme import HorizontalType, VerticalType
 from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
@@ -358,3 +358,13 @@ class Htmbuilder(TestCase, TestMixin):
 
         # THEN: Footer should wrap
         self.assertEqual(FOOTER_CSS_WRAP, css, 'The footer strings should be equal.')
+
+    def webkit_version_test(self):
+        """
+        Test the webkit_version() function
+        """
+        # GIVEN: Webkit
+        webkit_ver = float(QtWebKit.qWebKitVersion())
+        # WHEN: Retrieving the webkit version
+        # THEN: Webkit versions should match
+        self.assertEquals(webkit_version(), webkit_ver, "The returned webkit version doesn't match the installed one")

@@ -23,7 +23,7 @@
 This module contains the song book form
 """
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -38,7 +38,7 @@ class SongBookForm(QtWidgets.QDialog, Ui_SongBookDialog):
         """
         Constructor
         """
-        super(SongBookForm, self).__init__(parent)
+        super(SongBookForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
     def exec(self, clear=True):

@@ -292,7 +292,7 @@ class EasyWorshipSongImport(SongImport):
                 raw_record = db_file.read(record_size)
                 self.fields = self.record_structure.unpack(raw_record)
                 self.set_defaults()
-                self.title = self.get_field(fi_title).decode('unicode-escape')
+                self.title = self.get_field(fi_title).decode(self.encoding)
                 # Get remaining fields.
                 copy = self.get_field(fi_copy)
                 admin = self.get_field(fi_admin)
@@ -300,16 +300,16 @@ class EasyWorshipSongImport(SongImport):
                 authors = self.get_field(fi_author)
                 words = self.get_field(fi_words)
                 if copy:
-                    self.copyright = copy.decode('unicode-escape')
+                    self.copyright = copy.decode(self.encoding)
                 if admin:
                     if copy:
                         self.copyright += ', '
                     self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
-                                                'Administered by %s') % admin.decode('unicode-escape')
+                                                'Administered by %s') % admin.decode(self.encoding)
                 if ccli:
-                    self.ccli_number = ccli.decode('unicode-escape')
+                    self.ccli_number = ccli.decode(self.encoding)
                 if authors:
-                    authors = authors.decode('unicode-escape')
+                    authors = authors.decode(self.encoding)
                 else:
                     authors = ''
                 # Set the SongImport object members.
@@ -497,7 +497,7 @@ class EasyWorshipSongImport(SongImport):
         bytes = self.get_bytes(pos, length)
         mask = '<' + str(length) + 's'
         byte_str, = struct.unpack(mask, bytes)
-        return byte_str.decode('unicode-escape').replace('\0', '').strip()
+        return byte_str.decode(self.encoding).replace('\0', '').strip()
 
     def get_i16(self, pos):
         """

@@ -28,7 +28,6 @@ import json
 import os
 
 from openlp.core.common import translate
-from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.importers.songimport import SongImport
 from openlp.plugins.songs.lib.db import AuthorType
 
