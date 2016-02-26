@@ -685,6 +685,33 @@ class TestSlideController(TestCase):
         self.assertEqual('mocked_presentation_item_stop', mocked_execute.call_args_list[1][0][0],
                          'The presentation should have been stopped.')
 
+    def live_stolen_focus_shortcuts_test(self):
+        """
+        Test that all the needed shortcuts are available in scenarios where Live has stolen focus.
+        These are found under def __add_actions_to_widget(self, widget): in slidecontroller.py
+        """
+        # GIVEN: A slide controller, actions needed
+        slide_controller = SlideController(None)
+        mocked_widget = MagicMock()
+        slide_controller.previous_item = MagicMock()
+        slide_controller.next_item = MagicMock()
+        slide_controller.previous_service = MagicMock()
+        slide_controller.next_service = MagicMock()
+        slide_controller.escape_item = MagicMock()
+        slide_controller.desktop_screen = MagicMock()
+        slide_controller.blank_screen = MagicMock()
+        slide_controller.theme_screen = MagicMock()
+
+        # WHEN: __add_actions_to_widget is called
+        slide_controller._SlideController__add_actions_to_widget(mocked_widget)
+
+        # THEN: The call to addActions should be correct
+        mocked_widget.addActions.assert_called_with([
+            slide_controller.previous_item, slide_controller.next_item,
+            slide_controller.previous_service, slide_controller.next_service,
+            slide_controller.escape_item, slide_controller.desktop_screen,
+            slide_controller.theme_screen, slide_controller.blank_screen
+        ])
 
 class TestInfoLabel(TestCase):
 
