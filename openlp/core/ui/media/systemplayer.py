@@ -149,15 +149,19 @@ class SystemPlayer(MediaPlayer):
         log.info('Play the current item')
         controller = display.controller
         start_time = 0
-        if display.media_player.state() != QtMultimedia.QMediaPlayer.PausedState and \
-                controller.media_info.start_time > 0:
-            start_time = controller.media_info.start_time
+        if display.controller.is_live:
+            if self.get_live_state() != QtMultimedia.QMediaPlayer.PausedState and controller.media_info.start_time > 0:
+                start_time = controller.media_info.start_time
+        else:
+            if self.get_preview_state() != QtMultimedia.QMediaPlayer.PausedState and \
+                            controller.media_info.start_time > 0:
+                start_time = controller.media_info.start_time
         display.media_player.play()
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         self.volume(display, controller.media_info.volume)
         display.media_player.durationChanged.connect(functools.partial(self.set_duration, controller))
-        self.state = MediaState.Playing
+        self.set_state(MediaState.Playing, display)
         display.video_widget.raise_()
         return True
 
@@ -168,8 +172,12 @@ class SystemPlayer(MediaPlayer):
         :param display: The display where the media is
         """
         display.media_player.pause()
-        if display.media_player.state() == QtMultimedia.QMediaPlayer.PausedState:
-            self.state = MediaState.Paused
+        if display.controller.is_live:
+            if self.get_live_state() == QtMultimedia.QMediaPlayer.PausedState:
+                self.set_state(MediaState.Paused, display)
+        else:
+            if self.get_preview_state() == QtMultimedia.QMediaPlayer.PausedState:
+                self.set_state(MediaState.Paused, display)
 
     def stop(self, display):
         """
@@ -182,7 +190,7 @@ class SystemPlayer(MediaPlayer):
         display.media_player.blockSignals(False)
         display.media_player.stop()
         self.set_visible(display, False)
-        self.state = MediaState.Stopped
+        self.set_state(MediaState.Stopped, display)
 
     def volume(self, display, volume):
         """

@@ -205,15 +205,18 @@ class WebkitPlayer(MediaPlayer):
         """
         controller = display.controller
         display.web_loaded = True
-        length = 0
         start_time = 0
-        if self.state != MediaState.Paused and controller.media_info.start_time > 0:
-            start_time = controller.media_info.start_time
+        if display.controller.is_live:
+            if self.get_live_state() != MediaState.Paused and controller.media_info.start_time > 0:
+                start_time = controller.media_info.start_time
+        else:
+            if self.get_preview_state() != MediaState.Paused and controller.media_info.start_time > 0:
+                start_time = controller.media_info.start_time
         self.set_visible(display, True)
         display.frame.evaluateJavaScript('show_video("play");')
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
-        self.state = MediaState.Playing
+        self.set_state(MediaState.Playing, display)
         display.web_view.raise_()
         return True
 
@@ -224,7 +227,7 @@ class WebkitPlayer(MediaPlayer):
         :param display: The display to be updated.
         """
         display.frame.evaluateJavaScript('show_video("pause");')
-        self.state = MediaState.Paused
+        self.set_state(MediaState.Paused, display)
 
     def stop(self, display):
         """
@@ -233,7 +236,7 @@ class WebkitPlayer(MediaPlayer):
         :param display: The display to be updated.
         """
         display.frame.evaluateJavaScript('show_video("stop");')
-        self.state = MediaState.Stopped
+        self.set_state(MediaState.Stopped, display)
 
     def volume(self, display, volume):
         """
@@ -264,7 +267,7 @@ class WebkitPlayer(MediaPlayer):
         :param display: The display to be updated.
         """
         display.frame.evaluateJavaScript('show_video("close");')
-        self.state = MediaState.Off
+        self.set_state(MediaState.Off, display)
 
     def set_visible(self, display, visibility):
         """

@@ -205,53 +205,63 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         """
         Check if there is a running Live media Player and do updating stuff (e.g. update the UI)
         """
-        self.tick(self.display_controllers[DisplayControllerType.Live])
         display = self._define_display(self.display_controllers[DisplayControllerType.Live])
         if len(self.current_media_players):
             self.current_media_players[DisplayControllerType.Live].resize(display)
             self.current_media_players[DisplayControllerType.Live].update_ui(display)
-            if self.current_media_players[DisplayControllerType.Live].state is not MediaState.Playing:
+            self.tick(self.display_controllers[DisplayControllerType.Live])
+            if self.current_media_players[DisplayControllerType.Live].get_live_state() is not MediaState.Playing:
                 self.live_timer.stop()
+        else:
+            self.live_timer.stop()
+            self.media_stop(self.display_controllers[DisplayControllerType.Live])
+            if self.display_controllers[DisplayControllerType.Live].media_info.loop_playback:
+                self.media_play(self.display_controllers[DisplayControllerType.Live], True)
 
     def media_state_preview(self):
         """
         Check if there is a running Preview media Player and do updating stuff (e.g. update the UI)
         """
-        self.tick(self.display_controllers[DisplayControllerType.Preview])
         display = self._define_display(self.display_controllers[DisplayControllerType.Preview])
         if len(self.current_media_players):
             self.current_media_players[DisplayControllerType.Preview].resize(display)
             self.current_media_players[DisplayControllerType.Preview].update_ui(display)
-            if self.current_media_players[DisplayControllerType.Preview].state is not MediaState.Playing:
+            self.tick(self.display_controllers[DisplayControllerType.Preview])
+            if self.current_media_players[DisplayControllerType.Preview].get_preview_state() is not MediaState.Playing:
                 self.preview_timer.stop()
-
-    def media_state(self):
-        """
-        Check if there is a running media Player and do updating stuff (e.g. update the UI)
-        """
-        if not list(self.current_media_players.keys()):
-            self.live_timer.stop()
         else:
-            any_active = False
-            for source in list(self.current_media_players.keys()):
-                display = self._define_display(self.display_controllers[source])
-                self.current_media_players[source].resize(display)
-                self.current_media_players[source].update_ui(display)
-                if self.current_media_players[source].state == MediaState.Playing:
-                    any_active = True
-                    print(source)
-                    self.tick(self.display_controllers[source])
-        # There are still any active players - no need to stop live_timer.
-            if any_active:
-                return
-        # no players are active anymore
-        for source in list(self.current_media_players.keys()):
-            if self.current_media_players[source].state != MediaState.Paused:
-                display = self._define_display(self.display_controllers[source])
-                display.controller.seek_slider.setSliderPosition(0)
-                display.controller.mediabar.actions['playbackPlay'].setVisible(True)
-                display.controller.mediabar.actions['playbackPause'].setVisible(False)
-        self.live_timer.stop()
+            print("A2")
+            self.preview_timer.stop()
+            self.media_stop(self.display_controllers[DisplayControllerType.Preview])
+            if self.display_controllers[DisplayControllerType.Preview].media_info.loop_playback:
+                self.media_play(self.display_controllers[DisplayControllerType.Preview], True)
+
+    # def media_state_preview(self):
+    #     """
+    #     Check if there is a running media preview Player and do updating stuff (e.g. update the UI)
+    #     """
+    #     if not list(self.current_media_players.keys()):
+    #         self.preview_timer.stop()
+    #     else:
+    #         any_active = False
+    #         for source in list(self.current_media_players.keys()):
+    #             display = self._define_display(self.display_controllers[source])
+    #             self.current_media_players[source].resize(display)
+    #             self.current_media_players[source].update_ui(display)
+    #             if self.current_media_players[source].get_preview_state() == MediaState.Playing:
+    #                 any_active = True
+    #                 self.tick(self.display_controllers[source])
+    #     # There are still any active players - no need to stop live_timer.
+    #         if any_active:
+    #             return
+    #     # no players are active anymore
+    #     for source in list(self.current_media_players.keys()):
+    #         if self.current_media_players[source].get_preview_state() != MediaState.Paused:
+    #             display = self._define_display(self.display_controllers[source])
+    #             display.controller.seek_slider.setSliderPosition(0)
+    #             display.controller.mediabar.actions['playbackPlay'].setVisible(True)
+    #             display.controller.mediabar.actions['playbackPause'].setVisible(False)
+    #     self.preview_timer.stop()
 
     def get_media_display_css(self):
         """
@@ -682,8 +692,12 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller:  The Controller to be processed
         """
         start_again = False
+        print("D")
+        print(controller.media_info.playing, controller.media_info.length)
         if controller.media_info.playing and controller.media_info.length > 0:
+            print(controller.media_info.timer, controller.media_info.length)
             if controller.media_info.timer > controller.media_info.length:
+                print("D1")
                 self.media_stop(controller, True)
                 if controller.media_info.loop_playback:
                     start_again = True
@@ -697,6 +711,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             controller.position_label.setText(' %02d:%02d / %02d:%02d' %
                                               (minutes, seconds, total_minutes, total_seconds))
         if start_again:
+            print("D2")
             self.media_play(controller, True)
 
     def media_pause_msg(self, msg):
@@ -753,8 +768,10 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller: The controller that needs to be stopped
         :param looping_background: The background is looping so do not blank.
         """
+        print("E")
         display = self._define_display(controller)
         if controller.controller_type in self.current_media_players:
+            print("E1")
             if not looping_background:
                 display.frame.evaluateJavaScript('show_blank("black");')
             self.current_media_players[controller.controller_type].stop(display)
@@ -836,7 +853,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return
         display = self._define_display(self.live_controller)
         if self.live_controller.controller_type in self.current_media_players and \
-                self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
+                self.current_media_players[self.live_controller.controller_type].get_live_state() == MediaState.Playing:
             self.current_media_players[self.live_controller.controller_type].pause(display)
             self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
 
@@ -854,7 +871,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         Registry().execute('live_display_hide', hide_mode)
         display = self._define_display(self.live_controller)
         if self.live_controller.controller_type in self.current_media_players and \
-                self.current_media_players[self.live_controller.controller_type].state == MediaState.Playing:
+                self.current_media_players[self.live_controller.controller_type].get_live_state() == MediaState.Playing:
             self.current_media_players[self.live_controller.controller_type].pause(display)
             self.current_media_players[self.live_controller.controller_type].set_visible(display, False)
 
@@ -871,7 +888,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             return
         display = self._define_display(self.live_controller)
         if self.live_controller.controller_type in self.current_media_players and \
-                self.current_media_players[self.live_controller.controller_type].state != MediaState.Playing:
+                self.current_media_players[self.live_controller.controller_type].get_live_state() != \
+                MediaState.Playing:
             if self.current_media_players[self.live_controller.controller_type].play(display):
                 self.current_media_players[self.live_controller.controller_type].set_visible(display, True)
                 # Start Timer for ui updates

@@ -41,7 +41,7 @@ class MediaPlayer(RegistryProperties):
         self.is_active = False
         self.can_background = False
         self.can_folder = False
-        self.state = MediaState.Off
+        self.state = {0: MediaState.Off, 1: MediaState.Off}
         self.has_own_widget = False
         self.audio_extensions_list = []
         self.video_extensions_list = []
@@ -167,3 +167,21 @@ class MediaPlayer(RegistryProperties):
         Returns Information about the player
         """
         return ''
+
+    def get_live_state(self):
+        return self.state[0]
+
+    def set_live_state(self, state):
+        self.state[0] = state
+
+    def get_preview_state(self):
+        return self.state[1]
+
+    def set_preview_state(self, state):
+        self.state[1] = state
+
+    def set_state(self, state, display):
+        if display.controller.is_live:
+            self.set_live_state(state)
+        else:
+            self.set_preview_state(state)

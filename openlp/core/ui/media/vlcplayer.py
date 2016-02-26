@@ -261,14 +261,23 @@ class VlcPlayer(MediaPlayer):
         controller = display.controller
         start_time = 0
         log.debug('vlc play')
-        if self.state != MediaState.Paused and controller.media_info.start_time > 0:
-            start_time = controller.media_info.start_time
+        if display.controller.is_live:
+            if self.get_live_state() != MediaState.Paused and controller.media_info.start_time > 0:
+                start_time = controller.media_info.start_time
+        else:
+            if self.get_preview_state() != MediaState.Paused and controller.media_info.start_time > 0:
+                start_time = controller.media_info.start_time
         threading.Thread(target=display.vlc_media_player.play).start()
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
-        if self.state != MediaState.Paused and controller.media_info.start_time > 0:
-            log.debug('vlc play, start time set')
-            start_time = controller.media_info.start_time
+        if display.controller.is_live:
+            if self.get_live_state() != MediaState.Paused and controller.media_info.start_time > 0:
+                log.debug('vlc play, start time set')
+                start_time = controller.media_info.start_time
+        else:
+            if self.get_preview_state() != MediaState.Paused and controller.media_info.start_time > 0:
+                log.debug('vlc play, start time set')
+                start_time = controller.media_info.start_time
         log.debug('mediatype: ' + str(controller.media_info.media_type))
         # Set tracks for the optical device
         if controller.media_info.media_type == MediaType.DVD:
@@ -293,7 +302,7 @@ class VlcPlayer(MediaPlayer):
         if start_time > 0 and display.vlc_media_player.is_seekable():
             display.vlc_media_player.set_time(int(start_time))
         controller.seek_slider.setMaximum(controller.media_info.length)
-        self.state = MediaState.Playing
+        self.set_state(MediaState.Playing, display)
         display.vlc_widget.raise_()
         return True
 
@@ -309,7 +318,7 @@ class VlcPlayer(MediaPlayer):
             return
         display.vlc_media_player.pause()
         if self.media_state_wait(display, vlc.State.Paused):
-            self.state = MediaState.Paused
+            self.set_state(MediaState.Paused, display)
 
     def stop(self, display):
         """
@@ -319,7 +328,7 @@ class VlcPlayer(MediaPlayer):
         :return:
         """
         threading.Thread(target=display.vlc_media_player.stop).start()
-        self.state = MediaState.Stopped
+        self.set_state(MediaState.Stopped, display)
 
     def volume(self, display, vol):
         """
@@ -353,7 +362,7 @@ class VlcPlayer(MediaPlayer):
         """
         display.vlc_media_player.stop()
         display.vlc_widget.setVisible(False)
-        self.state = MediaState.Off
+        self.set_state(MediaState.Off, display)
 
     def set_visible(self, display, status):
         """
