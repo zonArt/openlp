@@ -985,7 +985,6 @@ class SlideController(DisplayController, RegistryProperties):
         self.update_preview()
         self.on_toggle_loop()
 
-
     def on_theme_display(self, checked=None):
         """
         Handle the Theme screen button
