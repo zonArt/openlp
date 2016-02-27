@@ -900,7 +900,7 @@ class TestVLCPlayer(TestCase, TestMixin):
         # WHEN: reset() is called
         vlc_player.reset(mocked_display)
 
-        # THEN: The media should be stopped and invsibile
+        # THEN: The media should be stopped and invisible
         mocked_display.vlc_media_player.stop.assert_called_with()
         mocked_display.vlc_widget.setVisible.assert_called_with(False)
         self.assertEqual(MediaState.Off, vlc_player.state)
