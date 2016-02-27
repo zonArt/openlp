@@ -713,6 +713,7 @@ class TestSlideController(TestCase):
             slide_controller.theme_screen, slide_controller.blank_screen
         ])
 
+
 class TestInfoLabel(TestCase):
 
     def paint_event_text_fits_test(self):
