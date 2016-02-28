@@ -60,3 +60,17 @@ class TestPJLink(TestCase):
                                                    "Connection request should have been called with TEST_SALT"))
         self.assertTrue(mock_qmd5_hash.called_with(TEST_PIN,
                                                    "Connection request should have been called with TEST_PIN"))
+
+    def non_standard_class_reply_test(self):
+        """
+        bugfix 1550891 - CLSS request returns non-standard 'Class N' reply
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+
+        # WHEN: Process non-standard reply
+        pjlink.process_clss('Class 1')
+
+        # THEN: Projector class should be set with proper value
+        self.assertEquals(pjlink.pjlink_class, '1',
+                          'Non-standard class reply should have set proper class')

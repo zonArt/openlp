@@ -665,7 +665,15 @@ class PJLink1(QTcpSocket):
 
         :param data: Class that projector supports.
         """
-        self.pjlink_class = data
+        # bug 1550891: Projector returns non-standard class response:
+        #            : Expected: %1CLSS=1
+        #            : Received: %1CLSS=Class 1
+        if len(data) > 1:
+            # Split non-standard information from response
+            clss = data.split()[-1]
+        else:
+            clss = data
+        self.pjlink_class = clss
         log.debug('(%s) Setting pjlink_class for this projector to "%s"' % (self.ip, self.pjlink_class))
         return
 
