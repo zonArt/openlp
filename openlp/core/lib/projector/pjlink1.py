@@ -515,7 +515,7 @@ class PJLink1(QTcpSocket):
         self.socket_timer.start()
         try:
             self.projectorNetwork.emit(S_NETWORK_SENDING)
-            sent = self.write(out)
+            sent = self.write(out.encode('ascii'))
             self.waitForBytesWritten(2000)  # 2 seconds should be enough
             if sent == -1:
                 # Network error?
