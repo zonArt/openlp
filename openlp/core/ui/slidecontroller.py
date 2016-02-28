@@ -601,13 +601,21 @@ class SlideController(DisplayController, RegistryProperties):
     def __add_actions_to_widget(self, widget):
         """
         Add actions to the widget specified by `widget`
+        This defines the controls available when Live display has stolen focus.
+        Examples of this happening: Clicking anything in the live window or certain single screen mode scenarios.
+        Needles to say, blank to modes should not be removed from here.
+        For some reason this required a test. It may be found in test_slidecontroller.py as
+        "live_stolen_focus_shortcuts_test. If you want to modify things here, you must also modify them there. (Duh)
 
         :param widget: The UI widget for the actions
         """
         widget.addActions([
             self.previous_item, self.next_item,
             self.previous_service, self.next_service,
-            self.escape_item])
+            self.escape_item,
+            self.desktop_screen,
+            self.theme_screen,
+            self.blank_screen])
 
     def preview_size_changed(self):
         """
