@@ -47,6 +47,9 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
         """
         super(QtWidgets.QTableWidget, self).__init__(parent)
         self._setup(screen_ratio)
+        
+        # max row height for non-text slides in pixels. If <= 0, will disable max row height.
+        self.max_img_row_height = 200
 
     def _setup(self, screen_ratio):
         """
@@ -82,8 +85,10 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                 self.resizeRowsToContents()
             else:
                 # Sort out image heights.
+                height = self.viewport().width() // self.screen_ratio ### Moved out of loop as only needs to run once
+                if self.max_img_row_height > 0 and height > self.max_img_row_height: ### Apply row height cap.
+                    height = self.max_img_row_height
                 for frame_number in range(len(self.service_item.get_frames())):
-                    height = self.viewport().width() // self.screen_ratio
                     self.setRowHeight(frame_number, height)
 
     def screen_size_changed(self, screen_ratio):
@@ -139,7 +144,20 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                     pixmap = QtGui.QPixmap.fromImage(image)
                     pixmap.setDevicePixelRatio(label.devicePixelRatio())
                     label.setPixmap(pixmap)
-                self.setCellWidget(frame_number, 0, label)
+                ### begin added/modified content
+                if self.max_img_row_height > 0:
+                    label.setMaximumWidth(self.max_img_row_height * self.screen_ratio) ### set max width based on max height
+                    label.resize(self.max_img_row_height * self.screen_ratio,self.max_img_row_height) ### resize to max width and max height; may be adjusted when setRowHeight called.
+                    container = QtWidgets.QWidget() ### container widget
+                    hbox = QtWidgets.QHBoxLayout() ### hbox to allow for horizonal stretch padding
+                    hbox.setContentsMargins(0, 0, 0, 0) ### 0 contents margins to avoid extra padding
+                    hbox.addWidget(label,stretch=1) ### add slide, stretch allows growing to max-width
+                    hbox.addStretch(0) ### add strech padding with lowest priority; will only grow when slide has hit max-width
+                    container.setLayout(hbox) ### populate container widget
+                    self.setCellWidget(frame_number, 0, container) ### populate cell with container
+                else:
+                    self.setCellWidget(frame_number, 0, label) ### populate cell with slide
+                ### end added/modified content    
                 slide_height = width // self.screen_ratio
                 row += 1
             text.append(str(row))
