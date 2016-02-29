@@ -81,3 +81,19 @@ class TestSongUsage(TestCase):
 
         # THEN: It should return True
         self.assertTrue(ret)
+
+    @patch('openlp.plugins.songusage.songusageplugin.Manager')
+    def toggle_song_usage_state_test(self, MockedManager):
+        """
+        Test that toggle_song_usage_state does toggle song_usage_state
+        """
+        # GIVEN: A SongUsagePlugin
+        song_usage = SongUsagePlugin()
+        song_usage.set_button_state = MagicMock()
+        song_usage.song_usage_active = True
+
+        # WHEN: calling toggle_song_usage_state
+        song_usage.toggle_song_usage_state()
+
+        # THEN: song_usage_state should have been toogled
+        self.assertFalse(song_usage.song_usage_active)
