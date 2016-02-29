@@ -170,6 +170,7 @@ class SongFormat(object):
     WorshipAssistant = 23
     WorshipCenterPro = 24
     ZionWorx = 25
+    OPSPro = 26
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -382,6 +383,17 @@ class SongFormat(object):
                                          'First convert your ZionWorx database to a CSV text file, as '
                                          'explained in the <a href="http://manual.openlp.org/songs.html'
                                          '#importing-from-zionworx">User Manual</a>.')
+        },
+        OPSPro: {
+            'name': 'OPS Pro',
+            'prefix': 'OPSPro',
+            'canDisable': True,
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm', 'OPS Pro database'),
+            'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+                                           'The OPS Pro importer is only supported on Windows. It has been '
+                                           'disabled due to a missing Python module. If you want to use this '
+                                           'importer, you will need to install the "pyodbc" module.')
         }
     }
 
@@ -417,6 +429,7 @@ class SongFormat(object):
             SongFormat.WorshipAssistant,
             SongFormat.WorshipCenterPro,
             SongFormat.ZionWorx,
+            SongFormat.OPSPro
         ])
 
     @staticmethod
