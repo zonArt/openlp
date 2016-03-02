@@ -1085,6 +1085,8 @@ class SlideController(DisplayController, RegistryProperties):
         # done by the thread holding the lock. If it is a "start" slide, we must wait for the lock, but only for 0.2
         # seconds, since we don't want to cause a deadlock
         timeout = 0.2 if start else -1
+        if self.is_live:
+            Registry().execute('slidecontroller_live_unblank')
         if not self.slide_selected_lock.acquire(start, timeout):
             if start:
                 self.log_debug('Could not get lock in slide_selected after waiting %f, skip to avoid deadlock.'
