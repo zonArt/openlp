@@ -789,10 +789,12 @@ class SlideController(DisplayController, RegistryProperties):
     def replace_service_manager_item(self, item):
         """
         Replacement item following a remote edit
-
+        This action takes place when a song that is sent to live from Service Manager is edited.
+        "not self.hide_mode()" prevents this from happening when display is blanked.
+        If same song is currently in live, it updates the lyrics. If display i blanked, it won't update. (bug)
         :param item: The current service item
         """
-        if item == self.service_item:
+        if item == self.service_item and not self.hide_mode():
             self._process_item(item, self.preview_widget.current_slide_number())
 
     def add_service_manager_item(self, item, slide_no):
