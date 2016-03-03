@@ -73,7 +73,10 @@ class AdvancedTab(SettingsTab):
         self.ui_layout.addRow(self.media_plugin_check_box)
         self.double_click_live_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.double_click_live_check_box.setObjectName('double_click_live_check_box')
+        self.click_live_slide_to_unblank_check_box = QtWidgets.QCheckBox(self.ui_group_box)
+        self.click_live_slide_to_unblank_check_box.setObjectName('click_live_slide_to_unblank_')
         self.ui_layout.addRow(self.double_click_live_check_box)
+        self.ui_layout.addRow(self.click_live_slide_to_unblank_check_box)
         self.single_click_preview_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.single_click_preview_check_box.setObjectName('single_click_preview_check_box')
         self.ui_layout.addRow(self.single_click_preview_check_box)
@@ -268,6 +271,8 @@ class AdvancedTab(SettingsTab):
                                                       'Remember active media manager tab on startup'))
         self.double_click_live_check_box.setText(translate('OpenLP.AdvancedTab',
                                                            'Double-click to send items straight to live'))
+        self.click_live_slide_to_unblank_check_box.setText(translate('OpenLP.AdvancedTab',
+                                                           'Unblank display when changing slide in Live'))
         self.single_click_preview_check_box.setText(translate('OpenLP.AdvancedTab',
                                                               'Preview items when clicked in Media Manager'))
         self.expand_service_item_check_box.setText(translate('OpenLP.AdvancedTab',
@@ -338,6 +343,7 @@ class AdvancedTab(SettingsTab):
         self.recent_spin_box.setValue(settings.value('recent file count'))
         self.media_plugin_check_box.setChecked(settings.value('save current plugin'))
         self.double_click_live_check_box.setChecked(settings.value('double click live'))
+        self.click_live_slide_to_unblank_check_box.setChecked(settings.value('click live slide to unblank'))
         self.single_click_preview_check_box.setChecked(settings.value('single click preview'))
         self.expand_service_item_check_box.setChecked(settings.value('expand service item'))
         self.enable_auto_close_check_box.setChecked(settings.value('enable exit confirmation'))
@@ -419,6 +425,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue('recent file count', self.recent_spin_box.value())
         settings.setValue('save current plugin', self.media_plugin_check_box.isChecked())
         settings.setValue('double click live', self.double_click_live_check_box.isChecked())
+        settings.setValue('click live slide to unblank', self.click_live_slide_to_unblank_check_box.isChecked())
         settings.setValue('single click preview', self.single_click_preview_check_box.isChecked())
         settings.setValue('expand service item', self.expand_service_item_check_box.isChecked())
         settings.setValue('enable exit confirmation', self.enable_auto_close_check_box.isChecked())

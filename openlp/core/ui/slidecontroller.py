@@ -1085,13 +1085,13 @@ class SlideController(DisplayController, RegistryProperties):
         # done by the thread holding the lock. If it is a "start" slide, we must wait for the lock, but only for 0.2
         # seconds, since we don't want to cause a deadlock
         timeout = 0.2 if start else -1
-        if self.is_live:
-            Registry().execute('slidecontroller_live_unblank')
         if not self.slide_selected_lock.acquire(start, timeout):
             if start:
                 self.log_debug('Could not get lock in slide_selected after waiting %f, skip to avoid deadlock.'
                                % timeout)
             return
+        if self.is_live and Settings().value('advanced/click live slide to unblank'):
+            Registry().execute('slidecontroller_live_unblank')
         row = self.preview_widget.current_slide_number()
         old_selected_row = self.selected_row
         self.selected_row = 0
@@ -1248,6 +1248,7 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param checked: is the check box checked.
         """
+        Registry().execute('slidecontroller_live_unblank')
         if checked is None:
             checked = self.play_slides_loop.isChecked()
         else:
@@ -1271,6 +1272,7 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param checked: is the check box checked.
         """
+        Registry().execute('slidecontroller_live_unblank')
         if checked is None:
             checked = self.play_slides_once.isChecked()
         else:

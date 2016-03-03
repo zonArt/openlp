@@ -119,6 +119,7 @@ class Settings(QtCore.QSettings):
         'advanced/default service name': UiStrings().DefaultServiceName,
         'advanced/display size': 0,
         'advanced/double click live': False,
+        'advanced/click live slide to unblank': True,
         'advanced/enable exit confirmation': True,
         'advanced/expand service item': False,
         'advanced/hide mouse': True,
