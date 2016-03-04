@@ -45,6 +45,7 @@ class BibleSearch(object):
     """
     Reference = 1
     Text = 2
+    Quick = 3
 
 
 class BibleMediaItem(MediaManagerItem):
@@ -309,6 +310,9 @@ class BibleMediaItem(MediaManagerItem):
         self.plugin.manager.media = self
         self.load_bibles()
         self.quick_search_edit.set_search_types([
+            (BibleSearch.Quick, ':/bibles/bibles_search_reference.png',
+                translate('BiblesPlugin.MediaItem', 'Quick search'),
+                translate('BiblesPlugin.MediaItem', 'Search Text or Scripture Reference...')),
             (BibleSearch.Reference, ':/bibles/bibles_search_reference.png',
                 translate('BiblesPlugin.MediaItem', 'Scripture Reference'),
                 translate('BiblesPlugin.MediaItem', 'Search Scripture Reference...')),
@@ -659,7 +663,13 @@ class BibleMediaItem(MediaManagerItem):
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quick_search_edit.text()
-        if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+        if self.quick_search_edit.current_search_type() == BibleSearch.Quick:
+            # We are doing a 'Reference Search'.
+            self.search_results = self.plugin.manager.get_verses(bible, text)
+            if second_bible and self.search_results:
+                self.second_search_results = \
+                    self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Reference:
             # We are doing a 'Reference Search'.
             self.search_results = self.plugin.manager.get_verses(bible, text)
             if second_bible and self.search_results:
