@@ -23,9 +23,11 @@
 Package to test the openlp.core.ui.listpreviewwidget package.
 """
 from unittest import TestCase
+
+from openlp.core.common import Settings
 from openlp.core.ui.listpreviewwidget import ListPreviewWidget
 
-from tests.functional import patch
+from tests.functional import MagicMock, patch
 
 
 class TestListPreviewWidget(TestCase):
