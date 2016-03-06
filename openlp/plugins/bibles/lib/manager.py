@@ -237,26 +237,6 @@ class BibleManager(RegistryProperties):
         log.debug('BibleManager.get_verse_count_by_book_ref_id("%s", "%s", "%s")', bible, book_ref_id, chapter)
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
-    def get_language_selection(self, bible):
-        """
-        Returns the language selection of a bible.
-
-        :param bible:  Unicode. The Bible to get the language selection from.
-        """
-        log.debug('BibleManager.get_language_selection("%s")', bible)
-        language_selection = self.get_meta_data(bible, 'book_name_language')
-        if not language_selection or language_selection.value == "None" or language_selection.value == "-1":
-            # If None is returned, it's not the singleton object but a
-            # BibleMeta object with the value "None"
-            language_selection = Settings().value(self.settings_section + '/book name language')
-        else:
-            language_selection = language_selection.value
-        try:
-            language_selection = int(language_selection)
-        except (ValueError, TypeError):
-            language_selection = LanguageSelection.Application
-        return language_selection
-
     def get_verses(self, bible, verse_text, book_ref_id=False, show_error=True):
         """
         Parses a scripture reference, fetches the verses from the Bible
@@ -316,6 +296,26 @@ class BibleManager(RegistryProperties):
                 )
             return None
 
+    def get_language_selection(self, bible):
+        """
+        Returns the language selection of a bible.
+
+        :param bible:  Unicode. The Bible to get the language selection from.
+        """
+        log.debug('BibleManager.get_language_selection("%s")', bible)
+        language_selection = self.get_meta_data(bible, 'book_name_language')
+        if not language_selection or language_selection.value == "None" or language_selection.value == "-1":
+            # If None is returned, it's not the singleton object but a
+            # BibleMeta object with the value "None"
+            language_selection = Settings().value(self.settings_section + '/book name language')
+        else:
+            language_selection = language_selection.value
+        try:
+            language_selection = int(language_selection)
+        except (ValueError, TypeError):
+            language_selection = LanguageSelection.Application
+        return language_selection
+
     def verse_search(self, bible, second_bible, text):
         """
         Does a verse search for the given bible and text.
@@ -362,6 +362,23 @@ class BibleManager(RegistryProperties):
                           'them by a comma to search for one of them.')
             )
             return None
+
+    def get_verses_combined(self, bible, verse_text, book_ref_id=False, show_error=False):
+            log.debug('BibleManager.get_verses("%s", "%s")', bible, verse_text)
+            if not bible:
+                if show_error:
+                    self.main_window.information_message(
+                        translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
+                        translate('BiblesPlugin.BibleManager', 'There are no Bibles currently installed. Please use the '
+                                  'Import Wizard to install one or more Bibles.')
+                    )
+                return None
+            language_selection = self.get_language_selection(bible)
+            ref_list = parse_reference(verse_text, self.db_cache[bible], language_selection, book_ref_id)
+            if ref_list:
+                return self.db_cache[bible].get_verses(ref_list, show_error)
+            else:
+                return None
 
     def save_meta_data(self, bible, version, copyright, permissions, book_name_language=None):
         """
