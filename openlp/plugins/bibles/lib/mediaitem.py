@@ -435,8 +435,8 @@ class BibleMediaItem(MediaManagerItem):
         # Save the current bible to the configuration.
         Settings().setValue(self.settings_section + '/quick bible', self.quickVersionComboBox.currentText())
         books = []
-        # We have to do a 'Reference Search'.
-        if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+        # We have to do a 'Reference Search' (Or as part of Combined Search).
+        if self.quick_search_edit.current_search_type() == BibleSearch.Reference or BibleSearch.Combined:
             bibles = self.plugin.manager.get_bibles()
             bible = self.quickVersionComboBox.currentText()
             if bible:
@@ -670,7 +670,7 @@ class BibleMediaItem(MediaManagerItem):
                 self.second_search_results = \
                     self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
         elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
-             # We are doing a 'Text Search'.
+            # We are doing a 'Text Search'.
             self.application.set_busy_cursor()
             bibles = self.plugin.manager.get_bibles()
             self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
@@ -700,7 +700,7 @@ class BibleMediaItem(MediaManagerItem):
                 self.search_results = new_search_results
                 self.second_search_results = bibles[second_bible].get_verses(text)
         elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
-            # Combined search, starting with reference search
+            # Combined search, starting with reference search (combined)
             self.search_results = self.plugin.manager.get_verses_combined(bible, text)
             if second_bible and self.search_results:
                 self.second_search_results = \
@@ -735,6 +735,13 @@ class BibleMediaItem(MediaManagerItem):
                             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.search_results = new_search_results
                     self.second_search_results = bibles[second_bible].get_verses(text)
+                # If no Text or Reference is found, message is given.
+                if not self.search_results:
+                    self.main_window.information_message(
+                        translate('BiblesPlugin.BibleManager', 'Scripture Reference Errorhhh'),
+                        translate('BiblesPlugin.BibleManager', 'You did not enter a search '
+                                    'different keywords by a space to search for all of your '
+                                    'them by a comma to search for one of them.'))
         # Finalizing the search
         if not self.quickLockButton.isChecked():
             self.list_view.clear()

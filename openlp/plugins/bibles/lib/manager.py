@@ -369,8 +369,8 @@ class BibleManager(RegistryProperties):
                 if show_error:
                     self.main_window.information_message(
                         translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
-                        translate('BiblesPlugin.BibleManager', 'There are no Bibles currently installed. Please use the '
-                                  'Import Wizard to install one or more Bibles.')
+                        translate('BiblesPlugin.BibleManager', 'There are no Bibles currently installed. Please use the'
+                                  ' Import Wizard to install one or more Bibles.')
                     )
                 return None
             language_selection = self.get_language_selection(bible)
