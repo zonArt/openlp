@@ -206,7 +206,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         Check if there is a running Live media Player and do updating stuff (e.g. update the UI)
         """
         display = self._define_display(self.display_controllers[DisplayControllerType.Live])
-        if len(self.current_media_players):
+        if DisplayControllerType.Live in self.current_media_players:
             self.current_media_players[DisplayControllerType.Live].resize(display)
             self.current_media_players[DisplayControllerType.Live].update_ui(display)
             self.tick(self.display_controllers[DisplayControllerType.Live])
@@ -223,7 +223,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         Check if there is a running Preview media Player and do updating stuff (e.g. update the UI)
         """
         display = self._define_display(self.display_controllers[DisplayControllerType.Preview])
-        if len(self.current_media_players):
+        if DisplayControllerType.Preview in self.current_media_players:
             self.current_media_players[DisplayControllerType.Preview].resize(display)
             self.current_media_players[DisplayControllerType.Preview].update_ui(display)
             self.tick(self.display_controllers[DisplayControllerType.Preview])
