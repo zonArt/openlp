@@ -279,21 +279,21 @@ class BibleManager(RegistryProperties):
                     'list': get_reference_separator('sep_l_display')}
                 self.main_window.information_message(
                     translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
-                    translate('BiblesPlugin.BibleManager', 'Your scripture reference is either not supported by '
-                              'OpenLP or is invalid. Please make sure your reference '
-                              'conforms to one of the following patterns or consult the manual:\n\n'
-                              'Book Chapter | John 3:16\n'
-                              'Book Chapter%(range)sChapter | John 3%(range)s4\n'
-                              'Book Chapter%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17\n'
+                    translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
+                                                           'with your search.</strong><br><br>'
+                              'Please make sure that your reference follows one of the following patterns:<br><br>'
+                              'Book Chapter | John 3:16<br>'
+                              'Book Chapter%(range)sChapter | John 3%(range)s4<br>'
+                              'Book Chapter%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17<br>'
                               'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
-                              '%(range)sVerse | John 3%(verse)s16-17%(list)s20%(range)s22\n'
+                              '%(range)sVerse | John 3%(verse)s16-17%(list)s20%(range)s22<br>'
                               'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
                               '%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17%'
-                                                           '(list)s5%(verse)s7%(range)s9\n'
+                                                           '(list)s5%(verse)s7%(range)s9<br>'
                               'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse'
-                                                           ' | John 3%(verse)s16%(range)s4%(verse)s2\n\n'
-                              'Book names may be shortened from full names but must not contain any additional dots.',
-                              'Please pay attention to the appended "s" of the wildcards '
+                                                           ' | John 3%(verse)s16%(range)s4%(verse)s2<br><br>'
+                              'Book names may be shortened from full names<br>but must not contain any additional dots.'
+                              , 'Please pay attention to the appended "s" of the wildcards '
                               'and refrain from translating the words inside the names in the brackets.')
                     % reference_separators
                 )
@@ -344,7 +344,8 @@ class BibleManager(RegistryProperties):
         if web_bible or second_web_bible:
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
-                translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.')
+                translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'
+                                                       'Please use the Scripture Reference Search instead.')
             )
             return None
         if len(text) < 3 or str.isspace(text):
@@ -352,8 +353,8 @@ class BibleManager(RegistryProperties):
                 translate('BiblesPlugin.BibleManager', 'Keyword is too short'),
                 translate('BiblesPlugin.BibleManager', 'The keyword you have entered is empty or shorter '
                                                        'than 3 characters long. Please try again with '
-                                                       'a longer keyword.\n \nYou can separate different keywords by '
-                                                       ' a space to search for all of your keywords and you can '
+                                                       'a longer keyword.\n\nYou can separate different keywords by '
+                                                       'a space to search for all of your keywords and you can '
                                                        'separate them by a comma to search for one of them.'))
             return None
         elif text:
