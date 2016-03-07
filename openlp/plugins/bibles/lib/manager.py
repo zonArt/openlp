@@ -282,14 +282,17 @@ class BibleManager(RegistryProperties):
                     translate('BiblesPlugin.BibleManager', 'Your scripture reference is either not supported by '
                               'OpenLP or is invalid. Please make sure your reference '
                               'conforms to one of the following patterns or consult the manual:\n\n'
-                              'Book Chapter\n'
-                              'Book Chapter%(range)sChapter\n'
-                              'Book Chapter%(verse)sVerse%(range)sVerse\n'
+                              'Book Chapter | John 3:16\n'
+                              'Book Chapter%(range)sChapter | John 3%(range)s4\n'
+                              'Book Chapter%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17\n'
                               'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
-                              '%(range)sVerse\n'
+                              '%(range)sVerse | John 3%(verse)s16-17%(list)s20%(range)s22\n'
                               'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
-                              '%(verse)sVerse%(range)sVerse\n'
-                              'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse',
+                              '%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17%'
+                                                           '(list)s5%(verse)s7%(range)s9\n'
+                              'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse'
+                                                           ' | John 3%(verse)s16%(range)s4%(verse)s2\n\n'
+                              'Book names may be shortened from full names but must not contain any additional dots.',
                               'Please pay attention to the appended "s" of the wildcards '
                               'and refrain from translating the words inside the names in the brackets.')
                     % reference_separators
@@ -344,23 +347,18 @@ class BibleManager(RegistryProperties):
                 translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.')
             )
             return None
-
-        if not len(text) == 0 and len(text) < 3:
+        if len(text) < 3 or str.isspace(text):
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'Keyword is too short'),
-                translate('BiblesPlugin.BibleManager', 'The keyword you have entered is shorter '
-                                                       'than 3 characters long.\nPlease try again with '
-                                                       'a longer keyword.')
-            )
+                translate('BiblesPlugin.BibleManager', 'The keyword you have entered is empty or shorter '
+                                                       'than 3 characters long. Please try again with '
+                                                       'a longer keyword.\n \nYou can separate different keywords by '
+                                                       ' a space to search for all of your keywords and you can '
+                                                       'separate them by a comma to search for one of them.'))
+            return None
         elif text:
             return self.db_cache[bible].verse_search(text)
         else:
-            self.main_window.information_message(
-                translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
-                translate('BiblesPlugin.BibleManager', 'You did not enter a search keyword.\nYou can separate '
-                          'different keywords by a space to search for all of your keywords and you can separate '
-                          'them by a comma to search for one of them.')
-            )
             return None
 
     def get_verses_combined(self, bible, verse_text, book_ref_id=False, show_error=False):

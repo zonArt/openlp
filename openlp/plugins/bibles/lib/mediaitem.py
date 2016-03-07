@@ -436,7 +436,7 @@ class BibleMediaItem(MediaManagerItem):
         Settings().setValue(self.settings_section + '/quick bible', self.quickVersionComboBox.currentText())
         books = []
         # We have to do a 'Reference Search' (Or as part of Combined Search).
-        if self.quick_search_edit.current_search_type() == BibleSearch.Reference or BibleSearch.Combined:
+        if self.quick_search_edit.current_search_type() is not BibleSearch.Text:
             bibles = self.plugin.manager.get_bibles()
             bible = self.quickVersionComboBox.currentText()
             if bible:
@@ -689,24 +689,42 @@ class BibleMediaItem(MediaManagerItem):
                         continue
                     new_search_results.append(verse)
                     text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
-                if passage_not_found():
-                    # This function appears to be broken / Does nothing?
-                    QtGui.QMessageBox.information(
-                        self, translate('BiblesPlugin.MediaItem', 'Information'),
+                if passage_not_found:
+                    self.main_window.information_message(
+                        translate('BiblesPlugin.MediaItem', 'Information'),
                         translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
                                   'that are in the main Bible. Only verses found in both Bibles will be shown. %d '
-                                  'verses have not been included in the results.') % count,
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                                  'verses have not been included in the results.') % count)
                 self.search_results = new_search_results
                 self.second_search_results = bibles[second_bible].get_verses(text)
+        # Combined search, starting with reference search (combined)
         elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
-            # Combined search, starting with reference search (combined)
             self.search_results = self.plugin.manager.get_verses_combined(bible, text)
             if second_bible and self.search_results:
                 self.second_search_results = \
                     self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
-            # Text search starts here if no reference was found
-            if not self.search_results:
+        # If keyword is shorter than 3, message is given and search is finalized.
+            if len(text) < 3 or str.isspace(text):
+                self.main_window.information_message(
+                    translate('BiblesPlugin.BibleManager', 'Search is Empty or too Short'),
+                    translate('BiblesPlugin.BibleManager', 'The Search you have entered is empty or shorter '
+                                                           'than 3 characters long. Please try again with '
+                                                           'a longer keyword.\n \nYou can separate different keywords '
+                                                           'by a space to search for all of your keywords and you can '
+                                                           'separate them by a comma to search for one of them.'))
+                if not self.quickLockButton.isChecked():
+                    self.list_view.clear()
+                if self.list_view.count() != 0 and self.search_results:
+                    self.__check_second_bible(bible, second_bible)
+                elif self.search_results:
+                    self.display_results(bible, second_bible)
+                self.quickSearchButton.setEnabled(True)
+                self.check_search_result()
+                self.application.set_normal_cursor()
+            # Text search starts here if no reference was found and keyword is longer than 2.
+            # This is required in order to avoid duplicate error messages for short keywords.
+            # If only spaces are searched OLP becomes unresponsive and  may crash eventually. "isspace" prevents this.
+            if not self.search_results and len(text) > 2 and not str.isspace(text):
                 self.application.set_busy_cursor()
                 bibles = self.plugin.manager.get_bibles()
                 self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
@@ -725,23 +743,42 @@ class BibleMediaItem(MediaManagerItem):
                             continue
                         new_search_results.append(verse)
                         text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
-                    if passage_not_found():
-                        # This function appears to be broken / Does nothing?
-                        QtGui.QMessageBox.information(
-                            self, translate('BiblesPlugin.MediaItem', 'Information'),
+                    if passage_not_found:
+                        self.main_window.information_message(
+                            translate('BiblesPlugin.MediaItem', 'Information'),
                             translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
                                       'that are in the main Bible. Only verses found in both Bibles will be shown. %d '
-                                      'verses have not been included in the results.') % count,
-                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                                      'verses have not been included in the results.') % count)
                     self.search_results = new_search_results
                     self.second_search_results = bibles[second_bible].get_verses(text)
                 # If no Text or Reference is found, message is given.
                 if not self.search_results:
-                    self.main_window.information_message(
-                        translate('BiblesPlugin.BibleManager', 'Scripture Reference Errorhhh'),
-                        translate('BiblesPlugin.BibleManager', 'You did not enter a search '
-                                    'different keywords by a space to search for all of your '
-                                    'them by a comma to search for one of them.'))
+                        reference_separators = {
+                        'verse': get_reference_separator('sep_v_display'),
+                        'range': get_reference_separator('sep_r_display'),
+                        'list': get_reference_separator('sep_l_display')}
+                        self.main_window.information_message(
+                                translate('BiblesPlugin.BibleManager', 'Nothing found'),
+                                translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find '
+                                                                       'anything with your search.</strong><br><br>'
+                                          'If you tried to search with Scripture Reference, please make sure that your '
+                                          'reference follows one of the following patterns:<br><br>'
+                                          'Book Chapter | John 3:16<br>'
+                                          'Book Chapter%(range)sChapter | John 3%(range)s4<br>'
+                                          'Book Chapter%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17<br>'
+                                          'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
+                                          '%(range)sVerse | John 3%(verse)s16-17%(list)s20%(range)s22<br>'
+                                          'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
+                                          '%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17%'
+                                                                       '(list)s5%(verse)s7%(range)s9<br>'
+                                          'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse'
+                                                                       ' | John 3%(verse)s16%(range)s4%(verse)s2<br><br>'
+                                          'Book names may be shortened from full names but'
+                                                                       ' must not contain any additional dots.',
+                                          'Please pay attention to the appended "s" of the wildcards '
+                                          'and refrain from translating the words inside the names in the brackets.')
+                                % reference_separators
+                                )
         # Finalizing the search
         if not self.quickLockButton.isChecked():
             self.list_view.clear()
