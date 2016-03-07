@@ -48,6 +48,7 @@ from .importers.powerpraise import PowerPraiseImport
 from .importers.presentationmanager import PresentationManagerImport
 from .importers.lyrix import LyrixImport
 from .importers.videopsalm import VideoPsalmImport
+from .importers.opspro import OpsProImport
 
 log = logging.getLogger(__name__)
 
@@ -78,6 +79,13 @@ if is_win():
         HAS_WORSHIPCENTERPRO = True
     except ImportError:
         log.exception('Error importing %s', 'WorshipCenterProImport')
+HAS_OPSPRO = False
+if is_win():
+    try:
+        from .importers.opspro import OpsProImport
+        HAS_OPSPRO = True
+    except ImportError:
+        log.exception('Error importing %s', 'OpsProImport')
 
 
 class SongFormatSelect(object):
@@ -478,6 +486,9 @@ if HAS_MEDIASHOUT:
 SongFormat.set(SongFormat.WorshipCenterPro, 'availability', HAS_WORSHIPCENTERPRO)
 if HAS_WORSHIPCENTERPRO:
     SongFormat.set(SongFormat.WorshipCenterPro, 'class', WorshipCenterProImport)
+SongFormat.set(SongFormat.OPSPro, 'availability', HAS_OPSPRO)
+if HAS_OPSPRO:
+    SongFormat.set(SongFormat.OPSPro, 'class', OpsProImport)
 
 
 __all__ = ['SongFormat', 'SongFormatSelect']
