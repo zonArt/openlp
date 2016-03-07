@@ -207,6 +207,7 @@ class SystemPlayer(MediaPlayer):
         Go to a particular point in the current media item
 
         :param display: The display where the media is
+        :param seek_value: The where to seek to
         """
         display.media_player.setPosition(seek_value)
 
@@ -220,7 +221,7 @@ class SystemPlayer(MediaPlayer):
         display.media_player.setMedia(QtMultimedia.QMediaContent())
         self.set_visible(display, False)
         display.video_widget.setVisible(False)
-        self.state = MediaState.Off
+        self.set_state(MediaState.Off, display)
 
     def set_visible(self, display, status):
         """
