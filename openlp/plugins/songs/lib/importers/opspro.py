@@ -98,13 +98,15 @@ class OpsProImport(SongImport):
         if lyrics:
             lyrics_text = lyrics.Lyrics
             # Remove whitespaces around the join-tag to keep verses joint
-            lyrics_text = re.sub('\w*\[join\]\w*', '[join]', lyrics_text, flags=re.IGNORECASE)
-            lyrics_text = re.sub('\w*\[splits?\]\w*', '[split]', lyrics_text, flags=re.IGNORECASE)
-            verses = lyrics_text.split('\r\n\r\n')
+            lyrics_text = re.sub('\s*\[join\]\s*', '[join]', lyrics_text, flags=re.IGNORECASE)
+            lyrics_text = re.sub('\s*\[splits?\]\s*', '[split]', lyrics_text, flags=re.IGNORECASE)
+            verses = re.split('\r\n\s*?\r\n', lyrics_text)
             verse_tag_defs = {}
             verse_tag_texts = {}
             chorus = ''
             for verse_text in verses:
+                if verse_text.strip() == '':
+                    continue
                 verse_def = 'v'
                 # Try to detect verse number
                 verse_number = re.match('^(\d+)\r\n', verse_text)
@@ -112,18 +114,21 @@ class OpsProImport(SongImport):
                     verse_text = re.sub('^\d+\r\n', '', verse_text)
                     verse_def = 'v' + verse_number.group(1)
                 # Detect verse tags
-                elif re.match('^.*?:\r\n', verse_text):
-                    tag_match = re.match('^(.*?)(\w.+)?:\r\n(.*)', verse_text)
-                    tag = tag_match.group(1)
-                    verse_text = tag_match.group(3)
-                    if 'refrain' in tag.lower():
+                elif re.match('^.+?\:\r\n', verse_text):
+                    tag_match = re.match('^(.+?)\:\r\n(.*)', verse_text, flags=re.DOTALL)
+                    tag = tag_match.group(1).lower()
+                    tag = tag.split(' ')[0]
+                    verse_text = tag_match.group(2)
+                    if 'refrein' in tag:
                         verse_def = 'c'
-                    elif 'bridge' in tag.lower():
+                    elif 'bridge' in tag:
                         verse_def = 'b'
                     verse_tag_defs[tag] = verse_def
-                elif re.match('^\(.*\)$', verse_text):
-                    tag_match = re.match('^\((.*)\)$', verse_text)
-                    tag = tag_match.group(1)
+                    verse_tag_texts[tag] = verse_text
+                # Detect tag reference
+                elif re.match('^\(.*?\)$', verse_text):
+                    tag_match = re.match('^\((.*?)\)$', verse_text)
+                    tag = tag_match.group(1).lower()
                     if tag in verse_tag_defs:
                         verse_text = verse_tag_texts[tag]
                         verse_def = verse_tag_defs[tag]
@@ -133,7 +138,7 @@ class OpsProImport(SongImport):
                     verse_text = re.sub('^\[slot\]\r\n', '', verse_text, flags=re.IGNORECASE)
                 # Handle tags
                 # Replace the join tag with line breaks
-                verse_text = re.sub('\[join\]', '\r\n\r\n\r\n', verse_text)
+                verse_text = re.sub('\[join\]', '\r\n\r\n', verse_text)
                 # Replace the split tag with line breaks and an optional split
                 verse_text = re.sub('\[split\]', '\r\n\r\n[---]\r\n', verse_text)
                 # Handle translations

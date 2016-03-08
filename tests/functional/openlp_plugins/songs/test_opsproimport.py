@@ -43,43 +43,44 @@ class TestRecord(object):
         self.Field = field
         self.Value = value
 
+SONG_TEST_DATA1 = ('Refrein 2x:\r\n'
+'Kom zing een nieuw lied\r\n'
+'want dit is een nieuwe dag.\r\n'
+'Zet de poorten open en zing je lied voor Hem.\r\n'
+'[splits]\r\n'
+'Kom zing een nieuw lied\r\n'
+'Hij heeft je roep gehoord.\r\n'
+'En de trouw en liefde van God zijn ook voor jou!\r\n'
+' \r\n'
+'Hij glimlacht en schijnt zijn licht op ons.\r\n'
+'Hij redt ons en steunt ons liefdevol.\r\n'
+'Mijn Redder, mijn sterkte is de Heer.\r\n'
+'Deze dag leef ik voor Hem - en geef Hem eer!\r\n'
+' \r\n'
+'(refrein)\r\n'
+'\r\n'
+'Zijn goedheid rust elke dag op ons.\r\n'
+'Zijn liefde verdrijft de angst in ons.\r\n'
+'Mijn schuilplaats, mijn toevlucht is de Heer.\r\n'
+'Deze dag leef ik voor Hem - en geef Hem eer!\r\n'
+' \r\n'
+'(refrein)\r\n'
+'\r\n'
+'Bridge 3x:\r\n'
+'Breng dank aan de Heer jouw God.\r\n'
+'Geef eer met een dankbaar hart,\r\n'
+'Hij toont zijn liefde hier vandaag!\r\n'
+'[splits]\r\n'
+'Breng dank aan de Heer, jouw God.\r\n'
+'Geef eer met een dankbaar hart.\r\n'
+'Open je hart voor Hem vandaag!\r\n'
+'\r\n'
+'Ik zing een nieuw lied en breng Hem de hoogste eer\r\n'
+'want de nieuwe dag is vol zegen van de Heer!\r\n'
+'Ik zing een nieuw lied en breng Hem de hoogste eer.\r\n'
+'Zet je hart wijd open en zing je lied voor Hem!\r\n')
 
-RECORDSET_TEST_DATA = [TestRecord(1, 'TITLE', 'Amazing Grace'),
-                       TestRecord(1, 'AUTHOR', 'John Newton'),
-                       TestRecord(1, 'CCLISONGID', '12345'),
-                       TestRecord(1, 'COMMENTS', 'The original version'),
-                       TestRecord(1, 'COPY', 'Public Domain'),
-                       TestRecord(
-                           1, 'LYRICS',
-                           'Amazing grace! How&crlf;sweet the sound&crlf;That saved a wretch like me!&crlf;'
-                           'I once was lost,&crlf;but now am found;&crlf;Was blind, but now I see.&crlf;&crlf;'
-                           '\'Twas grace that&crlf;taught my heart to fear,&crlf;And grace my fears relieved;&crlf;'
-                           'How precious did&crlf;that grace appear&crlf;The hour I first believed.&crlf;&crlf;'
-                           'Through many dangers,&crlf;toils and snares,&crlf;I have already come;&crlf;'
-                           '\'Tis grace hath brought&crlf;me safe thus far,&crlf;'
-                           'And grace will lead me home.&crlf;&crlf;The Lord has&crlf;promised good to me,&crlf;'
-                           'His Word my hope secures;&crlf;He will my Shield&crlf;and Portion be,&crlf;'
-                           'As long as life endures.&crlf;&crlf;Yea, when this flesh&crlf;and heart shall fail,&crlf;'
-                           'And mortal life shall cease,&crlf;I shall possess,&crlf;within the veil,&crlf;'
-                           'A life of joy and peace.&crlf;&crlf;The earth shall soon&crlf;dissolve like snow,&crlf;'
-                           'The sun forbear to shine;&crlf;But God, Who called&crlf;me here below,&crlf;'
-                           'Shall be forever mine.&crlf;&crlf;When we\'ve been there&crlf;ten thousand years,&crlf;'
-                           'Bright shining as the sun,&crlf;We\'ve no less days to&crlf;sing God\'s praise&crlf;'
-                           'Than when we\'d first begun.&crlf;&crlf;'),
-                       TestRecord(2, 'TITLE', 'Beautiful Garden Of Prayer, The'),
-                       TestRecord(
-                           2, 'LYRICS',
-                           'There\'s a garden where&crlf;Jesus is waiting,&crlf;'
-                           'There\'s a place that&crlf;is wondrously fair,&crlf;For it glows with the&crlf;'
-                           'light of His presence.&crlf;\'Tis the beautiful&crlf;garden of prayer.&crlf;&crlf;'
-                           'Oh, the beautiful garden,&crlf;the garden of prayer!&crlf;Oh, the beautiful&crlf;'
-                           'garden of prayer!&crlf;There my Savior awaits,&crlf;and He opens the gates&crlf;'
-                           'To the beautiful&crlf;garden of prayer.&crlf;&crlf;There\'s a garden where&crlf;'
-                           'Jesus is waiting,&crlf;And I go with my&crlf;burden and care,&crlf;'
-                           'Just to learn from His&crlf;lips words of comfort&crlf;In the beautiful&crlf;'
-                           'garden of prayer.&crlf;&crlf;There\'s a garden where&crlf;Jesus is waiting,&crlf;'
-                           'And He bids you to come,&crlf;meet Him there;&crlf;Just to bow and&crlf;'
-                           'receive a new blessing&crlf;In the beautiful&crlf;garden of prayer.&crlf;&crlf;')]
+
 SONG_TEST_DATA = [{'title': 'Amazing Grace',
                    'verses': [
                        ('Amazing grace! How\nsweet the sound\nThat saved a wretch like me!\nI once was lost,\n'
@@ -152,7 +153,7 @@ class TestOpsProSongImport(TestCase):
         song.Version = '1'
         song.Origin = '...'
         lyrics = MagicMock()
-        lyrics.Lyrics = 'sd'
+        lyrics.Lyrics = SONG_TEST_DATA1
         lyrics.Type = 1
         lyrics.IsDualLanguage = True
         importer.finish = MagicMock()
