@@ -23,7 +23,7 @@
 import logging
 import os
 
-from openlp.core.common import RegistryProperties, AppLocation, Settings, translate
+from openlp.core.common import RegistryProperties, AppLocation, Settings, UiStrings, translate
 from openlp.core.utils import delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
@@ -281,22 +281,8 @@ class BibleManager(RegistryProperties):
                     translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
                     translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
                                                            'with your search.</strong><br><br>'
-                              'Please make sure that your reference follows one of the following patterns:<br><br>'
-                              'Book Chapter | John 3:16<br>'
-                              'Book Chapter%(range)sChapter | John 3%(range)s4<br>'
-                              'Book Chapter%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17<br>'
-                              'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
-                              '%(range)sVerse | John 3%(verse)s16-17%(list)s20%(range)s22<br>'
-                              'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
-                              '%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17%'
-                                                           '(list)s5%(verse)s7%(range)s9<br>'
-                              'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse'
-                                                           ' | John 3%(verse)s16%(range)s4%(verse)s2<br><br>'
-                              'Book names may be shortened from full names<br>but must not contain any additional dots.'
-                              , 'Please pay attention to the appended "s" of the wildcards '
-                              'and refrain from translating the words inside the names in the brackets.')
-                    % reference_separators
-                )
+                              'Please make sure that your reference follows one of these patterns:%s'
+                              % UiStrings().BibleScriptureError % reference_separators))
             return None
 
     def get_language_selection(self, bible):
@@ -350,12 +336,8 @@ class BibleManager(RegistryProperties):
             return None
         if len(text) < 3 or str.isspace(text):
             self.main_window.information_message(
-                translate('BiblesPlugin.BibleManager', 'Keyword is too short'),
-                translate('BiblesPlugin.BibleManager', 'The keyword you have entered is empty or shorter '
-                                                       'than 3 characters long. Please try again with '
-                                                       'a longer keyword.\n\nYou can separate different keywords by '
-                                                       'a space to search for all of your keywords and you can '
-                                                       'separate them by a comma to search for one of them.'))
+                ('%s' % UiStrings().BibleShortSearchTitle),
+                ('%s' % UiStrings().BibleShortSearch))
             return None
         elif text:
             return self.db_cache[bible].verse_search(text)

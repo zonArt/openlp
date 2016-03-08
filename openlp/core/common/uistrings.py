@@ -151,3 +151,27 @@ class UiStrings(object):
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
+        self.BibleShortSearchTitle = translate('OpenLP.Ui', 'Search is Empty or too Short')
+        self.BibleScriptureError = translate('OpenLP.Ui', '<br><br>Book Chapter | John 3:16<br>'
+                                                          'Book Chapter%(range)sChapter | John 3%(range)s4<br>'
+                                                          'Book Chapter%(verse)sVerse%(range)sVerse | John 3%(verse)'
+                                                          's16%(range)s17<br>Book Chapter%(verse)sVerse%(range)sVerse%'
+                                                          '(list)sVerse%(range)sVerse | John 3%(verse)s16-17%(list)s20%'
+                                                          '(range)s22<br>Book Chapter%(verse)sVerse%(range)sVerse%'
+                                                          '(list)sChapter%(verse)sVerse%(range)sVerse | John 3%(verse)'
+                                                          's16%(range)s17%(list)s5%(verse)s7%(range)s9<br>Book Chapter%'
+                                                          '(verse)sVerse%(range)sChapter%(verse)sVerse | John 3%(verse)'
+                                                          's16%(range)s4%(verse)s2<br><br> Book names may be shortened '
+                                                          'from full names<br>but must not contain any '
+                                                          'additional dots.', 'Please pay attention to the appended'
+                                                                              '"s" of the wildcards and refrain from '
+                                                                              'translating the words inside the names'
+                                                          ' in the brackets.')
+        self.BibleShortSearch = translate('OpenLP.Ui', 'The keyword you have entered is empty or shorter '
+                                                       'than 3 characters long.\nPlease try again with '
+                                                       'a longer keyword.\n\nYou can separate different keywords by '
+                                                       'a space to search for all of your keywords and you can '
+                                                       'separate them by a comma to search for one of them.')
+
+
+

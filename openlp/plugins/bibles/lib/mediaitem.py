@@ -654,8 +654,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def on_quick_search_button(self):
         """
-        Does a quick search and saves the search results. Quick search can either be "Reference Search" or
-        "Text Search".
+        Does a quick search and saves the search results. Quick search can be:
+        "Reference Search" or "Text Search" or Combined search.
         """
         log.debug('Quick Search Button clicked')
         self.quickSearchButton.setEnabled(False)
@@ -707,12 +707,8 @@ class BibleMediaItem(MediaManagerItem):
         # This needs to be here in order to avoid deadlock/duplicate errors.
             if len(text) < 3 or str.isspace(text):
                 self.main_window.information_message(
-                    translate('BiblesPlugin.BibleManager', 'Search is Empty or too Short'),
-                    translate('BiblesPlugin.BibleManager', 'The Search you have entered is empty or shorter '
-                                                           'than 3 characters long. Please try again with '
-                                                           'a longer keyword.\n\nYou can separate different keywords '
-                                                           'by a space to search for all of your keywords and you can '
-                                                           'separate them by a comma to search for one of them.'))
+                    ('%s' % UiStrings().BibleShortSearchTitle),
+                    ('%s' % UiStrings().BibleShortSearch))
                 if not self.quickLockButton.isChecked():
                     self.list_view.clear()
                 if self.list_view.count() != 0 and self.search_results:
@@ -763,23 +759,8 @@ class BibleMediaItem(MediaManagerItem):
                                 translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find '
                                                                        'anything with your search.</strong><br><br>'
                                           'If you tried to search with Scripture Reference, please make sure that '
-                                          'your reference follows one of the following patterns:<br><br>'
-                                          'Book Chapter | John 3:16<br>'
-                                          'Book Chapter%(range)sChapter | John 3%(range)s4<br>'
-                                          'Book Chapter%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17<br>'
-                                          'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
-                                          '%(range)sVerse | John 3%(verse)s16-17%(list)s20%(range)s22<br>'
-                                          'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
-                                          '%(verse)sVerse%(range)sVerse | John 3%(verse)s16%(range)s17%'
-                                                                       '(list)s5%(verse)s7%(range)s9<br>'
-                                          'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse '
-                                                                       '| John 3%(verse)s16%(range)s4%(verse)s2<br><br>'
-                                          'Book names may be shortened from full names<br>but'
-                                                                       ' must not contain any additional dots.',
-                                          'Please pay attention to the appended "s" of the wildcards '
-                                          'and refrain from translating the words inside the names in the brackets.')
-                                % reference_separators
-                                )
+                                          'your reference follows one of these patterns:%s'
+                                          % UiStrings().BibleScriptureError % reference_separators))
         # Finalizing the search
         if not self.quickLockButton.isChecked():
             self.list_view.clear()
