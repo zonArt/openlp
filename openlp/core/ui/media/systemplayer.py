@@ -185,9 +185,6 @@ class SystemPlayer(MediaPlayer):
 
         :param display: The display where the media is
         """
-        display.media_player.blockSignals(True)
-        display.media_player.durationChanged.disconnect()
-        display.media_player.blockSignals(False)
         display.media_player.stop()
         self.set_visible(display, False)
         self.set_state(MediaState.Stopped, display)

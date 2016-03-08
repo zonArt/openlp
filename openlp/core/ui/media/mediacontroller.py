@@ -655,6 +655,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         controller.seek_slider.blockSignals(False)
         controller.volume_slider.blockSignals(False)
         controller.media_info.playing = True
+        display = self._define_display(controller)
+        display.setVisible(True)
         return True
 
     def tick(self, controller):
@@ -696,11 +698,12 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller: The Controller to be paused
         """
         display = self._define_display(controller)
-        self.current_media_players[controller.controller_type].pause(display)
-        controller.mediabar.actions['playbackPlay'].setVisible(True)
-        controller.mediabar.actions['playbackStop'].setDisabled(False)
-        controller.mediabar.actions['playbackPause'].setVisible(False)
-        controller.media_info.playing = False
+        if controller.controller_type in self.current_media_players:
+            self.current_media_players[controller.controller_type].pause(display)
+            controller.mediabar.actions['playbackPlay'].setVisible(True)
+            controller.mediabar.actions['playbackStop'].setDisabled(False)
+            controller.mediabar.actions['playbackPause'].setVisible(False)
+            controller.media_info.playing = False
 
     def media_loop_msg(self, msg):
         """
