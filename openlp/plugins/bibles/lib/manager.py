@@ -280,10 +280,8 @@ class BibleManager(RegistryProperties):
                 self.main_window.information_message(
                     translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
                     translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
-                                                           'with your search.</strong><br><br>'
-                              'Please make sure that your reference follows one of these patterns:%sBook names may be '
-                                                           'shortened from full names<br>but must not contain any '
-                                                           'additional dots.'
+                                                           'with your search.<br><br>'
+                              'Please make sure that your reference follows one of these patterns:</strong>%s'
                               % UiStrings().BibleScriptureError % reference_separators))
             return None
 

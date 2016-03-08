@@ -161,8 +161,9 @@ class UiStrings(object):
                                                           '(list)sChapter%(verse)sVerse%(range)sVerse | John 3%(verse)'
                                                           's16%(range)s17%(list)s5%(verse)s7%(range)s9<br>Book Chapter%'
                                                           '(verse)sVerse%(range)sChapter%(verse)sVerse | John 3%(verse)'
-                                                          's16%(range)s4%(verse)s2<br><br>',
-                                             'Please pay attention to the appended "s" of the wildcards and refrain '
+                                                          's16%(range)s4%(verse)s2<br><br> Book names may be shortened '
+                                                          'from full names, for an example: Joh 3 = John 3'
+                                             , 'Please pay attention to the appended "s" of the wildcards and refrain '
                                              'from translating the words inside the names in the brackets.')
         self.BibleShortSearch = translate('OpenLP.Ui', 'The keyword you have entered is empty or shorter '
                                                        'than 3 characters long.\nPlease try again with '

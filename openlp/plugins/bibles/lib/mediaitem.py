@@ -662,7 +662,10 @@ class BibleMediaItem(MediaManagerItem):
         self.application.process_events()
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
-        text = self.quick_search_edit.text()
+        # Get input from field and replace '. ' with ''
+        text_direct = self.quick_search_edit.text()
+        text = text_direct.replace('. ', ' ')
+        # This will check if field has any '.' and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
             # We are doing a 'Reference Search'.
             self.search_results = self.plugin.manager.get_verses(bible, text)
@@ -759,10 +762,8 @@ class BibleMediaItem(MediaManagerItem):
                                 translate('BiblesPlugin.BibleManager', 'Nothing found'),
                                 translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find '
                                                                        'anything with your search.</strong><br><br>'
-                                          'If you tried to search with Scripture Reference, please make sure that '
-                                          'your reference follows one of these patterns:%sBook names may be shortened '
-                                                                       'from full names<br>but must not contain any '
-                                                                       'additional dots.'
+                                          'If you tried to search with Scripture Reference, please make<br>sure that '
+                                          'your reference follows one of these patterns:%s'
                                           % UiStrings().BibleScriptureError % reference_separators))
         # Finalizing the search
         if not self.quickLockButton.isChecked():
