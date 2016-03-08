@@ -281,7 +281,9 @@ class BibleManager(RegistryProperties):
                     translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
                     translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
                                                            'with your search.</strong><br><br>'
-                              'Please make sure that your reference follows one of these patterns:%s'
+                              'Please make sure that your reference follows one of these patterns:%sBook names may be '
+                                                           'shortened from full names<br>but must not contain any '
+                                                           'additional dots.'
                               % UiStrings().BibleScriptureError % reference_separators))
             return None
 
@@ -328,6 +330,7 @@ class BibleManager(RegistryProperties):
         if second_bible:
             second_web_bible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
         if web_bible or second_web_bible:
+            self.application.set_normal_cursor()
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
                 translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'

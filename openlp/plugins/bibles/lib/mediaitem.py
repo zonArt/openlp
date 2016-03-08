@@ -750,6 +750,7 @@ class BibleMediaItem(MediaManagerItem):
                     self.second_search_results = bibles[second_bible].get_verses(text)
                 # If no Text or Reference is found, message is given.
                 if not self.search_results:
+                        self.application.set_normal_cursor()
                         reference_separators = {
                         'verse': get_reference_separator('sep_v_display'),
                         'range': get_reference_separator('sep_r_display'),
@@ -759,7 +760,9 @@ class BibleMediaItem(MediaManagerItem):
                                 translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find '
                                                                        'anything with your search.</strong><br><br>'
                                           'If you tried to search with Scripture Reference, please make sure that '
-                                          'your reference follows one of these patterns:%s'
+                                          'your reference follows one of these patterns:%sBook names may be shortened '
+                                                                       'from full names<br>but must not contain any '
+                                                                       'additional dots.'
                                           % UiStrings().BibleScriptureError % reference_separators))
         # Finalizing the search
         if not self.quickLockButton.isChecked():
