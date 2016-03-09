@@ -80,6 +80,17 @@ class OpsProImport(SongImport):
     def process_song(self, song, lyrics, topics):
         """
         Create the song, i.e. title, verse etc.
+
+        The OPS Pro format is a fairly simple text format using tags and anchors/labels. Linebreaks are \r\n.
+        Double linebreaks are slide dividers. OPS Pro support dual language using tags.
+        Tags are in [], see the liste below:
+        [join] are used to separate verses that should be keept on the same slide.
+        [split] or [splits] can be used to split a verse over several slides, while still being the same verse
+        Dual language tags:
+        [trans off] or [vertaal uit] turns dual language mode off for the following text
+        [trans on] or [vertaal aan] turns dual language mode on for the following text
+        [taal a] means the following lines are language a
+        [taal b] means the following lines are language b
         """
         self.set_defaults()
         self.title = song.Title
