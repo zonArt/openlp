@@ -706,9 +706,9 @@ class BibleMediaItem(MediaManagerItem):
             if second_bible and self.search_results:
                 self.second_search_results = \
                     self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
-        # If keyword is shorter than 3, message is given and search is finalized.
+        # If keyword is shorter than 3 (not including spaces), message is given and search is finalized.
         # This needs to be here in order to avoid deadlock/duplicate errors.
-            if len(text) < 3 or str.isspace(text):
+            if len(text) - text.count(' ') < 3:
                 self.main_window.information_message(
                     ('%s' % UiStrings().BibleShortSearchTitle),
                     ('%s' % UiStrings().BibleShortSearch))
@@ -723,8 +723,7 @@ class BibleMediaItem(MediaManagerItem):
                 self.application.set_normal_cursor()
             # Text search starts here if no reference was found and keyword is longer than 2.
             # This is required in order to avoid duplicate error messages for short keywords.
-            # If only spaces are searched OLP becomes unresponsive and  may crash eventually. "isspace" prevents this.
-            if not self.search_results and len(text) > 2 and not str.isspace(text):
+            if not self.search_results and len(text) - text.count(' ') > 2:
                 self.application.set_busy_cursor()
                 bibles = self.plugin.manager.get_bibles()
                 self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)

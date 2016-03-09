@@ -165,11 +165,11 @@ class UiStrings(object):
                                                           'from full names, for an example: Joh 3 = John 3'
                                              , 'Please pay attention to the appended "s" of the wildcards and refrain '
                                              'from translating the words inside the names in the brackets.')
-        self.BibleShortSearch = translate('OpenLP.Ui', 'The keyword you have entered is empty or shorter '
-                                                       'than 3 characters long.\nPlease try again with '
-                                                       'a longer keyword.\n\nYou can separate different keywords by '
-                                                       'a space to search for all of your keywords and you can '
-                                                       'separate them by a comma to search for one of them.')
+        self.BibleShortSearch = translate('OpenLP.Ui', '<strong>The search you have entered is empty or shorter '
+                                                       'than 3 characters long.<br>Please try again with '
+                                                       'a longer search.</strong><br><br>You can separate different '
+                                                       'keywords by a space to search for all of your keywords and you '
+                                                       'can separate them by a comma to search for one of them.')
 
 
 

@@ -335,7 +335,7 @@ class BibleManager(RegistryProperties):
                                                        'Please use the Scripture Reference Search instead.')
             )
             return None
-        if len(text) < 3 or str.isspace(text):
+        if len(text) - text.count(' ') < 3:
             self.main_window.information_message(
                 ('%s' % UiStrings().BibleShortSearchTitle),
                 ('%s' % UiStrings().BibleShortSearch))
