@@ -23,6 +23,7 @@
 This module contains tests for the WorshipCenter Pro song importer.
 """
 import os
+import json
 from unittest import TestCase, SkipTest
 
 from tests.functional import patch, MagicMock
@@ -43,7 +44,6 @@ class TestRecord(object):
         self.ID = id
         self.Field = field
         self.Value = value
-
 
 class TestOpsProSongImport(TestCase):
     """
@@ -74,7 +74,7 @@ class TestOpsProSongImport(TestCase):
         """
         Test importing lyrics with a chorus in OPS Pro
         """
-        # GIVEN: A mocked out SongImport class, and a mocked out "manager"
+        # GIVEN: A mocked out SongImport class, a mocked out "manager" and a mocked song and lyrics entry
         mocked_manager = MagicMock()
         importer = OpsProImport(mocked_manager, filenames=[])
         song = MagicMock()
@@ -95,7 +95,13 @@ class TestOpsProSongImport(TestCase):
         # WHEN: An importer object is created
         importer.process_song(song, lyrics, [])
 
-        # THEN: The importer object should not be None
-        print(importer.verses)
-        print(importer.verse_order_list)
-        self.assertIsNone(importer, 'Import should not be none')
+        # THEN: The imported data should look like expected
+        result_file = open(os.path.join(TEST_PATH, 'You are so faithful.json'), 'rb')
+        result_data = json.loads(result_file.read().decode())
+        self.assertListEqual(importer.verses, self._get_data(result_data, 'verses'))
+        self.assertListEqual(importer.verse_order_list_generated, self._get_data(result_data, 'verse_order_list'))
+
+    def _get_data(self, data, key):
+        if key in data:
+            return data[key]
+        return ''

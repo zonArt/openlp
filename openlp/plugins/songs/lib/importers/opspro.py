@@ -159,8 +159,8 @@ class OpsProImport(SongImport):
                 # Remove comments
                 verse_text = re.sub('\(.*?\)\r\n', '', verse_text, flags=re.IGNORECASE)
                 self.add_verse(verse_text, verse_def)
-                print(verse_def)
-                print(verse_text)
+                #print(verse_def)
+                #print(verse_text)
         self.finish()
 
     def extract_mdb_password(self):
