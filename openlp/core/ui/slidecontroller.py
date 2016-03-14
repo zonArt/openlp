@@ -786,16 +786,30 @@ class SlideController(DisplayController, RegistryProperties):
         self.song_edit = False
         self._process_item(item, slide_no)
 
-    def replace_service_manager_item(self, item):
+    def replace_service_manager_item (self, item):
         """
         Replacement item following a remote edit
-        This action takes place when a song that is sent to live from Service Manager is edited.
-        "not self.hide_mode()" prevents this from happening when display is blanked.
-        If same song is currently in live, it updates the lyrics. If display i blanked, it won't update. (bug)
+
+        This action  also takes place when a song that is sent to live from Service Manager is edited.
+        If display is blanked, this will update the song and then re-blank the display.
+        As result, lyrics are flashed on screen for a very short time before re-blanking happens. (Bug)
+
         :param item: The current service item
         """
-        if item == self.service_item and not self.hide_mode():
-            self._process_item(item, self.preview_widget.current_slide_number())
+        if item == self.service_item:
+            if not self.hide_mode():
+                self._process_item(item, self.preview_widget.current_slide_number())
+            # "isChecked" method is required for checking blanks, on_xx_display(False) does not work.
+            elif self.hide_mode():
+                if self.blank_screen.isChecked():
+                    self._process_item(item, self.preview_widget.current_slide_number())
+                    self.on_blank_display(True)
+                elif self.theme_screen.isChecked():
+                    self._process_item(item, self.preview_widget.current_slide_number())
+                    self.on_theme_display(True)
+                elif self.desktop_screen.isChecked():
+                    self._process_item(item, self.preview_widget.current_slide_number())
+                    self.on_hide_display(True)
 
     def add_service_manager_item(self, item, slide_no):
         """
@@ -1250,7 +1264,6 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param checked: is the check box checked.
         """
-        Registry().execute('slidecontroller_live_unblank')
         if checked is None:
             checked = self.play_slides_loop.isChecked()
         else:
@@ -1263,6 +1276,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.play_slides_once.setText(UiStrings().PlaySlidesToEnd)
             self.play_slides_menu.setDefaultAction(self.play_slides_loop)
             self.play_slides_once.setChecked(False)
+            Registry().execute('slidecontroller_live_unblank')
         else:
             self.play_slides_loop.setIcon(build_icon(':/media/media_time.png'))
             self.play_slides_loop.setText(UiStrings().PlaySlidesInLoop)
@@ -1274,7 +1288,6 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param checked: is the check box checked.
         """
-        Registry().execute('slidecontroller_live_unblank')
         if checked is None:
             checked = self.play_slides_once.isChecked()
         else:
@@ -1287,6 +1300,7 @@ class SlideController(DisplayController, RegistryProperties):
             self.play_slides_loop.setText(UiStrings().PlaySlidesInLoop)
             self.play_slides_menu.setDefaultAction(self.play_slides_once)
             self.play_slides_loop.setChecked(False)
+            Registry().execute('slidecontroller_live_unblank')
         else:
             self.play_slides_once.setIcon(build_icon(':/media/media_time'))
             self.play_slides_once.setText(UiStrings().PlaySlidesToEnd)
