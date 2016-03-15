@@ -786,10 +786,9 @@ class SlideController(DisplayController, RegistryProperties):
         self.song_edit = False
         self._process_item(item, slide_no)
 
-    def replace_service_manager_item (self, item):
+    def replace_service_manager_item(self, item):
         """
         Replacement item following a remote edit
-
         This action  also takes place when a song that is sent to live from Service Manager is edited.
         If display is blanked, this will update the song and then re-blank the display.
         As result, lyrics are flashed on screen for a very short time before re-blanking happens. (Bug)
@@ -809,6 +808,7 @@ class SlideController(DisplayController, RegistryProperties):
                     self.on_theme_display(True)
                 elif self.desktop_screen.isChecked():
                     self._process_item(item, self.preview_widget.current_slide_number())
+                    self.on_hide_display(True)
                     self.on_hide_display(True)
 
     def add_service_manager_item(self, item, slide_no):
