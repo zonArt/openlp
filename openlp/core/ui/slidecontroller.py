@@ -809,7 +809,6 @@ class SlideController(DisplayController, RegistryProperties):
                 elif self.desktop_screen.isChecked():
                     self._process_item(item, self.preview_widget.current_slide_number())
                     self.on_hide_display(True)
-                    self.on_hide_display(True)
 
     def add_service_manager_item(self, item, slide_no):
         """
