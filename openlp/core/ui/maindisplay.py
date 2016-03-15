@@ -86,12 +86,6 @@ class Display(QtWidgets.QGraphicsView):
         super(Display, self).__init__()
         self.controller = parent
         self.screen = {}
-        # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
-        # OpenGL. Only white blank screen is shown on the 2nd monitor all the
-        # time. We need to investigate more how to use OpenGL properly on Mac OS
-        # X.
-        if not is_macosx() and not is_win():
-            self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
@@ -332,6 +326,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             else:
                 self.setVisible(False)
                 self.setGeometry(self.screen['size'])
+        # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+        if is_win():
+            self.shake_web_view()
 
     def direct_image(self, path, background):
         """
@@ -401,8 +398,17 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
             if self.service_item.theme_data and self.service_item.theme_data.display_slide_transition:
+                # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+                if is_win():
+                    fade_shake_timer = QtCore.QTimer(self)
+                    fade_shake_timer.setInterval(25)
+                    fade_shake_timer.timeout.connect(self.shake_web_view)
+                    fade_shake_timer.start()
                 while not self.frame.evaluateJavaScript('show_text_completed()'):
                     self.application.process_events()
+                # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+                if is_win():
+                    fade_shake_timer.stop()
         # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !
         while not self.web_loaded:
@@ -420,6 +426,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
+        # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+        if is_win():
+            self.shake_web_view()
         return self.grab()
 
     def build_html(self, service_item, image_path=''):
@@ -499,6 +508,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             if self.isHidden():
                 self.setVisible(True)
                 self.web_view.setVisible(True)
+            # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+            if is_win():
+                self.shake_web_view()
         self.hide_mode = mode
 
     def show_display(self):
@@ -517,6 +529,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         # Trigger actions when display is active again.
         if self.is_live:
             Registry().execute('live_display_active')
+            # Workaround for bug #1531319, should not be needed with PyQt 5.6.
+            if is_win():
+                self.shake_web_view()
 
     def _hide_mouse(self):
         """
@@ -559,6 +574,13 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                     if window_id == main_window_id:
                         self.main_window.raise_()
 
+    def shake_web_view(self):
+        """
+        Resizes the web_view a bit to force an update. Workaround for bug #1531319, should not be needed with PyQt 5.6.
+        """
+        self.web_view.setGeometry(0, 0, self.width(), self.height() - 1)
+        self.web_view.setGeometry(0, 0, self.width(), self.height())
+
 
 class AudioPlayer(OpenLPMixin, QtCore.QObject):
     """
@@ -576,6 +598,7 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         self.player = QtMultimedia.QMediaPlayer()
         self.playlist = QtMultimedia.QMediaPlaylist(self.player)
         self.volume_slider = None
+        self.player.setPlaylist(self.playlist)
         self.player.positionChanged.connect(self._on_position_changed)
 
     def __del__(self):
@@ -643,7 +666,7 @@ class AudioPlayer(OpenLPMixin, QtCore.QObject):
         if not isinstance(file_names, list):
             file_names = [file_names]
         for file_name in file_names:
-            self.playlist.addMedia(QtCore.QUrl(file_name))
+            self.playlist.addMedia(QtMultimedia.QMediaContent(QtCore.QUrl.fromLocalFile(file_name)))
 
     def next(self):
         """

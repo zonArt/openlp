@@ -152,7 +152,7 @@ class TestBSExtract(TestCase):
         self.test_html = '<ul><li><a href="/overlay/selectChapter?tocBook=1">Genesis</a></li>' \
             '<li><a href="/overlay/selectChapter?tocBook=2"></a></li>' \
             '<li><a href="/overlay/selectChapter?tocBook=3">Leviticus</a></li></ul>'
-        self.test_soup = BeautifulSoup(self.test_html)
+        self.test_soup = BeautifulSoup(self.test_html, 'lxml')
         instance = BSExtract()
         self.mock_log.reset_mock()
         self.mock_urllib.reset_mock()

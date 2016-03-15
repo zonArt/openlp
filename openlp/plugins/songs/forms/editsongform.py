@@ -324,7 +324,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             if self.topics_combo_box.hasFocus() and self.topics_combo_box.currentText():
                 self.on_topic_add_button_clicked()
                 return
-            if self.songbooks_combo_box.hasFocus() and self.songbooks_combo_box.currentText():
+            if self.songbooks_combo_box.hasFocus() or self.songbook_entry_edit.hasFocus():
                 self.on_songbook_add_button_clicked()
                 return
         QtWidgets.QDialog.keyPressEvent(self, event)
@@ -514,6 +514,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             topic_name.setData(QtCore.Qt.UserRole, topic.id)
             self.topics_list_view.addItem(topic_name)
         self.songbooks_list_view.clear()
+        self.songbook_entry_edit.clear()
         for songbook_entry in self.song.songbook_entries:
             self.add_songbook_entry_to_list(songbook_entry.songbook.id, songbook_entry.songbook.name,
                                             songbook_entry.entry)
@@ -843,7 +844,9 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         :param text: The text of the verse order edit (ignored).
         """
         # First make sure that all letters entered in the verse order field are uppercase
+        pos = self.verse_order_edit.cursorPosition()
         self.verse_order_edit.setText(text.upper())
+        self.verse_order_edit.setCursorPosition(pos)
         # Extract all verses which were used in the order.
         verses_in_order = self._extract_verse_order(self.verse_order_edit.text())
         # Find the verses which were not used in the order.

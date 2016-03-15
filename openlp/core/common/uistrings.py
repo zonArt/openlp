@@ -122,8 +122,8 @@ class UiStrings(object):
         self.Projectors = translate('OpenLP.Ui', 'Projectors', 'Plural')
         self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
         self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace live background.')
-        self.ReplaceLiveBGDisabled = translate('OpenLP.Ui', 'Replace live background is not available on this '
-                                                            'platform in this version of OpenLP.')
+        self.ReplaceLiveBGDisabled = translate('OpenLP.Ui', 'Replace live background is not available when the WebKit '
+                                                            'player is disabled.')
         self.ResetBG = translate('OpenLP.Ui', 'Reset Background')
         self.ResetLiveBG = translate('OpenLP.Ui', 'Reset live background.')
         self.Seconds = translate('OpenLP.Ui', 's', 'The abbreviated unit for seconds')

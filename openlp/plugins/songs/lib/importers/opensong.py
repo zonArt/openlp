@@ -157,6 +157,7 @@ class OpenSongImport(SongImport):
                 if isinstance(fn_or_string, str):
                     if attr in ['ccli']:
                         if ustring:
+                            ustring = ''.join(re.findall('\d+', ustring))
                             setattr(self, fn_or_string, int(ustring))
                         else:
                             setattr(self, fn_or_string, None)

@@ -31,7 +31,7 @@ from threading import Lock
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, Settings, SlideLimits, UiStrings, translate, \
-    RegistryMixin, OpenLPMixin
+    RegistryMixin, OpenLPMixin, is_win
 from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, \
     ScreenList, build_icon, build_html
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
@@ -601,13 +601,21 @@ class SlideController(DisplayController, RegistryProperties):
     def __add_actions_to_widget(self, widget):
         """
         Add actions to the widget specified by `widget`
+        This defines the controls available when Live display has stolen focus.
+        Examples of this happening: Clicking anything in the live window or certain single screen mode scenarios.
+        Needles to say, blank to modes should not be removed from here.
+        For some reason this required a test. It may be found in test_slidecontroller.py as
+        "live_stolen_focus_shortcuts_test. If you want to modify things here, you must also modify them there. (Duh)
 
         :param widget: The UI widget for the actions
         """
         widget.addActions([
             self.previous_item, self.next_item,
             self.previous_service, self.next_service,
-            self.escape_item])
+            self.escape_item,
+            self.desktop_screen,
+            self.theme_screen,
+            self.blank_screen])
 
     def preview_size_changed(self):
         """
@@ -1125,8 +1133,8 @@ class SlideController(DisplayController, RegistryProperties):
         self.log_debug('update_preview %s ' % self.screens.current['primary'])
         if self.service_item and self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change is slow
-            QtCore.QTimer.singleShot(0.5, self.grab_maindisplay)
-            QtCore.QTimer.singleShot(2.5, self.grab_maindisplay)
+            QtCore.QTimer.singleShot(500, self.grab_maindisplay)
+            QtCore.QTimer.singleShot(2500, self.grab_maindisplay)
         else:
             self.slide_image = self.display.preview()
             self.slide_image.setDevicePixelRatio(self.main_window.devicePixelRatio())
@@ -1421,7 +1429,7 @@ class SlideController(DisplayController, RegistryProperties):
 
         :param time: the time remaining
         """
-        seconds = self.display.audio_player.media_object.remainingTime() // 1000
+        seconds = (self.display.audio_player.player.duration() - self.display.audio_player.player.position()) // 1000
         minutes = seconds // 60
         seconds %= 60
         self.audio_time_label.setText(' %02d:%02d ' % (minutes, seconds))
