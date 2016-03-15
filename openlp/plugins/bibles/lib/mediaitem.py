@@ -427,7 +427,7 @@ class BibleMediaItem(MediaManagerItem):
     def update_auto_completer(self):
         """
         This updates the bible book completion list for the search field. The completion depends on the bible. It is
-        only updated when we are doing a reference search, otherwise the auto completion list is removed.
+        only updated when we are doing reference or combined search, in text search the completion list is removed.
         """
         log.debug('update_auto_completer')
         # Save the current search type to the configuration.
@@ -754,16 +754,25 @@ class BibleMediaItem(MediaManagerItem):
                 if not self.search_results:
                         self.application.set_normal_cursor()
                         reference_separators = {
-                        'verse': get_reference_separator('sep_v_display'),
-                        'range': get_reference_separator('sep_r_display'),
-                        'list': get_reference_separator('sep_l_display')}
-                        self.main_window.information_message(
-                                translate('BiblesPlugin.BibleManager', 'Nothing found'),
-                                translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find '
-                                                                       'anything with your search.</strong><br><br>'
-                                          'If you tried to search with Scripture Reference, please make<br>sure that '
-                                          'your reference follows one of these patterns:%s'
-                                          % UiStrings().BibleScriptureError % reference_separators))
+                            'verse': get_reference_separator('sep_v_display'),
+                            'range': get_reference_separator('sep_r_display'),
+                            'list': get_reference_separator('sep_l_display')}
+                        self.main_window.information_message(translate('BiblesPlugin.BibleManager', 'Nothing found'),
+                                                             translate('BiblesPlugin.BibleManager', '<strong>OpenLP '
+                                                                                                    'couldn’t find '
+                                                                                                    'anything with your'
+                                                                                                    ' search.</strong>'
+                                                                                                    '<br><br>'
+                                                                                                    'If you tried to '
+                                                                                                    'search with '
+                                                                                                    'Scripture '
+                                                                                                    'Reference, please '
+                                                                                                    'make<br>sure that '
+                                                                                                    'your reference '
+                                                                                                    'follows one of '
+                                                                                                    'these patterns:%s'
+                                                                       % UiStrings().BibleScriptureError %
+                                                                       reference_separators))
         # Finalizing the search
         if not self.quickLockButton.isChecked():
             self.list_view.clear()
