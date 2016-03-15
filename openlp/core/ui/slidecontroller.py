@@ -792,6 +792,8 @@ class SlideController(DisplayController, RegistryProperties):
         This action  also takes place when a song that is sent to live from Service Manager is edited.
         If display is blanked, this will update the song and then re-blank the display.
         As result, lyrics are flashed on screen for a very short time before re-blanking happens. (Bug)
+        This happens only when Automatic unblanking is enabled when new item is sen to Live,
+        if it's not enabled they won't flash.
 
         :param item: The current service item
         """
@@ -1105,8 +1107,14 @@ class SlideController(DisplayController, RegistryProperties):
                 self.log_debug('Could not get lock in slide_selected after waiting %f, skip to avoid deadlock.'
                                % timeout)
             return
-        if self.is_live and Settings().value('advanced/click live slide to unblank'):
-            Registry().execute('slidecontroller_live_unblank')
+        # If "click live slide to unblank" is enabled, unblank the display.
+        # Note: If this if statement is placed at the bottom of this function instead of top slide transitions are lost.
+        if self.is_live and Settings().value('core/click live slide to unblank'):
+            # With this display stays blanked when "auto unblank" setting is not enabled and new item is sent to Live.
+            if not Settings().value('core/auto unblank') and start:
+                ()
+            else:
+                Registry().execute('slidecontroller_live_unblank')
         row = self.preview_widget.current_slide_number()
         old_selected_row = self.selected_row
         self.selected_row = 0
@@ -1275,7 +1283,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.play_slides_once.setText(UiStrings().PlaySlidesToEnd)
             self.play_slides_menu.setDefaultAction(self.play_slides_loop)
             self.play_slides_once.setChecked(False)
-            Registry().execute('slidecontroller_live_unblank')
+            if Settings().value('core/click live slide to unblank'):
+                Registry().execute('slidecontroller_live_unblank')
         else:
             self.play_slides_loop.setIcon(build_icon(':/media/media_time.png'))
             self.play_slides_loop.setText(UiStrings().PlaySlidesInLoop)
@@ -1299,7 +1308,8 @@ class SlideController(DisplayController, RegistryProperties):
             self.play_slides_loop.setText(UiStrings().PlaySlidesInLoop)
             self.play_slides_menu.setDefaultAction(self.play_slides_once)
             self.play_slides_loop.setChecked(False)
-            Registry().execute('slidecontroller_live_unblank')
+            if Settings().value('core/click live slide to unblank'):
+                Registry().execute('slidecontroller_live_unblank')
         else:
             self.play_slides_once.setIcon(build_icon(':/media/media_time'))
             self.play_slides_once.setText(UiStrings().PlaySlidesToEnd)
@@ -1361,7 +1371,8 @@ class SlideController(DisplayController, RegistryProperties):
                     Registry().execute('%s_stop' % self.service_item.name.lower(), [self.service_item, self.is_live])
                 if self.service_item.is_media():
                     self.on_media_close()
-                self.on_go_live()
+                if Settings().value('core/auto unblank'):
+                    self.on_go_live()
             else:
                 self.on_preview_add_to_service()
 
