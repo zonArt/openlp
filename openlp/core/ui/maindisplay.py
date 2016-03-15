@@ -252,29 +252,34 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         self.setVisible(False)
         Display.setup(self)
         if self.is_live:
-            # Build the initial frame.
-            background_color = QtGui.QColor()
-            background_color.setNamedColor(Settings().value('advanced/default color'))
-            if not background_color.isValid():
-                background_color = QtCore.Qt.white
-            image_file = Settings().value('advanced/default image')
-            splash_image = QtGui.QImage(image_file)
-            self.initial_fame = QtGui.QImage(
-                self.screen['size'].width(),
-                self.screen['size'].height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            painter_image = QtGui.QPainter()
-            painter_image.begin(self.initial_fame)
-            painter_image.fillRect(self.initial_fame.rect(), background_color)
-            painter_image.drawImage(
-                (self.screen['size'].width() - splash_image.width()) // 2,
-                (self.screen['size'].height() - splash_image.height()) // 2,
-                splash_image)
-            service_item = ServiceItem()
-            service_item.bg_image_bytes = image_to_byte(self.initial_fame)
-            self.web_view.setHtml(build_html(service_item, self.screen, self.is_live, None,
-                                  plugins=self.plugin_manager.plugins))
-            self._hide_mouse()
+            # If "Show no Logo or Image on startup" is enabled, display transparent background instead.
+            if Settings().value('advanced/show nothing default'):
+                self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+                self.setStyleSheet(TRANSPARENT_STYLESHEET)
+            else:
+                # Build the initial frame.
+                background_color = QtGui.QColor()
+                background_color.setNamedColor(Settings().value('advanced/default color'))
+                if not background_color.isValid():
+                    background_color = QtCore.Qt.white
+                image_file = Settings().value('advanced/default image')
+                splash_image = QtGui.QImage(image_file)
+                self.initial_fame = QtGui.QImage(
+                    self.screen['size'].width(),
+                    self.screen['size'].height(),
+                    QtGui.QImage.Format_ARGB32_Premultiplied)
+                painter_image = QtGui.QPainter()
+                painter_image.begin(self.initial_fame)
+                painter_image.fillRect(self.initial_fame.rect(), background_color)
+                painter_image.drawImage(
+                    (self.screen['size'].width() - splash_image.width()) // 2,
+                    (self.screen['size'].height() - splash_image.height()) // 2,
+                    splash_image)
+                service_item = ServiceItem()
+                service_item.bg_image_bytes = image_to_byte(self.initial_fame)
+                self.web_view.setHtml(build_html(service_item, self.screen, self.is_live, None,
+                                      plugins=self.plugin_manager.plugins))
+                self._hide_mouse()
 
     def text(self, slide, animate=True):
         """

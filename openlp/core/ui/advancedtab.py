@@ -196,6 +196,9 @@ class AdvancedTab(SettingsTab):
         self.default_file_layout.addWidget(self.default_browse_button)
         self.default_file_layout.addWidget(self.default_revert_button)
         self.default_image_layout.addRow(self.default_file_label, self.default_file_layout)
+        self.default_show_nothing_check_box = QtWidgets.QCheckBox(self.ui_group_box)
+        self.default_show_nothing_check_box.setObjectName('default_default_show_nothing_check_box')
+        self.default_image_layout.addRow(self.default_show_nothing_check_box)
         self.right_layout.addWidget(self.default_image_group_box)
         # Hide mouse
         self.hide_mouse_group_box = QtWidgets.QGroupBox(self.right_column)
@@ -299,6 +302,8 @@ class AdvancedTab(SettingsTab):
         self.default_file_label.setText(translate('OpenLP.AdvancedTab', 'Image file:'))
         self.default_browse_button.setToolTip(translate('OpenLP.AdvancedTab', 'Browse for an image file to display.'))
         self.default_revert_button.setToolTip(translate('OpenLP.AdvancedTab', 'Revert to the default OpenLP logo.'))
+        self.default_show_nothing_check_box.setText(translate('OpenLP.AdvancedTab',
+                                                                       'Do not show anything on startup'))
         self.data_directory_current_label.setText(translate('OpenLP.AdvancedTab', 'Current path:'))
         self.data_directory_new_label.setText(translate('OpenLP.AdvancedTab', 'Custom path:'))
         self.data_directory_browse_button.setToolTip(translate('OpenLP.AdvancedTab',
@@ -353,6 +358,7 @@ class AdvancedTab(SettingsTab):
         self.x11_bypass_check_box.setChecked(settings.value('x11 bypass wm'))
         self.default_color = settings.value('default color')
         self.default_file_edit.setText(settings.value('default image'))
+        self.default_show_nothing_check_box.setChecked(settings.value('show nothing default'))
         self.slide_limits = settings.value('slide limits')
         self.is_search_as_you_type_enabled = settings.value('search as type')
         self.search_as_type_check_box.setChecked(self.is_search_as_you_type_enabled)
@@ -426,6 +432,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue('alternate rows', self.alternate_rows_check_box.isChecked())
         settings.setValue('default color', self.default_color)
         settings.setValue('default image', self.default_file_edit.text())
+        settings.setValue('show nothing default', self.default_show_nothing_check_box.isChecked())
         settings.setValue('slide limits', self.slide_limits)
         if self.x11_bypass_check_box.isChecked() != settings.value('x11 bypass wm'):
             settings.setValue('x11 bypass wm', self.x11_bypass_check_box.isChecked())
