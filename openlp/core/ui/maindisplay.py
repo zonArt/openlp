@@ -253,7 +253,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         Display.setup(self)
         if self.is_live:
             # If "Show no Logo or Image on startup" is enabled, display transparent background instead.
-            if Settings().value('advanced/show nothing default'):
+            if Settings().value('advanced/default show nothing'):
                 self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
                 self.setStyleSheet(TRANSPARENT_STYLESHEET)
             else:

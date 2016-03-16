@@ -357,7 +357,7 @@ class AdvancedTab(SettingsTab):
         self.x11_bypass_check_box.setChecked(settings.value('x11 bypass wm'))
         self.default_color = settings.value('default color')
         self.default_file_edit.setText(settings.value('default image'))
-        self.default_show_nothing_check_box.setChecked(settings.value('show nothing default'))
+        self.default_show_nothing_check_box.setChecked(settings.value('default show nothing'))
         self.slide_limits = settings.value('slide limits')
         self.is_search_as_you_type_enabled = settings.value('search as type')
         self.search_as_type_check_box.setChecked(self.is_search_as_you_type_enabled)
@@ -431,7 +431,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue('alternate rows', self.alternate_rows_check_box.isChecked())
         settings.setValue('default color', self.default_color)
         settings.setValue('default image', self.default_file_edit.text())
-        settings.setValue('show nothing default', self.default_show_nothing_check_box.isChecked())
+        settings.setValue('default show nothing', self.default_show_nothing_check_box.isChecked())
         settings.setValue('slide limits', self.slide_limits)
         if self.x11_bypass_check_box.isChecked() != settings.value('x11 bypass wm'):
             settings.setValue('x11 bypass wm', self.x11_bypass_check_box.isChecked())
