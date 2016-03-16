@@ -130,7 +130,7 @@ class OpsProImport(SongImport):
                     tag = tag_match.group(1).lower()
                     tag = tag.split(' ')[0]
                     verse_text = tag_match.group(2)
-                    if 'refrein' in tag:
+                    if 'refrein' in tag or 'chorus' in tag:
                         verse_def = 'c'
                     elif 'bridge' in tag:
                         verse_def = 'b'
