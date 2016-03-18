@@ -75,7 +75,6 @@ class OpsProImport(SongImport):
                            'ORDER BY CategoryName' % song.ID)
             topics = cursor.fetchall()
             self.process_song(song, lyrics, topics)
-            break
 
     def process_song(self, song, lyrics, topics):
         """
@@ -105,21 +104,16 @@ class OpsProImport(SongImport):
         for topic in topics:
             self.topics.append(topic.CategoryName)
         # Try to split lyrics based on various rules
-        print(song.ID)
         if lyrics:
             lyrics_text = lyrics.Lyrics
-            # Remove whitespaces around the join-tag to keep verses joint
-            lyrics_text = re.sub('\s*\[join\]\s*', '[join]', lyrics_text, flags=re.IGNORECASE)
-            lyrics_text = re.sub('\s*\[splits?\]\s*', '[split]', lyrics_text, flags=re.IGNORECASE)
             verses = re.split('\r\n\s*?\r\n', lyrics_text)
             verse_tag_defs = {}
             verse_tag_texts = {}
-            chorus = ''
             for verse_text in verses:
                 if verse_text.strip() == '':
                     continue
                 verse_def = 'v'
-                # Try to detect verse number
+                # Detect verse number
                 verse_number = re.match('^(\d+)\r\n', verse_text)
                 if verse_number:
                     verse_text = re.sub('^\d+\r\n', '', verse_text)
@@ -143,19 +137,60 @@ class OpsProImport(SongImport):
                     if tag in verse_tag_defs:
                         verse_text = verse_tag_texts[tag]
                         verse_def = verse_tag_defs[tag]
-                # Try to detect end tag
+                # Detect end tag
                 elif re.match('^\[slot\]\r\n', verse_text, re.IGNORECASE):
                     verse_def = 'e'
                     verse_text = re.sub('^\[slot\]\r\n', '', verse_text, flags=re.IGNORECASE)
-                # Handle tags
                 # Replace the join tag with line breaks
-                verse_text = re.sub('\[join\]', '\r\n\r\n', verse_text)
+                verse_text = re.sub('\[join\]', '', verse_text)
                 # Replace the split tag with line breaks and an optional split
-                verse_text = re.sub('\[split\]', '\r\n\r\n[---]\r\n', verse_text)
+                verse_text = re.sub('\[split\]', '\r\n[---]', verse_text)
                 # Handle translations
-                #if lyrics.IsDualLanguage:
-                #    ...
-
+                if lyrics.IsDualLanguage:
+                    language = None
+                    translation = True
+                    translation_verse_text = ''
+                    start_tag = '{translation}'
+                    end_tag = '{/translation}'
+                    verse_text_lines = verse_text.splitlines()
+                    idx = 0
+                    while idx < len(verse_text_lines):
+                        # Detect if translation is turned on or off
+                        if verse_text_lines[idx] in ['[trans off]', '[vertaal uit]']:
+                            translation = False
+                            idx += 1
+                        elif verse_text_lines[idx] in ['[trans on]', '[vertaal aan]']:
+                            translation = True
+                            idx += 1
+                        elif verse_text_lines[idx] == '[taal a]':
+                            language = 'a'
+                            idx += 1
+                        elif verse_text_lines[idx] == '[taal b]':
+                            language = 'b'
+                            idx += 1
+                        # Handle the text based on whether translation is off or on
+                        if language:
+                            translation_verse_text += verse_text_lines[idx] + '\r\n'
+                            idx += 1
+                            while idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
+                                if language == 'a':
+                                    translation_verse_text += verse_text_lines[idx] + '\r\n'
+                                else:
+                                    translation_verse_text += start_tag + verse_text_lines[idx] + end_tag + '\r\n'
+                                idx += 1
+                            language = None
+                        elif translation:
+                            translation_verse_text += verse_text_lines[idx] + '\r\n'
+                            idx += 1
+                            translation_verse_text += start_tag + verse_text_lines[idx] + end_tag + '\r\n'
+                            idx += 1
+                        else:
+                            translation_verse_text += verse_text_lines[idx] + '\r\n'
+                            idx += 1
+                            while idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
+                                translation_verse_text += verse_text_lines[idx] + '\r\n'
+                                idx += 1
+                    verse_text = translation_verse_text
                 # Remove comments
                 verse_text = re.sub('\(.*?\)\r\n', '', verse_text, flags=re.IGNORECASE)
                 self.add_verse(verse_text, verse_def)
