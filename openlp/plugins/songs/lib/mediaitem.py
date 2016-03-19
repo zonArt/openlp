@@ -203,7 +203,13 @@ class SongMediaItem(MediaManagerItem):
             self.display_results_topic(search_results)
         elif search_type == SongSearch.Books:
             log.debug('Songbook Search')
-            self.display_results_book(search_keywords)
+            search_keywords = search_keywords.rpartition(' ')
+            search_book = search_keywords[0] + '%'
+            search_entry = search_keywords[2] + '%'
+            search_results = (self.plugin.manager.session.query(SongBookEntry)
+                .join(Book)
+                .filter(Book.name.like(search_book), SongBookEntry.entry.like(search_entry)).all())
+            self.display_results_book(search_results)
         elif search_type == SongSearch.Themes:
             log.debug('Theme Search')
             search_string = '%' + search_keywords + '%'
@@ -288,30 +294,18 @@ class SongMediaItem(MediaManagerItem):
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
 
-    def display_results_book(self, search_keywords):
+    def display_results_book(self, search_results):
         """
-        Display the song search results in the media manager list, grouped by book
+        Display the song search results in the media manager list, grouped by book and entry
 
-        :param search_keywords: A list of search keywords - book first, then number
+        :param search_results: A list of db SongBookEntry objects
         :return: None
         """
-	
         log.debug('display results Book')
         self.list_view.clear()
-
-        search_keywords = search_keywords.rpartition(' ')
-        search_book = search_keywords[0]
-        search_entry = re.sub(r'[^0-9]', '', search_keywords[2])
-
-        songbook_entries = (self.plugin.manager.session.query(SongBookEntry)
-                            .join(Book))
-        songbook_entries = sorted(songbook_entries, key=lambda songbook_entry: (songbook_entry.songbook.name, self._natural_sort_key(songbook_entry.entry)))
-        for songbook_entry in songbook_entries:
+        search_results = sorted(search_results, key=lambda songbook_entry: (songbook_entry.songbook.name, self._natural_sort_key(songbook_entry.entry)))
+        for songbook_entry in search_results:
             if songbook_entry.song.temporary:
-                continue
-            if search_book.lower() not in songbook_entry.songbook.name.lower():
-                continue
-            if search_entry not in songbook_entry.entry:
                 continue
             song_detail = '%s #%s: %s' % (songbook_entry.songbook.name, songbook_entry.entry, songbook_entry.song.title)
             song_name = QtWidgets.QListWidgetItem(song_detail)
