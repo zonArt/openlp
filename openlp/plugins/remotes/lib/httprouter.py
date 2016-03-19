@@ -152,7 +152,6 @@ class HttpRouter(RegistryProperties):
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
             ('^/(stage)/(.*)$', {'function': self.stages, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
-            (r'^/files1/(.*)$', {'function': self.serve_file, 'secure': False}),
             (r'^/(\w+)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
             (r'^/api/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/poll$', {'function': self.main_poll, 'secure': False}),
