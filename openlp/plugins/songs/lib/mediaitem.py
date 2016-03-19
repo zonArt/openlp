@@ -303,8 +303,8 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Book')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda songbook_entry: (
-                                songbook_entry.songbook.name, self._natural_sort_key(songbook_entry.entry)))
+        search_results = sorted(search_results, key=lambda songbook_entry: (songbook_entry.songbook.name,
+                                self._natural_sort_key(songbook_entry.entry)))
         for songbook_entry in search_results:
             if songbook_entry.song.temporary:
                 continue
