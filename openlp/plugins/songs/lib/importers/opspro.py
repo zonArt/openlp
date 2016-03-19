@@ -170,20 +170,20 @@ class OpsProImport(SongImport):
                             idx += 1
                         # Handle the text based on whether translation is off or on
                         if language:
-                            translation_verse_text += verse_text_lines[idx] + '\r\n'
-                            idx += 1
+                            if language == 'b':
+                                translation_verse_text += start_tag
                             while idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
-                                if language == 'a':
-                                    translation_verse_text += verse_text_lines[idx] + '\r\n'
-                                else:
-                                    translation_verse_text += start_tag + verse_text_lines[idx] + end_tag + '\r\n'
+                                translation_verse_text += verse_text_lines[idx] + '\r\n'
                                 idx += 1
+                            if language == 'b':
+                                translation_verse_text += end_tag
                             language = None
                         elif translation:
                             translation_verse_text += verse_text_lines[idx] + '\r\n'
                             idx += 1
-                            translation_verse_text += start_tag + verse_text_lines[idx] + end_tag + '\r\n'
-                            idx += 1
+                            if idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
+                                translation_verse_text += start_tag + verse_text_lines[idx] + end_tag + '\r\n'
+                                idx += 1
                         else:
                             translation_verse_text += verse_text_lines[idx] + '\r\n'
                             idx += 1
@@ -194,8 +194,6 @@ class OpsProImport(SongImport):
                 # Remove comments
                 verse_text = re.sub('\(.*?\)\r\n', '', verse_text, flags=re.IGNORECASE)
                 self.add_verse(verse_text, verse_def)
-                #print(verse_def)
-                #print(verse_text)
         self.finish()
 
     def extract_mdb_password(self):
