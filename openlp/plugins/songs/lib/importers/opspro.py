@@ -94,7 +94,11 @@ class OpsProImport(SongImport):
         self.set_defaults()
         self.title = song.Title
         if song.CopyrightText:
-            self.parse_author(song.CopyrightText)
+            for line in song.CopyrightText.splitlines():
+                if line.startswith('©') or line.lower().startswith('copyright'):
+                    self.add_copyright(line)
+                else:
+                    self.parse_author(line)
         if song.Origin:
             self.comments = song.Origin
         if song.SongBookName:
@@ -147,54 +151,63 @@ class OpsProImport(SongImport):
                 verse_text = re.sub('\[split\]', '\r\n[---]', verse_text)
                 # Handle translations
                 if lyrics.IsDualLanguage:
-                    language = None
-                    translation = True
-                    translation_verse_text = ''
-                    start_tag = '{translation}'
-                    end_tag = '{/translation}'
-                    verse_text_lines = verse_text.splitlines()
-                    idx = 0
-                    while idx < len(verse_text_lines):
-                        # Detect if translation is turned on or off
-                        if verse_text_lines[idx] in ['[trans off]', '[vertaal uit]']:
-                            translation = False
-                            idx += 1
-                        elif verse_text_lines[idx] in ['[trans on]', '[vertaal aan]']:
-                            translation = True
-                            idx += 1
-                        elif verse_text_lines[idx] == '[taal a]':
-                            language = 'a'
-                            idx += 1
-                        elif verse_text_lines[idx] == '[taal b]':
-                            language = 'b'
-                            idx += 1
-                        # Handle the text based on whether translation is off or on
-                        if language:
-                            if language == 'b':
-                                translation_verse_text += start_tag
-                            while idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
-                                translation_verse_text += verse_text_lines[idx] + '\r\n'
-                                idx += 1
-                            if language == 'b':
-                                translation_verse_text += end_tag
-                            language = None
-                        elif translation:
-                            translation_verse_text += verse_text_lines[idx] + '\r\n'
-                            idx += 1
-                            if idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
-                                translation_verse_text += start_tag + verse_text_lines[idx] + end_tag + '\r\n'
-                                idx += 1
-                        else:
-                            translation_verse_text += verse_text_lines[idx] + '\r\n'
-                            idx += 1
-                            while idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
-                                translation_verse_text += verse_text_lines[idx] + '\r\n'
-                                idx += 1
-                    verse_text = translation_verse_text
+                    verse_text = self.handle_translation(verse_text)
                 # Remove comments
                 verse_text = re.sub('\(.*?\)\r\n', '', verse_text, flags=re.IGNORECASE)
                 self.add_verse(verse_text, verse_def)
         self.finish()
+
+    def handle_translation(self, verse_text):
+        """
+        Replace OPS Pro translation tags with a {translation} tag
+
+        :param verse_text: the verse text
+        :return: the verse text with replaced tags
+        """
+        language = None
+        translation = True
+        translation_verse_text = ''
+        start_tag = '{translation}'
+        end_tag = '{/translation}'
+        verse_text_lines = verse_text.splitlines()
+        idx = 0
+        while idx < len(verse_text_lines):
+            # Detect if translation is turned on or off
+            if verse_text_lines[idx] in ['[trans off]', '[vertaal uit]']:
+                translation = False
+                idx += 1
+            elif verse_text_lines[idx] in ['[trans on]', '[vertaal aan]']:
+                translation = True
+                idx += 1
+            elif verse_text_lines[idx] == '[taal a]':
+                language = 'a'
+                idx += 1
+            elif verse_text_lines[idx] == '[taal b]':
+                language = 'b'
+                idx += 1
+            # Handle the text based on whether translation is off or on
+            if language:
+                if language == 'b':
+                    translation_verse_text += start_tag
+                while idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
+                    translation_verse_text += verse_text_lines[idx] + '\r\n'
+                    idx += 1
+                if language == 'b':
+                    translation_verse_text += end_tag
+                language = None
+            elif translation:
+                translation_verse_text += verse_text_lines[idx] + '\r\n'
+                idx += 1
+                if idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
+                    translation_verse_text += start_tag + verse_text_lines[idx] + end_tag + '\r\n'
+                    idx += 1
+            else:
+                translation_verse_text += verse_text_lines[idx] + '\r\n'
+                idx += 1
+                while idx < len(verse_text_lines) and not verse_text_lines[idx].startswith('['):
+                    translation_verse_text += verse_text_lines[idx] + '\r\n'
+                    idx += 1
+        return translation_verse_text
 
     def extract_mdb_password(self):
         """
