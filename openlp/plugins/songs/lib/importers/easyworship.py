@@ -289,40 +289,45 @@ class EasyWorshipSongImport(SongImport):
             for i in range(rec_count):
                 if self.stop_import_flag:
                     break
-                raw_record = db_file.read(record_size)
-                self.fields = self.record_structure.unpack(raw_record)
-                self.set_defaults()
-                self.title = self.get_field(fi_title).decode(self.encoding)
-                # Get remaining fields.
-                copy = self.get_field(fi_copy)
-                admin = self.get_field(fi_admin)
-                ccli = self.get_field(fi_ccli)
-                authors = self.get_field(fi_author)
-                words = self.get_field(fi_words)
-                if copy:
-                    self.copyright = copy.decode(self.encoding)
-                if admin:
+                try:
+                    raw_record = db_file.read(record_size)
+                    self.fields = self.record_structure.unpack(raw_record)
+                    self.set_defaults()
+                    self.title = self.get_field(fi_title).decode(self.encoding)
+                    # Get remaining fields.
+                    copy = self.get_field(fi_copy)
+                    admin = self.get_field(fi_admin)
+                    ccli = self.get_field(fi_ccli)
+                    authors = self.get_field(fi_author)
+                    words = self.get_field(fi_words)
                     if copy:
-                        self.copyright += ', '
-                    self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
-                                                'Administered by %s') % admin.decode(self.encoding)
-                if ccli:
-                    self.ccli_number = ccli.decode(self.encoding)
-                if authors:
-                    authors = authors.decode(self.encoding)
-                else:
-                    authors = ''
-                # Set the SongImport object members.
-                self.set_song_import_object(authors, words)
-                if self.stop_import_flag:
-                    break
-                if self.entry_error_log:
+                        self.copyright = copy.decode(self.encoding)
+                    if admin:
+                        if copy:
+                            self.copyright += ', '
+                        self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
+                                                    'Administered by %s') % admin.decode(self.encoding)
+                    if ccli:
+                        self.ccli_number = ccli.decode(self.encoding)
+                    if authors:
+                        authors = authors.decode(self.encoding)
+                    else:
+                        authors = ''
+                    # Set the SongImport object members.
+                    self.set_song_import_object(authors, words)
+                    if self.stop_import_flag:
+                        break
+                    if self.entry_error_log:
+                        self.log_error(self.import_source,
+                                       translate('SongsPlugin.EasyWorshipSongImport', '"%s" could not be imported. %s')
+                                       % (self.title, self.entry_error_log))
+                        self.entry_error_log = ''
+                    elif not self.finish():
+                        self.log_error(self.import_source)
+                except Exception as e:
                     self.log_error(self.import_source,
                                    translate('SongsPlugin.EasyWorshipSongImport', '"%s" could not be imported. %s')
-                                   % (self.title, self.entry_error_log))
-                    self.entry_error_log = ''
-                elif not self.finish():
-                    self.log_error(self.import_source)
+                                   % (self.title, e))
         db_file.close()
         self.memo_file.close()
 
@@ -368,7 +373,7 @@ class EasyWorshipSongImport(SongImport):
                 first_line_is_tag = False
                 # EW tags: verse, chorus, pre-chorus, bridge, tag,
                 # intro, ending, slide
-                for tag in VerseType.tags + ['tag', 'slide']:
+                for tag in VerseType.names + ['tag', 'slide', 'end']:
                     tag = tag.lower()
                     ew_tag = verse_split[0].strip().lower()
                     if ew_tag.startswith(tag):
@@ -390,6 +395,9 @@ class EasyWorshipSongImport(SongImport):
                         if not number_found:
                             verse_type += '1'
                         break
+                # If the verse only consist of the tag-line, add an empty line to create an empty slide
+                if first_line_is_tag and len(verse_split) == 1:
+                    verse_split.append("")
                 self.add_verse(verse_split[-1].strip() if first_line_is_tag else verse, verse_type)
         if len(self.comments) > 5:
             self.comments += str(translate('SongsPlugin.EasyWorshipSongImport',

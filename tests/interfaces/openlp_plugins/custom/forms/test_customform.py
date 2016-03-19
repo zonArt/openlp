@@ -128,3 +128,19 @@ class TestEditCustomForm(TestCase, TestMixin):
             # THEN: The validate method should have returned False.
             assert not result, 'The _validate() method should have retured False'
             mocked_critical_error_message_box.assert_called_with(message='You need to add at least one slide.')
+
+    def update_slide_list_test(self):
+        """
+        Test the update_slide_list() method
+        """
+        # GIVEN: Mocked slide_list_view with a slide with 3 lines
+        self.form.slide_list_view = MagicMock()
+        self.form.slide_list_view.count.return_value = 1
+        self.form.slide_list_view.currentRow.return_value = 0
+        self.form.slide_list_view.item.return_value = MagicMock(return_value='1st Slide\n2nd Slide\n3rd Slide')
+
+        # WHEN: updating the slide by splitting the lines into slides
+        self.form.update_slide_list(['1st Slide', '2nd Slide', '3rd Slide'])
+
+        # THEN: The slides should be created in correct order
+        self.form.slide_list_view.addItems.assert_called_with(['1st Slide', '2nd Slide', '3rd Slide'])

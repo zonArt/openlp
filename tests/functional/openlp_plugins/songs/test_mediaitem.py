@@ -454,10 +454,10 @@ class TestMediaItem(TestCase, TestMixin):
         """
         # GIVEN: A string to be converted into a sort key
         string_sort_key = 'A1B12C'
- 
+
         # WHEN: We attempt to create a sort key
         sort_key_result = self.media_item._natural_sort_key(string_sort_key)
- 
+
         # THEN: We should get back a tuple split on integers
         self.assertEqual(sort_key_result, ['a', 1, 'b', 12, 'c'])
 
