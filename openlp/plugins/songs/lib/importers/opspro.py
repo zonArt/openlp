@@ -53,7 +53,8 @@ class OpsProImport(SongImport):
         """
         password = self.extract_mdb_password()
         try:
-            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s;PWD=%s' % (self.import_source, password))
+            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s;PWD=%s' % (self.import_source,
+                                                                                              password))
         except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError) as e:
             log.warning('Unable to connect the OPS Pro database %s. %s', self.import_source, str(e))
             # Unfortunately no specific exception type
@@ -68,7 +69,8 @@ class OpsProImport(SongImport):
         for song in songs:
             if self.stop_import_flag:
                 break
-            cursor.execute('SELECT Lyrics, Type, IsDualLanguage FROM Lyrics WHERE SongID = %d AND Type < 2 ORDER BY Type DESC' % song.ID)
+            cursor.execute('SELECT Lyrics, Type, IsDualLanguage FROM Lyrics WHERE SongID = %d AND Type < 2 '
+                           'ORDER BY Type DESC' % song.ID)
             lyrics = cursor.fetchone()
             cursor.execute('SELECT CategoryName FROM Category INNER JOIN SongCategory '
                            'ON Category.ID = SongCategory.CategoryID WHERE SongCategory.SongID = %d '
@@ -215,7 +217,7 @@ class OpsProImport(SongImport):
         http://tutorialsto.com/database/access/crack-access-*.-mdb-all-current-versions-of-the-password.html
         """
         # The definition of 13 bytes as the source XOR Access2000. Encrypted with the corresponding signs are 0x13
-        xor_pattern_2k  = (0xa1, 0xec, 0x7a, 0x9c, 0xe1, 0x28, 0x34, 0x8a, 0x73, 0x7b, 0xd2, 0xdf, 0x50)
+        xor_pattern_2k = (0xa1, 0xec, 0x7a, 0x9c, 0xe1, 0x28, 0x34, 0x8a, 0x73, 0x7b, 0xd2, 0xdf, 0x50)
         # Access97 XOR of the source
         xor_pattern_97 = (0x86, 0xfb, 0xec, 0x37, 0x5d, 0x44, 0x9c, 0xfa, 0xc6, 0x5e, 0x28, 0xe6, 0x13)
         mdb = open(self.import_source, 'rb')
@@ -225,14 +227,14 @@ class OpsProImport(SongImport):
         mdb.seek(0x62)
         EncrypFlag = struct.unpack('B', mdb.read(1))[0]
         # Get encrypted password
-        mdb.seek(0x42);
+        mdb.seek(0x42)
         encrypted_password = mdb.read(26)
         mdb.close()
         # "Decrypt" the password based on the version
         decrypted_password = ''
         if version < 0x01:
             # Access 97
-            if int (encrypted_password[0] ^ xor_pattern_97[0]) == 0:
+            if int(encrypted_password[0] ^ xor_pattern_97[0]) == 0:
                 # No password
                 decrypted_password = ''
             else:
@@ -241,12 +243,12 @@ class OpsProImport(SongImport):
         else:
             # Access 2000 or 2002
             for j in range(0, 12):
-                if j% 2 == 0:
+                if j % 2 == 0:
                     # Every byte with a different sign or encrypt. Encryption signs here for the 0x13
-                    t1 = chr (0x13 ^ EncrypFlag ^ encrypted_password[j * 2] ^ xor_pattern_2k[j])
+                    t1 = chr(0x13 ^ EncrypFlag ^ encrypted_password[j * 2] ^ xor_pattern_2k[j])
                 else:
-                    t1 = chr(encrypted_password[j * 2] ^ xor_pattern_2k[j]);
-                decrypted_password = decrypted_password + t1;
+                    t1 = chr(encrypted_password[j * 2] ^ xor_pattern_2k[j])
+                decrypted_password = decrypted_password + t1
         if ord(decrypted_password[1]) < 0x20 or ord(decrypted_password[1]) > 0x7e:
             decrypted_password = ''
         return decrypted_password

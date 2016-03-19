@@ -33,17 +33,6 @@ from openlp.plugins.songs.lib.importers.opspro import OpsProImport
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'opsprosongs'))
 
-class TestRecord(object):
-    """
-    Microsoft Access Driver is not available on non Microsoft Systems for this reason the :class:`TestRecord` is used
-    to simulate a recordset that would be returned by pyobdc.
-    """
-    def __init__(self, id, field, value):
-        # The case of the following instance variables is important as it needs to be the same as the ones in use in the
-        # WorshipCenter Pro database.
-        self.ID = id
-        self.Field = field
-        self.Value = value
 
 class TestOpsProSongImport(TestCase):
     """
