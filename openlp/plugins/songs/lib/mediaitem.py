@@ -207,8 +207,8 @@ class SongMediaItem(MediaManagerItem):
             search_book = search_keywords[0] + '%'
             search_entry = search_keywords[2] + '%'
             search_results = (self.plugin.manager.session.query(SongBookEntry)
-                .join(Book)
-                .filter(Book.name.like(search_book), SongBookEntry.entry.like(search_entry)).all())
+                              .join(Book)
+                              .filter(Book.name.like(search_book), SongBookEntry.entry.like(search_entry)).all())
             self.display_results_book(search_results)
         elif search_type == SongSearch.Themes:
             log.debug('Theme Search')
@@ -303,7 +303,8 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Book')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda songbook_entry: (songbook_entry.songbook.name, self._natural_sort_key(songbook_entry.entry)))
+        search_results = sorted(search_results, key=lambda songbook_entry: (
+                          songbook_entry.songbook.name, self._natural_sort_key(songbook_entry.entry)))
         for songbook_entry in search_results:
             if songbook_entry.song.temporary:
                 continue
