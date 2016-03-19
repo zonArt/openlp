@@ -146,12 +146,13 @@ class HttpRouter(RegistryProperties):
             self.auth = base64.b64encode(auth_code)
         except TypeError:
             self.auth = base64.b64encode(auth_code.encode()).decode()
+        self.default_route = {'function': self.serve_file, 'secure': False}
         self.routes = [
             ('^/$', {'function': self.serve_file, 'secure': False}),
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
             ('^/(stage)/(.*)$', {'function': self.stages, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
-            (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
+            (r'^/files1/(.*)$', {'function': self.serve_file, 'secure': False}),
             (r'^/(\w+)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
             (r'^/api/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/poll$', {'function': self.main_poll, 'secure': False}),
@@ -221,6 +222,7 @@ class HttpRouter(RegistryProperties):
         self.request_data = None
         url_path_split = urlparse(url_path)
         url_query = parse_qs(url_path_split.query)
+        # GET
         if 'data' in url_query.keys():
             self.request_data = url_query['data'][0]
         for route, func in self.routes:
@@ -231,7 +233,7 @@ class HttpRouter(RegistryProperties):
                 for param in match.groups():
                     args.append(param)
                 return func, args
-        return None, None
+        return self.default_route, [url_path_split.path]
 
     def set_cache_headers(self):
         self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
@@ -404,6 +406,8 @@ class HttpRouter(RegistryProperties):
             file_name = 'stage.html'
         elif file_name == 'main':
             file_name = 'main.html'
+        if file_name.startswith('/'):
+            file_name = file_name[1:]
         path = os.path.normpath(os.path.join(self.html_dir, file_name))
         if not path.startswith(self.html_dir):
             return self.do_not_found()
