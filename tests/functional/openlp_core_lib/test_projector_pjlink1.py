@@ -26,6 +26,7 @@ Package to test the openlp.core.lib.projector.pjlink1 package.
 from unittest import TestCase
 
 from openlp.core.lib.projector.pjlink1 import PJLink1
+from openlp.core.lib.projector.constants import E_PARAMETER, ERROR_STRING
 
 from tests.functional import patch
 from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUTHENTICATE
@@ -74,3 +75,20 @@ class TestPJLink(TestCase):
         # THEN: Projector class should be set with proper value
         self.assertEquals(pjlink.pjlink_class, '1',
                           'Non-standard class reply should have set proper class')
+
+    @patch.object(pjlink_test, 'change_status')
+    def status_change_test(self, mock_change_status):
+        """
+        Test process_command call with ERR2 (Parameter) status
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+
+        # WHEN: process_command is called with "ERR2" status from projector
+        pjlink.process_command('POWR', 'ERR2')
+
+        # THEN: change_status should have called change_status with E_UNDEFINED
+        #       as first parameter
+        mock_change_status.called_with(E_PARAMETER,
+                                       'change_status should have been called with "{}"'.format(
+                                           ERROR_STRING[E_PARAMETER]))

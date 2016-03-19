@@ -198,6 +198,7 @@ class EditCustomForm(QtWidgets.QDialog, Ui_CustomEditDialog):
             # Insert all slides to make the old_slides list complete.
             for slide in slides:
                 old_slides.insert(old_row, slide)
+                old_row += 1
             self.slide_list_view.addItems(old_slides)
         self.slide_list_view.repaint()
 
