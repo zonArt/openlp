@@ -67,6 +67,7 @@ class OPSProImport(SongImport):
         for song in songs:
             if self.stop_import_flag:
                 break
+            # Type means: 0=Original, 1=Projection, 2=Own
             cursor.execute('SELECT Lyrics, Type, IsDualLanguage FROM Lyrics WHERE SongID = %d AND Type < 2 '
                            'ORDER BY Type DESC' % song.ID)
             lyrics = cursor.fetchone()
@@ -74,7 +75,12 @@ class OPSProImport(SongImport):
                            'ON Category.ID = SongCategory.CategoryID WHERE SongCategory.SongID = %d '
                            'ORDER BY CategoryName' % song.ID)
             topics = cursor.fetchall()
-            self.process_song(song, lyrics, topics)
+            try:
+                self.process_song(song, lyrics, topics)
+            except Exception as e:
+                self.log_error(self.import_source,
+                               translate('SongsPlugin.OPSProImport', '"%s" could not be imported. %s')
+                               % (song.Title, e))
 
     def process_song(self, song, lyrics, topics):
         """
@@ -146,9 +152,9 @@ class OPSProImport(SongImport):
                     verse_def = 'e'
                     verse_text = re.sub('^\[slot\]\r\n', '', verse_text, flags=re.IGNORECASE)
                 # Replace the join tag with line breaks
-                verse_text = re.sub('\[join\]', '', verse_text)
+                verse_text = verse_text.replace('[join]', '')
                 # Replace the split tag with line breaks and an optional split
-                verse_text = re.sub('\[split\]', '\r\n[---]', verse_text)
+                verse_text = re.sub('\[splits?\]', '\r\n[---]', verse_text)
                 # Handle translations
                 if lyrics.IsDualLanguage:
                     verse_text = self.handle_translation(verse_text)
@@ -185,6 +191,8 @@ class OPSProImport(SongImport):
             elif verse_text_lines[idx] == '[taal b]':
                 language = 'b'
                 idx += 1
+            if not idx < len(verse_text_lines):
+                break
             # Handle the text based on whether translation is off or on
             if language:
                 if language == 'b':
