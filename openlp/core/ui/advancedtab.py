@@ -84,9 +84,9 @@ class AdvancedTab(SettingsTab):
         self.slide_max_height_label.setObjectName('slide_max_height_label')
         self.slide_max_height_spin_box = QtWidgets.QSpinBox(self.ui_group_box)
         self.slide_max_height_spin_box.setObjectName('slide_max_height_spin_box')
-        self.slide_max_height_spin_box.setRange(0,1000)
+        self.slide_max_height_spin_box.setRange(0, 1000)
         self.slide_max_height_spin_box.setSingleStep(20)
-        self.ui_layout.addRow(self.slide_max_height_label,self.slide_max_height_spin_box)
+        self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_spin_box)
         self.search_as_type_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.search_as_type_check_box.setObjectName('SearchAsType_check_box')
         self.ui_layout.addRow(self.search_as_type_check_box)
@@ -280,7 +280,7 @@ class AdvancedTab(SettingsTab):
         self.expand_service_item_check_box.setText(translate('OpenLP.AdvancedTab',
                                                              'Expand new service items on creation'))
         self.slide_max_height_label.setText(translate('OpenLP.AdvancedTab',
-                                                             'Max height for non-text slides\nin slide controller:'))
+                                                      'Max height for non-text slides\nin slide controller:'))
         self.slide_max_height_spin_box.setSpecialValueText(translate('OpenLP.AdvancedTab', 'Disabled'))
         self.enable_auto_close_check_box.setText(translate('OpenLP.AdvancedTab',
                                                            'Enable application exit confirmation'))
