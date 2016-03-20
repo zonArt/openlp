@@ -25,9 +25,7 @@ a OPS Pro database into the OpenLP database.
 """
 import logging
 import re
-import os
-if os.name == 'nt':
-    import pyodbc
+import pyodbc
 import struct
 
 from openlp.core.common import translate
@@ -36,16 +34,16 @@ from openlp.plugins.songs.lib.importers.songimport import SongImport
 log = logging.getLogger(__name__)
 
 
-class OpsProImport(SongImport):
+class OPSProImport(SongImport):
     """
-    The :class:`OpsProImport` class provides the ability to import the
+    The :class:`OPSProImport` class provides the ability to import the
     WorshipCenter Pro Access Database
     """
     def __init__(self, manager, **kwargs):
         """
         Initialise the WorshipCenter Pro importer.
         """
-        super(OpsProImport, self).__init__(manager, **kwargs)
+        super(OPSProImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
         """
@@ -58,7 +56,7 @@ class OpsProImport(SongImport):
         except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError) as e:
             log.warning('Unable to connect the OPS Pro database %s. %s', self.import_source, str(e))
             # Unfortunately no specific exception type
-            self.log_error(self.import_source, translate('SongsPlugin.OpsProImport',
+            self.log_error(self.import_source, translate('SongsPlugin.OPSProImport',
                                                          'Unable to connect the OPS Pro database.'))
             return
         cursor = conn.cursor()

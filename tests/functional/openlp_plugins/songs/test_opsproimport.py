@@ -26,10 +26,13 @@ import os
 import json
 from unittest import TestCase, SkipTest
 
+if os.name != 'nt':
+    raise SkipTest('Not Windows, skipping test')
+
 from tests.functional import patch, MagicMock
 
 from openlp.core.common import Registry
-from openlp.plugins.songs.lib.importers.opspro import OpsProImport
+from openlp.plugins.songs.lib.importers.opspro import OPSProImport
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'opsprosongs'))
 
@@ -53,7 +56,7 @@ class TestOpsProSongImport(TestCase):
         mocked_manager = MagicMock()
 
         # WHEN: An importer object is created
-        importer = OpsProImport(mocked_manager, filenames=[])
+        importer = OPSProImport(mocked_manager, filenames=[])
 
         # THEN: The importer object should not be None
         self.assertIsNotNone(importer, 'Import should not be none')
@@ -65,7 +68,7 @@ class TestOpsProSongImport(TestCase):
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager" and a mocked song and lyrics entry
         mocked_manager = MagicMock()
-        importer = OpsProImport(mocked_manager, filenames=[])
+        importer = OPSProImport(mocked_manager, filenames=[])
         importer.finish = MagicMock()
         song, lyrics = self._build_test_data('you are so faithfull.txt', False)
 
@@ -85,7 +88,7 @@ class TestOpsProSongImport(TestCase):
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager" and a mocked song and lyrics entry
         mocked_manager = MagicMock()
-        importer = OpsProImport(mocked_manager, filenames=[])
+        importer = OPSProImport(mocked_manager, filenames=[])
         importer.finish = MagicMock()
         song, lyrics = self._build_test_data('amazing grace.txt', False)
 
@@ -105,7 +108,7 @@ class TestOpsProSongImport(TestCase):
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager" and a mocked song and lyrics entry
         mocked_manager = MagicMock()
-        importer = OpsProImport(mocked_manager, filenames=[])
+        importer = OPSProImport(mocked_manager, filenames=[])
         importer.finish = MagicMock()
         song, lyrics = self._build_test_data('amazing grace2.txt', True)
 
@@ -125,7 +128,7 @@ class TestOpsProSongImport(TestCase):
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager" and a mocked song and lyrics entry
         mocked_manager = MagicMock()
-        importer = OpsProImport(mocked_manager, filenames=[])
+        importer = OPSProImport(mocked_manager, filenames=[])
         importer.finish = MagicMock()
         song, lyrics = self._build_test_data('amazing grace3.txt', True)
 
