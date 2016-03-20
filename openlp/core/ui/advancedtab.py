@@ -77,6 +77,9 @@ class AdvancedTab(SettingsTab):
         self.single_click_preview_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.single_click_preview_check_box.setObjectName('single_click_preview_check_box')
         self.ui_layout.addRow(self.single_click_preview_check_box)
+        self.single_click_service_preview_check_box = QtWidgets.QCheckBox(self.ui_group_box)
+        self.single_click_service_preview_check_box.setObjectName('single_click_service_preview_check_box')
+        self.ui_layout.addRow(self.single_click_service_preview_check_box)
         self.expand_service_item_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.expand_service_item_check_box.setObjectName('expand_service_item_check_box')
         self.ui_layout.addRow(self.expand_service_item_check_box)
@@ -277,6 +280,8 @@ class AdvancedTab(SettingsTab):
                                                            'Double-click to send items straight to live'))
         self.single_click_preview_check_box.setText(translate('OpenLP.AdvancedTab',
                                                               'Preview items when clicked in Media Manager'))
+        self.single_click_service_preview_check_box.setText(translate('OpenLP.AdvancedTab',
+                                                                      'Preview items when clicked in Service Manager'))
         self.expand_service_item_check_box.setText(translate('OpenLP.AdvancedTab',
                                                              'Expand new service items on creation'))
         self.slide_max_height_label.setText(translate('OpenLP.AdvancedTab',
@@ -349,6 +354,7 @@ class AdvancedTab(SettingsTab):
         self.media_plugin_check_box.setChecked(settings.value('save current plugin'))
         self.double_click_live_check_box.setChecked(settings.value('double click live'))
         self.single_click_preview_check_box.setChecked(settings.value('single click preview'))
+        self.single_click_service_preview_check_box.setChecked(settings.value('single click service preview'))
         self.expand_service_item_check_box.setChecked(settings.value('expand service item'))
         self.slide_max_height_spin_box.setValue(settings.value('slide max height'))
         self.enable_auto_close_check_box.setChecked(settings.value('enable exit confirmation'))
@@ -431,6 +437,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue('save current plugin', self.media_plugin_check_box.isChecked())
         settings.setValue('double click live', self.double_click_live_check_box.isChecked())
         settings.setValue('single click preview', self.single_click_preview_check_box.isChecked())
+        settings.setValue('single click service preview', self.single_click_service_preview_check_box.isChecked())
         settings.setValue('expand service item', self.expand_service_item_check_box.isChecked())
         settings.setValue('slide max height', self.slide_max_height_spin_box.value())
         settings.setValue('enable exit confirmation', self.enable_auto_close_check_box.isChecked())
