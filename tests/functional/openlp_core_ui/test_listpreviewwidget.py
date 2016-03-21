@@ -89,7 +89,7 @@ class TestListPreviewWidget(TestCase):
         # WHEN: __recalculate_layout() is called (via resizeEvent)
         list_preview_widget.resizeEvent(None)
 
-        # THEN: resizeRowsToContents should be called twice
+        # THEN: setRowHeight() should not be called, while resizeRowsToContents() should be called twice
         #       (once each in __recalculate_layout and replace_service_item)
         self.assertEquals(mocked_resizeRowsToContents.call_count, 2, 'Should be called')
         self.assertEquals(mocked_setRowHeight.call_count, 0, 'Should not be called')
@@ -128,7 +128,8 @@ class TestListPreviewWidget(TestCase):
         # WHEN: __recalculate_layout() is called (via resizeEvent)
         list_preview_widget.resizeEvent(None)
 
-        # THEN: timer should have been started
+        # THEN: resizeRowsToContents() should not be called, while setRowHeight() should be called
+        #       twice for each slide.
         self.assertEquals(mocked_resizeRowsToContents.call_count, 0, 'Should not be called')
         self.assertEquals(mocked_setRowHeight.call_count, 4, 'Should be called twice for each slide')
         calls = [call(0, 200), call(1, 200), call(0, 400), call(1, 400)]
@@ -168,7 +169,8 @@ class TestListPreviewWidget(TestCase):
         # WHEN: __recalculate_layout() is called (via resizeEvent)
         list_preview_widget.resizeEvent(None)
 
-        # THEN: timer should have been started
+        # THEN: resizeRowsToContents() should not be called, while setRowHeight() should be called
+        #       twice for each slide.
         self.assertEquals(mocked_resizeRowsToContents.call_count, 0, 'Should not be called')
         self.assertEquals(mocked_setRowHeight.call_count, 4, 'Should be called twice for each slide')
         calls = [call(0, 100), call(1, 100), call(0, 100), call(1, 100)]
