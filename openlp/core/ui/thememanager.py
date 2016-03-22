@@ -760,8 +760,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                     used_count = plugin.uses_theme(theme)
                     if used_count:
                         plugin_usage = "%s%s" % (plugin_usage, (translate('OpenLP.ThemeManager',
-                                                                          '%s time(s) by %s') %
-                                                                (used_count, plugin.name)))
+                                                                          '%(count)s time(s) by %(plugin)s') %
+                                                                {'count': used_count, 'plugin': plugin.name}))
                         plugin_usage = "%s\n" % plugin_usage
                 if plugin_usage:
                     critical_error_message_box(translate('OpenLP.ThemeManager', 'Unable to delete theme'),
