@@ -26,12 +26,12 @@ import sys
 from PyQt5 import QtWidgets
 
 if sys.version_info[1] >= 3:
-    from unittest.mock import ANY, MagicMock, patch, mock_open, call
+    from unittest.mock import ANY, MagicMock, patch, mock_open, call, PropertyMock
 else:
-    from mock import ANY, MagicMock, patch, mock_open, call
+    from mock import ANY, MagicMock, patch, mock_open, call, PropertyMock
 
 # Only one QApplication can be created. Use QtWidgets.QApplication.instance() when you need to "create" a  QApplication.
 application = QtWidgets.QApplication([])
 application.setApplicationName('OpenLP')
 
-__all__ = ['ANY', 'MagicMock', 'patch', 'mock_open', 'call', 'application']
+__all__ = ['ANY', 'MagicMock', 'patch', 'mock_open', 'call', 'application', 'PropertyMock']
