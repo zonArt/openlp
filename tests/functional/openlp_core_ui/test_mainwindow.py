@@ -56,6 +56,15 @@ class TestMainWindow(TestCase, TestMixin):
                 patch('openlp.core.ui.mainwindow.QtWidgets.QMainWindow.addDockWidget') as mocked_add_dock_method, \
                 patch('openlp.core.ui.mainwindow.ThemeManager') as mocked_theme_manager, \
                 patch('openlp.core.ui.mainwindow.Renderer') as mocked_renderer:
+            self.mocked_settings_form = mocked_settings_form
+            self.mocked_image_manager = mocked_image_manager
+            self.mocked_live_controller = mocked_live_controller
+            self.mocked_preview_controller = mocked_preview_controller
+            self.mocked_dock_widget = mocked_dock_widget
+            self.mocked_q_tool_box_class = mocked_q_tool_box_class
+            self.mocked_add_dock_method = mocked_add_dock_method
+            self.mocked_theme_manager = mocked_theme_manager
+            self.mocked_renderer = mocked_renderer
             self.main_window = MainWindow()
 
     def tearDown(self):
@@ -146,3 +155,37 @@ class TestMainWindow(TestCase, TestMixin):
                                                                           'registered.')
         self.assertTrue('plugin_manager' in self.registry.service_list,
                         'The plugin_manager should have been registered.')
+
+    def on_search_shortcut_triggered_shows_media_manager_test(self):
+        """
+        Test that the media manager is made visible when the search shortcut is triggered
+        """
+        # GIVEN: A build main window set up for testing
+        with patch.object(self.main_window, 'media_manager_dock') as mocked_media_manager_dock, \
+                patch.object(self.main_window, 'media_tool_box') as mocked_media_tool_box:
+            mocked_media_manager_dock.isVisible.return_value = False
+            mocked_media_tool_box.currentWidget.return_value = None
+
+            # WHEN: The search shortcut is triggered
+            self.main_window.on_search_shortcut_triggered()
+
+            # THEN: The media manager dock is made visible
+            mocked_media_manager_dock.setVisible.assert_called_with(True)
+
+    def on_search_shortcut_triggered_focuses_widget_test(self):
+        """
+        Test that the focus is set on the widget when the search shortcut is triggered
+        """
+        # GIVEN: A build main window set up for testing
+        with patch.object(self.main_window, 'media_manager_dock') as mocked_media_manager_dock, \
+                patch.object(self.main_window, 'media_tool_box') as mocked_media_tool_box:
+            mocked_media_manager_dock.isVisible.return_value = True
+            mocked_widget = MagicMock()
+            mocked_media_tool_box.currentWidget.return_value = mocked_widget
+
+            # WHEN: The search shortcut is triggered
+            self.main_window.on_search_shortcut_triggered()
+
+            # THEN: The media manager dock is made visible
+            self.assertEqual(0, mocked_media_manager_dock.setVisible.call_count)
+            mocked_widget.on_focus.assert_called_with()

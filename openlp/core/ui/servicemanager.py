@@ -144,8 +144,8 @@ class Ui_ServiceManager(object):
         self.service_manager_list.customContextMenuRequested.connect(self.context_menu)
         self.service_manager_list.setObjectName('service_manager_list')
         # enable drop
-        self.service_manager_list.__class__.dragEnterEvent = self.drag_enter_event
-        self.service_manager_list.__class__.dragMoveEvent = self.drag_enter_event
+        self.service_manager_list.__class__.dragEnterEvent = lambda x, event: event.accept()
+        self.service_manager_list.__class__.dragMoveEvent = lambda x, event: event.accept()
         self.service_manager_list.__class__.dropEvent = self.drop_event
         self.layout.addWidget(self.service_manager_list)
         # Add the bottom toolbar
@@ -211,7 +211,8 @@ class Ui_ServiceManager(object):
         self.layout.addWidget(self.order_toolbar)
         # Connect up our signals and slots
         self.theme_combo_box.activated.connect(self.on_theme_combo_box_selected)
-        self.service_manager_list.doubleClicked.connect(self.on_make_live)
+        self.service_manager_list.doubleClicked.connect(self.on_double_click_live)
+        self.service_manager_list.clicked.connect(self.on_single_click_preview)
         self.service_manager_list.itemCollapsed.connect(self.collapsed)
         self.service_manager_list.itemExpanded.connect(self.expanded)
         # Last little bits of setting up
@@ -293,14 +294,6 @@ class Ui_ServiceManager(object):
         Registry().register_function('theme_update_global', self.theme_change)
         Registry().register_function('mediaitem_suffix_reset', self.reset_supported_suffixes)
 
-    def drag_enter_event(self, event):
-        """
-        Accept Drag events
-
-        :param event: Handle of the event passed
-        """
-        event.accept()
-
 
 class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceManager, RegistryProperties):
     """
@@ -327,6 +320,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         self._modified = False
         self._file_name = ''
         self.service_has_all_original_files = True
+        self.list_double_clicked = False
 
     def bootstrap_initialise(self):
         """
@@ -1139,7 +1133,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         :param item: The service item to be checked
         """
         pos = item.data(0, QtCore.Qt.UserRole)
-        self.service_items[pos - 1]['expanded'] = False
+        # Only set root items as collapsed, and since we only have 2 levels we find them by checking for children
+        if item.childCount():
+            self.service_items[pos - 1]['expanded'] = False
 
     def on_expand_all(self, field=None):
         """
@@ -1157,7 +1153,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         :param item: The service item to be checked
         """
         pos = item.data(0, QtCore.Qt.UserRole)
-        self.service_items[pos - 1]['expanded'] = True
+        # Only set root items as expanded, and since we only have 2 levels we find them by checking for children
+        if item.childCount():
+            self.service_items[pos - 1]['expanded'] = True
 
     def on_service_top(self, field=None):
         """
@@ -1458,12 +1456,37 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         else:
             return self.service_items[item]['service_item']
 
-    def on_make_live(self, field=None):
+    def on_double_click_live(self, field=None):
         """
         Send the current item to the Live slide controller but triggered by a tablewidget click event.
         :param field:
         """
+        self.list_double_clicked = True
         self.make_live()
+
+    def on_single_click_preview(self, field=None):
+        """
+        If single click previewing is enabled, and triggered by a tablewidget click event,
+        start a timeout to verify a double-click hasn't triggered.
+        :param field:
+        """
+        if Settings().value('advanced/single click service preview'):
+            if not self.list_double_clicked:
+                # If a double click has not registered start a timer, otherwise wait for the existing timer to finish.
+                QtCore.QTimer.singleShot(QtWidgets.QApplication.instance().doubleClickInterval(),
+                                         self.on_single_click_preview_timeout)
+
+    def on_single_click_preview_timeout(self):
+        """
+        If a single click ok, but double click not triggered, send the current item to the Preview slide controller.
+        :param field:
+        """
+        if self.list_double_clicked:
+            # If a double click has registered, clear it.
+            self.list_double_clicked = False
+        else:
+            # Otherwise preview the item.
+            self.make_preview()
 
     def make_live(self, row=-1):
         """
@@ -1585,7 +1608,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
                 if item is None:
                     end_pos = len(self.service_items)
                 else:
-                    end_pos = self._get_parent_item_data(item) - 1
+                    end_pos = get_parent_item_data(item) - 1
                 service_item = self.service_items[start_pos]
                 self.service_items.remove(service_item)
                 self.service_items.insert(end_pos, service_item)
@@ -1598,21 +1621,21 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
                     self.drop_position = len(self.service_items)
                 else:
                     # we are over something so lets investigate
-                    pos = self._get_parent_item_data(item) - 1
+                    pos = get_parent_item_data(item) - 1
                     service_item = self.service_items[pos]
                     if (plugin == service_item['service_item'].name and
                             service_item['service_item'].is_capable(ItemCapabilities.CanAppend)):
                         action = self.dnd_menu.exec(QtGui.QCursor.pos())
                         # New action required
                         if action == self.new_action:
-                            self.drop_position = self._get_parent_item_data(item)
+                            self.drop_position = get_parent_item_data(item)
                         # Append to existing action
                         if action == self.add_to_action:
-                            self.drop_position = self._get_parent_item_data(item)
+                            self.drop_position = get_parent_item_data(item)
                             item.setSelected(True)
                             replace = True
                     else:
-                        self.drop_position = self._get_parent_item_data(item) - 1
+                        self.drop_position = get_parent_item_data(item) - 1
                 Registry().execute('%s_add_service_item' % plugin, replace)
 
     def update_theme_list(self, theme_list):
@@ -1656,27 +1679,21 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         self.service_items[item]['service_item'].update_theme(theme)
         self.regenerate_service_items(True)
 
-    def _get_parent_item_data(self, item):
-        """
-        Finds and returns the parent item for any item
-
-        :param item: The service item list item to be checked.
-        """
-        parent_item = item.parent()
-        if parent_item is None:
-            return item.data(0, QtCore.Qt.UserRole)
-        else:
-            return parent_item.data(0, QtCore.Qt.UserRole)
-
-    def print_service_order(self, field=None):
-        """
-        Print a Service Order Sheet.
-        """
-        setting_dialog = PrintServiceForm()
-        setting_dialog.exec()
-
     def get_drop_position(self):
         """
         Getter for drop_position. Used in: MediaManagerItem
         """
         return self.drop_position
+
+
+def get_parent_item_data(item):
+    """
+    Finds and returns the parent item for any item
+
+    :param item: The service item list item to be checked.
+    """
+    parent_item = item.parent()
+    if parent_item is None:
+        return item.data(0, QtCore.Qt.UserRole)
+    else:
+        return parent_item.data(0, QtCore.Qt.UserRole)

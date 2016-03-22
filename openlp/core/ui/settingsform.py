@@ -46,7 +46,7 @@ class SettingsForm(QtWidgets.QDialog, Ui_SettingsDialog, RegistryProperties):
         """
         Registry().register('settings_form', self)
         Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
-        super(SettingsForm, self).__init__(parent)
+        super(SettingsForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.processes = []
         self.setupUi(self)
         self.setting_list_widget.currentRowChanged.connect(self.list_item_changed)

@@ -26,7 +26,6 @@ import os
 from unittest import TestCase
 
 from tests.helpers.songfileimport import SongImportTestHelper
-from openlp.plugins.songs.lib.importers.opensong import OpenSongImport
 from openlp.core.common import Registry
 from tests.functional import patch, MagicMock
 

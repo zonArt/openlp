@@ -142,3 +142,18 @@ class TestEditSongForm(TestCase, TestMixin):
                              'CCLI label should not be "{}"'.format(UiStrings().CCLINumberLabel))
         self.assertEquals(form.ccli_label.text(), UiStrings().CCLISongNumberLabel,
                           'CCLI label text should be "{}"'.format(UiStrings().CCLISongNumberLabel))
+
+    def verse_order_lowercase_test(self):
+        """
+        Test that entering a verse order in lowercase automatically converts to uppercase
+        """
+        # GIVEN; Mocked methods
+        form = self.form
+
+        # WHEN: We enter a verse order in lowercase
+        form.verse_order_edit.setText('v1 v2 c1 v3 c1 v4 c1')
+        # Need to manually trigger this method as it is only triggered by manual input
+        form.on_verse_order_text_changed(form.verse_order_edit.text())
+
+        # THEN: The verse order should be converted to uppercase
+        self.assertEqual(form.verse_order_edit.text(), 'V1 V2 C1 V3 C1 V4 C1')

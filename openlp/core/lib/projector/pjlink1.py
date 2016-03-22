@@ -101,7 +101,7 @@ class PJLink1(QTcpSocket):
         self.location = None
         self.notes = None
         self.dbid = None if 'dbid' not in kwargs else kwargs['dbid']
-        self.location = None if 'location' not in kwargs else kwargs['notes']
+        self.location = None if 'location' not in kwargs else kwargs['location']
         self.notes = None if 'notes' not in kwargs else kwargs['notes']
         # Poll time 20 seconds unless called with something else
         self.poll_time = 20000 if 'poll_time' not in kwargs else kwargs['poll_time'] * 1000
@@ -345,7 +345,7 @@ class PJLink1(QTcpSocket):
             # Authenticated login with salt
             log.debug('(%s) Setting hash with salt="%s"' % (self.ip, data_check[2]))
             log.debug('(%s) pin="%s"' % (self.ip, self.pin))
-            salt = qmd5_hash(salt=data_check[2].endcode('ascii'), data=self.pin.encode('ascii'))
+            salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
         else:
             salt = None
         # We're connected at this point, so go ahead and do regular I/O
@@ -515,7 +515,7 @@ class PJLink1(QTcpSocket):
         self.socket_timer.start()
         try:
             self.projectorNetwork.emit(S_NETWORK_SENDING)
-            sent = self.write(out)
+            sent = self.write(out.encode('ascii'))
             self.waitForBytesWritten(2000)  # 2 seconds should be enough
             if sent == -1:
                 # Network error?
@@ -665,7 +665,15 @@ class PJLink1(QTcpSocket):
 
         :param data: Class that projector supports.
         """
-        self.pjlink_class = data
+        # bug 1550891: Projector returns non-standard class response:
+        #            : Expected: %1CLSS=1
+        #            : Received: %1CLSS=Class 1
+        if len(data) > 1:
+            # Split non-standard information from response
+            clss = data.split()[-1]
+        else:
+            clss = data
+        self.pjlink_class = clss
         log.debug('(%s) Setting pjlink_class for this projector to "%s"' % (self.ip, self.pjlink_class))
         return
 

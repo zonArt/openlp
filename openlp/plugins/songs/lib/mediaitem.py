@@ -26,7 +26,7 @@ import os
 import shutil
 
 from PyQt5 import QtCore, QtWidgets
-from sqlalchemy.sql import or_
+from sqlalchemy.sql import and_, or_
 
 from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
 from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, \
@@ -37,7 +37,7 @@ from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
 from openlp.plugins.songs.forms.songexportform import SongExportForm
 from openlp.plugins.songs.lib import VerseType, clean_string, delete_song
-from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile
+from openlp.plugins.songs.lib.db import Author, AuthorType, Song, Book, MediaFile, SongBookEntry, Topic
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics, SongXML
 
@@ -52,8 +52,11 @@ class SongSearch(object):
     Titles = 2
     Lyrics = 3
     Authors = 4
-    Books = 5
-    Themes = 6
+    Topics = 5
+    Books = 6
+    Themes = 7
+    Copyright = 8
+    CCLInumber = 9
 
 
 class SongMediaItem(MediaManagerItem):
@@ -112,6 +115,7 @@ class SongMediaItem(MediaManagerItem):
 
     def on_focus(self):
         self.search_text_edit.setFocus()
+        self.search_text_edit.selectAll()
 
     def config_update(self):
         """
@@ -150,9 +154,17 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Search Lyrics...')),
             (SongSearch.Authors, ':/songs/song_search_author.png', SongStrings.Authors,
                 translate('SongsPlugin.MediaItem', 'Search Authors...')),
+            (SongSearch.Topics, ':/songs/song_search_topic.png', SongStrings.Topics,
+                translate('SongsPlugin.MediaItem', 'Search Topics...')),
             (SongSearch.Books, ':/songs/song_book_edit.png', SongStrings.SongBooks,
-                translate('SongsPlugin.MediaItem', 'Search Song Books...')),
-            (SongSearch.Themes, ':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
+                translate('SongsPlugin.MediaItem', 'Search Songbooks...')),
+            (SongSearch.Themes, ':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes),
+            (SongSearch.Copyright, ':/songs/song_search_copy.png',
+                translate('SongsPlugin.MediaItem', 'Copyright'),
+                translate('SongsPlugin.MediaItem', 'Search Copyright...')),
+            (SongSearch.CCLInumber, ':/songs/song_search_ccli.png',
+                translate('SongsPlugin.MediaItem', 'CCLI number'),
+                translate('SongsPlugin.MediaItem', 'Search CCLI number...'))
         ])
         self.search_text_edit.set_current_search_type(Settings().value('%s/last search type' % self.settings_section))
         self.config_update()
@@ -183,23 +195,33 @@ class SongMediaItem(MediaManagerItem):
             search_results = self.plugin.manager.get_all_objects(
                 Author, Author.display_name.like(search_string), Author.display_name.asc())
             self.display_results_author(search_results)
-        elif search_type == SongSearch.Books:
-            log.debug('Books Search')
+        elif search_type == SongSearch.Topics:
+            log.debug('Topics Search')
             search_string = '%' + search_keywords + '%'
-            search_results = self.plugin.manager.get_all_objects(Book, Book.name.like(search_string), Book.name.asc())
-            song_number = False
-            if not search_results:
-                search_keywords = search_keywords.rpartition(' ')
-                search_string = '%' + search_keywords[0] + '%'
-                search_results = self.plugin.manager.get_all_objects(Book,
-                                                                     Book.name.like(search_string), Book.name.asc())
-                song_number = re.sub(r'[^0-9]', '', search_keywords[2])
-            self.display_results_book(search_results, song_number)
+            search_results = self.plugin.manager.get_all_objects(
+                Topic, Topic.name.like(search_string), Topic.name.asc())
+            self.display_results_topic(search_results)
+        elif search_type == SongSearch.Books:
+            log.debug('Songbook Search')
+            self.display_results_book(search_keywords)
         elif search_type == SongSearch.Themes:
             log.debug('Theme Search')
             search_string = '%' + search_keywords + '%'
-            search_results = self.plugin.manager.get_all_objects(Song, Song.theme_name.like(search_string))
+            search_results = self.plugin.manager.get_all_objects(
+                Song, Song.theme_name.like(search_string), Song.theme_name.asc())
+            self.display_results_themes(search_results)
+        elif search_type == SongSearch.Copyright:
+            log.debug('Copyright Search')
+            search_string = '%' + search_keywords + '%'
+            search_results = self.plugin.manager.get_all_objects(
+                Song, and_(Song.copyright.like(search_string), Song.copyright != ''))
             self.display_results_song(search_results)
+        elif search_type == SongSearch.CCLInumber:
+            log.debug('CCLI number Search')
+            search_string = '%' + search_keywords + '%'
+            search_results = self.plugin.manager.get_all_objects(
+                Song, and_(Song.ccli_number.like(search_string), Song.ccli_number != ''))
+            self.display_results_cclinumber(search_results)
         self.check_search_result()
 
     def search_entire(self, search_keywords):
@@ -223,6 +245,12 @@ class SongMediaItem(MediaManagerItem):
         log.debug('on_song_list_load - finished')
 
     def display_results_song(self, search_results):
+        """
+        Display the song search results in the media manager list
+
+        :param search_results: A list of db Song objects
+        :return: None
+        """
         log.debug('display results Song')
         self.save_auto_select_id()
         self.list_view.clear()
@@ -242,6 +270,12 @@ class SongMediaItem(MediaManagerItem):
         self.auto_select_id = -1
 
     def display_results_author(self, search_results):
+        """
+        Display the song search results in the media manager list, grouped by author
+
+        :param search_results: A list of db Author objects
+        :return: None
+        """
         log.debug('display results Author')
         self.list_view.clear()
         for author in search_results:
@@ -254,21 +288,94 @@ class SongMediaItem(MediaManagerItem):
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
 
-    def display_results_book(self, search_results, song_number=False):
+    def display_results_book(self, search_keywords):
+        """
+        Display the song search results in the media manager list, grouped by book
+
+        :param search_keywords: A list of search keywords - book first, then number
+        :return: None
+        """
+
         log.debug('display results Book')
         self.list_view.clear()
-        for book in search_results:
-            songs = sorted(book.songs, key=lambda song: int(re.match(r'[0-9]+', '0' + song.song_number).group()))
+
+        search_keywords = search_keywords.rpartition(' ')
+        search_book = search_keywords[0]
+        search_entry = re.sub(r'[^0-9]', '', search_keywords[2])
+
+        songbook_entries = (self.plugin.manager.session.query(SongBookEntry)
+                            .join(Book)
+                            .order_by(Book.name)
+                            .order_by(SongBookEntry.entry))
+        for songbook_entry in songbook_entries:
+            if songbook_entry.song.temporary:
+                continue
+            if search_book.lower() not in songbook_entry.songbook.name.lower():
+                continue
+            if search_entry not in songbook_entry.entry:
+                continue
+            song_detail = '%s #%s: %s' % (songbook_entry.songbook.name, songbook_entry.entry, songbook_entry.song.title)
+            song_name = QtWidgets.QListWidgetItem(song_detail)
+            song_name.setData(QtCore.Qt.UserRole, songbook_entry.song.id)
+            self.list_view.addItem(song_name)
+
+    def display_results_topic(self, search_results):
+        """
+        Display the song search results in the media manager list, grouped by topic
+
+        :param search_results: A list of db Topic objects
+        :return: None
+        """
+        log.debug('display results Topic')
+        self.list_view.clear()
+        search_results = sorted(search_results, key=lambda topic: self._natural_sort_key(topic.name))
+        for topic in search_results:
+            songs = sorted(topic.songs, key=lambda song: song.sort_key)
             for song in songs:
                 # Do not display temporary songs
                 if song.temporary:
                     continue
-                if song_number and song_number not in song.song_number:
-                    continue
-                song_detail = '%s - %s (%s)' % (book.name, song.song_number, song.title)
+                song_detail = '%s (%s)' % (topic.name, song.title)
                 song_name = QtWidgets.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
+
+    def display_results_themes(self, search_results):
+        """
+        Display the song search results in the media manager list, sorted by theme
+
+        :param search_results: A list of db Song objects
+        :return: None
+        """
+        log.debug('display results Themes')
+        self.list_view.clear()
+        for song in search_results:
+            # Do not display temporary songs
+            if song.temporary:
+                continue
+            song_detail = '%s (%s)' % (song.theme_name, song.title)
+            song_name = QtWidgets.QListWidgetItem(song_detail)
+            song_name.setData(QtCore.Qt.UserRole, song.id)
+            self.list_view.addItem(song_name)
+
+    def display_results_cclinumber(self, search_results):
+        """
+        Display the song search results in the media manager list, sorted by CCLI number
+
+        :param search_results: A list of db Song objects
+        :return: None
+        """
+        log.debug('display results CCLI number')
+        self.list_view.clear()
+        songs = sorted(search_results, key=lambda song: self._natural_sort_key(song.ccli_number))
+        for song in songs:
+            # Do not display temporary songs
+            if song.temporary:
+                continue
+            song_detail = '%s (%s)' % (song.ccli_number, song.title)
+            song_name = QtWidgets.QListWidgetItem(song_detail)
+            song_name.setData(QtCore.Qt.UserRole, song.id)
+            self.list_view.addItem(song_name)
 
     def on_clear_text_button_click(self):
         """
@@ -363,8 +470,8 @@ class SongMediaItem(MediaManagerItem):
             items = self.list_view.selectedIndexes()
             if QtWidgets.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
-                    translate('SongsPlugin.MediaItem', 'Are you sure you want to delete the %n selected song(s)?', '',
-                              QtCore.QCoreApplication.CodecForTr, len(items)),
+                    translate('SongsPlugin.MediaItem',
+                              'Are you sure you want to delete the "%d" selected song(s)?') % len(items),
                     QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                     QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
                 return
@@ -523,8 +630,9 @@ class SongMediaItem(MediaManagerItem):
                 item.raw_footer.append("%s %s" % (SongStrings.CopyrightSymbol, song.copyright))
             else:
                 item.raw_footer.append(song.copyright)
-        if self.display_songbook and song.book:
-            item.raw_footer.append("%s #%s" % (song.book.name, song.song_number))
+        if self.display_songbook and song.songbook_entries:
+            songbooks = [str(songbook_entry) for songbook_entry in song.songbook_entries]
+            item.raw_footer.append(", ".join(songbooks))
         if Settings().value('core/ccli number'):
             item.raw_footer.append(translate('SongsPlugin.MediaItem',
                                              'CCLI License: ') + Settings().value('core/ccli number'))
@@ -585,6 +693,14 @@ class SongMediaItem(MediaManagerItem):
                 return False
         # List must be empty at the end
         return not author_list
+
+    def _natural_sort_key(self, s):
+        """
+        Return a tuple by which s is sorted.
+        :param s: A string value from the list we want to sort.
+        """
+        return [int(text) if text.isdecimal() else text.lower()
+                for text in re.split('(\d+)', s)]
 
     def search(self, string, show_error):
         """

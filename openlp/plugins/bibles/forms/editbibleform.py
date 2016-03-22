@@ -24,7 +24,7 @@ import logging
 import os
 import re
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import RegistryProperties, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -45,7 +45,7 @@ class EditBibleForm(QtWidgets.QDialog, Ui_EditBibleDialog, RegistryProperties):
         """
         Constructor
         """
-        super(EditBibleForm, self).__init__(parent)
+        super(EditBibleForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.media_item = media_item
         self.book_names = BibleStrings().BookNames
         self.setupUi(self)

@@ -62,7 +62,8 @@ class CustomPlugin(Plugin):
         self.icon_path = ':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
 
-    def about(self):
+    @staticmethod
+    def about():
         about_text = translate('CustomPlugin', '<strong>Custom Slide Plugin </strong><br />The custom slide plugin '
                                'provides the ability to set up custom text slides that can be displayed on the screen '
                                'the same way songs are. This plugin provides greater freedom over the songs plugin.')
@@ -73,6 +74,7 @@ class CustomPlugin(Plugin):
         Called to find out if the custom plugin is currently using a theme.
 
         Returns count of the times the theme is used.
+        :param theme: Theme to be queried
         """
         return len(self.db_manager.get_all_objects(CustomSlide, CustomSlide.theme_name == theme))
 

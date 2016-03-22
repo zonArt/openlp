@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import RegistryProperties, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
@@ -36,7 +36,8 @@ class SongUsageDeleteForm(QtWidgets.QDialog, Ui_SongUsageDeleteDialog, RegistryP
         Constructor
         """
         self.manager = manager
-        super(SongUsageDeleteForm, self).__init__(parent)
+        super(SongUsageDeleteForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint |
+                                                  QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.button_box.clicked.connect(self.on_button_box_clicked)
 
@@ -47,13 +48,14 @@ class SongUsageDeleteForm(QtWidgets.QDialog, Ui_SongUsageDeleteDialog, RegistryP
         :param button: The button pressed
         """
         if self.button_box.standardButton(button) == QtWidgets.QDialogButtonBox.Ok:
-            ret = QtWidgets.QMessageBox.question(
-                self,
-                translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Selected Song Usage Events?'),
-                translate('SongUsagePlugin.SongUsageDeleteForm',
-                          'Are you sure you want to delete selected Song Usage data?'),
-                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
-                QtWidgets.QMessageBox.No)
+            ret = QtWidgets.QMessageBox.question(self,
+                                                 translate('SongUsagePlugin.SongUsageDeleteForm',
+                                                           'Delete Selected Song Usage Events?'),
+                                                 translate('SongUsagePlugin.SongUsageDeleteForm',
+                                                           'Are you sure you want to delete selected Song Usage data?'),
+                                                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
+                                                                                       QtWidgets.QMessageBox.No),
+                                                 QtWidgets.QMessageBox.No)
             if ret == QtWidgets.QMessageBox.Yes:
                 delete_date = self.delete_calendar.selectedDate().toPyDate()
                 self.manager.delete_all_objects(SongUsageItem, SongUsageItem.usagedate <= delete_date)

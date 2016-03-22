@@ -24,7 +24,7 @@ The About dialog.
 """
 import webbrowser
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib import translate
 from openlp.core.utils import get_application_version
@@ -40,7 +40,7 @@ class AboutForm(QtWidgets.QDialog, UiAboutDialog):
         """
         Do some initialisation stuff
         """
-        super(AboutForm, self).__init__(parent)
+        super(AboutForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self._setup()
 
     def _setup(self):

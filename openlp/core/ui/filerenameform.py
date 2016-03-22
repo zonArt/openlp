@@ -23,7 +23,7 @@
 The file rename dialog.
 """
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from .filerenamedialog import Ui_FileRenameDialog
 
@@ -38,7 +38,8 @@ class FileRenameForm(QtWidgets.QDialog, Ui_FileRenameDialog, RegistryProperties)
         """
         Constructor
         """
-        super(FileRenameForm, self).__init__(Registry().get('main_window'))
+        super(FileRenameForm, self).__init__(Registry().get('main_window'),
+                                             QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self._setup()
 
     def _setup(self):

@@ -144,7 +144,7 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
     editProjector = pyqtSignal(object)
 
     def __init__(self, parent=None, projectordb=None):
-        super(ProjectorEditForm, self).__init__(parent=parent)
+        super(ProjectorEditForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.projectordb = projectordb
         self.setupUi(self)
         self.button_box.accepted.connect(self.accept_me)

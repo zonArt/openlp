@@ -37,7 +37,7 @@ class MediaFilesForm(QtWidgets.QDialog, Ui_MediaFilesDialog):
     log.info('%s MediaFilesForm loaded', __name__)
 
     def __init__(self, parent):
-        super(MediaFilesForm, self).__init__()
+        super(MediaFilesForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
     def populate_files(self, files):

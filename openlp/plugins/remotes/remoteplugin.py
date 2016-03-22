@@ -88,7 +88,8 @@ class RemotesPlugin(Plugin):
             self.server.stop_server()
             self.server = None
 
-    def about(self):
+    @staticmethod
+    def about():
         """
         Information about this plugin
         """

@@ -159,6 +159,7 @@ class GeneralTab(SettingsTab):
         self.startup_layout.addWidget(self.show_splash_check_box)
         self.check_for_updates_check_box = QtWidgets.QCheckBox(self.startup_group_box)
         self.check_for_updates_check_box.setObjectName('check_for_updates_check_box')
+        self.check_for_updates_check_box.setVisible(False)
         self.startup_layout.addWidget(self.check_for_updates_check_box)
         self.right_layout.addWidget(self.startup_group_box)
         # Application Settings

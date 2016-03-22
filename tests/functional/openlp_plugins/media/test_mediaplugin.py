@@ -40,7 +40,7 @@ class MediaPluginTest(TestCase, TestMixin):
 
     @patch(u'openlp.plugins.media.mediaplugin.Plugin.initialise')
     @patch(u'openlp.plugins.media.mediaplugin.Settings')
-    def initialise_test(self, MockedSettings, mocked_initialise):
+    def initialise_test(self, _mocked_settings, mocked_initialise):
         """
         Test that the initialise() method overwrites the built-in one, but still calls it
         """
@@ -48,7 +48,7 @@ class MediaPluginTest(TestCase, TestMixin):
         media_plugin = MediaPlugin()
         mocked_settings = MagicMock()
         mocked_settings.get_files_from_config.return_value = True  # Not the real value, just need something "true-ish"
-        MockedSettings.return_value = mocked_settings
+        _mocked_settings.return_value = mocked_settings
 
         # WHEN: initialise() is called
         media_plugin.initialise()
@@ -57,3 +57,11 @@ class MediaPluginTest(TestCase, TestMixin):
         mocked_settings.get_files_from_config.assert_called_with(media_plugin)
         mocked_settings.setValue.assert_called_with('media/media files', True)
         mocked_initialise.assert_called_with()
+
+    def test_about_text(self):
+        # GIVEN: The MediaPlugin
+        # WHEN: Retrieving the about text
+        # THEN: about() should return a string object
+        self.assertIsInstance(MediaPlugin.about(), str)
+        # THEN: about() should return a non-empty string
+        self.assertNotEquals(len(MediaPlugin.about()), 0)

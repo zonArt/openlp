@@ -20,24 +20,25 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-    :mod: `tests.interfaces.openlp_core_ui.test_projectorsourceform` module
+:mod: `tests.interfaces.openlp_core_ui.test_projectorsourceform` module
 
-    Tests for the Projector Source Select form.
+Tests for the Projector Source Select form.
 """
 import logging
 log = logging.getLogger(__name__)
 log.debug('test_projectorsourceform loaded')
-
+import os
+import time
 from unittest import TestCase
+
 from PyQt5.QtWidgets import QDialog
 
 from tests.functional import patch
-from tests.functional.openlp_core_lib.test_projectordb import tmpfile
 from tests.helpers.testmixin import TestMixin
 from tests.resources.projector.data import TEST_DB, TEST1_DATA
 
 from openlp.core.common import Registry, Settings
-from openlp.core.lib.projector.db import ProjectorDB
+from openlp.core.lib.projector.db import ProjectorDB, Projector
 from openlp.core.lib.projector.constants import PJLINK_DEFAULT_CODES, PJLINK_DEFAULT_SOURCES
 from openlp.core.ui.projector.sourceselectform import source_group, SourceSelectSingle
 
@@ -65,7 +66,7 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         """
         Set up anything necessary for all tests
         """
-        mocked_init_url.return_value = 'sqlite:///{}'.format(tmpfile)
+        mocked_init_url.return_value = 'sqlite:///{}'.format(TEST_DB)
         self.build_settings()
         self.setup_application()
         Registry.create()
@@ -73,10 +74,10 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         if not hasattr(self, 'projectordb'):
             self.projectordb = ProjectorDB()
         # Retrieve/create a database record
-        self.projector = self.projectordb.get_projector_by_ip(TEST1_DATA.ip)
+        self.projector = self.projectordb.get_projector_by_ip(TEST1_DATA['ip'])
         if not self.projector:
-            self.projectordb.add_projector(projector=TEST1_DATA)
-            self.projector = self.projectordb.get_projector_by_ip(TEST1_DATA.ip)
+            self.projectordb.add_projector(projector=Projector(**TEST1_DATA))
+            self.projector = self.projectordb.get_projector_by_ip(TEST1_DATA['ip'])
         self.projector.dbid = self.projector.id
         self.projector.db_item = self.projector
 
@@ -88,6 +89,15 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
         self.projectordb.session.close()
         del(self.projectordb)
         del(self.projector)
+        retries = 0
+        while retries < 5:
+            try:
+                if os.path.exists(TEST_DB):
+                    os.unlink(TEST_DB)
+                break
+            except:
+                time.sleep(1)
+                retries += 1
         self.destroy_settings()
 
     def source_dict_test(self):

@@ -44,7 +44,7 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
         """
         Constructor
         """
-        super(ShortcutListForm, self).__init__(parent)
+        super(ShortcutListForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.changed_actions = {}
         self.action_list = ActionList.get_instance()
@@ -320,9 +320,17 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
         """
         if not toggled:
             return
-        self.on_primary_push_button_clicked(False)
-        self.on_alternate_push_button_clicked(False)
+        action = self._current_item_action()
+        shortcuts = self._action_shortcuts(action)
         self.refresh_shortcut_list()
+        primary_button_text = ''
+        alternate_button_text = ''
+        if shortcuts:
+            primary_button_text = self.get_shortcut_string(shortcuts[0], for_display=True)
+        if len(shortcuts) == 2:
+            alternate_button_text = self.get_shortcut_string(shortcuts[1], for_display=True)
+        self.primary_push_button.setText(primary_button_text)
+        self.alternate_push_button.setText(alternate_button_text)
 
     def save(self):
         """

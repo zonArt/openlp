@@ -48,13 +48,17 @@ class TestMixin(object):
         """
         Build the settings Object and initialise it
         """
-        Settings.setDefaultFormat(Settings.IniFormat)
         self.fd, self.ini_file = mkstemp('.ini')
-        Settings().set_filename(self.ini_file)
+        Settings.set_filename(self.ini_file)
+        Settings().setDefaultFormat(Settings.IniFormat)
+        # Needed on windows to make sure a Settings object is available during the tests
+        self.setting = Settings()
+        Settings().setValue('themes/global theme', 'my_theme')
 
     def destroy_settings(self):
         """
         Destroy the Settings Object
         """
+        del self.setting
         os.close(self.fd)
         os.unlink(Settings().fileName())

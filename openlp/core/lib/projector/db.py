@@ -20,18 +20,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-    :mod:`openlp.core.lib.projector.db` module
+:mod:`openlp.core.lib.projector.db` module
 
-    Provides the database functions for the Projector module.
+Provides the database functions for the Projector module.
 
-    The Manufacturer, Model, Source tables keep track of the video source
-    strings used for display of input sources. The Source table maps
-    manufacturer-defined or user-defined strings from PJLink default strings
-    to end-user readable strings; ex: PJLink code 11 would map "RGB 1"
-    default string to "RGB PC (analog)" string.
-    (Future feature).
+The Manufacturer, Model, Source tables keep track of the video source
+strings used for display of input sources. The Source table maps
+manufacturer-defined or user-defined strings from PJLink default strings
+to end-user readable strings; ex: PJLink code 11 would map "RGB 1"
+default string to "RGB PC (analog)" string.
+(Future feature).
 
-    The Projector table keeps track of entries for controlled projectors.
+The Projector table keeps track of entries for controlled projectors.
 """
 
 import logging
@@ -218,19 +218,19 @@ class ProjectorDB(Manager):
     """
     def __init__(self, *args, **kwargs):
         log.debug('ProjectorDB().__init__(args="%s", kwargs="%s")' % (args, kwargs))
-        super().__init__(plugin_name='projector',
-                         init_schema=self.init_schema)
+        super().__init__(plugin_name='projector', init_schema=self.init_schema)
         log.debug('ProjectorDB() Initialized using db url %s' % self.db_url)
+        log.debug('Session: %s', self.session)
 
-    def init_schema(*args, **kwargs):
+    def init_schema(self, *args, **kwargs):
         """
         Setup the projector database and initialize the schema.
 
         Declarative uses table classes to define schema.
         """
-        url = init_url('projector')
-        session, metadata = init_db(url, base=Base)
-        Base.metadata.create_all(checkfirst=True)
+        self.db_url = init_url('projector')
+        session, metadata = init_db(self.db_url, base=Base)
+        metadata.create_all(checkfirst=True)
         return session
 
     def get_projector_by_id(self, dbid):

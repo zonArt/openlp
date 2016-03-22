@@ -45,5 +45,3 @@ class TestProPresenterFileImport(SongImportTestHelper):
         """
         self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.pro4')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
-        self.file_import([os.path.join(TEST_PATH, 'Vaste Grond.pro4')],
-                         self.load_external_result_data(os.path.join(TEST_PATH, 'Vaste Grond.json')))

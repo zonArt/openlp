@@ -192,7 +192,7 @@ class TestSongSelectImport(TestCase, TestMixin):
         mock_callback = MagicMock()
         importer = SongSelectImport(None)
 
-        # WHEN: The login method is called after being rigged to fail
+        # WHEN: The search method is called
         results = importer.search('text', 1000, mock_callback)
 
         # THEN: callback was never called, open was called once, find_all was called once, an empty list returned
@@ -234,10 +234,10 @@ class TestSongSelectImport(TestCase, TestMixin):
         mock_callback = MagicMock()
         importer = SongSelectImport(None)
 
-        # WHEN: The login method is called after being rigged to fail
+        # WHEN: The search method is called
         results = importer.search('text', 2, mock_callback)
 
-        # THEN: callback was never called, open was called once, find_all was called once, an empty list returned
+        # THEN: callback was called twice, open was called twice, find_all was called twice, max results returned
         self.assertEqual(2, mock_callback.call_count, 'callback should have been called twice')
         self.assertEqual(2, mocked_opener.open.call_count, 'open should have been called twice')
         self.assertEqual(2, mocked_results_page.find_all.call_count, 'find_all should have been called twice')
@@ -245,6 +245,22 @@ class TestSongSelectImport(TestCase, TestMixin):
         expected_list = [{'title': 'Title 1', 'authors': ['Author 1-1', 'Author 1-2'], 'link': BASE_URL + '/url1'},
                          {'title': 'Title 2', 'authors': ['Author 2-1', 'Author 2-2'], 'link': BASE_URL + '/url2'}]
         self.assertListEqual(expected_list, results, 'The search method should have returned two songs')
+
+    @patch('openlp.plugins.songs.lib.songselect.build_opener')
+    @patch('openlp.plugins.songs.lib.songselect.BeautifulSoup')
+    def stop_called_test(self, MockedBeautifulSoup, mocked_build_opener):
+        """
+        Test that the search is stopped with stop() is called
+        """
+        # GIVEN: An importer object that is currently "searching"
+        importer = SongSelectImport(None)
+        importer.run_search = True
+
+        # WHEN: The stop method is called
+        results = importer.stop()
+
+        # THEN: Searching should have stopped
+        self.assertFalse(importer.run_search, 'Searching should have been stopped')
 
     @patch('openlp.plugins.songs.lib.songselect.build_opener')
     def get_song_page_raises_exception_test(self, mocked_build_opener):
@@ -685,6 +701,23 @@ class TestSongSelectForm(TestCase, TestMixin):
 
         # THEN: The view button should be enabled
         mocked_view_button.setEnabled.assert_called_with(True)
+
+    @patch('openlp.plugins.songs.forms.songselectform.SongSelectImport')
+    def on_stop_button_clicked_test(self, MockedSongSelectImport):
+        """
+        Test that the search is stopped when the stop button is clicked
+        """
+        # GIVEN: A mocked SongSelectImporter and a SongSelect form
+        mocked_song_select_importer = MagicMock()
+        MockedSongSelectImport.return_value = mocked_song_select_importer
+        ssform = SongSelectForm(None, MagicMock(), MagicMock())
+        ssform.initialise()
+
+        # WHEN: The stop button is clicked
+        ssform.on_stop_button_clicked()
+
+        # THEN: The view button should be enabled
+        mocked_song_select_importer.stop.assert_called_with()
 
 
 class TestSongSelectFileImport(SongImportTestHelper):

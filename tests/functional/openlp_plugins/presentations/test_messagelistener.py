@@ -26,6 +26,7 @@ from unittest import TestCase
 
 from openlp.core.common import Registry
 from openlp.plugins.presentations.lib.mediaitem import MessageListener, PresentationMediaItem
+from openlp.plugins.presentations.lib.messagelistener import Controller
 from tests.functional import patch, MagicMock
 from tests.helpers.testmixin import TestMixin
 
@@ -104,3 +105,46 @@ class TestMessageListener(TestCase, TestMixin):
 
         # THEN: The controllers will be setup.
         self.assertTrue(len(controllers), 'We have loaded a controller')
+
+    @patch('openlp.plugins.presentations.lib.mediaitem.MessageListener._setup')
+    def start_pdf_presentation_test(self, media_mock):
+        """
+        Test the startup of pdf presentation succeed.
+        """
+        # GIVEN: A sservice item with a pdf
+        mock_item = MagicMock()
+        mock_item.processor = 'Pdf'
+        mock_item.get_frame_path.return_value = "test.pdf"
+        self.media_item.generate_slide_data = MagicMock()
+        ml = MessageListener(self.media_item)
+        ml.media_item = self.media_item
+        ml.preview_handler = MagicMock()
+
+        # WHEN: request the presentation to start
+        ml.startup([mock_item, False, False, False])
+
+        # THEN: The handler should be set to None
+        self.assertIsNone(ml.handler, 'The handler should be None')
+
+
+class TestController(TestCase, TestMixin):
+    """
+    Test the Presentation Controller.
+    """
+
+    def add_handler_failure_test(self):
+        """
+        Test that add_handler does set doc.slidenumber to 0 in case filed loading
+        """
+        # GIVEN: A Controller, a mocked doc-controller
+        controller = Controller(True)
+        mocked_doc_controller = MagicMock()
+        mocked_doc = MagicMock()
+        mocked_doc.load_presentation.return_value = False
+        mocked_doc_controller.add_document.return_value = mocked_doc
+
+        # WHEN: calling add_handler that fails
+        controller.add_handler(mocked_doc_controller, MagicMock(), True, 0)
+
+        # THEN: slidenumber should be 0
+        self.assertEqual(controller.doc.slidenumber, 0, 'doc.slidenumber should be 0')

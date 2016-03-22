@@ -1,9 +1,13 @@
 <RCC>
   <qresource prefix="songs">
+    <file>song_search_stop.png</file>
     <file>song_search_all.png</file>
     <file>song_search_author.png</file>
+    <file>song_search_ccli.png</file>
+    <file>song_search_copy.png</file>
     <file>song_search_lyrics.png</file>
     <file>song_search_title.png</file>
+    <file>song_search_topic.png</file>
     <file>topic_edit.png</file>
     <file>author_add.png</file>
     <file>author_delete.png</file>

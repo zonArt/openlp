@@ -26,6 +26,7 @@ Module implementing LanguageForm.
 import logging
 
 from PyQt5.QtWidgets import QDialog
+from PyQt5 import QtCore
 
 from openlp.core.common import translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -46,7 +47,7 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
         """
         Constructor
         """
-        super(LanguageForm, self).__init__(parent)
+        super(LanguageForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
 
     def exec(self, bible_name):
