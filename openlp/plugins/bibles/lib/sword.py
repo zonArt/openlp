@@ -69,10 +69,11 @@ class SwordBible(BibleDB):
                 num_books += len(books['ot'])
             if 'nt' in books:
                 num_books += len(books['nt'])
+            self.wizard.progress_bar.setMaximum(num_books)
             # Import the bible
             for testament in ['ot', 'nt']:
                 if testament in books:
-                    for book in books['ot']:
+                    for book in books[testament]:
                         book_ref_id = self.get_book_ref_id_by_name(book.name, num_books, language_id)
                         book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                         db_book = self.create_book(book_details['name'], book_ref_id, book_details['testament_id'])
@@ -84,9 +85,8 @@ class SwordBible(BibleDB):
                             for verse in verses:
                                 verse_number += 1
                                 self.create_verse(db_book.id, chapter_number, verse_number, verse)
-                            self.wizard.increment_progress_bar(
-                                translate('BiblesPlugin.Sword', 'Importing %(bookname)s %(chapter)s...') %
-                                {'bookname': db_book.name, 'chapter': chapter_number})
+                        self.wizard.increment_progress_bar(
+                            translate('BiblesPlugin.Sword', 'Importing %s...') % db_book.name)
             self.session.commit()
             self.application.process_events()
         except Exception as e:
