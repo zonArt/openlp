@@ -39,7 +39,7 @@ from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import get_locale_key
 from openlp.plugins.bibles.lib.manager import BibleFormat
-from openlp.plugins.bibles.lib.db import BiblesResourcesDB, clean_filename
+from openlp.plugins.bibles.lib.db import clean_filename
 from openlp.plugins.bibles.lib.http import CWExtract, BGExtract, BSExtract
 
 log = logging.getLogger(__name__)
@@ -504,7 +504,8 @@ class BibleImportForm(OpenLPWizard):
                 # Test the SWORD tab that is currently active
                 if self.sword_tab_widget.currentIndex() == self.sword_tab_widget.indexOf(self.sword_folder_tab):
                     if not self.field('sword_folder_path') and self.sword_bible_combo_box.count() == 0:
-                        critical_error_message_box(UiStrings().NFSs, WizardStrings.YouSpecifyFolder % WizardStrings.SWORD)
+                        critical_error_message_box(UiStrings().NFSs,
+                                                   WizardStrings.YouSpecifyFolder % WizardStrings.SWORD)
                         self.sword_folder_edit.setFocus()
                         return False
                     key = self.sword_bible_combo_box.itemData(self.sword_bible_combo_box.currentIndex())
@@ -785,12 +786,12 @@ class BibleImportForm(OpenLPWizard):
                 importer = self.manager.import_bible(BibleFormat.SWORD, name=license_version,
                                                      sword_path=self.field('sword_folder_path'),
                                                      sword_key=self.sword_bible_combo_box.itemData(
-                                                             self.sword_bible_combo_box.currentIndex()))
+                                                         self.sword_bible_combo_box.currentIndex()))
             else:
                 importer = self.manager.import_bible(BibleFormat.SWORD, name=license_version,
                                                      sword_path=self.field('sword_zip_path'),
                                                      sword_key=self.sword_zipbible_combo_box.itemData(
-                                                             self.sword_zipbible_combo_box.currentIndex()))
+                                                         self.sword_zipbible_combo_box.currentIndex()))
         if importer.do_import(license_version):
             self.manager.save_meta_data(license_version, license_version, license_copyright, license_permissions)
             self.manager.reload_bibles()

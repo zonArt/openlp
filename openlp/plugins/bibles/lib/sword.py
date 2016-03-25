@@ -91,9 +91,9 @@ class SwordBible(BibleDB):
             self.application.process_events()
         except Exception as e:
             critical_error_message_box(
-                message=translate('BiblesPlugin.SwordImport','An unexpected error happened while importing the SWORD '
-                                                             'bible, please report this to the OpenLP developers.\n'
-                                                             '%s' % e.msg))
+                message=translate('BiblesPlugin.SwordImport', 'An unexpected error happened while importing the SWORD '
+                                                              'bible, please report this to the OpenLP developers.\n'
+                                                              '%s' % e.msg))
             log.exception(str(e))
             success = False
         if self.stop_import_flag:

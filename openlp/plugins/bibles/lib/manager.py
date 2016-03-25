@@ -32,8 +32,10 @@ from .http import HTTPBible
 from .opensong import OpenSongBible
 from .osis import OSISBible
 from .zefania import ZefaniaBible
-from .sword import SwordBible
-
+try:
+    from .sword import SwordBible
+except:
+    pass
 
 log = logging.getLogger(__name__)
 
