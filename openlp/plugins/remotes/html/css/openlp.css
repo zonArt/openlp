@@ -18,11 +18,11 @@
 ******************************************************************************/
 
 .ui-icon-blank {
-  background-image: url(images/ui-icon-blank.png);
+  background-image: url(../images/ui-icon-blank.png);
 }
 
 .ui-icon-unblank {
-  background-image: url(images/ui-icon-unblank.png);
+  background-image: url(../images/ui-icon-unblank.png);
 }
 
 /* Overwrite style from jquery-mobile.min.css */
