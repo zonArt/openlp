@@ -160,7 +160,6 @@ class ThemesTab(SettingsTab):
         settings.endGroup()
         self.renderer.set_theme_level(self.theme_level)
         if self.tab_visited:
-            print("processed")
             self.settings_form.register_post_process('theme_update_global')
         self.tab_visited = False
 
