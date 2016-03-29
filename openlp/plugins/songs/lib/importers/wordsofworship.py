@@ -117,9 +117,9 @@ class WordsOfWorshipImport(SongImport):
                 song_data.seek(66)
                 if song_data.read(16).decode() != 'CSongDoc::CBlock':
                     self.log_error(source,
-                                  translate('SongsPlugin.WordsofWorshipSongImport',
-                                            'Invalid Words of Worship song file. Missing "%s" string.')
-                                  % 'CSongDoc::CBlock')
+                                   translate('SongsPlugin.WordsofWorshipSongImport',
+                                             'Invalid Words of Worship song file. Missing "%s" string.')
+                                   % 'CSongDoc::CBlock')
                     continue
                 # Seek to the beginning of the first block
                 song_data.seek(82)
