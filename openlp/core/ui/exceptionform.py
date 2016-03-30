@@ -180,11 +180,13 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
             if ':' in line:
                 exception = line.split('\n')[-1].split(':')[0]
         subject = 'Bug report: %s in %s' % (exception, source)
-        mail_to_url = QtCore.QUrlQuery('mailto:bugs@openlp.org')
-        mail_to_url.addQueryItem('subject', subject)
-        mail_to_url.addQueryItem('body', self.report_text % content)
+        mail_urlquery = QtCore.QUrlQuery()
+        mail_urlquery.addQueryItem('subject', subject)
+        mail_urlquery.addQueryItem('body', self.report_text % content)
         if self.file_attachment:
-            mail_to_url.addQueryItem('attach', self.file_attachment)
+            mail_urlquery.addQueryItem('attach', self.file_attachment)
+        mail_to_url = QtCore.QUrl('mailto:bugs@openlp.org')
+        mail_to_url.setQuery(mail_urlquery)
         QtGui.QDesktopServices.openUrl(mail_to_url)
 
     def on_description_updated(self):

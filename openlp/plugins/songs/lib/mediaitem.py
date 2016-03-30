@@ -295,7 +295,7 @@ class SongMediaItem(MediaManagerItem):
         :param search_keywords: A list of search keywords - book first, then number
         :return: None
         """
-	
+
         log.debug('display results Book')
         self.list_view.clear()
 
@@ -700,7 +700,7 @@ class SongMediaItem(MediaManagerItem):
         :param s: A string value from the list we want to sort.
         """
         return [int(text) if text.isdecimal() else text.lower()
-            for text in re.split('(\d+)', s)]
+                for text in re.split('(\d+)', s)]
 
     def search(self, string, show_error):
         """
