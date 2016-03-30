@@ -251,35 +251,33 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         self.screen = self.screens.current
         self.setVisible(False)
         Display.setup(self)
+        # If "Show no Logo or Image on startup" is enabled, keep display hidden instead.
         if self.is_live:
-            # If "Show no Logo or Image on startup" is enabled, display transparent background instead.
             if Settings().value('advanced/default show nothing'):
-                self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
-                self.setStyleSheet(TRANSPARENT_STYLESHEET)
-            else:
-                # Build the initial frame.
-                background_color = QtGui.QColor()
-                background_color.setNamedColor(Settings().value('advanced/default color'))
-                if not background_color.isValid():
-                    background_color = QtCore.Qt.white
-                image_file = Settings().value('advanced/default image')
-                splash_image = QtGui.QImage(image_file)
-                self.initial_fame = QtGui.QImage(
-                    self.screen['size'].width(),
-                    self.screen['size'].height(),
-                    QtGui.QImage.Format_ARGB32_Premultiplied)
-                painter_image = QtGui.QPainter()
-                painter_image.begin(self.initial_fame)
-                painter_image.fillRect(self.initial_fame.rect(), background_color)
-                painter_image.drawImage(
-                    (self.screen['size'].width() - splash_image.width()) // 2,
-                    (self.screen['size'].height() - splash_image.height()) // 2,
-                    splash_image)
-                service_item = ServiceItem()
-                service_item.bg_image_bytes = image_to_byte(self.initial_fame)
-                self.web_view.setHtml(build_html(service_item, self.screen, self.is_live, None,
-                                      plugins=self.plugin_manager.plugins))
-                self._hide_mouse()
+                self.setVisible(False)
+            # Build the initial frame.
+            background_color = QtGui.QColor()
+            background_color.setNamedColor(Settings().value('advanced/default color'))
+            if not background_color.isValid():
+                background_color = QtCore.Qt.white
+            image_file = Settings().value('advanced/default image')
+            splash_image = QtGui.QImage(image_file)
+            self.initial_fame = QtGui.QImage(
+                self.screen['size'].width(),
+                self.screen['size'].height(),
+                QtGui.QImage.Format_ARGB32_Premultiplied)
+            painter_image = QtGui.QPainter()
+            painter_image.begin(self.initial_fame)
+            painter_image.fillRect(self.initial_fame.rect(), background_color)
+            painter_image.drawImage(
+                (self.screen['size'].width() - splash_image.width()) // 2,
+                (self.screen['size'].height() - splash_image.height()) // 2,
+                splash_image)
+            service_item = ServiceItem()
+            service_item.bg_image_bytes = image_to_byte(self.initial_fame)
+            self.web_view.setHtml(build_html(service_item, self.screen, self.is_live, None,
+                                  plugins=self.plugin_manager.plugins))
+            self._hide_mouse()
 
     def text(self, slide, animate=True):
         """
@@ -528,12 +526,14 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             if not Settings().value('core/display on monitor'):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
-        if self.isHidden():
+        # Check if setting for hiding default background image and color is enabled.
+        # If so, display should remain hidden, otherwise default logo is shown. (from def setup)
+        if self.isHidden() and not Settings().value('advanced/default show nothing'):
             self.setVisible(True)
         self.hide_mode = None
         # Trigger actions when display is active again.
         if self.is_live:
-            Registry().execute('live_display_active')
+            #Registry().execute('live_display_active')
             # Workaround for bug #1531319, should not be needed with PyQt 5.6.
             if is_win():
                 self.shake_web_view()
