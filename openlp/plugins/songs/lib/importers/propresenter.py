@@ -35,44 +35,6 @@ from .songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-'''
-class ProPresenterImport(SongImport):
-    """
-    The :class:`ProPresenterImport` class provides OpenLP with the
-    ability to import ProPresenter 4 song files.
-    """
-    def do_import(self):
-        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
-        for file_path in self.import_source:
-            if self.stop_import_flag:
-                return
-            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
-            root = objectify.parse(open(file_path, 'rb')).getroot()
-            self.process_song(root, file_path)
-
-    def process_song(self, root, filename):
-        self.set_defaults()
-        self.title = os.path.basename(filename).rstrip('.pro4')
-        self.copyright = root.get('CCLICopyrightInfo')
-        self.comments = root.get('notes')
-        self.ccli_number = root.get('CCLILicenseNumber')
-        for author_key in ['author', 'artist', 'CCLIArtistCredits']:
-            author = root.get(author_key)
-            if len(author) > 0:
-                self.parse_author(author)
-        count = 0
-        for slide in root.slides.RVDisplaySlide:
-            count += 1
-            if not hasattr(slide.displayElements, 'RVTextElement'):
-                log.debug('No text found, may be an image slide')
-                continue
-            RTFData = slide.displayElements.RVTextElement.get('RTFData')
-            rtf = base64.standard_b64decode(RTFData)
-            words, encoding = strip_rtf(rtf.decode())
-            self.add_verse(words, "v%d" % count)
-        if not self.finish():
-            self.log_error(self.import_source)
-'''
 
 class ProPresenterImport(SongImport):
     """
@@ -90,14 +52,17 @@ class ProPresenterImport(SongImport):
 
     def process_song(self, root, filename):
         self.set_defaults()
-        self.comments = root.get('notes')
         self.title = os.path.basename(filename)
+
+        # Extract ProPresenter versionNumber
         try:
             self.version = int(root.get('versionNumber'))
         except ValueError:
-            self.log_error(self.import_source)
+            log.debug('ProPresenter versionNumber invalid or missing')
             return
 
+        # Common settings
+        self.comments = root.get('notes')
         for author_key in ['author', 'CCLIAuthor', 'artist', 'CCLIArtistCredits']:
             author = root.get(author_key)
             if author and len(author) > 0:
@@ -149,7 +114,7 @@ class ProPresenterImport(SongImport):
                 for slide in group.array.RVDisplaySlide:
                     count += 1
                     for item in slide.array:
-                        if not (item.get('rvXMLIvarName')=="displayElements"):
+                        if not (item.get('rvXMLIvarName') == "displayElements"):
                             continue
                         if not hasattr(item, 'RVTextElement'):
                             log.debug('No text found, may be an image slide')
@@ -158,11 +123,11 @@ class ProPresenterImport(SongImport):
                             b64Data = contents.text
                             data = base64.standard_b64decode(b64Data)
                             words = None
-                            if(contents.get('rvXMLIvarName')=="RTFData"):
+                            if(contents.get('rvXMLIvarName') == "RTFData"):
                                 words, encoding = strip_rtf(data.decode())
                                 break
                         if words:
                             self.add_verse(words, "v%d" % count)
-                        
+
         if not self.finish():
             self.log_error(self.import_source)
