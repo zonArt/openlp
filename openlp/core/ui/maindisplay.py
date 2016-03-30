@@ -251,10 +251,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         self.screen = self.screens.current
         self.setVisible(False)
         Display.setup(self)
-        # If "Show no Logo or Image on startup" is enabled, keep display hidden instead.
         if self.is_live:
-            if Settings().value('advanced/default show nothing'):
-                self.setVisible(False)
             # Build the initial frame.
             background_color = QtGui.QColor()
             background_color.setNamedColor(Settings().value('advanced/default color'))
