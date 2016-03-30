@@ -533,7 +533,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         self.hide_mode = None
         # Trigger actions when display is active again.
         if self.is_live:
-            #Registry().execute('live_display_active')
+            Registry().execute('live_display_active')
             # Workaround for bug #1531319, should not be needed with PyQt 5.6.
             if is_win():
                 self.shake_web_view()
