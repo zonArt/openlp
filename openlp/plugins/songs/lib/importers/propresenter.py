@@ -35,7 +35,7 @@ from .songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-
+'''
 class ProPresenterImport(SongImport):
     """
     The :class:`ProPresenterImport` class provides OpenLP with the
@@ -70,5 +70,99 @@ class ProPresenterImport(SongImport):
             rtf = base64.standard_b64decode(RTFData)
             words, encoding = strip_rtf(rtf.decode())
             self.add_verse(words, "v%d" % count)
+        if not self.finish():
+            self.log_error(self.import_source)
+'''
+
+class ProPresenterImport(SongImport):
+    """
+    The :class:`ProPresenterImport` class provides OpenLP with the
+    ability to import ProPresenter *4-6* song files.
+    """
+    def do_import(self):
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for file_path in self.import_source:
+            if self.stop_import_flag:
+                return
+            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
+            root = objectify.parse(open(file_path, 'rb')).getroot()
+            self.process_song(root, file_path)
+
+    def process_song(self, root, filename):
+        self.set_defaults()
+        self.comments = root.get('notes')
+        self.title = os.path.basename(filename)
+        try:
+            self.version = int(root.get('versionNumber'))
+        except ValueError:
+            self.log_error(self.import_source)
+            return
+
+        for author_key in ['author', 'CCLIAuthor', 'artist', 'CCLIArtistCredits']:
+            author = root.get(author_key)
+            if author and len(author) > 0:
+                self.parse_author(author)
+
+        # ProPresenter 4
+        if(self.version >= 400 and self.version < 500):
+            if self.title.endswith('.pro4'):
+                self.title = self.title[:-5]
+            self.copyright = root.get('CCLICopyrightInfo')
+            self.ccli_number = root.get('CCLILicenseNumber')
+            count = 0
+            for slide in root.slides.RVDisplaySlide:
+                count += 1
+                if not hasattr(slide.displayElements, 'RVTextElement'):
+                    log.debug('No text found, may be an image slide')
+                    continue
+                RTFData = slide.displayElements.RVTextElement.get('RTFData')
+                rtf = base64.standard_b64decode(RTFData)
+                words, encoding = strip_rtf(rtf.decode())
+                self.add_verse(words, "v%d" % count)
+
+        # ProPresenter 5
+        elif(self.version >= 500 and self.version < 600):
+            if self.title.endswith('.pro5'):
+                self.title = self.title[:-5]
+            self.copyright = root.get('CCLICopyrightInfo')
+            self.ccli_number = root.get('CCLILicenseNumber')
+            count = 0
+            for group in root.groups.RVSlideGrouping:
+                for slide in group.slides.RVDisplaySlide:
+                    count += 1
+                    if not hasattr(slide.displayElements, 'RVTextElement'):
+                        log.debug('No text found, may be an image slide')
+                        continue
+                    RTFData = slide.displayElements.RVTextElement.get('RTFData')
+                    rtf = base64.standard_b64decode(RTFData)
+                    words, encoding = strip_rtf(rtf.decode())
+                    self.add_verse(words, "v%d" % count)
+
+        # ProPresenter 6
+        elif(self.version >= 600 and self.version < 700):
+            if self.title.endswith('.pro6'):
+                self.title = self.title[:-5]
+            self.copyright = root.get('CCLICopyrightYear')
+            self.ccli_number = root.get('CCLISongNumber')
+            count = 0
+            for group in root.array.RVSlideGrouping:
+                for slide in group.array.RVDisplaySlide:
+                    count += 1
+                    for item in slide.array:
+                        if not (item.get('rvXMLIvarName')=="displayElements"):
+                            continue
+                        if not hasattr(item, 'RVTextElement'):
+                            log.debug('No text found, may be an image slide')
+                            continue
+                        for contents in item.RVTextElement.NSString:
+                            b64Data = contents.text
+                            data = base64.standard_b64decode(b64Data)
+                            words = None
+                            if(contents.get('rvXMLIvarName')=="RTFData"):
+                                words, encoding = strip_rtf(data.decode())
+                                break
+                        if words:
+                            self.add_verse(words, "v%d" % count)
+                        
         if not self.finish():
             self.log_error(self.import_source)
