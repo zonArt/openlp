@@ -307,7 +307,7 @@ class AdvancedTab(SettingsTab):
         self.default_file_label.setText(translate('OpenLP.AdvancedTab', 'Image file:'))
         self.default_browse_button.setToolTip(translate('OpenLP.AdvancedTab', 'Browse for an image file to display.'))
         self.default_revert_button.setToolTip(translate('OpenLP.AdvancedTab', 'Revert to the default OpenLP logo.'))
-        self.default_show_nothing_check_box.setText(translate('OpenLP.AdvancedTab', 'Don\'t show Logo  '))
+        self.default_show_nothing_check_box.setText(translate('OpenLP.AdvancedTab', 'Don\'t show image or background'))
         self.data_directory_current_label.setText(translate('OpenLP.AdvancedTab', 'Current path:'))
         self.data_directory_new_label.setText(translate('OpenLP.AdvancedTab', 'Custom path:'))
         self.data_directory_browse_button.setToolTip(translate('OpenLP.AdvancedTab',
