@@ -22,17 +22,17 @@
 """
 Package to test the openlp.core.utils.db package.
 """
-from tempfile import mkdtemp
-from unittest import TestCase
 import gc
 import os
 import shutil
-import sqlalchemy
 import time
+from tempfile import mkdtemp
+from unittest import TestCase
 
-from openlp.core.utils.db import drop_column, drop_columns
+import sqlalchemy
+
+from openlp.core.common.db import drop_column, drop_columns
 from openlp.core.lib.db import init_db, get_upgrade_op
-
 from tests.utils.constants import TEST_RESOURCES_PATH
 
 

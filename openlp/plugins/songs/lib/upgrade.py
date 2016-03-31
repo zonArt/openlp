@@ -28,8 +28,8 @@ import logging
 from sqlalchemy import Table, Column, ForeignKey, types
 from sqlalchemy.sql.expression import func, false, null, text
 
+from openlp.core.common.db import drop_columns
 from openlp.core.lib.db import get_upgrade_op
-from openlp.core.utils.db import drop_columns
 
 log = logging.getLogger(__name__)
 __version__ = 5

@@ -523,13 +523,15 @@ def get_locale_key(string):
 def get_natural_key(string):
     """
     Generate a key for locale aware natural string sorting.
+
+    :param string: string to be sorted by
     Returns a list of string compare keys and integers.
     """
     key = DIGITS_OR_NONDIGITS.findall(string)
     key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
     # Python 3 does not support comparison of different types anymore. So make sure, that we do not compare str
     # and int.
-    if string[0].isdigit():
+    if string and string[0].isdigit():
         return [b''] + key
     return key
 
