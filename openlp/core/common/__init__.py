@@ -242,3 +242,4 @@ from .uistrings import UiStrings
 from .settings import Settings
 from .applocation import AppLocation
 from .historycombobox import HistoryComboBox
+from .actions import ActionList

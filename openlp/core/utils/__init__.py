@@ -22,28 +22,27 @@
 """
 The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
-from datetime import datetime
-from distutils.version import LooseVersion
-from http.client import HTTPException
-import logging
 import locale
+import logging
 import os
 import platform
 import re
 import socket
-import time
-from shutil import which
-from subprocess import Popen, PIPE
 import sys
-import urllib.request
+import time
 import urllib.error
 import urllib.parse
+import urllib.request
+from datetime import datetime
+from distutils.version import LooseVersion
+from http.client import HTTPException
 from random import randint
+from shutil import which
+from subprocess import Popen, PIPE
 
 from PyQt5 import QtGui, QtCore
 
 from openlp.core.common import Registry, AppLocation, Settings, is_win, is_macosx
-
 
 if not is_win() and not is_macosx():
     try:
@@ -537,9 +536,8 @@ def get_natural_key(string):
 
 
 from .languagemanager import LanguageManager
-from .actions import ActionList
 
 
-__all__ = ['ActionList', 'LanguageManager', 'get_application_version', 'check_latest_version',
+__all__ = ['LanguageManager', 'get_application_version', 'check_latest_version',
            'add_actions', 'get_filesystem_encoding', 'get_web_page', 'get_uno_command', 'get_uno_instance',
            'delete_file', 'clean_filename', 'format_time', 'get_locale_key', 'get_natural_key']
