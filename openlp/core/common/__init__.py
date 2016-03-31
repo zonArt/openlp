@@ -243,3 +243,4 @@ from .settings import Settings
 from .applocation import AppLocation
 from .historycombobox import HistoryComboBox
 from .actions import ActionList
+from .languagemanager import LanguageManager
