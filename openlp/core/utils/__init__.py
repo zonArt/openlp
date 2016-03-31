@@ -22,28 +22,27 @@
 """
 The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
-from datetime import datetime
-from distutils.version import LooseVersion
-from http.client import HTTPException
-import logging
 import locale
+import logging
 import os
 import platform
 import re
 import socket
-import time
-from shutil import which
-from subprocess import Popen, PIPE
 import sys
-import urllib.request
+import time
 import urllib.error
 import urllib.parse
+import urllib.request
+from datetime import datetime
+from distutils.version import LooseVersion
+from http.client import HTTPException
 from random import randint
+from shutil import which
+from subprocess import Popen, PIPE
 
 from PyQt5 import QtGui, QtCore
 
 from openlp.core.common import Registry, AppLocation, Settings, is_win, is_macosx
-
 
 if not is_win() and not is_macosx():
     try:
@@ -511,7 +510,7 @@ def get_locale_key(string):
     try:
         if ICU_COLLATOR is None:
             import icu
-            from .languagemanager import LanguageManager
+            from openlp.core.common.languagemanager import LanguageManager
             language = LanguageManager.get_language()
             icu_locale = icu.Locale(language)
             ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
@@ -523,21 +522,18 @@ def get_locale_key(string):
 def get_natural_key(string):
     """
     Generate a key for locale aware natural string sorting.
+
+    :param string: string to be sorted by
     Returns a list of string compare keys and integers.
     """
     key = DIGITS_OR_NONDIGITS.findall(string)
     key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
     # Python 3 does not support comparison of different types anymore. So make sure, that we do not compare str
     # and int.
-    if string[0].isdigit():
+    if string and string[0].isdigit():
         return [b''] + key
     return key
 
-
-from .languagemanager import LanguageManager
-from .actions import ActionList
-
-
-__all__ = ['ActionList', 'LanguageManager', 'get_application_version', 'check_latest_version',
+__all__ = ['get_application_version', 'check_latest_version',
            'add_actions', 'get_filesystem_encoding', 'get_web_page', 'get_uno_command', 'get_uno_instance',
            'delete_file', 'clean_filename', 'format_time', 'get_locale_key', 'get_natural_key']
