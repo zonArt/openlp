@@ -313,7 +313,7 @@ class SongFormat(object):
         },
         ProPresenter: {
             'class': ProPresenterImport,
-            'name': 'ProPresenter 4 -> 6',
+            'name': 'ProPresenter 4, 5 and 6',
             'prefix': 'proPresenter',
             'filter': '%s (*.pro4 *.pro5 *.pro6)' % translate('SongsPlugin.ImportWizardForm', 'ProPresenter Song Files')
         },

@@ -39,7 +39,7 @@ log = logging.getLogger(__name__)
 class ProPresenterImport(SongImport):
     """
     The :class:`ProPresenterImport` class provides OpenLP with the
-    ability to import ProPresenter *4-6* song files.
+    ability to import ProPresenter 4-6 song files.
     """
     def do_import(self):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
@@ -52,7 +52,6 @@ class ProPresenterImport(SongImport):
 
     def process_song(self, root, filename):
         self.set_defaults()
-        self.title = os.path.basename(filename)
 
         # Extract ProPresenter versionNumber
         try:
@@ -61,8 +60,15 @@ class ProPresenterImport(SongImport):
             log.debug('ProPresenter versionNumber invalid or missing')
             return
 
-        # Common settings
+        # Title
+        self.title = root.get('CCLISongTitle')
+        if not self.title or self.title == '':
+            self.title = os.path.basename(filename)
+            if self.title[-5:-1] == '.pro':
+                self.title = self.title[:-5]
+        # Notes
         self.comments = root.get('notes')
+        # Author
         for author_key in ['author', 'CCLIAuthor', 'artist', 'CCLIArtistCredits']:
             author = root.get(author_key)
             if author and len(author) > 0:
@@ -70,8 +76,6 @@ class ProPresenterImport(SongImport):
 
         # ProPresenter 4
         if(self.version >= 400 and self.version < 500):
-            if self.title.endswith('.pro4'):
-                self.title = self.title[:-5]
             self.copyright = root.get('CCLICopyrightInfo')
             self.ccli_number = root.get('CCLILicenseNumber')
             count = 0
@@ -87,8 +91,6 @@ class ProPresenterImport(SongImport):
 
         # ProPresenter 5
         elif(self.version >= 500 and self.version < 600):
-            if self.title.endswith('.pro5'):
-                self.title = self.title[:-5]
             self.copyright = root.get('CCLICopyrightInfo')
             self.ccli_number = root.get('CCLILicenseNumber')
             count = 0
@@ -105,8 +107,6 @@ class ProPresenterImport(SongImport):
 
         # ProPresenter 6
         elif(self.version >= 600 and self.version < 700):
-            if self.title.endswith('.pro6'):
-                self.title = self.title[:-5]
             self.copyright = root.get('CCLICopyrightYear')
             self.ccli_number = root.get('CCLISongNumber')
             count = 0
