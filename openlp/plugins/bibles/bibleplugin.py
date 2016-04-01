@@ -24,13 +24,13 @@ import logging
 
 from PyQt5 import QtWidgets
 
+from openlp.core.common.actions import ActionList
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import UiStrings, create_action
-from openlp.core.utils.actions import ActionList
+from openlp.plugins.bibles.forms import BibleUpgradeForm
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem, LayoutStyle, DisplayStyle, \
     LanguageSelection
 from openlp.plugins.bibles.lib.mediaitem import BibleSearch
-from openlp.plugins.bibles.forms import BibleUpgradeForm
 
 log = logging.getLogger(__name__)
 

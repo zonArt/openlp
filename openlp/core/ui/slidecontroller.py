@@ -23,20 +23,20 @@
 The :mod:`slidecontroller` module contains the most important part of OpenLP - the slide controller
 """
 
-import os
 import copy
+import os
 from collections import deque
 from threading import Lock
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, Settings, SlideLimits, UiStrings, translate, \
-    RegistryMixin, OpenLPMixin, is_win
+    RegistryMixin, OpenLPMixin
+from openlp.core.common.actions import ActionList, CategoryOrder
 from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, \
     ScreenList, build_icon, build_html
-from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
-from openlp.core.utils.actions import ActionList, CategoryOrder
+from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.ui.listpreviewwidget import ListPreviewWidget
 
 # Threshold which has to be trespassed to toggle.

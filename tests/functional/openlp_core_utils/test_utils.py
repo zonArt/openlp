@@ -241,7 +241,7 @@ class TestUtils(TestCase):
         """
         Test the get_locale_key(string) function
         """
-        with patch('openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language:
+        with patch('openlp.core.common.languagemanager.LanguageManager.get_language') as mocked_get_language:
             # GIVEN: The language is German
             # 0x00C3 (A with diaresis) should be sorted as "A". 0x00DF (sharp s) should be sorted as "ss".
             mocked_get_language.return_value = 'de'
@@ -258,7 +258,7 @@ class TestUtils(TestCase):
         """
         Test the get_natural_key(string) function
         """
-        with patch('openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language:
+        with patch('openlp.core.common.languagemanager.LanguageManager.get_language') as mocked_get_language:
             # GIVEN: The language is English (a language, which sorts digits before letters)
             mocked_get_language.return_value = 'en'
             unsorted_list = ['item 10a', 'item 3b', '1st item']
