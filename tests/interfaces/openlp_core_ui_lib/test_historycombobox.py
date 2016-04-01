@@ -28,9 +28,8 @@ from unittest import TestCase
 from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry
-from openlp.core.common import HistoryComboBox
+from openlp.core.ui.lib.historycombobox import HistoryComboBox
 from tests.helpers.testmixin import TestMixin
-from tests.interfaces import MagicMock, patch
 
 
 class TestHistoryComboBox(TestCase, TestMixin):
