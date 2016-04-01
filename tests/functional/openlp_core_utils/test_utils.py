@@ -26,7 +26,8 @@ import os
 from unittest import TestCase
 
 from openlp.core.utils import clean_filename, delete_file, get_filesystem_encoding, get_locale_key, \
-    get_natural_key, split_filename, _get_user_agent, get_web_page, get_uno_instance, add_actions
+    get_natural_key, split_filename, _get_user_agent, get_web_page, get_uno_instance
+
 from tests.functional import MagicMock, patch
 
 
@@ -34,65 +35,6 @@ class TestUtils(TestCase):
     """
     A test suite to test out various methods around the AppLocation class.
     """
-    def add_actions_empty_list_test(self):
-        """
-        Test that no actions are added when the list is empty
-        """
-        # GIVEN: a mocked action list, and an empty list
-        mocked_target = MagicMock()
-        empty_list = []
-
-        # WHEN: The empty list is added to the mocked target
-        add_actions(mocked_target, empty_list)
-
-        # THEN: The add method on the mocked target is never called
-        self.assertEqual(0, mocked_target.addSeparator.call_count, 'addSeparator method should not have been called')
-        self.assertEqual(0, mocked_target.addAction.call_count, 'addAction method should not have been called')
-
-    def add_actions_none_action_test(self):
-        """
-        Test that a separator is added when a None action is in the list
-        """
-        # GIVEN: a mocked action list, and a list with None in it
-        mocked_target = MagicMock()
-        separator_list = [None]
-
-        # WHEN: The list is added to the mocked target
-        add_actions(mocked_target, separator_list)
-
-        # THEN: The addSeparator method is called, but the addAction method is never called
-        mocked_target.addSeparator.assert_called_with()
-        self.assertEqual(0, mocked_target.addAction.call_count, 'addAction method should not have been called')
-
-    def add_actions_add_action_test(self):
-        """
-        Test that an action is added when a valid action is in the list
-        """
-        # GIVEN: a mocked action list, and a list with an action in it
-        mocked_target = MagicMock()
-        action_list = ['action']
-
-        # WHEN: The list is added to the mocked target
-        add_actions(mocked_target, action_list)
-
-        # THEN: The addSeparator method is not called, and the addAction method is called
-        self.assertEqual(0, mocked_target.addSeparator.call_count, 'addSeparator method should not have been called')
-        mocked_target.addAction.assert_called_with('action')
-
-    def add_actions_action_and_none_test(self):
-        """
-        Test that an action and a separator are added when a valid action and None are in the list
-        """
-        # GIVEN: a mocked action list, and a list with an action and None in it
-        mocked_target = MagicMock()
-        action_list = ['action', None]
-
-        # WHEN: The list is added to the mocked target
-        add_actions(mocked_target, action_list)
-
-        # THEN: The addSeparator method is called, and the addAction method is called
-        mocked_target.addSeparator.assert_called_with()
-        mocked_target.addAction.assert_called_with('action')
 
     def get_filesystem_encoding_sys_function_not_called_test(self):
         """

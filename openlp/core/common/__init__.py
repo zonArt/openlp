@@ -242,3 +242,18 @@ from .settings import Settings
 from .applocation import AppLocation
 from .actions import ActionList
 from .languagemanager import LanguageManager
+
+
+def add_actions(target, actions):
+    """
+    Adds multiple actions to a menu or toolbar in one command.
+
+    :param target: The menu or toolbar to add actions to
+    :param actions: The actions to be added. An action consisting of the keyword ``None``
+        will result in a separator being inserted into the target.
+    """
+    for action in actions:
+        if action is None:
+            target.addSeparator()
+        else:
+            target.addAction(action)

@@ -267,21 +267,6 @@ def check_latest_version(current_version):
     return version_string
 
 
-def add_actions(target, actions):
-    """
-    Adds multiple actions to a menu or toolbar in one command.
-
-    :param target: The menu or toolbar to add actions to
-    :param actions: The actions to be added. An action consisting of the keyword ``None``
-        will result in a separator being inserted into the target.
-    """
-    for action in actions:
-        if action is None:
-            target.addSeparator()
-        else:
-            target.addAction(action)
-
-
 def get_filesystem_encoding():
     """
     Returns the name of the encoding used to convert Unicode filenames into system file names.
@@ -535,5 +520,5 @@ def get_natural_key(string):
     return key
 
 __all__ = ['get_application_version', 'check_latest_version',
-           'add_actions', 'get_filesystem_encoding', 'get_web_page', 'get_uno_command', 'get_uno_instance',
+           'get_filesystem_encoding', 'get_web_page', 'get_uno_command', 'get_uno_instance',
            'delete_file', 'clean_filename', 'format_time', 'get_locale_key', 'get_natural_key']
