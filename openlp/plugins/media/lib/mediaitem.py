@@ -151,7 +151,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         Adds buttons to the end of the header bar.
         """
         # Replace backgrounds do not work at present so remove functionality.
-        self.replace_action = self.toolbar.add_toolbar_action('replace_action', icon=':/slides/slide_blank.png',
+        self.replace_action = self.toolbar.add_toolbar_action('replace_action', icon=':/slides/slide_theme.png',
                                                               triggers=self.on_replace_click)
         if 'webkit' not in get_media_players()[0]:
             self.replace_action.setDisabled(True)

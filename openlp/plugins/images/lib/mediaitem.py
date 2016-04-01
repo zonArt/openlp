@@ -194,7 +194,7 @@ class ImageMediaItem(MediaManagerItem):
         Add custom buttons to the end of the toolbar
         """
         self.replace_action = self.toolbar.add_toolbar_action('replace_action',
-                                                              icon=':/slides/slide_blank.png',
+                                                              icon=':/slides/slide_theme.png',
                                                               triggers=self.on_replace_click)
         self.reset_action = self.toolbar.add_toolbar_action('reset_action',
                                                             icon=':/system/system_close.png',
