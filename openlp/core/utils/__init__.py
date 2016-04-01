@@ -450,7 +450,7 @@ def get_web_page(url, header=None, update_openlp=False):
 
 def get_uno_command(connection_type='pipe'):
     """
-    Returns the UNO command to launch an openoffice.org instance.
+    Returns the UNO command to launch an libreoffice.org instance.
     """
     for command in ['libreoffice', 'soffice']:
         if which(command):
@@ -468,7 +468,7 @@ def get_uno_command(connection_type='pipe'):
 
 def get_uno_instance(resolver, connection_type='pipe'):
     """
-    Returns a running openoffice.org instance.
+    Returns a running libreoffice.org instance.
 
     :param resolver: The UNO resolver to use to find a running instance.
     """
