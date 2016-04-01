@@ -109,8 +109,6 @@ class Settings(QtCore.QSettings):
         'advanced/alternate rows': not is_win(),
         'advanced/current media plugin': -1,
         'advanced/data path': '',
-        'advanced/logo background color': '#ffffff',
-        'advanced/logo file': ':/graphics/openlp-splash-screen.png',
         # 7 stands for now, 0 to 6 is Monday to Sunday.
         'advanced/default service day': 7,
         'advanced/default service enabled': True,
@@ -121,7 +119,6 @@ class Settings(QtCore.QSettings):
         'advanced/double click live': False,
         'advanced/enable exit confirmation': True,
         'advanced/expand service item': False,
-        'advanced/logo hide on startup': False,
         'advanced/hide mouse': True,
         'advanced/is portable': False,
         'advanced/max recent files': 20,

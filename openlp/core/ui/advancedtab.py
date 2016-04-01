@@ -30,8 +30,8 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
-from openlp.core.lib import ColorButton, SettingsTab, build_icon
-from openlp.core.utils import format_time, get_images_filter
+from openlp.core.lib import SettingsTab, build_icon
+from openlp.core.utils import format_time
 
 log = logging.getLogger(__name__)
 
@@ -45,8 +45,6 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        self.logo_file = ':/graphics/openlp-splash-screen.png'
-        self.logo_background_color = '#ffffff'
         self.data_exists = False
         self.icon_path = ':/system/system_settings.png'
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
@@ -173,36 +171,6 @@ class AdvancedTab(SettingsTab):
         self.data_directory_layout.addRow(self.new_data_directory_has_files_label)
         self.left_layout.addWidget(self.data_directory_group_box)
         self.left_layout.addStretch()
-        # Logo
-        self.logo_group_box = QtWidgets.QGroupBox(self.right_column)
-        self.logo_group_box.setObjectName('logo_group_box')
-        self.logo_layout = QtWidgets.QFormLayout(self.logo_group_box)
-        self.logo_layout.setObjectName('logo_layout')
-        self.logo_file_label = QtWidgets.QLabel(self.logo_group_box)
-        self.logo_file_label.setObjectName('logo_file_label')
-        self.logo_file_edit = QtWidgets.QLineEdit(self.logo_group_box)
-        self.logo_file_edit.setObjectName('logo_file_edit')
-        self.logo_browse_button = QtWidgets.QToolButton(self.logo_group_box)
-        self.logo_browse_button.setObjectName('logo_browse_button')
-        self.logo_browse_button.setIcon(build_icon(':/general/general_open.png'))
-        self.logo_revert_button = QtWidgets.QToolButton(self.logo_group_box)
-        self.logo_revert_button.setObjectName('logo_revert_button')
-        self.logo_revert_button.setIcon(build_icon(':/general/general_revert.png'))
-        self.logo_file_layout = QtWidgets.QHBoxLayout()
-        self.logo_file_layout.setObjectName('logo_file_layout')
-        self.logo_file_layout.addWidget(self.logo_file_edit)
-        self.logo_file_layout.addWidget(self.logo_browse_button)
-        self.logo_file_layout.addWidget(self.logo_revert_button)
-        self.logo_layout.addRow(self.logo_file_label, self.logo_file_layout)
-        self.logo_color_label = QtWidgets.QLabel(self.logo_group_box)
-        self.logo_color_label.setObjectName('logo_color_label')
-        self.logo_color_button = ColorButton(self.logo_group_box)
-        self.logo_color_button.setObjectName('logo_color_button')
-        self.logo_layout.addRow(self.logo_color_label, self.logo_color_button)
-        self.logo_hide_on_startup_check_box = QtWidgets.QCheckBox(self.ui_group_box)
-        self.logo_hide_on_startup_check_box.setObjectName('default_logo_hide_on_startup_check_box')
-        self.logo_layout.addRow(self.logo_hide_on_startup_check_box)
-        self.right_layout.addWidget(self.logo_group_box)
         # Hide mouse
         self.hide_mouse_group_box = QtWidgets.QGroupBox(self.right_column)
         self.hide_mouse_group_box.setObjectName('hide_mouse_group_box')
@@ -249,9 +217,6 @@ class AdvancedTab(SettingsTab):
         self.service_name_time.timeChanged.connect(self.update_service_name_example)
         self.service_name_edit.textChanged.connect(self.update_service_name_example)
         self.service_name_revert_button.clicked.connect(self.on_service_name_revert_button_clicked)
-        self.logo_color_button.colorChanged.connect(self.on_background_color_changed)
-        self.logo_browse_button.clicked.connect(self.on_logo_browse_button_clicked)
-        self.logo_revert_button.clicked.connect(self.on_logo_revert_button_clicked)
         self.alternate_rows_check_box.toggled.connect(self.on_alternate_rows_check_box_toggled)
         self.data_directory_browse_button.clicked.connect(self.on_data_directory_browse_button_clicked)
         self.data_directory_default_button.clicked.connect(self.on_data_directory_default_button_clicked)
@@ -302,12 +267,6 @@ class AdvancedTab(SettingsTab):
         self.service_name_example_label.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hide_mouse_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
         self.hide_mouse_check_box.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
-        self.logo_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Logo'))
-        self.logo_color_label.setText(translate('OpenLP.AdvancedTab', 'Background color:'))
-        self.logo_file_label.setText(translate('OpenLP.AdvancedTab', 'Logo file:'))
-        self.logo_browse_button.setToolTip(translate('OpenLP.AdvancedTab', 'Browse for an image file to display.'))
-        self.logo_revert_button.setToolTip(translate('OpenLP.AdvancedTab', 'Revert to the default OpenLP logo.'))
-        self.logo_hide_on_startup_check_box.setText(translate('OpenLP.AdvancedTab', 'Don\'t show logo on startup'))
         self.data_directory_current_label.setText(translate('OpenLP.AdvancedTab', 'Current path:'))
         self.data_directory_new_label.setText(translate('OpenLP.AdvancedTab', 'Custom path:'))
         self.data_directory_browse_button.setToolTip(translate('OpenLP.AdvancedTab',
@@ -361,9 +320,6 @@ class AdvancedTab(SettingsTab):
         self.service_name_check_box.setChecked(default_service_enabled)
         self.service_name_check_box_toggled(default_service_enabled)
         self.x11_bypass_check_box.setChecked(settings.value('x11 bypass wm'))
-        self.logo_background_color = settings.value('logo background color')
-        self.logo_file_edit.setText(settings.value('logo file'))
-        self.logo_hide_on_startup_check_box.setChecked(settings.value('logo hide on startup'))
         self.slide_limits = settings.value('slide limits')
         self.is_search_as_you_type_enabled = settings.value('search as type')
         self.search_as_type_check_box.setChecked(self.is_search_as_you_type_enabled)
@@ -405,7 +361,6 @@ class AdvancedTab(SettingsTab):
             self.current_data_path = AppLocation.get_data_path()
             log.warning('User requested data path set to default %s' % self.current_data_path)
         self.data_directory_label.setText(os.path.abspath(self.current_data_path))
-        self.logo_color_button.color = self.logo_background_color
         # Don't allow data directory move if running portable.
         if settings.value('advanced/is portable'):
             self.data_directory_group_box.hide()
@@ -436,9 +391,6 @@ class AdvancedTab(SettingsTab):
         settings.setValue('enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue('hide mouse', self.hide_mouse_check_box.isChecked())
         settings.setValue('alternate rows', self.alternate_rows_check_box.isChecked())
-        settings.setValue('logo background color', self.logo_background_color)
-        settings.setValue('logo file', self.logo_file_edit.text())
-        settings.setValue('logo hide on startup', self.logo_hide_on_startup_check_box.isChecked())
         settings.setValue('slide limits', self.slide_limits)
         if self.x11_bypass_check_box.isChecked() != settings.value('x11 bypass wm'):
             settings.setValue('x11 bypass wm', self.x11_bypass_check_box.isChecked())
@@ -515,24 +467,6 @@ class AdvancedTab(SettingsTab):
         """
         self.service_name_edit.setText(UiStrings().DefaultServiceName)
         self.service_name_edit.setFocus()
-
-    def on_background_color_changed(self, color):
-        """
-        Select the background colour of the default display screen.
-        """
-        self.logo_background_color = color
-
-    def on_logo_browse_button_clicked(self):
-        """
-        Select an image for the default display screen.
-        """
-        file_filters = '%s;;%s (*.*)' % (get_images_filter(), UiStrings().AllFiles)
-        filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(self,
-                                                                      translate('OpenLP.AdvancedTab', 'Open File'), '',
-                                                                      file_filters)
-        if filename:
-            self.logo_file_edit.setText(filename)
-        self.logo_file_edit.setFocus()
 
     def on_data_directory_browse_button_clicked(self):
         """
@@ -650,13 +584,6 @@ class AdvancedTab(SettingsTab):
         self.data_directory_copy_check_box.hide()
         self.data_directory_cancel_button.hide()
         self.new_data_directory_has_files_label.hide()
-
-    def on_logo_revert_button_clicked(self):
-        """
-        Revert the default screen back to the default settings.
-        """
-        self.logo_file_edit.setText(':/graphics/openlp-splash-screen.png')
-        self.logo_file_edit.setFocus()
 
     def on_alternate_rows_check_box_toggled(self, checked):
         """
