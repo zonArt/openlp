@@ -192,7 +192,7 @@ class GeneralTab(SettingsTab):
         self.logo_color_button.setObjectName('logo_color_button')
         self.logo_layout.addRow(self.logo_color_label, self.logo_color_button)
         self.logo_hide_on_startup_check_box = QtWidgets.QCheckBox(self.logo_group_box)
-        self.logo_hide_on_startup_check_box.setObjectName('default_logo_hide_on_startup_check_box')
+        self.logo_hide_on_startup_check_box.setObjectName('logo_hide_on_startup_check_box')
         self.logo_layout.addRow(self.logo_hide_on_startup_check_box)
         self.right_layout.addWidget(self.logo_group_box)
         self.logo_color_button.colorChanged.connect(self.on_logo_background_color_changed)
@@ -398,7 +398,7 @@ class GeneralTab(SettingsTab):
 
     def on_logo_browse_button_clicked(self):
         """
-        Select an image for the default display screen.
+        Select the logo file
         """
         file_filters = '%s;;%s (*.*)' % (get_images_filter(), UiStrings().AllFiles)
         filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(self,
@@ -410,13 +410,13 @@ class GeneralTab(SettingsTab):
 
     def on_logo_revert_button_clicked(self):
         """
-        Revert the default screen back to the default settings.
+        Revert the logo file back to the default setting.
         """
         self.logo_file_edit.setText(':/graphics/openlp-splash-screen.png')
         self.logo_file_edit.setFocus()
 
     def on_logo_background_color_changed(self, color):
         """
-        Select the background colour of the default display screen.
+        Select the background color for logo.
         """
         self.logo_background_color = color

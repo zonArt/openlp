@@ -523,8 +523,8 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             if not Settings().value('core/display on monitor'):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
-        # Check if setting for hiding default background image and color is enabled.
-        # If so, display should remain hidden, otherwise default logo is shown. (from def setup)
+        # Check if setting for hiding logo on startup is enabled.
+        # If it is, display should remain hidden, otherwise logo is shown. (from def setup)
         if self.isHidden() and not Settings().value('core/logo hide on startup'):
             self.setVisible(True)
         self.hide_mode = None
