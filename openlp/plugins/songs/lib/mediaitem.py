@@ -366,8 +366,9 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results CCLI number')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda song: get_natural_key(song.ccli_number))
-        for song in search_results:
+        songs = sorted(search_results, key=lambda song: (get_natural_key(song.ccli_number),
+                                song.sort_key))
+        for song in songs:
             # Do not display temporary songs
             if song.temporary:
                 continue
