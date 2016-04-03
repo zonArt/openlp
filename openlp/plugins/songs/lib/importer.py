@@ -78,6 +78,13 @@ if is_win():
         HAS_WORSHIPCENTERPRO = True
     except ImportError:
         log.exception('Error importing %s', 'WorshipCenterProImport')
+HAS_OPSPRO = False
+if is_win():
+    try:
+        from .importers.opspro import OPSProImport
+        HAS_OPSPRO = True
+    except ImportError:
+        log.exception('Error importing %s', 'OPSProImport')
 
 
 class SongFormatSelect(object):
@@ -156,20 +163,21 @@ class SongFormat(object):
     Lyrix = 9
     MediaShout = 10
     OpenSong = 11
-    PowerPraise = 12
-    PowerSong = 13
-    PresentationManager = 14
-    ProPresenter = 15
-    SongBeamer = 16
-    SongPro = 17
-    SongShowPlus = 18
-    SongsOfFellowship = 19
-    SundayPlus = 20
-    VideoPsalm = 21
-    WordsOfWorship = 22
-    WorshipAssistant = 23
-    WorshipCenterPro = 24
-    ZionWorx = 25
+    OPSPro = 12
+    PowerPraise = 13
+    PowerSong = 14
+    PresentationManager = 15
+    ProPresenter = 16
+    SongBeamer = 17
+    SongPro = 18
+    SongShowPlus = 19
+    SongsOfFellowship = 20
+    SundayPlus = 21
+    VideoPsalm = 22
+    WordsOfWorship = 23
+    WorshipAssistant = 24
+    WorshipCenterPro = 25
+    ZionWorx = 26
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -271,6 +279,17 @@ class SongFormat(object):
             'class': OpenSongImport,
             'name': WizardStrings.OS,
             'prefix': 'openSong'
+        },
+        OPSPro: {
+            'name': 'OPS Pro',
+            'prefix': 'OPSPro',
+            'canDisable': True,
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm', 'OPS Pro database'),
+            'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+                                           'The OPS Pro importer is only supported on Windows. It has been '
+                                           'disabled due to a missing Python module. If you want to use this '
+                                           'importer, you will need to install the "pyodbc" module.')
         },
         PowerPraise: {
             'class': PowerPraiseImport,
@@ -403,6 +422,7 @@ class SongFormat(object):
             SongFormat.Lyrix,
             SongFormat.MediaShout,
             SongFormat.OpenSong,
+            SongFormat.OPSPro,
             SongFormat.PowerPraise,
             SongFormat.PowerSong,
             SongFormat.PresentationManager,
@@ -416,7 +436,7 @@ class SongFormat(object):
             SongFormat.WordsOfWorship,
             SongFormat.WorshipAssistant,
             SongFormat.WorshipCenterPro,
-            SongFormat.ZionWorx,
+            SongFormat.ZionWorx
         ])
 
     @staticmethod
@@ -465,6 +485,9 @@ if HAS_MEDIASHOUT:
 SongFormat.set(SongFormat.WorshipCenterPro, 'availability', HAS_WORSHIPCENTERPRO)
 if HAS_WORSHIPCENTERPRO:
     SongFormat.set(SongFormat.WorshipCenterPro, 'class', WorshipCenterProImport)
+SongFormat.set(SongFormat.OPSPro, 'availability', HAS_OPSPRO)
+if HAS_OPSPRO:
+    SongFormat.set(SongFormat.OPSPro, 'class', OPSProImport)
 
 
 __all__ = ['SongFormat', 'SongFormatSelect']
