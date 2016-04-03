@@ -22,7 +22,6 @@
 """
 The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
-import locale
 import logging
 import os
 import platform
@@ -463,62 +462,6 @@ def get_uno_instance(resolver, connection_type='pipe'):
     else:
         return resolver.resolve('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
 
-
-def format_time(text, local_time):
-    """
-    Workaround for Python built-in time formatting function time.strftime().
-
-    time.strftime() accepts only ascii characters. This function accepts
-    unicode string and passes individual % placeholders to time.strftime().
-    This ensures only ascii characters are passed to time.strftime().
-
-    :param text:  The text to be processed.
-    :param local_time: The time to be used to add to the string.  This is a time object
-    """
-    def match_formatting(match):
-        """
-        Format the match
-        """
-        return local_time.strftime(match.group())
-    return re.sub('\%[a-zA-Z]', match_formatting, text)
-
-
-def get_locale_key(string):
-    """
-    Creates a key for case insensitive, locale aware string sorting.
-
-    :param string: The corresponding string.
-    """
-    string = string.lower()
-    # ICU is the prefered way to handle locale sort key, we fallback to locale.strxfrm which will work in most cases.
-    global ICU_COLLATOR
-    try:
-        if ICU_COLLATOR is None:
-            import icu
-            from openlp.core.common.languagemanager import LanguageManager
-            language = LanguageManager.get_language()
-            icu_locale = icu.Locale(language)
-            ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
-        return ICU_COLLATOR.getSortKey(string)
-    except:
-        return locale.strxfrm(string).encode()
-
-
-def get_natural_key(string):
-    """
-    Generate a key for locale aware natural string sorting.
-
-    :param string: string to be sorted by
-    Returns a list of string compare keys and integers.
-    """
-    key = DIGITS_OR_NONDIGITS.findall(string)
-    key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
-    # Python 3 does not support comparison of different types anymore. So make sure, that we do not compare str
-    # and int.
-    if string and string[0].isdigit():
-        return [b''] + key
-    return key
-
 __all__ = ['get_application_version', 'check_latest_version',
            'get_filesystem_encoding', 'get_web_page', 'get_uno_command', 'get_uno_instance',
-           'delete_file', 'clean_filename', 'format_time', 'get_locale_key', 'get_natural_key']
+           'delete_file', 'clean_filename']

@@ -36,7 +36,8 @@ from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, ValidationEr
 from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
 from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import delete_file, get_locale_key, get_filesystem_encoding
+from openlp.core.utils import delete_file, get_filesystem_encoding
+from openlp.core.common.languagemanager import get_locale_key
 
 
 class Ui_ThemeManager(object):

@@ -22,6 +22,7 @@
 """
 The :mod:`languagemanager` module provides all the translation settings and language file loading for OpenLP.
 """
+import locale
 import logging
 import re
 
@@ -31,6 +32,8 @@ from PyQt5 import QtCore, QtWidgets
 from openlp.core.common import AppLocation, Settings, translate, is_win, is_macosx
 
 log = logging.getLogger(__name__)
+
+DIGITS_OR_NONDIGITS = re.compile(r'\d+|\D+', re.UNICODE)
 
 
 class LanguageManager(object):
@@ -143,3 +146,60 @@ class LanguageManager(object):
         if not LanguageManager.__qm_list__:
             LanguageManager.init_qm_list()
         return LanguageManager.__qm_list__
+
+
+def format_time(text, local_time):
+    """
+    Workaround for Python built-in time formatting function time.strftime().
+
+    time.strftime() accepts only ascii characters. This function accepts
+    unicode string and passes individual % placeholders to time.strftime().
+    This ensures only ascii characters are passed to time.strftime().
+
+    :param text:  The text to be processed.
+    :param local_time: The time to be used to add to the string.  This is a time object
+    """
+
+    def match_formatting(match):
+        """
+        Format the match
+        """
+        return local_time.strftime(match.group())
+
+    return re.sub('\%[a-zA-Z]', match_formatting, text)
+
+
+def get_locale_key(string):
+    """
+    Creates a key for case insensitive, locale aware string sorting.
+
+    :param string: The corresponding string.
+    """
+    string = string.lower()
+    # ICU is the prefered way to handle locale sort key, we fallback to locale.strxfrm which will work in most cases.
+    global ICU_COLLATOR
+    try:
+        if ICU_COLLATOR is None:
+            import icu
+            language = LanguageManager.get_language()
+            icu_locale = icu.Locale(language)
+            ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
+        return ICU_COLLATOR.getSortKey(string)
+    except:
+        return locale.strxfrm(string).encode()
+
+
+def get_natural_key(string):
+    """
+    Generate a key for locale aware natural string sorting.
+
+    :param string: string to be sorted by
+    Returns a list of string compare keys and integers.
+    """
+    key = DIGITS_OR_NONDIGITS.findall(string)
+    key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
+    # Python 3 does not support comparison of different types anymore. So make sure, that we do not compare str
+    # and int.
+    if string and string[0].isdigit():
+        return [b''] + key
+    return key

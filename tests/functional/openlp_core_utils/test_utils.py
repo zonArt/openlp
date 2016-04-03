@@ -25,8 +25,9 @@ Functional tests to test the AppLocation class and related methods.
 import os
 from unittest import TestCase
 
-from openlp.core.utils import clean_filename, delete_file, get_filesystem_encoding, get_locale_key, \
-    get_natural_key, split_filename, _get_user_agent, get_web_page, get_uno_instance
+from openlp.core.utils import clean_filename, delete_file, get_filesystem_encoding, \
+    split_filename, _get_user_agent, get_web_page, get_uno_instance
+from openlp.core.common.languagemanager import get_locale_key, get_natural_key
 
 from tests.functional import MagicMock, patch
 
@@ -178,38 +179,6 @@ class TestUtils(TestCase):
             # THEN: delete_file should log and exception and return False
             self.assertEqual(mocked_log.exception.call_count, 1)
             self.assertFalse(result, 'delete_file should return False when os.remove raises an OSError')
-
-    def get_locale_key_test(self):
-        """
-        Test the get_locale_key(string) function
-        """
-        with patch('openlp.core.common.languagemanager.LanguageManager.get_language') as mocked_get_language:
-            # GIVEN: The language is German
-            # 0x00C3 (A with diaresis) should be sorted as "A". 0x00DF (sharp s) should be sorted as "ss".
-            mocked_get_language.return_value = 'de'
-            unsorted_list = ['Auszug', 'Aushang', '\u00C4u\u00DFerung']
-
-            # WHEN: We sort the list and use get_locale_key() to generate the sorting keys
-            sorted_list = sorted(unsorted_list, key=get_locale_key)
-
-            # THEN: We get a properly sorted list
-            self.assertEqual(['Aushang', '\u00C4u\u00DFerung', 'Auszug'], sorted_list,
-                             'Strings should be sorted properly')
-
-    def get_natural_key_test(self):
-        """
-        Test the get_natural_key(string) function
-        """
-        with patch('openlp.core.common.languagemanager.LanguageManager.get_language') as mocked_get_language:
-            # GIVEN: The language is English (a language, which sorts digits before letters)
-            mocked_get_language.return_value = 'en'
-            unsorted_list = ['item 10a', 'item 3b', '1st item']
-
-            # WHEN: We sort the list and use get_natural_key() to generate the sorting keys
-            sorted_list = sorted(unsorted_list, key=get_natural_key)
-
-            # THEN: We get a properly sorted list
-            self.assertEqual(['1st item', 'item 3b', 'item 10a'], sorted_list, 'Numbers should be sorted naturally')
 
     def get_uno_instance_pipe_test(self):
         """
