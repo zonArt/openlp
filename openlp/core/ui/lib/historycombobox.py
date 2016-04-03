@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`~openlp.core.common.historycombobox` module contains the HistoryComboBox widget
+The :mod:`~openlp.core.ui.lib.historycombobox` module contains the HistoryComboBox widget
 """
 
 from PyQt5 import QtCore, QtWidgets

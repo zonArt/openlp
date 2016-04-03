@@ -24,13 +24,12 @@ The :mod:`common` module contains most of the components and libraries that make
 OpenLP work.
 """
 import hashlib
-import re
-import os
 import logging
+import os
+import re
 import sys
 import traceback
 from ipaddress import IPv4Address, IPv6Address, AddressValueError
-from codecs import decode, encode
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import QCryptographicHash as QHash
@@ -241,6 +240,20 @@ from .registryproperties import RegistryProperties
 from .uistrings import UiStrings
 from .settings import Settings
 from .applocation import AppLocation
-from .historycombobox import HistoryComboBox
 from .actions import ActionList
 from .languagemanager import LanguageManager
+
+
+def add_actions(target, actions):
+    """
+    Adds multiple actions to a menu or toolbar in one command.
+
+    :param target: The menu or toolbar to add actions to
+    :param actions: The actions to be added. An action consisting of the keyword ``None``
+        will result in a separator being inserted into the target.
+    """
+    for action in actions:
+        if action is None:
+            target.addSeparator()
+        else:
+            target.addAction(action)
