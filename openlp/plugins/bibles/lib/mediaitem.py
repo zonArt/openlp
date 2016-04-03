@@ -312,7 +312,7 @@ class BibleMediaItem(MediaManagerItem):
         self.quick_search_edit.set_search_types([
             (BibleSearch.Combined, ':/bibles/bibles_search_combined.png',
                 translate('BiblesPlugin.MediaItem', 'Text or Scripture Reference'),
-                translate('BiblesPlugin.MediaItem', 'Search Text or Scripture Reference...')),
+                translate('BiblesPlugin.MediaItem', 'Text or Scripture Reference...')),
             (BibleSearch.Reference, ':/bibles/bibles_search_reference.png',
                 translate('BiblesPlugin.MediaItem', 'Scripture Reference'),
                 translate('BiblesPlugin.MediaItem', 'Search Scripture Reference...')),
@@ -652,6 +652,53 @@ class BibleMediaItem(MediaManagerItem):
         self.check_search_result()
         self.application.set_normal_cursor()
 
+    def on_quick_reference_search(self):
+        # We are doing a 'Reference Search'.
+        bible = self.quickVersionComboBox.currentText()
+        second_bible = self.quickSecondComboBox.currentText()
+        # Get input from field and replace '. ' with ''
+        text_direct = self.quick_search_edit.text()
+        text = text_direct.replace('. ', ' ')
+        if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+            self.search_results = self.plugin.manager.get_verses(bible, text)
+        else:
+            self.search_results = self.plugin.manager.get_verses_combined(bible, text)
+        if second_bible and self.search_results:
+            self.second_search_results = \
+                self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
+
+    def on_quick_text_search(self):
+        # We are doing a 'Text Search'.
+        bible = self.quickVersionComboBox.currentText()
+        second_bible = self.quickSecondComboBox.currentText()
+        text = self.quick_search_edit.text()
+        self.application.set_busy_cursor()
+        bibles = self.plugin.manager.get_bibles()
+        self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
+        if second_bible and self.search_results:
+            text = []
+            new_search_results = []
+            count = 0
+            passage_not_found = False
+            for verse in self.search_results:
+                db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
+                if not db_book:
+                    log.debug('Passage "%s %d:%d" not found in Second Bible' %
+                              (verse.book.name, verse.chapter, verse.verse))
+                    passage_not_found = True
+                    count += 1
+                    continue
+                new_search_results.append(verse)
+                text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
+            if passage_not_found:
+                self.main_window.information_message(
+                    translate('BiblesPlugin.MediaItem', 'Information'),
+                    translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
+                                                        'that are in the main Bible. Only verses found in both Bibles will be shown. %d '
+                                                        'verses have not been included in the results.') % count)
+            self.search_results = new_search_results
+            self.second_search_results = bibles[second_bible].get_verses(text)
+
     def on_quick_search_button(self):
         """
         Does a quick search and saves the search results. Quick search can be:
@@ -662,94 +709,28 @@ class BibleMediaItem(MediaManagerItem):
         self.application.process_events()
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
-        # Get input from field and replace '. ' with ''
-        text_direct = self.quick_search_edit.text()
-        text = text_direct.replace('. ', ' ')
+        text = self.quick_search_edit.text()
         # This will check if field has any '.' and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
-            # We are doing a 'Reference Search'.
-            self.search_results = self.plugin.manager.get_verses(bible, text)
-            if second_bible and self.search_results:
-                self.second_search_results = \
-                    self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
+            # We are doing a 'Reference Search'. (Get script from def on_quick_reference_search)
+            self.on_quick_reference_search()
         elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
-            # We are doing a 'Text Search'.
-            self.application.set_busy_cursor()
-            bibles = self.plugin.manager.get_bibles()
-            self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
-            if second_bible and self.search_results:
-                text = []
-                new_search_results = []
-                count = 0
-                passage_not_found = False
-                for verse in self.search_results:
-                    db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
-                    if not db_book:
-                        log.debug('Passage "%s %d:%d" not found in Second Bible' %
-                                  (verse.book.name, verse.chapter, verse.verse))
-                        passage_not_found = True
-                        count += 1
-                        continue
-                    new_search_results.append(verse)
-                    text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
-                if passage_not_found:
-                    self.main_window.information_message(
-                        translate('BiblesPlugin.MediaItem', 'Information'),
-                        translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
-                                  'that are in the main Bible. Only verses found in both Bibles will be shown. %d '
-                                  'verses have not been included in the results.') % count)
-                self.search_results = new_search_results
-                self.second_search_results = bibles[second_bible].get_verses(text)
-        # Combined search, starting with reference search (combined)
+            # We are doing a 'Text Search'. (Get script from def on_quick_text_search)
+            self.on_quick_text_search()
+        # Combined search, starting with reference search.
         elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
-            self.search_results = self.plugin.manager.get_verses_combined(bible, text)
-            if second_bible and self.search_results:
-                self.second_search_results = \
-                    self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
+            self.on_quick_reference_search()
         # If keyword is shorter than 3 (not including spaces), message is given and search is finalized.
-        # This needs to be here in order to avoid deadlock/duplicate errors.
-            if len(text) - text.count(' ') < 3:
+        # It's actually to find verses with less than 3 chars (Eg. G1 = Genesis 1) thus this error is not shown if
+        # any results are found. This check needs to be here in order to avoid duplicate errors.
+            if not self.search_results and len(text) - text.count(' ') < 3:
                 self.main_window.information_message(
                     ('%s' % UiStrings().BibleShortSearchTitle),
                     ('%s' % UiStrings().BibleShortSearch))
-                if not self.quickLockButton.isChecked():
-                    self.list_view.clear()
-                if self.list_view.count() != 0 and self.search_results:
-                    self.__check_second_bible(bible, second_bible)
-                elif self.search_results:
-                    self.display_results(bible, second_bible)
-                self.quickSearchButton.setEnabled(True)
-                self.check_search_result()
-                self.application.set_normal_cursor()
             # Text search starts here if no reference was found and keyword is longer than 2.
             # This is required in order to avoid duplicate error messages for short keywords.
             if not self.search_results and len(text) - text.count(' ') > 2:
-                self.application.set_busy_cursor()
-                bibles = self.plugin.manager.get_bibles()
-                self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
-                if second_bible and self.search_results:
-                    text = []
-                    new_search_results = []
-                    count = 0
-                    passage_not_found = False
-                    for verse in self.search_results:
-                        db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
-                        if not db_book:
-                            log.debug('Passage "%s %d:%d" not found in Second Bible' %
-                                      (verse.book.name, verse.chapter, verse.verse))
-                            passage_not_found = True
-                            count += 1
-                            continue
-                        new_search_results.append(verse)
-                        text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
-                    if passage_not_found:
-                        self.main_window.information_message(
-                            translate('BiblesPlugin.MediaItem', 'Information'),
-                            translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
-                                      'that are in the main Bible. Only verses found in both Bibles will be shown. %d '
-                                      'verses have not been included in the results.') % count)
-                    self.search_results = new_search_results
-                    self.second_search_results = bibles[second_bible].get_verses(text)
+                self.on_quick_text_search()
                 # If no Text or Reference is found, message is given.
                 if not self.search_results:
                         self.application.set_normal_cursor()
