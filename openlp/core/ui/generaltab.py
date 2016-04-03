@@ -221,7 +221,7 @@ class GeneralTab(SettingsTab):
                                                   'Prompt to save before starting a new service'))
         self.auto_unblank_check_box.setText(translate('OpenLP.GeneralTab', 'Unblank display when adding new live item'))
         self.click_live_slide_to_unblank_check_box.setText(translate('OpenLP.GeneralTab',
-                                                           'Unblank display when changing slide in Live'))
+                                                           'Unblank display when changing slide in live'))
         self.auto_preview_check_box.setText(translate('OpenLP.GeneralTab',
                                                       'Automatically preview next item in service'))
         self.timeout_label.setText(translate('OpenLP.GeneralTab', 'Timed slide interval:'))
