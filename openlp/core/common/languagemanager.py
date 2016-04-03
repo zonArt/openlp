@@ -24,7 +24,6 @@ The :mod:`languagemanager` module provides all the translation settings and lang
 """
 import logging
 import re
-import sys
 
 from PyQt5 import QtCore, QtWidgets
 
