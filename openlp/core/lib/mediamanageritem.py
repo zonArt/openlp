@@ -177,7 +177,7 @@ class MediaManagerItem(QtWidgets.QWidget, RegistryProperties):
                                     ':/general/general_delete.png', self.on_delete_click])
         # Preview
         toolbar_actions.append(['Preview', StringContent.Preview,
-                                ':/system/system_mediamanager.png', self.on_preview_click])
+                                ':/general/general_preview.png', self.on_preview_click])
         # Live Button
         toolbar_actions.append(['Live', StringContent.Live, ':/general/general_live.png', self.on_live_click])
         # Add to service Button
