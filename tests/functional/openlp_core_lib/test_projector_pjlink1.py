@@ -92,3 +92,18 @@ class TestPJLink(TestCase):
         mock_change_status.called_with(E_PARAMETER,
                                        'change_status should have been called with "{}"'.format(
                                            ERROR_STRING[E_PARAMETER]))
+
+    @patch.object(pjlink_test, 'process_inpt')
+    def projector_return_ok_test(self, mock_process_inpt):
+        """
+        Test projector calls process_inpt command when process_command is called with INPT option
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+
+        # WHEN: process_command is called with INST command and 31 input:
+        pjlink.process_command('INPT', '31')
+
+        # THEN: process_inpt method should have been called with 31
+        mock_process_inpt.called_with('31',
+                                      "process_inpt should have been called with 31")
