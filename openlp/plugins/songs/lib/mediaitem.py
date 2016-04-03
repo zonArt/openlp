@@ -194,13 +194,13 @@ class SongMediaItem(MediaManagerItem):
             log.debug('Authors Search')
             search_string = '%' + search_keywords + '%'
             search_results = self.plugin.manager.get_all_objects(
-                Author, Author.display_name.like(search_string), Author.display_name.asc())
+                Author, Author.display_name.like(search_string))
             self.display_results_author(search_results)
         elif search_type == SongSearch.Topics:
             log.debug('Topics Search')
             search_string = '%' + search_keywords + '%'
             search_results = self.plugin.manager.get_all_objects(
-                Topic, Topic.name.like(search_string), Topic.name.asc())
+                Topic, Topic.name.like(search_string))
             self.display_results_topic(search_results)
         elif search_type == SongSearch.Books:
             log.debug('Songbook Search')
@@ -215,7 +215,7 @@ class SongMediaItem(MediaManagerItem):
             log.debug('Theme Search')
             search_string = '%' + search_keywords + '%'
             search_results = self.plugin.manager.get_all_objects(
-                Song, Song.theme_name.like(search_string), Song.theme_name.asc())
+                Song, Song.theme_name.like(search_string))
             self.display_results_themes(search_results)
         elif search_type == SongSearch.Copyright:
             log.debug('Copyright Search')
@@ -285,10 +285,10 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Author')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda author: get_natural_key(author.display_name))
+        search_results.sort(key=lambda author: get_natural_key(author.display_name))
         for author in search_results:
-            songs = sorted(author.songs, key=lambda song: song.sort_key)
-            for song in songs:
+            author.songs.sort(key=lambda song: song.sort_key)
+            for song in author.songs:
                 # Do not display temporary songs
                 if song.temporary:
                     continue
@@ -306,8 +306,8 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Book')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda songbook_entry:
-                                (get_natural_key(songbook_entry.songbook.name), get_natural_key(songbook_entry.entry)))
+        search_results.sort(key=lambda songbook_entry:
+                            (get_natural_key(songbook_entry.songbook.name), get_natural_key(songbook_entry.entry)))
         for songbook_entry in search_results:
             if songbook_entry.song.temporary:
                 continue
@@ -325,10 +325,10 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Topic')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda topic: get_natural_key(topic.name))
+        search_results.sort(key=lambda topic: get_natural_key(topic.name))
         for topic in search_results:
-            songs = sorted(topic.songs, key=lambda song: song.sort_key)
-            for song in songs:
+            topic.songs.sort(key=lambda song: song.sort_key)
+            for song in topic.songs:
                 # Do not display temporary songs
                 if song.temporary:
                     continue
@@ -346,8 +346,8 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Themes')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda song: (get_natural_key(song.theme_name),
-                                song.sort_key))
+        search_results.sort(key=lambda song: (get_natural_key(song.theme_name),
+                            song.sort_key))
         for song in search_results:
             # Do not display temporary songs
             if song.temporary:
@@ -366,9 +366,9 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results CCLI number')
         self.list_view.clear()
-        songs = sorted(search_results, key=lambda song: (get_natural_key(song.ccli_number),
-                       song.sort_key))
-        for song in songs:
+        search_results.sort(key=lambda song: (get_natural_key(song.ccli_number),
+                            song.sort_key))
+        for song in search_results:
             # Do not display temporary songs
             if song.temporary:
                 continue
