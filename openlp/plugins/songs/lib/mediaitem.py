@@ -306,8 +306,8 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Book')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda songbook_entry: (get_natural_key(songbook_entry.songbook.name),
-                                get_natural_key(songbook_entry.entry)))
+        search_results = sorted(search_results, key=lambda songbook_entry:
+                                (get_natural_key(songbook_entry.songbook.name), get_natural_key(songbook_entry.entry)))
         for songbook_entry in search_results:
             if songbook_entry.song.temporary:
                 continue
@@ -367,7 +367,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug('display results CCLI number')
         self.list_view.clear()
         songs = sorted(search_results, key=lambda song: (get_natural_key(song.ccli_number),
-                                song.sort_key))
+                       song.sort_key))
         for song in songs:
             # Do not display temporary songs
             if song.temporary:
