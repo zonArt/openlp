@@ -186,9 +186,9 @@ def get_application_version():
         # If they are equal, then this tree is tarball with the source for the release. We do not want the revision
         # number in the full version.
         if tree_revision == tag_revision:
-            full_version = tag_version.decode('utf-8')
+            full_version = tag_version.strip()
         else:
-            full_version = '%s-bzr%s' % (tag_version.decode('utf-8'), tree_revision.decode('utf-8'))
+            full_version = '%s-bzr%s' % (tag_version.strip(), tree_revision.strip())
     else:
         # We're not running the development version, let's use the file.
         file_path = AppLocation.get_directory(AppLocation.VersionDir)
