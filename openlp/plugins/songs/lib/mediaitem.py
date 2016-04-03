@@ -285,7 +285,7 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Author')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda author: (get_natural_key(author.display_name)))
+        search_results = sorted(search_results, key=lambda author: get_natural_key(author.display_name))
         for author in search_results:
             songs = sorted(author.songs, key=lambda song: song.sort_key)
             for song in songs:
