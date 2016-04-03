@@ -125,7 +125,7 @@ class PresentationTab(SettingsTab):
             translate('PresentationPlugin.PresentationTab', 'Allow presentation application to be overridden'))
         self.ppt_slide_click_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
-                      'Clicking on a selected slide in the slidecontroller advances to next effect.'))
+                      'Clicking on a selected slide in Live advances to the next effect.'))
         self.ppt_window_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
                       'Let PowerPoint control the size and position of the presentation window '
@@ -151,7 +151,7 @@ class PresentationTab(SettingsTab):
             if controller.name == 'Powerpoint' and controller.is_available():
                 powerpoint_available = True
         self.override_app_check_box.setChecked(Settings().value(self.settings_section + '/override app'))
-        # Load Powerpoint settings
+        # Load PowerPoint settings
         self.ppt_slide_click_check_box.setChecked(Settings().value(self.settings_section +
                                                                    '/powerpoint slide click advance'))
         self.ppt_slide_click_check_box.setEnabled(powerpoint_available)

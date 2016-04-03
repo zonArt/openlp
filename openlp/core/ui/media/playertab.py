@@ -125,7 +125,7 @@ class PlayerTab(SettingsTab):
         self.media_player_group_box.setTitle(translate('OpenLP.PlayerTab', 'Available Media Players'))
         self.player_order_group_box.setTitle(translate('OpenLP.PlayerTab', 'Player Search Order'))
         self.background_color_group_box.setTitle(UiStrings().BackgroundColor)
-        self.background_color_label.setText(UiStrings().DefaultColor)
+        self.background_color_label.setText(UiStrings().BackgroundColor)
         self.information_label.setText(translate('OpenLP.PlayerTab',
                                        'Visible background for videos with aspect ratio different to screen.'))
         self.retranslate_players()

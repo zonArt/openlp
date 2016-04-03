@@ -174,10 +174,10 @@ class BiblesTab(SettingsTab):
                                        'Note:\nChanges do not affect verses already in the service.'))
         self.bible_second_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Display second Bible verses'))
         self.scripture_reference_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Custom Scripture References'))
-        self.verse_separator_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Verse Separator:'))
-        self.range_separator_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Range Separator:'))
-        self.list_separator_check_box.setText(translate('BiblesPlugin.BiblesTab', 'List Separator:'))
-        self.end_separator_check_box.setText(translate('BiblesPlugin.BiblesTab', 'End Mark:'))
+        self.verse_separator_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Verse separator:'))
+        self.range_separator_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Range separator:'))
+        self.list_separator_check_box.setText(translate('BiblesPlugin.BiblesTab', 'List separator:'))
+        self.end_separator_check_box.setText(translate('BiblesPlugin.BiblesTab', 'End mark:'))
         tip_text = translate('BiblesPlugin.BiblesTab',
                              'Multiple alternative verse separators may be defined.\nThey have to be separated by a '
                              'vertical bar "|".\nPlease clear this edit line to use the default value.')
