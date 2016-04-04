@@ -24,9 +24,8 @@ Package to test the openlp.core.utils.actions package.
 """
 from unittest import TestCase
 
-from openlp.core.common.settings import Settings
-from openlp.core.utils import VersionThread, get_uno_command
-from tests.functional import MagicMock, patch
+from openlp.core.utils import get_uno_command
+from tests.functional import patch
 from tests.helpers.testmixin import TestMixin
 
 
@@ -44,23 +43,6 @@ class TestInitFunctions(TestMixin, TestCase):
         """
         self.destroy_settings()
 
-    def version_thread_triggered_test(self):
-        """
-        Test the version thread call does not trigger UI
-        :return:
-        """
-        # GIVEN: a equal version setup and the data is not today.
-        mocked_main_window = MagicMock()
-        Settings().setValue('core/last version test', '1950-04-01')
-        # WHEN: We check to see if the version is different .
-        with patch('PyQt5.QtCore.QThread'),\
-                patch('openlp.core.utils.get_application_version') as mocked_get_application_version:
-            mocked_get_application_version.return_value = {'version': '1.0.0', 'build': '', 'full': '2.0.4'}
-            version_thread = VersionThread(mocked_main_window)
-            version_thread.run()
-        # THEN: If the version has changed the main window is notified
-        self.assertTrue(mocked_main_window.openlp_version_check.emit.called,
-                        'The main windows should have been notified')
 
     def get_uno_command_libreoffice_command_exists_test(self):
         """

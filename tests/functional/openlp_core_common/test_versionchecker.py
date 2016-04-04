@@ -20,47 +20,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The About dialog.
+Package to test the openlp.core.common.versionchecker package.
 """
-import webbrowser
+from unittest import TestCase
 
-from PyQt5 import QtCore, QtWidgets
+from openlp.core.common.settings import Settings
+from openlp.core.common.versionchecker import VersionThread
+from tests.functional import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
 
-from openlp.core.common.versionchecker import get_application_version
-from openlp.core.lib import translate
-from .aboutdialog import UiAboutDialog
 
+class TestVersionchecker(TestMixin, TestCase):
 
-class AboutForm(QtWidgets.QDialog, UiAboutDialog):
-    """
-    The About dialog
-    """
-
-    def __init__(self, parent):
+    def setUp(self):
         """
-        Do some initialisation stuff
+        Create an instance and a few example actions.
         """
-        super(AboutForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
-        self._setup()
+        self.build_settings()
 
-    def _setup(self):
+    def tearDown(self):
         """
-        Set up the dialog. This method is mocked out in tests.
+        Clean up
         """
-        self.setup_ui(self)
-        application_version = get_application_version()
-        about_text = self.about_text_edit.toPlainText()
-        about_text = about_text.replace('<version>', application_version['version'])
-        if application_version['build']:
-            build_text = translate('OpenLP.AboutForm', ' build %s') % application_version['build']
-        else:
-            build_text = ''
-        about_text = about_text.replace('<revision>', build_text)
-        self.about_text_edit.setPlainText(about_text)
-        self.volunteer_button.clicked.connect(self.on_volunteer_button_clicked)
+        self.destroy_settings()
 
-    def on_volunteer_button_clicked(self):
+    def version_thread_triggered_test(self):
         """
-        Launch a web browser and go to the contribute page on the site.
+        Test the version thread call does not trigger UI
+        :return:
         """
-        webbrowser.open_new('http://openlp.org/en/contribute')
+        # GIVEN: a equal version setup and the data is not today.
+        mocked_main_window = MagicMock()
+        Settings().setValue('core/last version test', '1950-04-01')
+        # WHEN: We check to see if the version is different .
+        with patch('PyQt5.QtCore.QThread'),\
+                patch('openlp.core.common.versionchecker.get_application_version') as mocked_get_application_version:
+            mocked_get_application_version.return_value = {'version': '1.0.0', 'build': '', 'full': '2.0.4'}
+            version_thread = VersionThread(mocked_main_window)
+            version_thread.run()
+        # THEN: If the version has changed the main window is notified
+        self.assertTrue(mocked_main_window.openlp_version_check.emit.called,
+                        'The main windows should have been notified')

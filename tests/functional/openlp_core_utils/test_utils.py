@@ -27,7 +27,6 @@ from unittest import TestCase
 
 from openlp.core.utils import clean_filename, delete_file, get_filesystem_encoding, \
     split_filename, _get_user_agent, get_web_page, get_uno_instance
-from openlp.core.common.languagemanager import get_locale_key, get_natural_key
 
 from tests.functional import MagicMock, patch
 
