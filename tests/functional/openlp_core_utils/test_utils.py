@@ -347,7 +347,7 @@ class TestUtils(TestCase):
         with patch('openlp.core.utils.urllib.request.Request') as MockRequest, \
                 patch('openlp.core.utils.urllib.request.urlopen') as mock_urlopen, \
                 patch('openlp.core.utils._get_user_agent') as mock_get_user_agent, \
-                patch('openlp.core.common.Registry') as MockRegistry:
+                patch('openlp.core.utils.Registry') as MockRegistry:
             # GIVEN: Mocked out objects, a fake URL
             mocked_request_object = MagicMock()
             MockRequest.return_value = mocked_request_object
