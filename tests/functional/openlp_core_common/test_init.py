@@ -24,11 +24,12 @@ Functional tests to test the AppLocation class and related methods.
 """
 from unittest import TestCase
 
-from openlp.core.common import add_actions, get_uno_instance, get_uno_command, get_frozen_path
+from openlp.core.common import add_actions, get_uno_instance, get_uno_command
 from tests.functional import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
 
 
-class TestInit(TestCase):
+class TestInit(TestCase, TestMixin):
     """
     A test suite to test out various methods around the common __init__ class.
     """
