@@ -657,6 +657,7 @@ class BibleMediaItem(MediaManagerItem):
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         # Get input from field and replace '. ' with ''
+        # This will check if field has any '.' and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
         text_direct = self.quick_search_edit.text()
         text = text_direct.replace('. ', ' ')
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
@@ -711,7 +712,6 @@ class BibleMediaItem(MediaManagerItem):
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quick_search_edit.text()
-        # This will check if field has any '.' and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
             # We are doing a 'Reference Search'. (Get script from def on_quick_reference_search)
             self.on_quick_reference_search()
