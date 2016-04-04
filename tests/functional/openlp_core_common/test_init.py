@@ -139,7 +139,7 @@ class TestInit(TestCase, TestMixin):
         """
 
         # GIVEN: A patched 'which' method which returns a path when called with 'libreoffice'
-        with patch('openlp.core.utils.which',
+        with patch('openlp.core.common.which',
                    **{'side_effect': lambda command: {'libreoffice': '/usr/bin/libreoffice'}[command]}):
             # WHEN: Calling get_uno_command
             result = get_uno_command()
@@ -157,7 +157,7 @@ class TestInit(TestCase, TestMixin):
 
         # GIVEN: A patched 'which' method which returns None when called with 'libreoffice' and a path when called with
         #        'soffice'
-        with patch('openlp.core.utils.which',
+        with patch('openlp.core.common.which',
                    **{'side_effect': lambda command: {'libreoffice': None, 'soffice': '/usr/bin/soffice'}[
                        command]}):
             # WHEN: Calling get_uno_command
@@ -175,7 +175,7 @@ class TestInit(TestCase, TestMixin):
         """
 
         # GIVEN: A patched 'which' method which returns None
-        with patch('openlp.core.utils.which', **{'return_value': None}):
+        with patch('openlp.core.common.which', **{'return_value': None}):
             # WHEN: Calling get_uno_command
 
             # THEN: a FileNotFoundError exception should be raised
@@ -188,7 +188,7 @@ class TestInit(TestCase, TestMixin):
         """
 
         # GIVEN: A patched 'which' method which returns 'libreoffice'
-        with patch('openlp.core.utils.which', **{'return_value': 'libreoffice'}):
+        with patch('openlp.core.common.which', **{'return_value': 'libreoffice'}):
             # WHEN: Calling get_uno_command with a connection type other than pipe
             result = get_uno_command('socket')
 
