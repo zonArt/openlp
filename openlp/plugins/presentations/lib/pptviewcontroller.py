@@ -34,7 +34,7 @@ if is_win():
     from ctypes import cdll
     from ctypes.wintypes import RECT
 
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
 
