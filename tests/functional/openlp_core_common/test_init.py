@@ -24,14 +24,26 @@ Functional tests to test the AppLocation class and related methods.
 """
 from unittest import TestCase
 
-from openlp.core.common import add_actions, get_uno_instance
-from tests.functional import MagicMock
+from openlp.core.common import add_actions, get_uno_instance, get_uno_command, get_frozen_path
+from tests.functional import MagicMock, patch
 
 
 class TestInit(TestCase):
     """
     A test suite to test out various methods around the common __init__ class.
     """
+
+    def setUp(self):
+        """
+        Create an instance and a few example actions.
+        """
+        self.build_settings()
+
+    def tearDown(self):
+        """
+        Clean up
+        """
+        self.destroy_settings()
 
     def add_actions_empty_list_test(self):
         """
@@ -118,3 +130,68 @@ class TestInit(TestCase):
 
         # THEN: the resolve method is called with the correct argument
         mock_resolver.resolve.assert_called_with('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+
+    def get_uno_command_libreoffice_command_exists_test(self):
+        """
+        Test the ``get_uno_command`` function uses the libreoffice command when available.
+        :return:
+        """
+
+        # GIVEN: A patched 'which' method which returns a path when called with 'libreoffice'
+        with patch('openlp.core.utils.which',
+                   **{'side_effect': lambda command: {'libreoffice': '/usr/bin/libreoffice'}[command]}):
+            # WHEN: Calling get_uno_command
+            result = get_uno_command()
+
+            # THEN: The command 'libreoffice' should be called with the appropriate parameters
+            self.assertEquals(result,
+                              'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
+                              ' "--accept=pipe,name=openlp_pipe;urp;"')
+
+    def get_uno_command_only_soffice_command_exists_test(self):
+        """
+        Test the ``get_uno_command`` function uses the soffice command when the libreoffice command is not available.
+        :return:
+        """
+
+        # GIVEN: A patched 'which' method which returns None when called with 'libreoffice' and a path when called with
+        #        'soffice'
+        with patch('openlp.core.utils.which',
+                   **{'side_effect': lambda command: {'libreoffice': None, 'soffice': '/usr/bin/soffice'}[
+                       command]}):
+            # WHEN: Calling get_uno_command
+            result = get_uno_command()
+
+            # THEN: The command 'soffice' should be called with the appropriate parameters
+            self.assertEquals(result, 'soffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
+                                      ' "--accept=pipe,name=openlp_pipe;urp;"')
+
+    def get_uno_command_when_no_command_exists_test(self):
+        """
+        Test the ``get_uno_command`` function raises an FileNotFoundError when neither the libreoffice or soffice
+        commands are available.
+        :return:
+        """
+
+        # GIVEN: A patched 'which' method which returns None
+        with patch('openlp.core.utils.which', **{'return_value': None}):
+            # WHEN: Calling get_uno_command
+
+            # THEN: a FileNotFoundError exception should be raised
+            self.assertRaises(FileNotFoundError, get_uno_command)
+
+    def get_uno_command_connection_type_test(self):
+        """
+        Test the ``get_uno_command`` function when the connection type is anything other than pipe.
+        :return:
+        """
+
+        # GIVEN: A patched 'which' method which returns 'libreoffice'
+        with patch('openlp.core.utils.which', **{'return_value': 'libreoffice'}):
+            # WHEN: Calling get_uno_command with a connection type other than pipe
+            result = get_uno_command('socket')
+
+            # THEN: The connection parameters should be set for socket
+            self.assertEqual(result, 'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
+                                     ' "--accept=socket,host=localhost,port=2002;urp;"')
+
