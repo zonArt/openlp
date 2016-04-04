@@ -24,7 +24,7 @@ Package to test the openlp.core.utils.actions package.
 """
 from unittest import TestCase
 
-from openlp.core.utils import get_uno_command
+from openlp.core.common import get_uno_command
 from tests.functional import patch
 from tests.helpers.testmixin import TestMixin
 

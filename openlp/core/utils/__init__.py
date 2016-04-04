@@ -33,7 +33,6 @@ import urllib.parse
 import urllib.request
 from http.client import HTTPException
 from random import randint
-from shutil import which
 
 from PyQt5 import QtGui
 
@@ -279,36 +278,5 @@ def get_web_page(url, header=None, update_openlp=False):
     return page
 
 
-def get_uno_command(connection_type='pipe'):
-    """
-    Returns the UNO command to launch an libreoffice.org instance.
-    """
-    for command in ['libreoffice', 'soffice']:
-        if which(command):
-            break
-    else:
-        raise FileNotFoundError('Command not found')
-
-    OPTIONS = '--nologo --norestore --minimized --nodefault --nofirststartwizard'
-    if connection_type == 'pipe':
-        CONNECTION = '"--accept=pipe,name=openlp_pipe;urp;"'
-    else:
-        CONNECTION = '"--accept=socket,host=localhost,port=2002;urp;"'
-    return '%s %s %s' % (command, OPTIONS, CONNECTION)
-
-
-def get_uno_instance(resolver, connection_type='pipe'):
-    """
-    Returns a running libreoffice.org instance.
-
-    :param resolver: The UNO resolver to use to find a running instance.
-    """
-    log.debug('get UNO Desktop Openoffice - resolve')
-    if connection_type == 'pipe':
-        return resolver.resolve('uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
-    else:
-        return resolver.resolve('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
-
 __all__ = ['get_application_version', 'check_latest_version',
-           'get_filesystem_encoding', 'get_web_page', 'get_uno_command', 'get_uno_instance',
-           'delete_file', 'clean_filename']
+           'get_filesystem_encoding', 'get_web_page', 'delete_file', 'clean_filename']

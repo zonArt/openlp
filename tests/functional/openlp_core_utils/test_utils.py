@@ -26,7 +26,8 @@ import os
 from unittest import TestCase
 
 from openlp.core.utils import clean_filename, delete_file, get_filesystem_encoding, \
-    split_filename, _get_user_agent, get_web_page, get_uno_instance
+    split_filename, _get_user_agent, get_web_page
+from openlp.core.common import get_uno_instance
 
 from tests.functional import MagicMock, patch
 
