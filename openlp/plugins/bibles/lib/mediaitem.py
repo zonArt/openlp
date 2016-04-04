@@ -694,8 +694,9 @@ class BibleMediaItem(MediaManagerItem):
                 self.main_window.information_message(
                     translate('BiblesPlugin.MediaItem', 'Information'),
                     translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
-                                                        'that are in the main Bible. Only verses found in both Bibles will be shown. %d '
-                                                        'verses have not been included in the results.') % count)
+                                                        'that are in the main Bible. Only verses found in both Bibles '
+                                                        'will be shown. %d verses have not been included '
+                                                        'in the results.') % count)
             self.search_results = new_search_results
             self.second_search_results = bibles[second_bible].get_verses(text)
 
