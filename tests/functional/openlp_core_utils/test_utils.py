@@ -27,7 +27,6 @@ from unittest import TestCase
 
 from openlp.core.utils import clean_filename, delete_file, get_filesystem_encoding, \
     split_filename, _get_user_agent, get_web_page
-from openlp.core.common import get_uno_instance
 
 from tests.functional import MagicMock, patch
 
@@ -180,32 +179,6 @@ class TestUtils(TestCase):
             self.assertEqual(mocked_log.exception.call_count, 1)
             self.assertFalse(result, 'delete_file should return False when os.remove raises an OSError')
 
-    def get_uno_instance_pipe_test(self):
-        """
-        Test that when the UNO connection type is "pipe" the resolver is given the "pipe" URI
-        """
-        # GIVEN: A mock resolver object and UNO_CONNECTION_TYPE is "pipe"
-        mock_resolver = MagicMock()
-
-        # WHEN: get_uno_instance() is called
-        get_uno_instance(mock_resolver)
-
-        # THEN: the resolve method is called with the correct argument
-        mock_resolver.resolve.assert_called_with('uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
-
-    def get_uno_instance_socket_test(self):
-        """
-        Test that when the UNO connection type is other than "pipe" the resolver is given the "socket" URI
-        """
-        # GIVEN: A mock resolver object and UNO_CONNECTION_TYPE is "socket"
-        mock_resolver = MagicMock()
-
-        # WHEN: get_uno_instance() is called
-        get_uno_instance(mock_resolver, 'socket')
-
-        # THEN: the resolve method is called with the correct argument
-        mock_resolver.resolve.assert_called_with('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
-
     def get_user_agent_linux_test(self):
         """
         Test that getting a user agent on Linux returns a user agent suitable for Linux
@@ -287,7 +260,7 @@ class TestUtils(TestCase):
         with patch('openlp.core.utils.urllib.request.Request') as MockRequest, \
                 patch('openlp.core.utils.urllib.request.urlopen') as mock_urlopen, \
                 patch('openlp.core.utils._get_user_agent') as mock_get_user_agent, \
-                patch('openlp.core.utils.Registry') as MockRegistry:
+                patch('openlp.core.common.Registry') as MockRegistry:
             # GIVEN: Mocked out objects and a fake URL
             mocked_request_object = MagicMock()
             MockRequest.return_value = mocked_request_object
@@ -374,7 +347,7 @@ class TestUtils(TestCase):
         with patch('openlp.core.utils.urllib.request.Request') as MockRequest, \
                 patch('openlp.core.utils.urllib.request.urlopen') as mock_urlopen, \
                 patch('openlp.core.utils._get_user_agent') as mock_get_user_agent, \
-                patch('openlp.core.utils.Registry') as MockRegistry:
+                patch('openlp.core.common.Registry') as MockRegistry:
             # GIVEN: Mocked out objects, a fake URL
             mocked_request_object = MagicMock()
             MockRequest.return_value = mocked_request_object

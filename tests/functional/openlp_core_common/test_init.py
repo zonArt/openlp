@@ -24,7 +24,7 @@ Functional tests to test the AppLocation class and related methods.
 """
 from unittest import TestCase
 
-from openlp.core.common import add_actions
+from openlp.core.common import add_actions, get_uno_instance
 from tests.functional import MagicMock
 
 
@@ -92,3 +92,29 @@ class TestInit(TestCase):
         # THEN: The addSeparator method is called, and the addAction method is called
         mocked_target.addSeparator.assert_called_with()
         mocked_target.addAction.assert_called_with('action')
+
+    def get_uno_instance_pipe_test(self):
+        """
+        Test that when the UNO connection type is "pipe" the resolver is given the "pipe" URI
+        """
+        # GIVEN: A mock resolver object and UNO_CONNECTION_TYPE is "pipe"
+        mock_resolver = MagicMock()
+
+        # WHEN: get_uno_instance() is called
+        get_uno_instance(mock_resolver)
+
+        # THEN: the resolve method is called with the correct argument
+        mock_resolver.resolve.assert_called_with('uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
+
+    def get_uno_instance_socket_test(self):
+        """
+        Test that when the UNO connection type is other than "pipe" the resolver is given the "socket" URI
+        """
+        # GIVEN: A mock resolver object and UNO_CONNECTION_TYPE is "socket"
+        mock_resolver = MagicMock()
+
+        # WHEN: get_uno_instance() is called
+        get_uno_instance(mock_resolver, 'socket')
+
+        # THEN: the resolve method is called with the correct argument
+        mock_resolver.resolve.assert_called_with('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
