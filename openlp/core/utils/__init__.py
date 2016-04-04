@@ -34,11 +34,10 @@ import urllib.request
 from http.client import HTTPException
 from random import randint
 from shutil import which
-from subprocess import Popen, PIPE
 
-from PyQt5 import QtGui, QtCore
+from PyQt5 import QtGui
 
-from openlp.core.common import Registry, AppLocation, Settings, is_win, is_macosx
+from openlp.core.common import Registry, is_win, is_macosx
 
 if not is_win() and not is_macosx():
     try:
