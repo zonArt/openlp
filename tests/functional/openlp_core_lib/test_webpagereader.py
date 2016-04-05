@@ -141,8 +141,8 @@ class TestUtils(TestCase):
         """
         Test that adding a header to the call to get_web_page() adds the header to the request
         """
-        with patch('openlp.core.lib.urllib.request.Request') as MockRequest, \
-                patch('openlp.core.lib.urllib.request.urlopen') as mock_urlopen, \
+        with patch('openlp.core.lib.webpagereader.urllib.request.Request') as MockRequest, \
+                patch('openlp.core.lib.webpagereader.urllib.request.urlopen') as mock_urlopen, \
                 patch('openlp.core.lib.webpagereader._get_user_agent') as mock_get_user_agent:
             # GIVEN: Mocked out objects, a fake URL and a fake header
             mocked_request_object = MagicMock()
@@ -170,8 +170,8 @@ class TestUtils(TestCase):
         """
         Test that adding a user agent in the header when calling get_web_page() adds that user agent to the request
         """
-        with patch('openlp.core.lib.urllib.request.Request') as MockRequest, \
-                patch('openlp.core.lib.urllib.request.urlopen') as mock_urlopen, \
+        with patch('openlp.core.lib.webpagereader.urllib.request.Request') as MockRequest, \
+                patch('openlp.core.lib.webpagereader.urllib.request.urlopen') as mock_urlopen, \
                 patch('openlp.core.lib.webpagereader._get_user_agent') as mock_get_user_agent:
             # GIVEN: Mocked out objects, a fake URL and a fake header
             mocked_request_object = MagicMock()
@@ -201,7 +201,7 @@ class TestUtils(TestCase):
         with patch('openlp.core.lib.webpagereader.urllib.request.Request') as MockRequest, \
                 patch('openlp.core.lib.webpagereader.urllib.request.urlopen') as mock_urlopen, \
                 patch('openlp.core.lib.webpagereader._get_user_agent') as mock_get_user_agent, \
-                patch('openlp.core.lib.Registry') as MockRegistry:
+                patch('openlp.core.lib.webpagereader.Registry') as MockRegistry:
             # GIVEN: Mocked out objects, a fake URL
             mocked_request_object = MagicMock()
             MockRequest.return_value = mocked_request_object
