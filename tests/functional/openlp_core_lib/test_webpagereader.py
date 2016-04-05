@@ -37,7 +37,7 @@ class TestUtils(TestCase):
         """
         Test that getting a user agent on Linux returns a user agent suitable for Linux
         """
-        with patch('openlp.core.lib.sys') as mocked_sys:
+        with patch('openlp.core.lib.webpagereader.sys') as mocked_sys:
 
             # GIVEN: The system is Linux
             mocked_sys.platform = 'linux2'
@@ -53,7 +53,7 @@ class TestUtils(TestCase):
         """
         Test that getting a user agent on Windows returns a user agent suitable for Windows
         """
-        with patch('openlp.core.lib.sys') as mocked_sys:
+        with patch('openlp.core.lib.webpagereader.sys') as mocked_sys:
 
             # GIVEN: The system is Linux
             mocked_sys.platform = 'win32'
