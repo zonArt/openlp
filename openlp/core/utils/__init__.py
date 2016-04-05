@@ -32,15 +32,7 @@ import urllib.request
 from http.client import HTTPException
 from random import randint
 
-from openlp.core.common import Registry, is_win, is_macosx
-
-if not is_win() and not is_macosx():
-    try:
-        from xdg import BaseDirectory
-        XDG_BASE_AVAILABLE = True
-    except ImportError:
-        BaseDirectory = None
-        XDG_BASE_AVAILABLE = False
+from openlp.core.common import Registry
 
 log = logging.getLogger(__name__ + '.__init__')
 
