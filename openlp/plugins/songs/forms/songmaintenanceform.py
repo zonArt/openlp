@@ -27,6 +27,7 @@ from sqlalchemy.sql import and_
 
 from openlp.core.common import Registry, RegistryProperties, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.utils import get_natural_key
 from openlp.plugins.songs.forms.authorsform import AuthorsForm
 from openlp.plugins.songs.forms.topicsform import TopicsForm
 from openlp.plugins.songs.forms.songbookform import SongBookForm
@@ -121,7 +122,8 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         Reloads the Authors list.
         """
         self.authors_list_widget.clear()
-        authors = self.manager.get_all_objects(Author, order_by_ref=Author.display_name)
+        authors = self.manager.get_all_objects(Author)
+        authors.sort(key=lambda author: get_natural_key(author.display_name))
         for author in authors:
             if author.display_name:
                 author_name = QtWidgets.QListWidgetItem(author.display_name)
@@ -135,7 +137,8 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         Reloads the Topics list.
         """
         self.topics_list_widget.clear()
-        topics = self.manager.get_all_objects(Topic, order_by_ref=Topic.name)
+        topics = self.manager.get_all_objects(Topic)
+        topics.sort(key=lambda topic: get_natural_key(topic.name))
         for topic in topics:
             topic_name = QtWidgets.QListWidgetItem(topic.name)
             topic_name.setData(QtCore.Qt.UserRole, topic.id)
@@ -146,7 +149,8 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         Reloads the Books list.
         """
         self.song_books_list_widget.clear()
-        books = self.manager.get_all_objects(Book, order_by_ref=Book.name)
+        books = self.manager.get_all_objects(Book)
+        books.sort(key=lambda book: get_natural_key(book.name))
         for book in books:
             book_name = QtWidgets.QListWidgetItem('%s (%s)' % (book.name, book.publisher))
             book_name.setData(QtCore.Qt.UserRole, book.id)
