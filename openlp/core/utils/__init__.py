@@ -142,17 +142,6 @@ def is_not_image_file(file_name):
         return True
 
 
-def split_filename(path):
-    """
-    Return a list of the parts in a given path.
-    """
-    path = os.path.abspath(path)
-    if not os.path.isfile(path):
-        return path, ''
-    else:
-        return os.path.split(path)
-
-
 def clean_filename(filename):
     """
     Removes invalid characters from the given ``filename``.
@@ -162,23 +151,6 @@ def clean_filename(filename):
     if not isinstance(filename, str):
         filename = str(filename, 'utf-8')
     return INVALID_FILE_CHARS.sub('_', CONTROL_CHARS.sub('', filename))
-
-
-def delete_file(file_path_name):
-    """
-    Deletes a file from the system.
-
-    :param file_path_name: The file, including path, to delete.
-    """
-    if not file_path_name:
-        return False
-    try:
-        if os.path.exists(file_path_name):
-            os.remove(file_path_name)
-        return True
-    except (IOError, OSError):
-        log.exception("Unable to delete file %s" % file_path_name)
-        return False
 
 
 def _get_user_agent():
@@ -269,4 +241,4 @@ def get_web_page(url, header=None, update_openlp=False):
 
 
 __all__ = ['get_application_version', 'check_latest_version',
-           'get_web_page', 'delete_file', 'clean_filename']
+           'get_web_page', 'clean_filename']

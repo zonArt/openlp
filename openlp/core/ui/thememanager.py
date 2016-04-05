@@ -30,13 +30,12 @@ from xml.etree.ElementTree import ElementTree, XML
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, OpenLPMixin, RegistryMixin, \
-    check_directory_exists, UiStrings, translate, is_win, get_filesystem_encoding
+    check_directory_exists, UiStrings, translate, is_win, get_filesystem_encoding, delete_file
 from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, ValidationError, get_text_file_string, build_icon, \
     check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
 from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import delete_file
 from openlp.core.common.languagemanager import get_locale_key
 
 
