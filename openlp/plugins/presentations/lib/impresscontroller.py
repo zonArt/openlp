@@ -57,7 +57,8 @@ else:
 from PyQt5 import QtCore
 
 from openlp.core.lib import ScreenList
-from openlp.core.utils import delete_file, get_uno_command, get_uno_instance
+from openlp.core.utils import delete_file, \
+from openlp.core.common import get_uno_command, get_uno_instance
 from .presentationcontroller import PresentationController, PresentationDocument, TextType
 
 
