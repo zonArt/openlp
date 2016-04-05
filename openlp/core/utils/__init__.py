@@ -112,16 +112,6 @@ class HTTPRedirectHandlerFixed(urllib.request.HTTPRedirectHandler):
         return super(HTTPRedirectHandlerFixed, self).redirect_request(req, fp, code, msg, headers, fixed_url)
 
 
-def get_filesystem_encoding():
-    """
-    Returns the name of the encoding used to convert Unicode filenames into system file names.
-    """
-    encoding = sys.getfilesystemencoding()
-    if encoding is None:
-        encoding = sys.getdefaultencoding()
-    return encoding
-
-
 def get_images_filter():
     """
     Returns a filter string for a file dialog containing all the supported image formats.
@@ -279,4 +269,4 @@ def get_web_page(url, header=None, update_openlp=False):
 
 
 __all__ = ['get_application_version', 'check_latest_version',
-           'get_filesystem_encoding', 'get_web_page', 'delete_file', 'clean_filename']
+           'get_web_page', 'delete_file', 'clean_filename']

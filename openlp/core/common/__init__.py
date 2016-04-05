@@ -289,3 +289,13 @@ def get_uno_instance(resolver, connection_type='pipe'):
         return resolver.resolve('uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
     else:
         return resolver.resolve('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+
+
+def get_filesystem_encoding():
+    """
+    Returns the name of the encoding used to convert Unicode filenames into system file names.
+    """
+    encoding = sys.getfilesystemencoding()
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+    return encoding
