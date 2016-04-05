@@ -68,7 +68,7 @@ class TestUtils(TestCase):
         """
         Test that getting a user agent on OS X returns a user agent suitable for OS X
         """
-        with patch('openlp.core.lib.sys') as mocked_sys:
+        with patch('openlp.core.lib.webpagereader.sys') as mocked_sys:
 
             # GIVEN: The system is Linux
             mocked_sys.platform = 'darwin'
@@ -83,7 +83,7 @@ class TestUtils(TestCase):
         """
         Test that getting a user agent on a non-Linux/Windows/OS X platform returns the default user agent
         """
-        with patch('openlp.core.lib.sys') as mocked_sys:
+        with patch('openlp.core.lib.webpagereader.sys') as mocked_sys:
 
             # GIVEN: The system is Linux
             mocked_sys.platform = 'freebsd'
@@ -111,8 +111,8 @@ class TestUtils(TestCase):
         """
         Test that the get_web_page method works correctly
         """
-        with patch('openlp.core.lib.urllib.request.Request') as MockRequest, \
-                patch('openlp.core.lib.urllib.request.urlopen') as mock_urlopen, \
+        with patch('openlp.core.lib.webpagereader..urllib.request.Request') as MockRequest, \
+                patch('openlp.core.lib.webpagereader.urllib.request.urlopen') as mock_urlopen, \
                 patch('openlp.core.lib.webpagereader._get_user_agent') as mock_get_user_agent, \
                 patch('openlp.core.common.Registry') as MockRegistry:
             # GIVEN: Mocked out objects and a fake URL
