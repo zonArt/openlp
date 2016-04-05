@@ -29,10 +29,9 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
+from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate, get_images_filter
 from openlp.core.lib import ColorButton, SettingsTab, build_icon
 from openlp.core.common.languagemanager import format_time
-from openlp.core.utils import get_images_filter
 
 log = logging.getLogger(__name__)
 

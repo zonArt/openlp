@@ -32,7 +32,7 @@ import traceback
 from ipaddress import IPv4Address, IPv6Address, AddressValueError
 from shutil import which
 
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QCryptographicHash as QHash
 
 log = logging.getLogger(__name__ + '.__init__')
@@ -40,6 +40,9 @@ log = logging.getLogger(__name__ + '.__init__')
 
 FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
 SECOND_CAMEL_REGEX = re.compile('([a-z0-9])([A-Z])')
+CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
+INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
+IMAGES_FILTER = None
 
 
 def trace_error_handler(logger):
@@ -327,3 +330,44 @@ def delete_file(file_path_name):
     except (IOError, OSError):
         log.exception("Unable to delete file %s" % file_path_name)
         return False
+
+
+def get_images_filter():
+    """
+    Returns a filter string for a file dialog containing all the supported image formats.
+    """
+    global IMAGES_FILTER
+    if not IMAGES_FILTER:
+        log.debug('Generating images filter.')
+        formats = list(map(bytes.decode, list(map(bytes, QtGui.QImageReader.supportedImageFormats()))))
+        visible_formats = '(*.%s)' % '; *.'.join(formats)
+        actual_formats = '(*.%s)' % ' *.'.join(formats)
+        IMAGES_FILTER = '%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
+    return IMAGES_FILTER
+
+
+def is_not_image_file(file_name):
+    """
+    Validate that the file is not an image file.
+
+    :param file_name: File name to be checked.
+    """
+    if not file_name:
+        return True
+    else:
+        formats = [bytes(fmt).decode().lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
+        file_part, file_extension = os.path.splitext(str(file_name))
+        if file_extension[1:].lower() in formats and os.path.exists(file_name):
+            return False
+        return True
+
+
+def clean_filename(filename):
+    """
+    Removes invalid characters from the given ``filename``.
+
+    :param filename:  The "dirty" file name to clean.
+    """
+    if not isinstance(filename, str):
+        filename = str(filename, 'utf-8')
+    return INVALID_FILE_CHARS.sub('_', CONTROL_CHARS.sub('', filename))

@@ -25,8 +25,8 @@ Functional tests to test the AppLocation class and related methods.
 import os
 from unittest import TestCase
 
-from openlp.core.utils import clean_filename, _get_user_agent, get_web_page
-from openlp.core.common import get_filesystem_encoding, split_filename, delete_file
+from openlp.core.utils import _get_user_agent, get_web_page
+from openlp.core.common import get_filesystem_encoding, split_filename, delete_file, clean_filename
 
 from tests.functional import MagicMock, patch
 

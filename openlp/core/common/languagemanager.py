@@ -33,6 +33,7 @@ from openlp.core.common import AppLocation, Settings, translate, is_win, is_maco
 
 log = logging.getLogger(__name__)
 
+ICU_COLLATOR = None
 DIGITS_OR_NONDIGITS = re.compile(r'\d+|\D+', re.UNICODE)
 
 

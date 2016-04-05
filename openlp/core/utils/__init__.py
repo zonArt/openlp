@@ -23,8 +23,6 @@
 The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
 import logging
-import os
-import re
 import socket
 import sys
 import time
@@ -33,8 +31,6 @@ import urllib.parse
 import urllib.request
 from http.client import HTTPException
 from random import randint
-
-from PyQt5 import QtGui
 
 from openlp.core.common import Registry, is_win, is_macosx
 
@@ -46,16 +42,8 @@ if not is_win() and not is_macosx():
         BaseDirectory = None
         XDG_BASE_AVAILABLE = False
 
-from openlp.core.common import translate
-
 log = logging.getLogger(__name__ + '.__init__')
 
-APPLICATION_VERSION = {}
-IMAGES_FILTER = None
-ICU_COLLATOR = None
-CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
-INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
-DIGITS_OR_NONDIGITS = re.compile(r'\d+|\D+', re.UNICODE)
 USER_AGENTS = {
     'win32': [
         'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36',
@@ -110,47 +98,6 @@ class HTTPRedirectHandlerFixed(urllib.request.HTTPRedirectHandler):
             # The url could not be decoded to ascii, so we do some url encoding
             fixed_url = urllib.parse.quote(new_url.encode('latin1').decode('utf-8', 'replace'), safe='/:')
         return super(HTTPRedirectHandlerFixed, self).redirect_request(req, fp, code, msg, headers, fixed_url)
-
-
-def get_images_filter():
-    """
-    Returns a filter string for a file dialog containing all the supported image formats.
-    """
-    global IMAGES_FILTER
-    if not IMAGES_FILTER:
-        log.debug('Generating images filter.')
-        formats = list(map(bytes.decode, list(map(bytes, QtGui.QImageReader.supportedImageFormats()))))
-        visible_formats = '(*.%s)' % '; *.'.join(formats)
-        actual_formats = '(*.%s)' % ' *.'.join(formats)
-        IMAGES_FILTER = '%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
-    return IMAGES_FILTER
-
-
-def is_not_image_file(file_name):
-    """
-    Validate that the file is not an image file.
-
-    :param file_name: File name to be checked.
-    """
-    if not file_name:
-        return True
-    else:
-        formats = [bytes(fmt).decode().lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
-        file_part, file_extension = os.path.splitext(str(file_name))
-        if file_extension[1:].lower() in formats and os.path.exists(file_name):
-            return False
-        return True
-
-
-def clean_filename(filename):
-    """
-    Removes invalid characters from the given ``filename``.
-
-    :param filename:  The "dirty" file name to clean.
-    """
-    if not isinstance(filename, str):
-        filename = str(filename, 'utf-8')
-    return INVALID_FILE_CHARS.sub('_', CONTROL_CHARS.sub('', filename))
 
 
 def _get_user_agent():
@@ -241,4 +188,4 @@ def get_web_page(url, header=None, update_openlp=False):
 
 
 __all__ = ['get_application_version', 'check_latest_version',
-           'get_web_page', 'clean_filename']
+           'get_web_page']
