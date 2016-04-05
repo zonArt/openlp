@@ -111,7 +111,7 @@ class TestUtils(TestCase):
         """
         Test that the get_web_page method works correctly
         """
-        with patch('openlp.core.lib.webpagereader..urllib.request.Request') as MockRequest, \
+        with patch('openlp.core.lib.webpagereader.urllib.request.Request') as MockRequest, \
                 patch('openlp.core.lib.webpagereader.urllib.request.urlopen') as mock_urlopen, \
                 patch('openlp.core.lib.webpagereader._get_user_agent') as mock_get_user_agent, \
                 patch('openlp.core.common.Registry') as MockRegistry:
@@ -198,8 +198,8 @@ class TestUtils(TestCase):
         """
         Test that passing "update_openlp" as true to get_web_page calls Registry().get('app').process_events()
         """
-        with patch('openlp.core.lib.urllib.request.Request') as MockRequest, \
-                patch('openlp.core.lib.urllib.request.urlopen') as mock_urlopen, \
+        with patch('openlp.core.lib.webpagereader.urllib.request.Request') as MockRequest, \
+                patch('openlp.core.lib.webpagereader.urllib.request.urlopen') as mock_urlopen, \
                 patch('openlp.core.lib.webpagereader._get_user_agent') as mock_get_user_agent, \
                 patch('openlp.core.lib.Registry') as MockRegistry:
             # GIVEN: Mocked out objects, a fake URL
