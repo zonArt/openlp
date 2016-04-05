@@ -198,7 +198,6 @@ class TestInit(TestCase, TestMixin):
             self.assertEqual(result, 'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
                                      ' "--accept=socket,host=localhost,port=2002;urp;"')
 
-
     def get_filesystem_encoding_sys_function_not_called_test(self):
         """
         Test the get_filesystem_encoding() function does not call the sys.getdefaultencoding() function
