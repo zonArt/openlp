@@ -168,4 +168,3 @@ def check_latest_version(current_version):
         if remote_version:
             version_string = remote_version
     return version_string
-
