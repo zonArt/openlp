@@ -30,8 +30,9 @@ import re
 import sys
 import traceback
 from ipaddress import IPv4Address, IPv6Address, AddressValueError
+from shutil import which
 
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QCryptographicHash as QHash
 
 log = logging.getLogger(__name__ + '.__init__')
@@ -39,6 +40,9 @@ log = logging.getLogger(__name__ + '.__init__')
 
 FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
 SECOND_CAMEL_REGEX = re.compile('([a-z0-9])([A-Z])')
+CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
+INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
+IMAGES_FILTER = None
 
 
 def trace_error_handler(logger):
@@ -257,3 +261,113 @@ def add_actions(target, actions):
             target.addSeparator()
         else:
             target.addAction(action)
+
+
+def get_uno_command(connection_type='pipe'):
+    """
+    Returns the UNO command to launch an libreoffice.org instance.
+    """
+    for command in ['libreoffice', 'soffice']:
+        if which(command):
+            break
+    else:
+        raise FileNotFoundError('Command not found')
+
+    OPTIONS = '--nologo --norestore --minimized --nodefault --nofirststartwizard'
+    if connection_type == 'pipe':
+        CONNECTION = '"--accept=pipe,name=openlp_pipe;urp;"'
+    else:
+        CONNECTION = '"--accept=socket,host=localhost,port=2002;urp;"'
+    return '%s %s %s' % (command, OPTIONS, CONNECTION)
+
+
+def get_uno_instance(resolver, connection_type='pipe'):
+    """
+    Returns a running libreoffice.org instance.
+
+    :param resolver: The UNO resolver to use to find a running instance.
+    """
+    log.debug('get UNO Desktop Openoffice - resolve')
+    if connection_type == 'pipe':
+        return resolver.resolve('uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
+    else:
+        return resolver.resolve('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+
+
+def get_filesystem_encoding():
+    """
+    Returns the name of the encoding used to convert Unicode filenames into system file names.
+    """
+    encoding = sys.getfilesystemencoding()
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+    return encoding
+
+
+def split_filename(path):
+    """
+    Return a list of the parts in a given path.
+    """
+    path = os.path.abspath(path)
+    if not os.path.isfile(path):
+        return path, ''
+    else:
+        return os.path.split(path)
+
+
+def delete_file(file_path_name):
+    """
+    Deletes a file from the system.
+
+    :param file_path_name: The file, including path, to delete.
+    """
+    if not file_path_name:
+        return False
+    try:
+        if os.path.exists(file_path_name):
+            os.remove(file_path_name)
+        return True
+    except (IOError, OSError):
+        log.exception("Unable to delete file %s" % file_path_name)
+        return False
+
+
+def get_images_filter():
+    """
+    Returns a filter string for a file dialog containing all the supported image formats.
+    """
+    global IMAGES_FILTER
+    if not IMAGES_FILTER:
+        log.debug('Generating images filter.')
+        formats = list(map(bytes.decode, list(map(bytes, QtGui.QImageReader.supportedImageFormats()))))
+        visible_formats = '(*.%s)' % '; *.'.join(formats)
+        actual_formats = '(*.%s)' % ' *.'.join(formats)
+        IMAGES_FILTER = '%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
+    return IMAGES_FILTER
+
+
+def is_not_image_file(file_name):
+    """
+    Validate that the file is not an image file.
+
+    :param file_name: File name to be checked.
+    """
+    if not file_name:
+        return True
+    else:
+        formats = [bytes(fmt).decode().lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
+        file_part, file_extension = os.path.splitext(str(file_name))
+        if file_extension[1:].lower() in formats and os.path.exists(file_name):
+            return False
+        return True
+
+
+def clean_filename(filename):
+    """
+    Removes invalid characters from the given ``filename``.
+
+    :param filename:  The "dirty" file name to clean.
+    """
+    if not isinstance(filename, str):
+        filename = str(filename, 'utf-8')
+    return INVALID_FILE_CHARS.sub('_', CONTROL_CHARS.sub('', filename))

@@ -37,6 +37,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from openlp.core.common import Registry, RegistryProperties, AppLocation, LanguageManager, Settings, \
     check_directory_exists, translate, is_win, is_macosx, add_actions
 from openlp.core.common.actions import ActionList, CategoryOrder
+from openlp.core.common.versionchecker import get_application_version
 from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageManager, PluginStatus, ScreenList, \
     build_icon
 from openlp.core.lib.ui import UiStrings, create_action
@@ -46,7 +47,6 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.media import MediaController
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.ui.projector.manager import ProjectorManager
-from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 

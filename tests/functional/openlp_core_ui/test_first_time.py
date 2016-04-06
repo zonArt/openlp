@@ -19,3 +19,39 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Package to test the openlp.core.utils.__init__ package.
+"""
+
+from unittest import TestCase
+import urllib.request
+import urllib.error
+import urllib.parse
+
+from tests.functional import patch
+from tests.helpers.testmixin import TestMixin
+
+from openlp.core.lib.webpagereader import CONNECTION_RETRIES, get_web_page
+
+
+class TestFirstTimeWizard(TestMixin, TestCase):
+    """
+    Test First Time Wizard import functions
+    """
+    def webpage_connection_retry_test(self):
+        """
+        Test get_web_page will attempt CONNECTION_RETRIES+1 connections - bug 1409031
+        """
+        # GIVEN: Initial settings and mocks
+        with patch.object(urllib.request, 'urlopen') as mocked_urlopen:
+            mocked_urlopen.side_effect = ConnectionError
+
+            # WHEN: A webpage is requested
+            try:
+                get_web_page(url='http://localhost')
+            except:
+                pass
+
+            # THEN: urlopen should have been called CONNECTION_RETRIES + 1 count
+            self.assertEquals(mocked_urlopen.call_count, CONNECTION_RETRIES + 1,
+                              'get_web_page() should have tried {} times'.format(CONNECTION_RETRIES))
