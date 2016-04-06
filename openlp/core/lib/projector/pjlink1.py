@@ -513,17 +513,13 @@ class PJLink1(QTcpSocket):
         log.debug('(%s) _send_string(): Sending "%s"' % (self.ip, out.strip()))
         log.debug('(%s) _send_string(): Queue = %s' % (self.ip, self.send_queue))
         self.socket_timer.start()
-        try:
-            self.projectorNetwork.emit(S_NETWORK_SENDING)
-            sent = self.write(out)
-            self.waitForBytesWritten(2000)  # 2 seconds should be enough
-            if sent == -1:
-                # Network error?
-                self.change_status(E_NETWORK,
-                                   translate('OpenLP.PJLink1', 'Error while sending data to projector'))
-        except SocketError as e:
-            self.disconnect_from_host(abort=True)
-            self.changeStatus(E_NETWORK, '%s : %s' % (e.error(), e.errorString()))
+        self.projectorNetwork.emit(S_NETWORK_SENDING)
+        sent = self.write(out.encode('ascii'))
+        self.waitForBytesWritten(2000)  # 2 seconds should be enough
+        if sent == -1:
+            # Network error?
+            self.change_status(E_NETWORK,
+                               translate('OpenLP.PJLink1', 'Error while sending data to projector'))
 
     def process_command(self, cmd, data):
         """
@@ -665,7 +661,15 @@ class PJLink1(QTcpSocket):
 
         :param data: Class that projector supports.
         """
-        self.pjlink_class = data
+        # bug 1550891: Projector returns non-standard class response:
+        #            : Expected: %1CLSS=1
+        #            : Received: %1CLSS=Class 1
+        if len(data) > 1:
+            # Split non-standard information from response
+            clss = data.split()[-1]
+        else:
+            clss = data
+        self.pjlink_class = clss
         log.debug('(%s) Setting pjlink_class for this projector to "%s"' % (self.ip, self.pjlink_class))
         return
 

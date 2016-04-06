@@ -1,0 +1,21 @@
+{
+    "title": "Amazing Grace",
+    "verse_order_list": ["v1", "v2", "v3"],
+    "verses": [
+        [
+            "v1",
+            "Amazing grace! How sweet the sound!\r\nThat saved a wretch like me!\r\nI once was lost, but now am found;\r\nWas blind, but now I see.\r\n\r\n'Twas grace that taught my heart to fear,\r\nAnd grace my fears relieved.\r\nHow precious did that grace appear,\r\nThe hour I first believed.",
+            null
+        ],
+        [
+            "v2",
+            "The Lord has promised good to me,\r\nHis Word my hope secures.\r\nHe will my shield and portion be\r\nAs long as life endures.",
+            null
+        ],
+        [
+            "v3",
+            "Thro' many dangers, toils and snares\r\nI have already come.\r\n'Tis grace that brought me safe thus far,\r\nAnd grace will lead me home.\r\n\r\n[---]\r\nWhen we've been there ten thousand years,\r\nBright shining as the sun,\r\nWe've no less days to sing God's praise,\r\nThan when we first begun.",
+            null
+        ]
+    ]
+}

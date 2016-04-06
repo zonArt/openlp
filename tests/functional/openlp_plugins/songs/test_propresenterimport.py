@@ -39,11 +39,23 @@ class TestProPresenterFileImport(SongImportTestHelper):
         self.importer_module_name = 'propresenter'
         super(TestProPresenterFileImport, self).__init__(*args, **kwargs)
 
-    def test_song_import(self):
+    def test_pro4_song_import(self):
         """
-        Test that loading a ProPresenter file works correctly
+        Test that loading a ProPresenter 4 file works correctly
         """
         self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.pro4')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
-        self.file_import([os.path.join(TEST_PATH, 'Vaste Grond.pro4')],
-                         self.load_external_result_data(os.path.join(TEST_PATH, 'Vaste Grond.json')))
+
+    def test_pro5_song_import(self):
+        """
+        Test that loading a ProPresenter 5 file works correctly
+        """
+        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.pro5')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
+
+    def test_pro6_song_import(self):
+        """
+        Test that loading a ProPresenter 6 file works correctly
+        """
+        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.pro6')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))

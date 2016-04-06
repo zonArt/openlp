@@ -32,7 +32,7 @@ from openlp.core.lib import ItemCapabilities, MediaManagerItem, MediaType, Servi
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players, parse_optical_path, format_milliseconds
-from openlp.core.utils import get_locale_key
+from openlp.core.common.languagemanager import get_locale_key
 from openlp.core.ui.media.vlcplayer import get_vlc
 
 if get_vlc() is not None:

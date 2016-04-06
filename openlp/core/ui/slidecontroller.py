@@ -23,20 +23,20 @@
 The :mod:`slidecontroller` module contains the most important part of OpenLP - the slide controller
 """
 
-import os
 import copy
+import os
 from collections import deque
 from threading import Lock
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, Settings, SlideLimits, UiStrings, translate, \
-    RegistryMixin, OpenLPMixin, is_win
+    RegistryMixin, OpenLPMixin
+from openlp.core.common.actions import ActionList, CategoryOrder
 from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, \
     ScreenList, build_icon, build_html
-from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
-from openlp.core.utils.actions import ActionList, CategoryOrder
+from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.ui.listpreviewwidget import ListPreviewWidget
 
 # Threshold which has to be trespassed to toggle.
@@ -601,13 +601,21 @@ class SlideController(DisplayController, RegistryProperties):
     def __add_actions_to_widget(self, widget):
         """
         Add actions to the widget specified by `widget`
+        This defines the controls available when Live display has stolen focus.
+        Examples of this happening: Clicking anything in the live window or certain single screen mode scenarios.
+        Needles to say, blank to modes should not be removed from here.
+        For some reason this required a test. It may be found in test_slidecontroller.py as
+        "live_stolen_focus_shortcuts_test. If you want to modify things here, you must also modify them there. (Duh)
 
         :param widget: The UI widget for the actions
         """
         widget.addActions([
             self.previous_item, self.next_item,
             self.previous_service, self.next_service,
-            self.escape_item])
+            self.escape_item,
+            self.desktop_screen,
+            self.theme_screen,
+            self.blank_screen])
 
     def preview_size_changed(self):
         """

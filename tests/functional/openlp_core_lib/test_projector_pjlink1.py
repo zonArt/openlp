@@ -26,6 +26,7 @@ Package to test the openlp.core.lib.projector.pjlink1 package.
 from unittest import TestCase
 
 from openlp.core.lib.projector.pjlink1 import PJLink1
+from openlp.core.lib.projector.constants import E_PARAMETER, ERROR_STRING
 
 from tests.functional import patch
 from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUTHENTICATE
@@ -60,3 +61,49 @@ class TestPJLink(TestCase):
                                                    "Connection request should have been called with TEST_SALT"))
         self.assertTrue(mock_qmd5_hash.called_with(TEST_PIN,
                                                    "Connection request should have been called with TEST_PIN"))
+
+    def non_standard_class_reply_test(self):
+        """
+        bugfix 1550891 - CLSS request returns non-standard 'Class N' reply
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+
+        # WHEN: Process non-standard reply
+        pjlink.process_clss('Class 1')
+
+        # THEN: Projector class should be set with proper value
+        self.assertEquals(pjlink.pjlink_class, '1',
+                          'Non-standard class reply should have set proper class')
+
+    @patch.object(pjlink_test, 'change_status')
+    def status_change_test(self, mock_change_status):
+        """
+        Test process_command call with ERR2 (Parameter) status
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+
+        # WHEN: process_command is called with "ERR2" status from projector
+        pjlink.process_command('POWR', 'ERR2')
+
+        # THEN: change_status should have called change_status with E_UNDEFINED
+        #       as first parameter
+        mock_change_status.called_with(E_PARAMETER,
+                                       'change_status should have been called with "{}"'.format(
+                                           ERROR_STRING[E_PARAMETER]))
+
+    @patch.object(pjlink_test, 'process_inpt')
+    def projector_return_ok_test(self, mock_process_inpt):
+        """
+        Test projector calls process_inpt command when process_command is called with INPT option
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+
+        # WHEN: process_command is called with INST command and 31 input:
+        pjlink.process_command('INPT', '31')
+
+        # THEN: process_inpt method should have been called with 31
+        mock_process_inpt.called_with('31',
+                                      "process_inpt should have been called with 31")

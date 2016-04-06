@@ -23,17 +23,16 @@
 The actual exception dialog form.
 """
 import logging
-import re
 import os
 import platform
+import re
 
 import bs4
 import sqlalchemy
+from PyQt5 import Qt, QtCore, QtGui, QtWebKit, QtWidgets
 from lxml import etree
 
 from openlp.core.common import RegistryProperties, is_linux
-
-from PyQt5 import Qt, QtCore, QtGui, QtWebKit, QtWidgets
 
 try:
     import migrate
@@ -74,7 +73,7 @@ except ImportError:
     VLC_VERSION = '-'
 
 from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.utils import get_application_version
+from openlp.core.common.versionchecker import get_application_version
 
 from .exceptiondialog import Ui_ExceptionDialog
 
@@ -180,11 +179,13 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
             if ':' in line:
                 exception = line.split('\n')[-1].split(':')[0]
         subject = 'Bug report: %s in %s' % (exception, source)
-        mail_to_url = QtCore.QUrlQuery('mailto:bugs@openlp.org')
-        mail_to_url.addQueryItem('subject', subject)
-        mail_to_url.addQueryItem('body', self.report_text % content)
+        mail_urlquery = QtCore.QUrlQuery()
+        mail_urlquery.addQueryItem('subject', subject)
+        mail_urlquery.addQueryItem('body', self.report_text % content)
         if self.file_attachment:
-            mail_to_url.addQueryItem('attach', self.file_attachment)
+            mail_urlquery.addQueryItem('attach', self.file_attachment)
+        mail_to_url = QtCore.QUrl('mailto:bugs@openlp.org')
+        mail_to_url.setQuery(mail_urlquery)
         QtGui.QDesktopServices.openUrl(mail_to_url)
 
     def on_description_updated(self):

@@ -45,7 +45,5 @@ class TestSundayPlusFileImport(SongImportTestHelper):
         with patch('openlp.plugins.songs.lib.importers.sundayplus.retrieve_windows_encoding') as \
                 mocked_retrieve_windows_encoding:
             mocked_retrieve_windows_encoding.return_value = 'cp1252'
-            self.file_import([os.path.join(TEST_PATH, 'Abba Fader.ptf')],
-                             self.load_external_result_data(os.path.join(TEST_PATH, 'abba-fader.json')))
             self.file_import([os.path.join(TEST_PATH, 'Amazing Grace.ptf')],
                              self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
