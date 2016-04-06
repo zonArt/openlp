@@ -764,7 +764,7 @@ class BibleMediaItem(MediaManagerItem):
                 except IndexError:
                     log.exception('The second_search_results does not have as many verses as the search_results.')
                     break
-                except:
+                except TypeError:
                     log.exception('The second_search_results does not have this book.')
                     break
                 bible_text = '%s %d%s%d (%s, %s)' % (book, verse.chapter, verse_separator, verse.verse, version,
