@@ -752,7 +752,8 @@ class BibleMediaItem(MediaManagerItem):
                                                                                                     'make<br>sure that '
                                                                                                     'your reference '
                                                                                                     'follows one of '
-                                                                                                    'these patterns:%s'
+                                                                                                    'these patterns:'
+                                                                                                    '<br><br>%s'
                                                                        % UiStrings().BibleScriptureError %
                                                                        reference_separators))
         # Finalizing the search

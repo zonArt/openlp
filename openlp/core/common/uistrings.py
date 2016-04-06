@@ -152,21 +152,30 @@ class UiStrings(object):
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
         self.BibleShortSearchTitle = translate('OpenLP.Ui', 'Search is Empty or too Short')
-        self.BibleScriptureError = translate('OpenLP.Ui', '<br><br>Book Chapter | John 3:16<br>'
-                                                          'Book Chapter%(range)sChapter | John 3%(range)s4<br>'
-                                                          'Book Chapter%(verse)sVerse%(range)sVerse | John 3%(verse)'
-                                                          's16%(range)s17<br>Book Chapter%(verse)sVerse%(range)sVerse%'
-                                                          '(list)sVerse%(range)sVerse | John 3%(verse)s16-17%(list)s20%'
-                                                          '(range)s22<br>Book Chapter%(verse)sVerse%(range)sVerse%'
-                                                          '(list)sChapter%(verse)sVerse%(range)sVerse | John 3%(verse)'
-                                                          's16%(range)s17%(list)s5%(verse)s7%(range)s9<br>Book Chapter%'
-                                                          '(verse)sVerse%(range)sChapter%(verse)sVerse | John 3%(verse)'
-                                                          's16%(range)s4%(verse)s2<br><br> Book names may be shortened '
-                                                          'from full names, for an example: Joh 3 = John 3',
-                                             'Please pay attention to the appended "s" of the wildcards and refrain '
-                                             'from translating the words inside the names in the brackets.')
         self.BibleShortSearch = translate('OpenLP.Ui', '<strong>The search you have entered is empty or shorter '
                                                        'than 3 characters long.<br>Please try again with '
                                                        'a longer search.</strong><br><br>You can separate different '
                                                        'keywords by a space to search for all of your keywords and you '
                                                        'can separate them by a comma to search for one of them.')
+        import itertools
+        #b = book, c = chapter, ve = verse
+        bc = translate('OpenLP.Ui', 'Book Chapter')
+        cha = translate('OpenLP.Ui', 'Chapter')
+        ver = translate('OpenLP.Ui', 'Verse')
+        interval = ' | '
+        psalm = translate('OpenLP.Ui', 'Psalm')
+        may_shorten = translate('OpenLP.Ui', 'Book names may be shortened from full names, for an example Ps 23 = '
+                                             'Psalm 23')
+
+        bible_items = [bc, interval, psalm, ' 23<br>',
+                 bc, '%(range)s', cha, interval, psalm, ' 23%(range)s24<br>',
+                 bc, '%(verse)s', ver, '%(range)s', ver, interval, psalm, ' 23%(verse)s1%(range)s2<br>',
+                 bc, '%(verse)s', ver, '%(range)s', ver, '%(list)s', ver, '%(range)s', ver, interval, psalm,
+                       ' 23%(verse)s1%(range)s2%(list)s5%(range)s6<br>',
+                       bc, '%(verse)s', ver, '%(range)s', ver, '%(list)s', cha, '%(verse)s', ver, '%(range)s', ver,
+                       interval, psalm, ' 23%(verse)s1%(range)s2%(list)s24%(verse)s1%(range)s3<br>',
+                       bc, '%(verse)s', ver, '%(range)s', cha, '%(verse)s', ver, interval, psalm,
+                       ' 23%(verse)s1%(range)s24%(verse)s1<br><br>', may_shorten]
+        itertools.chain.from_iterable(itertools.repeat(x, 1) if isinstance(x, str) else x for x in bible_items)
+        bible_scripture_error_all = ''.join(str(e) for e in bible_items)
+        self.BibleScriptureError = bible_scripture_error_all

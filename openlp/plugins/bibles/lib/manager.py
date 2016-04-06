@@ -281,7 +281,7 @@ class BibleManager(RegistryProperties):
                     translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
                     translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
                                                            'with your search.<br><br>'
-                              'Please make sure that your reference follows one of these patterns:</strong>%s'
+                              'Please make sure that your reference follows one of these patterns:</strong><br><br>%s'
                               % UiStrings().BibleScriptureError % reference_separators))
             return None
 
