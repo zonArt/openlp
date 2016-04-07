@@ -169,18 +169,42 @@ class MediaPlayer(RegistryProperties):
         return ''
 
     def get_live_state(self):
+        """
+        Get the state of the live player
+        :return: Live state
+        """
         return self.state[0]
 
     def set_live_state(self, state):
+        """
+        Set the State of the Live player
+        :param state: State to be set
+        :return: None
+        """
         self.state[0] = state
 
     def get_preview_state(self):
+        """
+        Get the state of the preview player
+        :return: Preview State
+        """
         return self.state[1]
 
     def set_preview_state(self, state):
+        """
+        Set the state of the Preview Player
+        :param state: State to be set
+        :return: None
+        """
         self.state[1] = state
 
     def set_state(self, state, display):
+        """
+        Set the State based on the display being processed
+        :param state: State to be set
+        :param display: Identify the Display type
+        :return: None
+        """
         if display.controller.is_live:
             self.set_live_state(state)
         else:

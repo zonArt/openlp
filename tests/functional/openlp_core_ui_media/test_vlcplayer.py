@@ -470,7 +470,6 @@ class TestVLCPlayer(TestCase, TestMixin):
         mocked_display.vlc_media_player.set_media.assert_called_with(mocked_vlc_media)
         mocked_vlc_media.parse.assert_called_with()
         mocked_volume.assert_called_with(mocked_display, 100)
-        # self.assertEqual(10, mocked_controller.media_info.length)
         self.assertTrue(result)
 
     @patch('openlp.core.ui.media.vlcplayer.is_win')
@@ -637,7 +636,6 @@ class TestVLCPlayer(TestCase, TestMixin):
         # THEN: A bunch of things should happen to play the media
         mocked_thread.start.assert_called_with()
         mocked_volume.assert_called_with(mocked_display, 100)
-        mocked_controller.seek_slider.setMaximum.assert_called_with(50000)
         self.assertEqual(MediaState.Playing, vlc_player.get_live_state())
         mocked_display.vlc_widget.raise_.assert_called_with()
         self.assertTrue(result, 'The value returned from play() should be True')
@@ -707,7 +705,6 @@ class TestVLCPlayer(TestCase, TestMixin):
         mocked_display.vlc_media_player.audio_set_track.assert_called_with(1)
         mocked_display.vlc_media_player.video_set_spu.assert_called_with(1)
         mocked_volume.assert_called_with(mocked_display, 100)
-        mocked_controller.seek_slider.setMaximum.assert_called_with(50000)
         self.assertEqual(MediaState.Playing, vlc_player.get_live_state())
         mocked_display.vlc_widget.raise_.assert_called_with()
         self.assertTrue(result, 'The value returned from play() should be True')
