@@ -32,7 +32,7 @@ from openlp.core.common import Registry, AppLocation, Settings, check_directory_
 from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, \
     check_item_selected, create_separated_list
 from openlp.core.lib.ui import create_widget_action
-from openlp.core.utils import get_natural_key
+from openlp.core.common.languagemanager import get_natural_key
 from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm

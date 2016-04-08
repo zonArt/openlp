@@ -27,7 +27,7 @@ from sqlalchemy.sql import and_
 
 from openlp.core.common import Registry, RegistryProperties, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import get_natural_key
+from openlp.core.common.languagemanager import get_natural_key
 from openlp.plugins.songs.forms.authorsform import AuthorsForm
 from openlp.plugins.songs.forms.topicsform import TopicsForm
 from openlp.plugins.songs.forms.songbookform import SongBookForm

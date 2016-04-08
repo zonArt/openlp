@@ -20,38 +20,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.utils.__init__ package.
+Package to test the openlp.core.common.versionchecker package.
 """
-
 from unittest import TestCase
-import urllib.request
-import urllib.error
-import urllib.parse
 
+from openlp.core.common.settings import Settings
+from openlp.core.common.versionchecker import VersionThread
 from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 
-from openlp.core.utils import CONNECTION_TIMEOUT, CONNECTION_RETRIES, get_web_page
 
+class TestVersionchecker(TestMixin, TestCase):
 
-class TestFirstTimeWizard(TestMixin, TestCase):
-    """
-    Test First Time Wizard import functions
-    """
-    def webpage_connection_retry_test(self):
+    def setUp(self):
         """
-        Test get_web_page will attempt CONNECTION_RETRIES+1 connections - bug 1409031
+        Create an instance and a few example actions.
         """
-        # GIVEN: Initial settings and mocks
-        with patch.object(urllib.request, 'urlopen') as mocked_urlopen:
-            mocked_urlopen.side_effect = ConnectionError
+        self.build_settings()
 
-            # WHEN: A webpage is requested
-            try:
-                get_web_page(url='http://localhost')
-            except:
-                pass
+    def tearDown(self):
+        """
+        Clean up
+        """
+        self.destroy_settings()
 
-            # THEN: urlopen should have been called CONNECTION_RETRIES + 1 count
-            self.assertEquals(mocked_urlopen.call_count, CONNECTION_RETRIES + 1,
-                              'get_web_page() should have tried {} times'.format(CONNECTION_RETRIES))
+    def version_thread_triggered_test(self):
+        """
+        Test the version thread call does not trigger UI
+        :return:
+        """
+        # GIVEN: a equal version setup and the data is not today.
+        mocked_main_window = MagicMock()
+        Settings().setValue('core/last version test', '1950-04-01')
+        # WHEN: We check to see if the version is different .
+        with patch('PyQt5.QtCore.QThread'),\
+                patch('openlp.core.common.versionchecker.get_application_version') as mocked_get_application_version:
+            mocked_get_application_version.return_value = {'version': '1.0.0', 'build': '', 'full': '2.0.4'}
+            version_thread = VersionThread(mocked_main_window)
+            version_thread.run()
+        # THEN: If the version has changed the main window is notified
+        self.assertTrue(mocked_main_window.openlp_version_check.emit.called,
+                        'The main windows should have been notified')

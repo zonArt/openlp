@@ -34,7 +34,7 @@ from PyQt5 import QtCore, QtWidgets
 from openlp.core.common import Registry, RegistryProperties, AppLocation, UiStrings, check_directory_exists, translate
 from openlp.core.lib import FileDialog, PluginStatus, MediaType, create_separated_list
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
-from openlp.core.utils import get_natural_key
+from openlp.core.common.languagemanager import get_natural_key
 from openlp.plugins.songs.lib import VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorType, Topic, MediaFile, SongBookEntry
 from openlp.plugins.songs.lib.ui import SongStrings
