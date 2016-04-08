@@ -207,7 +207,9 @@ class Settings(QtCore.QSettings):
         # ('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
         ('songs/search as type', 'advanced/search as type', []),
         ('media/players', 'media/players_temp', [(media_players_conv, None)]),  # Convert phonon to system
-        ('media/players_temp', 'media/players', [])  # Move temp setting from above to correct setting
+        ('media/players_temp', 'media/players', []),  # Move temp setting from above to correct setting
+        ('advanced/default color', 'core/logo background color', []),  # Default image renamed + moved to general > 2.4.
+        ('advanced/default image', '/core/logo file', [])  # Default image renamed + moved to general after 2.4.
     ]
 
     @staticmethod
