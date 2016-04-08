@@ -26,26 +26,25 @@ for the Songs plugin.
 
 import logging
 import os
-from tempfile import gettempdir
 import sqlite3
+from tempfile import gettempdir
 
 from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import UiStrings, Registry, translate
+from openlp.core.common.actions import ActionList
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
-from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.forms.duplicatesongremovalform import DuplicateSongRemovalForm
 from openlp.plugins.songs.forms.songselectform import SongSelectForm
 from openlp.plugins.songs.lib import clean_song, upgrade
 from openlp.plugins.songs.lib.db import init_schema, Song
-from openlp.plugins.songs.lib.mediaitem import SongSearch
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.importers.openlp import OpenLPSongImport
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
+from openlp.plugins.songs.lib.mediaitem import SongSearch
 from openlp.plugins.songs.lib.songstab import SongsTab
-
 
 log = logging.getLogger(__name__)
 __default_settings__ = {

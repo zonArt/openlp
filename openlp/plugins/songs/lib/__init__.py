@@ -29,9 +29,8 @@ import re
 
 from PyQt5 import QtWidgets
 
-from openlp.core.common import AppLocation
+from openlp.core.common import AppLocation, CONTROL_CHARS
 from openlp.core.lib import translate
-from openlp.core.utils import CONTROL_CHARS
 from openlp.plugins.songs.lib.db import MediaFile, Song
 from .db import Author
 from .ui import SongStrings

@@ -33,10 +33,9 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.common import Registry, RegistryProperties, AppLocation, translate
+from openlp.core.common import Registry, RegistryProperties, AppLocation, translate, clean_filename
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import clean_filename
 from openlp.plugins.bibles.lib import upgrade
 
 log = logging.getLogger(__name__)
