@@ -29,15 +29,9 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-<<<<<<< TREE
 from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
 from openlp.core.lib import SettingsTab, build_icon
-from openlp.core.utils import format_time
-=======
-from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate, get_images_filter
-from openlp.core.lib import ColorButton, SettingsTab, build_icon
 from openlp.core.common.languagemanager import format_time
->>>>>>> MERGE-SOURCE
 
 log = logging.getLogger(__name__)
 
