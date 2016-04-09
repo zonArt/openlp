@@ -385,7 +385,7 @@ class Ui_MainWindow(object):
         """
         Set up the translation system
         """
-        main_window.setWindowTitle(UiStrings().OLPV2x)
+        main_window.setWindowTitle(UiStrings().OLP)
         self.file_menu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.file_import_menu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.file_export_menu.setTitle(translate('OpenLP.MainWindow', '&Export'))
@@ -1156,9 +1156,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         :param file_name: The file name of the service file.
         """
         if modified:
-            title = '%s - %s*' % (UiStrings().OLPV2x, file_name)
+            title = '%s - %s*' % (UiStrings().OLP, file_name)
         else:
-            title = '%s - %s' % (UiStrings().OLPV2x, file_name)
+            title = '%s - %s' % (UiStrings().OLP, file_name)
         self.setWindowTitle(title)
 
     def show_status_message(self, message):

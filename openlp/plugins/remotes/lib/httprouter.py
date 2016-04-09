@@ -312,12 +312,12 @@ class HttpRouter(RegistryProperties):
         Translate various strings in the mobile app.
         """
         remote = translate('RemotePlugin.Mobile', 'Remote')
-        stage = translate('RemotePlugin.Mobile', 'Stage View')
-        live = translate('RemotePlugin.Mobile', 'Live View')
+        stage = translate('RemotePlugin.Mobile', 'Stage')
+        #live = translate('RemotePlugin.Mobile', 'Live')
         self.template_vars = {
-            'app_title': "%s %s" % (UiStrings().OLPV2x, remote),
-            'stage_title': "%s %s" % (UiStrings().OLPV2x, stage),
-            'live_title': "%s %s" % (UiStrings().OLPV2x, live),
+            'app_title': "OpenLP | %s" % remote,
+            'stage_title': "OpenLP | %s" % stage,
+            'live_title': "OpenLP | %s" % (UiStrings().Live),
             'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
             'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
