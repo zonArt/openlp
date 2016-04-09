@@ -128,22 +128,14 @@ class BiblesTab(SettingsTab):
         self.language_selection_layout.addWidget(self.language_selection_label)
         self.language_selection_layout.addWidget(self.language_selection_combo_box)
         self.right_layout.addWidget(self.language_selection_group_box)
-        # a
         self.bible_search_settings_group_box = QtWidgets.QGroupBox(self.right_column)
         self.bible_search_settings_group_box.setObjectName('bible_search_settings_group_box')
         self.right_layout.addWidget(self.bible_search_settings_group_box)
-
         self.hide_combined_quick_error_check_box = QtWidgets.QCheckBox(self.bible_search_settings_group_box)
         self.hide_combined_quick_error_check_box.setObjectName('hide_combined_quick_error_check_box')
-        self.right_layout.addWidget(self.hide_combined_quick_error_check_box)
-
-
-        #self.is_verse_number_visible_check_box = QtWidgets.QCheckBox(self.verse_display_group_box)
-        #self.is_verse_number_visible_check_box.setObjectName('is_verse_number_visible_check_box')
-        #self.verse_display_layout.addRow(self.is_verse_number_visible_check_box)
-
-
-        # b
+        self.search_settings_layout = QtWidgets.QFormLayout(self.bible_search_settings_group_box)
+        self.search_settings_layout.setObjectName('search_settings_layout')
+        self.search_settings_layout.addRow(self.hide_combined_quick_error_check_box)
         self.left_layout.addStretch()
         self.right_layout.addStretch()
         # Signals and slots
@@ -216,6 +208,7 @@ class BiblesTab(SettingsTab):
         self.hide_combined_quick_error_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Don\'t show error '
                                                                                              'for no results in '
                                                                                              'combined quick search'))
+
     def on_bible_theme_combo_box_changed(self):
         self.bible_theme = self.bible_theme_combo_box.currentText()
 
@@ -328,7 +321,6 @@ class BiblesTab(SettingsTab):
         Event handler for the 'hide_combined_quick_error' check box
         """
         self.hide_combined_quick_error = (check_state == QtCore.Qt.Checked)
-        #self.check_hide_combined_quick_error()
 
     def load(self):
         settings = Settings()
@@ -385,7 +377,6 @@ class BiblesTab(SettingsTab):
         self.language_selection_combo_box.setCurrentIndex(self.language_selection)
         self.hide_combined_quick_error = settings.value('hide combined quick error')
         self.hide_combined_quick_error_check_box.setChecked(self.hide_combined_quick_error)
-        #self.check_hide_combined_quick_error()
         settings.endGroup()
 
     def save(self):
