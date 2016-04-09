@@ -169,21 +169,21 @@ class UiStrings(object):
         cha = chapter
         verse = translate('OpenLP.Ui', 'Verse')
         ver = verse
-        interval = ' | '
+        gap = ' | '
         psalm = translate('OpenLP.Ui', 'Psalm')
         may_shorten = translate('OpenLP.Ui', 'Book names may be shortened from full names, for an example Ps 23 = '
                                              'Psalm 23')
-        bible_scripture_items = [bc, interval, psalm, ' 23<br>',
-                 bc, '%(range)s', cha, interval, psalm, ' 23%(range)s24<br>',
-                 bc, '%(verse)s', ver, '%(range)s', ver, interval, psalm, ' 23%(verse)s1%(range)s2<br>',
-                 bc, '%(verse)s', ver, '%(range)s', ver, '%(list)s', ver, '%(range)s', ver, interval, psalm,
-                       ' 23%(verse)s1%(range)s2%(list)s5%(range)s6<br>',
-                       bc, '%(verse)s', ver, '%(range)s', ver, '%(list)s', cha, '%(verse)s', ver, '%(range)s', ver,
-                       interval, psalm, ' 23%(verse)s1%(range)s2%(list)s24%(verse)s1%(range)s3<br>',
-                       bc, '%(verse)s', ver, '%(range)s', cha, '%(verse)s', ver, interval, psalm,
-                       ' 23%(verse)s1%(range)s24%(verse)s1<br><br>', may_shorten]
+        bible_scripture_items = [bc, gap, psalm, ' 23<br>',
+                                 bc, '%(range)s', cha, gap, psalm, ' 23%(range)s24<br>',
+                                 bc, '%(verse)s', ver, '%(range)s', ver, gap, psalm, ' 23%(verse)s1%(range)s2<br>',
+                                 bc, '%(verse)s', ver, '%(range)s', ver, '%(list)s', ver, '%(range)s', ver, gap, psalm,
+                                 ' 23%(verse)s1%(range)s2%(list)s5%(range)s6<br>',
+                                 bc, '%(verse)s', ver, '%(range)s', ver, '%(list)s', cha, '%(verse)s', ver, '%(range)s',
+                                 ver, gap, psalm, ' 23%(verse)s1%(range)s2%(list)s24%(verse)s1%(range)s3<br>', bc,
+                                 '%(verse)s', ver, '%(range)s', cha, '%(verse)s', ver, gap, psalm,
+                                 ' 23%(verse)s1%(range)s24%(verse)s1<br><br>', may_shorten]
         itertools.chain.from_iterable(itertools.repeat(strings, 1) if isinstance(strings, str) else strings for strings
                                       in bible_scripture_items)
         bible_scripture_error_joined = ''.join(str(joined) for joined in bible_scripture_items)
-        # This is the actual
+        # This is what gets called to other files.
         self.BibleScriptureError = bible_scripture_error_joined
