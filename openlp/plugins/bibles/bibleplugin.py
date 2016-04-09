@@ -59,7 +59,8 @@ __default_settings__ = {
     'bibles/range separator': '',
     'bibles/list separator': '',
     'bibles/end separator': '',
-    'bibles/last directory import': ''
+    'bibles/last directory import': '',
+    'bibles/hide combined quick error': False
 }
 
 

@@ -736,7 +736,8 @@ class BibleMediaItem(MediaManagerItem):
             if not self.search_results and len(text) - text.count(' ') > 2 and bible:
                 self.on_quick_text_search()
                 # If no Text or Reference is found, message is given.
-                if not self.search_results:
+                if not self.search_results and not \
+                        Settings().value(self.settings_section + '/hide combined quick error'):
                         self.application.set_normal_cursor()
                         reference_separators = {
                             'verse': get_reference_separator('sep_v_display'),
