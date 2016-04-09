@@ -660,8 +660,10 @@ class BibleMediaItem(MediaManagerItem):
         # This will check if field has any '.' and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
         text_direct = self.quick_search_edit.text()
         text = text_direct.replace('. ', ' ')
+        # If we are doing "Reference" search, use the search from manager.py
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
             self.search_results = self.plugin.manager.get_verses(bible, text)
+        # If we are doing "Combined Reference" search, use the get_verses_combined from manager.py (No error included)
         else:
             self.search_results = self.plugin.manager.get_verses_combined(bible, text)
         if second_bible and self.search_results:
@@ -724,13 +726,14 @@ class BibleMediaItem(MediaManagerItem):
         # If keyword is shorter than 3 (not including spaces), message is given and search is finalized.
         # It's actually to find verses with less than 3 chars (Eg. G1 = Genesis 1) thus this error is not shown if
         # any results are found. This check needs to be here in order to avoid duplicate errors.
-            if not self.search_results and len(text) - text.count(' ') < 3:
+        # if no Bibles are installed, this message is not shown - "No bibles" message is whon instead. (and bible)
+            if not self.search_results and len(text) - text.count(' ') < 3 and bible:
                 self.main_window.information_message(
                     ('%s' % UiStrings().BibleShortSearchTitle),
                     ('%s' % UiStrings().BibleShortSearch))
             # Text search starts here if no reference was found and keyword is longer than 2.
             # This is required in order to avoid duplicate error messages for short keywords.
-            if not self.search_results and len(text) - text.count(' ') > 2:
+            if not self.search_results and len(text) - text.count(' ') > 2 and bible:
                 self.on_quick_text_search()
                 # If no Text or Reference is found, message is given.
                 if not self.search_results:

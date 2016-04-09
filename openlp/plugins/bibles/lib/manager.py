@@ -262,10 +262,8 @@ class BibleManager(RegistryProperties):
         if not bible:
             if show_error:
                 self.main_window.information_message(
-                    translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
-                    translate('BiblesPlugin.BibleManager', 'There are no Bibles currently installed. Please use the '
-                              'Import Wizard to install one or more Bibles.')
-                )
+                    ('%s' % UiStrings().BibleNoBiblesTitle),
+                    ('%s' % UiStrings().BibleNoBibles))
             return None
         language_selection = self.get_language_selection(bible)
         ref_list = parse_reference(verse_text, self.db_cache[bible], language_selection, book_ref_id)
@@ -316,11 +314,8 @@ class BibleManager(RegistryProperties):
         log.debug('BibleManager.verse_search("%s", "%s")', bible, text)
         if not bible:
             self.main_window.information_message(
-                translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
-                translate('BiblesPlugin.BibleManager',
-                          'There are no Bibles currently installed. Please use the Import Wizard to install one or '
-                          'more Bibles.')
-            )
+                ('%s' % UiStrings().BibleNoBiblesTitle),
+                ('%s' % UiStrings().BibleNoBibles))
             return None
         # Check if the bible or second_bible is a web bible.
         web_bible = self.db_cache[bible].get_object(BibleMeta, 'download_source')
@@ -345,15 +340,15 @@ class BibleManager(RegistryProperties):
         else:
             return None
 
-    def get_verses_combined(self, bible, verse_text, book_ref_id=False, show_error=False):
+    def get_verses_combined(self, bible, verse_text, book_ref_id=False, show_error=True):
             log.debug('BibleManager.get_verses("%s", "%s")', bible, verse_text)
             if not bible:
                 if show_error:
-                    self.main_window.information_message(
-                        translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
-                        translate('BiblesPlugin.BibleManager', 'There are no Bibles currently installed. Please use the'
-                                  ' Import Wizard to install one or more Bibles.')
-                    )
+                    if not bible:
+                        self.main_window.information_message(
+                            ('%s' % UiStrings().BibleNoBiblesTitle),
+                            ('%s' % UiStrings().BibleNoBibles))
+                        return None
                 return None
             language_selection = self.get_language_selection(bible)
             ref_list = parse_reference(verse_text, self.db_cache[bible], language_selection, book_ref_id)

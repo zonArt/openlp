@@ -23,6 +23,7 @@
 The :mod:`uistrings` module provides standard strings for OpenLP.
 """
 import logging
+import itertools
 
 from openlp.core.common import translate
 
@@ -151,23 +152,28 @@ class UiStrings(object):
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
+        # Translations used in both, bibles\lib\mediaitem.py and bibles\lib\manager.py
         self.BibleShortSearchTitle = translate('OpenLP.Ui', 'Search is Empty or too Short')
         self.BibleShortSearch = translate('OpenLP.Ui', '<strong>The search you have entered is empty or shorter '
                                                        'than 3 characters long.<br>Please try again with '
                                                        'a longer search.</strong><br><br>You can separate different '
                                                        'keywords by a space to search for all of your keywords and you '
                                                        'can separate them by a comma to search for one of them.')
-        import itertools
-        #b = book, c = chapter, ve = verse
-        bc = translate('OpenLP.Ui', 'Book Chapter')
-        cha = translate('OpenLP.Ui', 'Chapter')
-        ver = translate('OpenLP.Ui', 'Verse')
+        self.BibleNoBiblesTitle = translate('OpenLP.Ui', 'No Bibles Available')
+        self.BibleNoBibles = translate('OpenLP.Ui', '<strong>There are no Bibles currently installed.</strong><br><br>'
+                                                    'Please use the Import Wizard to install one or more Bibles.')
+        # Scripture reference error combined from small translation stings by using itertools.
+        book_chapter = translate('OpenLP.Ui', 'Book Chapter')
+        bc = book_chapter
+        chapter = translate('OpenLP.Ui', 'Chapter')
+        cha = chapter
+        verse = translate('OpenLP.Ui', 'Verse')
+        ver = verse
         interval = ' | '
         psalm = translate('OpenLP.Ui', 'Psalm')
         may_shorten = translate('OpenLP.Ui', 'Book names may be shortened from full names, for an example Ps 23 = '
                                              'Psalm 23')
-
-        bible_items = [bc, interval, psalm, ' 23<br>',
+        bible_scripture_items = [bc, interval, psalm, ' 23<br>',
                  bc, '%(range)s', cha, interval, psalm, ' 23%(range)s24<br>',
                  bc, '%(verse)s', ver, '%(range)s', ver, interval, psalm, ' 23%(verse)s1%(range)s2<br>',
                  bc, '%(verse)s', ver, '%(range)s', ver, '%(list)s', ver, '%(range)s', ver, interval, psalm,
@@ -176,6 +182,8 @@ class UiStrings(object):
                        interval, psalm, ' 23%(verse)s1%(range)s2%(list)s24%(verse)s1%(range)s3<br>',
                        bc, '%(verse)s', ver, '%(range)s', cha, '%(verse)s', ver, interval, psalm,
                        ' 23%(verse)s1%(range)s24%(verse)s1<br><br>', may_shorten]
-        itertools.chain.from_iterable(itertools.repeat(x, 1) if isinstance(x, str) else x for x in bible_items)
-        bible_scripture_error_all = ''.join(str(e) for e in bible_items)
-        self.BibleScriptureError = bible_scripture_error_all
+        itertools.chain.from_iterable(itertools.repeat(strings, 1) if isinstance(strings, str) else strings for strings
+                                      in bible_scripture_items)
+        bible_scripture_error_joined = ''.join(str(joined) for joined in bible_scripture_items)
+        # This is the actual
+        self.BibleScriptureError = bible_scripture_error_joined
