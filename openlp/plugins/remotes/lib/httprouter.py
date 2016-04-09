@@ -313,11 +313,10 @@ class HttpRouter(RegistryProperties):
         """
         remote = translate('RemotePlugin.Mobile', 'Remote')
         stage = translate('RemotePlugin.Mobile', 'Stage')
-        #live = translate('RemotePlugin.Mobile', 'Live')
         self.template_vars = {
             'app_title': "OpenLP | %s" % remote,
             'stage_title': "OpenLP | %s" % stage,
-            'live_title': "OpenLP | %s" % (UiStrings().Live),
+            'live_title': "OpenLP | %s" % UiStrings().Live,
             'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
             'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
