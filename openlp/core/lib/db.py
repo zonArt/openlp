@@ -34,9 +34,8 @@ from sqlalchemy.pool import NullPool
 from alembic.migration import MigrationContext
 from alembic.operations import Operations
 
-from openlp.core.common import AppLocation, Settings, translate
+from openlp.core.common import AppLocation, Settings, translate, delete_file
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import delete_file
 
 log = logging.getLogger(__name__)
 

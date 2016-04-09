@@ -33,12 +33,12 @@ from tempfile import mkstemp
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, ThemeLevel, OpenLPMixin, \
-    RegistryMixin, check_directory_exists, UiStrings, translate
+    RegistryMixin, check_directory_exists, UiStrings, translate, split_filename, delete_file
 from openlp.core.common.actions import ActionList, CategoryOrder
 from openlp.core.lib import OpenLPToolbar, ServiceItem, ItemCapabilities, PluginStatus, build_icon
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
-from openlp.core.utils import delete_file, split_filename, format_time
+from openlp.core.common.languagemanager import format_time
 
 
 class ServiceManagerList(QtWidgets.QTreeWidget):

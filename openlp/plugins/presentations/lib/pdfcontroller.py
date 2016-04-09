@@ -27,7 +27,7 @@ import re
 from shutil import which
 from subprocess import check_output, CalledProcessError, STDOUT
 
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.common import Settings, is_win, trace_error_handler
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument

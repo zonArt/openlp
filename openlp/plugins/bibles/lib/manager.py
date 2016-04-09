@@ -23,8 +23,7 @@
 import logging
 import os
 
-from openlp.core.common import RegistryProperties, AppLocation, Settings, UiStrings, translate
-from openlp.core.utils import delete_file
+from openlp.core.common import RegistryProperties, AppLocation, Settings, translate, delete_file, UiStrings
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 from .csvbible import CSVBible
