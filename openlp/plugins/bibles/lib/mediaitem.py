@@ -654,35 +654,57 @@ class BibleMediaItem(MediaManagerItem):
 
     def on_quick_reference_search(self):
         # We are doing a 'Reference Search'.
+        # Set Bibles to use the text input from Quick search field.
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         # Get input from field and replace '. ' with ''
         # This will check if field has any '.' and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
-        text_direct = self.quick_search_edit.text()
-        text = text_direct.replace('. ', ' ')
-        # If we are doing "Reference" search, use the search from manager.py
+        text = self.quick_search_edit.text()
+        text = text.replace('. ', ' ')
+        # This is triggered on reference search, use the search from manager.py
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
             self.search_results = self.plugin.manager.get_verses(bible, text)
-        # If we are doing "Combined Reference" search, use the get_verses_combined from manager.py (No error included)
-        else:
-            self.search_results = self.plugin.manager.get_verses_combined(bible, text)
+            if not self.search_results:
+                # if nothing is found, message is given.
+                # Get reference separators from settings.
+                reference_separators = {
+                    'verse': get_reference_separator('sep_v_display'),
+                    'range': get_reference_separator('sep_r_display'),
+                    'list': get_reference_separator('sep_l_display')}
+                self.main_window.information_message(
+                    translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
+                    translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
+                                                           'with your search.<br><br>'
+                              'Please make sure that your reference follows one of these patterns:</strong><br><br>%s'
+                              % UiStrings().BibleScriptureError % reference_separators))
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
+            # In Combined Reference search no error is given if no results are found. (This would result in duplicate)
+            self.search_results = self.plugin.manager.get_verses(bible, text)
         if second_bible and self.search_results:
             self.second_search_results = \
                 self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
 
     def on_quick_text_search(self):
         # We are doing a 'Text Search'.
+        # Set Bibles to use the text input from Quick search field.
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quick_search_edit.text()
+        # This changes the curson to "Loading animation"
         self.application.set_busy_cursor()
+        # Get Bibles list
         bibles = self.plugin.manager.get_bibles()
+        # Add results to "search_results"
         self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
         if second_bible and self.search_results:
+            # Set up variables,
+            # new_search_results is needed to make sure 2nd bible contains all verses. (And counting them on error)
             text = []
             new_search_results = []
             count = 0
             passage_not_found = False
+            # Search second bible for results of search_results to make sure everythigns there.
+            # Count all the unfound passages.
             for verse in self.search_results:
                 db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
                 if not db_book:
@@ -694,23 +716,27 @@ class BibleMediaItem(MediaManagerItem):
                 new_search_results.append(verse)
                 text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
             if passage_not_found:
+                # This is for the 2nd Bible.
                 self.main_window.information_message(
                     translate('BiblesPlugin.MediaItem', 'Information'),
                     translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
                                                         'that are in the main Bible. Only verses found in both Bibles '
                                                         'will be shown. %d verses have not been included '
                                                         'in the results.') % count)
+            # Join the searches so only verses that are found on both Bibles are shown.
             self.search_results = new_search_results
             self.second_search_results = bibles[second_bible].get_verses(text)
 
     def on_quick_search_button(self):
         """
-        Does a quick search and saves the search results. Quick search can be:
-        "Reference Search" or "Text Search" or Combined search.
+        This triggers the proper Quick search based on which search type is used.
+        "Eg. "Reference Search", "Text Search" or "Combined search".
         """
         log.debug('Quick Search Button clicked')
+        # Disable the button while processing, get text from Quick search field.
         self.quickSearchButton.setEnabled(False)
         self.application.process_events()
+        # These need to be defined here too so the search results can be displayed.
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quick_search_edit.text()
@@ -720,20 +746,21 @@ class BibleMediaItem(MediaManagerItem):
         elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
             # We are doing a 'Text Search'. (Get script from def on_quick_text_search)
             self.on_quick_text_search()
-        # Combined search, starting with reference search.
         elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
+            # We are doing a 'Combined search'. Starting with reference search.
             self.on_quick_reference_search()
-        # If keyword is shorter than 3 (not including spaces), message is given and search is finalized.
-        # It's actually to find verses with less than 3 chars (Eg. G1 = Genesis 1) thus this error is not shown if
-        # any results are found. This check needs to be here in order to avoid duplicate errors.
-        # if no Bibles are installed, this message is not shown - "No bibles" message is whon instead. (and bible)
+            # If results are found, search will be finalized.
+            # This check needs to be here in order to avoid duplicate errors.
+            # If keyword is shorter than 3 (not including spaces), message is given. It's actually possible to find
+            # verses with less than 3 chars (Eg. G1 = Genesis 1) thus this error is not shown if any results are found.
+            # if no Bibles are installed, this message is not shown - "No bibles" message is shown instead. (and bible)
             if not self.search_results and len(text) - text.count(' ') < 3 and bible:
                 self.main_window.information_message(
                     ('%s' % UiStrings().BibleShortSearchTitle),
                     ('%s' % UiStrings().BibleShortSearch))
-            # Text search starts here if no reference was found and keyword is longer than 2.
-            # This is required in order to avoid duplicate error messages for short keywords.
             if not self.search_results and len(text) - text.count(' ') > 2 and bible:
+                # Text search starts here if no reference was found and keyword is longer than 2.
+                #  > 2 check is required in order to avoid duplicate error messages for short keywords.
                 self.on_quick_text_search()
                 # If no Text or Reference is found, message is given.
                 if not self.search_results and not \
@@ -744,23 +771,16 @@ class BibleMediaItem(MediaManagerItem):
                             'range': get_reference_separator('sep_r_display'),
                             'list': get_reference_separator('sep_l_display')}
                         self.main_window.information_message(translate('BiblesPlugin.BibleManager', 'Nothing found'),
-                                                             translate('BiblesPlugin.BibleManager', '<strong>OpenLP '
-                                                                                                    'couldn’t find '
-                                                                                                    'anything with your'
-                                                                                                    ' search.</strong>'
-                                                                                                    '<br><br>'
-                                                                                                    'If you tried to '
-                                                                                                    'search with '
-                                                                                                    'Scripture '
-                                                                                                    'Reference, please '
-                                                                                                    'make<br>sure that '
-                                                                                                    'your reference '
-                                                                                                    'follows one of '
-                                                                                                    'these patterns:'
-                                                                                                    '<br><br>%s'
+                                                             translate('BiblesPlugin.BibleManager',
+                                                                       '<strong>OpenLP couldn’t find anything with your'
+                                                                       ' search.</strong><br><br>If you tried to search'
+                                                                       ' with Scripture Reference, please make<br> sure'
+                                                                       ' that your reference follows one of these'
+                                                                       ' patterns: <br><br>%s'
                                                                        % UiStrings().BibleScriptureError %
                                                                        reference_separators))
         # Finalizing the search
+        # List is cleared if not locked, results are listed, button is set available, cursor is set to normal.
         if not self.quickLockButton.isChecked():
             self.list_view.clear()
         if self.list_view.count() != 0 and self.search_results:

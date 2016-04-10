@@ -240,6 +240,7 @@ class BibleManager(RegistryProperties):
         """
         Parses a scripture reference, fetches the verses from the Bible
         specified, and returns a list of ``Verse`` objects.
+        This function is called in \bibles\lib\mediaitem.py by def on_quick_search_button
 
         :param bible: Unicode. The Bible to use.
         :param verse_text:
@@ -258,28 +259,20 @@ class BibleManager(RegistryProperties):
         :param show_error:
         """
         log.debug('BibleManager.get_verses("%s", "%s")', bible, verse_text)
+        # If no bibles are installed, message is given.
         if not bible:
             if show_error:
                 self.main_window.information_message(
                     ('%s' % UiStrings().BibleNoBiblesTitle),
                     ('%s' % UiStrings().BibleNoBibles))
             return None
+        # Get the language for books.
         language_selection = self.get_language_selection(bible)
         ref_list = parse_reference(verse_text, self.db_cache[bible], language_selection, book_ref_id)
         if ref_list:
             return self.db_cache[bible].get_verses(ref_list, show_error)
+        # If nothing is found. Message is given if this is not combined search. (defined in mediaitem.py)
         else:
-            if show_error:
-                reference_separators = {
-                    'verse': get_reference_separator('sep_v_display'),
-                    'range': get_reference_separator('sep_r_display'),
-                    'list': get_reference_separator('sep_l_display')}
-                self.main_window.information_message(
-                    translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
-                    translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
-                                                           'with your search.<br><br>'
-                              'Please make sure that your reference follows one of these patterns:</strong><br><br>%s'
-                              % UiStrings().BibleScriptureError % reference_separators))
             return None
 
     def get_language_selection(self, bible):
@@ -305,12 +298,14 @@ class BibleManager(RegistryProperties):
     def verse_search(self, bible, second_bible, text):
         """
         Does a verse search for the given bible and text.
+        This function is called in \bibles\lib\mediaitem.py by def on_quick_search_button.
 
         :param bible: The bible to search in (unicode).
         :param second_bible: The second bible (unicode). We do not search in this bible.
         :param text: The text to search for (unicode).
         """
         log.debug('BibleManager.verse_search("%s", "%s")', bible, text)
+        # If no bibles are installed, message is given.
         if not bible:
             self.main_window.information_message(
                 ('%s' % UiStrings().BibleNoBiblesTitle),
@@ -322,6 +317,7 @@ class BibleManager(RegistryProperties):
         if second_bible:
             second_web_bible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
         if web_bible or second_web_bible:
+            # If either Bible is Web, cursor is reset to normal and message is given.
             self.application.set_normal_cursor()
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
@@ -329,32 +325,17 @@ class BibleManager(RegistryProperties):
                                                        'Please use the Scripture Reference Search instead.')
             )
             return None
+        # Shorter than 3 char searches break OpenLP with very long search times, thus they are blocked.
         if len(text) - text.count(' ') < 3:
             self.main_window.information_message(
                 ('%s' % UiStrings().BibleShortSearchTitle),
                 ('%s' % UiStrings().BibleShortSearch))
             return None
+        # Fetch the results from db. If no results are found, return None, no message is given for this.
         elif text:
             return self.db_cache[bible].verse_search(text)
         else:
             return None
-
-    def get_verses_combined(self, bible, verse_text, book_ref_id=False, show_error=True):
-            log.debug('BibleManager.get_verses("%s", "%s")', bible, verse_text)
-            if not bible:
-                if show_error:
-                    if not bible:
-                        self.main_window.information_message(
-                            ('%s' % UiStrings().BibleNoBiblesTitle),
-                            ('%s' % UiStrings().BibleNoBibles))
-                        return None
-                return None
-            language_selection = self.get_language_selection(bible)
-            ref_list = parse_reference(verse_text, self.db_cache[bible], language_selection, book_ref_id)
-            if ref_list:
-                return self.db_cache[bible].get_verses(ref_list, show_error)
-            else:
-                return None
 
     def save_meta_data(self, bible, version, copyright, permissions, book_name_language=None):
         """
