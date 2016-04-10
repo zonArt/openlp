@@ -26,7 +26,7 @@ It is based on a QTableWidget but represents its contents in list form.
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from openlp.core.common import RegistryProperties
+from openlp.core.common import RegistryProperties, Settings
 from openlp.core.lib import ImageSource, ServiceItem
 
 
@@ -63,6 +63,8 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
         # Initialize variables.
         self.service_item = ServiceItem()
         self.screen_ratio = screen_ratio
+        # Connect signals
+        self.verticalHeader().sectionResized.connect(self.row_resized)
 
     def resizeEvent(self, event):
         """
@@ -80,11 +82,29 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
             # Sort out songs, bibles, etc.
             if self.service_item.is_text():
                 self.resizeRowsToContents()
+            # Sort out image heights.
             else:
-                # Sort out image heights.
+                height = self.viewport().width() // self.screen_ratio
+                max_img_row_height = Settings().value('advanced/slide max height')
+                # Adjust for row height cap if in use.
+                if max_img_row_height > 0 and height > max_img_row_height:
+                    height = max_img_row_height
+                # Apply new height to slides
                 for frame_number in range(len(self.service_item.get_frames())):
-                    height = self.viewport().width() // self.screen_ratio
                     self.setRowHeight(frame_number, height)
+
+    def row_resized(self, row, old_height, new_height):
+        """
+        Will scale non-image slides.
+        """
+        # Only for non-text slides when row height cap in use
+        if self.service_item.is_text() or Settings().value('advanced/slide max height') <= 0:
+            return
+        # Get and validate label widget containing slide & adjust max width
+        try:
+            self.cellWidget(row, 0).children()[1].setMaximumWidth(new_height * self.screen_ratio)
+        except:
+            return
 
     def screen_size_changed(self, screen_ratio):
         """
@@ -139,8 +159,26 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                     pixmap = QtGui.QPixmap.fromImage(image)
                     pixmap.setDevicePixelRatio(label.devicePixelRatio())
                     label.setPixmap(pixmap)
-                self.setCellWidget(frame_number, 0, label)
                 slide_height = width // self.screen_ratio
+                # Setup row height cap if in use.
+                max_img_row_height = Settings().value('advanced/slide max height')
+                if max_img_row_height > 0:
+                    if slide_height > max_img_row_height:
+                        slide_height = max_img_row_height
+                    label.setMaximumWidth(max_img_row_height * self.screen_ratio)
+                    label.resize(max_img_row_height * self.screen_ratio, max_img_row_height)
+                    # Build widget with stretch padding
+                    container = QtWidgets.QWidget()
+                    hbox = QtWidgets.QHBoxLayout()
+                    hbox.setContentsMargins(0, 0, 0, 0)
+                    hbox.addWidget(label, stretch=1)
+                    hbox.addStretch(0)
+                    container.setLayout(hbox)
+                    # Add to table
+                    self.setCellWidget(frame_number, 0, container)
+                else:
+                    # Add to table
+                    self.setCellWidget(frame_number, 0, label)
                 row += 1
             text.append(str(row))
             self.setItem(frame_number, 0, item)

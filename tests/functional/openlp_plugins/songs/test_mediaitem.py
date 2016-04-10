@@ -127,6 +127,38 @@ class TestMediaItem(TestCase, TestMixin):
             mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_song.id)
             self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
 
+    def display_results_book_test(self):
+        """
+        Test displaying song search results grouped by book and entry with basic song
+        """
+        # GIVEN: Search results grouped by book and entry, plus a mocked QtListWidgetItem
+        with patch('openlp.core.lib.QtWidgets.QListWidgetItem') as MockedQListWidgetItem, \
+                patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
+            mock_search_results = []
+            mock_songbook_entry = MagicMock()
+            mock_songbook = MagicMock()
+            mock_song = MagicMock()
+            mock_songbook_entry.entry = '1'
+            mock_songbook.name = 'My Book'
+            mock_song.id = 1
+            mock_song.title = 'My Song'
+            mock_song.sort_key = 'My Song'
+            mock_song.temporary = False
+            mock_songbook_entry.song = mock_song
+            mock_songbook_entry.songbook = mock_songbook
+            mock_search_results.append(mock_songbook_entry)
+            mock_qlist_widget = MagicMock()
+            MockedQListWidgetItem.return_value = mock_qlist_widget
+
+            # WHEN: I display song search results grouped by book
+            self.media_item.display_results_book(mock_search_results)
+
+            # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
+            self.media_item.list_view.clear.assert_called_with()
+            MockedQListWidgetItem.assert_called_with('My Book #1: My Song')
+            mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_songbook_entry.song.id)
+            self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
+
     def display_results_topic_test(self):
         """
         Test displaying song search results grouped by topic with basic song
@@ -415,19 +447,6 @@ class TestMediaItem(TestCase, TestMixin):
 
         # THEN: They should not match
         self.assertFalse(result, "Authors should not match")
-
-    def natural_sort_key_test(self):
-        """
-        Test the _natural_sort_key function
-        """
-        # GIVEN: A string to be converted into a sort key
-        string_sort_key = 'A1B12C'
-
-        # WHEN: We attempt to create a sort key
-        sort_key_result = self.media_item._natural_sort_key(string_sort_key)
-
-        # THEN: We should get back a tuple split on integers
-        self.assertEqual(sort_key_result, ['a', 1, 'b', 12, 'c'])
 
     def build_remote_search_test(self):
         """

@@ -32,7 +32,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 from openlp.core.common import Registry, RegistryProperties, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import get_web_page
+from openlp.core.lib.webpagereader import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, Book
 

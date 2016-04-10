@@ -171,7 +171,7 @@ class TestAppLocation(TestCase):
         """
         Test the _get_frozen_path() function when the application is not frozen (compiled by PyInstaller)
         """
-        with patch('openlp.core.utils.sys') as mocked_sys:
+        with patch('openlp.core.common.sys') as mocked_sys:
             # GIVEN: The sys module "without" a "frozen" attribute
             mocked_sys.frozen = None
 

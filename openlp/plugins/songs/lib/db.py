@@ -29,7 +29,7 @@ from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func, text
 
 from openlp.core.lib.db import BaseModel, init_db
-from openlp.core.utils import get_natural_key
+from openlp.core.common.languagemanager import get_natural_key
 from openlp.core.lib import translate
 
 

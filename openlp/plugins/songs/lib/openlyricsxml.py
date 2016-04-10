@@ -62,10 +62,10 @@ import re
 from lxml import etree, objectify
 
 from openlp.core.common import translate
+from openlp.core.common.versionchecker import get_application_version
 from openlp.core.lib import FormattingTags
 from openlp.plugins.songs.lib import VerseType, clean_song
 from openlp.plugins.songs.lib.db import Author, AuthorType, Book, Song, Topic
-from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 

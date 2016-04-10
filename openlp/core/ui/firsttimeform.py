@@ -39,7 +39,7 @@ from openlp.core.common import Registry, RegistryProperties, AppLocation, Settin
     translate, clean_button_text, trace_error_handler
 from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import get_web_page, CONNECTION_RETRIES, CONNECTION_TIMEOUT
+from openlp.core.lib.webpagereader import get_web_page, CONNECTION_RETRIES, CONNECTION_TIMEOUT
 from .firsttimewizard import UiFirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
