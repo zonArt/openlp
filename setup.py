@@ -65,8 +65,8 @@ def natural_sort(seq):
     return temp
 
 
-# NOTE: The following code is a duplicate of the code in openlp/core/utils/__init__.py. Any fix applied here should also
-# be applied there.
+# NOTE: The following code is a duplicate of the code in openlp/core/common/checkversion.py.
+# Any fix applied here should also be applied there.
 ver_file = None
 try:
     # Get the revision of this tree.

@@ -121,6 +121,7 @@ class Settings(QtCore.QSettings):
         'advanced/double click live': False,
         'advanced/enable exit confirmation': True,
         'advanced/expand service item': False,
+        'advanced/slide max height': 0,
         'advanced/hide mouse': True,
         'advanced/is portable': False,
         'advanced/max recent files': 20,

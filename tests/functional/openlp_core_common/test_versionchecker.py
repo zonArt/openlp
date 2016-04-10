@@ -20,52 +20,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`db` module provides the database and schema that is the backend for
-the Custom plugin
+Package to test the openlp.core.common.versionchecker package.
 """
+from unittest import TestCase
 
-from sqlalchemy import Column, Table, types
-from sqlalchemy.orm import mapper
+from openlp.core.common.settings import Settings
+from openlp.core.common.versionchecker import VersionThread
+from tests.functional import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
 
-from openlp.core.lib.db import BaseModel, init_db
-from openlp.core.common.languagemanager import get_locale_key
 
+class TestVersionchecker(TestMixin, TestCase):
 
-class CustomSlide(BaseModel):
-    """
-    CustomSlide model
-    """
-    # By default sort the customs by its title considering language specific characters.
-    def __lt__(self, other):
-        return get_locale_key(self.title) < get_locale_key(other.title)
-
-    def __eq__(self, other):
-        return get_locale_key(self.title) == get_locale_key(other.title)
-
-    def __hash__(self):
+    def setUp(self):
         """
-        Return the hash for a custom slide.
+        Create an instance and a few example actions.
         """
-        return self.id
+        self.build_settings()
 
+    def tearDown(self):
+        """
+        Clean up
+        """
+        self.destroy_settings()
 
-def init_schema(url):
-    """
-    Setup the custom database connection and initialise the database schema
-
-    :param url:  The database to setup
-    """
-    session, metadata = init_db(url)
-
-    custom_slide_table = Table('custom_slide', metadata,
-                               Column('id', types.Integer(), primary_key=True),
-                               Column('title', types.Unicode(255), nullable=False),
-                               Column('text', types.UnicodeText, nullable=False),
-                               Column('credits', types.UnicodeText),
-                               Column('theme_name', types.Unicode(128))
-                               )
-
-    mapper(CustomSlide, custom_slide_table)
-
-    metadata.create_all(checkfirst=True)
-    return session
+    def version_thread_triggered_test(self):
+        """
+        Test the version thread call does not trigger UI
+        :return:
+        """
+        # GIVEN: a equal version setup and the data is not today.
+        mocked_main_window = MagicMock()
+        Settings().setValue('core/last version test', '1950-04-01')
+        # WHEN: We check to see if the version is different .
+        with patch('PyQt5.QtCore.QThread'),\
+                patch('openlp.core.common.versionchecker.get_application_version') as mocked_get_application_version:
+            mocked_get_application_version.return_value = {'version': '1.0.0', 'build': '', 'full': '2.0.4'}
+            version_thread = VersionThread(mocked_main_window)
+            version_thread.run()
+        # THEN: If the version has changed the main window is notified
+        self.assertTrue(mocked_main_window.openlp_version_check.emit.called,
+                        'The main windows should have been notified')

@@ -23,17 +23,16 @@
 The actual exception dialog form.
 """
 import logging
-import re
 import os
 import platform
+import re
 
 import bs4
 import sqlalchemy
+from PyQt5 import Qt, QtCore, QtGui, QtWebKit, QtWidgets
 from lxml import etree
 
 from openlp.core.common import RegistryProperties, is_linux
-
-from PyQt5 import Qt, QtCore, QtGui, QtWebKit, QtWidgets
 
 try:
     import migrate
@@ -74,7 +73,7 @@ except ImportError:
     VLC_VERSION = '-'
 
 from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.utils import get_application_version
+from openlp.core.common.versionchecker import get_application_version
 
 from .exceptiondialog import Ui_ExceptionDialog
 

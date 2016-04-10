@@ -20,7 +20,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
 import os
 import logging
 import zipfile
@@ -34,7 +33,7 @@ if is_win():
     from ctypes import cdll
     from ctypes.wintypes import RECT
 
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
 

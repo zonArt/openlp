@@ -25,7 +25,7 @@ Functional tests to test the AppLocation class and related methods.
 import os
 from unittest import TestCase
 
-from openlp.core.utils import is_not_image_file
+from openlp.core.common import is_not_image_file
 from tests.utils.constants import TEST_RESOURCES_PATH
 from tests.helpers.testmixin import TestMixin
 
