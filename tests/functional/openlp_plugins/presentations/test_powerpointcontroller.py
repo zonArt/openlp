@@ -76,7 +76,7 @@ class TestPowerpointController(TestCase, TestMixin):
         controller = PowerpointController(plugin=self.mock_plugin)
 
         # THEN: The name of the presentation controller should be correct
-        self.assertEqual('Powerpoint', controller.name,
+        self.assertEqual('PowerPoint', controller.name,
                          'The name of the presentation controller should be correct')
 
 
