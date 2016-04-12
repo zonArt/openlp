@@ -856,7 +856,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             self,
             translate('OpenLP.MainWindow', 'Import settings'),
             '',
-            translate('OpenLP.MainWindow', 'OpenLP Settings (.conf)'))
+            translate('OpenLP.MainWindow', 'OpenLP Settings (*.conf)'))
         if not import_file_name:
             return
         setting_sections = []
