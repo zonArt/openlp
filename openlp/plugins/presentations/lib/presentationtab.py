@@ -125,7 +125,7 @@ class PresentationTab(SettingsTab):
             translate('PresentationPlugin.PresentationTab', 'Allow presentation application to be overridden'))
         self.ppt_slide_click_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
-                      'Clicking on a selected slide in live advances to the next effect'))
+                      'Clicking on current slide in live advances to the next effect'))
         self.ppt_window_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
                       'Let PowerPoint control the size and position of the presentation window '
