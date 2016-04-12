@@ -416,7 +416,7 @@ class Ui_MainWindow(object):
         self.print_service_order_item.setText(UiStrings().PrintService)
         self.print_service_order_item.setStatusTip(translate('OpenLP.MainWindow', 'Print the current service.'))
         self.file_exit_item.setText(translate('OpenLP.MainWindow', 'E&xit'))
-        self.file_exit_item.setStatusTip(translate('OpenLP.MainWindow', 'Exit OpenLP - Shut down the program.'))
+        self.file_exit_item.setStatusTip(translate('OpenLP.MainWindow', 'Close OpenLP - Shut down the program.'))
         self.import_theme_item.setText(translate('OpenLP.MainWindow', '&Theme'))
         self.import_language_item.setText(translate('OpenLP.MainWindow', '&Language'))
         self.export_theme_item.setText(translate('OpenLP.MainWindow', '&Theme'))
@@ -425,10 +425,10 @@ class Ui_MainWindow(object):
         self.formatting_tag_item.setText(translate('OpenLP.MainWindow', 'Configure &Formatting Tags...'))
         self.settings_configure_item.setText(translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.settings_export_item.setStatusTip(
-            translate('OpenLP.MainWindow', 'Export settings to a .config file.'))
+            translate('OpenLP.MainWindow', 'Export settings to a *.config file.'))
         self.settings_export_item.setText(translate('OpenLP.MainWindow', 'Settings'))
         self.settings_import_item.setStatusTip(
-            translate('OpenLP.MainWindow', 'Import settings from a .config file previously exported from '
+            translate('OpenLP.MainWindow', 'Import OpenLP settings from a *.config file previously exported from '
                                            'this or an another machine.'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
         self.view_projector_manager_item.setText(translate('OPenLP.MainWindow', '&Projectors'))
@@ -946,7 +946,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             self,
             translate('OpenLP.MainWindow', 'Export Settings File'),
             '',
-            translate('OpenLP.MainWindow', 'Exported OpenLP Settings (.conf)'))
+            translate('OpenLP.MainWindow', 'Exported OpenLP Settings (*.conf)'))
         if not export_file_name:
             return
             # Make sure it's a .conf file.

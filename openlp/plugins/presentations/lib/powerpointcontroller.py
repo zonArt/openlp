@@ -60,7 +60,7 @@ class PowerpointController(PresentationController):
         Initialise the class
         """
         log.debug('Initialising')
-        super(PowerpointController, self).__init__(plugin, 'Powerpoint', PowerpointDocument)
+        super(PowerpointController, self).__init__(plugin, 'PowerPoint', PowerpointDocument)
         self.supports = ['ppt', 'pps', 'pptx', 'ppsx', 'pptm']
         self.process = None
 
@@ -514,7 +514,7 @@ class PowerpointDocument(PresentationDocument):
             log.exception('Failed to exit Powerpoint presentation after error')
             log.exception(e)
         critical_error_message_box(UiStrings().Error, translate('PresentationPlugin.PowerpointDocument',
-                                                                'An error occurred in the Powerpoint integration '
+                                                                'An error occurred in the PowerPoint integration '
                                                                 'and the presentation will be stopped. '
                                                                 'Restart the presentation if you wish to present it.'))
 

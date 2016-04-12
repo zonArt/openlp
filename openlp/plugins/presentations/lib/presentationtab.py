@@ -125,11 +125,11 @@ class PresentationTab(SettingsTab):
             translate('PresentationPlugin.PresentationTab', 'Allow presentation application to be overridden'))
         self.ppt_slide_click_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
-                      'Clicking on a selected slide in Live advances to the next effect.'))
+                      'Clicking on a selected slide in live advances to the next effect'))
         self.ppt_window_check_box.setText(
             translate('PresentationPlugin.PresentationTab',
                       'Let PowerPoint control the size and position of the presentation window '
-                      '(workaround for Windows 8 scaling issue).'))
+                      '(workaround for Windows 8 scaling issue)'))
         self.pdf_program_check_box.setText(
             translate('PresentationPlugin.PresentationTab', 'Use given full path for mudraw or ghostscript binary:'))
 
@@ -148,7 +148,7 @@ class PresentationTab(SettingsTab):
             controller = self.controllers[key]
             checkbox = self.presenter_check_boxes[controller.name]
             checkbox.setChecked(Settings().value(self.settings_section + '/' + controller.name))
-            if controller.name == 'Powerpoint' and controller.is_available():
+            if controller.name == 'PowerPoint' and controller.is_available():
                 powerpoint_available = True
         self.override_app_check_box.setChecked(Settings().value(self.settings_section + '/override app'))
         # Load PowerPoint settings
