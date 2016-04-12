@@ -255,6 +255,7 @@ class VerseType(object):
         for num, translation in enumerate(VerseType.translated_names):
             if verse_name == translation.lower():
                 return num
+        return None
 
     @staticmethod
     def from_loose_input(verse_name, default=Other):
@@ -270,7 +271,7 @@ class VerseType(object):
             if verse_index is None:
                 verse_index = VerseType.from_string(verse_name, default)
         elif len(verse_name) == 1:
-            verse_index = VerseType.from_translated_tag(verse_name, default)
+            verse_index = VerseType.from_translated_tag(verse_name, None)
             if verse_index is None:
                 verse_index = VerseType.from_tag(verse_name, default)
         else:
