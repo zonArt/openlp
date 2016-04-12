@@ -26,7 +26,7 @@ from unittest import TestCase
 
 from openlp.plugins.songs.lib import VerseType, clean_string, clean_title, strip_rtf
 from openlp.plugins.songs.lib.songcompare import songs_probably_equal, _remove_typos, _op_length
-from tests.functional import patch, MagicMock
+from tests.functional import patch, MagicMock, PropertyMock
 
 
 class TestLib(TestCase):
@@ -477,3 +477,27 @@ class TestVerseType(TestCase):
 
             # THEN: The result should be None
             self.assertIsNone(result, 'The result should be None, but was "%s"' % result)
+
+    @patch('openlp.plugins.songs.lib.VerseType.translated_tags', new_callable=PropertyMock, return_value=['x'])
+    def from_loose_input_with_invalid_input_test(self, mocked_translated_tags):
+        """
+        Test that the from_loose_input() method returns a sane default when passed an invalid tag and None as default.
+        """
+        # GIVEN: A mocked VerseType.translated_tags
+        # WHEN: We run the from_loose_input() method with an invalid verse type, we get the specified default back
+        result = VerseType.from_loose_input('m', None)
+
+        # THEN: The result should be None
+        self.assertIsNone(result, 'The result should be None, but was "%s"' % result)
+
+    @patch('openlp.plugins.songs.lib.VerseType.translated_tags', new_callable=PropertyMock, return_value=['x'])
+    def from_loose_input_with_valid_input_test(self, mocked_translated_tags):
+        """
+        Test that the from_loose_input() method returns valid output on valid input.
+        """
+        # GIVEN: A mocked VerseType.translated_tags
+        # WHEN: We run the from_loose_input() method with a valid verse type, we get the expected VerseType back
+        result = VerseType.from_loose_input('v')
+
+        # THEN: The result should be a Verse
+        self.assertEqual(result, VerseType.Verse, 'The result should be a verse, but was "%s"' % result)
