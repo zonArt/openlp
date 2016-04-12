@@ -148,7 +148,7 @@ class TestMainWindow(TestCase, TestMixin):
 
         # THEN: the following registry functions should have been registered
         self.assertEqual(len(self.registry.service_list), 6, 'The registry should have 6 services.')
-        self.assertEqual(len(self.registry.functions_list), 16, 'The registry should have 16 functions')
+        self.assertEqual(len(self.registry.functions_list), 17, 'The registry should have 17 functions')
         self.assertTrue('application' in self.registry.service_list, 'The application should have been registered.')
         self.assertTrue('main_window' in self.registry.service_list, 'The main_window should have been registered.')
         self.assertTrue('media_controller' in self.registry.service_list, 'The media_controller should have been '
