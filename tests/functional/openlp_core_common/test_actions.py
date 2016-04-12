@@ -20,15 +20,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.utils.actions package.
+Package to test the openlp.core.common.actions package.
 """
 from unittest import TestCase
 
 from PyQt5 import QtGui, QtCore, QtWidgets
 
 from openlp.core.common import Settings
-from openlp.core.utils import ActionList
-from openlp.core.utils.actions import CategoryActionList
+from openlp.core.common.actions import CategoryActionList, ActionList
 from tests.functional import MagicMock
 from tests.helpers.testmixin import TestMixin
 

@@ -28,7 +28,7 @@ from sqlalchemy import Column, Table, types
 from sqlalchemy.orm import mapper
 
 from openlp.core.lib.db import BaseModel, init_db
-from openlp.core.utils import get_locale_key
+from openlp.core.common.languagemanager import get_locale_key
 
 
 class CustomSlide(BaseModel):

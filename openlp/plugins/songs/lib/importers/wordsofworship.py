@@ -107,9 +107,9 @@ class WordsOfWorshipImport(SongImport):
                 song_data = open(source, 'rb')
                 if song_data.read(19).decode() != 'WoW File\nSong Words':
                     self.log_error(source,
-                                   str(translate('SongsPlugin.WordsofWorshipSongImport',
-                                                 'Invalid Words of Worship song file. Missing "%s" header.'
-                                                 % 'WoW File\\nSong Words')))
+                                   translate('SongsPlugin.WordsofWorshipSongImport',
+                                             'Invalid Words of Worship song file. Missing "%s" header.')
+                                   % 'WoW File\\nSong Words')
                     continue
                 # Seek to byte which stores number of blocks in the song
                 song_data.seek(56)
@@ -117,9 +117,9 @@ class WordsOfWorshipImport(SongImport):
                 song_data.seek(66)
                 if song_data.read(16).decode() != 'CSongDoc::CBlock':
                     self.log_error(source,
-                                   str(translate('SongsPlugin.WordsofWorshipSongImport',
-                                                 'Invalid Words of Worship song file. Missing "%s" '
-                                                 'string.' % 'CSongDoc::CBlock')))
+                                   translate('SongsPlugin.WordsofWorshipSongImport',
+                                             'Invalid Words of Worship song file. Missing "%s" string.')
+                                   % 'CSongDoc::CBlock')
                     continue
                 # Seek to the beginning of the first block
                 song_data.seek(82)

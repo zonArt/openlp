@@ -32,7 +32,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 from openlp.core.common import Registry, RegistryProperties, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import get_web_page
+from openlp.core.lib.webpagereader import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, Book
 
@@ -504,7 +504,7 @@ class CWExtract(RegistryProperties):
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
-        content = soup.find_all(('h4', {'class': 'small-header'}))
+        content = soup.find_all('h4', {'class': 'small-header'})
         if not content:
             log.error('No books found in the Crosswalk response.')
             send_error_message('parse')

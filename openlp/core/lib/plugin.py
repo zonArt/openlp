@@ -24,11 +24,10 @@ Provide the generic plugin functionality for OpenLP plugins.
 """
 import logging
 
-
 from PyQt5 import QtCore
 
 from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings
-from openlp.core.utils import get_application_version
+from openlp.core.common.versionchecker import get_application_version
 
 log = logging.getLogger(__name__)
 

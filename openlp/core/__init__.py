@@ -27,26 +27,26 @@ All the core functions of the OpenLP application including the GUI, settings,
 logging and a plugin framework are contained within the openlp.core module.
 """
 
-import os
-import sys
-import logging
 import argparse
-from traceback import format_exception
+import logging
+import os
 import shutil
+import sys
 import time
+from traceback import format_exception
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from openlp.core.common import Registry, OpenLPMixin, AppLocation, Settings, UiStrings, check_directory_exists, \
-    is_macosx, is_win, translate
+from openlp.core.common import Registry, OpenLPMixin, AppLocation, LanguageManager, Settings, UiStrings, \
+    check_directory_exists, is_macosx, is_win, translate
+from openlp.core.common.versionchecker import VersionThread, get_application_version
 from openlp.core.lib import ScreenList
 from openlp.core.resources import qInitResources
-from openlp.core.ui.mainwindow import MainWindow
-from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
-from openlp.core.ui.firsttimeform import FirstTimeForm
-from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen
-from openlp.core.utils import LanguageManager, VersionThread, get_application_version
-
+from openlp.core.ui.exceptionform import ExceptionForm
+from openlp.core.ui.firsttimeform import FirstTimeForm
+from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
+from openlp.core.ui.mainwindow import MainWindow
 
 __all__ = ['OpenLP', 'main']
 

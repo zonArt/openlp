@@ -28,8 +28,7 @@ import os
 
 from lxml import etree
 
-from openlp.core.common import RegistryProperties, check_directory_exists, translate
-from openlp.core.utils import clean_filename
+from openlp.core.common import RegistryProperties, check_directory_exists, translate, clean_filename
 from openlp.plugins.songs.lib.openlyricsxml import OpenLyrics
 
 log = logging.getLogger(__name__)

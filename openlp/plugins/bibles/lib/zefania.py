@@ -70,7 +70,8 @@ class ZefaniaBible(BibleDB):
                 log.error('Importing books from "%s" failed' % self.filename)
                 return False
             self.save_meta('language_id', language_id)
-            num_books = int(zefania_bible_tree.xpath("count(//BIBLEBOOK)"))
+            num_books = int(zefania_bible_tree.xpath('count(//BIBLEBOOK)'))
+            self.wizard.progress_bar.setMaximum(int(zefania_bible_tree.xpath('count(//CHAPTER)')))
             # Strip tags we don't use - keep content
             etree.strip_tags(zefania_bible_tree, ('STYLE', 'GRAM', 'NOTE', 'SUP', 'XREF'))
             # Strip tags we don't use - remove content
