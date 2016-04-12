@@ -101,7 +101,12 @@ class BibleImportForm(OpenLPWizard):
         self.select_stack.setCurrentIndex(0)
         if PYSWORD_AVAILABLE:
             self.pysword_folder_modules = modules.SwordModules()
-            self.pysword_folder_modules_json = self.pysword_folder_modules.parse_modules()
+            try:
+                self.pysword_folder_modules_json = self.pysword_folder_modules.parse_modules()
+            except FileNotFoundError:
+                log.debug('No installed SWORD modules found in the default location')
+                self.sword_bible_combo_box.clear()
+                return
             bible_keys = self.pysword_folder_modules_json.keys()
             for key in bible_keys:
                 self.sword_bible_combo_box.addItem(self.pysword_folder_modules_json[key]['description'], key)
@@ -464,6 +469,9 @@ class BibleImportForm(OpenLPWizard):
         if self.currentPage() == self.welcome_page:
             return True
         elif self.currentPage() == self.select_page:
+            self.version_name_edit.clear()
+            self.permissions_edit.clear()
+            self.copyright_edit.clear()
             if self.field('source_format') == BibleFormat.OSIS:
                 if not self.field('osis_location'):
                     critical_error_message_box(UiStrings().NFSs, WizardStrings.YouSpecifyFile % WizardStrings.OSIS)
@@ -513,6 +521,8 @@ class BibleImportForm(OpenLPWizard):
                         self.version_name_edit.setText(self.pysword_folder_modules_json[key]['description'])
                     if 'distributionlicense' in self.pysword_folder_modules_json[key]:
                         self.permissions_edit.setText(self.pysword_folder_modules_json[key]['distributionlicense'])
+                    if 'copyright' in self.pysword_folder_modules_json[key]:
+                        self.copyright_edit.setText(self.pysword_folder_modules_json[key]['copyright'])
                 elif self.sword_tab_widget.currentIndex() == self.sword_tab_widget.indexOf(self.sword_zip_tab):
                     if not self.field('sword_zip_path'):
                         critical_error_message_box(UiStrings().NFSs, WizardStrings.YouSpecifyFile % WizardStrings.SWORD)
