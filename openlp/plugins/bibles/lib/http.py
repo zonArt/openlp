@@ -504,7 +504,7 @@ class CWExtract(RegistryProperties):
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
-        content = soup.find_all(('h4', {'class': 'small-header'}))
+        content = soup.find_all('h4', {'class': 'small-header'})
         if not content:
             log.error('No books found in the Crosswalk response.')
             send_error_message('parse')
