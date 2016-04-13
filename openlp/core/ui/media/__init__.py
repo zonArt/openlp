@@ -61,12 +61,12 @@ class MediaInfo(object):
     file_info = None
     volume = 100
     is_background = False
-    loop_playback = False
+    can_loop_playback = False
     length = 0
     start_time = 0
     end_time = 0
     title_track = 0
-    playing = False
+    is_playing = False
     timer = 1000
     audio_track = 0
     subtitle_track = 0

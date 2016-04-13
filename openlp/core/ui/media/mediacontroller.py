@@ -215,7 +215,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         else:
             self.live_timer.stop()
             self.media_stop(self.display_controllers[DisplayControllerType.Live])
-            if self.display_controllers[DisplayControllerType.Live].media_info.loop_playback:
+            if self.display_controllers[DisplayControllerType.Live].media_info.can_loop_playback:
                 self.media_play(self.display_controllers[DisplayControllerType.Live], True)
 
     def media_state_preview(self):
@@ -232,7 +232,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         else:
             self.preview_timer.stop()
             self.media_stop(self.display_controllers[DisplayControllerType.Preview])
-            if self.display_controllers[DisplayControllerType.Preview].media_info.loop_playback:
+            if self.display_controllers[DisplayControllerType.Preview].media_info.can_loop_playback:
                 self.media_play(self.display_controllers[DisplayControllerType.Preview], True)
 
     def get_media_display_css(self):
@@ -394,7 +394,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         controller.media_info.volume = controller.volume_slider.value()
         controller.media_info.is_background = video_behind_text
         # background will always loop video.
-        controller.media_info.loop_playback = video_behind_text
+        controller.media_info.can_loop_playback = video_behind_text
         controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
         display = self._define_display(controller)
         if controller.is_live:
@@ -654,7 +654,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                 self.preview_timer.start()
         controller.seek_slider.blockSignals(False)
         controller.volume_slider.blockSignals(False)
-        controller.media_info.playing = True
+        controller.media_info.is_playing = True
         display = self._define_display(controller)
         display.setVisible(True)
         return True
@@ -666,10 +666,10 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         :param controller:  The Controller to be processed
         """
         start_again = False
-        if controller.media_info.playing and controller.media_info.length > 0:
+        if controller.media_info.is_playing and controller.media_info.length > 0:
             if controller.media_info.timer > controller.media_info.length:
                 self.media_stop(controller, True)
-                if controller.media_info.loop_playback:
+                if controller.media_info.can_loop_playback:
                     start_again = True
             controller.media_info.timer += TICK_TIME
             seconds = controller.media_info.timer // 1000
@@ -703,7 +703,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             controller.mediabar.actions['playbackPlay'].setVisible(True)
             controller.mediabar.actions['playbackStop'].setDisabled(False)
             controller.mediabar.actions['playbackPause'].setVisible(False)
-            controller.media_info.playing = False
+            controller.media_info.is_playing = False
 
     def media_loop_msg(self, msg):
         """
@@ -720,8 +720,8 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
 
         :param controller: The controller that needs to be stopped
         """
-        controller.media_info.loop_playback = not controller.media_info.loop_playback
-        controller.mediabar.actions['playbackLoop'].setChecked(controller.media_info.loop_playback)
+        controller.media_info.can_loop_playback = not controller.media_info.can_loop_playback
+        controller.mediabar.actions['playbackLoop'].setChecked(controller.media_info.can_loop_playback)
 
     def media_stop_msg(self, msg):
         """
@@ -748,7 +748,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
             controller.mediabar.actions['playbackPlay'].setVisible(True)
             controller.mediabar.actions['playbackStop'].setDisabled(True)
             controller.mediabar.actions['playbackPause'].setVisible(False)
-            controller.media_info.playing = False
+            controller.media_info.is_playing = False
             controller.media_info.timer = 1000
             controller.media_timer = 0
 
