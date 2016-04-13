@@ -154,7 +154,7 @@ class SystemPlayer(MediaPlayer):
                 start_time = controller.media_info.start_time
         else:
             if self.get_preview_state() != QtMultimedia.QMediaPlayer.PausedState and \
-                            controller.media_info.start_time > 0:
+                    controller.media_info.start_time > 0:
                 start_time = controller.media_info.start_time
         display.media_player.play()
         if start_time > 0:
