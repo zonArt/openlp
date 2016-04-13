@@ -248,7 +248,7 @@ class GeneralTab(SettingsTab):
         self.auto_open_check_box.setText(translate('OpenLP.GeneralTab', 'Automatically open the last service'))
         self.show_splash_check_box.setText(translate('OpenLP.GeneralTab', 'Show the splash screen'))
         self.logo_group_box.setTitle(translate('OpenLP.GeneralTab', 'Logo'))
-        self.logo_color_label.setText(translate('OpenLP.GeneralTab', 'Background color:'))
+        self.logo_color_label.setText(UiStrings().BackgroundColorColon)
         self.logo_file_label.setText(translate('OpenLP.GeneralTab', 'Logo file:'))
         self.logo_browse_button.setToolTip(translate('OpenLP.GeneralTab', 'Browse for an image file to display.'))
         self.logo_revert_button.setToolTip(translate('OpenLP.GeneralTab', 'Revert to the default OpenLP logo.'))
