@@ -148,7 +148,7 @@ class PresentationTab(SettingsTab):
             controller = self.controllers[key]
             checkbox = self.presenter_check_boxes[controller.name]
             checkbox.setChecked(Settings().value(self.settings_section + '/' + controller.name))
-            if controller.name == 'PowerPoint' and controller.is_available():
+            if controller.name == 'Powerpoint' and controller.is_available():
                 powerpoint_available = True
         self.override_app_check_box.setChecked(Settings().value(self.settings_section + '/override app'))
         # Load PowerPoint settings

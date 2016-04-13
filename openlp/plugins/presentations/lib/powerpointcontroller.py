@@ -60,7 +60,7 @@ class PowerpointController(PresentationController):
         Initialise the class
         """
         log.debug('Initialising')
-        super(PowerpointController, self).__init__(plugin, 'PowerPoint', PowerpointDocument)
+        super(PowerpointController, self).__init__(plugin, 'Powerpoint', PowerpointDocument)
         self.supports = ['ppt', 'pps', 'pptx', 'ppsx', 'pptm']
         self.process = None
 

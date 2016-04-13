@@ -69,7 +69,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.media_item.controllers = {
             'Impress': impress_controller,
             'Powerpoint': presentation_controller,
-            'PowerPoint Viewer': presentation_viewer_controller,
+            'Powerpoint Viewer': presentation_viewer_controller,
             'Pdf': pdf_controller
         }
 

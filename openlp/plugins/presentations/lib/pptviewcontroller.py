@@ -55,7 +55,7 @@ class PptviewController(PresentationController):
         """
         log.debug('Initialising')
         self.process = None
-        super(PptviewController, self).__init__(plugin, 'PowerPoint Viewer', PptviewDocument)
+        super(PptviewController, self).__init__(plugin, 'Powerpoint Viewer', PptviewDocument)
         self.supports = ['ppt', 'pps', 'pptx', 'ppsx', 'pptm']
 
     def check_available(self):
