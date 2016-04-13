@@ -32,6 +32,7 @@ from openlp.core.common import Registry, AppLocation, Settings, check_directory_
 from openlp.core.lib import MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, \
     check_item_selected, create_separated_list
 from openlp.core.lib.ui import create_widget_action
+from openlp.core.common.languagemanager import get_natural_key
 from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
@@ -203,7 +204,13 @@ class SongMediaItem(MediaManagerItem):
             self.display_results_topic(search_results)
         elif search_type == SongSearch.Books:
             log.debug('Songbook Search')
-            self.display_results_book(search_keywords)
+            search_keywords = search_keywords.rpartition(' ')
+            search_book = search_keywords[0] + '%'
+            search_entry = search_keywords[2] + '%'
+            search_results = (self.plugin.manager.session.query(SongBookEntry)
+                              .join(Book)
+                              .filter(Book.name.like(search_book), SongBookEntry.entry.like(search_entry)).all())
+            self.display_results_book(search_results)
         elif search_type == SongSearch.Themes:
             log.debug('Theme Search')
             search_string = '%' + search_keywords + '%'
@@ -278,8 +285,10 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Author')
         self.list_view.clear()
+        search_results = sorted(search_results, key=lambda author: get_natural_key(author.display_name))
         for author in search_results:
-            for song in author.songs:
+            songs = sorted(author.songs, key=lambda song: song.sort_key)
+            for song in songs:
                 # Do not display temporary songs
                 if song.temporary:
                     continue
@@ -288,31 +297,19 @@ class SongMediaItem(MediaManagerItem):
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
 
-    def display_results_book(self, search_keywords):
+    def display_results_book(self, search_results):
         """
-        Display the song search results in the media manager list, grouped by book
+        Display the song search results in the media manager list, grouped by book and entry
 
-        :param search_keywords: A list of search keywords - book first, then number
+        :param search_results: A list of db SongBookEntry objects
         :return: None
         """
-
         log.debug('display results Book')
         self.list_view.clear()
-
-        search_keywords = search_keywords.rpartition(' ')
-        search_book = search_keywords[0]
-        search_entry = re.sub(r'[^0-9]', '', search_keywords[2])
-
-        songbook_entries = (self.plugin.manager.session.query(SongBookEntry)
-                            .join(Book)
-                            .order_by(Book.name)
-                            .order_by(SongBookEntry.entry))
-        for songbook_entry in songbook_entries:
+        search_results = sorted(search_results, key=lambda songbook_entry:
+                                (get_natural_key(songbook_entry.songbook.name), get_natural_key(songbook_entry.entry)))
+        for songbook_entry in search_results:
             if songbook_entry.song.temporary:
-                continue
-            if search_book.lower() not in songbook_entry.songbook.name.lower():
-                continue
-            if search_entry not in songbook_entry.entry:
                 continue
             song_detail = '%s #%s: %s' % (songbook_entry.songbook.name, songbook_entry.entry, songbook_entry.song.title)
             song_name = QtWidgets.QListWidgetItem(song_detail)
@@ -328,7 +325,7 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Topic')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda topic: self._natural_sort_key(topic.name))
+        search_results = sorted(search_results, key=lambda topic: get_natural_key(topic.name))
         for topic in search_results:
             songs = sorted(topic.songs, key=lambda song: song.sort_key)
             for song in songs:
@@ -349,6 +346,8 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results Themes')
         self.list_view.clear()
+        search_results = sorted(search_results, key=lambda song: (get_natural_key(song.theme_name),
+                                song.sort_key))
         for song in search_results:
             # Do not display temporary songs
             if song.temporary:
@@ -367,7 +366,8 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug('display results CCLI number')
         self.list_view.clear()
-        songs = sorted(search_results, key=lambda song: self._natural_sort_key(song.ccli_number))
+        songs = sorted(search_results, key=lambda song: (get_natural_key(song.ccli_number),
+                       song.sort_key))
         for song in songs:
             # Do not display temporary songs
             if song.temporary:
@@ -693,14 +693,6 @@ class SongMediaItem(MediaManagerItem):
                 return False
         # List must be empty at the end
         return not author_list
-
-    def _natural_sort_key(self, s):
-        """
-        Return a tuple by which s is sorted.
-        :param s: A string value from the list we want to sort.
-        """
-        return [int(text) if text.isdecimal() else text.lower()
-                for text in re.split('(\d+)', s)]
 
     def search(self, string, show_error):
         """

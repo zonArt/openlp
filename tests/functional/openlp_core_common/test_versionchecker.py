@@ -20,18 +20,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Base directory for tests
+Package to test the openlp.core.common.versionchecker package.
 """
-import sys
-from PyQt5 import QtWidgets
+from unittest import TestCase
 
-if sys.version_info[1] >= 3:
-    from unittest.mock import ANY, MagicMock, patch, mock_open, call, PropertyMock
-else:
-    from mock import ANY, MagicMock, patch, mock_open, call, PropertyMock
+from openlp.core.common.settings import Settings
+from openlp.core.common.versionchecker import VersionThread
+from tests.functional import MagicMock, patch
+from tests.helpers.testmixin import TestMixin
 
-# Only one QApplication can be created. Use QtWidgets.QApplication.instance() when you need to "create" a  QApplication.
-application = QtWidgets.QApplication([])
-application.setApplicationName('OpenLP')
 
-__all__ = ['ANY', 'MagicMock', 'patch', 'mock_open', 'call', 'application', 'PropertyMock']
+class TestVersionchecker(TestMixin, TestCase):
+
+    def setUp(self):
+        """
+        Create an instance and a few example actions.
+        """
+        self.build_settings()
+
+    def tearDown(self):
+        """
+        Clean up
+        """
+        self.destroy_settings()
+
+    def version_thread_triggered_test(self):
+        """
+        Test the version thread call does not trigger UI
+        :return:
+        """
+        # GIVEN: a equal version setup and the data is not today.
+        mocked_main_window = MagicMock()
+        Settings().setValue('core/last version test', '1950-04-01')
+        # WHEN: We check to see if the version is different .
+        with patch('PyQt5.QtCore.QThread'),\
+                patch('openlp.core.common.versionchecker.get_application_version') as mocked_get_application_version:
+            mocked_get_application_version.return_value = {'version': '1.0.0', 'build': '', 'full': '2.0.4'}
+            version_thread = VersionThread(mocked_main_window)
+            version_thread.run()
+        # THEN: If the version has changed the main window is notified
+        self.assertTrue(mocked_main_window.openlp_version_check.emit.called,
+                        'The main windows should have been notified')

@@ -20,46 +20,38 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Module to test the :mod:`~openlp.core.common.historycombobox` module.
+Package to test the openlp.core.utils.__init__ package.
 """
 
 from unittest import TestCase
+import urllib.request
+import urllib.error
+import urllib.parse
 
-from PyQt5 import QtWidgets
-
-from openlp.core.common import Registry
-from openlp.core.common import HistoryComboBox
+from tests.functional import patch
 from tests.helpers.testmixin import TestMixin
-from tests.interfaces import MagicMock, patch
+
+from openlp.core.lib.webpagereader import CONNECTION_RETRIES, get_web_page
 
 
-class TestHistoryComboBox(TestCase, TestMixin):
-    def setUp(self):
+class TestFirstTimeWizard(TestMixin, TestCase):
+    """
+    Test First Time Wizard import functions
+    """
+    def webpage_connection_retry_test(self):
         """
-        Some pre-test setup required.
+        Test get_web_page will attempt CONNECTION_RETRIES+1 connections - bug 1409031
         """
-        Registry.create()
-        self.setup_application()
-        self.main_window = QtWidgets.QMainWindow()
-        Registry().register('main_window', self.main_window)
-        self.combo = HistoryComboBox(self.main_window)
+        # GIVEN: Initial settings and mocks
+        with patch.object(urllib.request, 'urlopen') as mocked_urlopen:
+            mocked_urlopen.side_effect = ConnectionError
 
-    def tearDown(self):
-        """
-        Delete all the C++ objects at the end so that we don't have a segfault
-        """
-        del self.combo
-        del self.main_window
+            # WHEN: A webpage is requested
+            try:
+                get_web_page(url='http://localhost')
+            except:
+                pass
 
-    def get_items_test(self):
-        """
-        Test the getItems() method
-        """
-        # GIVEN: The combo.
-
-        # WHEN: Add two items.
-        self.combo.addItem('test1')
-        self.combo.addItem('test2')
-
-        # THEN: The list of items should contain both strings.
-        self.assertEqual(self.combo.getItems(), ['test1', 'test2'])
+            # THEN: urlopen should have been called CONNECTION_RETRIES + 1 count
+            self.assertEquals(mocked_urlopen.call_count, CONNECTION_RETRIES + 1,
+                              'get_web_page() should have tried {} times'.format(CONNECTION_RETRIES))

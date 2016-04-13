@@ -29,9 +29,9 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
+from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate, get_images_filter
 from openlp.core.lib import ColorButton, SettingsTab, build_icon
-from openlp.core.utils import format_time, get_images_filter
+from openlp.core.common.languagemanager import format_time
 
 log = logging.getLogger(__name__)
 
@@ -83,6 +83,13 @@ class AdvancedTab(SettingsTab):
         self.expand_service_item_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.expand_service_item_check_box.setObjectName('expand_service_item_check_box')
         self.ui_layout.addRow(self.expand_service_item_check_box)
+        self.slide_max_height_label = QtWidgets.QLabel(self.ui_group_box)
+        self.slide_max_height_label.setObjectName('slide_max_height_label')
+        self.slide_max_height_spin_box = QtWidgets.QSpinBox(self.ui_group_box)
+        self.slide_max_height_spin_box.setObjectName('slide_max_height_spin_box')
+        self.slide_max_height_spin_box.setRange(0, 1000)
+        self.slide_max_height_spin_box.setSingleStep(20)
+        self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_spin_box)
         self.search_as_type_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.search_as_type_check_box.setObjectName('SearchAsType_check_box')
         self.ui_layout.addRow(self.search_as_type_check_box)
@@ -277,6 +284,9 @@ class AdvancedTab(SettingsTab):
                                                                       'Preview items when clicked in service'))
         self.expand_service_item_check_box.setText(translate('OpenLP.AdvancedTab',
                                                              'Expand new service items on creation'))
+        self.slide_max_height_label.setText(translate('OpenLP.AdvancedTab',
+                                                      'Max height for non-text slides\nin slide controller:'))
+        self.slide_max_height_spin_box.setSpecialValueText(translate('OpenLP.AdvancedTab', 'Disabled'))
         self.enable_auto_close_check_box.setText(translate('OpenLP.AdvancedTab',
                                                            'Enable application exit confirmation'))
         self.service_name_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Default Service Name'))
@@ -346,6 +356,7 @@ class AdvancedTab(SettingsTab):
         self.single_click_preview_check_box.setChecked(settings.value('single click preview'))
         self.single_click_service_preview_check_box.setChecked(settings.value('single click service preview'))
         self.expand_service_item_check_box.setChecked(settings.value('expand service item'))
+        self.slide_max_height_spin_box.setValue(settings.value('slide max height'))
         self.enable_auto_close_check_box.setChecked(settings.value('enable exit confirmation'))
         self.hide_mouse_check_box.setChecked(settings.value('hide mouse'))
         self.service_name_day.setCurrentIndex(settings.value('default service day'))
@@ -428,6 +439,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue('single click preview', self.single_click_preview_check_box.isChecked())
         settings.setValue('single click service preview', self.single_click_service_preview_check_box.isChecked())
         settings.setValue('expand service item', self.expand_service_item_check_box.isChecked())
+        settings.setValue('slide max height', self.slide_max_height_spin_box.value())
         settings.setValue('enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue('hide mouse', self.hide_mouse_check_box.isChecked())
         settings.setValue('alternate rows', self.alternate_rows_check_box.isChecked())
