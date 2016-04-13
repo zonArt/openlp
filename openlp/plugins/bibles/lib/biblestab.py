@@ -171,7 +171,7 @@ class BiblesTab(SettingsTab):
         self.display_style_combo_box.setItemText(DisplayStyle.Square,
                                                  translate('BiblesPlugin.BiblesTab', '[ And ]'))
         self.change_note_label.setText(translate('BiblesPlugin.BiblesTab',
-                                       'Note:\nChanges do not affect verses already in the service.'))
+                                       'Note: Changes do not affect verses in the Service'))
         self.bible_second_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Display second Bible verses'))
         self.scripture_reference_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Custom Scripture References'))
         self.verse_separator_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Verse separator:'))

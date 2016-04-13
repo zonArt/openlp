@@ -68,10 +68,10 @@ class SongsTab(SettingsTab):
     def retranslateUi(self):
         self.mode_group_box.setTitle(translate('SongsPlugin.SongsTab', 'Songs Mode'))
         self.tool_bar_active_check_box.setText(translate('SongsPlugin.SongsTab',
-                                                         'Display verses on live tool bar'))
-        self.update_on_edit_check_box.setText(translate('SongsPlugin.SongsTab', 'Update service from song edit'))
+                                                         'Enable "Go to verse" button in Live panel'))
+        self.update_on_edit_check_box.setText(translate('SongsPlugin.SongsTab', 'Update Service from song edit'))
         self.add_from_service_check_box.setText(translate('SongsPlugin.SongsTab',
-                                                          'Import missing songs from service files'))
+                                                          'Import missing songs from Service files'))
         self.display_songbook_check_box.setText(translate('SongsPlugin.SongsTab', 'Display songbook in footer'))
         self.display_copyright_check_box.setText(translate('SongsPlugin.SongsTab',
                                                            'Display "%s" symbol before copyright info') %

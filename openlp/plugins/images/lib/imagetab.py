@@ -61,7 +61,7 @@ class ImageTab(SettingsTab):
 
     def retranslateUi(self):
         self.background_color_group_box.setTitle(UiStrings().BackgroundColor)
-        self.background_color_label.setText(UiStrings().DefaultColor)
+        self.background_color_label.setText(UiStrings().BackgroundColorColon)
         self.information_label.setText(
             translate('ImagesPlugin.ImageTab', 'Visible background for images with aspect ratio different to screen.'))
 

@@ -98,7 +98,7 @@ class AlertsTab(SettingsTab):
         self.font_group_box.setTitle(translate('AlertsPlugin.AlertsTab', 'Font'))
         self.font_label.setText(translate('AlertsPlugin.AlertsTab', 'Font name:'))
         self.font_color_label.setText(translate('AlertsPlugin.AlertsTab', 'Font color:'))
-        self.background_color_label.setText(translate('AlertsPlugin.AlertsTab', 'Background color:'))
+        self.background_color_label.setText(UiStrings().BackgroundColorColon)
         self.font_size_label.setText(translate('AlertsPlugin.AlertsTab', 'Font size:'))
         self.font_size_spin_box.setSuffix(UiStrings().FontSizePtUnit)
         self.timeout_label.setText(translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
