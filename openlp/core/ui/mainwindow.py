@@ -639,12 +639,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_last_file()
         view_mode = Settings().value('%s/view mode' % self.general_settings_section)
-        if view_mode == 'default':
+        # Cherry
+        if view_mode == 'default' and Settings().value('user interface/layout preset enabled'):
             self.mode_default_item.setChecked(True)
-        elif view_mode == 'setup':
+        elif view_mode == 'setup' and Settings().value('user interface/layout preset enabled'):
             self.set_view_mode(True, True, False, True, False, True)
             self.mode_setup_item.setChecked(True)
-        elif view_mode == 'live':
+        elif view_mode == 'live' and Settings().value('user interface/layout preset enabled'):
             self.set_view_mode(False, True, False, False, True, True)
             self.mode_live_item.setChecked(True)
 
@@ -1027,18 +1028,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         Put OpenLP into "Default" view mode.
         """
         self.set_view_mode(True, True, True, True, True, True, 'default')
+        Settings().setValue('user interface/layout preset enabled', True)
 
     def on_mode_setup_item_clicked(self):
         """
         Put OpenLP into "Setup" view mode.
         """
         self.set_view_mode(True, True, False, True, False, True, 'setup')
+        Settings().setValue('user interface/layout preset enabled', True)
 
     def on_mode_live_item_clicked(self):
         """
         Put OpenLP into "Live" view mode.
         """
         self.set_view_mode(False, True, False, False, True, True, 'live')
+        Settings().setValue('user interface/layout preset enabled', True)
 
     def set_view_mode(self, media=True, service=True, theme=True, preview=True, live=True, projector=True, mode=''):
         """
@@ -1176,24 +1180,28 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         Toggle the visibility of the media manager
         """
         self.media_manager_dock.setVisible(not self.media_manager_dock.isVisible())
+        Settings().setValue('user interface/layout preset enabled', False)
 
     def toggle_projector_manager(self):
         """
         Toggle visibility of the projector manager
         """
         self.projector_manager_dock.setVisible(not self.projector_manager_dock.isVisible())
+        Settings().setValue('user interface/layout preset enabled', False)
 
     def toggle_service_manager(self):
         """
         Toggle the visibility of the service manager
         """
         self.service_manager_dock.setVisible(not self.service_manager_dock.isVisible())
+        Settings().setValue('user interface/layout preset enabled', False)
 
     def toggle_theme_manager(self):
         """
         Toggle the visibility of the theme manager
         """
         self.theme_manager_dock.setVisible(not self.theme_manager_dock.isVisible())
+        Settings().setValue('user interface/layout preset enabled', False)
 
     def set_preview_panel_visibility(self, visible):
         """
@@ -1207,6 +1215,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.preview_controller.panel.setVisible(visible)
         Settings().setValue('user interface/preview panel', visible)
         self.view_preview_panel.setChecked(visible)
+        Settings().setValue('user interface/layout preset enabled', False)
 
     def set_lock_panel(self, lock):
         """
@@ -1217,6 +1226,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.service_manager_dock.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
             self.media_manager_dock.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
             self.projector_manager_dock.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
+            self.view_mode_menu.setEnabled(False)
             self.view_media_manager_item.setEnabled(False)
             self.view_service_manager_item.setEnabled(False)
             self.view_theme_manager_item.setEnabled(False)
@@ -1224,10 +1234,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.view_preview_panel.setEnabled(False)
             self.view_live_panel.setEnabled(False)
         else:
+            #Banana
             self.theme_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
             self.service_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
             self.media_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
             self.projector_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
+            self.view_mode_menu.setEnabled(True)
             self.view_media_manager_item.setEnabled(True)
             self.view_service_manager_item.setEnabled(True)
             self.view_theme_manager_item.setEnabled(True)
@@ -1248,6 +1260,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         self.live_controller.panel.setVisible(visible)
         Settings().setValue('user interface/live panel', visible)
         self.view_live_panel.setChecked(visible)
+        Settings().setValue('user interface/layout preset enabled', False)
 
     def load_settings(self):
         """
