@@ -638,8 +638,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.open_cmd_line_files(self.arguments)
         elif Settings().value(self.general_settings_section + '/auto open'):
             self.service_manager_contents.load_last_file()
+        # This will store currently used layout preset so it remains enabled on next startup.
+        # If any panel is enabled/disabled after preset is set, this setting is not saved.
         view_mode = Settings().value('%s/view mode' % self.general_settings_section)
-        # Cherry
         if view_mode == 'default' and Settings().value('user interface/layout preset enabled'):
             self.mode_default_item.setChecked(True)
         elif view_mode == 'setup' and Settings().value('user interface/layout preset enabled'):
@@ -1234,7 +1235,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.view_preview_panel.setEnabled(False)
             self.view_live_panel.setEnabled(False)
         else:
-            #Banana
             self.theme_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
             self.service_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
             self.media_manager_dock.setFeatures(QtWidgets.QDockWidget.AllDockWidgetFeatures)
