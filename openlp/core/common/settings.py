@@ -180,7 +180,7 @@ class Settings(QtCore.QSettings):
         'themes/wrap footer': False,
         'user interface/live panel': True,
         'user interface/live splitter geometry': QtCore.QByteArray(),
-        'user interface/lock panel': False,
+        'user interface/lock panel': True,
         'user interface/main window geometry': QtCore.QByteArray(),
         'user interface/main window position': QtCore.QPoint(0, 0),
         'user interface/main window splitter geometry': QtCore.QByteArray(),
