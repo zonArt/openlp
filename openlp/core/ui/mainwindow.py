@@ -698,6 +698,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             return
         self.application.set_busy_cursor()
         self.first_time()
+        # if settings.value('%s/screen blank' % self.general_settings_section):
+        #if Settings().value('advanced/enable exit confirmation'):
+        if Settings().value('user interface/projectors hidden in wizard'):
+            self.projector_manager_dock.setVisible(False)
         for plugin in self.plugin_manager.plugins:
             self.active_plugin = plugin
             old_status = self.active_plugin.status
