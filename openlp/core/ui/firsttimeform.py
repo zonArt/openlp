@@ -576,7 +576,6 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
                                             'Click the %s button to start OpenLP.') %
                                             clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
-        Settings().setValue('user interface/projectors hidden in wizard', True)
         self.finish_button.setVisible(True)
         self.finish_button.setEnabled(True)
         self.cancel_button.setVisible(False)

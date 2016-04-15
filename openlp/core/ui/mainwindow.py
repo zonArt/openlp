@@ -698,9 +698,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             return
         self.application.set_busy_cursor()
         self.first_time()
-        # if settings.value('%s/screen blank' % self.general_settings_section):
-        #if Settings().value('advanced/enable exit confirmation'):
-        if Settings().value('user interface/projectors hidden in wizard'):
+        # Check if Projectors panel should be visible or not after wizard.
+        if Settings().value('projector/show after wizard'):
+            self.projector_manager_dock.setVisible(True)
+        else:
             self.projector_manager_dock.setVisible(False)
         for plugin in self.plugin_manager.plugins:
             self.active_plugin = plugin
@@ -1034,6 +1035,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         self.set_view_mode(True, True, True, True, True, True, 'default')
         Settings().setValue('user interface/layout preset enabled', True)
+        Settings().setValue('projector/show after wizard', True)
 
     def on_mode_setup_item_clicked(self):
         """
@@ -1041,6 +1043,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         self.set_view_mode(True, True, False, True, False, True, 'setup')
         Settings().setValue('user interface/layout preset enabled', True)
+        Settings().setValue('projector/show after wizard', True)
 
     def on_mode_live_item_clicked(self):
         """
@@ -1048,6 +1051,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         self.set_view_mode(False, True, False, False, True, True, 'live')
         Settings().setValue('user interface/layout preset enabled', True)
+        Settings().setValue('projector/show after wizard', True)
 
     def set_view_mode(self, media=True, service=True, theme=True, preview=True, live=True, projector=True, mode=''):
         """
@@ -1193,6 +1197,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         self.projector_manager_dock.setVisible(not self.projector_manager_dock.isVisible())
         Settings().setValue('user interface/layout preset enabled', False)
+        # Check/uncheck checkbox on First time wizard based on visibility of this panel.
+        if not Settings().value('projector/show after wizard'):
+            Settings().setValue('projector/show after wizard', True)
+        else:
+            Settings().setValue('projector/show after wizard', False)
 
     def toggle_service_manager(self):
         """
