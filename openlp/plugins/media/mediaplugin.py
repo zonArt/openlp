@@ -60,13 +60,6 @@ class MediaPlugin(Plugin):
         """
         Override the inherited initialise() method in order to upgrade the media before trying to load it
         """
-        # FIXME: Remove after 2.2 release.
-        # This is needed to load the list of media from the config saved before the settings rewrite.
-        if self.media_item_class is not None:
-            loaded_list = Settings().get_files_from_config(self)
-            # Now save the list to the config using our Settings class.
-            if loaded_list:
-                Settings().setValue('%s/%s files' % (self.settings_section, self.name), loaded_list)
         super().initialise()
 
     def app_startup(self):
