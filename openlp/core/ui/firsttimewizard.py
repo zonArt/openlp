@@ -239,20 +239,28 @@ class UiFirstTimeWizard(object):
                                                                            'downloaded.'))
         self.download_label.setText(translate('OpenLP.FirstTimeWizard', 'Please wait while OpenLP downloads the '
                                                                         'resource index file...'))
-        self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
-        self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
+        self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Select parts of the program you wish to use'))
+        self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard',
+                                               'You can also change these settings after the Wizard.'))
         self.songs_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
-        self.custom_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Custom Slides'))
-        self.bible_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Bible'))
-        self.image_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Images'))
-        self.presentation_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Presentations'))
-        self.media_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Media (Audio and Video)'))
-        self.remote_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Allow remote access'))
-        self.song_usage_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Monitor Song Usage'))
-        self.alert_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Allow Alerts'))
+        self.custom_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                                'Custom Slides – Easier to manage than songs and they have their own'
+                                                ' list of slides'))
+        self.bible_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                               'Bibles – Import and show Bibles'))
+        self.image_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                               'Images – Show images or replace background with them'))
+        self.presentation_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                                      'Presentations – Show .ppt, .odp and .pdf presentations'))
+        self.media_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Media – Playback of Audio and Video files'))
+        self.remote_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Remote – Control OpenLP via browser or smart'
+                                                                          'phone app'))
+        self.song_usage_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Song Usage Monitor'))
+        self.alert_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                               'Alerts – Display informative messages while showing other slides'))
         self.projectors_check_box.setText(translate('OpenLP.FirstTimeWizard',
-                                                    'Projectors - This allows OpenLP to control projectors in your'
-                                                    ' network that are compatible with PJLink.'))
+                                                    'Projectors – Allows OpenLP to control PJLink compatible projectors'
+                                                    ' in your network'))
         self.no_internet_page.setTitle(translate('OpenLP.FirstTimeWizard', 'No Internet Connection'))
         self.no_internet_page.setSubTitle(
             translate('OpenLP.FirstTimeWizard', 'Unable to detect an Internet connection.'))
