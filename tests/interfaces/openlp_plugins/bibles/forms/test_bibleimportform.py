@@ -27,7 +27,7 @@ from unittest import TestCase
 from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry
-from openlp.plugins.bibles.forms.bibleimportform import BibleImportForm, WebDownload
+import openlp.plugins.bibles.forms.bibleimportform as bibleimportform
 
 from tests.helpers.testmixin import TestMixin
 from tests.functional import MagicMock, patch
@@ -46,7 +46,8 @@ class TestBibleImportForm(TestCase, TestMixin):
         self.setup_application()
         self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
-        self.form = BibleImportForm(self.main_window, MagicMock(), MagicMock())
+        bibleimportform.PYSWORD_AVAILABLE = False
+        self.form = bibleimportform.BibleImportForm(self.main_window, MagicMock(), MagicMock())
 
     def tearDown(self):
         """
@@ -76,3 +77,16 @@ class TestBibleImportForm(TestCase, TestMixin):
 
         # THEN: The webbible list should still be empty
         self.assertEqual(self.form.web_bible_list, {}, 'The webbible list should be empty')
+
+    def custom_init_test(self):
+        """
+        Test that custom_init works as expected if pysword is unavailable
+        """
+        # GIVEN: A mocked sword_tab_widget
+        self.form.sword_tab_widget = MagicMock()
+
+        # WHEN: Running custom_init
+        self.form.custom_init()
+
+        # THEN: sword_tab_widget.setDisabled(True) should have been called
+        self.form.sword_tab_widget.setDisabled.assert_called_with(True)

@@ -21,8 +21,7 @@
 ###############################################################################
 
 import logging
-from lxml import etree, objectify
-from pysword import modules, bible
+from pysword import modules
 
 from openlp.core.common import translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -48,7 +47,7 @@ class SwordBible(BibleDB):
         if self.sword_path == '':
             self.sword_path = None
 
-    def do_import(self, bible_name=None):
+    def do_import(self):
         """
         Loads a Bible from SWORD module.
         """
@@ -92,7 +91,7 @@ class SwordBible(BibleDB):
             critical_error_message_box(
                 message=translate('BiblesPlugin.SwordImport', 'An unexpected error happened while importing the SWORD '
                                                               'bible, please report this to the OpenLP developers.\n'
-                                                              '%s' % e.msg))
+                                                              '%s' % e))
             log.exception(str(e))
             success = False
         if self.stop_import_flag:
