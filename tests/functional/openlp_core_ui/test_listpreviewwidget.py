@@ -130,12 +130,14 @@ class TestListPreviewWidget(TestCase):
 
         # WHEN: __recalculate_layout() is called (via resizeEvent)
         list_preview_widget.resizeEvent(None)
+        self.mocked_Settings_obj.value.return_value = None
+        list_preview_widget.resizeEvent(None)
 
         # THEN: resizeRowsToContents() should not be called, while setRowHeight() should be called
         #       twice for each slide.
         self.assertEquals(mocked_resizeRowsToContents.call_count, 0, 'Should not be called')
-        self.assertEquals(mocked_setRowHeight.call_count, 4, 'Should be called twice for each slide')
-        calls = [call(0, 200), call(1, 200), call(0, 400), call(1, 400)]
+        self.assertEquals(mocked_setRowHeight.call_count, 6, 'Should be called 3 times for each slide')
+        calls = [call(0, 200), call(1, 200), call(0, 400), call(1, 400), call(0, 400), call(1, 400)]
         mocked_setRowHeight.assert_has_calls(calls)
 
     @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
@@ -236,6 +238,8 @@ class TestListPreviewWidget(TestCase):
 
         # WHEN: row_resized() is called
         list_preview_widget.row_resized(0, 100, 150)
+        self.mocked_Settings_obj.value.return_value = None
+        list_preview_widget.row_resized(0, 100, 150)
 
         # THEN: self.cellWidget(row, 0).children()[1].setMaximumWidth() should not be called
         self.assertEquals(mocked_cellWidget_child.setMaximumWidth.call_count, 0, 'Should not be called')
@@ -295,16 +299,20 @@ class TestListPreviewWidget(TestCase):
         list_preview_widget.change_slide(0)
         self.mocked_Settings_obj.value.return_value = 1
         list_preview_widget.change_slide(0)
-        self.mocked_Settings_obj.value.return_value = {'test': 1}
+        self.mocked_Settings_obj.value.return_value = {'fail': 1}
         list_preview_widget.change_slide(0)
-        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'test': 1}
+        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'fail': 1}
+        list_preview_widget.change_slide(0)
+        self.mocked_Settings_obj.value.return_value = {'dist': 'fail', 'pos': 1}
+        list_preview_widget.change_slide(0)
+        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'pos': 'fail'}
         list_preview_widget.change_slide(0)
 
         # THEN: no further functions should be called
         self.assertEquals(mocked_slide_count.call_count, 0, 'Should not be called')
-        self.assertEquals(mocked_item.call_count, 0, 'Should not be called')
         self.assertEquals(mocked_scrollToItem.call_count, 0, 'Should not be called')
         self.assertEquals(mocked_selectRow.call_count, 0, 'Should not be called')
+        self.assertEquals(mocked_item.call_count, 0, 'Should not be called')
 
     @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.selectRow')
     @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.scrollToItem')
@@ -332,6 +340,7 @@ class TestListPreviewWidget(TestCase):
         self.assertEquals(mocked_slide_count.call_count, 3, 'Should be called')
         self.assertEquals(mocked_scrollToItem.call_count, 2, 'Should be called')
         self.assertEquals(mocked_selectRow.call_count, 2, 'Should be called')
+        self.assertEquals(mocked_item.call_count, 2, 'Should be called')
         calls = [call(0, 0), call(0, 0)]
         mocked_item.assert_has_calls(calls)
 
@@ -363,5 +372,6 @@ class TestListPreviewWidget(TestCase):
         self.assertEquals(mocked_slide_count.call_count, 3, 'Should be called')
         self.assertEquals(mocked_scrollToItem.call_count, 3, 'Should be called')
         self.assertEquals(mocked_selectRow.call_count, 3, 'Should be called')
+        self.assertEquals(mocked_item.call_count, 3, 'Should be called')
         calls = [call(0, 0), call(1, 0), call(2, 0)]
         mocked_item.assert_has_calls(calls)
