@@ -197,6 +197,8 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
         # Retrieve setting
         autoscrolling = Settings().value('advanced/autoscrolling')
         # Check if auto-scroll disabled (None) and validate value as dict containing 'dist' and 'pos'
+        # 'dist' represents the slide to scroll to relative to the new slide (-1 = previous, 0 = current, 1 = next)
+        # 'pos' represents the vert position of of the slide (0 = in view, 1 = top, 2 = middle, 3 = bottom)
         if (not isinstance(autoscrolling, dict)) or ('dist' not in autoscrolling) or ('pos' not in autoscrolling):
             return
         # prevent scrolling past list bounds
