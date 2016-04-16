@@ -295,9 +295,9 @@ class TestListPreviewWidget(TestCase):
         list_preview_widget.change_slide(0)
         self.mocked_Settings_obj.value.return_value = 1
         list_preview_widget.change_slide(0)
-        self.mocked_Settings_obj.value.return_value = {'test':1}
+        self.mocked_Settings_obj.value.return_value = {'test': 1}
         list_preview_widget.change_slide(0)
-        self.mocked_Settings_obj.value.return_value = {'dist':1, 'test':1}
+        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'test': 1}
         list_preview_widget.change_slide(0)
 
         # THEN: no further functions should be called
@@ -305,7 +305,7 @@ class TestListPreviewWidget(TestCase):
         self.assertEquals(mocked_item.call_count, 0, 'Should not be called')
         self.assertEquals(mocked_scrollToItem.call_count, 0, 'Should not be called')
         self.assertEquals(mocked_selectRow.call_count, 0, 'Should not be called')
-        
+
     @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.selectRow')
     @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.scrollToItem')
     @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.item')
@@ -316,7 +316,7 @@ class TestListPreviewWidget(TestCase):
         """
         # GIVEN: A setting for autoscrolling and a ListPreviewWidget.
         # Mock Settings().value('advanced/autoscrolling')
-        self.mocked_Settings_obj.value.return_value = {'dist':-1, 'pos':1}
+        self.mocked_Settings_obj.value.return_value = {'dist': -1, 'pos': 1}
         # Mocked returns
         mocked_slide_count.return_value = 1
         mocked_item.return_value = None
@@ -325,7 +325,7 @@ class TestListPreviewWidget(TestCase):
 
         # WHEN: change_slide() is called
         list_preview_widget.change_slide(0)
-        self.mocked_Settings_obj.value.return_value = {'dist':1, 'pos':1}
+        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'pos': 1}
         list_preview_widget.change_slide(0)
 
         # THEN: no further functions should be called
@@ -345,7 +345,7 @@ class TestListPreviewWidget(TestCase):
         """
         # GIVEN: A setting for autoscrolling and a ListPreviewWidget.
         # Mock Settings().value('advanced/autoscrolling')
-        self.mocked_Settings_obj.value.return_value = {'dist':-1, 'pos':1}
+        self.mocked_Settings_obj.value.return_value = {'dist': -1, 'pos': 1}
         # Mocked returns
         mocked_slide_count.return_value = 3
         mocked_item.return_value = None
@@ -354,9 +354,9 @@ class TestListPreviewWidget(TestCase):
 
         # WHEN: change_slide() is called
         list_preview_widget.change_slide(1)
-        self.mocked_Settings_obj.value.return_value = {'dist':0, 'pos':1}
+        self.mocked_Settings_obj.value.return_value = {'dist': 0, 'pos': 1}
         list_preview_widget.change_slide(1)
-        self.mocked_Settings_obj.value.return_value = {'dist':1, 'pos':1}
+        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'pos': 1}
         list_preview_widget.change_slide(1)
 
         # THEN: no further functions should be called

@@ -107,7 +107,7 @@ class Settings(QtCore.QSettings):
     __default_settings__ = {
         'advanced/add page break': False,
         'advanced/alternate rows': not is_win(),
-        'advanced/autoscrolling': {'dist':1, 'pos':0},
+        'advanced/autoscrolling': {'dist': 1, 'pos': 0},
         'advanced/current media plugin': -1,
         'advanced/data path': '',
         'advanced/default color': '#ffffff',
