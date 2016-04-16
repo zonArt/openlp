@@ -109,8 +109,6 @@ class Settings(QtCore.QSettings):
         'advanced/alternate rows': not is_win(),
         'advanced/current media plugin': -1,
         'advanced/data path': '',
-        'advanced/default color': '#ffffff',
-        'advanced/default image': ':/graphics/openlp-splash-screen.png',
         # 7 stands for now, 0 to 6 is Monday to Sunday.
         'advanced/default service day': 7,
         'advanced/default service enabled': True,
@@ -152,6 +150,9 @@ class Settings(QtCore.QSettings):
         'core/save prompt': False,
         'core/screen blank': False,
         'core/show splash': True,
+        'core/logo background color': '#ffffff',
+        'core/logo file': ':/graphics/openlp-splash-screen.png',
+        'core/logo hide on startup': False,
         'core/songselect password': '',
         'core/songselect username': '',
         'core/update check': True,
@@ -207,7 +208,9 @@ class Settings(QtCore.QSettings):
         # ('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
         ('songs/search as type', 'advanced/search as type', []),
         ('media/players', 'media/players_temp', [(media_players_conv, None)]),  # Convert phonon to system
-        ('media/players_temp', 'media/players', [])  # Move temp setting from above to correct setting
+        ('media/players_temp', 'media/players', []),  # Move temp setting from above to correct setting
+        ('advanced/default color', 'core/logo background color', []),  # Default image renamed + moved to general > 2.4.
+        ('advanced/default image', '/core/logo file', [])  # Default image renamed + moved to general after 2.4.
     ]
 
     @staticmethod

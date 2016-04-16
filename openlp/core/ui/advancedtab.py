@@ -29,8 +29,8 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate, get_images_filter
-from openlp.core.lib import ColorButton, SettingsTab, build_icon
+from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
+from openlp.core.lib import SettingsTab, build_icon
 from openlp.core.common.languagemanager import format_time
 
 log = logging.getLogger(__name__)
@@ -45,8 +45,6 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        self.default_image = ':/graphics/openlp-splash-screen.png'
-        self.default_color = '#ffffff'
         self.data_exists = False
         self.icon_path = ':/system/system_settings.png'
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
@@ -180,33 +178,6 @@ class AdvancedTab(SettingsTab):
         self.data_directory_layout.addRow(self.new_data_directory_has_files_label)
         self.left_layout.addWidget(self.data_directory_group_box)
         self.left_layout.addStretch()
-        # Default Image
-        self.default_image_group_box = QtWidgets.QGroupBox(self.right_column)
-        self.default_image_group_box.setObjectName('default_image_group_box')
-        self.default_image_layout = QtWidgets.QFormLayout(self.default_image_group_box)
-        self.default_image_layout.setObjectName('default_image_layout')
-        self.default_color_label = QtWidgets.QLabel(self.default_image_group_box)
-        self.default_color_label.setObjectName('default_color_label')
-        self.default_color_button = ColorButton(self.default_image_group_box)
-        self.default_color_button.setObjectName('default_color_button')
-        self.default_image_layout.addRow(self.default_color_label, self.default_color_button)
-        self.default_file_label = QtWidgets.QLabel(self.default_image_group_box)
-        self.default_file_label.setObjectName('default_file_label')
-        self.default_file_edit = QtWidgets.QLineEdit(self.default_image_group_box)
-        self.default_file_edit.setObjectName('default_file_edit')
-        self.default_browse_button = QtWidgets.QToolButton(self.default_image_group_box)
-        self.default_browse_button.setObjectName('default_browse_button')
-        self.default_browse_button.setIcon(build_icon(':/general/general_open.png'))
-        self.default_revert_button = QtWidgets.QToolButton(self.default_image_group_box)
-        self.default_revert_button.setObjectName('default_revert_button')
-        self.default_revert_button.setIcon(build_icon(':/general/general_revert.png'))
-        self.default_file_layout = QtWidgets.QHBoxLayout()
-        self.default_file_layout.setObjectName('default_file_layout')
-        self.default_file_layout.addWidget(self.default_file_edit)
-        self.default_file_layout.addWidget(self.default_browse_button)
-        self.default_file_layout.addWidget(self.default_revert_button)
-        self.default_image_layout.addRow(self.default_file_label, self.default_file_layout)
-        self.right_layout.addWidget(self.default_image_group_box)
         # Hide mouse
         self.hide_mouse_group_box = QtWidgets.QGroupBox(self.right_column)
         self.hide_mouse_group_box.setObjectName('hide_mouse_group_box')
@@ -253,9 +224,6 @@ class AdvancedTab(SettingsTab):
         self.service_name_time.timeChanged.connect(self.update_service_name_example)
         self.service_name_edit.textChanged.connect(self.update_service_name_example)
         self.service_name_revert_button.clicked.connect(self.on_service_name_revert_button_clicked)
-        self.default_color_button.colorChanged.connect(self.on_background_color_changed)
-        self.default_browse_button.clicked.connect(self.on_default_browse_button_clicked)
-        self.default_revert_button.clicked.connect(self.on_default_revert_button_clicked)
         self.alternate_rows_check_box.toggled.connect(self.on_alternate_rows_check_box_toggled)
         self.data_directory_browse_button.clicked.connect(self.on_data_directory_browse_button_clicked)
         self.data_directory_default_button.clicked.connect(self.on_data_directory_default_button_clicked)
@@ -309,11 +277,6 @@ class AdvancedTab(SettingsTab):
         self.service_name_example_label.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hide_mouse_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
         self.hide_mouse_check_box.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
-        self.default_image_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Default Image'))
-        self.default_color_label.setText(translate('OpenLP.AdvancedTab', 'Background color:'))
-        self.default_file_label.setText(translate('OpenLP.AdvancedTab', 'Image file:'))
-        self.default_browse_button.setToolTip(translate('OpenLP.AdvancedTab', 'Browse for an image file to display.'))
-        self.default_revert_button.setToolTip(translate('OpenLP.AdvancedTab', 'Revert to the default OpenLP logo.'))
         self.data_directory_current_label.setText(translate('OpenLP.AdvancedTab', 'Current path:'))
         self.data_directory_new_label.setText(translate('OpenLP.AdvancedTab', 'Custom path:'))
         self.data_directory_browse_button.setToolTip(translate('OpenLP.AdvancedTab',
@@ -368,8 +331,6 @@ class AdvancedTab(SettingsTab):
         self.service_name_check_box.setChecked(default_service_enabled)
         self.service_name_check_box_toggled(default_service_enabled)
         self.x11_bypass_check_box.setChecked(settings.value('x11 bypass wm'))
-        self.default_color = settings.value('default color')
-        self.default_file_edit.setText(settings.value('default image'))
         self.slide_limits = settings.value('slide limits')
         self.is_search_as_you_type_enabled = settings.value('search as type')
         self.search_as_type_check_box.setChecked(self.is_search_as_you_type_enabled)
@@ -411,7 +372,6 @@ class AdvancedTab(SettingsTab):
             self.current_data_path = AppLocation.get_data_path()
             log.warning('User requested data path set to default %s' % self.current_data_path)
         self.data_directory_label.setText(os.path.abspath(self.current_data_path))
-        self.default_color_button.color = self.default_color
         # Don't allow data directory move if running portable.
         if settings.value('advanced/is portable'):
             self.data_directory_group_box.hide()
@@ -443,8 +403,6 @@ class AdvancedTab(SettingsTab):
         settings.setValue('enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue('hide mouse', self.hide_mouse_check_box.isChecked())
         settings.setValue('alternate rows', self.alternate_rows_check_box.isChecked())
-        settings.setValue('default color', self.default_color)
-        settings.setValue('default image', self.default_file_edit.text())
         settings.setValue('slide limits', self.slide_limits)
         if self.x11_bypass_check_box.isChecked() != settings.value('x11 bypass wm'):
             settings.setValue('x11 bypass wm', self.x11_bypass_check_box.isChecked())
@@ -521,24 +479,6 @@ class AdvancedTab(SettingsTab):
         """
         self.service_name_edit.setText(UiStrings().DefaultServiceName)
         self.service_name_edit.setFocus()
-
-    def on_background_color_changed(self, color):
-        """
-        Select the background colour of the default display screen.
-        """
-        self.default_color = color
-
-    def on_default_browse_button_clicked(self):
-        """
-        Select an image for the default display screen.
-        """
-        file_filters = '%s;;%s (*.*)' % (get_images_filter(), UiStrings().AllFiles)
-        filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(self,
-                                                                      translate('OpenLP.AdvancedTab', 'Open File'), '',
-                                                                      file_filters)
-        if filename:
-            self.default_file_edit.setText(filename)
-        self.default_file_edit.setFocus()
 
     def on_data_directory_browse_button_clicked(self):
         """
@@ -656,13 +596,6 @@ class AdvancedTab(SettingsTab):
         self.data_directory_copy_check_box.hide()
         self.data_directory_cancel_button.hide()
         self.new_data_directory_has_files_label.hide()
-
-    def on_default_revert_button_clicked(self):
-        """
-        Revert the default screen back to the default settings.
-        """
-        self.default_file_edit.setText(':/graphics/openlp-splash-screen.png')
-        self.default_file_edit.setFocus()
 
     def on_alternate_rows_check_box_toggled(self, checked):
         """

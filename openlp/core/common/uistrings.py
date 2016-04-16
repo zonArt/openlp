@@ -56,6 +56,7 @@ class UiStrings(object):
         self.AllFiles = translate('OpenLP.Ui', 'All Files')
         self.Automatic = translate('OpenLP.Ui', 'Automatic')
         self.BackgroundColor = translate('OpenLP.Ui', 'Background Color')
+        self.BackgroundColorColon = translate('OpenLP.Ui', 'Background color:')
         self.Bottom = translate('OpenLP.Ui', 'Bottom')
         self.Browse = translate('OpenLP.Ui', 'Browse...')
         self.Cancel = translate('OpenLP.Ui', 'Cancel')
