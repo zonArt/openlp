@@ -47,6 +47,10 @@ class AdvancedTab(SettingsTab):
         """
         self.data_exists = False
         self.icon_path = ':/system/system_settings.png'
+        self.autoscroll_map = [None, {'dist': -1, 'pos': 0}, {'dist': -1, 'pos': 1}, {'dist': -1, 'pos': 2},
+                               {'dist': 0, 'pos': 0}, {'dist': 0, 'pos': 1}, {'dist': 0, 'pos': 2},
+                               {'dist': 0, 'pos': 3}, {'dist': 1, 'pos': 0}, {'dist': 1, 'pos': 1},
+                               {'dist': 1, 'pos': 2}, {'dist': 1, 'pos': 3}]
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
         super(AdvancedTab, self).__init__(parent, 'Advanced', advanced_translated)
 
@@ -88,6 +92,13 @@ class AdvancedTab(SettingsTab):
         self.slide_max_height_spin_box.setRange(0, 1000)
         self.slide_max_height_spin_box.setSingleStep(20)
         self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_spin_box)
+        self.autoscroll_label = QtWidgets.QLabel(self.ui_group_box)
+        self.autoscroll_label.setObjectName('autoscroll_label')
+        self.autoscroll_combo_box = QtWidgets.QComboBox(self.ui_group_box)
+        self.autoscroll_combo_box.addItems(['', '', '', '', '', '', '', '', '', '', '', ''])
+        self.autoscroll_combo_box.setObjectName('autoscroll_combo_box')
+        self.ui_layout.addRow(self.autoscroll_label)
+        self.ui_layout.addRow(self.autoscroll_combo_box)
         self.search_as_type_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.search_as_type_check_box.setObjectName('SearchAsType_check_box')
         self.ui_layout.addRow(self.search_as_type_check_box)
@@ -255,6 +266,31 @@ class AdvancedTab(SettingsTab):
         self.slide_max_height_label.setText(translate('OpenLP.AdvancedTab',
                                                       'Max height for non-text slides\nin slide controller:'))
         self.slide_max_height_spin_box.setSpecialValueText(translate('OpenLP.AdvancedTab', 'Disabled'))
+        self.autoscroll_label.setText(translate('OpenLP.AdvancedTab',
+                                                'When changing slides:'))
+        self.autoscroll_combo_box.setItemText(0, translate('OpenLP.AdvancedTab', 'Do not auto-scroll'))
+        self.autoscroll_combo_box.setItemText(1, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the previous slide into view'))
+        self.autoscroll_combo_box.setItemText(2, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the previous slide to top'))
+        self.autoscroll_combo_box.setItemText(3, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the previous slide to middle'))
+        self.autoscroll_combo_box.setItemText(4, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the current slide into view'))
+        self.autoscroll_combo_box.setItemText(5, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the current slide to top'))
+        self.autoscroll_combo_box.setItemText(6, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the current slide to middle'))
+        self.autoscroll_combo_box.setItemText(7, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the current slide to bottom'))
+        self.autoscroll_combo_box.setItemText(8, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the next slide into view'))
+        self.autoscroll_combo_box.setItemText(9, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the next slide to top'))
+        self.autoscroll_combo_box.setItemText(10, translate('OpenLP.AdvancedTab',
+                                                            'Auto-scroll the next slide to middle'))
+        self.autoscroll_combo_box.setItemText(11, translate('OpenLP.AdvancedTab',
+                                                            'Auto-scroll the next slide to bottom'))
         self.enable_auto_close_check_box.setText(translate('OpenLP.AdvancedTab',
                                                            'Enable application exit confirmation'))
         self.service_name_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Default Service Name'))
@@ -320,6 +356,10 @@ class AdvancedTab(SettingsTab):
         self.single_click_service_preview_check_box.setChecked(settings.value('single click service preview'))
         self.expand_service_item_check_box.setChecked(settings.value('expand service item'))
         self.slide_max_height_spin_box.setValue(settings.value('slide max height'))
+        autoscroll_value = settings.value('autoscrolling')
+        for i in range(0, len(self.autoscroll_map)):
+            if self.autoscroll_map[i] == autoscroll_value:
+                self.autoscroll_combo_box.setCurrentIndex(i)
         self.enable_auto_close_check_box.setChecked(settings.value('enable exit confirmation'))
         self.hide_mouse_check_box.setChecked(settings.value('hide mouse'))
         self.service_name_day.setCurrentIndex(settings.value('default service day'))
@@ -400,6 +440,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue('single click service preview', self.single_click_service_preview_check_box.isChecked())
         settings.setValue('expand service item', self.expand_service_item_check_box.isChecked())
         settings.setValue('slide max height', self.slide_max_height_spin_box.value())
+        settings.setValue('autoscrolling', self.autoscroll_map[self.autoscroll_combo_box.currentIndex()])
         settings.setValue('enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue('hide mouse', self.hide_mouse_check_box.isChecked())
         settings.setValue('alternate rows', self.alternate_rows_check_box.isChecked())

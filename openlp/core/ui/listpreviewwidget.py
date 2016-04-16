@@ -87,7 +87,7 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                 height = self.viewport().width() // self.screen_ratio
                 max_img_row_height = Settings().value('advanced/slide max height')
                 # Adjust for row height cap if in use.
-                if max_img_row_height > 0 and height > max_img_row_height:
+                if isinstance(max_img_row_height, int) and max_img_row_height > 0 and height > max_img_row_height:
                     height = max_img_row_height
                 # Apply new height to slides
                 for frame_number in range(len(self.service_item.get_frames())):
@@ -98,7 +98,8 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
         Will scale non-image slides.
         """
         # Only for non-text slides when row height cap in use
-        if self.service_item.is_text() or Settings().value('advanced/slide max height') <= 0:
+        max_img_row_height = Settings().value('advanced/slide max height')
+        if self.service_item.is_text() or not isinstance(max_img_row_height, int) or max_img_row_height <= 0:
             return
         # Get and validate label widget containing slide & adjust max width
         try:
@@ -160,9 +161,9 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                     pixmap.setDevicePixelRatio(label.devicePixelRatio())
                     label.setPixmap(pixmap)
                 slide_height = width // self.screen_ratio
-                # Setup row height cap if in use.
+                # Setup and validate row height cap if in use.
                 max_img_row_height = Settings().value('advanced/slide max height')
-                if max_img_row_height > 0:
+                if isinstance(max_img_row_height, int) and max_img_row_height > 0:
                     if slide_height > max_img_row_height:
                         slide_height = max_img_row_height
                     label.setMaximumWidth(max_img_row_height * self.screen_ratio)
@@ -194,11 +195,22 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
         """
         Switches to the given row.
         """
-        if slide >= self.slide_count():
-            slide = self.slide_count() - 1
-        # Scroll to next item if possible.
-        if slide + 1 < self.slide_count():
-            self.scrollToItem(self.item(slide + 1, 0))
+        # Retrieve setting
+        autoscrolling = Settings().value('advanced/autoscrolling')
+        # Check if auto-scroll disabled (None) and validate value as dict containing 'dist' and 'pos'
+        # 'dist' represents the slide to scroll to relative to the new slide (-1 = previous, 0 = current, 1 = next)
+        # 'pos' represents the vert position of of the slide (0 = in view, 1 = top, 2 = middle, 3 = bottom)
+        if not (isinstance(autoscrolling, dict) and 'dist' in autoscrolling and 'pos' in autoscrolling and
+                isinstance(autoscrolling['dist'], int) and isinstance(autoscrolling['pos'], int)):
+            return
+        # prevent scrolling past list bounds
+        scroll_to_slide = slide + autoscrolling['dist']
+        if scroll_to_slide < 0:
+            scroll_to_slide = 0
+        if scroll_to_slide >= self.slide_count():
+            scroll_to_slide = self.slide_count() - 1
+        # Scroll to item if possible.
+        self.scrollToItem(self.item(scroll_to_slide, 0), autoscrolling['pos'])
         self.selectRow(slide)
 
     def current_slide_number(self):
