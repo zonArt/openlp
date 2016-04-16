@@ -251,7 +251,7 @@ class UiFirstTimeWizard(object):
         self.image_check_box.setText(translate('OpenLP.FirstTimeWizard',
                                                'Images – Show images or replace background with them'))
         self.presentation_check_box.setText(translate('OpenLP.FirstTimeWizard',
-                                                      'Presentations – Show .ppt, .odp and .pdf presentations'))
+                                                      'Presentations – Show .ppt, .odp and .pdf files'))
         self.media_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Media – Playback of Audio and Video files'))
         self.remote_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Remote – Control OpenLP via browser or smart'
                                                                           'phone app'))
@@ -259,8 +259,8 @@ class UiFirstTimeWizard(object):
         self.alert_check_box.setText(translate('OpenLP.FirstTimeWizard',
                                                'Alerts – Display informative messages while showing other slides'))
         self.projectors_check_box.setText(translate('OpenLP.FirstTimeWizard',
-                                                    'Projectors – Allows OpenLP to control PJLink compatible projectors'
-                                                    ' in your network'))
+                                                    'Projectors – Control PJLink compatible projects on your network'
+                                                    ' from OpenLP'))
         self.no_internet_page.setTitle(translate('OpenLP.FirstTimeWizard', 'No Internet Connection'))
         self.no_internet_page.setSubTitle(
             translate('OpenLP.FirstTimeWizard', 'Unable to detect an Internet connection.'))
