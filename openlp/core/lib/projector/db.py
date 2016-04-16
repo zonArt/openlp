@@ -74,7 +74,7 @@ class Manufacturer(CommonBase, Base):
         """
         Returns a basic representation of a Manufacturer table entry.
         """
-        return '<Manufacturer(name="%s")>' % self.name
+        return '<Manufacturer(name="{name}")>'.format(name=self.name)
 
     name = Column(String(30))
     models = relationship('Model',
@@ -101,7 +101,7 @@ class Model(CommonBase, Base):
         """
         Returns a basic representation of a Model table entry.
         """
-        return '<Model(name=%s)>' % self.name
+        return '<Model(name={name})>'.format(name=self.name)
 
     manufacturer_id = Column(Integer, ForeignKey('manufacturer.id'))
     name = Column(String(20))
@@ -131,8 +131,9 @@ class Source(CommonBase, Base):
         """
         Return basic representation of Source table entry.
         """
-        return '<Source(pjlink_name="%s", pjlink_code="%s", text="%s")>' % \
-            (self.pjlink_name, self.pjlink_code, self.text)
+        return '<Source(pjlink_name="{name}", pjlink_code="{code}", text="{Text}")>'.format(name=self.pjlink_name,
+                                                                                            code=self.pjlink_code,
+                                                                                            text=self.text)
     model_id = Column(Integer, ForeignKey('model.id'))
     pjlink_name = Column(String(15))
     pjlink_code = Column(String(2))
@@ -162,11 +163,22 @@ class Projector(CommonBase, Base):
         """
         Return basic representation of Source table entry.
         """
-        return '< Projector(id="%s", ip="%s", port="%s", pin="%s", name="%s", location="%s",' \
-            'notes="%s", pjlink_name="%s", manufacturer="%s", model="%s", other="%s",' \
-            'sources="%s", source_list="%s") >' % (self.id, self.ip, self.port, self.pin, self.name, self.location,
-                                                   self.notes, self.pjlink_name, self.manufacturer, self.model,
-                                                   self.other, self.sources, self.source_list)
+        return '< Projector(id="{data}", ip="{ip}", port="{port}", pin="{pin}", name="{name}", ' \
+            'location="{location}", notes="{notes}", pjlink_name="{pjlink_name}", ' \
+            'manufacturer="{manufacturer}", model="{model}", other="{other}", ' \
+            'sources="{sources}", source_list="{source_list}") >'.format(data=self.id,
+                                                                         ip=self.ip,
+                                                                         port=self.port,
+                                                                         pin=self.pin,
+                                                                         name=self.name,
+                                                                         location=self.location,
+                                                                         notes=self.notes,
+                                                                         pjlink_name=self.pjlink_name,
+                                                                         manufacturer=self.manufacturer,
+                                                                         model=self.model,
+                                                                         other=self.other,
+                                                                         sources=self.sources,
+                                                                         source_list=self.source_list)
     ip = Column(String(100))
     port = Column(String(8))
     pin = Column(String(20))
@@ -203,10 +215,11 @@ class ProjectorSource(CommonBase, Base):
         """
         Return basic representation of Source table entry.
         """
-        return '<ProjectorSource(id="%s", code="%s", text="%s", projector_id="%s")>' % (self.id,
-                                                                                        self.code,
-                                                                                        self.text,
-                                                                                        self.projector_id)
+        return '<ProjectorSource(id="{data}", code="{code}", text="{text}", ' \
+            'projector_id="{projector_id}")>'.format(data=self.id,
+                                                     code=self.code,
+                                                     text=self.text,
+                                                     projector_id=self.projector_id)
     code = Column(String(3))
     text = Column(String(20))
     projector_id = Column(Integer, ForeignKey('projector.id'))
@@ -217,10 +230,11 @@ class ProjectorDB(Manager):
     Class to access the projector database.
     """
     def __init__(self, *args, **kwargs):
-        log.debug('ProjectorDB().__init__(args="%s", kwargs="%s")' % (args, kwargs))
+        log.debug('ProjectorDB().__init__(args="{arg}", kwargs="{kwarg}")'.format(arg=args,
+                                                                                  kwarg=kwargs))
         super().__init__(plugin_name='projector', init_schema=self.init_schema)
-        log.debug('ProjectorDB() Initialized using db url %s' % self.db_url)
-        log.debug('Session: %s', self.session)
+        log.debug('ProjectorDB() Initialized using db url {db}'.format(db=self.db_url))
+        log.debug('Session: {session}'.format(session=self.session))
 
     def init_schema(self, *args, **kwargs):
         """
@@ -240,13 +254,14 @@ class ProjectorDB(Manager):
         :param dbid: DB record id
         :returns: Projector() instance
         """
-        log.debug('get_projector_by_id(id="%s")' % dbid)
+        log.debug('get_projector_by_id(id="{data}")'.format(data=dbid))
         projector = self.get_object_filtered(Projector, Projector.id == dbid)
         if projector is None:
             # Not found
-            log.warn('get_projector_by_id() did not find %s' % id)
+            log.warn('get_projector_by_id() did not find {data}'.format(data=id))
             return None
-        log.debug('get_projectorby_id() returning 1 entry for "%s" id="%s"' % (dbid, projector.id))
+        log.debug('get_projectorby_id() returning 1 entry for "{entry}" id="{data}"'.format(entry=dbid,
+                                                                                            data=projector.id))
         return projector
 
     def get_projector_all(self):
@@ -262,7 +277,7 @@ class ProjectorDB(Manager):
             return return_list
         for new_projector in new_list:
             return_list.append(new_projector)
-        log.debug('get_all() returning %s item(s)' % len(return_list))
+        log.debug('get_all() returning {items} item(s)'.format(items=len(return_list)))
         return return_list
 
     def get_projector_by_ip(self, ip):
@@ -276,9 +291,10 @@ class ProjectorDB(Manager):
         projector = self.get_object_filtered(Projector, Projector.ip == ip)
         if projector is None:
             # Not found
-            log.warn('get_projector_by_ip() did not find %s' % ip)
+            log.warn('get_projector_by_ip() did not find {ip}'.format(ip=ip))
             return None
-        log.debug('get_projectorby_ip() returning 1 entry for "%s" id="%s"' % (ip, projector.id))
+        log.debug('get_projectorby_ip() returning 1 entry for "{ip}" id="{data}"'.format(ip=ip,
+                                                                                         data=projector.id))
         return projector
 
     def get_projector_by_name(self, name):
@@ -288,13 +304,14 @@ class ProjectorDB(Manager):
         :param name: Name of projector
         :returns: Projector() instance
         """
-        log.debug('get_projector_by_name(name="%s")' % name)
+        log.debug('get_projector_by_name(name="{name}")'.format(name=name))
         projector = self.get_object_filtered(Projector, Projector.name == name)
         if projector is None:
             # Not found
-            log.warn('get_projector_by_name() did not find "%s"' % name)
+            log.warn('get_projector_by_name() did not find "{name}"'.format(name=name))
             return None
-        log.debug('get_projector_by_name() returning one entry for "%s" id="%s"' % (name, projector.id))
+        log.debug('get_projector_by_name() returning one entry for "{name}" id="{data}"'.format(name=name,
+                                                                                                data=projector.id))
         return projector
 
     def add_projector(self, projector):
@@ -308,13 +325,13 @@ class ProjectorDB(Manager):
         """
         old_projector = self.get_object_filtered(Projector, Projector.ip == projector.ip)
         if old_projector is not None:
-            log.warn('add_new() skipping entry ip="%s" (Already saved)' % old_projector.ip)
+            log.warn('add_new() skipping entry ip="{ip}" (Already saved)'.format(ip=old_projector.ip))
             return False
         log.debug('add_new() saving new entry')
-        log.debug('ip="%s", name="%s", location="%s"' % (projector.ip,
-                                                         projector.name,
-                                                         projector.location))
-        log.debug('notes="%s"' % projector.notes)
+        log.debug('ip="{ip}", name="{name}", location="{location}"'.format(ip=projector.ip,
+                                                                           name=projector.name,
+                                                                           location=projector.location))
+        log.debug('notes="{notes}"'.format(notes=projector.notes))
         return self.save_object(projector)
 
     def update_projector(self, projector=None):
@@ -333,7 +350,7 @@ class ProjectorDB(Manager):
         if old_projector is None:
             log.error('Edit called on projector instance not in database - cancelled')
             return False
-        log.debug('(%s) Updating projector with dbid=%s' % (projector.ip, projector.id))
+        log.debug('({ip}) Updating projector with dbid={dbid}'.format(ip=projector.ip, dbid=projector.id))
         old_projector.ip = projector.ip
         old_projector.name = projector.name
         old_projector.location = projector.location
@@ -357,9 +374,9 @@ class ProjectorDB(Manager):
         """
         deleted = self.delete_object(Projector, projector.id)
         if deleted:
-            log.debug('delete_by_id() Removed entry id="%s"' % projector.id)
+            log.debug('delete_by_id() Removed entry id="{data}"'.format(data=projector.id))
         else:
-            log.error('delete_by_id() Entry id="%s" not deleted for some reason' % projector.id)
+            log.error('delete_by_id() Entry id="{data}" not deleted for some reason'.format(data=projector.id))
         return deleted
 
     def get_source_list(self, projector):
@@ -395,9 +412,9 @@ class ProjectorDB(Manager):
         source_entry = self.get_object_filtered(ProjetorSource, ProjectorSource.id == source)
         if source_entry is None:
             # Not found
-            log.warn('get_source_by_id() did not find "%s"' % source)
+            log.warn('get_source_by_id() did not find "{source}"'.format(source=source))
             return None
-        log.debug('get_source_by_id() returning one entry for "%s""' % (source))
+        log.debug('get_source_by_id() returning one entry for "{source}""'.format(source=source))
         return source_entry
 
     def get_source_by_code(self, code, projector_id):
@@ -411,11 +428,14 @@ class ProjectorDB(Manager):
         source_entry = self.get_object_filtered(ProjectorSource,
                                                 and_(ProjectorSource.code == code,
                                                      ProjectorSource.projector_id == projector_id))
+
         if source_entry is None:
             # Not found
-            log.warn('get_source_by_id() did not find code="%s" projector_id="%s"' % (code, projector_id))
+            log.warn('get_source_by_id() not found')
+            log.warn('code="{code}" projector_id="{data}"'.format(code=code, data=projector_id))
             return None
-        log.debug('get_source_by_id() returning one entry for code="%s" projector_id="%s"' % (code, projector_id))
+        log.debug('get_source_by_id() returning one entry')
+        log.debug('code="{code}" projector_id="{data}"'.format(code=code, data=projector_id))
         return source_entry
 
     def add_source(self, source):
@@ -424,6 +444,8 @@ class ProjectorDB(Manager):
 
         :param source: ProjectorSource() instance to add
         """
-        log.debug('Saving ProjectorSource(projector_id="%s" code="%s" text="%s")' % (source.projector_id,
-                                                                                     source.code, source.text))
+        log.debug('Saving ProjectorSource(projector_id="{data}" '
+                  'code="{code}" text="{text}")'.format(data=source.projector_id,
+                                                        code=source.code,
+                                                        text=source.text))
         return self.save_object(source)
