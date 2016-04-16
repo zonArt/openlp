@@ -24,6 +24,7 @@ The :mod:`common` module contains most of the components and libraries that make
 OpenLP work.
 """
 import hashlib
+
 import logging
 import os
 import re
@@ -31,6 +32,7 @@ import sys
 import traceback
 from ipaddress import IPv4Address, IPv6Address, AddressValueError
 from shutil import which
+from subprocess import check_output, CalledProcessError, STDOUT
 
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QCryptographicHash as QHash
@@ -247,6 +249,10 @@ from .applocation import AppLocation
 from .actions import ActionList
 from .languagemanager import LanguageManager
 
+if is_win():
+    from subprocess import STARTUPINFO, STARTF_USESHOWWINDOW
+
+
 
 def add_actions(target, actions):
     """
@@ -371,3 +377,29 @@ def clean_filename(filename):
     if not isinstance(filename, str):
         filename = str(filename, 'utf-8')
     return INVALID_FILE_CHARS.sub('_', CONTROL_CHARS.sub('', filename))
+
+
+def check_binary(program_path):
+    """
+    Function that checks whether a binary exists.
+
+    :param program_path:The full path to the binary to check.
+    :return: program output to be parsed
+    """
+    log.debug('testing program_path: %s', program_path)
+    try:
+        # Setup startupinfo options for check_output to avoid console popping up on windows
+        if is_win():
+            startupinfo = STARTUPINFO()
+            startupinfo.dwFlags |= STARTF_USESHOWWINDOW
+        else:
+            startupinfo = None
+        runlog = check_output([program_path, '--help'], stderr=STDOUT, startupinfo=startupinfo)
+    except CalledProcessError as e:
+        runlog = e.output
+    except Exception:
+        trace_error_handler(log)
+        runlog = ''
+    log.debug('check_output returned: %s' % runlog)
+    return runlog
+

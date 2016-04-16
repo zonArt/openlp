@@ -27,7 +27,7 @@ import logging
 
 from PyQt5 import QtCore
 
-from openlp.core.common import Settings, translate
+from openlp.core.common import Settings, translate, check_binary
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
@@ -61,6 +61,51 @@ class MediaPlugin(Plugin):
         Override the inherited initialise() method in order to upgrade the media before trying to load it
         """
         super().initialise()
+
+    def check_pre_conditions(self):
+        """
+        Check it we have a valid environment.
+        :return: true or false
+        """
+        log.debug('check_installed Pdf')
+        self.mudrawbin = ''
+        self.gsbin = ''
+        self.also_supports = []
+        # Use the user defined program if given
+        if Settings().value('presentations/enable_pdf_program'):
+            pdf_program = Settings().value('presentations/pdf_program')
+            program_type = self.check_binary('mediainfo')
+            if program_type == 'gs':
+                self.gsbin = pdf_program
+            elif program_type == 'mudraw':
+                self.mudrawbin = pdf_program
+        else:
+            # Fallback to autodetection
+            application_path = AppLocation.get_directory(AppLocation.AppDir)
+            if is_win():
+                # for windows we only accept mudraw.exe in the base folder
+                application_path = AppLocation.get_directory(AppLocation.AppDir)
+                if os.path.isfile(os.path.join(application_path, 'mudraw.exe')):
+                    self.mudrawbin = os.path.join(application_path, 'mudraw.exe')
+            else:
+                DEVNULL = open(os.devnull, 'wb')
+                # First try to find mupdf
+                self.mudrawbin = which('mudraw')
+                # if mupdf isn't installed, fallback to ghostscript
+                if not self.mudrawbin:
+                    self.gsbin = which('gs')
+                # Last option: check if mudraw is placed in OpenLP base folder
+                if not self.mudrawbin and not self.gsbin:
+                    application_path = AppLocation.get_directory(AppLocation.AppDir)
+                    if os.path.isfile(os.path.join(application_path, 'mudraw')):
+                        self.mudrawbin = os.path.join(application_path, 'mudraw')
+        if self.mudrawbin:
+            self.also_supports = ['xps', 'oxps']
+            return True
+        elif self.gsbin:
+            return True
+        else:
+            return False
 
     def app_startup(self):
         """
@@ -137,3 +182,28 @@ class MediaPlugin(Plugin):
         Add html code to htmlbuilder.
         """
         return self.media_controller.get_media_display_html()
+
+
+def process_check_binary(program_path):
+    """
+    Function that checks whether a binary is either ghostscript or mudraw or neither.
+    Is also used from presentationtab.py
+
+    :param program_path:The full path to the binary to check.
+    :return: Type of the binary, 'gs' if ghostscript, 'mudraw' if mudraw, None if invalid.
+    """
+    program_type = None
+    runlog = check_binary(program_path)
+    # Analyse the output to see it the program is mudraw, ghostscript or neither
+    for line in runlog.splitlines():
+        decoded_line = line.decode()
+        found_mudraw = re.search('usage: mudraw.*', decoded_line, re.IGNORECASE)
+        if found_mudraw:
+            program_type = 'mudraw'
+            break
+        found_gs = re.search('GPL Ghostscript.*', decoded_line, re.IGNORECASE)
+        if found_gs:
+            program_type = 'gs'
+            break
+    log.debug('in check_binary, found: %s', program_type)
+    return program_type
