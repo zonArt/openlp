@@ -189,3 +189,16 @@ class TestMainWindow(TestCase, TestMixin):
             # THEN: The media manager dock is made visible
             self.assertEqual(0, mocked_media_manager_dock.setVisible.call_count)
             mocked_widget.on_focus.assert_called_with()
+
+    def on_first_time_wizard_clicked_projectors_visibility_true_test(self):
+        """
+        Test that the focus is set on the widget when the search shortcut is triggered
+        """
+        # GIVEN: A build main window set up for testing
+
+
+        # WHEN: The search shortcut is triggered
+        self.main_window.on_first_time_wizard_clicked()
+
+        # THEN: The media manager dock is made visible
+
