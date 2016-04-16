@@ -194,11 +194,19 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
         """
         Switches to the given row.
         """
-        if slide >= self.slide_count():
-            slide = self.slide_count() - 1
-        # Scroll to next item if possible.
-        if slide + 1 < self.slide_count():
-            self.scrollToItem(self.item(slide + 1, 0))
+        # Retrieve setting
+        autoscrolling = Settings().value('advanced/autoscrolling')
+        # Check if auto-scroll disabled (None) and validate value as dict containing 'dist' and 'pos'
+        if (not isinstance(autoscrolling, dict)) or ('dist' not in autoscrolling) or ('pos' not in autoscrolling):
+            return
+        # prevent scrolling past list bounds
+        scroll_to_slide = slide + autoscrolling['dist']
+        if scroll_to_slide < 0:
+            scroll_to_slide = 0
+        if scroll_to_slide >= self.slide_count():
+            scroll_to_slide = self.slide_count() - 1
+        # Scroll to item if possible.
+        self.scrollToItem(self.item(scroll_to_slide, 0), autoscrolling['pos'])
         self.selectRow(slide)
 
     def current_slide_number(self):

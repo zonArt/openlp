@@ -107,6 +107,7 @@ class Settings(QtCore.QSettings):
     __default_settings__ = {
         'advanced/add page break': False,
         'advanced/alternate rows': not is_win(),
+        'advanced/autoscrolling': {'dist':1, 'pos':0},
         'advanced/current media plugin': -1,
         'advanced/data path': '',
         'advanced/default color': '#ffffff',
@@ -121,7 +122,6 @@ class Settings(QtCore.QSettings):
         'advanced/double click live': False,
         'advanced/enable exit confirmation': True,
         'advanced/expand service item': False,
-        'advanced/slide max height': 0,
         'advanced/hide mouse': True,
         'advanced/is portable': False,
         'advanced/max recent files': 20,
@@ -131,6 +131,7 @@ class Settings(QtCore.QSettings):
         'advanced/recent file count': 4,
         'advanced/save current plugin': False,
         'advanced/slide limits': SlideLimits.End,
+        'advanced/slide max height': 0,
         'advanced/single click preview': False,
         'advanced/single click service preview': False,
         'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
