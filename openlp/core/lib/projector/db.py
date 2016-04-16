@@ -230,8 +230,7 @@ class ProjectorDB(Manager):
     Class to access the projector database.
     """
     def __init__(self, *args, **kwargs):
-        log.debug('ProjectorDB().__init__(args="{arg}", kwargs="{kwarg}")'.format(arg=args,
-                                                                                  kwarg=kwargs))
+        log.debug('ProjectorDB().__init__(args="{arg}", kwargs="{kwarg}")'.format(arg=args, kwarg=kwargs))
         super().__init__(plugin_name='projector', init_schema=self.init_schema)
         log.debug('ProjectorDB() Initialized using db url {db}'.format(db=self.db_url))
         log.debug('Session: {session}'.format(session=self.session))
@@ -445,7 +444,5 @@ class ProjectorDB(Manager):
         :param source: ProjectorSource() instance to add
         """
         log.debug('Saving ProjectorSource(projector_id="{data}" '
-                  'code="{code}" text="{text}")'.format(data=source.projector_id,
-                                                        code=source.code,
-                                                        text=source.text))
+                  'code="{code}" text="{text}")'.format(data=source.projector_id, code=source.code, text=source.text))
         return self.save_object(source)

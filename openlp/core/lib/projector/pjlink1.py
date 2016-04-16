@@ -91,8 +91,7 @@ class PJLink1(QTcpSocket):
         :param poll_time: Time (in seconds) to poll connected projector
         :param socket_timeout: Time (in seconds) to abort the connection if no response
         """
-        log.debug('PJlink(args={args} kwargs={kwargs})'.format(args=args,
-                                                               kwargs=kwargs))
+        log.debug('PJlink(args={args} kwargs={kwargs})'.format(args=args, kwargs=kwargs))
         self.name = name
         self.ip = ip
         self.port = port
@@ -148,8 +147,7 @@ class PJLink1(QTcpSocket):
         """
         Reset projector-specific information to default
         """
-        log.debug('({ip}) reset_information() connect status is {state}'.format(ip=self.ip,
-                                                                                state=self.state()))
+        log.debug('({ip}) reset_information() connect status is {state}'.format(ip=self.ip, state=self.state()))
         self.power = S_OFF
         self.pjlink_name = None
         self.manufacturer = None
@@ -299,8 +297,7 @@ class PJLink1(QTcpSocket):
 
         :param data: Optional data if called from another routine
         """
-        log.debug('({ip}) check_login(data="{data}")'.format(ip=self.ip,
-                                                             data=data))
+        log.debug('({ip}) check_login(data="{data}")'.format(ip=self.ip, data=data))
         if data is None:
             # Reconnected setup?
             if not self.waitForReadyRead(2000):
@@ -320,8 +317,7 @@ class PJLink1(QTcpSocket):
             # Possibility of extraneous data on input when reading.
             # Clean out extraneous characters in buffer.
             dontcare = self.readLine(self.maxSize)
-            log.debug('({ip}) check_login() read "{data}"'.format(ip=self.ip,
-                                                                  data=data.strip()))
+            log.debug('({ip}) check_login() read "{data}"'.format(ip=self.ip, data=data.strip()))
         # At this point, we should only have the initial login prompt with
         # possible authentication
         # PJLink initial login will be:
@@ -336,8 +332,7 @@ class PJLink1(QTcpSocket):
         else:
             # Process initial connection
             data_check = data.strip().split(' ')
-        log.debug('({ip}) data_check="{data}"'.format(ip=self.ip,
-                                                      data=data_check))
+        log.debug('({ip}) data_check="{data}"'.format(ip=self.ip, data=data_check))
         # Check for projector reporting an error
         if data_check[1].upper() == 'ERRA':
             # Authentication error
@@ -354,10 +349,8 @@ class PJLink1(QTcpSocket):
             return
         elif data_check[1] == '1':
             # Authenticated login with salt
-            log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip,
-                                                                      data=data_check[2]))
-            log.debug('({ip}) pin="{data}"'.format(ip=self.ip,
-                                                   data=self.pin))
+            log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
+            log.debug('({ip}) pin="{data}"'.format(ip=self.ip, data=self.pin))
             salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
         else:
             salt = None
@@ -395,13 +388,11 @@ class PJLink1(QTcpSocket):
         data = data_in.strip()
         if len(data) < 7:
             # Not enough data for a packet
-            log.debug('({ip}) get_data(): Packet length < 7: "{data}"'.format(ip=self.ip,
-                                                                              data=data))
+            log.debug('({ip}) get_data(): Packet length < 7: "{data}"'.format(ip=self.ip, data=data))
             self.send_busy = False
             self.projectorReceivedData.emit()
             return
-        log.debug('({ip}) get_data(): Checking new data "{data}"'.format(ip=self.ip,
-                                                                         data=data))
+        log.debug('({ip}) get_data(): Checking new data "{data}"'.format(ip=self.ip, data=data))
         if data.upper().startswith('PJLINK'):
             # Reconnected from remote host disconnect ?
             self.check_login(data)
@@ -418,16 +409,14 @@ class PJLink1(QTcpSocket):
             (prefix, class_, cmd, data) = (data_split[0][0], data_split[0][1], data_split[0][2:], data_split[1])
         except ValueError as e:
             log.warn('({ip}) get_data(): Invalid packet - expected header + command + data'.format(ip=self.ip))
-            log.warn('({ip}) get_data(): Received data: "{data}"'.format(ip=self.ip,
-                                                                         data=data_in.strip()))
+            log.warn('({ip}) get_data(): Received data: "{data}"'.format(ip=self.ip, data=data_in.strip()))
             self.change_status(E_INVALID_DATA)
             self.send_busy = False
             self.projectorReceivedData.emit()
             return
 
         if not (self.pjlink_class in PJLINK_VALID_CMD and cmd in PJLINK_VALID_CMD[self.pjlink_class]):
-            log.warn('({ip}) get_data(): Invalid packet - unknown command "{data}"'.format(ip=self.ip,
-                                                                                           data=cmd))
+            log.warn('({ip}) get_data(): Invalid packet - unknown command "{data}"'.format(ip=self.ip, data=cmd))
             self.send_busy = False
             self.projectorReceivedData.emit()
             return
@@ -441,9 +430,7 @@ class PJLink1(QTcpSocket):
 
         :param err: Error code
         """
-        log.debug('({ip}) get_error(err={error}): {data}'.format(ip=self.ip,
-                                                                 error=err,
-                                                                 data=self.errorString()))
+        log.debug('({ip}) get_error(err={error}): {data}'.format(ip=self.ip, error=err, data=self.errorString()))
         if err <= 18:
             # QSocket errors. Redefined in projector.constants so we don't mistake
             # them for system errors
@@ -492,16 +479,13 @@ class PJLink1(QTcpSocket):
                                                                                              data=out.strip()))
         elif not queue and len(self.send_queue) == 0:
             # Nothing waiting to send, so just send it
-            log.debug('({ip}) send_command(out="{data}") Sending data'.format(ip=self.ip,
-                                                                              data=out.strip()))
+            log.debug('({ip}) send_command(out="{data}") Sending data'.format(ip=self.ip, data=out.strip()))
             return self._send_command(data=out)
         else:
-            log.debug('({ip}) send_command(out="{data}") adding to queue'.format(ip=self.ip,
-                                                                                 data=out.strip()))
+            log.debug('({ip}) send_command(out="{data}") adding to queue'.format(ip=self.ip, data=out.strip()))
             self.send_queue.append(out)
             self.projectorReceivedData.emit()
-        log.debug('({ip}) send_command(): send_busy is {data}'.format(ip=self.ip,
-                                                                      data=self.send_busy))
+        log.debug('({ip}) send_command(): send_busy is {data}'.format(ip=self.ip, data=self.send_busy))
         if not self.send_busy:
             log.debug('({ip}) send_command() calling _send_string()'.format(ip=self.ip))
             self._send_command()
@@ -514,8 +498,7 @@ class PJLink1(QTcpSocket):
         :param data: Immediate data to send
         """
         log.debug('({ip}) _send_string()'.format(ip=self.ip))
-        log.debug('({ip}) _send_string(): Connection status: {data}'.format(ip=self.ip,
-                                                                            data=self.state()))
+        log.debug('({ip}) _send_string(): Connection status: {data}'.format(ip=self.ip, data=self.state()))
         if self.state() != self.ConnectedState:
             log.debug('({ip}) _send_string() Not connected - abort'.format(ip=self.ip))
             self.send_queue = []
@@ -526,22 +509,18 @@ class PJLink1(QTcpSocket):
             return
         if data is not None:
             out = data
-            log.debug('({ip}) _send_string(data="{data}")'.format(ip=self.ip,
-                                                                  data=out.strip()))
+            log.debug('({ip}) _send_string(data="{data}")'.format(ip=self.ip, data=out.strip()))
         elif len(self.send_queue) != 0:
             out = self.send_queue.pop(0)
-            log.debug('({ip}) _send_string(queued data="{data}"%s)'.format(ip=self.ip,
-                                                                           data=out.strip()))
+            log.debug('({ip}) _send_string(queued data="{data}"%s)'.format(ip=self.ip, data=out.strip()))
         else:
             # No data to send
             log.debug('({ip}) _send_string(): No data to send'.format(ip=self.ip))
             self.send_busy = False
             return
         self.send_busy = True
-        log.debug('({ip}) _send_string(): Sending "{data}"'.format(ip=self.ip,
-                                                                   data=out.strip()))
-        log.debug('({ip}) _send_string(): Queue = {data}'.format(ip=self.ip,
-                                                                 data=self.send_queue))
+        log.debug('({ip}) _send_string(): Sending "{data}"'.format(ip=self.ip, data=out.strip()))
+        log.debug('({ip}) _send_string(): Queue = {data}'.format(ip=self.ip, data=self.send_queue))
         self.socket_timer.start()
         self.projectorNetwork.emit(S_NETWORK_SENDING)
         sent = self.write(out.encode('ascii'))
@@ -558,12 +537,10 @@ class PJLink1(QTcpSocket):
         :param cmd: Command to process
         :param data: Data being processed
         """
-        log.debug('({ip}) Processing command "{data}"'.format(ip=self.ip,
-                                                              data=cmd))
+        log.debug('({ip}) Processing command "{data}"'.format(ip=self.ip, data=cmd))
         if data in PJLINK_ERRORS:
             # Oops - projector error
-            log.error('({ip}) Projector returned error "{data}"'.format(ip=self.ip,
-                                                                        data=data))
+            log.error('({ip}) Projector returned error "{data}"'.format(ip=self.ip, data=data))
             if data.upper() == 'ERRA':
                 # Authentication error
                 self.disconnect_from_host()
@@ -598,8 +575,7 @@ class PJLink1(QTcpSocket):
         if cmd in self.PJLINK1_FUNC:
             self.PJLINK1_FUNC[cmd](data)
         else:
-            log.warn('({ip}) Invalid command {data}'.format(ip=self.ip,
-                                                            data=cmd))
+            log.warn('({ip}) Invalid command {data}'.format(ip=self.ip, data=cmd))
         self.send_busy = False
         self.projectorReceivedData.emit()
 
@@ -618,8 +594,7 @@ class PJLink1(QTcpSocket):
                 fill = {'Hours': int(data_dict[0]), 'On': False if data_dict[1] == '0' else True}
             except ValueError:
                 # In case of invalid entry
-                log.warn('({ip}) process_lamp(): Invalid data "{data}"'.format(ip=self.ip,
-                                                                               data=data))
+                log.warn('({ip}) process_lamp(): Invalid data "{data}"'.format(ip=self.ip, data=data))
                 return
             lamps.append(fill)
             data_dict.pop(0)  # Remove lamp hours
@@ -646,8 +621,7 @@ class PJLink1(QTcpSocket):
                     self.send_command('INST')
         else:
             # Log unknown status response
-            log.warn('({ip}) Unknown power response: {data}'.format(ip=self.ip,
-                                                                    data=data))
+            log.warn('({ip}) Unknown power response: {data}'.format(ip=self.ip, data=data))
         return
 
     def process_avmt(self, data):
@@ -672,8 +646,7 @@ class PJLink1(QTcpSocket):
             shutter = True
             mute = True
         else:
-            log.warn('({ip}) Unknown shutter response: {data}'.format(ip=self.ip,
-                                                                      data=data))
+            log.warn('({ip}) Unknown shutter response: {data}'.format(ip=self.ip, data=data))
         update_icons = shutter != self.shutter
         update_icons = update_icons or mute != self.mute
         self.shutter = shutter
@@ -690,8 +663,7 @@ class PJLink1(QTcpSocket):
         :param data: Currently selected source
         """
         self.source = data
-        log.info('({ip}) Setting data source to "{data}"'.format(ip=self.ip,
-                                                                 data=self.source))
+        log.info('({ip}) Setting data source to "{data}"'.format(ip=self.ip, data=self.source))
         return
 
     def process_clss(self, data):
@@ -722,8 +694,7 @@ class PJLink1(QTcpSocket):
         :param data: Projector name
         """
         self.pjlink_name = data
-        log.debug('({ip}) Setting projector PJLink name to "{data}"'.format(ip=self.ip,
-                                                                            data=self.pjlink_name))
+        log.debug('({ip}) Setting projector PJLink name to "{data}"'.format(ip=self.ip, data=self.pjlink_name))
         return
 
     def process_inf1(self, data):
@@ -734,8 +705,7 @@ class PJLink1(QTcpSocket):
         :param data: Projector manufacturer
         """
         self.manufacturer = data
-        log.debug('({ip}) Setting projector manufacturer data to "{data}"'.format(ip=self.ip,
-                                                                                  data=self.manufacturer))
+        log.debug('({ip}) Setting projector manufacturer data to "{data}"'.format(ip=self.ip, data=self.manufacturer))
         return
 
     def process_inf2(self, data):
@@ -746,8 +716,7 @@ class PJLink1(QTcpSocket):
         :param data: Model name
         """
         self.model = data
-        log.debug('({ip}) Setting projector model to "{data}"'.format(ip=self.ip,
-                                                                      data=self.model))
+        log.debug('({ip}) Setting projector model to "{data}"'.format(ip=self.ip, data=self.model))
         return
 
     def process_info(self, data):
@@ -758,8 +727,7 @@ class PJLink1(QTcpSocket):
         :param data: Projector other info
         """
         self.other_info = data
-        log.debug('({ip}) Setting projector other_info to "{data}"'.format(ip=self.ip,
-                                                                           data=self.other_info))
+        log.debug('({ip}) Setting projector other_info to "{data}"'.format(ip=self.ip, data=self.other_info))
         return
 
     def process_inst(self, data):
@@ -852,8 +820,7 @@ class PJLink1(QTcpSocket):
             self.change_status(E_NOT_CONNECTED)
         else:
             log.debug('({ip}) disconnect_from_host() '
-                      'Current status {data}'.format(ip=self.ip,
-                                                     data=self._get_status(self.status_connect)[0]))
+                      'Current status {data}'.format(ip=self.ip, data=self._get_status(self.status_connect)[0]))
             if self.status_connect != E_NOT_CONNECTED:
                 self.change_status(S_NOT_CONNECTED)
         self.reset_information()
@@ -936,14 +903,12 @@ class PJLink1(QTcpSocket):
 
         :param src: Video source to select in projector
         """
-        log.debug('({ip}) set_input_source(src="{data}")'.format(ip=self.ip,
-                                                                 data=src))
+        log.debug('({ip}) set_input_source(src="{data}")'.format(ip=self.ip, data=src))
         if self.source_available is None:
             return
         elif src not in self.source_available:
             return
-        log.debug('({ip}) Setting input source to "{data}"'.format(ip=self.ip,
-                                                                   data=src))
+        log.debug('({ip}) Setting input source to "{data}"'.format(ip=self.ip, data=src))
         self.send_command(cmd='INPT', opts=src)
         self.poll_loop()
 
