@@ -4,14 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
-# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
-# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# Copyright (c) 2008-2016 OpenLP Developers                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -124,7 +117,8 @@ class SystemPlayer(MediaPlayer):
     def load(self, display):
         """
         Load a video into the display
-        :param display:
+
+        :param display: The display where the media is
         """
         log.debug('load vid in System Controller')
         controller = display.controller
@@ -141,93 +135,122 @@ class SystemPlayer(MediaPlayer):
     def resize(self, display):
         """
         Resize the display
-        :param display:
+
+        :param display: The display where the media is
         """
         display.video_widget.resize(display.size())
 
     def play(self, display):
         """
         Play the current media item
-        :param display:
+
+        :param display: The display where the media is
         """
         log.info('Play the current item')
         controller = display.controller
         start_time = 0
-        if display.media_player.state() != QtMultimedia.QMediaPlayer.PausedState and \
-                controller.media_info.start_time > 0:
-            start_time = controller.media_info.start_time
+        if display.controller.is_live:
+            if self.get_live_state() != QtMultimedia.QMediaPlayer.PausedState and controller.media_info.start_time > 0:
+                start_time = controller.media_info.start_time
+        else:
+            if self.get_preview_state() != QtMultimedia.QMediaPlayer.PausedState and \
+                    controller.media_info.start_time > 0:
+                start_time = controller.media_info.start_time
         display.media_player.play()
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         self.volume(display, controller.media_info.volume)
         display.media_player.durationChanged.connect(functools.partial(self.set_duration, controller))
-        self.state = MediaState.Playing
+        self.set_state(MediaState.Playing, display)
         display.video_widget.raise_()
         return True
 
     def pause(self, display):
         """
         Pause the current media item
+
+        :param display: The display where the media is
         """
         display.media_player.pause()
-        if display.media_player.state() == QtMultimedia.QMediaPlayer.PausedState:
-            self.state = MediaState.Paused
+        if display.controller.is_live:
+            if self.get_live_state() == QtMultimedia.QMediaPlayer.PausedState:
+                self.set_state(MediaState.Paused, display)
+        else:
+            if self.get_preview_state() == QtMultimedia.QMediaPlayer.PausedState:
+                self.set_state(MediaState.Paused, display)
 
     def stop(self, display):
         """
         Stop the current media item
+
+        :param display: The display where the media is
         """
-        display.media_player.blockSignals(True)
-        display.media_player.durationChanged.disconnect()
-        display.media_player.blockSignals(False)
         display.media_player.stop()
         self.set_visible(display, False)
-        self.state = MediaState.Stopped
+        self.set_state(MediaState.Stopped, display)
 
-    def volume(self, display, vol):
+    def volume(self, display, volume):
         """
         Set the volume
+
+        :param display: The display where the media is
+        :param volume: The volume to be set
         """
         if display.has_audio:
-            display.media_player.setVolume(vol)
+            display.media_player.setVolume(volume)
 
     def seek(self, display, seek_value):
         """
         Go to a particular point in the current media item
+
+        :param display: The display where the media is
+        :param seek_value: The where to seek to
         """
         display.media_player.setPosition(seek_value)
 
     def reset(self, display):
         """
         Reset the media player
+
+        :param display: The display where the media is
         """
         display.media_player.stop()
         display.media_player.setMedia(QtMultimedia.QMediaContent())
         self.set_visible(display, False)
         display.video_widget.setVisible(False)
-        self.state = MediaState.Off
+        self.set_state(MediaState.Off, display)
 
     def set_visible(self, display, status):
         """
         Set the visibility of the widget
+
+        :param display: The display where the media is
+        :param status: The visibility status to be set
         """
         if self.has_own_widget:
             display.video_widget.setVisible(status)
 
     @staticmethod
     def set_duration(controller, duration):
-        controller.media_info.length = int(duration / 1000)
-        controller.seek_slider.setMaximum(controller.media_info.length * 1000)
+        """
+
+        :param controller: the controller displaying the media
+        :param duration: how long is the media
+        :return:
+        """
+        controller.seek_slider.setMaximum(controller.media_info.length)
 
     def update_ui(self, display):
         """
         Update the UI
+
+        :param display: The display where the media is
         """
         if display.media_player.state() == QtMultimedia.QMediaPlayer.PausedState and self.state != MediaState.Paused:
             self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
-            if display.media_player.position() > controller.media_info.end_time * 1000:
+            if display.media_player.position() > controller.media_info.end_time:
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seek_slider.isSliderDown():
