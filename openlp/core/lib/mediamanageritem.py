@@ -29,10 +29,10 @@ import re
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, Settings, UiStrings, translate
-from openlp.core.lib import FileDialog, OpenLPToolbar, ServiceItem, StringContent, ListWidgetWithDnD, \
-    ServiceItemContext
+from openlp.core.lib import FileDialog, OpenLPToolbar, ServiceItem, StringContent, ServiceItemContext
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
+from openlp.core.ui.lib.listwidgetwithdnd import ListWidgetWithDnD
 
 log = logging.getLogger(__name__)
 

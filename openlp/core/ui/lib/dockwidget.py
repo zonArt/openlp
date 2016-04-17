@@ -20,5 +20,37 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.core.ui.lib.colorbutton import ColorButton
-from openlp.core.ui.lib.listwidgetwithdnd import ListWidgetWithDnD
+"""
+Provide additional functionality required by OpenLP from the inherited QDockWidget.
+"""
+
+import logging
+
+from PyQt5 import QtWidgets
+
+from openlp.core.lib import ScreenList, build_icon
+
+log = logging.getLogger(__name__)
+
+
+class OpenLPDockWidget(QtWidgets.QDockWidget):
+    """
+    Custom DockWidget class to handle events
+    """
+    def __init__(self, parent=None, name=None, icon=None):
+        """
+        Initialise the DockWidget
+        """
+        log.debug('Initialise the %s widget' % name)
+        super(OpenLPDockWidget, self).__init__(parent)
+        if name:
+            self.setObjectName(name)
+        if icon:
+            self.setWindowIcon(build_icon(icon))
+        # Sort out the minimum width.
+        screens = ScreenList()
+        main_window_docbars = screens.current['size'].width() // 5
+        if main_window_docbars > 300:
+            self.setMinimumWidth(300)
+        else:
+            self.setMinimumWidth(main_window_docbars)
