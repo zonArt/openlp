@@ -119,7 +119,7 @@ class TestPJLink(TestCase):
         # WHEN: Call process_command with lamp data
         pjlink.process_command('LAMP', '11111 1 22222 0 33333 1')
 
-        # THEN: Lamp should have been set with status=ON and hours=22222
+        # THEN: Lamp should have been set with proper lamp status
         self.assertEquals(len(pjlink.lamp), 3,
                           'Projector should have 3 lamps specified')
         self.assertEquals(pjlink.lamp[0]['On'], True,
