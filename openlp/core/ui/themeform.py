@@ -31,6 +31,7 @@ from openlp.core.common import Registry, RegistryProperties, UiStrings, translat
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
+from openlp.core.ui.lib.colorbutton import ColorButton
 from .themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
