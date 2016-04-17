@@ -53,6 +53,7 @@ class TestMediaItem(TestCase, TestMixin):
             self.media_item.list_view.save_auto_select_id = MagicMock()
             self.media_item.list_view.clear = MagicMock()
             self.media_item.list_view.addItem = MagicMock()
+            self.media_item.list_view.setCurrentItem = MagicMock()
             self.media_item.auto_select_id = -1
             self.media_item.display_songbook = False
             self.media_item.display_copyright_symbol = False
@@ -79,13 +80,22 @@ class TestMediaItem(TestCase, TestMixin):
             mock_song.title = 'My Song'
             mock_song.sort_key = 'My Song'
             mock_song.authors = []
+            mock_song_temp = MagicMock()
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.authors = []
             mock_author = MagicMock()
             mock_author.display_name = 'My Author'
             mock_song.authors.append(mock_author)
+            mock_song_temp.authors.append(mock_author)
             mock_song.temporary = False
+            mock_song_temp.temporary = True
             mock_search_results.append(mock_song)
+            mock_search_results.append(mock_song_temp)
             mock_qlist_widget = MagicMock()
             MockedQListWidgetItem.return_value = mock_qlist_widget
+            self.media_item.auto_select_id = 1
 
             # WHEN: I display song search results
             self.media_item.display_results_song(mock_search_results)
@@ -93,9 +103,10 @@ class TestMediaItem(TestCase, TestMixin):
             # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
             self.media_item.list_view.clear.assert_called_with()
             self.media_item.save_auto_select_id.assert_called_with()
-            MockedQListWidgetItem.assert_called_with('My Song (My Author)')
-            mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_song.id)
-            self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
+            MockedQListWidgetItem.assert_called_once_with('My Song (My Author)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
+            self.media_item.list_view.setCurrentItem.assert_called_with(mock_qlist_widget)
 
     def display_results_author_test(self):
         """
@@ -107,13 +118,19 @@ class TestMediaItem(TestCase, TestMixin):
             mock_search_results = []
             mock_author = MagicMock()
             mock_song = MagicMock()
+            mock_song_temp = MagicMock()
             mock_author.display_name = 'My Author'
             mock_author.songs = []
             mock_song.id = 1
             mock_song.title = 'My Song'
             mock_song.sort_key = 'My Song'
             mock_song.temporary = False
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.temporary = True
             mock_author.songs.append(mock_song)
+            mock_author.songs.append(mock_song_temp)
             mock_search_results.append(mock_author)
             mock_qlist_widget = MagicMock()
             MockedQListWidgetItem.return_value = mock_qlist_widget
@@ -123,9 +140,9 @@ class TestMediaItem(TestCase, TestMixin):
 
             # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
             self.media_item.list_view.clear.assert_called_with()
-            MockedQListWidgetItem.assert_called_with('My Author (My Song)')
-            mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_song.id)
-            self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
+            MockedQListWidgetItem.assert_called_once_with('My Author (My Song)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
     def display_results_book_test(self):
         """
@@ -136,17 +153,27 @@ class TestMediaItem(TestCase, TestMixin):
                 patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
             mock_search_results = []
             mock_songbook_entry = MagicMock()
+            mock_songbook_entry_temp = MagicMock()
             mock_songbook = MagicMock()
             mock_song = MagicMock()
+            mock_song_temp = MagicMock()
             mock_songbook_entry.entry = '1'
+            mock_songbook_entry_temp.entry = '2'
             mock_songbook.name = 'My Book'
             mock_song.id = 1
             mock_song.title = 'My Song'
             mock_song.sort_key = 'My Song'
             mock_song.temporary = False
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.temporary = True
             mock_songbook_entry.song = mock_song
             mock_songbook_entry.songbook = mock_songbook
+            mock_songbook_entry_temp.song = mock_song_temp
+            mock_songbook_entry_temp.songbook = mock_songbook
             mock_search_results.append(mock_songbook_entry)
+            mock_search_results.append(mock_songbook_entry_temp)
             mock_qlist_widget = MagicMock()
             MockedQListWidgetItem.return_value = mock_qlist_widget
 
@@ -155,9 +182,9 @@ class TestMediaItem(TestCase, TestMixin):
 
             # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
             self.media_item.list_view.clear.assert_called_with()
-            MockedQListWidgetItem.assert_called_with('My Book #1: My Song')
-            mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_songbook_entry.song.id)
-            self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
+            MockedQListWidgetItem.assert_called_once_with('My Book #1: My Song')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_songbook_entry.song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
     def display_results_topic_test(self):
         """
@@ -169,13 +196,19 @@ class TestMediaItem(TestCase, TestMixin):
             mock_search_results = []
             mock_topic = MagicMock()
             mock_song = MagicMock()
+            mock_song_temp = MagicMock()
             mock_topic.name = 'My Topic'
             mock_topic.songs = []
             mock_song.id = 1
             mock_song.title = 'My Song'
             mock_song.sort_key = 'My Song'
             mock_song.temporary = False
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.temporary = True
             mock_topic.songs.append(mock_song)
+            mock_topic.songs.append(mock_song_temp)
             mock_search_results.append(mock_topic)
             mock_qlist_widget = MagicMock()
             MockedQListWidgetItem.return_value = mock_qlist_widget
@@ -185,9 +218,9 @@ class TestMediaItem(TestCase, TestMixin):
 
             # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
             self.media_item.list_view.clear.assert_called_with()
-            MockedQListWidgetItem.assert_called_with('My Topic (My Song)')
-            mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_song.id)
-            self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
+            MockedQListWidgetItem.assert_called_once_with('My Topic (My Song)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
     def display_results_themes_test(self):
         """
@@ -198,12 +231,19 @@ class TestMediaItem(TestCase, TestMixin):
                 patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
             mock_search_results = []
             mock_song = MagicMock()
+            mock_song_temp = MagicMock()
             mock_song.id = 1
             mock_song.title = 'My Song'
             mock_song.sort_key = 'My Song'
             mock_song.theme_name = 'My Theme'
             mock_song.temporary = False
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.theme_name = 'My Theme'
+            mock_song_temp.temporary = True
             mock_search_results.append(mock_song)
+            mock_search_results.append(mock_song_temp)
             mock_qlist_widget = MagicMock()
             MockedQListWidgetItem.return_value = mock_qlist_widget
 
@@ -212,9 +252,9 @@ class TestMediaItem(TestCase, TestMixin):
 
             # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
             self.media_item.list_view.clear.assert_called_with()
-            MockedQListWidgetItem.assert_called_with('My Theme (My Song)')
-            mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_song.id)
-            self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
+            MockedQListWidgetItem.assert_called_once_with('My Theme (My Song)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
     def display_results_cclinumber_test(self):
         """
@@ -225,12 +265,19 @@ class TestMediaItem(TestCase, TestMixin):
                 patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
             mock_search_results = []
             mock_song = MagicMock()
+            mock_song_temp = MagicMock()
             mock_song.id = 1
             mock_song.title = 'My Song'
             mock_song.sort_key = 'My Song'
             mock_song.ccli_number = '12345'
             mock_song.temporary = False
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.ccli_number = '12346'
+            mock_song_temp.temporary = True
             mock_search_results.append(mock_song)
+            mock_search_results.append(mock_song_temp)
             mock_qlist_widget = MagicMock()
             MockedQListWidgetItem.return_value = mock_qlist_widget
 
@@ -239,9 +286,9 @@ class TestMediaItem(TestCase, TestMixin):
 
             # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
             self.media_item.list_view.clear.assert_called_with()
-            MockedQListWidgetItem.assert_called_with('12345 (My Song)')
-            mock_qlist_widget.setData.assert_called_with(MockedUserRole, mock_song.id)
-            self.media_item.list_view.addItem.assert_called_with(mock_qlist_widget)
+            MockedQListWidgetItem.assert_called_once_with('12345 (My Song)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
     def build_song_footer_one_author_test(self):
         """

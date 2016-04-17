@@ -284,7 +284,6 @@ class SongMediaItem(MediaManagerItem):
         :return: None
         """
         log.debug('display results Author')
-        self.save_auto_select_id()
         self.list_view.clear()
         search_results.sort(key=lambda author: get_natural_key(author.display_name))
         for author in search_results:
@@ -297,10 +296,6 @@ class SongMediaItem(MediaManagerItem):
                 song_name = QtWidgets.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
-                # Auto-select the item if name has been set
-                if song.id == self.auto_select_id:
-                    self.list_view.setCurrentItem(song_name)
-        self.auto_select_id = -1
 
     def display_results_book(self, search_results):
         """
@@ -310,21 +305,17 @@ class SongMediaItem(MediaManagerItem):
         :return: None
         """
         log.debug('display results Book')
-        self.save_auto_select_id()
         self.list_view.clear()
         search_results.sort(key=lambda songbook_entry:
                             (get_natural_key(songbook_entry.songbook.name), get_natural_key(songbook_entry.entry)))
         for songbook_entry in search_results:
+            # Do not display temporary songs
             if songbook_entry.song.temporary:
                 continue
             song_detail = '%s #%s: %s' % (songbook_entry.songbook.name, songbook_entry.entry, songbook_entry.song.title)
             song_name = QtWidgets.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, songbook_entry.song.id)
             self.list_view.addItem(song_name)
-            # Auto-select the item if name has been set
-            if songbook_entry.song.id == self.auto_select_id:
-                self.list_view.setCurrentItem(song_name)
-        self.auto_select_id = -1
 
     def display_results_topic(self, search_results):
         """
@@ -334,7 +325,6 @@ class SongMediaItem(MediaManagerItem):
         :return: None
         """
         log.debug('display results Topic')
-        self.save_auto_select_id()
         self.list_view.clear()
         search_results.sort(key=lambda topic: get_natural_key(topic.name))
         for topic in search_results:
@@ -347,10 +337,6 @@ class SongMediaItem(MediaManagerItem):
                 song_name = QtWidgets.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
-                # Auto-select the item if name has been set
-                if song.id == self.auto_select_id:
-                    self.list_view.setCurrentItem(song_name)
-        self.auto_select_id = -1
 
     def display_results_themes(self, search_results):
         """
@@ -360,7 +346,6 @@ class SongMediaItem(MediaManagerItem):
         :return: None
         """
         log.debug('display results Themes')
-        self.save_auto_select_id()
         self.list_view.clear()
         search_results.sort(key=lambda song: (get_natural_key(song.theme_name),
                             song.sort_key))
@@ -372,10 +357,6 @@ class SongMediaItem(MediaManagerItem):
             song_name = QtWidgets.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
-            # Auto-select the item if name has been set
-            if song.id == self.auto_select_id:
-                self.list_view.setCurrentItem(song_name)
-        self.auto_select_id = -1
 
     def display_results_cclinumber(self, search_results):
         """
@@ -385,7 +366,6 @@ class SongMediaItem(MediaManagerItem):
         :return: None
         """
         log.debug('display results CCLI number')
-        self.save_auto_select_id()
         self.list_view.clear()
         search_results.sort(key=lambda song: (get_natural_key(song.ccli_number),
                             song.sort_key))
@@ -397,10 +377,6 @@ class SongMediaItem(MediaManagerItem):
             song_name = QtWidgets.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
-            # Auto-select the item if name has been set
-            if song.id == self.auto_select_id:
-                self.list_view.setCurrentItem(song_name)
-        self.auto_select_id = -1
 
     def on_clear_text_button_click(self):
         """
