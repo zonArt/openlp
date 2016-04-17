@@ -315,7 +315,6 @@ def create_separated_list(string_list):
 from .exceptions import ValidationError
 from .filedialog import FileDialog
 from .screen import ScreenList
-from .treewidgetwithdnd import TreeWidgetWithDnD
 from .formattingtags import FormattingTags
 from .spelltextedit import SpellTextEdit
 from .plugin import PluginStatus, StringContent, Plugin
@@ -323,8 +322,6 @@ from .pluginmanager import PluginManager
 from .settingstab import SettingsTab
 from .serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
 from .htmlbuilder import build_html, build_lyrics_format_css, build_lyrics_outline_css
-from .toolbar import OpenLPToolbar
-from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
 from .imagemanager import ImageManager
 from .renderer import Renderer
 from .mediamanageritem import MediaManagerItem

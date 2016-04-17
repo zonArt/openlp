@@ -29,7 +29,7 @@ from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import Registry
 from openlp.core.lib import ServiceItem
-from openlp.core.ui import listpreviewwidget
+from openlp.core.ui.lib.listwidgetwithdnd import ListWidgetWithDnD
 from tests.interfaces import MagicMock, patch
 from tests.utils.osdinteraction import read_service_from_file
 from tests.helpers.testmixin import TestMixin

@@ -22,3 +22,6 @@
 
 from openlp.core.ui.lib.colorbutton import ColorButton
 from openlp.core.ui.lib.listwidgetwithdnd import ListWidgetWithDnD
+from openlp.core.ui.lib.treewidgetwithdnd import TreeWidgetWithDnD
+from openlp.core.ui.lib.toolbar import OpenLPToolbar
+from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
