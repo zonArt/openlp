@@ -1371,10 +1371,13 @@ class SlideController(DisplayController, RegistryProperties):
                     Registry().execute('%s_stop' % self.service_item.name.lower(), [self.service_item, self.is_live])
                 if self.service_item.is_media():
                     self.on_media_close()
-                if Settings().value('core/auto unblank'):
-                    self.on_go_live()
-            else:
+                self.on_go_live()
+            # If ('advanced/double click live') is not enabled, double clicking preview adds the item to Service.
+            # Prevent same item in preview from being sent to Service multiple times. Changing preview slide resets
+            # this setting. Do note that this still allows to add item to Service multiple times if icon is clicked.
+            elif not Settings().value('core/doubleclicking preview has added to service'):
                 self.on_preview_add_to_service()
+                Settings().setValue('core/doubleclicking preview has added to service', True)
 
     def on_go_live(self, field=None):
         """
