@@ -384,7 +384,6 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.theme_combo_box.clear()
         self.theme_combo_box.addItem('')
         self.themes = theme_list
-        self.themes.sort(key=lambda theme: get_natural_key(theme))
         self.theme_combo_box.addItems(theme_list)
         set_case_insensitive_completer(self.themes, self.theme_combo_box)
 
