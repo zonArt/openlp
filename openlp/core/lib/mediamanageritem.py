@@ -483,7 +483,7 @@ class MediaManagerItem(QtWidgets.QWidget, RegistryProperties):
             log.debug('%s Preview requested' % self.plugin.name)
             # If ('advanced/double click live') is not enabled, double clicking preview adds the item to Service.
             # This setting prevents it from being sent to Service multiple times, in here it is reset to False.
-            Settings().setValue('core/doubleclicking preview has added to service', False)
+            Settings().setValue('core/has doubleclicking preview added item to service', False)
             service_item = self.build_service_item()
             if service_item:
                 service_item.from_plugin = True

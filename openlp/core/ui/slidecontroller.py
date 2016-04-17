@@ -1376,9 +1376,9 @@ class SlideController(DisplayController, RegistryProperties):
             # Prevent same item in preview from being sent to Service multiple times. Changing preview slide resets
             # this setting. Sending to preview from Service does not reset this setting, this is a design choise.
             # Do note that this still allows to add item to Service multiple times if icon is clicked.
-            elif not Settings().value('core/doubleclicking preview has added to service'):
+            elif not Settings().value('core/has doubleclicking preview added item to service'):
                 self.on_preview_add_to_service()
-                Settings().setValue('core/doubleclicking preview has added to service', True)
+                Settings().setValue('core/has doubleclicking preview added item to service', True)
 
     def on_go_live(self, field=None):
         """
