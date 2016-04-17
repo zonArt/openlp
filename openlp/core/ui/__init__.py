@@ -68,7 +68,6 @@ class DisplayControllerType(object):
     """
     Live = 0
     Preview = 1
-    Plugin = 2
 
 
 class SingleColumnTableWidget(QtWidgets.QTableWidget):
