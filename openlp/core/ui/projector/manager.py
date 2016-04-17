@@ -926,9 +926,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
 
         :param name: Name from QListWidgetItem
         """
-        # Build the title separately so we can make it easier for translators
-        title = '"{name}" '.format(name=name)
-        title += translate('OpenLP.ProjectorManager', 'Authentication Error')
+        title = '"{name} {message}" '.format(name=name,
+                                             message=translate('OpenLP.ProjectorManager', 'Authentication Error'))
         QtWidgets.QMessageBox.warning(self, title,
                                       '<br />There was an authentication error while trying to connect.'
                                       '<br /><br />Please verify your PIN setting '
@@ -942,9 +941,8 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
 
         :param name: Name from QListWidgetItem
         """
-        # Build the title separately so we can make it easier for translators
-        title = '"{name}" '.format(name=name)
-        title += translate('OpenLP.ProjectorManager', 'No Authentication Error')
+        title = '"{name} {message}" '.format(name=name,
+                                             message-translate('OpenLP.ProjectorManager', 'No Authentication Error'))
         QtWidgets.QMessageBox.warning(self, title,
                                       '<br />PIN is set and projector does not require authentication.'
                                       '<br /><br />Please verify your PIN setting '
