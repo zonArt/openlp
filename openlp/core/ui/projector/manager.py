@@ -942,7 +942,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         :param name: Name from QListWidgetItem
         """
         title = '"{name} {message}" '.format(name=name,
-                                             message-translate('OpenLP.ProjectorManager', 'No Authentication Error'))
+                                             message=translate('OpenLP.ProjectorManager', 'No Authentication Error'))
         QtWidgets.QMessageBox.warning(self, title,
                                       '<br />PIN is set and projector does not require authentication.'
                                       '<br /><br />Please verify your PIN setting '
