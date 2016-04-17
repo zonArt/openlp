@@ -33,11 +33,11 @@ class TestColorDialog(TestCase):
     Test the :class:`~openlp.core.lib.colorbutton.ColorButton` class
     """
     def setUp(self):
-        self.change_color_patcher = patch('openlp.core.lib.colorbutton.ColorButton.change_color')
-        self.clicked_patcher = patch('openlp.core.lib.colorbutton.ColorButton.clicked')
-        self.color_changed_patcher = patch('openlp.core.lib.colorbutton.ColorButton.colorChanged')
-        self.qt_gui_patcher = patch('openlp.core.lib.colorbutton.QtWidgets')
-        self.translate_patcher = patch('openlp.core.lib.colorbutton.translate', **{'return_value': 'Tool Tip Text'})
+        self.change_color_patcher = patch('openlp.core.ui.lib.colorbutton.ColorButton.change_color')
+        self.clicked_patcher = patch('openlp.core.ui.lib.colorbutton.ColorButton.clicked')
+        self.color_changed_patcher = patch('openlp.core.ui.lib.colorbutton.ColorButton.colorChanged')
+        self.qt_gui_patcher = patch('openlp.core.ui.lib.colorbutton.QtWidgets')
+        self.translate_patcher = patch('openlp.core.ui.lib.colorbutton.translate', **{'return_value': 'Tool Tip Text'})
         self.addCleanup(self.change_color_patcher.stop)
         self.addCleanup(self.clicked_patcher.stop)
         self.addCleanup(self.color_changed_patcher.stop)
@@ -55,7 +55,7 @@ class TestColorDialog(TestCase):
         """
 
         # GIVEN: The ColorButton class, a mocked change_color, setToolTip methods and clicked signal
-        with patch('openlp.core.lib.colorbutton.ColorButton.setToolTip') as mocked_set_tool_tip:
+        with patch('openlp.core.ui.lib.colorbutton.ColorButton.setToolTip') as mocked_set_tool_tip:
 
             # WHEN: The ColorButton object is instantiated
             widget = ColorButton()
@@ -74,7 +74,7 @@ class TestColorDialog(TestCase):
         self.change_color_patcher.stop()
 
         # GIVEN: An instance of the ColorButton object, and a mocked out setStyleSheet
-        with patch('openlp.core.lib.colorbutton.ColorButton.setStyleSheet') as mocked_set_style_sheet:
+        with patch('openlp.core.ui.lib.colorbutton.ColorButton.setStyleSheet') as mocked_set_style_sheet:
             widget = ColorButton()
 
             # WHEN: Changing the color
@@ -123,7 +123,7 @@ class TestColorDialog(TestCase):
         """
 
         # GIVEN: An instance of ColorButton, with a mocked __init__
-        with patch('openlp.core.lib.colorbutton.ColorButton.__init__', **{'return_value': None}):
+        with patch('openlp.core.ui.lib.colorbutton.ColorButton.__init__', **{'return_value': None}):
             widget = ColorButton()
 
             # WHEN: Setting the color property
