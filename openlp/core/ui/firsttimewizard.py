@@ -249,10 +249,11 @@ class UiFirstTimeWizard(object):
         self.no_internet_text = translate('OpenLP.FirstTimeWizard',
                                           'No Internet connection was found. The First Time Wizard needs an Internet '
                                           'connection in order to be able to download sample songs, Bibles and themes.'
-                                          '  Click the Finish button now to start OpenLP with initial settings and '
+                                          '  Click the %s button now to start OpenLP with initial settings and '
                                           'no sample data.\n\nTo re-run the First Time Wizard and import this sample '
                                           'data at a later time, check your Internet connection and re-run this '
-                                          'wizard by selecting "Tools/Re-run First Time Wizard" from OpenLP.')
+                                          'wizard by selecting "Tools/Re-run First Time Wizard" from OpenLP.') % \
+            clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.FinishButton))
         self.cancel_wizard_text = translate('OpenLP.FirstTimeWizard',
                                             '\n\nTo cancel the First Time Wizard completely (and not start OpenLP), '
                                             'click the %s button now.') % \
@@ -272,5 +273,7 @@ class UiFirstTimeWizard(object):
         self.progress_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Please wait while resources are downloaded '
                                                                            'and OpenLP is configured.'))
         self.progress_label.setText(translate('OpenLP.FirstTimeWizard', 'Starting configuration process...'))
-        first_time_wizard.setButtonText(QtWidgets.QWizard.CustomButton1, translate('OpenLP.FirstTimeWizard', 'Finish'))
-        first_time_wizard.setButtonText(QtWidgets.QWizard.CustomButton2, translate('OpenLP.FirstTimeWizard', 'Cancel'))
+        first_time_wizard.setButtonText(QtWidgets.QWizard.CustomButton1,
+                                        clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.FinishButton)))
+        first_time_wizard.setButtonText(QtWidgets.QWizard.CustomButton2,
+                                        clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.CancelButton)))

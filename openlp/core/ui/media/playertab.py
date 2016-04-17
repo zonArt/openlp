@@ -133,12 +133,16 @@ class PlayerTab(SettingsTab):
     def on_background_color_changed(self, color):
         """
         Set the background color
+
+        :param color: The color to be set.
         """
         self.background_color = color
 
     def on_player_check_box_changed(self, check_state):
         """
         Add or remove players depending on their status
+
+        :param check_state: The requested status.
         """
         player = self.sender().player_name
         if check_state == QtCore.Qt.Checked:
