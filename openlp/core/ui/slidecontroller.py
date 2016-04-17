@@ -796,9 +796,9 @@ class SlideController(DisplayController, RegistryProperties):
         :param item: The current service item
         """
         if item == self.service_item:
-                Settings().setValue('core/is live item edited and replaced', True)
-                self._process_item(item, self.preview_widget.current_slide_number())
-                Settings().setValue('core/is live item edited and replaced', False)
+            Settings().setValue('core/is live item edited and replaced', True)
+            self._process_item(item, self.preview_widget.current_slide_number())
+            Settings().setValue('core/is live item edited and replaced', False)
 
     def add_service_manager_item(self, item, slide_no):
         """

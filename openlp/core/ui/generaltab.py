@@ -174,7 +174,7 @@ class GeneralTab(SettingsTab):
         self.auto_unblank_check_box.setObjectName('auto_unblank_check_box')
         self.settings_layout.addRow(self.auto_unblank_check_box)
         self.click_live_slide_to_unblank_check_box = QtWidgets.QCheckBox(self.settings_group_box)
-        self.click_live_slide_to_unblank_check_box.setObjectName('click_live_slide_to_unblank_')
+        self.click_live_slide_to_unblank_check_box.setObjectName('click_live_slide_to_unblank')
         self.settings_layout.addRow(self.click_live_slide_to_unblank_check_box)
         self.auto_preview_check_box = QtWidgets.QCheckBox(self.settings_group_box)
         self.auto_preview_check_box.setObjectName('auto_preview_check_box')
