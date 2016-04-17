@@ -790,10 +790,8 @@ class SlideController(DisplayController, RegistryProperties):
         """
         Replacement item following a remote edit
         This action  also takes place when a song that is sent to live from Service Manager is edited.
-        If display is blanked, this will update the song and then re-blank the display.
-        As result, lyrics are flashed on screen for a very short time before re-blanking happens. (Bug)
-        This happens only when Automatic unblanking is enabled when new item is sen to Live,
-        if it's not enabled they won't flash.
+        If display is blanked, it will get unblanked if automatic unblanking is enabled. We prevent this from happening
+        by setting a hidden setting to "True" and then to "False" after the processing is done.
 
         :param item: The current service item
         """
