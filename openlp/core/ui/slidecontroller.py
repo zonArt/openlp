@@ -798,19 +798,9 @@ class SlideController(DisplayController, RegistryProperties):
         :param item: The current service item
         """
         if item == self.service_item:
-            if not self.hide_mode():
+                Settings().setValue('core/is live item edited and replaced', True)
                 self._process_item(item, self.preview_widget.current_slide_number())
-            # "isChecked" method is required for checking blanks, on_xx_display(False) does not work.
-            elif self.hide_mode():
-                if self.blank_screen.isChecked():
-                    self._process_item(item, self.preview_widget.current_slide_number())
-                    self.on_blank_display(True)
-                elif self.theme_screen.isChecked():
-                    self._process_item(item, self.preview_widget.current_slide_number())
-                    self.on_theme_display(True)
-                elif self.desktop_screen.isChecked():
-                    self._process_item(item, self.preview_widget.current_slide_number())
-                    self.on_hide_display(True)
+                Settings().setValue('core/is live item edited and replaced', False)
 
     def add_service_manager_item(self, item, slide_no):
         """
@@ -1113,7 +1103,7 @@ class SlideController(DisplayController, RegistryProperties):
             # With this display stays blanked when "auto unblank" setting is not enabled and new item is sent to Live.
             if not Settings().value('core/auto unblank') and start:
                 ()
-            else:
+            if not start and not Settings().value('core/is live item edited and replaced'):
                 Registry().execute('slidecontroller_live_unblank')
         row = self.preview_widget.current_slide_number()
         old_selected_row = self.selected_row
@@ -1364,7 +1354,7 @@ class SlideController(DisplayController, RegistryProperties):
         Triggered when a preview slide item is doubleclicked
         """
         if self.service_item:
-            if Settings().value('advanced/double click live'):
+            if Settings().value('advanced/double click live') and Settings().value('core/auto unblank'):
                 # Live and Preview have issues if we have video or presentations
                 # playing in both at the same time.
                 if self.service_item.is_command():
