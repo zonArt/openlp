@@ -37,7 +37,6 @@ from tests.helpers.testmixin import TestMixin
 from tests.utils.constants import TEST_RESOURCES_PATH
 
 
-
 class TestMainWindow(TestCase, TestMixin):
 
     def setUp(self):
@@ -187,7 +186,6 @@ class TestMainWindow(TestCase, TestMixin):
             mocked_media_tool_box.currentWidget.return_value = mocked_widget
 
             # WHEN: The search shortcut is triggered
-
             self.main_window.on_search_shortcut_triggered()
 
             # THEN: The media manager dock is made visible
