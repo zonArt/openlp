@@ -26,6 +26,8 @@ import os
 
 from unittest import TestCase
 
+from PyQt5 import QtWidgets
+
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.lib.ui import UiStrings
 from openlp.core.common.registry import Registry
@@ -33,6 +35,7 @@ from openlp.core.common.registry import Registry
 from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 from tests.utils.constants import TEST_RESOURCES_PATH
+
 
 
 class TestMainWindow(TestCase, TestMixin):
@@ -184,21 +187,63 @@ class TestMainWindow(TestCase, TestMixin):
             mocked_media_tool_box.currentWidget.return_value = mocked_widget
 
             # WHEN: The search shortcut is triggered
+
             self.main_window.on_search_shortcut_triggered()
 
             # THEN: The media manager dock is made visible
             self.assertEqual(0, mocked_media_manager_dock.setVisible.call_count)
             mocked_widget.on_focus.assert_called_with()
 
-    def on_first_time_wizard_clicked_projectors_visibility_true_test(self):
-        """
-        Test that the focus is set on the widget when the search shortcut is triggered
-        """
-        # GIVEN: A build main window set up for testing
+    @patch('openlp.core.ui.mainwindow.MainWindow.plugin_manager')
+    @patch('openlp.core.ui.mainwindow.MainWindow.first_time')
+    @patch('openlp.core.ui.mainwindow.MainWindow.application')
+    @patch('openlp.core.ui.mainwindow.FirstTimeForm')
+    @patch('openlp.core.ui.mainwindow.QtWidgets.QMessageBox.warning')
+    @patch('openlp.core.ui.mainwindow.Settings')
+    def on_first_time_wizard_clicked_show_projectors_after_test(self, mocked_Settings, mocked_warning,
+                                                                mocked_FirstTimeForm, mocked_application,
+                                                                mocked_first_time,
+                                                                mocked_plugin_manager):
+        # GIVEN: Main_window, patched things, patched "Yes" as confirmation to re-run wizard, settings to True.
+        mocked_Settings_obj = MagicMock()
+        mocked_Settings_obj.value.return_value = True
+        mocked_Settings.return_value = mocked_Settings_obj
+        mocked_warning.return_value = QtWidgets.QMessageBox.Yes
+        mocked_FirstTimeForm_obj = MagicMock()
+        mocked_FirstTimeForm_obj.was_cancelled = False
+        mocked_FirstTimeForm.return_value = mocked_FirstTimeForm_obj
+        mocked_plugin_manager.plugins = []
+        self.main_window.projector_manager_dock = MagicMock()
 
-
-        # WHEN: The search shortcut is triggered
+        # WHEN: on_first_time_wizard_clicked is called
         self.main_window.on_first_time_wizard_clicked()
 
-        # THEN: The media manager dock is made visible
+        # THEN: projector_manager_dock.setVisible should had been called once
+        self.main_window.projector_manager_dock.setVisible.assert_called_once_with(True)
 
+    @patch('openlp.core.ui.mainwindow.MainWindow.plugin_manager')
+    @patch('openlp.core.ui.mainwindow.MainWindow.first_time')
+    @patch('openlp.core.ui.mainwindow.MainWindow.application')
+    @patch('openlp.core.ui.mainwindow.FirstTimeForm')
+    @patch('openlp.core.ui.mainwindow.QtWidgets.QMessageBox.warning')
+    @patch('openlp.core.ui.mainwindow.Settings')
+    def on_first_time_wizard_clicked_hide_projectors_after_test(self, mocked_Settings, mocked_warning,
+                                                                mocked_FirstTimeForm, mocked_application,
+                                                                mocked_first_time,
+                                                                mocked_plugin_manager):
+        # GIVEN: Main_window, patched things, patched "Yes" as confirmation to re-run wizard, settings to False.
+        mocked_Settings_obj = MagicMock()
+        mocked_Settings_obj.value.return_value = False
+        mocked_Settings.return_value = mocked_Settings_obj
+        mocked_warning.return_value = QtWidgets.QMessageBox.Yes
+        mocked_FirstTimeForm_obj = MagicMock()
+        mocked_FirstTimeForm_obj.was_cancelled = False
+        mocked_FirstTimeForm.return_value = mocked_FirstTimeForm_obj
+        mocked_plugin_manager.plugins = []
+        self.main_window.projector_manager_dock = MagicMock()
+
+        # WHEN: on_first_time_wizard_clicked is called
+        self.main_window.on_first_time_wizard_clicked()
+
+        # THEN: projector_manager_dock.setVisible should had been called once
+        self.main_window.projector_manager_dock.setVisible.assert_called_once_with(False)
