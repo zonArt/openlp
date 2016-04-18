@@ -144,18 +144,33 @@ class RemoteTab(SettingsTab):
         self.android_app_group_box = QtWidgets.QGroupBox(self.right_column)
         self.android_app_group_box.setObjectName('android_app_group_box')
         self.right_layout.addWidget(self.android_app_group_box)
-        self.qr_layout = QtWidgets.QVBoxLayout(self.android_app_group_box)
-        self.qr_layout.setObjectName('qr_layout')
-        self.qr_code_label = QtWidgets.QLabel(self.android_app_group_box)
-        self.qr_code_label.setPixmap(QtGui.QPixmap(':/remotes/android_app_qr.png'))
-        self.qr_code_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.qr_code_label.setObjectName('qr_code_label')
-        self.qr_layout.addWidget(self.qr_code_label)
-        self.qr_description_label = QtWidgets.QLabel(self.android_app_group_box)
-        self.qr_description_label.setObjectName('qr_description_label')
-        self.qr_description_label.setOpenExternalLinks(True)
-        self.qr_description_label.setWordWrap(True)
-        self.qr_layout.addWidget(self.qr_description_label)
+        self.android_qr_layout = QtWidgets.QVBoxLayout(self.android_app_group_box)
+        self.android_qr_layout.setObjectName('android_qr_layout')
+        self.android_qr_code_label = QtWidgets.QLabel(self.android_app_group_box)
+        self.android_qr_code_label.setPixmap(QtGui.QPixmap(':/remotes/android_app_qr.png'))
+        self.android_qr_code_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.android_qr_code_label.setObjectName('android_qr_code_label')
+        self.android_qr_layout.addWidget(self.android_qr_code_label)
+        self.android_qr_description_label = QtWidgets.QLabel(self.android_app_group_box)
+        self.android_qr_description_label.setObjectName('android_qr_description_label')
+        self.android_qr_description_label.setOpenExternalLinks(True)
+        self.android_qr_description_label.setWordWrap(True)
+        self.android_qr_layout.addWidget(self.android_qr_description_label)
+        self.ios_app_group_box = QtWidgets.QGroupBox(self.right_column)
+        self.ios_app_group_box.setObjectName('ios_app_group_box')
+        self.right_layout.addWidget(self.ios_app_group_box)
+        self.ios_qr_layout = QtWidgets.QVBoxLayout(self.ios_app_group_box)
+        self.ios_qr_layout.setObjectName('ios_qr_layout')
+        self.ios_qr_code_label = QtWidgets.QLabel(self.ios_app_group_box)
+        self.ios_qr_code_label.setPixmap(QtGui.QPixmap(':/remotes/ios_app_qr.png'))
+        self.ios_qr_code_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.ios_qr_code_label.setObjectName('ios_qr_code_label')
+        self.ios_qr_layout.addWidget(self.ios_qr_code_label)
+        self.ios_qr_description_label = QtWidgets.QLabel(self.ios_app_group_box)
+        self.ios_qr_description_label.setObjectName('ios_qr_description_label')
+        self.ios_qr_description_label.setOpenExternalLinks(True)
+        self.ios_qr_description_label.setWordWrap(True)
+        self.ios_qr_layout.addWidget(self.ios_qr_description_label)
         self.left_layout.addStretch()
         self.right_layout.addStretch()
         self.twelve_hour_check_box.stateChanged.connect(self.on_twelve_hour_check_box_changed)
@@ -176,10 +191,15 @@ class RemoteTab(SettingsTab):
         self.thumbnails_check_box.setText(translate('RemotePlugin.RemoteTab',
                                                     'Show thumbnails of non-text slides in remote and stage view.'))
         self.android_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
-        self.qr_description_label.setText(
+        self.android_qr_description_label.setText(
             translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="%s">download</a> to install the '
                                                 'Android app from Google Play.') %
             'https://play.google.com/store/apps/details?id=org.openlp.android2')
+        self.ios_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'iOS App'))
+        self.ios_qr_description_label.setText(
+            translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="%s">download</a> to install the '
+                                                'iOS app from the App Store.') %
+            'https://itunes.apple.com/app/id1096218725')
         self.https_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'HTTPS Server'))
         self.https_error_label.setText(
             translate('RemotePlugin.RemoteTab', 'Could not find an SSL certificate. The HTTPS server will not be '
