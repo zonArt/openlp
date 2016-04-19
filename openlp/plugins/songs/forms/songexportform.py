@@ -213,7 +213,8 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         self.application.set_busy_cursor()
         songs = self.plugin.manager.get_all_objects(Song)
-        songs.sort(key=lambda song: song.sort_key)
+        get_song_key = lambda song: song.sort_key
+        songs.sort(key=get_song_key)
         for song in songs:
             # No need to export temporary songs.
             if song.temporary:
