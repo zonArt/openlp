@@ -1095,7 +1095,8 @@ class SlideController(DisplayController, RegistryProperties):
                 self.log_debug('Could not get lock in slide_selected after waiting %f, skip to avoid deadlock.'
                                % timeout)
             return
-        # If "click live slide to unblank" is enabled, unblank the display.
+        # If "click live slide to unblank" is enabled, unblank the display. And start = Item is sent to Live.
+        # 'core/is live item edited and replaced' is only True when replacing Live item with the same item from Service.
         # Note: If this if statement is placed at the bottom of this function instead of top slide transitions are lost.
         if self.is_live and Settings().value('core/click live slide to unblank'):
             # With this display stays blanked when "auto unblank" setting is not enabled and new item is sent to Live.

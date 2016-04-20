@@ -713,6 +713,48 @@ class TestSlideController(TestCase):
             slide_controller.theme_screen, slide_controller.blank_screen
         ])
 
+    @patch('openlp.core.ui.slidecontroller.Settings')
+    def on_preview_double_click_unblank_display_test(self, MockedSettings):
+        # GIVEN: A slide controller, actions needed, settins set to True.
+        slide_controller = SlideController(None)
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = True
+        MockedSettings.return_value = mocked_settings
+        slide_controller.service_item = MagicMock()
+        slide_controller.service_item.is_media = MagicMock()
+        slide_controller.on_media_close = MagicMock()
+        slide_controller.on_go_live = MagicMock()
+        slide_controller.on_preview_add_to_service = MagicMock()
+        slide_controller.media_reset = MagicMock()
+
+        # WHEN: on_preview_double_click is called
+        slide_controller.on_preview_double_click()
+
+        # THEN: The call to addActions should be correct
+        self.assertEqual(1, slide_controller.on_go_live.call_count, 'on_go_live should have been called once.')
+        self.assertEqual(0, slide_controller.on_preview_add_to_service.call_count, 'Should have not been called.')
+
+    @patch('openlp.core.ui.slidecontroller.Settings')
+    def on_preview_double_click_add_to_service_test(self, MockedSettings):
+        # GIVEN: A slide controller, actions needed, settins set to False.
+        slide_controller = SlideController(None)
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        slide_controller.service_item = MagicMock()
+        slide_controller.service_item.is_media = MagicMock()
+        slide_controller.on_media_close = MagicMock()
+        slide_controller.on_go_live = MagicMock()
+        slide_controller.on_preview_add_to_service = MagicMock()
+        slide_controller.media_reset = MagicMock()
+
+        # WHEN: on_preview_double_click is called
+        slide_controller.on_preview_double_click()
+
+        # THEN: The call to addActions should be correct
+        self.assertEqual(0, slide_controller.on_go_live.call_count, 'on_go_live Should have not been called.')
+        self.assertEqual(1, slide_controller.on_preview_add_to_service.call_count, 'Should have been called once.')
+
 
 class TestInfoLabel(TestCase):
 
@@ -805,18 +847,3 @@ class TestLiveController(TestCase):
         # WHEN: the default controller is built.
         # THEN: The controller should not be a live controller.
         self.assertEqual(live_controller.is_live, True, 'The slide controller should be a live controller')
-
-
-class TestPreviewLiveController(TestCase):
-
-    def initial_preview_controller_test(self):
-        """
-        Test the initial preview slide controller state.
-        """
-        # GIVEN: A new SlideController instance.
-        Registry.create()
-        preview_controller = PreviewController(None)
-
-        # WHEN: the default controller is built.
-        # THEN: The controller should not be a live controller.
-        self.assertEqual(preview_controller.is_live, False, 'The slide controller should be a Preview controller')
