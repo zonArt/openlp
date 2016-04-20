@@ -25,10 +25,13 @@ This module contains tests for the SWORD Bible importer.
 
 import os
 import json
-from unittest import TestCase
+from unittest import TestCase, SkipTest
 
 from tests.functional import MagicMock, patch
-from openlp.plugins.bibles.lib.sword import SwordBible
+try:
+    from openlp.plugins.bibles.lib.sword import SwordBible
+except ImportError:
+    raise SkipTest('PySword is not installed, skipping SWORD test.')
 from openlp.plugins.bibles.lib.db import BibleDB
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
