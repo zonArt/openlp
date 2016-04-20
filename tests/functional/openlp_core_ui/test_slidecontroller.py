@@ -847,3 +847,18 @@ class TestLiveController(TestCase):
         # WHEN: the default controller is built.
         # THEN: The controller should not be a live controller.
         self.assertEqual(live_controller.is_live, True, 'The slide controller should be a live controller')
+
+
+class TestPreviewLiveController(TestCase):
+
+    def initial_preview_controller_test(self):
+        """
+        Test the initial preview slide controller state.
+        """
+        # GIVEN: A new SlideController instance.
+        Registry.create()
+        preview_controller = PreviewController(None)
+
+        # WHEN: the default controller is built.
+        # THEN: The controller should not be a live controller.
+        self.assertEqual(preview_controller.is_live, False, 'The slide controller should be a Preview controller')
