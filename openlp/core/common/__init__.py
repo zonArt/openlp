@@ -253,7 +253,6 @@ if is_win():
     from subprocess import STARTUPINFO, STARTF_USESHOWWINDOW
 
 
-
 def add_actions(target, actions):
     """
     Adds multiple actions to a menu or toolbar in one command.

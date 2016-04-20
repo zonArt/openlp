@@ -153,11 +153,10 @@ class MediaPlugin(Plugin):
 
 def process_check_binary(program_path):
     """
-    Function that checks whether a binary is either ghostscript or mudraw or neither.
-    Is also used from presentationtab.py
+    Function that checks whether a binary MediaInfo is present
 
     :param program_path:The full path to the binary to check.
-    :return: Type of the binary, 'gs' if ghostscript, 'mudraw' if mudraw, None if invalid.
+    :return: If exists or not
     """
     program_type = None
     runlog = check_binary(program_path)
