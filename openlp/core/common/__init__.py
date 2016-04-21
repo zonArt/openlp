@@ -378,7 +378,7 @@ def clean_filename(filename):
     return INVALID_FILE_CHARS.sub('_', CONTROL_CHARS.sub('', filename))
 
 
-def check_binary(program_path):
+def check_binary_exists(program_path):
     """
     Function that checks whether a binary exists.
 

@@ -30,7 +30,7 @@ from shutil import which
 
 from PyQt5 import QtCore
 
-from openlp.core.common import AppLocation, Settings, translate, check_binary, is_win
+from openlp.core.common import AppLocation, Settings, translate, check_binary_exists, is_win
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
@@ -159,8 +159,8 @@ def process_check_binary(program_path):
     :return: If exists or not
     """
     program_type = None
-    runlog = check_binary(program_path)
-    print(runlog)
+    runlog = check_binary_exists(program_path)
+    print(runlog, type(runlog))
     # Analyse the output to see it the program is mediainfo
     for line in runlog.splitlines():
         decoded_line = line.decode()

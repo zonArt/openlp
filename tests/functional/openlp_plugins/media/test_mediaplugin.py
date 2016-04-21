@@ -64,24 +64,28 @@ class MediaPluginTest(TestCase, TestMixin):
         # THEN: about() should return a non-empty string
         self.assertNotEquals(len(MediaPlugin.about()), 0)
 
-    def process_check_binary_pass_test(self):
+    @patch('openlp.plugins.media.mediaplugin.check_binary_exists')
+    def process_check_binary_pass_test(self, mocked_checked_binary_exists):
         """
         Test that the Process check returns true if found
         """
         # GIVEN: A media plugin instance
         # WHEN: function is called with the correct name
-        result = process_check_binary("MediaInfo")
+        mocked_checked_binary_exists.return_value = str.encode('MediaInfo Command line')
+        result = process_check_binary('MediaInfo')
 
         # THEN: The the result should be True
-        self.assertFalse(result, "Media info should have been found")
+        self.assertTrue(result, 'Mediainfo should have been found')
 
-    def process_check_binary_fail_test(self):
+    @patch('openlp.plugins.media.mediaplugin.check_binary_exists')
+    def process_check_binary_fail_test(self, mocked_checked_binary_exists):
         """
         Test that the Process check returns false if not found
         """
         # GIVEN: A media plugin instance
         # WHEN: function is called with the wrong name
+        mocked_checked_binary_exists.return_value = str.encode('MediaInfo1 Command line')
         result = process_check_binary("MediaInfo1")
 
         # THEN: The the result should be True
-        self.assertTrue(result, "Media info should not have been found")
+        self.assertFalse(result, "Mediainfo should not have been found")

@@ -26,7 +26,7 @@ import re
 from shutil import which
 from subprocess import check_output, CalledProcessError
 
-from openlp.core.common import AppLocation, check_binary
+from openlp.core.common import AppLocation, check_binary_exists
 from openlp.core.common import Settings, is_win
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
@@ -69,7 +69,7 @@ class PdfController(PresentationController):
         :return: Type of the binary, 'gs' if ghostscript, 'mudraw' if mudraw, None if invalid.
         """
         program_type = None
-        runlog = check_binary(program_path)
+        runlog = check_binary_exists(program_path)
         # Analyse the output to see it the program is mudraw, ghostscript or neither
         for line in runlog.splitlines():
             decoded_line = line.decode()
