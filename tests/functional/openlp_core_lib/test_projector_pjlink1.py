@@ -107,3 +107,20 @@ class TestPJLink(TestCase):
         # THEN: process_inpt method should have been called with 31
         mock_process_inpt.called_with('31',
                                       "process_inpt should have been called with 31")
+
+    @patch.object(pjlink_test, 'projectorReceivedData')
+    def projector_process_lamp_test(self, mock_projectorReceivedData):
+        """
+        Test setting lamp on/off and hours
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+
+        # WHEN: Call process_command with lamp data
+        pjlink.process_command('LAMP', '22222 1')
+
+        # THEN: Lamp should have been set with status=ON and hours=22222
+        self.assertEquals(pjlink.lamp[0]['On'], True,
+                          'Lamp power status should have been set to TRUE')
+        self.assertEquals(pjlink.lamp[0]['Hours'], 22222,
+                          'Lamp hours should have been set to 22222')
