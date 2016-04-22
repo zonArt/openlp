@@ -29,3 +29,5 @@ from .wizard import OpenLPWizard, WizardStrings
 from .mediadockmanager import MediaDockManager
 from .listpreviewwidget import ListPreviewWidget
 
+__all__ = ['ColorButton', 'ListPreviewWidget', 'ListWidgetWithDnD', 'OpenLPToolbar', 'OpenLPDockWidget',
+           'OpenLPWizard', 'WizardStrings', 'MediaDockManager', 'ListPreviewWidget']
