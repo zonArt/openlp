@@ -401,4 +401,3 @@ def check_binary_exists(program_path):
         runlog = ''
     log.debug('check_output returned: %s' % runlog)
     return runlog
-
