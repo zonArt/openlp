@@ -26,3 +26,6 @@ from .treewidgetwithdnd import TreeWidgetWithDnD
 from .toolbar import OpenLPToolbar
 from .dockwidget import OpenLPDockWidget
 from .wizard import OpenLPWizard, WizardStrings
+from .mediadockmanager import MediaDockManager
+from .listpreviewwidget import ListPreviewWidget
+

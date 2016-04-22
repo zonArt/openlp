@@ -38,8 +38,9 @@ from openlp.core.lib import ItemCapabilities, ServiceItem, ImageSource, ServiceI
 from openlp.core.lib.ui import create_action
 from openlp.core.ui.lib.toolbar import OpenLPToolbar
 from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
+from openlp.core.ui.lib.listpreviewwidget import ListPreviewWidget
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
-from openlp.core.ui.listpreviewwidget import ListPreviewWidget
+
 
 # Threshold which has to be trespassed to toggle.
 HIDE_MENU_THRESHOLD = 27
