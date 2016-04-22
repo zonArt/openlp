@@ -130,12 +130,14 @@ class TestListPreviewWidget(TestCase):
 
         # WHEN: __recalculate_layout() is called (via resizeEvent)
         list_preview_widget.resizeEvent(None)
+        self.mocked_Settings_obj.value.return_value = None
+        list_preview_widget.resizeEvent(None)
 
         # THEN: resizeRowsToContents() should not be called, while setRowHeight() should be called
         #       twice for each slide.
         self.assertEquals(mocked_resizeRowsToContents.call_count, 0, 'Should not be called')
-        self.assertEquals(mocked_setRowHeight.call_count, 4, 'Should be called twice for each slide')
-        calls = [call(0, 200), call(1, 200), call(0, 400), call(1, 400)]
+        self.assertEquals(mocked_setRowHeight.call_count, 6, 'Should be called 3 times for each slide')
+        calls = [call(0, 200), call(1, 200), call(0, 400), call(1, 400), call(0, 400), call(1, 400)]
         mocked_setRowHeight.assert_has_calls(calls)
 
     @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
@@ -236,6 +238,8 @@ class TestListPreviewWidget(TestCase):
 
         # WHEN: row_resized() is called
         list_preview_widget.row_resized(0, 100, 150)
+        self.mocked_Settings_obj.value.return_value = None
+        list_preview_widget.row_resized(0, 100, 150)
 
         # THEN: self.cellWidget(row, 0).children()[1].setMaximumWidth() should not be called
         self.assertEquals(mocked_cellWidget_child.setMaximumWidth.call_count, 0, 'Should not be called')
@@ -273,3 +277,101 @@ class TestListPreviewWidget(TestCase):
 
         # THEN: self.cellWidget(row, 0).children()[1].setMaximumWidth() should be called
         mocked_cellWidget_child.setMaximumWidth.assert_called_once_with(150)
+
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.selectRow')
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.scrollToItem')
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.item')
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.slide_count')
+    def autoscroll_test_setting_invalid(self, mocked_slide_count, mocked_item, mocked_scrollToItem, mocked_selectRow):
+        """
+        Test if 'advanced/autoscrolling' setting None or invalid, that no autoscrolling occurs on change_slide().
+        """
+        # GIVEN: A setting for autoscrolling and a ListPreviewWidget.
+        # Mock Settings().value('advanced/autoscrolling')
+        self.mocked_Settings_obj.value.return_value = None
+        # Mocked returns
+        mocked_slide_count.return_value = 1
+        mocked_item.return_value = None
+        # init ListPreviewWidget and load service item
+        list_preview_widget = ListPreviewWidget(None, 1)
+
+        # WHEN: change_slide() is called
+        list_preview_widget.change_slide(0)
+        self.mocked_Settings_obj.value.return_value = 1
+        list_preview_widget.change_slide(0)
+        self.mocked_Settings_obj.value.return_value = {'fail': 1}
+        list_preview_widget.change_slide(0)
+        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'fail': 1}
+        list_preview_widget.change_slide(0)
+        self.mocked_Settings_obj.value.return_value = {'dist': 'fail', 'pos': 1}
+        list_preview_widget.change_slide(0)
+        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'pos': 'fail'}
+        list_preview_widget.change_slide(0)
+
+        # THEN: no further functions should be called
+        self.assertEquals(mocked_slide_count.call_count, 0, 'Should not be called')
+        self.assertEquals(mocked_scrollToItem.call_count, 0, 'Should not be called')
+        self.assertEquals(mocked_selectRow.call_count, 0, 'Should not be called')
+        self.assertEquals(mocked_item.call_count, 0, 'Should not be called')
+
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.selectRow')
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.scrollToItem')
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.item')
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.slide_count')
+    def autoscroll_test_dist_bounds(self, mocked_slide_count, mocked_item, mocked_scrollToItem, mocked_selectRow):
+        """
+        Test if 'advanced/autoscrolling' setting asks to scroll beyond list bounds, that it does not beyond.
+        """
+        # GIVEN: A setting for autoscrolling and a ListPreviewWidget.
+        # Mock Settings().value('advanced/autoscrolling')
+        self.mocked_Settings_obj.value.return_value = {'dist': -1, 'pos': 1}
+        # Mocked returns
+        mocked_slide_count.return_value = 1
+        mocked_item.return_value = None
+        # init ListPreviewWidget and load service item
+        list_preview_widget = ListPreviewWidget(None, 1)
+
+        # WHEN: change_slide() is called
+        list_preview_widget.change_slide(0)
+        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'pos': 1}
+        list_preview_widget.change_slide(0)
+
+        # THEN: no further functions should be called
+        self.assertEquals(mocked_slide_count.call_count, 3, 'Should be called')
+        self.assertEquals(mocked_scrollToItem.call_count, 2, 'Should be called')
+        self.assertEquals(mocked_selectRow.call_count, 2, 'Should be called')
+        self.assertEquals(mocked_item.call_count, 2, 'Should be called')
+        calls = [call(0, 0), call(0, 0)]
+        mocked_item.assert_has_calls(calls)
+
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.selectRow')
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.scrollToItem')
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.item')
+    @patch(u'openlp.core.ui.listpreviewwidget.ListPreviewWidget.slide_count')
+    def autoscroll_test_normal(self, mocked_slide_count, mocked_item, mocked_scrollToItem, mocked_selectRow):
+        """
+        Test if 'advanced/autoscrolling' setting valid, autoscrolling called as expected.
+        """
+        # GIVEN: A setting for autoscrolling and a ListPreviewWidget.
+        # Mock Settings().value('advanced/autoscrolling')
+        self.mocked_Settings_obj.value.return_value = {'dist': -1, 'pos': 1}
+        # Mocked returns
+        mocked_slide_count.return_value = 3
+        mocked_item.return_value = None
+        # init ListPreviewWidget and load service item
+        list_preview_widget = ListPreviewWidget(None, 1)
+
+        # WHEN: change_slide() is called
+        list_preview_widget.change_slide(1)
+        self.mocked_Settings_obj.value.return_value = {'dist': 0, 'pos': 1}
+        list_preview_widget.change_slide(1)
+        self.mocked_Settings_obj.value.return_value = {'dist': 1, 'pos': 1}
+        list_preview_widget.change_slide(1)
+
+        # THEN: no further functions should be called
+        self.assertEquals(mocked_slide_count.call_count, 3, 'Should be called')
+        self.assertEquals(mocked_scrollToItem.call_count, 3, 'Should be called')
+        self.assertEquals(mocked_selectRow.call_count, 3, 'Should be called')
+        self.assertEquals(mocked_item.call_count, 3, 'Should be called')
+        calls = [call(0, 0), call(1, 0), call(2, 0)]
+        mocked_item.assert_has_calls(calls)

@@ -54,8 +54,6 @@ class MediaPluginTest(TestCase, TestMixin):
         media_plugin.initialise()
 
         # THEN: The settings should be upgraded and the base initialise() method should be called
-        mocked_settings.get_files_from_config.assert_called_with(media_plugin)
-        mocked_settings.setValue.assert_called_with('media/media files', True)
         mocked_initialise.assert_called_with()
 
     def test_about_text(self):

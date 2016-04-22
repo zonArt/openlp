@@ -107,10 +107,9 @@ class Settings(QtCore.QSettings):
     __default_settings__ = {
         'advanced/add page break': False,
         'advanced/alternate rows': not is_win(),
+        'advanced/autoscrolling': {'dist': 1, 'pos': 0},
         'advanced/current media plugin': -1,
         'advanced/data path': '',
-        'advanced/default color': '#ffffff',
-        'advanced/default image': ':/graphics/openlp-splash-screen.png',
         # 7 stands for now, 0 to 6 is Monday to Sunday.
         'advanced/default service day': 7,
         'advanced/default service enabled': True,
@@ -121,7 +120,6 @@ class Settings(QtCore.QSettings):
         'advanced/double click live': False,
         'advanced/enable exit confirmation': True,
         'advanced/expand service item': False,
-        'advanced/slide max height': 0,
         'advanced/hide mouse': True,
         'advanced/is portable': False,
         'advanced/max recent files': 20,
@@ -131,6 +129,7 @@ class Settings(QtCore.QSettings):
         'advanced/recent file count': 4,
         'advanced/save current plugin': False,
         'advanced/slide limits': SlideLimits.End,
+        'advanced/slide max height': 0,
         'advanced/single click preview': False,
         'advanced/single click service preview': False,
         'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
@@ -152,6 +151,9 @@ class Settings(QtCore.QSettings):
         'core/save prompt': False,
         'core/screen blank': False,
         'core/show splash': True,
+        'core/logo background color': '#ffffff',
+        'core/logo file': ':/graphics/openlp-splash-screen.png',
+        'core/logo hide on startup': False,
         'core/songselect password': '',
         'core/songselect username': '',
         'core/update check': True,
@@ -180,13 +182,15 @@ class Settings(QtCore.QSettings):
         'themes/wrap footer': False,
         'user interface/live panel': True,
         'user interface/live splitter geometry': QtCore.QByteArray(),
-        'user interface/lock panel': False,
+        'user interface/lock panel': True,
         'user interface/main window geometry': QtCore.QByteArray(),
         'user interface/main window position': QtCore.QPoint(0, 0),
         'user interface/main window splitter geometry': QtCore.QByteArray(),
         'user interface/main window state': QtCore.QByteArray(),
         'user interface/preview panel': True,
         'user interface/preview splitter geometry': QtCore.QByteArray(),
+        'user interface/is preset layout': False,
+        'projector/show after wizard': False,
         'projector/db type': 'sqlite',
         'projector/db username': '',
         'projector/db password': '',
@@ -207,7 +211,9 @@ class Settings(QtCore.QSettings):
         # ('general/recent files', 'core/recent files', [(recent_files_conv, None)]),
         ('songs/search as type', 'advanced/search as type', []),
         ('media/players', 'media/players_temp', [(media_players_conv, None)]),  # Convert phonon to system
-        ('media/players_temp', 'media/players', [])  # Move temp setting from above to correct setting
+        ('media/players_temp', 'media/players', []),  # Move temp setting from above to correct setting
+        ('advanced/default color', 'core/logo background color', []),  # Default image renamed + moved to general > 2.4.
+        ('advanced/default image', '/core/logo file', [])  # Default image renamed + moved to general after 2.4.
     ]
 
     @staticmethod
