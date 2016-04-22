@@ -20,8 +20,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.core.ui.lib.colorbutton import ColorButton
-from openlp.core.ui.lib.listwidgetwithdnd import ListWidgetWithDnD
-from openlp.core.ui.lib.treewidgetwithdnd import TreeWidgetWithDnD
-from openlp.core.ui.lib.toolbar import OpenLPToolbar
-from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
+from .colorbutton import ColorButton
+from .listwidgetwithdnd import ListWidgetWithDnD
+from .treewidgetwithdnd import TreeWidgetWithDnD
+from .toolbar import OpenLPToolbar
+from .dockwidget import OpenLPDockWidget
+from .wizard import OpenLPWizard, WizardStrings

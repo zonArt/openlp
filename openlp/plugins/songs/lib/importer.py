@@ -26,7 +26,7 @@ import os
 import logging
 
 from openlp.core.common import translate, UiStrings, is_win
-from openlp.core.ui.wizard import WizardStrings
+from openlp.core.ui.lib.wizard import WizardStrings
 from .importers.opensong import OpenSongImport
 from .importers.easyslides import EasySlidesImport
 from .importers.openlp import OpenLPSongImport

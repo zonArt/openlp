@@ -113,7 +113,7 @@ from .settingsform import SettingsForm
 from .formattingtagform import FormattingTagForm
 from .formattingtagcontroller import FormattingTagController
 from .shortcutlistform import ShortcutListForm
-from .mediadockmanager import MediaDockManager
+from openlp.core.ui.lib.mediadockmanager import MediaDockManager
 from .servicemanager import ServiceManager
 from .thememanager import ThemeManager
 from .projector.manager import ProjectorManager
