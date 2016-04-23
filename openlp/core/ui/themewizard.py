@@ -25,9 +25,10 @@ The Create/Edit theme wizard
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import UiStrings, translate, is_macosx
-from openlp.core.lib import build_icon, ColorButton
+from openlp.core.lib import build_icon
 from openlp.core.lib.theme import HorizontalType, BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import add_welcome_page, create_valign_selection_widgets
+from openlp.core.ui.lib.colorbutton import ColorButton
 
 
 class Ui_ThemeWizard(object):

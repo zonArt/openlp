@@ -33,11 +33,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from openlp.core.common import Registry, RegistryProperties, Settings, SlideLimits, UiStrings, translate, \
     RegistryMixin, OpenLPMixin
 from openlp.core.common.actions import ActionList, CategoryOrder
-from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, \
-    ScreenList, build_icon, build_html
+from openlp.core.lib import ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, ScreenList, build_icon, \
+    build_html
 from openlp.core.lib.ui import create_action
+from openlp.core.ui.lib.toolbar import OpenLPToolbar
+from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
+from openlp.core.ui.lib.listpreviewwidget import ListPreviewWidget
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
-from openlp.core.ui.listpreviewwidget import ListPreviewWidget
+
 
 # Threshold which has to be trespassed to toggle.
 HIDE_MENU_THRESHOLD = 27

@@ -26,10 +26,11 @@ Presentationmanager song files into the current database.
 
 import os
 import re
+
 import chardet
 from lxml import objectify, etree
 
-from openlp.core.ui.wizard import WizardStrings
+from openlp.core.ui.lib.wizard import WizardStrings
 from .songimport import SongImport
 
 
