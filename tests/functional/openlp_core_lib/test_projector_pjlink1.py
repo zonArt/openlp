@@ -26,7 +26,8 @@ Package to test the openlp.core.lib.projector.pjlink1 package.
 from unittest import TestCase
 
 from openlp.core.lib.projector.pjlink1 import PJLink1
-from openlp.core.lib.projector.constants import E_PARAMETER, ERROR_STRING
+from openlp.core.lib.projector.constants import E_PARAMETER, ERROR_STRING, S_OFF, S_STANDBY, S_WARMUP, S_ON, \
+    S_COOLDOWN, PJLINK_POWR_STATUS
 
 from tests.functional import patch
 from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUTHENTICATE
@@ -151,3 +152,33 @@ class TestPJLink(TestCase):
                           'Lamp 3 power status should have been set to TRUE')
         self.assertEquals(pjlink.lamp[2]['Hours'], 33333,
                           'Lamp 3 hours should have been set to 33333')
+
+    @patch.object(pjlink_test, 'projectorReceivedData')
+    def projector_process_power_on_test(self, mock_projectorReceivedData):
+        """
+        Test setting power on
+        """
+        # GIVEN: Test object and preset
+        pjlink = pjlink_test
+        pjlink.power = S_STANDBY
+
+        # WHEN: Call process_command with turn power on command
+        pjlink.process_command('POWR', PJLINK_POWR_STATUS[S_ON])
+
+        # THEN: Power should be set to ON
+        self.assertEquals(pjlink.power, S_ON, 'Power should have been set to ON')
+
+    @patch.object(pjlink_test, 'projectorReceivedData')
+    def projector_process_power_off_test(self, mock_projectorReceivedData):
+        """
+        Test setting power off
+        """
+        # GIVEN: Test object and preset
+        pjlink = pjlink_test
+        pjlink.power = S_ON
+
+        # WHEN: Call process_command with turn power on command
+        pjlink.process_command('POWR', PJLINK_POWR_STATUS[S_STANDBY])
+
+        # THEN: Power should be set to ON
+        self.assertEquals(pjlink.power, S_STANDBY, 'Power should have been set to STANDBY')
