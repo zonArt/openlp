@@ -47,7 +47,7 @@ class SwordBible(BibleDB):
         if self.sword_path == '':
             self.sword_path = None
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Loads a Bible from SWORD module.
         """
