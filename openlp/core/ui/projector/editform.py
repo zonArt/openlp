@@ -182,9 +182,10 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
             QtWidgets.QMessageBox.warning(self,
                                           translate('OpenLP.ProjectorEdit', 'Duplicate Name'),
                                           translate('OpenLP.ProjectorEdit',
-                                                    'There is already an entry with name "%s" in '
-                                                    'the database as ID "%s". <br />'
-                                                    'Please enter a different name.' % (name, record.id)))
+                                                    'There is already an entry with name "{name}" in '
+                                                    'the database as ID "{record}". <br />'
+                                                    'Please enter a different name.'.format(name=name,
+                                                                                            record=record.id)))
             valid = False
             return
         adx = self.ip_text.text()
@@ -198,17 +199,17 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
                 QtWidgets.QMessageBox.warning(self,
                                               translate('OpenLP.ProjectorWizard', 'Duplicate IP Address'),
                                               translate('OpenLP.ProjectorWizard',
-                                                        'IP address "%s"<br />is already in the database as ID %s.'
-                                                        '<br /><br />Please Enter a different IP address.' %
-                                                        (adx, ip.id)))
+                                                        'IP address "{ip}"<br />is already in the database '
+                                                        'as ID {data}.<br /><br />Please Enter a different '
+                                                        'IP address.'.format(ip=adx, data=ip.id)))
                 valid = False
                 return
         else:
             QtWidgets.QMessageBox.warning(self,
                                           translate('OpenLP.ProjectorWizard', 'Invalid IP Address'),
                                           translate('OpenLP.ProjectorWizard',
-                                                    'IP address "%s"<br>is not a valid IP address.'
-                                                    '<br /><br />Please enter a valid IP address.' % adx))
+                                                    'IP address "{ip}"<br>is not a valid IP address.'
+                                                    '<br /><br />Please enter a valid IP address.'.format(ip=adx)))
             valid = False
             return
         port = int(self.port_text.text())
@@ -219,8 +220,8 @@ class ProjectorEditForm(QDialog, Ui_ProjectorEditForm):
                                                     'Port numbers below 1000 are reserved for admin use only, '
                                                     '<br />and port numbers above 32767 are not currently usable.'
                                                     '<br /><br />Please enter a valid port number between '
-                                                    ' 1000 and 32767.'
-                                                    '<br /><br />Default PJLink port is %s' % PJLINK_PORT))
+                                                    '1000 and 32767.<br /><br />'
+                                                    'Default PJLink port is {port}'.format(port=PJLINK_PORT)))
             valid = False
         if valid:
             self.projector.ip = self.ip_text.text()
