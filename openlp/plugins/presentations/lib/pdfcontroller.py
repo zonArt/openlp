@@ -22,13 +22,12 @@
 
 import os
 import logging
-from tempfile import NamedTemporaryFile
 import re
 from shutil import which
-from subprocess import check_output, CalledProcessError, STDOUT
+from subprocess import check_output, CalledProcessError
 
-from openlp.core.common import AppLocation
-from openlp.core.common import Settings, is_win, trace_error_handler
+from openlp.core.common import AppLocation, check_binary_exists
+from openlp.core.common import Settings, is_win
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
 
@@ -61,7 +60,7 @@ class PdfController(PresentationController):
         self.check_installed()
 
     @staticmethod
-    def check_binary(program_path):
+    def process_check_binary(program_path):
         """
         Function that checks whether a binary is either ghostscript or mudraw or neither.
         Is also used from presentationtab.py
@@ -70,22 +69,7 @@ class PdfController(PresentationController):
         :return: Type of the binary, 'gs' if ghostscript, 'mudraw' if mudraw, None if invalid.
         """
         program_type = None
-        runlog = ''
-        log.debug('testing program_path: %s', program_path)
-        try:
-            # Setup startupinfo options for check_output to avoid console popping up on windows
-            if is_win():
-                startupinfo = STARTUPINFO()
-                startupinfo.dwFlags |= STARTF_USESHOWWINDOW
-            else:
-                startupinfo = None
-            runlog = check_output([program_path, '--help'], stderr=STDOUT, startupinfo=startupinfo)
-        except CalledProcessError as e:
-            runlog = e.output
-        except Exception:
-            trace_error_handler(log)
-            runlog = ''
-        log.debug('check_output returned: %s' % runlog)
+        runlog = check_binary_exists(program_path)
         # Analyse the output to see it the program is mudraw, ghostscript or neither
         for line in runlog.splitlines():
             decoded_line = line.decode()
@@ -122,7 +106,7 @@ class PdfController(PresentationController):
         # Use the user defined program if given
         if Settings().value('presentations/enable_pdf_program'):
             pdf_program = Settings().value('presentations/pdf_program')
-            program_type = self.check_binary(pdf_program)
+            program_type = self.process_check_binary(pdf_program)
             if program_type == 'gs':
                 self.gsbin = pdf_program
             elif program_type == 'mudraw':
