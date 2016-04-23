@@ -286,7 +286,7 @@ def get_uno_command(connection_type='pipe'):
         CONNECTION = '"--accept=pipe,name=openlp_pipe;urp;"'
     else:
         CONNECTION = '"--accept=socket,host=localhost,port=2002;urp;"'
-    return '%s %s %s' % (command, OPTIONS, CONNECTION)
+    return '{cmd} {opt} {conn}'.format(cmd=command, opt=OPTIONS, conn=CONNECTION)
 
 
 def get_uno_instance(resolver, connection_type='pipe'):
@@ -336,7 +336,7 @@ def delete_file(file_path_name):
             os.remove(file_path_name)
         return True
     except (IOError, OSError):
-        log.exception("Unable to delete file %s" % file_path_name)
+        log.exception("Unable to delete file {name}".format(name=file_path_name))
         return False
 
 
@@ -390,7 +390,7 @@ def check_binary_exists(program_path):
     :param program_path:The full path to the binary to check.
     :return: program output to be parsed
     """
-    log.debug('testing program_path: %s', program_path)
+    log.debug('testing program_path: {text}'.format(text=program_path))
     try:
         # Setup startupinfo options for check_output to avoid console popping up on windows
         if is_win():
@@ -404,5 +404,5 @@ def check_binary_exists(program_path):
     except Exception:
         trace_error_handler(log)
         runlog = ''
-    log.debug('check_output returned: %s' % runlog)
+    log.debug('check_output returned: {text}'.format(text=runlog))
     return runlog
