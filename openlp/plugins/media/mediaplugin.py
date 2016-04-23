@@ -160,7 +160,8 @@ def process_check_binary(program_path):
     """
     program_type = None
     runlog = check_binary_exists(program_path)
-    print(runlog, type(runlog))
+    # NOTE: Unneeded print statement - let originator clear it out if needed
+    # print(runlog, type(runlog))
     # Analyse the output to see it the program is mediainfo
     for line in runlog.splitlines():
         decoded_line = line.decode()
