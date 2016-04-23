@@ -29,7 +29,7 @@ import base64
 import logging
 from lxml import objectify
 
-from openlp.core.ui.wizard import WizardStrings
+from openlp.core.ui.lib.wizard import WizardStrings
 from openlp.plugins.songs.lib import strip_rtf
 from .songimport import SongImport
 

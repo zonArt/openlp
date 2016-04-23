@@ -35,7 +35,7 @@ from PyQt5.QtWidgets import QWidget
 
 from openlp.core.common import RegistryProperties, Settings, OpenLPMixin, \
     RegistryMixin, translate
-from openlp.core.lib import OpenLPToolbar
+from openlp.core.ui.lib import OpenLPToolbar
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.lib.projector import DialogSourceStyle
 from openlp.core.lib.projector.constants import *

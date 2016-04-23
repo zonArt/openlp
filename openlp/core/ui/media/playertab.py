@@ -26,9 +26,10 @@ import platform
 from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import Registry, Settings, UiStrings, translate
-from openlp.core.lib import ColorButton, SettingsTab
+from openlp.core.lib import SettingsTab
 from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
+from openlp.core.ui.lib.colorbutton import ColorButton
 
 
 class MediaQCheckBox(QtWidgets.QCheckBox):

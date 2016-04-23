@@ -29,14 +29,16 @@ import datetime
 from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.common import OpenLPMixin, Registry, RegistryMixin, RegistryProperties, Settings, UiStrings, translate
-from openlp.core.lib import OpenLPToolbar, ItemCapabilities
+from openlp.core.lib import ItemCapabilities
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players,\
-    parse_optical_path
-from openlp.core.ui.media.vendor.mediainfoWrapper import MediaInfoWrapper
-from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.common import AppLocation
 from openlp.core.ui import DisplayControllerType
+from openlp.core.ui.media.vendor.mediainfoWrapper import MediaInfoWrapper
+from openlp.core.ui.media.mediaplayer import MediaPlayer
+from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players,\
+    parse_optical_path
+from openlp.core.ui.lib.toolbar import OpenLPToolbar
+from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
 
 log = logging.getLogger(__name__)
 
