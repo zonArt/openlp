@@ -336,7 +336,7 @@ def delete_file(file_path_name):
             os.remove(file_path_name)
         return True
     except (IOError, OSError):
-        log.exception("Unable to delete file {name}".format(name=file_path_name))
+        log.exception("Unable to delete file {text}".format(text=file_path_name))
         return False
 
 
@@ -404,5 +404,5 @@ def check_binary_exists(program_path):
     except Exception:
         trace_error_handler(log)
         runlog = ''
-    log.debug('check_output returned: {text}'.format(text=runlog))
+    log.debug('check_output returned: {text}'.format(text=runlog)
     return runlog
