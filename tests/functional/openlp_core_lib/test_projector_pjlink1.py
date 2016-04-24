@@ -156,7 +156,7 @@ class TestPJLink(TestCase):
     @patch.object(pjlink_test, 'projectorReceivedData')
     def projector_process_power_on_test(self, mock_projectorReceivedData):
         """
-        Test setting power on
+        Test setting power to ON
         """
         # GIVEN: Test object and preset
         pjlink = pjlink_test
@@ -171,7 +171,7 @@ class TestPJLink(TestCase):
     @patch.object(pjlink_test, 'projectorReceivedData')
     def projector_process_power_off_test(self, mock_projectorReceivedData):
         """
-        Test setting power off
+        Test setting power to STANDBY
         """
         # GIVEN: Test object and preset
         pjlink = pjlink_test
@@ -180,5 +180,5 @@ class TestPJLink(TestCase):
         # WHEN: Call process_command with turn power on command
         pjlink.process_command('POWR', PJLINK_POWR_STATUS[S_STANDBY])
 
-        # THEN: Power should be set to ON
+        # THEN: Power should be set to STANDBY
         self.assertEquals(pjlink.power, S_STANDBY, 'Power should have been set to STANDBY')

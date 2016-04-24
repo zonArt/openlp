@@ -404,5 +404,5 @@ def check_binary_exists(program_path):
     except Exception:
         trace_error_handler(log)
         runlog = ''
-    log.debug('check_output returned: {text}'.format(text=runlog)
+    log.debug('check_output returned: {text}'.format(text=runlog))
     return runlog
