@@ -114,7 +114,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         def get_key(obj):
             """Get the key to sort by"""
             return get_natural_key(obj.name)
-        
+
         objects = self.manager.get_all_objects(cls)
         objects.sort(key=get_key)
         combo.clear()
@@ -352,7 +352,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         def get_author_key(author):
             """Get the key to sort by"""
             return get_natural_key(author.display_name)
-        
+
         authors = self.manager.get_all_objects(Author)
         authors.sort(key=get_author_key)
         self.authors_combo_box.clear()
@@ -392,7 +392,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         def get_theme_key(theme):
             """Get the key to sort by"""
             return get_natural_key(theme)
-        
+
         self.theme_combo_box.clear()
         self.theme_combo_box.addItem('')
         self.themes = theme_list

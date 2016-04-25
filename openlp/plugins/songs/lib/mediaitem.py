@@ -261,7 +261,7 @@ class SongMediaItem(MediaManagerItem):
         def get_song_key(song):
             """Get the key to sort by"""
             return song.sort_key
-        
+
         log.debug('display results Song')
         self.save_auto_select_id()
         self.list_view.clear()
@@ -290,11 +290,11 @@ class SongMediaItem(MediaManagerItem):
         def get_author_key(author):
             """Get the key to sort by"""
             return get_natural_key(author.display_name)
-        
+
         def get_song_key(song):
             """Get the key to sort by"""
             return song.sort_key
-        
+
         log.debug('display results Author')
         self.list_view.clear()
         search_results.sort(key=get_author_key)
@@ -319,7 +319,7 @@ class SongMediaItem(MediaManagerItem):
         def get_songbook_key(songbook_entry):
             """Get the key to sort by"""
             return (get_natural_key(songbook_entry.songbook.name), get_natural_key(songbook_entry.entry))
-        
+
         log.debug('display results Book')
         self.list_view.clear()
         search_results.sort(key=get_songbook_key)
@@ -342,11 +342,11 @@ class SongMediaItem(MediaManagerItem):
         def get_topic_key(topic):
             """Get the key to sort by"""
             return get_natural_key(topic.name)
-        
+
         def get_song_key(song):
             """Get the key to sort by"""
             return song.sort_key
-        
+
         log.debug('display results Topic')
         self.list_view.clear()
         search_results.sort(key=get_topic_key)
@@ -371,7 +371,7 @@ class SongMediaItem(MediaManagerItem):
         def get_theme_key(song):
             """Get the key to sort by"""
             return (get_natural_key(song.theme_name), song.sort_key)
-        
+
         log.debug('display results Themes')
         self.list_view.clear()
         search_results.sort(key=get_theme_key)
@@ -394,7 +394,7 @@ class SongMediaItem(MediaManagerItem):
         def get_cclinumber_key(song):
             """Get the key to sort by"""
             return (get_natural_key(song.ccli_number), song.sort_key)
-        
+
         log.debug('display results CCLI number')
         self.list_view.clear()
         search_results.sort(key=get_cclinumber_key)

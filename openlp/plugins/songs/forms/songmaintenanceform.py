@@ -124,7 +124,7 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         def get_author_key(author):
             """Get the key to sort by"""
             return get_natural_key(author.display_name)
-        
+
         self.authors_list_widget.clear()
         authors = self.manager.get_all_objects(Author)
         authors.sort(key=get_author_key)
@@ -143,7 +143,7 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         def get_topic_key(topic):
             """Get the key to sort by"""
             return get_natural_key(topic.name)
-        
+
         self.topics_list_widget.clear()
         topics = self.manager.get_all_objects(Topic)
         topics.sort(key=get_topic_key)
@@ -159,7 +159,7 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         def get_book_key(book):
             """Get the key to sort by"""
             return get_natural_key(book.name)
-        
+
         self.song_books_list_widget.clear()
         books = self.manager.get_all_objects(Book)
         books.sort(key=get_book_key)

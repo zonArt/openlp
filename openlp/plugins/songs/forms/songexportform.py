@@ -206,7 +206,7 @@ class SongExportForm(OpenLPWizard):
         def get_song_key(song):
             """Get the key to sort by"""
             return song.sort_key
-        
+
         self.restart()
         self.finish_button.setVisible(False)
         self.cancel_button.setVisible(True)
