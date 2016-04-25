@@ -31,7 +31,7 @@ from PyQt5 import QtWidgets
 from openlp.core.common import AppLocation, Settings, UiStrings, translate, clean_filename
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
+from openlp.core.ui.lib.wizard import OpenLPWizard, WizardStrings
 from openlp.core.common.languagemanager import get_locale_key
 from openlp.plugins.bibles.lib.manager import BibleFormat
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB, clean_filename

@@ -27,7 +27,8 @@ import logging
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, Settings, UiStrings, translate, get_images_filter
-from openlp.core.lib import SettingsTab, ScreenList, ColorButton, build_icon
+from openlp.core.lib import SettingsTab, ScreenList, build_icon
+from openlp.core.ui.lib.colorbutton import ColorButton
 
 log = logging.getLogger(__name__)
 

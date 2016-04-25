@@ -20,7 +20,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-    Package to test the openlp.core.ui.listpreviewwidget.
+    Package to test the openlp.core.ui.lib.listpreviewwidget.
 """
 
 from unittest import TestCase
@@ -29,7 +29,7 @@ from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import Registry
 from openlp.core.lib import ServiceItem
-from openlp.core.ui import listpreviewwidget
+from openlp.core.ui.lib import ListWidgetWithDnD, ListPreviewWidget
 from tests.interfaces import MagicMock, patch
 from tests.utils.osdinteraction import read_service_from_file
 from tests.helpers.testmixin import TestMixin
@@ -48,7 +48,7 @@ class TestListPreviewWidget(TestCase, TestMixin):
         self.image_manager = MagicMock()
         self.image_manager.get_image.return_value = self.image
         Registry().register('image_manager', self.image_manager)
-        self.preview_widget = listpreviewwidget.ListPreviewWidget(self.main_window, 2)
+        self.preview_widget = ListPreviewWidget(self.main_window, 2)
 
     def tearDown(self):
         """
