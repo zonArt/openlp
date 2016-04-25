@@ -111,8 +111,11 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Generically load a set of objects into a cache and a combobox.
         """
+        def get_key(obj):
+            """Get the key to sort by"""
+            return get_natural_key(obj.name)
+        
         objects = self.manager.get_all_objects(cls)
-        def get_key(object): return get_natural_key(object.name)
         objects.sort(key=get_key)
         combo.clear()
         combo.addItem('')
@@ -346,8 +349,11 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Load the authors from the database into the combobox.
         """
+        def get_author_key(author):
+            """Get the key to sort by"""
+            return get_natural_key(author.display_name)
+        
         authors = self.manager.get_all_objects(Author)
-        def get_author_key(author): return get_natural_key(author.display_name)
         authors.sort(key=get_author_key)
         self.authors_combo_box.clear()
         self.authors_combo_box.addItem('')
@@ -383,10 +389,13 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Load the themes into a combobox.
         """
+        def get_theme_key(theme):
+            """Get the key to sort by"""
+            return get_natural_key(theme)
+        
         self.theme_combo_box.clear()
         self.theme_combo_box.addItem('')
         self.themes = theme_list
-        def get_theme_key(theme): return get_natural_key(theme)
         self.themes.sort(key=get_theme_key)
         self.theme_combo_box.addItems(theme_list)
         set_case_insensitive_completer(self.themes, self.theme_combo_box)

@@ -203,6 +203,10 @@ class SongExportForm(OpenLPWizard):
         """
         Set default form values for the song export wizard.
         """
+        def get_song_key(song):
+            """Get the key to sort by"""
+            return song.sort_key
+        
         self.restart()
         self.finish_button.setVisible(False)
         self.cancel_button.setVisible(True)
@@ -213,7 +217,6 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         self.application.set_busy_cursor()
         songs = self.plugin.manager.get_all_objects(Song)
-        def get_song_key(song): return song.sort_key
         songs.sort(key=get_song_key)
         for song in songs:
             # No need to export temporary songs.

@@ -121,9 +121,12 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         """
         Reloads the Authors list.
         """
+        def get_author_key(author):
+            """Get the key to sort by"""
+            return get_natural_key(author.display_name)
+        
         self.authors_list_widget.clear()
         authors = self.manager.get_all_objects(Author)
-        def get_author_key(author): return get_natural_key(author.display_name)
         authors.sort(key=get_author_key)
         for author in authors:
             if author.display_name:
@@ -137,9 +140,12 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         """
         Reloads the Topics list.
         """
+        def get_topic_key(topic):
+            """Get the key to sort by"""
+            return get_natural_key(topic.name)
+        
         self.topics_list_widget.clear()
         topics = self.manager.get_all_objects(Topic)
-        def get_topic_key(topic): return get_natural_key(topic.name)
         topics.sort(key=get_topic_key)
         for topic in topics:
             topic_name = QtWidgets.QListWidgetItem(topic.name)
@@ -150,9 +156,12 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         """
         Reloads the Books list.
         """
+        def get_book_key(book):
+            """Get the key to sort by"""
+            return get_natural_key(book.name)
+        
         self.song_books_list_widget.clear()
         books = self.manager.get_all_objects(Book)
-        def get_book_key(book): return get_natural_key(book.name)
         books.sort(key=get_book_key)
         for book in books:
             book_name = QtWidgets.QListWidgetItem('%s (%s)' % (book.name, book.publisher))
