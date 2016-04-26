@@ -254,10 +254,10 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         if self.is_live:
             # Build the initial frame.
             background_color = QtGui.QColor()
-            background_color.setNamedColor(Settings().value('advanced/default color'))
+            background_color.setNamedColor(Settings().value('core/logo background color'))
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
-            image_file = Settings().value('advanced/default image')
+            image_file = Settings().value('core/logo file')
             splash_image = QtGui.QImage(image_file)
             self.initial_fame = QtGui.QImage(
                 self.screen['size'].width(),
@@ -523,7 +523,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             if not Settings().value('core/display on monitor'):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
-        if self.isHidden():
+        # Check if setting for hiding logo on startup is enabled.
+        # If it is, display should remain hidden, otherwise logo is shown. (from def setup)
+        if self.isHidden() and not Settings().value('core/logo hide on startup'):
             self.setVisible(True)
         self.hide_mode = None
         # Trigger actions when display is active again.

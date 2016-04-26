@@ -194,13 +194,13 @@ class SongMediaItem(MediaManagerItem):
             log.debug('Authors Search')
             search_string = '%' + search_keywords + '%'
             search_results = self.plugin.manager.get_all_objects(
-                Author, Author.display_name.like(search_string), Author.display_name.asc())
+                Author, Author.display_name.like(search_string))
             self.display_results_author(search_results)
         elif search_type == SongSearch.Topics:
             log.debug('Topics Search')
             search_string = '%' + search_keywords + '%'
             search_results = self.plugin.manager.get_all_objects(
-                Topic, Topic.name.like(search_string), Topic.name.asc())
+                Topic, Topic.name.like(search_string))
             self.display_results_topic(search_results)
         elif search_type == SongSearch.Books:
             log.debug('Songbook Search')
@@ -215,7 +215,7 @@ class SongMediaItem(MediaManagerItem):
             log.debug('Theme Search')
             search_string = '%' + search_keywords + '%'
             search_results = self.plugin.manager.get_all_objects(
-                Song, Song.theme_name.like(search_string), Song.theme_name.asc())
+                Song, Song.theme_name.like(search_string))
             self.display_results_themes(search_results)
         elif search_type == SongSearch.Copyright:
             log.debug('Copyright Search')
@@ -258,10 +258,14 @@ class SongMediaItem(MediaManagerItem):
         :param search_results: A list of db Song objects
         :return: None
         """
+        def get_song_key(song):
+            """Get the key to sort by"""
+            return song.sort_key
+
         log.debug('display results Song')
         self.save_auto_select_id()
         self.list_view.clear()
-        search_results.sort(key=lambda song: song.sort_key)
+        search_results.sort(key=get_song_key)
         for song in search_results:
             # Do not display temporary songs
             if song.temporary:
@@ -283,12 +287,20 @@ class SongMediaItem(MediaManagerItem):
         :param search_results: A list of db Author objects
         :return: None
         """
+        def get_author_key(author):
+            """Get the key to sort by"""
+            return get_natural_key(author.display_name)
+
+        def get_song_key(song):
+            """Get the key to sort by"""
+            return song.sort_key
+
         log.debug('display results Author')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda author: get_natural_key(author.display_name))
+        search_results.sort(key=get_author_key)
         for author in search_results:
-            songs = sorted(author.songs, key=lambda song: song.sort_key)
-            for song in songs:
+            author.songs.sort(key=get_song_key)
+            for song in author.songs:
                 # Do not display temporary songs
                 if song.temporary:
                     continue
@@ -304,11 +316,15 @@ class SongMediaItem(MediaManagerItem):
         :param search_results: A list of db SongBookEntry objects
         :return: None
         """
+        def get_songbook_key(songbook_entry):
+            """Get the key to sort by"""
+            return (get_natural_key(songbook_entry.songbook.name), get_natural_key(songbook_entry.entry))
+
         log.debug('display results Book')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda songbook_entry:
-                                (get_natural_key(songbook_entry.songbook.name), get_natural_key(songbook_entry.entry)))
+        search_results.sort(key=get_songbook_key)
         for songbook_entry in search_results:
+            # Do not display temporary songs
             if songbook_entry.song.temporary:
                 continue
             song_detail = '%s #%s: %s' % (songbook_entry.songbook.name, songbook_entry.entry, songbook_entry.song.title)
@@ -323,12 +339,20 @@ class SongMediaItem(MediaManagerItem):
         :param search_results: A list of db Topic objects
         :return: None
         """
+        def get_topic_key(topic):
+            """Get the key to sort by"""
+            return get_natural_key(topic.name)
+
+        def get_song_key(song):
+            """Get the key to sort by"""
+            return song.sort_key
+
         log.debug('display results Topic')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda topic: get_natural_key(topic.name))
+        search_results.sort(key=get_topic_key)
         for topic in search_results:
-            songs = sorted(topic.songs, key=lambda song: song.sort_key)
-            for song in songs:
+            topic.songs.sort(key=get_song_key)
+            for song in topic.songs:
                 # Do not display temporary songs
                 if song.temporary:
                     continue
@@ -344,10 +368,13 @@ class SongMediaItem(MediaManagerItem):
         :param search_results: A list of db Song objects
         :return: None
         """
+        def get_theme_key(song):
+            """Get the key to sort by"""
+            return (get_natural_key(song.theme_name), song.sort_key)
+
         log.debug('display results Themes')
         self.list_view.clear()
-        search_results = sorted(search_results, key=lambda song: (get_natural_key(song.theme_name),
-                                song.sort_key))
+        search_results.sort(key=get_theme_key)
         for song in search_results:
             # Do not display temporary songs
             if song.temporary:
@@ -364,11 +391,14 @@ class SongMediaItem(MediaManagerItem):
         :param search_results: A list of db Song objects
         :return: None
         """
+        def get_cclinumber_key(song):
+            """Get the key to sort by"""
+            return (get_natural_key(song.ccli_number), song.sort_key)
+
         log.debug('display results CCLI number')
         self.list_view.clear()
-        songs = sorted(search_results, key=lambda song: (get_natural_key(song.ccli_number),
-                       song.sort_key))
-        for song in songs:
+        search_results.sort(key=get_cclinumber_key)
+        for song in search_results:
             # Do not display temporary songs
             if song.temporary:
                 continue

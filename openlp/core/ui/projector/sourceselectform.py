@@ -115,7 +115,7 @@ def Build_Tab(group, source_key, default, projector, projectordb, edit=False):
     if edit:
         for key in sourcelist:
             item = QLineEdit()
-            item.setObjectName('source_key_%s' % key)
+            item.setObjectName('source_key_{key}'.format(key=key))
             source_item = projectordb.get_source_by_code(code=key, projector_id=projector.db_item.id)
             if source_item is None:
                 item.setText(PJLINK_DEFAULT_CODES[key])
@@ -161,7 +161,7 @@ def set_button_tooltip(bar):
             button.setToolTip(translate('OpenLP.SourceSelectForm',
                                         'Save changes and return to OpenLP'))
         else:
-            log.debug('No tooltip for button {}'.format(button.text()))
+            log.debug('No tooltip for button {text}'.format(text=button.text()))
 
 
 class FingerTabBarWidget(QTabBar):
@@ -359,16 +359,20 @@ class SourceSelectTabs(QDialog):
                     continue
                 item = self.projectordb.get_source_by_code(code=code, projector_id=projector.id)
                 if item is None:
-                    log.debug("(%s) Adding new source text %s: %s" % (projector.ip, code, text))
+                    log.debug("({ip}) Adding new source text {code}: {text}".format(ip=projector.ip,
+                                                                                    code=code,
+                                                                                    text=text))
                     item = ProjectorSource(projector_id=projector.id, code=code, text=text)
                 else:
                     item.text = text
-                    log.debug('(%s) Updating source code %s with text="%s"' % (projector.ip, item.code, item.text))
+                    log.debug('({ip}) Updating source code {code} with text="{text}"'.format(ip=projector.ip,
+                                                                                             code=item.code,
+                                                                                             text=item.text))
                 self.projectordb.add_source(item)
             selected = 0
         else:
             selected = self.button_group.checkedId()
-            log.debug('SourceSelectTabs().accepted() Setting source to %s' % selected)
+            log.debug('SourceSelectTabs().accepted() Setting source to {selected}'.format(selected=selected))
         self.done(selected)
 
 
@@ -417,7 +421,7 @@ class SourceSelectSingle(QDialog):
         if self.edit:
             for key in keys:
                 item = QLineEdit()
-                item.setObjectName('source_key_%s' % key)
+                item.setObjectName('source_key_{key}'.format(key=key))
                 source_item = self.projectordb.get_source_by_code(code=key, projector_id=self.projector.db_item.id)
                 if source_item is None:
                     item.setText(PJLINK_DEFAULT_CODES[key])
@@ -498,14 +502,18 @@ class SourceSelectSingle(QDialog):
                     continue
                 item = self.projectordb.get_source_by_code(code=code, projector_id=projector.id)
                 if item is None:
-                    log.debug("(%s) Adding new source text %s: %s" % (projector.ip, code, text))
+                    log.debug("({ip}) Adding new source text {code}: {text}".format(ip=projector.ip,
+                                                                                    code=code,
+                                                                                    text=text))
                     item = ProjectorSource(projector_id=projector.id, code=code, text=text)
                 else:
                     item.text = text
-                    log.debug('(%s) Updating source code %s with text="%s"' % (projector.ip, item.code, item.text))
+                    log.debug('({ip}) Updating source code {code} with text="{text}"'.format(ip=projector.ip,
+                                                                                             code=item.code,
+                                                                                             text=item.text))
                 self.projectordb.add_source(item)
             selected = 0
         else:
             selected = self.button_group.checkedId()
-            log.debug('SourceSelectDialog().accepted() Setting source to %s' % selected)
+            log.debug('SourceSelectDialog().accepted() Setting source to {selected}'.format(selected=selected))
         self.done(selected)

@@ -27,7 +27,7 @@ Powerpraise song files into the current database.
 import os
 from lxml import objectify
 
-from openlp.core.ui.wizard import WizardStrings
+from openlp.core.ui.lib.wizard import WizardStrings
 from .songimport import SongImport
 
 

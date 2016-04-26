@@ -610,7 +610,7 @@ class ServiceItem(RegistryProperties):
                 str(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
             end = translate('OpenLP.ServiceItem', '<strong>Length</strong>: %s') % \
-                str(datetime.timedelta(seconds=self.media_length))
+                str(datetime.timedelta(seconds=self.media_length // 1000))
         if not start and not end:
             return ''
         elif start and not end:

@@ -716,8 +716,43 @@ class TestSongSelectForm(TestCase, TestMixin):
         # WHEN: The stop button is clicked
         ssform.on_stop_button_clicked()
 
-        # THEN: The view button should be enabled
+        # THEN: The view button, search box and search button should be enabled
         mocked_song_select_importer.stop.assert_called_with()
+        self.assertTrue(ssform.search_button.isEnabled())
+        self.assertTrue(ssform.search_combobox.isEnabled())
+
+    @patch('openlp.plugins.songs.forms.songselectform.Settings')
+    @patch('openlp.plugins.songs.forms.songselectform.QtCore.QThread')
+    @patch('openlp.plugins.songs.forms.songselectform.SearchWorker')
+    def on_search_button_clicked_test(self, MockedSearchWorker, MockedQtThread, MockedSettings):
+        """
+        Test that search fields are disabled when search button is clicked.
+        """
+        # GIVEN: A mocked SongSelect form
+        ssform = SongSelectForm(None, MagicMock(), MagicMock())
+        ssform.initialise()
+
+        # WHEN: The search button is clicked
+        ssform.on_search_button_clicked()
+
+        # THEN: The search box and search button should be disabled
+        self.assertFalse(ssform.search_button.isEnabled())
+        self.assertFalse(ssform.search_combobox.isEnabled())
+
+    def on_search_finished_test(self):
+        """
+        Test that search fields are enabled when search is finished.
+        """
+        # GIVEN: A mocked SongSelect form
+        ssform = SongSelectForm(None, MagicMock(), MagicMock())
+        ssform.initialise()
+
+        # WHEN: The search is finished
+        ssform.on_search_finished()
+
+        # THEN: The search box and search button should be enabled
+        self.assertTrue(ssform.search_button.isEnabled())
+        self.assertTrue(ssform.search_combobox.isEnabled())
 
 
 class TestSongSelectFileImport(SongImportTestHelper):
