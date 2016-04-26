@@ -369,6 +369,7 @@ class Htmbuilder(TestCase, TestMixin):
         item = MagicMock()
         item.theme_data = None
         item.footer = 'FAIL'
+        height = 1024
 
         # WHEN: Settings say that footer should wrap
         css.append(build_footer_css(item, height))
