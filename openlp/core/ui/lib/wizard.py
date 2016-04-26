@@ -112,8 +112,9 @@ class OpenLPWizard(QtWidgets.QWizard, RegistryProperties):
     def setupUi(self, image):
         """
         Set up the wizard UI.
+        :param image: path to start up image
         """
-        self.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
+        self.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
         self.setModal(True)
         self.setOptions(QtWidgets.QWizard.IndependentPages |
                         QtWidgets.QWizard.NoBackButtonOnStartPage | QtWidgets.QWizard.NoBackButtonOnLastPage)
@@ -211,6 +212,7 @@ class OpenLPWizard(QtWidgets.QWizard, RegistryProperties):
     def on_current_id_changed(self, page_id):
         """
         Perform necessary functions depending on which wizard page is active.
+        :param page_id: current page number
         """
         if self.with_progress_page and self.page(page_id) == self.progress_page:
             self.pre_wizard()
@@ -222,6 +224,7 @@ class OpenLPWizard(QtWidgets.QWizard, RegistryProperties):
     def custom_page_changed(self, page_id):
         """
         Called when changing to a page other than the progress page
+        :param page_id: current page number
         """
         pass
 
