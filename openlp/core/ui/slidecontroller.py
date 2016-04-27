@@ -792,6 +792,7 @@ class SlideController(DisplayController, RegistryProperties):
         This action  also takes place when a song that is sent to live from Service Manager is edited.
         If display is blanked, it will get unblanked if automatic unblanking is enabled. We prevent this from happening
         by setting a hidden setting to "True" and then to "False" after the processing is done.
+        The setting is also set to "False" on every start up, should the program ever crash during this process.
 
         :param item: The current service item
         """

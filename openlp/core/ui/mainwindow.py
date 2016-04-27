@@ -652,6 +652,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Give all the plugins a chance to perform some tasks at startup
         """
+        # This setting is set to false, in case def replace_service_manager_item in slidecontroller would crash the
+        # program and make blank to modes unavailable.
+        Settings().setValue('core/is live item edited and replaced', False)
         self.application.process_events()
         for plugin in self.plugin_manager.plugins:
             if plugin.is_active():
