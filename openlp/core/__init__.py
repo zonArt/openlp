@@ -224,7 +224,7 @@ class OpenLP(OpenLPMixin, QtWidgets.QApplication):
                     return
                 message = translate('OpenLP',
                                     'A backup of the data folder has been created'
-                                    'at {text}'.format(text=data_folder_backup_path))
+                                    'at {text}').format(text=data_folder_backup_path)
                 QtWidgets.QMessageBox.information(None, translate('OpenLP', 'Backup'), message)
 
             # Update the version in the settings
