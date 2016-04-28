@@ -34,6 +34,7 @@ from PyQt5 import QtCore, QtWidgets
 from openlp.core.common import Registry, RegistryProperties, AppLocation, UiStrings, check_directory_exists, translate
 from openlp.core.lib import FileDialog, PluginStatus, MediaType, create_separated_list
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
+from openlp.core.common.languagemanager import get_natural_key
 from openlp.plugins.songs.lib import VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, AuthorType, Topic, MediaFile, SongBookEntry
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -110,7 +111,12 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Generically load a set of objects into a cache and a combobox.
         """
-        objects = self.manager.get_all_objects(cls, order_by_ref=cls.name)
+        def get_key(obj):
+            """Get the key to sort by"""
+            return get_natural_key(obj.name)
+
+        objects = self.manager.get_all_objects(cls)
+        objects.sort(key=get_key)
         combo.clear()
         combo.addItem('')
         for obj in objects:
@@ -343,7 +349,12 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Load the authors from the database into the combobox.
         """
-        authors = self.manager.get_all_objects(Author, order_by_ref=Author.display_name)
+        def get_author_key(author):
+            """Get the key to sort by"""
+            return get_natural_key(author.display_name)
+
+        authors = self.manager.get_all_objects(Author)
+        authors.sort(key=get_author_key)
         self.authors_combo_box.clear()
         self.authors_combo_box.addItem('')
         self.authors = []
@@ -378,9 +389,14 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Load the themes into a combobox.
         """
+        def get_theme_key(theme):
+            """Get the key to sort by"""
+            return get_natural_key(theme)
+
         self.theme_combo_box.clear()
         self.theme_combo_box.addItem('')
         self.themes = theme_list
+        self.themes.sort(key=get_theme_key)
         self.theme_combo_box.addItems(theme_list)
         set_case_insensitive_completer(self.themes, self.theme_combo_box)
 

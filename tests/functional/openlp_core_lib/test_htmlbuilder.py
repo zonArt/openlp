@@ -197,6 +197,7 @@ FOOTER_CSS_BASE = """
     """
 FOOTER_CSS = FOOTER_CSS_BASE % ('nowrap')
 FOOTER_CSS_WRAP = FOOTER_CSS_BASE % ('normal')
+FOOTER_CSS_INVALID = ''
 
 
 class Htmbuilder(TestCase, TestMixin):
@@ -358,6 +359,27 @@ class Htmbuilder(TestCase, TestMixin):
 
         # THEN: Footer should wrap
         self.assertEqual(FOOTER_CSS_WRAP, css, 'The footer strings should be equal.')
+
+    def build_footer_invalid_test(self):
+        """
+        Test the build_footer_css() function
+        """
+        # GIVEN: Create a theme.
+        css = []
+        item = MagicMock()
+        item.theme_data = None
+        item.footer = 'FAIL'
+        height = 1024
+
+        # WHEN: Settings say that footer should wrap
+        css.append(build_footer_css(item, height))
+        item.theme_data = 'TEST'
+        item.footer = None
+        css.append(build_footer_css(item, height))
+
+        # THEN: Footer should wrap
+        self.assertEqual(FOOTER_CSS_INVALID, css[0], 'The footer strings should be blank.')
+        self.assertEqual(FOOTER_CSS_INVALID, css[1], 'The footer strings should be blank.')
 
     def webkit_version_test(self):
         """

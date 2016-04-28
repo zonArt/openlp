@@ -31,6 +31,7 @@ from openlp.core.common import Registry, RegistryProperties, UiStrings, translat
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
+from openlp.core.ui.lib.colorbutton import ColorButton
 from .themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
@@ -147,6 +148,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
     def update_lines_text(self, lines):
         """
         Updates the lines on a page on the wizard
+        :param lines: then number of lines to be displayed
         """
         self.main_line_count_label.setText(
             translate('OpenLP.ThemeForm', '(approximately %d lines per slide)') % int(lines))
@@ -186,6 +188,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
     def on_current_id_changed(self, page_id):
         """
         Detects Page changes and updates as appropriate.
+        :param page_id: current page number
         """
         enabled = self.page(page_id) == self.area_position_page
         self.setOption(QtWidgets.QWizard.HaveCustomButton1, enabled)
