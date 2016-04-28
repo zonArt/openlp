@@ -435,7 +435,8 @@ class BibleMediaItem(MediaManagerItem):
         if Settings().value(self.settings_section + '/reset to combined quick search'):
             Settings().setValue('%s/last search type' % self.settings_section, BibleSearch.Combined)
         else:
-            Settings().setValue('%s/last search type' % self.settings_section, self.quick_search_edit.current_search_type())
+            Settings().setValue('%s/last search type' % self.settings_section,
+                                self.quick_search_edit.current_search_type())
         # Save the current bible to the configuration.
         Settings().setValue(self.settings_section + '/quick bible', self.quickVersionComboBox.currentText())
         books = []

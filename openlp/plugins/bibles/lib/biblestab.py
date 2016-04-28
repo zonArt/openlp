@@ -128,15 +128,15 @@ class BiblesTab(SettingsTab):
         self.language_selection_layout.addWidget(self.language_selection_label)
         self.language_selection_layout.addWidget(self.language_selection_combo_box)
         self.right_layout.addWidget(self.language_selection_group_box)
-        self.bible_search_settings_group_box = QtWidgets.QGroupBox(self.right_column)
-        self.bible_search_settings_group_box.setObjectName('bible_search_settings_group_box')
-        self.right_layout.addWidget(self.bible_search_settings_group_box)
-        self.search_settings_layout = QtWidgets.QFormLayout(self.bible_search_settings_group_box)
+        self.bible_quick_settings_group_box = QtWidgets.QGroupBox(self.right_column)
+        self.bible_quick_settings_group_box.setObjectName('bible_quick_settings_group_box')
+        self.right_layout.addWidget(self.bible_quick_settings_group_box)
+        self.search_settings_layout = QtWidgets.QFormLayout(self.bible_quick_settings_group_box)
         self.search_settings_layout.setObjectName('search_settings_layout')
-        self.reset_to_combined_quick_search_check_box = QtWidgets.QCheckBox(self.bible_search_settings_group_box)
+        self.reset_to_combined_quick_search_check_box = QtWidgets.QCheckBox(self.bible_quick_settings_group_box)
         self.reset_to_combined_quick_search_check_box.setObjectName('reset_to_combined_quick_search_check_box')
         self.search_settings_layout.addRow(self.reset_to_combined_quick_search_check_box)
-        self.hide_combined_quick_error_check_box = QtWidgets.QCheckBox(self.bible_search_settings_group_box)
+        self.hide_combined_quick_error_check_box = QtWidgets.QCheckBox(self.bible_quick_settings_group_box)
         self.hide_combined_quick_error_check_box.setObjectName('hide_combined_quick_error_check_box')
         self.search_settings_layout.addRow(self.hide_combined_quick_error_check_box)
         self.left_layout.addStretch()
@@ -162,7 +162,7 @@ class BiblesTab(SettingsTab):
         self.end_separator_line_edit.editingFinished.connect(self.on_end_separator_line_edit_finished)
         Registry().register_function('theme_update_list', self.update_theme_list)
         self.language_selection_combo_box.activated.connect(self.on_language_selection_combo_box_changed)
-        self.reset_to_combined_quick_search_check_box.stateChanged.connect \
+        self.reset_to_combined_quick_search_check_box.stateChanged.connect\
             (self.on_reset_to_combined_quick_search_check_box_changed)
         self.hide_combined_quick_error_check_box.stateChanged.connect\
             (self.on_hide_combined_quick_error_check_box_changed)
@@ -209,13 +209,13 @@ class BiblesTab(SettingsTab):
             LanguageSelection.Application, translate('BiblesPlugin.BiblesTab', 'Application Language'))
         self.language_selection_combo_box.setItemText(
             LanguageSelection.English, translate('BiblesPlugin.BiblesTab', 'English'))
-        self.bible_search_settings_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Search Settings'))
+        self.bible_quick_settings_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Quick Search Settings'))
         self.reset_to_combined_quick_search_check_box.setText(translate('BiblesPlugin.BiblesTab',
-                                                                        'Reset quick search type to "Combined" '
-                                                                        'on startup'))
+                                                                        'Reset search type to "Text or Scripture'
+                                                                        ' Reference" on startup'))
         self.hide_combined_quick_error_check_box.setText(translate('BiblesPlugin.BiblesTab',
-                                                                   'Don\'t show error for no results in combined '
-                                                                   'quick search'))
+                                                                   'Don\'t show error if nothing is found in "Text or '
+                                                                   'Scripture Reference"'))
 
     def on_bible_theme_combo_box_changed(self):
         self.bible_theme = self.bible_theme_combo_box.currentText()
