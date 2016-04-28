@@ -430,8 +430,12 @@ class BibleMediaItem(MediaManagerItem):
         only updated when we are doing reference or combined search, in text search the completion list is removed.
         """
         log.debug('update_auto_completer')
-        # Save the current search type to the configuration.
-        Settings().setValue('%s/last search type' % self.settings_section, self.quick_search_edit.current_search_type())
+        # Save the current search type to the configuration. If setting for automatically resetting the search type to
+        # Combined is enabled, use that otherwise use the currently selected search type.
+        if Settings().value(self.settings_section + '/reset to combined quick search'):
+            Settings().setValue('%s/last search type' % self.settings_section, BibleSearch.Combined)
+        else:
+            Settings().setValue('%s/last search type' % self.settings_section, self.quick_search_edit.current_search_type())
         # Save the current bible to the configuration.
         Settings().setValue(self.settings_section + '/quick bible', self.quickVersionComboBox.currentText())
         books = []
