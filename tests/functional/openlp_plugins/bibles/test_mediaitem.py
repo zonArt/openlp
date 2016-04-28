@@ -23,6 +23,8 @@
 This module contains tests for the lib submodule of the Presentations plugin.
 """
 from unittest import TestCase
+
+from openlp.core.common import Registry, Settings
 from openlp.plugins.bibles.lib.mediaitem import BibleMediaItem
 from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
@@ -41,6 +43,9 @@ class TestMediaItem(TestCase, TestMixin):
                 patch('openlp.plugins.bibles.lib.mediaitem.BibleMediaItem.setup_item'):
             self.media_item = BibleMediaItem(None, MagicMock())
         self.setup_application()
+        self.mocked_main_window = MagicMock()
+        Registry.create()
+        Registry().register('main_window', self.mocked_main_window)
 
     def display_results_no_results_test(self):
         """
@@ -109,3 +114,49 @@ class TestMediaItem(TestCase, TestMixin):
                 mocked_list_view.selectAll.assert_called_once_with()
                 self.assertEqual(self.media_item.search_results, {})
                 self.assertEqual(self.media_item.second_search_results, {})
+
+    def on_quick_reference_search_test(self):
+        """
+        BOOM BOOM BANANAS
+        """
+
+        # GIVEN: A mocked build_display_results which returns an empty list
+        self.media_item.quickVersionComboBox = MagicMock()
+        self.media_item.quickSecondComboBox = MagicMock()
+        self.media_item.quick_search_edit = MagicMock()
+
+        #mocked_text = self.media_item()
+        #mocked_text.text.return_value = 'Gen. 1'
+        #self.media_item.text = mocked_text
+        #self.media_item.text.return_value = 'Gen. 1'
+        # self.mocked_main_window.information_message = MagicMock()
+
+        self.media_item.search_results = MagicMock()
+        self.media_item.advancedSearchButton = MagicMock()
+        self.media_item.advancedSearchButton.setEnabled = MagicMock()
+
+        # WHEN: Calling display_results with a single bible version
+        self.media_item.banana()
+
+        # THEN: No items should be added to the list, and select all should have been called.
+        # self.assertEqual(0, self.mocked_main_window.information_message, 'lama')
+        # mocked_media_item.assert_called_with(mocked_main_window.information_message)
+        # self.mocked_text.text.assert_called_with('Gen. 1')
+        # mocked_process_item.assert_called_once_with(mocked_item, 7)
+        self.media_item.advancedSearchButton.setEnabled.assert_called_once_with(True)
+
+
+    """
+    def on_quick_reference_search_test(self):
+
+        Test the display_results method a large number of results (> 100) are returned
+
+
+        # GIVEN: A mocked build_display_results which returns a large list of results
+        media_item = BibleMediaItem(MagicMock)
+
+        # WHEN: Calling display_results
+        #self.media_item.on_quick_reference_search()
+
+        # THEN: addItem should have been called 100 times, and the lsit items should not be selected.
+    """
