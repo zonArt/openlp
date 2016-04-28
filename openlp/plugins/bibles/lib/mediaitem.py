@@ -689,36 +689,6 @@ class BibleMediaItem(MediaManagerItem):
             self.second_search_results = \
                 self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
 
-    def banana(self):
-        # We are doing a 'Reference Search'.
-        # Set Bibles to use the text input from Quick search field.
-        bible = self.quickVersionComboBox.currentText()
-        second_bible = self.quickSecondComboBox.currentText()
-        text = self.quick_search_edit.text()
-        text = text.replace('. ', ' ')
-        if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
-            self.search_results = self.plugin.manager.get_verses(bible, text)
-            if not self.search_results:
-                # if nothing is found, message is given.
-                # Get reference separators from settings.
-                reference_separators = {
-                    'verse': get_reference_separator('sep_v_display'),
-                    'range': get_reference_separator('sep_r_display'),
-                    'list': get_reference_separator('sep_l_display')}
-                self.main_window.information_message(
-                    translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
-                    translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
-                                                           'with your search.<br><br>'
-                              'Please make sure that your reference follows one of these patterns:</strong><br><br>%s'
-                              % UiStrings().BibleScriptureError % reference_separators))
-        elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
-            # In Combined Reference search no error is given if no results are found. (This would result in duplicate)
-            self.search_results = self.plugin.manager.get_verses(bible, text)
-        if second_bible and self.search_results:
-            self.second_search_results = \
-                self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
-        self.advancedSearchButton.setEnabled(True)
-
     def on_quick_text_search(self):
         # We are doing a 'Text Search'.
         # Set Bibles to use the text input from Quick search field.
