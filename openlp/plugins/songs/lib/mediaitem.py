@@ -207,9 +207,11 @@ class SongMediaItem(MediaManagerItem):
             search_keywords = search_keywords.rpartition(' ')
             search_book = search_keywords[0] + '%'
             search_entry = search_keywords[2] + '%'
-            search_results = (self.plugin.manager.session.query(SongBookEntry)
+            search_results = (self.plugin.manager.session.query(SongBookEntry.entry, Book.name, Song.title, Song.id)
+                              .join(Song)
                               .join(Book)
-                              .filter(Book.name.like(search_book), SongBookEntry.entry.like(search_entry)).all())
+                              .filter(Book.name.like(search_book), SongBookEntry.entry.like(search_entry),
+                                      Song.temporary.is_(False)).all())
             self.display_results_book(search_results)
         elif search_type == SongSearch.Themes:
             log.debug('Theme Search')
@@ -316,20 +318,17 @@ class SongMediaItem(MediaManagerItem):
         :param search_results: A list of db SongBookEntry objects
         :return: None
         """
-        def get_songbook_key(songbook_entry):
+        def get_songbook_key(result):
             """Get the key to sort by"""
-            return (get_natural_key(songbook_entry.songbook.name), get_natural_key(songbook_entry.entry))
+            return (get_natural_key(result[1]), get_natural_key(result[0]), get_natural_key(result[2]))
 
         log.debug('display results Book')
         self.list_view.clear()
         search_results.sort(key=get_songbook_key)
-        for songbook_entry in search_results:
-            # Do not display temporary songs
-            if songbook_entry.song.temporary:
-                continue
-            song_detail = '%s #%s: %s' % (songbook_entry.songbook.name, songbook_entry.entry, songbook_entry.song.title)
+        for result in search_results:
+            song_detail = '%s #%s: %s' % (result[1], result[0], result[2])
             song_name = QtWidgets.QListWidgetItem(song_detail)
-            song_name.setData(QtCore.Qt.UserRole, songbook_entry.song.id)
+            song_name.setData(QtCore.Qt.UserRole, result[3])
             self.list_view.addItem(song_name)
 
     def display_results_topic(self, search_results):
