@@ -21,7 +21,6 @@
 ###############################################################################
 
 import logging
-import re
 import os
 import shutil
 
