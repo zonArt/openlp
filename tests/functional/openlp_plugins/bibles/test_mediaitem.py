@@ -24,6 +24,7 @@ This module contains tests for the lib submodule of the Presentations plugin.
 """
 from unittest import TestCase
 
+
 from openlp.core.common import Registry, Settings
 from openlp.plugins.bibles.lib.mediaitem import BibleMediaItem
 from tests.functional import MagicMock, patch
@@ -114,3 +115,40 @@ class TestMediaItem(TestCase, TestMixin):
                 mocked_list_view.selectAll.assert_called_once_with()
                 self.assertEqual(self.media_item.search_results, {})
                 self.assertEqual(self.media_item.second_search_results, {})
+
+    def on_quick_search_button_general_test(self):
+        """
+        Test that general things, which should be called on all Quick searches are called.
+        """
+
+        # GIVEN: self.application as self.app, all the required functions
+        Registry.create()
+        Registry().register('application', self.app)
+        self.media_item.quickSearchButton = MagicMock()
+        self.app.process_events = MagicMock()
+        self.media_item.quickVersionComboBox = MagicMock()
+        self.media_item.quickVersionComboBox.currentText = MagicMock()
+        self.media_item.quickSecondComboBox = MagicMock()
+        self.media_item.quickSecondComboBox.currentText = MagicMock()
+        self.media_item.quick_search_edit = MagicMock()
+        self.media_item.quick_search_edit.text = MagicMock()
+        self.media_item.quickLockButton = MagicMock()
+        self.media_item.list_view = MagicMock()
+        self.media_item.search_results = MagicMock()
+        self.media_item.display_results = MagicMock()
+        self.media_item.check_search_result = MagicMock()
+        self.app.set_normal_cursor = MagicMock()
+
+        # WHEN: on_quick_search_button is called
+        self.media_item.on_quick_search_button()
+
+        # THEN: Search should had been started and finalized properly
+        self.assertEqual(1, self.app.process_events.call_count, 'Normal cursor should had been called once')
+        self.assertEqual(1, self.media_item.quickVersionComboBox.currentText.call_count, 'Should had been called once')
+        self.assertEqual(1, self.media_item.quickSecondComboBox.currentText.call_count, 'Should had been called once')
+        self.assertEqual(1, self.media_item.quick_search_edit.text.call_count, 'Text edit Should had been called once')
+        self.assertEqual(1, self.media_item.quickLockButton.isChecked.call_count, 'Lock Should had been called once')
+        self.assertEqual(1, self.media_item.display_results.call_count, 'Display results Should had been called once')
+        self.assertEqual(2, self.media_item.quickSearchButton.setEnabled.call_count, 'Disable and Enable the button')
+        self.assertEqual(1, self.media_item.check_search_result.call_count, 'Check results Should had been called once')
+        self.assertEqual(1, self.app.set_normal_cursor.call_count, 'Normal cursor should had been called once')

@@ -311,8 +311,8 @@ class BibleMediaItem(MediaManagerItem):
         self.load_bibles()
         self.quick_search_edit.set_search_types([
             (BibleSearch.Combined, ':/bibles/bibles_search_combined.png',
-                translate('BiblesPlugin.MediaItem', 'Text or Scripture Reference'),
-                translate('BiblesPlugin.MediaItem', 'Text or Scripture Reference...')),
+                translate('BiblesPlugin.MediaItem', 'Text or Reference'),
+                translate('BiblesPlugin.MediaItem', 'Text or Reference...')),
             (BibleSearch.Reference, ':/bibles/bibles_search_reference.png',
                 translate('BiblesPlugin.MediaItem', 'Scripture Reference'),
                 translate('BiblesPlugin.MediaItem', 'Search Scripture Reference...')),
