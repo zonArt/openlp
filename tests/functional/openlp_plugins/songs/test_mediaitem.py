@@ -187,8 +187,8 @@ class TestMediaItem(TestCase, TestMixin):
             calls = [call('My Book #1: My Song'), call().setData(QtCore.Qt.UserRole, 1),
                      call('My Book #2: Your Song'), call().setData(QtCore.Qt.UserRole, 7),
                      call('My Book #10: Our Song'), call().setData(QtCore.Qt.UserRole, 12),
-                     call('Thy Book #2: A Song'),  call().setData(QtCore.Qt.UserRole, 8),
-                     call('Thy Book #2: Thy Song'),  call().setData(QtCore.Qt.UserRole, 50)]
+                     call('Thy Book #2: A Song'), call().setData(QtCore.Qt.UserRole, 8),
+                     call('Thy Book #2: Thy Song'), call().setData(QtCore.Qt.UserRole, 50)]
             MockedQListWidgetItem.assert_has_calls(calls)
 
     def display_results_topic_test(self):
