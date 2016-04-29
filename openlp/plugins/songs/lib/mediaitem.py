@@ -315,7 +315,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Display the song search results in the media manager list, grouped by book and entry
 
-        :param search_results: A list of db SongBookEntry objects
+        :param search_results: A tuple containing (songbook entry, book name, song title, song id)
         :return: None
         """
         def get_songbook_key(result):
