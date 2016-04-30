@@ -439,7 +439,6 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
 
         :param service_item: The Service item to be used
         :param image_path: Where the image resides.
-        :param is_love: Are we the live controller assume not.
         """
         self.web_loaded = False
         self.initial_fame = None

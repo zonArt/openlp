@@ -135,7 +135,6 @@ class Ui_ThemeWizard(object):
         self.transparent_layout.setObjectName('Transparent_layout')
         self.background_stack.addWidget(self.transparent_widget)
         self.background_layout.addLayout(self.background_stack)
-
         self.video_widget = QtWidgets.QWidget(self.background_page)
         self.video_widget.setObjectName('video_widget')
         self.video_layout = QtWidgets.QFormLayout(self.video_widget)
@@ -160,7 +159,6 @@ class Ui_ThemeWizard(object):
         self.video_layout.addRow(self.video_label, self.video_file_layout)
         self.video_layout.setItem(2, QtWidgets.QFormLayout.LabelRole, self.spacer)
         self.background_stack.addWidget(self.video_widget)
-
         theme_wizard.addPage(self.background_page)
         # Main Area Page
         self.main_area_page = QtWidgets.QWizardPage()
