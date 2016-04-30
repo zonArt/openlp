@@ -55,9 +55,6 @@ VIDEO_JS = """
         switch(state){
             case 'load':
                 video.src = 'file:///' + path;
-                if(loop == true) {
-                    video.loop = true;
-                }
                 video.load();
                 break;
             case 'play':

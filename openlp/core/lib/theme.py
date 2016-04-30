@@ -44,6 +44,7 @@ class BackgroundType(object):
     Gradient = 1
     Image = 2
     Transparent = 3
+    Video = 4
 
     @staticmethod
     def to_string(background_type):
@@ -58,6 +59,8 @@ class BackgroundType(object):
             return 'image'
         elif background_type == BackgroundType.Transparent:
             return 'transparent'
+        elif background_type == BackgroundType.Video:
+            return 'video'
 
     @staticmethod
     def from_string(type_string):
@@ -72,6 +75,8 @@ class BackgroundType(object):
             return BackgroundType.Image
         elif type_string == 'transparent':
             return BackgroundType.Transparent
+        elif type_string == 'video':
+            return BackgroundType.Video
 
 
 class BackgroundGradientType(object):
@@ -184,7 +189,7 @@ class ThemeXML(object):
 
         :param path: The path name to be added.
         """
-        if self.background_type == 'image':
+        if self.background_type == 'image' or self.background_type == 'video':
             if self.background_filename and path:
                 self.theme_name = self.theme_name.strip()
                 self.background_filename = self.background_filename.strip()
@@ -249,6 +254,21 @@ class ThemeXML(object):
         """
         background = self.theme_xml.createElement('background')
         background.setAttribute('type', 'image')
+        self.theme.appendChild(background)
+        # Create Filename element
+        self.child_element(background, 'filename', filename)
+        # Create endColor element
+        self.child_element(background, 'borderColor', str(border_color))
+
+    def add_background_video(self, filename, border_color):
+        """
+        Add a video background.
+
+        :param filename: The file name of the video.
+        :param border_color:
+        """
+        background = self.theme_xml.createElement('background')
+        background.setAttribute('type', 'video')
         self.theme.appendChild(background)
         # Create Filename element
         self.child_element(background, 'filename', filename)
@@ -512,6 +532,9 @@ class ThemeXML(object):
         elif self.background_type == BackgroundType.to_string(BackgroundType.Image):
             filename = os.path.split(self.background_filename)[1]
             self.add_background_image(filename, self.background_border_color)
+        elif self.background_type == BackgroundType.to_string(BackgroundType.Video):
+            filename = os.path.split(self.background_filename)[1]
+            self.add_background_video(filename, self.background_border_color)
         elif self.background_type == BackgroundType.to_string(BackgroundType.Transparent):
             self.add_background_transparent()
         self.add_font(
