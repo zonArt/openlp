@@ -45,7 +45,7 @@ VIDEO_CSS = """
 """
 
 VIDEO_JS = """
-    function show_video(state, path, volume, loop, variable_value){
+    function show_video(state, path, volume, variable_value){
         // Sometimes  video.currentTime stops slightly short of video.duration and video.ended is intermittent!
 
         var video = document.getElementById('video');
@@ -177,12 +177,8 @@ class WebkitPlayer(MediaPlayer):
         else:
             vol = 0
         path = controller.media_info.file_info.absoluteFilePath()
-        if controller.media_info.is_background:
-            loop = 'true'
-        else:
-            loop = 'false'
         display.web_view.setVisible(True)
-        js = 'show_video("load", "%s", %s, %s);' % (path.replace('\\', '\\\\'), str(vol), loop)
+        js = 'show_video("load", "%s", %s, %s);' % (path.replace('\\', '\\\\'), str(vol))
         display.frame.evaluateJavaScript(js)
         return True
 
