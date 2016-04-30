@@ -77,6 +77,12 @@ class PdfController(PresentationController):
             if found_mudraw:
                 program_type = 'mudraw'
                 break
+            found_mutool = re.search('usage: mutool.*', decoded_line, re.IGNORECASE)
+            if found_mutool:
+                # Test that mutool contains mudraw
+                if re.search('draw\s+--\s+convert document.*', runlog.decode(), re.IGNORECASE | re.MULTILINE):
+                    program_type = 'mutool'
+                    break
             found_gs = re.search('GPL Ghostscript.*', decoded_line, re.IGNORECASE)
             if found_gs:
                 program_type = 'gs'
@@ -101,6 +107,7 @@ class PdfController(PresentationController):
         """
         log.debug('check_installed Pdf')
         self.mudrawbin = ''
+        self.mutoolbin = ''
         self.gsbin = ''
         self.also_supports = []
         # Use the user defined program if given
@@ -111,27 +118,36 @@ class PdfController(PresentationController):
                 self.gsbin = pdf_program
             elif program_type == 'mudraw':
                 self.mudrawbin = pdf_program
+            elif program_type == 'mutool':
+                self.mutoolbin = pdf_program
         else:
             # Fallback to autodetection
             application_path = AppLocation.get_directory(AppLocation.AppDir)
             if is_win():
-                # for windows we only accept mudraw.exe in the base folder
+                # for windows we only accept mudraw.exe or mutool.exe in the base folder
                 application_path = AppLocation.get_directory(AppLocation.AppDir)
                 if os.path.isfile(os.path.join(application_path, 'mudraw.exe')):
                     self.mudrawbin = os.path.join(application_path, 'mudraw.exe')
+                elif os.path.isfile(os.path.join(application_path, 'mutool.exe')):
+                    self.mutoolbin = os.path.join(application_path, 'mutool.exe')
             else:
                 DEVNULL = open(os.devnull, 'wb')
-                # First try to find mupdf
+                # First try to find mudraw
                 self.mudrawbin = which('mudraw')
-                # if mupdf isn't installed, fallback to ghostscript
+                # if mudraw isn't installed, try mutool
                 if not self.mudrawbin:
-                    self.gsbin = which('gs')
-                # Last option: check if mudraw is placed in OpenLP base folder
-                if not self.mudrawbin and not self.gsbin:
+                    self.mutoolbin = which('mutool')
+                    # Check we got a working mutool
+                    if not self.mutoolbin or self.process_check_binary(self.mutoolbin) != 'mutool':
+                        self.gsbin = which('gs')
+                # Last option: check if mudraw or mutool is placed in OpenLP base folder
+                if not self.mudrawbin and not self.mutoolbin and not self.gsbin:
                     application_path = AppLocation.get_directory(AppLocation.AppDir)
-                    if os.path.isfile(os.path.join(application_path, 'mudraw')):
-                        self.mudrawbin = os.path.join(application_path, 'mudraw')
-        if self.mudrawbin:
+                    if os.path.isfile(os.path.join(application_path, 'mudraw.exe')):
+                        self.mudrawbin = os.path.join(application_path, 'mudraw.exe')
+                    elif os.path.isfile(os.path.join(application_path, 'mutool.exe')):
+                        self.mutoolbin = os.path.join(application_path, 'mutool.exe')
+        if self.mudrawbin or self.mutoolbin:
             self.also_supports = ['xps', 'oxps']
             return True
         elif self.gsbin:
@@ -238,10 +254,18 @@ class PdfDocument(PresentationDocument):
             if not os.path.isdir(self.get_temp_folder()):
                 os.makedirs(self.get_temp_folder())
             if self.controller.mudrawbin:
+                log.debug('loading presentation using mudraw')
                 runlog = check_output([self.controller.mudrawbin, '-w', str(size.width()), '-h', str(size.height()),
                                        '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path],
                                       startupinfo=self.startupinfo)
+            elif self.controller.mutoolbin:
+                log.debug('loading presentation using mutool')
+                runlog = check_output([self.controller.mutoolbin, 'draw', '-w', str(size.width()), '-h',
+                                       str(size.height()),
+                                       '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path],
+                                      startupinfo=self.startupinfo)
             elif self.controller.gsbin:
+                log.debug('loading presentation using gs')
                 resolution = self.gs_get_resolution(size)
                 runlog = check_output([self.controller.gsbin, '-dSAFER', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m',
                                        '-r' + str(resolution), '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4',
