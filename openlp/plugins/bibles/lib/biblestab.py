@@ -162,10 +162,10 @@ class BiblesTab(SettingsTab):
         self.end_separator_line_edit.editingFinished.connect(self.on_end_separator_line_edit_finished)
         Registry().register_function('theme_update_list', self.update_theme_list)
         self.language_selection_combo_box.activated.connect(self.on_language_selection_combo_box_changed)
-        self.reset_to_combined_quick_search_check_box.stateChanged.connect\
-            (self.on_reset_to_combined_quick_search_check_box_changed)
-        self.hide_combined_quick_error_check_box.stateChanged.connect\
-            (self.on_hide_combined_quick_error_check_box_changed)
+        self.reset_to_combined_quick_search_check_box.stateChanged.connect(
+            self.on_reset_to_combined_quick_search_check_box_changed)
+        self.hide_combined_quick_error_check_box.stateChanged.connect(
+            self.on_hide_combined_quick_error_check_box_changed)
 
     def retranslateUi(self):
         self.verse_display_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Verse Display'))
