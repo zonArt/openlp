@@ -24,7 +24,7 @@ The UI widgets for the first time wizard.
 """
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from openlp.core.common import translate, is_macosx, clean_button_text
+from openlp.core.common import translate, is_macosx, clean_button_text, Settings
 from openlp.core.lib import build_icon
 from openlp.core.lib.ui import add_welcome_page
 
@@ -136,6 +136,13 @@ class UiFirstTimeWizard(object):
         self.alert_check_box.setChecked(True)
         self.alert_check_box.setObjectName('alert_check_box')
         self.plugin_layout.addWidget(self.alert_check_box)
+        self.projectors_check_box = QtWidgets.QCheckBox(self.plugin_page)
+        # If visibility setting for projector panel is True, check the box.
+        if Settings().value('projector/show after wizard'):
+            self.projectors_check_box.setChecked(True)
+        self.projectors_check_box.setObjectName('projectors_check_box')
+        self.projectors_check_box.clicked.connect(self.on_projectors_check_box_clicked)
+        self.plugin_layout.addWidget(self.projectors_check_box)
         first_time_wizard.setPage(FirstTimePage.Plugins, self.plugin_page)
         # The song samples page
         self.songs_page = QtWidgets.QWizardPage()
@@ -232,17 +239,28 @@ class UiFirstTimeWizard(object):
                                                                            'downloaded.'))
         self.download_label.setText(translate('OpenLP.FirstTimeWizard', 'Please wait while OpenLP downloads the '
                                                                         'resource index file...'))
-        self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
-        self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
+        self.plugin_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Select parts of the program you wish to use'))
+        self.plugin_page.setSubTitle(translate('OpenLP.FirstTimeWizard',
+                                               'You can also change these settings after the Wizard.'))
         self.songs_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
-        self.custom_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Custom Slides'))
-        self.bible_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Bible'))
-        self.image_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Images'))
-        self.presentation_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Presentations'))
-        self.media_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Media (Audio and Video)'))
-        self.remote_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Allow remote access'))
-        self.song_usage_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Monitor Song Usage'))
-        self.alert_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Allow Alerts'))
+        self.custom_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                                'Custom Slides – Easier to manage than songs and they have their own'
+                                                ' list of slides'))
+        self.bible_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                               'Bibles – Import and show Bibles'))
+        self.image_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                               'Images – Show images or replace background with them'))
+        self.presentation_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                                      'Presentations – Show .ppt, .odp and .pdf files'))
+        self.media_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Media – Playback of Audio and Video files'))
+        self.remote_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Remote – Control OpenLP via browser or smart'
+                                                                          'phone app'))
+        self.song_usage_check_box.setText(translate('OpenLP.FirstTimeWizard', 'Song Usage Monitor'))
+        self.alert_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                               'Alerts – Display informative messages while showing other slides'))
+        self.projectors_check_box.setText(translate('OpenLP.FirstTimeWizard',
+                                                    'Projectors – Control PJLink compatible projects on your network'
+                                                    ' from OpenLP'))
         self.no_internet_page.setTitle(translate('OpenLP.FirstTimeWizard', 'No Internet Connection'))
         self.no_internet_page.setSubTitle(
             translate('OpenLP.FirstTimeWizard', 'Unable to detect an Internet connection.'))
@@ -277,3 +295,10 @@ class UiFirstTimeWizard(object):
                                         clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.FinishButton)))
         first_time_wizard.setButtonText(QtWidgets.QWizard.CustomButton2,
                                         clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.CancelButton)))
+
+    def on_projectors_check_box_clicked(self):
+        # When clicking projectors_check box, change the visibility setting for Projectors panel.
+        if Settings().value('projector/show after wizard'):
+            Settings().setValue('projector/show after wizard', False)
+        else:
+            Settings().setValue('projector/show after wizard', True)

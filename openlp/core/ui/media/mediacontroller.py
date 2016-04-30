@@ -298,7 +298,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
                                                tooltip=translate('OpenLP.SlideController', 'Stop playing media.'),
                                                triggers=controller.send_to_plugins)
         controller.mediabar.add_toolbar_action('playbackLoop', text='media_playback_loop',
-                                               icon=':/slides/media_playback_stop.png', checked=False,
+                                               icon=':/media/media_repeat.png', checked=False,
                                                tooltip=translate('OpenLP.SlideController', 'Loop playing media.'),
                                                triggers=controller.send_to_plugins)
         controller.position_label = QtWidgets.QLabel()
