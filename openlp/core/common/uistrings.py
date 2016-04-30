@@ -153,7 +153,7 @@ class UiStrings(object):
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
-        # Translations used in both, bibles\lib\mediaitem.py and bibles\lib\manager.py
+        # Translations that are used in bibles\lib\mediaitem.py and bibles\lib\manager.py
         self.BibleShortSearchTitle = translate('OpenLP.Ui', 'Search is Empty or too Short')
         self.BibleShortSearch = translate('OpenLP.Ui', '<strong>The search you have entered is empty or shorter '
                                                        'than 3 characters long.<br>Please try again with '
