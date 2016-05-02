@@ -247,7 +247,6 @@ class BibleManager(RegistryProperties):
         """
         Parses a scripture reference, fetches the verses from the Bible
         specified, and returns a list of ``Verse`` objects.
-        This function is called in \bibles\lib\mediaitem.py by def on_quick_search_button
 
         :param bible: Unicode. The Bible to use.
         :param verse_text:
@@ -305,7 +304,6 @@ class BibleManager(RegistryProperties):
     def verse_search(self, bible, second_bible, text):
         """
         Does a verse search for the given bible and text.
-        This function is called in \bibles\lib\mediaitem.py by def on_quick_search_button.
 
         :param bible: The bible to search in (unicode).
         :param second_bible: The second bible (unicode). We do not search in this bible.
@@ -327,15 +325,13 @@ class BibleManager(RegistryProperties):
             # If either Bible is Web, cursor is reset to normal and message is given.
             self.application.set_normal_cursor()
             # If we are performing "Search while typing", do not show this error.
-            # Web Bible checking method is currently bound to this file, so it can't be properly moved to mediaitem.py
-            # Without making some changes to the stucture. (= self.db_cache[bible].get_object(BibleMeta,...)
             if not Settings().value('bibles/hide web bible error if searching while typing'):
                 self.main_window.information_message(
                     translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
                     translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'
                                                            'Please use the Scripture Reference Search instead.\n\n'
                                                            'This means that the currently used Bible or Second Bible\n'
-                                                           'is installed as Web Bible and may not be used.')
+                                                           'is installed as Web Bible')
                 )
             return None
         # Shorter than 3 char searches break OpenLP with very long search times, thus they are blocked.
