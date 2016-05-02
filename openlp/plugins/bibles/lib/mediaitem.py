@@ -37,7 +37,6 @@ from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, VerseReferenceL
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 import re
 
-
 log = logging.getLogger(__name__)
 
 
@@ -808,7 +807,7 @@ class BibleMediaItem(MediaManagerItem):
         self.check_search_result()
         self.application.set_normal_cursor()
 
-    def on_quick_search_search_as_type_text(self):
+    def on_quick_search_while_typing(self):
         """
         This function is called when "Search as you type" is enabled for Bibles.
         It is basically the same thing as "on_quick_search_search" but all the error messages are removed.
@@ -869,9 +868,9 @@ class BibleMediaItem(MediaManagerItem):
         if Settings().value('bibles/is search while typing enabled'):
             if len(text) > search_length and len(count_space_any) != 0:
                 # Start search if no chars are entered or deleted for 1.3 seconds
-                # Use the self.on_quick_search_search_as_type_text, this does not contain any error messages.
+                # Use the self.on_quick_search_while_typing, this does not contain any error messages.
                 # This method may be a bit buggy sometimes and starts shorter than required searches due to the delay.
-                QtCore.QTimer().singleShot(1300, self.on_quick_search_search_as_type_text)
+                QtCore.QTimer().singleShot(1300, self.on_quick_search_while_typing)
             # If text length is less than 4 and results are not locked, it's still possible to search short references.
             if not self.quickLockButton.isChecked() and len(text) < 4:
                 self.list_view.clear()
