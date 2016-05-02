@@ -813,24 +813,19 @@ class BibleMediaItem(MediaManagerItem):
         """
         This function is called when "Search as you type" is enabled for Bibles.
         It is basically the same thing as "on_quick_search_search" but all the error messages are removed.
+        For commented version, please visit def on_quick_search_button.
         """
         log.debug('Quick Search Button clicked')
-        #self.application.process_events()
-        # These need to be defined here too so the search results can be displayed.
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
-            # We are doing a 'Reference Search'. (Get script from def on_quick_reference_search)
             self.on_quick_reference_search()
         elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
-            # We are doing a 'Text Search'. (Get script from def on_quick_text_search)
             self.on_quick_text_search()
         elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
             self.on_quick_reference_search()
             if not self.search_results:
                 self.on_quick_text_search()
-        # Finalizing the search
-        # List is cleared if not locked, results are listed, button is set available, cursor is set to normal.
         if not self.quickLockButton.isChecked():
             self.list_view.clear()
         if self.list_view.count() != 0 and self.search_results:
@@ -873,16 +868,15 @@ class BibleMediaItem(MediaManagerItem):
         # Turn this into a format that may be used in if statement.
         count_space_any = space_and_any.findall(text)
         # Start searching if this behaviour is not disabled in settings and conditions are met.
-        if len(text) > search_length and len(count_space_any) != 0\
-                and Settings().value('bibles/is search while typing enabled'):
-            # Start search if no chars are entered or deleted for 1.3 seconds
-            # Use the self.on_quick_search_search_as_type_text, this does not contain any error messages.
-            # This method may be a bit buggy sometimes and starts shorter than required searches due to the delay.
-            QtCore.QTimer().singleShot(1300, self.on_quick_search_search_as_type_text)
-        # If text lenght is less than 4 and results are not locked, it's still possible to search short references.
-        if not self.quickLockButton.isChecked() and len(text) < 4\
-                and Settings().value('bibles/is search while typing enabled'):
-            self.list_view.clear()
+        if Settings().value('bibles/is search while typing enabled'):
+            if len(text) > search_length and len(count_space_any) != 0:
+                # Start search if no chars are entered or deleted for 1.3 seconds
+                # Use the self.on_quick_search_search_as_type_text, this does not contain any error messages.
+                # This method may be a bit buggy sometimes and starts shorter than required searches due to the delay.
+                QtCore.QTimer().singleShot(1300, self.on_quick_search_search_as_type_text)
+            # If text length is less than 4 and results are not locked, it's still possible to search short references.
+            if not self.quickLockButton.isChecked() and len(text) < 4:
+                self.list_view.clear()
 
     def build_display_results(self, bible, second_bible, search_results):
         """

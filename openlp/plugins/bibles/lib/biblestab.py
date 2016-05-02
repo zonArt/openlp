@@ -407,7 +407,7 @@ class BiblesTab(SettingsTab):
         self.hide_combined_quick_error = settings.value('hide combined quick error')
         self.hide_combined_quick_error_check_box.setChecked(self.hide_combined_quick_error)
         self.bible_search_while_typing = settings.value('is search while typing enabled')
-        self.bible_search_while_typing_check_box.setChecked(self.hide_combined_quick_error)
+        self.bible_search_while_typing_check_box.setChecked(self.bible_search_while_typing)
         settings.endGroup()
 
     def save(self):
