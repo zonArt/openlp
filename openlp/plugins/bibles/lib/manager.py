@@ -326,17 +326,20 @@ class BibleManager(RegistryProperties):
         if web_bible or second_web_bible:
             # If either Bible is Web, cursor is reset to normal and message is given.
             self.application.set_normal_cursor()
-            self.main_window.information_message(
-                translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
-                translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'
-                                                       'Please use the Scripture Reference Search instead.')
-            )
+            # If we are performing "Search while typing", do not show this error.
+            # Web Bible checking method is currently bound to this file, so it can't be properly moved to mediaitem.py
+            # Without making some changes to the stucture. (= self.db_cache[bible].get_object(BibleMeta,...)
+            if not Settings().value('bibles/hide web bible error if searching while typing'):
+                self.main_window.information_message(
+                    translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
+                    translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'
+                                                           'Please use the Scripture Reference Search instead.\n\n'
+                                                           'This means that the currently used Bible or Second Bible\n'
+                                                           'is installed as Web Bible and may not be used.')
+                )
             return None
         # Shorter than 3 char searches break OpenLP with very long search times, thus they are blocked.
         if len(text) - text.count(' ') < 3:
-            self.main_window.information_message(
-                ('%s' % UiStrings().BibleShortSearchTitle),
-                ('%s' % UiStrings().BibleShortSearch))
             return None
         # Fetch the results from db. If no results are found, return None, no message is given for this.
         elif text:

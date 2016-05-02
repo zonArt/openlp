@@ -35,6 +35,8 @@ from openlp.plugins.bibles.forms.editbibleform import EditBibleForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, VerseReferenceList, get_reference_separator, \
     LanguageSelection, BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
+import re
+
 
 log = logging.getLogger(__name__)
 
@@ -251,6 +253,8 @@ class BibleMediaItem(MediaManagerItem):
         # Other stuff
         self.quick_search_edit.returnPressed.connect(self.on_quick_search_button)
         self.search_tab_bar.currentChanged.connect(self.on_search_tab_bar_current_changed)
+        # Cherry
+        self.quick_search_edit.textChanged.connect(self.on_search_text_edit_changed)
 
     def on_focus(self):
         if self.quickTab.isVisible():
@@ -669,19 +673,6 @@ class BibleMediaItem(MediaManagerItem):
         # This is triggered on reference search, use the search from manager.py
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
             self.search_results = self.plugin.manager.get_verses(bible, text)
-            if not self.search_results:
-                # if nothing is found, message is given.
-                # Get reference separators from settings.
-                reference_separators = {
-                    'verse': get_reference_separator('sep_v_display'),
-                    'range': get_reference_separator('sep_r_display'),
-                    'list': get_reference_separator('sep_l_display')}
-                self.main_window.information_message(
-                    translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
-                    translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
-                                                           'with your search.<br><br>'
-                              'Please make sure that your reference follows one of these patterns:</strong><br><br>%s'
-                              % UiStrings().BibleScriptureError % reference_separators))
         elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
             # In Combined Reference search no error is given if no results are found. (This would result in duplicate)
             self.search_results = self.plugin.manager.get_verses(bible, text)
@@ -738,6 +729,8 @@ class BibleMediaItem(MediaManagerItem):
         "Eg. "Reference Search", "Text Search" or "Combined search".
         """
         log.debug('Quick Search Button clicked')
+        # If we are performing "Search while typing", this setting is set to True, here it's reset to "False"
+        Settings().setValue('bibles/hide web bible error if searching while typing', False)
         # Disable the button while processing, get text from Quick search field.
         self.quickSearchButton.setEnabled(False)
         self.application.process_events()
@@ -748,9 +741,27 @@ class BibleMediaItem(MediaManagerItem):
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
             # We are doing a 'Reference Search'. (Get script from def on_quick_reference_search)
             self.on_quick_reference_search()
+            # if nothing is found, message is given.
+            # Get reference separators from settings.
+            if not self.search_results:
+                reference_separators = {
+                    'verse': get_reference_separator('sep_v_display'),
+                    'range': get_reference_separator('sep_r_display'),
+                    'list': get_reference_separator('sep_l_display')}
+                self.main_window.information_message(
+                    translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
+                    translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
+                                                           'with your search.<br><br>'
+                                                           'Please make sure that your reference follows '
+                                                           'one of these patterns:</strong><br><br>%s'
+                              % UiStrings().BibleScriptureError % reference_separators))
         elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
             # We are doing a 'Text Search'. (Get script from def on_quick_text_search)
             self.on_quick_text_search()
+            if not self.search_results and len(text) - text.count(' ') < 3 and bible:
+                self.main_window.information_message(
+                    ('%s' % UiStrings().BibleShortSearchTitle),
+                    ('%s' % UiStrings().BibleShortSearch))
         elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
             # We are doing a 'Combined search'. Starting with reference search.
             self.on_quick_reference_search()
@@ -767,10 +778,12 @@ class BibleMediaItem(MediaManagerItem):
                 # Text search starts here if no reference was found and keyword is longer than 2.
                 #  > 2 check is required in order to avoid duplicate error messages for short keywords.
                 self.on_quick_text_search()
-                # If no Text or Reference is found, message is given.
+                # If no Text or Reference is found, message is given, unless a setting for not showing it is enabled.
                 if not self.search_results and not \
                         Settings().value(self.settings_section + '/hide combined quick error'):
                         self.application.set_normal_cursor()
+                        # Reference separators need to be defined both, in here and on reference search,
+                        # error won't work if they are left out from one.
                         reference_separators = {
                             'verse': get_reference_separator('sep_v_display'),
                             'range': get_reference_separator('sep_r_display'),
@@ -796,6 +809,37 @@ class BibleMediaItem(MediaManagerItem):
         self.check_search_result()
         self.application.set_normal_cursor()
 
+    def on_quick_search_search_as_type_text(self):
+        """
+        This function is called when "Search as you type" is enabled for Bibles.
+        It is basically the same thing as "on_quick_search_search" but all the error messages are removed.
+        """
+        log.debug('Quick Search Button clicked')
+        #self.application.process_events()
+        # These need to be defined here too so the search results can be displayed.
+        bible = self.quickVersionComboBox.currentText()
+        second_bible = self.quickSecondComboBox.currentText()
+        if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+            # We are doing a 'Reference Search'. (Get script from def on_quick_reference_search)
+            self.on_quick_reference_search()
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
+            # We are doing a 'Text Search'. (Get script from def on_quick_text_search)
+            self.on_quick_text_search()
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
+            self.on_quick_reference_search()
+            if not self.search_results:
+                self.on_quick_text_search()
+        # Finalizing the search
+        # List is cleared if not locked, results are listed, button is set available, cursor is set to normal.
+        if not self.quickLockButton.isChecked():
+            self.list_view.clear()
+        if self.list_view.count() != 0 and self.search_results:
+            self.__check_second_bible(bible, second_bible)
+        elif self.search_results:
+            self.display_results(bible, second_bible)
+        self.check_search_result()
+        self.application.set_normal_cursor()
+
     def display_results(self, bible, second_bible=''):
         """
         Displays the search results in the media manager. All data needed for further action is saved for/in each row.
@@ -806,6 +850,39 @@ class BibleMediaItem(MediaManagerItem):
         self.list_view.selectAll()
         self.search_results = {}
         self.second_search_results = {}
+
+    def on_search_text_edit_changed(self):
+        """
+        If search as type enabled invoke the search on each key press. If the Lyrics are being searched do not start
+        till 7 characters have been entered.
+        """
+        text = self.quick_search_edit.text()
+        # If web bible is used, don't show the error while searching and typing.
+        # This would result in seeing the same message multiple times.
+        # This message is located in lib\manager.py, so the setting is required.
+        Settings().setValue('bibles/hide web bible error if searching while typing', True)
+        search_length = 1
+        if self.quick_search_edit.current_search_type() == BibleSearch.Combined:
+            search_length = 4
+        if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+            search_length = 3
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
+            search_length = 5
+        # Regex for finding space + any non whitemark character. (Prevents search from starting on 1 word searches)
+        space_and_any = re.compile(' \S')
+        # Turn this into a format that may be used in if statement.
+        count_space_any = space_and_any.findall(text)
+        # Start searching if this behaviour is not disabled in settings and conditions are met.
+        if len(text) > search_length and len(count_space_any) != 0\
+                and Settings().value('bibles/is search while typing enabled'):
+            # Start search if no chars are entered or deleted for 1.3 seconds
+            # Use the self.on_quick_search_search_as_type_text, this does not contain any error messages.
+            # This method may be a bit buggy sometimes and starts shorter than required searches due to the delay.
+            QtCore.QTimer().singleShot(1300, self.on_quick_search_search_as_type_text)
+        # If text lenght is less than 4 and results are not locked, it's still possible to search short references.
+        if not self.quickLockButton.isChecked() and len(text) < 4\
+                and Settings().value('bibles/is search while typing enabled'):
+            self.list_view.clear()
 
     def build_display_results(self, bible, second_bible, search_results):
         """
