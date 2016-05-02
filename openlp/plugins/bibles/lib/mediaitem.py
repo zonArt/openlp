@@ -848,8 +848,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def on_search_text_edit_changed(self):
         """
-        If search as type enabled invoke the search on each key press. If the Lyrics are being searched do not start
-        till 7 characters have been entered.
+        If search automatically while typing is enabled, perform the search and list results when conditions are met.
         """
         text = self.quick_search_edit.text()
         # If web bible is used, don't show the error while searching and typing.
