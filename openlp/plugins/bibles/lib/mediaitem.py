@@ -253,7 +253,6 @@ class BibleMediaItem(MediaManagerItem):
         # Other stuff
         self.quick_search_edit.returnPressed.connect(self.on_quick_search_button)
         self.search_tab_bar.currentChanged.connect(self.on_search_tab_bar_current_changed)
-        # Cherry
         self.quick_search_edit.textChanged.connect(self.on_search_text_edit_changed)
 
     def on_focus(self):
