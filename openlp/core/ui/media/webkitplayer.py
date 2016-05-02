@@ -178,7 +178,7 @@ class WebkitPlayer(MediaPlayer):
             vol = 0
         path = controller.media_info.file_info.absoluteFilePath()
         display.web_view.setVisible(True)
-        js = 'show_video("load", "%s", %s, %s);' % (path.replace('\\', '\\\\'), str(vol))
+        js = 'show_video("load", "{path}", {vol});'.format(path=path.replace('\\', '\\\\'), vol=str(vol))
         display.frame.evaluateJavaScript(js)
         return True
 

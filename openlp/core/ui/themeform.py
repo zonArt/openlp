@@ -465,8 +465,9 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         visible_formats = '(%s)' % '; '.join(VIDEO_EXT)
         actual_formats = '(%s)' % ' '.join(VIDEO_EXT)
-        video_filter = '%s %s %s' % (translate('OpenLP', 'Video Files'), visible_formats, actual_formats)
-        video_filter = '%s;;%s (*.*)' % (video_filter, UiStrings().AllFiles)
+        video_filter = '{trans} {visible} {actual}'.format(trans=translate('OpenLP', 'Video Files'),
+                                                           visible=visible_formats, actual=actual_formats)
+        video_filter = '{video};;{ui} (*.*)'.format(video=video_filter, ui=UiStrings().AllFiles)
         filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(
             self, translate('OpenLP.ThemeWizard', 'Select Video'),
             self.video_file_edit.text(), video_filter)
