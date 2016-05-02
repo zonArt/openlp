@@ -703,8 +703,9 @@ class BibleMediaItem(MediaManagerItem):
             for verse in self.search_results:
                 db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
                 if not db_book:
-                    log.debug('Passage "%s %d:%d" not found in Second Bible' %
-                              (verse.book.name, verse.chapter, verse.verse))
+                    log.debug('Passage ("{versebookname}","{versechapter}","{verseverse}") not found in Second Bible'
+                              .format(versebookname=verse.book.name, versechapter='verse.chapter',
+                                      verseverse=verse.verse))
                     passage_not_found = True
                     count += 1
                     continue
@@ -715,9 +716,9 @@ class BibleMediaItem(MediaManagerItem):
                 self.main_window.information_message(
                     translate('BiblesPlugin.MediaItem', 'Information'),
                     translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
-                                                        'that are in the main Bible. Only verses found in both Bibles '
-                                                        'will be shown. %d verses have not been included '
-                                                        'in the results.') % count)
+                                                        'that are in the main Bible.\nOnly verses found in both Bibles'
+                                                        ' will be shown.\n\n {count} verses have not been included '
+                                                        'in the results.').format(count=count))
             # Join the searches so only verses that are found on both Bibles are shown.
             self.search_results = new_search_results
             self.second_search_results = bibles[second_bible].get_verses(text)
