@@ -622,11 +622,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         :param version: The Version to be displayed.
         """
         log.debug('version_notice')
-        version_text = translate('OpenLP.MainWindow', 'Version %s of OpenLP is now available for download (you are '
-                                 'currently running version %s). \n\nYou can download the latest version from '
-                                 'http://openlp.org/.')
-        QtWidgets.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
-                                       version_text % (version, get_application_version()[u'full']))
+        version_text = translate('OpenLP.MainWindow', 'Version {new} of OpenLP is now available for download (you are '
+                                 'currently running version {current}). \n\nYou can download the latest version from '
+                                 'http://openlp.org/.').format(new=version, current=get_application_version()[u'full'])
+        QtWidgets.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Version Updated'), version_text)
 
     def show(self):
         """
@@ -642,7 +641,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             self.service_manager_contents.load_last_file()
         # This will store currently used layout preset so it remains enabled on next startup.
         # If any panel is enabled/disabled after preset is set, this setting is not saved.
-        view_mode = Settings().value('%s/view mode' % self.general_settings_section)
+        view_mode = Settings().value('{section}/view mode'.format(section=self.general_settings_section))
         if view_mode == 'default' and Settings().value('user interface/is preset layout'):
             self.mode_default_item.setChecked(True)
         elif view_mode == 'setup' and Settings().value('user interface/is preset layout'):
@@ -731,8 +730,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         settings = Settings()
         self.live_controller.main_display_set_background()
-        if settings.value('%s/screen blank' % self.general_settings_section):
-            if settings.value('%s/blank warning' % self.general_settings_section):
+        if settings.value('{section}/screen blank'.format(section=self.general_settings_section)):
+            if settings.value('{section}/blank warning'.format(section=self.general_settings_section)):
                 QtWidgets.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Main Display Blanked'),
                                                translate('OpenLP.MainWindow', 'The Main Display has been blanked out'))
 
@@ -924,9 +923,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             try:
                 value = import_settings.value(section_key)
             except KeyError:
-                log.warning('The key "%s" does not exist (anymore), so it will be skipped.' % section_key)
+                log.warning('The key "{key}" does not exist (anymore), so it will be skipped.'.format(key=section_key))
             if value is not None:
-                settings.setValue('%s' % (section_key), value)
+                settings.setValue('{key}'.format(key=section_key), value)
         now = datetime.now()
         settings.beginGroup(self.header_section)
         settings.setValue('file_imported', import_file_name)
@@ -1003,9 +1002,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
                 key_value = settings.value(section_key)
             except KeyError:
                 QtWidgets.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
-                                               translate('OpenLP.MainWindow', 'The key "%s" does not have a default '
+                                               translate('OpenLP.MainWindow', 'The key "{key}" does not have a default '
                                                                               'value so it will be skipped in this '
-                                                                              'export.') % section_key,
+                                                                              'export.').format(key=section_key),
                                                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
                 key_value = None
             if key_value is not None:
@@ -1027,8 +1026,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             os.remove(temp_file)
         except OSError as ose:
                 QtWidgets.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Export setting error'),
-                                               translate('OpenLP.MainWindow', 'An error occurred while exporting the '
-                                                                              'settings: %s') % ose.strerror,
+                                               translate('OpenLP.MainWindow',
+                                                         'An error occurred while exporting the '
+                                                         'settings: {err}').format(err=ose.strerror),
                                                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
 
     def on_mode_default_item_clicked(self):
@@ -1061,7 +1061,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         if mode:
             settings = Settings()
-            settings.setValue('%s/view mode' % self.general_settings_section, mode)
+            settings.setValue('{section}/view mode'.format(section=self.general_settings_section), mode)
         self.media_manager_dock.setVisible(media)
         self.service_manager_dock.setVisible(service)
         self.theme_manager_dock.setVisible(theme)
@@ -1168,9 +1168,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         :param file_name: The file name of the service file.
         """
         if modified:
-            title = '%s - %s*' % (UiStrings().OLPV2x, file_name)
+            title = '{title} - {name}*'.format(title=UiStrings().OLPV2x, name=file_name)
         else:
-            title = '%s - %s' % (UiStrings().OLPV2x, file_name)
+            title = '{title} - {name}'.format(title=UiStrings().OLPV2x, name=file_name)
         self.setWindowTitle(title)
 
     def show_status_message(self, message):
@@ -1183,8 +1183,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Update the default theme indicator in the status bar
         """
-        self.default_theme_label.setText(translate('OpenLP.MainWindow', 'Default Theme: %s') %
-                                         Settings().value('themes/global theme'))
+        theme_name = Settings().value('themes/global theme')
+        self.default_theme_label.setText(translate('OpenLP.MainWindow',
+                                                   'Default Theme: {theme}').format(theme=theme_name))
 
     def toggle_media_manager(self):
         """
@@ -1331,7 +1332,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         recent_files_to_display = existing_recent_files[0:recent_file_count]
         self.recent_files_menu.clear()
         for file_id, filename in enumerate(recent_files_to_display):
-            log.debug('Recent file name: %s', filename)
+            log.debug('Recent file name: {name}'.format(name=filename))
+            # TODO: Verify ''.format() before committing
             action = create_action(self, '', text='&%d %s' % (file_id + 1,
                                    os.path.splitext(os.path.basename(str(filename)))[0]), data=filename,
                                    triggers=self.service_manager_contents.on_recent_service_clicked)
@@ -1424,7 +1426,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         """
         Change the data directory.
         """
-        log.info('Changing data path to %s' % self.new_data_path)
+        log.info('Changing data path to {newpath}'.format(newpath=self.new_data_path))
         old_data_path = str(AppLocation.get_data_path())
         # Copy OpenLP data to new location if requested.
         self.application.set_busy_cursor()
@@ -1432,17 +1434,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             log.info('Copying data to new path')
             try:
                 self.show_status_message(
-                    translate('OpenLP.MainWindow', 'Copying OpenLP data to new data directory location - %s '
-                              '- Please wait for copy to finish').replace('%s', self.new_data_path))
+                    translate('OpenLP.MainWindow', 'Copying OpenLP data to new data directory location - {path} '
+                              '- Please wait for copy to finish').format(path=self.new_data_path))
                 dir_util.copy_tree(old_data_path, self.new_data_path)
                 log.info('Copy successful')
             except (IOError, os.error, DistutilsFileError) as why:
                 self.application.set_normal_cursor()
-                log.exception('Data copy failed %s' % str(why))
+                log.exception('Data copy failed {err}'.format(err=str(why)))
+                err_text = translate('OpenLP.MainWindow',
+                                     'OpenLP Data directory copy failed\n\n{err}').format(err=str(why)),
                 QtWidgets.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
-                                               translate('OpenLP.MainWindow',
-                                                         'OpenLP Data directory copy failed\n\n%s').
-                                               replace('%s', str(why)),
+                                               err_text,
                                                QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
                 return False
         else:
