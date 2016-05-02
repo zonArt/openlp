@@ -331,7 +331,7 @@ class BibleManager(RegistryProperties):
                     translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'
                                                            'Please use the Scripture Reference Search instead.\n\n'
                                                            'This means that the currently used Bible or Second Bible\n'
-                                                           'is installed as Web Bible')
+                                                           'is installed as Web Bible.')
                 )
             return None
         # Shorter than 3 char searches break OpenLP with very long search times, thus they are blocked.
