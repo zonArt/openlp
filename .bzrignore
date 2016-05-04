@@ -45,3 +45,4 @@ cover
 *.kdev4
 coverage
 tags
+output
