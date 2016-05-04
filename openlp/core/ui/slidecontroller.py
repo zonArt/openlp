@@ -1132,9 +1132,16 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.log_debug('update_preview %s ' % self.screens.current['primary'])
         if self.service_item and self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
-            # Grab now, but try again in a couple of seconds if slide change is slow
-            QtCore.QTimer.singleShot(500, self.grab_maindisplay)
-            QtCore.QTimer.singleShot(2500, self.grab_maindisplay)
+            if self.is_live:
+                # If live, grab screen-cap of main display now
+                QtCore.QTimer.singleShot(500, self.grab_maindisplay)
+                # but take another in a couple of seconds in case slide change is slow
+                QtCore.QTimer.singleShot(2500, self.grab_maindisplay)
+            else:
+                # If not live, use the slide's thumbnail instead
+                self.slide_image = QtGui.QPixmap.fromImage(self.image_manager.get_image(self.service_item.get_rendered_frame(self.selected_row), ImageSource.PresentationPlugin)) #QtGui.QPixmap(self.service_item.get_rendered_frame(self.selected_row))
+                self.slide_image.setDevicePixelRatio(self.main_window.devicePixelRatio())
+                self.slide_preview.setPixmap(self.slide_image)
         else:
             self.slide_image = self.display.preview()
             self.slide_image.setDevicePixelRatio(self.main_window.devicePixelRatio())

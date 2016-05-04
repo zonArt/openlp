@@ -55,9 +55,13 @@ class ImageSource(object):
 
     ``Theme``
         This says, that the image is used by a theme.
+        
+    ``PresentationPlugin``
+        This states that an image is being used by the presentation plugin.
     """
     ImagePlugin = 1
     Theme = 2
+    PresentationPlugin = 3
 
 
 class MediaType(object):
@@ -174,10 +178,24 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     ext = os.path.splitext(thumb_path)[1].lower()
     reader = QtGui.QImageReader(image_path)
     if size is None:
+        # No size given; use default height of 88
         ratio = reader.size().width() / reader.size().height()
         reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
-    else:
+    elif size.isValid():
+        # Complete size given
         reader.setScaledSize(size)
+    else:
+        # Invalid size given
+        ratio = reader.size().width() / reader.size().height()
+        if size.width() >= 0:
+            # Valid width; scale height
+            reader.setScaledSize(QtCore.QSize(size.width(), int(size.width() / ratio)))
+        elif size.height() >= 0:
+            # Valid height; scale width
+            reader.setScaledSize(QtCore.QSize(int(ratio * size.height()), size.height()))
+        else:
+            # Invalid; use default height of 88
+            reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
     thumb = reader.read()
     thumb.save(thumb_path, ext[1:])
     if not return_icon:
