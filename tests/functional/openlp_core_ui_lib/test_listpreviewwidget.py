@@ -24,9 +24,11 @@ Package to test the openlp.core.ui.lib.listpreviewwidget package.
 """
 from unittest import TestCase
 
+from PyQt5 import QtGui
+
 from openlp.core.common import Settings
 from openlp.core.ui.lib.listpreviewwidget import ListPreviewWidget
-from openlp.core.lib import ServiceItem
+from openlp.core.lib import ImageSource, ServiceItem
 
 from tests.functional import MagicMock, patch, call
 
@@ -71,6 +73,54 @@ class TestListPreviewWidget(TestCase):
         # THEN: The object is not None, and the _setup() method was called.
         self.assertIsNotNone(list_preview_widget, 'The ListPreviewWidget object should not be None')
         self.assertEquals(list_preview_widget.screen_ratio, 1, 'Should not be called')
+
+    @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.image_manager')
+    @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
+    @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
+    def replace_service_item_test_thumbs(self, mocked_setRowHeight, mocked_resizeRowsToContents,
+                                         mocked_image_manager):
+        """
+        Test that thubmails for different slides are loaded properly in replace_service_item.
+        """
+        # GIVEN: A setting to adjust "Max height for non-text slides in slide controller",
+        #        different ServiceItem(s) and a ListPreviewWidget.
+
+        # Mock Settings().value('advanced/slide max height')
+        self.mocked_Settings_obj.value.return_value = 0
+        # Mock self.viewport().width()
+        self.mocked_viewport_obj.width.return_value = 200
+        # Mock Image service item
+        mocked_img_service_item = MagicMock()
+        mocked_img_service_item.is_text.return_value = False
+        mocked_img_service_item.is_media.return_value = False
+        mocked_img_service_item.is_command.return_value = False
+        mocked_img_service_item.is_capable.return_value = False
+        mocked_img_service_item.get_frames.return_value = [{'title': None, 'path': 'TEST1', 'image': 'FAIL'},
+                                                           {'title': None, 'path': 'TEST2', 'image': 'FAIL'}]
+        # Mock Command service item
+        mocked_cmd_service_item = MagicMock()
+        mocked_cmd_service_item.is_text.return_value = False
+        mocked_cmd_service_item.is_media.return_value = False
+        mocked_cmd_service_item.is_command.return_value = True
+        mocked_cmd_service_item.is_capable.return_value = True
+        mocked_cmd_service_item.get_frames.return_value = [{'title': None, 'path': 'FAIL', 'image': 'TEST3'},
+                                                           {'title': None, 'path': 'FAIL', 'image': 'TEST4'}]
+        # Mock image_manager
+        mocked_image_manager.get_image.return_value = QtGui.QImage()
+
+        # init ListPreviewWidget and load service item
+        list_preview_widget = ListPreviewWidget(None, 1)
+
+        # WHEN: replace_service_item is called
+        list_preview_widget.replace_service_item(mocked_img_service_item, 200, 0)
+        list_preview_widget.replace_service_item(mocked_cmd_service_item, 200, 0)
+
+        # THEN: resizeRowsToContents() should not be called, while setRowHeight() should be called
+        #       twice for each slide.
+        self.assertEquals(mocked_image_manager.get_image.call_count, 4, 'Should be called once for each slide')
+        calls = [call('TEST1', ImageSource.ImagePlugin), call('TEST2', ImageSource.ImagePlugin),
+                 call('TEST3', ImageSource.CommandPlugins), call('TEST4', ImageSource.CommandPlugins)]
+        mocked_image_manager.get_image.assert_has_calls(calls)
 
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
@@ -120,6 +170,7 @@ class TestListPreviewWidget(TestCase):
         # Mock image service item
         service_item = MagicMock()
         service_item.is_text.return_value = False
+        service_item.is_capable.return_value = False
         service_item.get_frames.return_value = [{'title': None, 'path': None, 'image': None},
                                                 {'title': None, 'path': None, 'image': None}]
         # init ListPreviewWidget and load service item
@@ -156,6 +207,7 @@ class TestListPreviewWidget(TestCase):
         # Mock image service item
         service_item = MagicMock()
         service_item.is_text.return_value = False
+        service_item.is_capable.return_value = False
         service_item.get_frames.return_value = [{'title': None, 'path': None, 'image': None},
                                                 {'title': None, 'path': None, 'image': None}]
         # init ListPreviewWidget and load service item
@@ -225,6 +277,7 @@ class TestListPreviewWidget(TestCase):
         # Mock image service item
         service_item = MagicMock()
         service_item.is_text.return_value = False
+        service_item.is_capable.return_value = False
         service_item.get_frames.return_value = [{'title': None, 'path': None, 'image': None},
                                                 {'title': None, 'path': None, 'image': None}]
         # Mock self.cellWidget().children().setMaximumWidth()
@@ -261,6 +314,7 @@ class TestListPreviewWidget(TestCase):
         # Mock image service item
         service_item = MagicMock()
         service_item.is_text.return_value = False
+        service_item.is_capable.return_value = False
         service_item.get_frames.return_value = [{'title': None, 'path': None, 'image': None},
                                                 {'title': None, 'path': None, 'image': None}]
         # Mock self.cellWidget().children().setMaximumWidth()

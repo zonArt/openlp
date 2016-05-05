@@ -250,7 +250,7 @@ class TestLib(TestCase):
 
     def create_thumb_with_size_test(self):
         """
-        Test the create_thumb() function
+        Test the create_thumb() function with a given size.
         """
         # GIVEN: An image to create a thumb of.
         image_path = os.path.join(TEST_PATH, 'church.jpg')
@@ -270,11 +270,150 @@ class TestLib(TestCase):
         # WHEN: Create the thumb.
         icon = create_thumb(image_path, thumb_path, size=thumb_size)
 
-        # THEN: Check if the thumb was created.
+        # THEN: Check if the thumb was created and scaled to the given size.
         self.assertTrue(os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists')
         self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
         self.assertFalse(icon.isNull(), 'The icon should not be null')
         self.assertEqual(thumb_size, QtGui.QImageReader(thumb_path).size(), 'The thumb should have the given size')
+
+        # Remove the thumb so that the test actually tests if the thumb will be created.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+    def create_thumb_no_size_test(self):
+        """
+        Test the create_thumb() function with no size specified.
+        """
+        # GIVEN: An image to create a thumb of.
+        image_path = os.path.join(TEST_PATH, 'church.jpg')
+        thumb_path = os.path.join(TEST_PATH, 'church_thumb.jpg')
+        expected_size = QtCore.QSize(63, 88)
+
+        # Remove the thumb so that the test actually tests if the thumb will be created. Maybe it was not deleted in the
+        # last test.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+        # Only continue when the thumb does not exist.
+        self.assertFalse(os.path.exists(thumb_path), 'Test was not run, because the thumb already exists.')
+
+        # WHEN: Create the thumb.
+        icon = create_thumb(image_path, thumb_path)
+
+        # THEN: Check if the thumb was created, retaining its aspect ratio.
+        self.assertTrue(os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists')
+        self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
+        self.assertFalse(icon.isNull(), 'The icon should not be null')
+        self.assertEqual(expected_size, QtGui.QImageReader(thumb_path).size(), 'The thumb should have the given size')
+
+        # Remove the thumb so that the test actually tests if the thumb will be created.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+    def create_thumb_invalid_size_test(self):
+        """
+        Test the create_thumb() function with invalid size specified.
+        """
+        # GIVEN: An image to create a thumb of.
+        image_path = os.path.join(TEST_PATH, 'church.jpg')
+        thumb_path = os.path.join(TEST_PATH, 'church_thumb.jpg')
+        thumb_size = QtCore.QSize(-1, -1)
+        expected_size = QtCore.QSize(63, 88)
+
+        # Remove the thumb so that the test actually tests if the thumb will be created. Maybe it was not deleted in the
+        # last test.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+        # Only continue when the thumb does not exist.
+        self.assertFalse(os.path.exists(thumb_path), 'Test was not run, because the thumb already exists.')
+
+        # WHEN: Create the thumb.
+        icon = create_thumb(image_path, thumb_path)
+
+        # THEN: Check if the thumb was created, retaining its aspect ratio.
+        self.assertTrue(os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists')
+        self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
+        self.assertFalse(icon.isNull(), 'The icon should not be null')
+        self.assertEqual(expected_size, QtGui.QImageReader(thumb_path).size(), 'The thumb should have the given size')
+
+        # Remove the thumb so that the test actually tests if the thumb will be created.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+    def create_thumb_width_only_test(self):
+        """
+        Test the create_thumb() function with a size of only width specified.
+        """
+        # GIVEN: An image to create a thumb of.
+        image_path = os.path.join(TEST_PATH, 'church.jpg')
+        thumb_path = os.path.join(TEST_PATH, 'church_thumb.jpg')
+        thumb_size = QtCore.QSize(100, -1)
+        expected_size = QtCore.QSize(100, 137)
+
+        # Remove the thumb so that the test actually tests if the thumb will be created. Maybe it was not deleted in the
+        # last test.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+        # Only continue when the thumb does not exist.
+        self.assertFalse(os.path.exists(thumb_path), 'Test was not run, because the thumb already exists.')
+
+        # WHEN: Create the thumb.
+        icon = create_thumb(image_path, thumb_path, size=thumb_size)
+
+        # THEN: Check if the thumb was created, retaining its aspect ratio.
+        self.assertTrue(os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists')
+        self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
+        self.assertFalse(icon.isNull(), 'The icon should not be null')
+        self.assertEqual(expected_size, QtGui.QImageReader(thumb_path).size(), 'The thumb should have the given size')
+
+        # Remove the thumb so that the test actually tests if the thumb will be created.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+    def create_thumb_height_only_test(self):
+        """
+        Test the create_thumb() function with a size of only height specified.
+        """
+        # GIVEN: An image to create a thumb of.
+        image_path = os.path.join(TEST_PATH, 'church.jpg')
+        thumb_path = os.path.join(TEST_PATH, 'church_thumb.jpg')
+        thumb_size = QtCore.QSize(-1, 100)
+        expected_size = QtCore.QSize(72, 100)
+
+        # Remove the thumb so that the test actually tests if the thumb will be created. Maybe it was not deleted in the
+        # last test.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+        # Only continue when the thumb does not exist.
+        self.assertFalse(os.path.exists(thumb_path), 'Test was not run, because the thumb already exists.')
+
+        # WHEN: Create the thumb.
+        icon = create_thumb(image_path, thumb_path, size=thumb_size)
+
+        # THEN: Check if the thumb was created, retaining its aspect ratio.
+        self.assertTrue(os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists')
+        self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
+        self.assertFalse(icon.isNull(), 'The icon should not be null')
+        self.assertEqual(expected_size, QtGui.QImageReader(thumb_path).size(), 'The thumb should have the given size')
 
         # Remove the thumb so that the test actually tests if the thumb will be created.
         try:

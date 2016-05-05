@@ -55,7 +55,7 @@ class ImageSource(object):
 
     ``Theme``
         This says, that the image is used by a theme.
-        
+
     ``CommandPlugins``
         This states that an image is being used by a command plugin.
     """
