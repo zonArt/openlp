@@ -247,7 +247,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         """
         Set up and build the output screen
         """
-        self.log_debug('Start MainDisplay setup (live = %s)' % self.is_live)
+        self.log_debug('Start MainDisplay setup (live = {islive})'.format(islive=self.is_live))
         self.screen = self.screens.current
         self.setVisible(False)
         Display.setup(self)
@@ -288,7 +288,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             self.application.process_events()
         self.setGeometry(self.screen['size'])
         if animate:
-            self.frame.evaluateJavaScript('show_text("%s")' % slide.replace('\\', '\\\\').replace('\"', '\\\"'))
+            # NOTE: Verify this works with ''.format()
+            _text = slide.replace('\\', '\\\\').replace('\"', '\\\"')
+            self.frame.evaluateJavaScript('show_text("{text}")'.format(text=_text))
         else:
             # This exists for https://bugs.launchpad.net/openlp/+bug/1016843
             # For unknown reasons if evaluateJavaScript is called
@@ -309,10 +311,10 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         text_prepared = expand_tags(html.escape(text)).replace('\\', '\\\\').replace('\"', '\\\"')
         if self.height() != self.screen['size'].height() or not self.isVisible():
             shrink = True
-            js = 'show_alert("%s", "%s")' % (text_prepared, 'top')
+            js = 'show_alert("{text}", "{top}")'.format(text=text_prepared, top='top')
         else:
             shrink = False
-            js = 'show_alert("%s", "")' % text_prepared
+            js = 'show_alert("{text}", "")'.format(text=text_prepared)
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
@@ -368,7 +370,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
         """
         self.setGeometry(self.screen['size'])
         if image:
-            js = 'show_image("data:image/png;base64,%s");' % image
+            js = 'show_image("data:image/png;base64,{image}");'.format(image=image)
         else:
             js = 'show_image("");'
         self.frame.evaluateJavaScript(js)
@@ -492,7 +494,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
 
         :param mode: How the screen is to be hidden
         """
-        self.log_debug('hide_display mode = %d' % mode)
+        self.log_debug('hide_display mode = {mode:d}'.format(mode=mode))
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
             if not Settings().value('core/display on monitor'):

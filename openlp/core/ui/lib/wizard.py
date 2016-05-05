@@ -45,6 +45,7 @@ class WizardStrings(object):
     OS = 'OpenSong'
     OSIS = 'OSIS'
     ZEF = 'Zefania'
+    SWORD = 'Sword'
     # These strings should need a good reason to be retranslated elsewhere.
     FinishedImport = translate('OpenLP.Ui', 'Finished import.')
     FormatLabel = translate('OpenLP.Ui', 'Format:')
@@ -113,7 +114,7 @@ class OpenLPWizard(QtWidgets.QWizard, RegistryProperties):
         Set up the wizard UI.
         :param image: path to start up image
         """
-        self.setWindowIcon(build_icon(u':/icon/openlp-logo.svg'))
+        self.setWindowIcon(build_icon(':/icon/openlp-logo.svg'))
         self.setModal(True)
         self.setOptions(QtWidgets.QWizard.IndependentPages |
                         QtWidgets.QWizard.NoBackButtonOnStartPage | QtWidgets.QWizard.NoBackButtonOnLastPage)
