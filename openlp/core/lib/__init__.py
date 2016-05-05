@@ -56,12 +56,12 @@ class ImageSource(object):
     ``Theme``
         This says, that the image is used by a theme.
         
-    ``PresentationPlugin``
-        This states that an image is being used by the presentation plugin.
+    ``CommandPlugins``
+        This states that an image is being used by a command plugin.
     """
     ImagePlugin = 1
     Theme = 2
-    PresentationPlugin = 3
+    CommandPlugins = 3
 
 
 class MediaType(object):
