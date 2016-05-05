@@ -211,24 +211,24 @@ def update_reference_separators():
         while '||' in source_string:
             source_string = source_string.replace('||', '|')
         if role != 'e':
-            REFERENCE_SEPARATORS['sep_{text}_display'.format(text=role)] = source_string.split('|')[0]
+            REFERENCE_SEPARATORS['sep_{role}_display'.format(role=role)] = source_string.split('|')[0]
         # escape reserved characters
         for character in '\\.^$*+?{}[]()':
             source_string = source_string.replace(character, '\\' + character)
         # add various unicode alternatives
         source_string = source_string.replace('-', '(?:[-\u00AD\u2010\u2011\u2012\u2014\u2014\u2212\uFE63\uFF0D])')
         source_string = source_string.replace(',', '(?:[,\u201A])')
-        REFERENCE_SEPARATORS['sep_{text}'.format(text=role)] = '\s*(?:{text})\s*'.format(text=source_string)
-        REFERENCE_SEPARATORS['sep_{text}_default'.format(text=role)] = default_separators[index]
+        REFERENCE_SEPARATORS['sep_{role}'.format(role=role)] = '\s*(?:{source})\s*'.format(source=source_string)
+        REFERENCE_SEPARATORS['sep_{role}_default'.format(role=role)] = default_separators[index]
     # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
-    range_regex = '(?:(?P<from_chapter>[0-9]+){sep_v})?' \
-        '(?P<from_verse>[0-9]+)(?P<range_to>{sep_r}(?:(?:(?P<to_chapter>' \
-        '[0-9]+){sep_v})?(?P<to_verse>[0-9]+)|{sep_e})?)?'.format(**REFERENCE_SEPARATORS)
-    REFERENCE_MATCHES['range'] = re.compile('^\s*{text}\s*$'.format(text=range_regex), re.UNICODE)
+    # TODO: Check before converting this string
+    range_regex = '(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?' \
+        '(?P<from_verse>[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>' \
+        '[0-9]+)%(sep_v)s)?(?P<to_verse>[0-9]+)|%(sep_e)s)?)?' % REFERENCE_SEPARATORS
+    # TODO: Test before converting re.compile strings
+    REFERENCE_MATCHES['range'] = re.compile('^\s*%s\s*$' % range_regex, re.UNICODE)
     REFERENCE_MATCHES['range_separator'] = re.compile(REFERENCE_SEPARATORS['sep_l'], re.UNICODE)
     # full reference match: <book>(<range>(,(?!$)|(?=$)))+
-    # NOTE:
-    # Need to research a little more before converting this to python3 string format
     REFERENCE_MATCHES['full'] = \
         re.compile('^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
                    '(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$'
@@ -333,9 +333,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
         separator.
 
     """
-    # TODO:
-    # Verify convertsion here before committing format change
-    log.debug('parse_reference("%s")', reference)
+    log.debug('parse_reference("{text}")'.format(text=reference))
     match = get_reference_match('full').match(reference)
     if match:
         log.debug('Matched reference {text}'.format(text=reference))
@@ -404,7 +402,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                 ref_list.append((book_ref_id, from_chapter, 1, -1))
         return ref_list
     else:
-        log.warn('Invalid reference: {text}'.format(text=reference))
+        log.debug('Invalid reference: {text}'.format(text=reference))
         return None
 
 
