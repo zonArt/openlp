@@ -337,7 +337,7 @@ class TestLib(TestCase):
         self.assertFalse(os.path.exists(thumb_path), 'Test was not run, because the thumb already exists.')
 
         # WHEN: Create the thumb.
-        icon = create_thumb(image_path, thumb_path)
+        icon = create_thumb(image_path, thumb_path, size=thumb_size)
 
         # THEN: Check if the thumb was created, retaining its aspect ratio.
         self.assertTrue(os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists')
