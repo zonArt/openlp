@@ -143,10 +143,10 @@ class PdfController(PresentationController):
                 # Last option: check if mudraw or mutool is placed in OpenLP base folder
                 if not self.mudrawbin and not self.mutoolbin and not self.gsbin:
                     application_path = AppLocation.get_directory(AppLocation.AppDir)
-                    if os.path.isfile(os.path.join(application_path, 'mudraw.exe')):
-                        self.mudrawbin = os.path.join(application_path, 'mudraw.exe')
-                    elif os.path.isfile(os.path.join(application_path, 'mutool.exe')):
-                        self.mutoolbin = os.path.join(application_path, 'mutool.exe')
+                    if os.path.isfile(os.path.join(application_path, 'mudraw')):
+                        self.mudrawbin = os.path.join(application_path, 'mudraw')
+                    elif os.path.isfile(os.path.join(application_path, 'mutool')):
+                        self.mutoolbin = os.path.join(application_path, 'mutool')
         if self.mudrawbin or self.mutoolbin:
             self.also_supports = ['xps', 'oxps']
             return True
