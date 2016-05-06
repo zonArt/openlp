@@ -83,7 +83,7 @@ class TestListPreviewWidget(TestCase):
         Test that thubmails for different slides are loaded properly in replace_service_item.
         """
         # GIVEN: A setting to adjust "Max height for non-text slides in slide controller",
-        #        different ServiceItem(s) and a ListPreviewWidget.
+        #        different ServiceItem(s), an ImageManager, and a ListPreviewWidget.
 
         # Mock Settings().value('advanced/slide max height')
         self.mocked_Settings_obj.value.return_value = 0
@@ -115,8 +115,7 @@ class TestListPreviewWidget(TestCase):
         list_preview_widget.replace_service_item(mocked_img_service_item, 200, 0)
         list_preview_widget.replace_service_item(mocked_cmd_service_item, 200, 0)
 
-        # THEN: resizeRowsToContents() should not be called, while setRowHeight() should be called
-        #       twice for each slide.
+        # THEN: The ImageManager should be called in the appriopriate manner for each service item.
         self.assertEquals(mocked_image_manager.get_image.call_count, 4, 'Should be called once for each slide')
         calls = [call('TEST1', ImageSource.ImagePlugin), call('TEST2', ImageSource.ImagePlugin),
                  call('TEST3', ImageSource.CommandPlugins), call('TEST4', ImageSource.CommandPlugins)]

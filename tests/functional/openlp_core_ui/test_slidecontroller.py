@@ -717,9 +717,9 @@ class TestSlideController(TestCase):
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
     def update_preview_test_live(self, mocked_singleShot, mocked_image_manager):
         """
-        Test that the preview screen is updated with the correct preview for different service items
+        Test that the preview screen is updated with a screen grab for live service items
         """
-        # GIVEN: A mocked presentation service item, a mocked media service item, a mocked Registry.execute
+        # GIVEN: A mocked live service item, a mocked image_manager, a mocked Registry,
         #        and a slide controller with many mocks.
         # Mocked Live Item
         mocked_live_item = MagicMock()
@@ -749,7 +749,7 @@ class TestSlideController(TestCase):
         # WHEN: update_preview is called
         slide_controller.update_preview()
 
-        # THEN: Registry.execute should have been called to stop the presentation
+        # THEN: A screen_grab should have been called
         self.assertEqual(0, slide_controller.slide_preview.setPixmap.call_count, 'setPixmap should not be called')
         self.assertEqual(0, slide_controller.display.preview.call_count, 'display.preview() should not be called')
         self.assertEqual(2, mocked_singleShot.call_count,
@@ -760,9 +760,9 @@ class TestSlideController(TestCase):
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
     def update_preview_test_pres(self, mocked_singleShot, mocked_image_manager):
         """
-        Test that the preview screen is updated with the correct preview for different service items
+        Test that the preview screen is updated with the correct preview for presentation service items
         """
-        # GIVEN: A mocked presentation service item, a mocked media service item, a mocked Registry.execute
+        # GIVEN: A mocked presentation service item, a mocked image_manager, a mocked Registry,
         #        and a slide controller with many mocks.
         # Mocked Presentation Item
         mocked_pres_item = MagicMock()
@@ -792,7 +792,7 @@ class TestSlideController(TestCase):
         # WHEN: update_preview is called
         slide_controller.update_preview()
 
-        # THEN: Registry.execute should have been called to stop the presentation
+        # THEN: setPixmap and the image_manager should have been called
         self.assertEqual(1, slide_controller.slide_preview.setPixmap.call_count, 'setPixmap should be called')
         self.assertEqual(0, slide_controller.display.preview.call_count, 'display.preview() should not be called')
         self.assertEqual(0, mocked_singleShot.call_count, 'Timer to grab_maindisplay should not be called')
@@ -802,9 +802,9 @@ class TestSlideController(TestCase):
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
     def update_preview_test_media(self, mocked_singleShot, mocked_image_manager):
         """
-        Test that the preview screen is updated with the correct preview for different service items
+        Test that the preview screen is updated with the correct preview for media service items
         """
-        # GIVEN: A mocked presentation service item, a mocked media service item, a mocked Registry.execute
+        # GIVEN: A mocked media service item, a mocked image_manager, a mocked Registry,
         #        and a slide controller with many mocks.
         # Mocked Media Item
         mocked_media_item = MagicMock()
@@ -834,7 +834,7 @@ class TestSlideController(TestCase):
         # WHEN: update_preview is called
         slide_controller.update_preview()
 
-        # THEN: Registry.execute should have been called to stop the presentation
+        # THEN: setPixmap should have been called
         self.assertEqual(1, slide_controller.slide_preview.setPixmap.call_count, 'setPixmap should be called')
         self.assertEqual(0, slide_controller.display.preview.call_count, 'display.preview() should not be called')
         self.assertEqual(0, mocked_singleShot.call_count, 'Timer to grab_maindisplay should not be called')
@@ -844,9 +844,9 @@ class TestSlideController(TestCase):
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
     def update_preview_test_image(self, mocked_singleShot, mocked_image_manager):
         """
-        Test that the preview screen is updated with the correct preview for different service items
+        Test that the preview screen is updated with the correct preview for image service items
         """
-        # GIVEN: A mocked presentation service item, a mocked media service item, a mocked Registry.execute
+        # GIVEN: A mocked image service item, a mocked image_manager, a mocked Registry,
         #        and a slide controller with many mocks.
         # Mocked Image Item
         mocked_img_item = MagicMock()
@@ -876,7 +876,7 @@ class TestSlideController(TestCase):
         # WHEN: update_preview is called
         slide_controller.update_preview()
 
-        # THEN: Registry.execute should have been called to stop the presentation
+        # THEN: setPixmap and display.preview should have been called
         self.assertEqual(1, slide_controller.slide_preview.setPixmap.call_count, 'setPixmap should be called')
         self.assertEqual(1, slide_controller.display.preview.call_count, 'display.preview() should be called')
         self.assertEqual(0, mocked_singleShot.call_count, 'Timer to grab_maindisplay should not be called')
