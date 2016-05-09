@@ -520,7 +520,7 @@ class CWExtract(RegistryProperties):
         returns a list in the form [(biblename, biblekey, language_code)]
         """
         log.debug('CWExtract.get_bibles_from_http')
-        bible_url = 'http://www.biblestudytools.com/search/bible-search.part/'
+        bible_url = 'http://www.biblestudytools.com/'
         soup = get_soup_for_bible_ref(bible_url)
         if not soup:
             return None
@@ -528,7 +528,7 @@ class CWExtract(RegistryProperties):
         if not bible_select:
             log.debug('No select tags found - did site change?')
             return None
-        option_tags = bible_select.find_all('option')
+        option_tags = bible_select.find_all('option', {'class': 'log-translation'})
         if not option_tags:
             log.debug('No option tags found - did site change?')
             return None
