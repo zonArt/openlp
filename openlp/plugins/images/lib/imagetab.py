@@ -23,7 +23,8 @@
 from PyQt5 import QtWidgets
 
 from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import ColorButton, SettingsTab
+from openlp.core.lib import SettingsTab
+from openlp.core.ui.lib.colorbutton import ColorButton
 
 
 class ImageTab(SettingsTab):

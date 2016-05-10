@@ -26,7 +26,7 @@ from unittest import TestCase, skipUnless
 
 from PyQt5 import QtCore
 
-from openlp.core.common import Registry, is_macosx
+from openlp.core.common import Registry, is_macosx, Settings
 from openlp.core.lib import ScreenList
 from openlp.core.ui import MainDisplay
 from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
@@ -183,3 +183,43 @@ class TestMainDisplay(TestCase, TestMixin):
                          'Window level should be NSMainMenuWindowLevel + 2')
         self.assertEqual(pyobjc_nsview.window().collectionBehavior(), NSWindowCollectionBehaviorManaged,
                          'Window collection behavior should be NSWindowCollectionBehaviorManaged')
+
+    @patch(u'openlp.core.ui.maindisplay.Settings')
+    def show_display_startup_logo_test(self, MockedSettings):
+        # GIVEN: Mocked show_display, setting for logo visibility
+        display = MagicMock()
+        main_display = MainDisplay(display)
+        main_display.frame = MagicMock()
+        main_display.isHidden = MagicMock()
+        main_display.isHidden.return_value = True
+        main_display.setVisible = MagicMock()
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        main_display.shake_web_view = MagicMock()
+
+        # WHEN: show_display is called.
+        main_display.show_display()
+
+        # THEN: setVisible should had been called with "True"
+        main_display.setVisible.assert_called_once_with(True)
+
+    @patch(u'openlp.core.ui.maindisplay.Settings')
+    def show_display_hide_startup_logo_test(self, MockedSettings):
+        # GIVEN: Mocked show_display, setting for logo visibility
+        display = MagicMock()
+        main_display = MainDisplay(display)
+        main_display.frame = MagicMock()
+        main_display.isHidden = MagicMock()
+        main_display.isHidden.return_value = False
+        main_display.setVisible = MagicMock()
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        main_display.shake_web_view = MagicMock()
+
+        # WHEN: show_display is called.
+        main_display.show_display()
+
+        # THEN: setVisible should had not been called
+        main_display.setVisible.assert_not_called()

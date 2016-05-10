@@ -68,7 +68,6 @@ class DisplayControllerType(object):
     """
     Live = 0
     Preview = 1
-    Plugin = 2
 
 
 class SingleColumnTableWidget(QtWidgets.QTableWidget):
@@ -114,7 +113,6 @@ from .settingsform import SettingsForm
 from .formattingtagform import FormattingTagForm
 from .formattingtagcontroller import FormattingTagController
 from .shortcutlistform import ShortcutListForm
-from .mediadockmanager import MediaDockManager
 from .servicemanager import ServiceManager
 from .thememanager import ThemeManager
 from .projector.manager import ProjectorManager
@@ -122,7 +120,7 @@ from .projector.tab import ProjectorTab
 from .projector.editform import ProjectorEditForm
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeForm',
-           'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm',
+           'ThemeManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm',
            'Display', 'ServiceNoteForm', 'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay',
            'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
            'FormattingTagForm', 'ShortcutListForm', 'FormattingTagController', 'SingleColumnTableWidget',

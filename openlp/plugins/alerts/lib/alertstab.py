@@ -23,8 +23,9 @@
 from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import ColorButton, SettingsTab
+from openlp.core.lib import SettingsTab
 from openlp.core.lib.ui import create_valign_selection_widgets
+from openlp.core.ui.lib.colorbutton import ColorButton
 
 
 class AlertsTab(SettingsTab):
