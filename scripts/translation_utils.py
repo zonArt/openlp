@@ -60,7 +60,7 @@ import webbrowser
 from PyQt5 import QtCore
 from lxml import etree, objectify
 
-SERVER_URL = 'http://www.transifex.net/api/2/project/openlp/resource/openlp-26x/'
+SERVER_URL = 'http://www.transifex.com/api/2/project/openlp/resource/openlp-26x/'
 IGNORED_PATHS = ['scripts']
 IGNORED_FILES = ['setup.py']
 
