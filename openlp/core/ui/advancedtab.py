@@ -294,7 +294,7 @@ class AdvancedTab(SettingsTab):
         self.enable_auto_close_check_box.setText(translate('OpenLP.AdvancedTab',
                                                            'Enable application exit confirmation'))
         self.service_name_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Default Service Name'))
-        self.service_name_check_box.setText(translate('OpenLP.AdvancedTab', 'Enable default Service name'))
+        self.service_name_check_box.setText(translate('OpenLP.AdvancedTab', 'Enable default service name'))
         self.service_name_time_label.setText(translate('OpenLP.AdvancedTab', 'Date and Time:'))
         self.service_name_day.setItemText(0, translate('OpenLP.AdvancedTab', 'Monday'))
         self.service_name_day.setItemText(1, translate('OpenLP.AdvancedTab', 'Tuesday'))
@@ -304,11 +304,11 @@ class AdvancedTab(SettingsTab):
         self.service_name_day.setItemText(5, translate('OpenLP.AdvancedTab', 'Saturday'))
         self.service_name_day.setItemText(6, translate('OpenLP.AdvancedTab', 'Sunday'))
         self.service_name_day.setItemText(7, translate('OpenLP.AdvancedTab', 'Now'))
-        self.service_name_time.setToolTip(translate('OpenLP.AdvancedTab', 'Time when usual Service starts.'))
+        self.service_name_time.setToolTip(translate('OpenLP.AdvancedTab', 'Time when usual service starts.'))
         self.service_name_label.setText(translate('OpenLP.AdvancedTab', 'Name:'))
         self.service_name_edit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.service_name_revert_button.setToolTip(
-            translate('OpenLP.AdvancedTab', 'Revert to the default Service name "%s".') %
+            translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') %
             UiStrings().DefaultServiceName)
         self.service_name_example_label.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hide_mouse_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
@@ -336,7 +336,7 @@ class AdvancedTab(SettingsTab):
         self.slide_label.setText(translate('OpenLP.GeneralTab', 'Behavior of next/previous on the last/first slide:'))
         self.end_slide_radio_button.setText(translate('OpenLP.GeneralTab', '&Remain on Slide'))
         self.wrap_slide_radio_button.setText(translate('OpenLP.GeneralTab', '&Wrap around'))
-        self.next_item_radio_button.setText(translate('OpenLP.GeneralTab', '&Move to next/previous Service item'))
+        self.next_item_radio_button.setText(translate('OpenLP.GeneralTab', '&Move to next/previous service item'))
         self.search_as_type_check_box.setText(translate('SongsPlugin.GeneralTab', 'Enable search as you type'))
 
     def load(self):

@@ -199,7 +199,8 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         else:
             self.__button_state(False)
         self.description_word_count.setText(
-            translate('OpenLP.ExceptionDialog', '%s Characters from the minimum description remaining.') % count)
+            translate('OpenLP.ExceptionDialog', '{count} characters from the minimum description remaining.'
+                      ).format(count = count))
 
     def on_attach_file_button_clicked(self):
         """

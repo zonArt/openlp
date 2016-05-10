@@ -442,7 +442,7 @@ class Ui_MainWindow(object):
         self.view_media_manager_item.setStatusTip(translate('OpenLP.MainWindow',
                                                   'Toggle the visibility of the Library.'))
         self.view_theme_manager_item.setText(translate('OpenLP.MainWindow', '&Themes'))
-        self.view_theme_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Hide or show Themes'))
+        self.view_theme_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Hide or show themes'))
         self.view_theme_manager_item.setStatusTip(translate('OpenLP.MainWindow',
                                                   'Toggle the visibility of the Themes.'))
         self.view_service_manager_item.setText(translate('OpenLP.MainWindow', '&Service'))
