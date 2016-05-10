@@ -91,8 +91,8 @@ class Ui_ExceptionDialog(object):
         Translate the widgets on the fly.
         """
         # Note that bugs_mail is not clicable, but it adds the blue color and underlining and makes the test copyable.
-        bugs_mail = '<a href = "mailto:bugs@openlp.org" > bugs@openlp.org</a>'
         exception_dialog.setWindowTitle(translate('OpenLP.ExceptionDialog', 'Error Occurred'))
+        # Explanation text, &nbsp; adds a small space before: If possible, write in English.
         self.description_explanation.setText(
             translate('OpenLP.ExceptionDialog', '<strong>Please describe what you were trying to do.</strong> '
                                                 '&nbsp;If possible, write in English.'))
@@ -100,11 +100,12 @@ class Ui_ExceptionDialog(object):
             translate('OpenLP.ExceptionDialog', '<strong>Oops, OpenLP hit a problem '
                       'and couldn\'t recover!</strong> <br><br>'
                       '<strong>You can help </strong> OpenLP developers to <strong>fix this</strong> by<br>'
-                      'sending them a <strong>bug report</strong> to %s<br><br>'
+                      'sending them a <strong>bug report</strong> to {email}<br><br>'
                       '<strong>No email app? </strong> You can <strong>save</strong> this '
                       'information to a <strong>file</strong> and<br>'
                       'send it from your <strong>mail on browser</strong> via an <strong>attachement.</strong><br><br>'
-                      '<strong>Thank you<strong> for being part of making OpenLP better!<br>') % bugs_mail)
+                      '<strong>Thank you<strong> for being part of making OpenLP better!<br>'
+                      ).format(email='<a href = "mailto:bugs@openlp.org" > bugs@openlp.org</a>'))
         self.send_report_button.setText(translate('OpenLP.ExceptionDialog', 'Send E-Mail'))
         self.save_report_button.setText(translate('OpenLP.ExceptionDialog', 'Save to File'))
         self.attach_tile_button.setText(translate('OpenLP.ExceptionDialog', 'Attach File'))

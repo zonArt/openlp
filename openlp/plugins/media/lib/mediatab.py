@@ -54,7 +54,7 @@ class MediaTab(SettingsTab):
     def retranslateUi(self):
         self.advanced_group_box.setTitle(UiStrings().Advanced)
         self.override_player_check_box.setText(translate('MediaPlugin.MediaTab', 'Allow media player to be overridden'))
-        self.auto_start_check_box.setText(translate('MediaPlugin.MediaTab', 'Start Live items automatically'))
+        self.auto_start_check_box.setText(translate('MediaPlugin.MediaTab', 'Start videos Live items automatically'))
 
     def load(self):
         self.override_player_check_box.setChecked(Settings().value(self.settings_section + '/override player'))

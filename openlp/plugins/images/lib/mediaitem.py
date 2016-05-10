@@ -74,8 +74,8 @@ class ImageMediaItem(MediaManagerItem):
         self.on_new_prompt = translate('ImagePlugin.MediaItem', 'Select Image(s)')
         file_formats = get_images_filter()
         self.on_new_file_masks = '%s;;%s (*)' % (file_formats, UiStrings().AllFiles)
-        self.add_group_action.setText(UiStrings().AddGroup)
-        self.add_group_action.setToolTip(UiStrings().AddGroup)
+        self.add_group_action.setText(UiStrings().AddGroupDot)
+        self.add_group_action.setToolTip(UiStrings().AddGroupDot)
         self.replace_action.setText(UiStrings().ReplaceBG)
         self.replace_action.setToolTip(UiStrings().ReplaceLiveBG)
         self.reset_action.setText(UiStrings().ResetBG)
@@ -179,7 +179,7 @@ class ImageMediaItem(MediaManagerItem):
             text=UiStrings().AddGroup, icon=':/images/image_new_group.png', triggers=self.on_add_group_click)
         create_widget_action(
             self.list_view,
-            text=self.plugin.get_string(StringContent.Load)['tooltip'],
+            text=translate('ImagePlugin', 'Add new image(s)'),
             icon=':/general/general_open.png', triggers=self.on_file_click)
 
     def add_start_header_bar(self):
