@@ -246,7 +246,7 @@ class GeneralTab(SettingsTab):
         self.display_on_monitor_check.setText(translate('OpenLP.GeneralTab', 'Display if a single screen'))
         self.startup_group_box.setTitle(translate('OpenLP.GeneralTab', 'Application Startup'))
         self.warning_check_box.setText(translate('OpenLP.GeneralTab', 'Show blank screen warning'))
-        self.auto_open_check_box.setText(translate('OpenLP.GeneralTab', 'Automatically open the last Service'))
+        self.auto_open_check_box.setText(translate('OpenLP.GeneralTab', 'Automatically open the previous service file'))
         self.show_splash_check_box.setText(translate('OpenLP.GeneralTab', 'Show the splash screen'))
         self.logo_group_box.setTitle(translate('OpenLP.GeneralTab', 'Logo'))
         self.logo_color_label.setText(UiStrings().BackgroundColorColon)
