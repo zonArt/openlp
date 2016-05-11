@@ -28,7 +28,7 @@ PREREQUISITE: add_record() and get_all() functions validated.
 import os
 from unittest import TestCase
 
-from openlp.core.lib.projector.db import Projector, ProjectorDB, ProjectorSource
+from openlp.core.lib.projector.db import Manufacturer, Model, Projector, ProjectorDB, ProjectorSource
 
 from tests.functional import MagicMock, patch
 from tests.resources.projector.data import TEST_DB, TEST1_DATA, TEST2_DATA, TEST3_DATA
@@ -82,13 +82,13 @@ class TestProjectorDB(TestCase):
     """
     Test case for ProjectorDB
     """
-    def setUp(self):
+    @patch('openlp.core.lib.projector.db.init_url')
+    def setUp(self, mocked_init_url):
         """
         Set up anything necessary for all tests
         """
-        with patch('openlp.core.lib.projector.db.init_url') as mocked_init_url:
-            mocked_init_url.return_value = 'sqlite:///%s' % TEST_DB
-            self.projector = ProjectorDB()
+        mocked_init_url.return_value = 'sqlite:///{db}'.format(db=TEST_DB)
+        self.projector = ProjectorDB()
 
     def tearDown(self):
         """
@@ -192,3 +192,17 @@ class TestProjectorDB(TestCase):
         # THEN: Projector should have the same source entry
         item = self.projector.get_projector_by_id(item_id)
         self.assertTrue(compare_source(item.source_list[0], source))
+
+    def manufacturer_repr_test(self):
+        """
+        Test manufacturer class __repr__ text
+        """
+        # GIVEN: Test object
+        manufacturer = Manufacturer()
+
+        # WHEN: Name is set
+        manufacturer.name = 'OpenLP Test'
+
+        # THEN: __repr__ should return a proper string
+        self.assertEqual(str(manufacturer), '<Manufacturer(name="OpenLP Test")>',
+                         'Manufacturer.__repr__() should have returned a proper representation string')

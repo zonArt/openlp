@@ -577,7 +577,7 @@ class BibleImportForm(OpenLPWizard):
         :param index: The index of the combo box.
         """
         self.web_translation_combo_box.clear()
-        if self.web_bible_list:
+        if self.web_bible_list and index in self.web_bible_list:
             bibles = list(self.web_bible_list[index].keys())
             bibles.sort(key=get_locale_key)
             self.web_translation_combo_box.addItems(bibles)

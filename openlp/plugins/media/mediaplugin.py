@@ -71,8 +71,12 @@ class MediaPlugin(Plugin):
         :return: true or false
         """
         log.debug('check_installed Mediainfo')
-        # Use the user defined program if given
-        return process_check_binary('mediainfo')
+        # Try to find mediainfo in the path
+        exists = process_check_binary('mediainfo')
+        # If mediainfo is not in the path, try to find it in the application folder
+        if not exists:
+            exists = process_check_binary(os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'mediainfo'))
+        return exists
 
     def app_startup(self):
         """
@@ -160,7 +164,6 @@ def process_check_binary(program_path):
     """
     program_type = None
     runlog = check_binary_exists(program_path)
-    print(runlog, type(runlog))
     # Analyse the output to see it the program is mediainfo
     for line in runlog.splitlines():
         decoded_line = line.decode()
