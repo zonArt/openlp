@@ -761,7 +761,9 @@ class BibleMediaItem(MediaManagerItem):
                     ('%s' % UiStrings().BibleShortSearch))
         elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
             # We are doing a 'Combined search'. Starting with reference search.
-            self.on_quick_reference_search()
+            # Perform only if text contains any numbers
+            if (char.isdigit() for char in text):
+                self.on_quick_reference_search()
             # If results are found, search will be finalized.
             # This check needs to be here in order to avoid duplicate errors.
             # If keyword is shorter than 3 (not including spaces), message is given. It's actually possible to find
@@ -811,16 +813,20 @@ class BibleMediaItem(MediaManagerItem):
         It is basically the same thing as "on_quick_search_search" but all the error messages are removed.
         For commented version, please visit def on_quick_search_button.
         """
-        log.debug('Quick Search Button clicked')
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
-        if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+        text = self.quick_search_edit.text()
+        if self.quick_search_edit.current_search_type() == BibleSearch.Combined:
+            # If text has no numbers, auto search limit is min 8 characters for performance reasons.
+            # If you change this value, also change it in biblestab.py (Count) in enabling search while typing.
+            if (char.isdigit() for char in text) and len(text) > 1:
+                self.on_quick_reference_search()
+            if not self.search_results and len(text) > 7:
+                self.on_quick_text_search()
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Reference:
             self.on_quick_reference_search()
         elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
-            self.on_quick_text_search()
-        elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
-            self.on_quick_reference_search()
-            if not self.search_results:
+            if len(text) > 7:
                 self.on_quick_text_search()
         if not self.quickLockButton.isChecked():
             self.list_view.clear()
@@ -845,8 +851,6 @@ class BibleMediaItem(MediaManagerItem):
     def on_search_text_edit_changed(self):
         """
         If search automatically while typing is enabled, perform the search and list results when conditions are met.
-        search_length = Amount of characters in quick search field. If amount of characters is greater than the defined
-        minimun, search is performed when typing is stopped for 1.2 seconds.
         """
         text = self.quick_search_edit.text()
         """
@@ -855,32 +859,30 @@ class BibleMediaItem(MediaManagerItem):
         This message is located in lib\manager.py, so the setting is required.
         """
         Settings().setValue('bibles/hide web bible error if searching while typing', True)
-        search_length = 1
-        if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
-            search_length = 2
-        elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
-            search_length = 4
-        elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
-            search_length = 4
         # Regex for finding space + any non whitemark character. (Prevents search from starting on 1 word searches)
         space_and_any = re.compile(' \S')
         # Turn this into a format that may be used in if statement.
         count_space_any = space_and_any.findall(text)
         # Start searching if this behaviour is not disabled in settings and conditions are met.
         if Settings().value('bibles/is search while typing enabled'):
-            if len(text) > search_length and len(count_space_any) != 0:
+            # If text length is less than the mininum and results are not locked, clear the results.
+            if len(count_space_any) == 0:
+                if not self.quickLockButton.isChecked():
+                    self.list_view.clear()
+            else:
                 """
-                Start search if no chars are entered or deleted for 1.2 s (Long enough to press an another key)
-                QtCore.QTimer().singleShot resets the timer every time a character is added or removed.
+                Start search if no chars are entered or deleted for 0.2 s
                 If no Timer is set, Text search will break the search by sending repeative search Quaries on all chars
                 Use the self.on_quick_search_while_typing, this does not contain any error messages.
-                This method may be a bit buggy sometimes and starts shorter than required searches due to the delay.
                 """
-                QtCore.QTimer().singleShot(1200, self.on_quick_search_while_typing)
-            # If text length is less than 4 and results are not locked, clear the results.
-            # It's still possible to search short references in reference search eg. ps 3.
-            if not self.quickLockButton.isChecked() and len(text) < 4:
-                self.list_view.clear()
+                self.search_timer = ()
+                if self.search_timer:
+                    self.search_timer.stop()
+                    self.search_timer.deleteLater()
+                self.search_timer = QtCore.QTimer()
+                self.search_timer.timeout.connect(self.on_quick_search_while_typing)
+                self.search_timer.setSingleShot(True)
+                self.search_timer.start(200)
 
     def build_display_results(self, bible, second_bible, search_results):
         """

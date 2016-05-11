@@ -222,7 +222,9 @@ class BiblesTab(SettingsTab):
                                                                    'Don\'t show error if nothing is found in "Text or '
                                                                    'Scripture Reference"'))
         self.bible_search_while_typing_check_box.setText(translate('BiblesPlugin.BiblesTab',
-                                                                   'Search automatically when writing is stopped'))
+                                                                   'Search automatically while typing (Text search must'
+                                                                   ' contain a\nminimum of {count} characters and a '
+                                                                   'space for performance reasons)').format(count='8'))
 
     def on_bible_theme_combo_box_changed(self):
         self.bible_theme = self.bible_theme_combo_box.currentText()
