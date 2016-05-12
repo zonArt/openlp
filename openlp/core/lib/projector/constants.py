@@ -297,7 +297,11 @@ PJLINK_ERST_STATUS = {'0': ERROR_STRING[E_OK],
 PJLINK_POWR_STATUS = {'0': S_STANDBY,
                       '1': S_ON,
                       '2': S_COOLDOWN,
-                      '3': S_WARMUP}
+                      '3': S_WARMUP,
+                      S_STANDBY: '0',
+                      S_ON: '1',
+                      S_COOLDOWN: '2',
+                      S_WARMUP: '3'}
 
 PJLINK_DEFAULT_SOURCES = {'1': translate('OpenLP.DB', 'RGB'),
                           '2': translate('OpenLP.DB', 'Video'),

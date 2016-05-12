@@ -97,7 +97,7 @@ def get_text_file_string(text_file):
             file_handle.seek(0)
         content = file_handle.read()
     except (IOError, UnicodeError):
-        log.exception('Failed to open text file %s' % text_file)
+        log.exception('Failed to open text file {text}'.format(text=text_file))
     finally:
         if file_handle:
             file_handle.close()
@@ -300,6 +300,8 @@ def create_separated_list(string_list):
         return ''
     elif len(string_list) == 1:
         return string_list[0]
+    # TODO:
+    #   Cannot convert these strings to python3 yet until I can figure out how to mock translate() with the new format
     elif len(string_list) == 2:
         return translate('OpenLP.core.lib', '%s and %s',
                          'Locale list separator: 2 items') % (string_list[0], string_list[1])

@@ -22,7 +22,7 @@
 """
     Package to test the openlp.plugin.bible.lib.https package.
 """
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from openlp.core.common import Registry
 from openlp.plugins.bibles.lib.http import BGExtract, CWExtract, BSExtract
@@ -146,6 +146,7 @@ class TestBibleHTTP(TestCase):
         self.assertIsNotNone(bibles)
         self.assertIn(('Holman Christian Standard Bible', 'HCSB', 'en'), bibles)
 
+    @skip("Waiting for Crosswalk to fix their server")
     def crosswalk_get_bibles_test(self):
         """
         Test getting list of bibles from Crosswalk.com
