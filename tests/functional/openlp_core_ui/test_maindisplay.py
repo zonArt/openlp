@@ -27,8 +27,9 @@ from unittest import TestCase, skipUnless
 from PyQt5 import QtCore
 
 from openlp.core.common import Registry, is_macosx, Settings
-from openlp.core.lib import ScreenList
+from openlp.core.lib import ScreenList, PluginManager
 from openlp.core.ui import MainDisplay
+from openlp.core.ui.media import MediaController
 from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
 
 from tests.helpers.testmixin import TestMixin
@@ -223,3 +224,61 @@ class TestMainDisplay(TestCase, TestMixin):
 
         # THEN: setVisible should had not been called
         main_display.setVisible.assert_not_called()
+
+    @patch(u'openlp.core.ui.maindisplay.Settings')
+    @patch(u'openlp.core.ui.maindisplay.build_html')
+    def build_html_no_video_test(self, MockedSettings, Mocked_build_html):
+        # GIVEN: Mocked display
+        display = MagicMock()
+        mocked_media_controller = MagicMock()
+        Registry.create()
+        Registry().register('media_controller', mocked_media_controller)
+        main_display = MainDisplay(display)
+        main_display.frame = MagicMock()
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        main_display.shake_web_view = MagicMock()
+        service_item = MagicMock()
+        mocked_plugin = MagicMock()
+        display.plugin_manager = PluginManager()
+        display.plugin_manager.plugins = [mocked_plugin]
+        main_display.web_view = MagicMock()
+
+        # WHEN: build_html is called with a normal service item and a non video theme.
+        main_display.build_html(service_item)
+
+        # THEN: the following should had not been called
+        self.assertEquals(main_display.web_view.setHtml.call_count, 1, 'setHTML should be called once')
+        self.assertEquals(main_display.media_controller.video.call_count, 0,
+                          'Media Controller video should not have been called')
+
+    @patch(u'openlp.core.ui.maindisplay.Settings')
+    @patch(u'openlp.core.ui.maindisplay.build_html')
+    def build_html_video_test(self, MockedSettings, Mocked_build_html):
+        # GIVEN: Mocked display
+        display = MagicMock()
+        mocked_media_controller = MagicMock()
+        Registry.create()
+        Registry().register('media_controller', mocked_media_controller)
+        main_display = MainDisplay(display)
+        main_display.frame = MagicMock()
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        main_display.shake_web_view = MagicMock()
+        service_item = MagicMock()
+        service_item.theme_data = MagicMock()
+        service_item.theme_data.background_type = 'video'
+        mocked_plugin = MagicMock()
+        display.plugin_manager = PluginManager()
+        display.plugin_manager.plugins = [mocked_plugin]
+        main_display.web_view = MagicMock()
+
+        # WHEN: build_html is called with a normal service item and a video theme.
+        main_display.build_html(service_item)
+
+        # THEN: the following should had not been called
+        self.assertEquals(main_display.web_view.setHtml.call_count, 1, 'setHTML should be called once')
+        self.assertEquals(main_display.media_controller.video.call_count, 1,
+                          'Media Controller video should have been called once')
