@@ -44,9 +44,10 @@ class VersionThread(QtCore.QThread):
         log.debug('Version thread - run')
         app_version = get_application_version()
         version = check_latest_version(app_version)
-        log.debug("Versions %s and %s " % (LooseVersion(str(version)), LooseVersion(str(app_version['full']))))
+        log.debug("Versions {version1} and {version2} ".format(version1=LooseVersion(str(version)),
+                                                               version2=LooseVersion(str(app_version['full']))))
         if LooseVersion(str(version)) > LooseVersion(str(app_version['full'])):
-            self.main_window.openlp_version_check.emit('%s' % version)
+            self.main_window.openlp_version_check.emit('{version}'.format(version=version))
 
 
 def get_application_version():
@@ -91,7 +92,7 @@ def get_application_version():
         if tree_revision == tag_revision:
             full_version = tag_version.strip()
         else:
-            full_version = '%s-bzr%s' % (tag_version.strip(), tree_revision.strip())
+            full_version = '{tag}-bzr{tree}'.format(tag=tag_version.strip(), tree=tree_revision.strip())
     else:
         # We're not running the development version, let's use the file.
         file_path = AppLocation.get_directory(AppLocation.VersionDir)
@@ -113,9 +114,10 @@ def get_application_version():
         'build': bits[1] if len(bits) > 1 else None
     }
     if APPLICATION_VERSION['build']:
-        log.info('Openlp version %s build %s', APPLICATION_VERSION['version'], APPLICATION_VERSION['build'])
+        log.info('Openlp version {version} build {build}'.format(version=APPLICATION_VERSION['version'],
+                                                                 build=APPLICATION_VERSION['build']))
     else:
-        log.info('Openlp version %s' % APPLICATION_VERSION['version'])
+        log.info('Openlp version {version}'.format(version=APPLICATION_VERSION['version']))
     return APPLICATION_VERSION
 
 
@@ -149,8 +151,9 @@ def check_latest_version(current_version):
                 req = urllib.request.Request('http://www.openlp.org/files/dev_version.txt')
             else:
                 req = urllib.request.Request('http://www.openlp.org/files/version.txt')
-        req.add_header('User-Agent', 'OpenLP/%s %s/%s; ' % (current_version['full'], platform.system(),
-                                                            platform.release()))
+        req.add_header('User-Agent', 'OpenLP/{version} {system}/{release}; '.format(version=current_version['full'],
+                                                                                    system=platform.system(),
+                                                                                    release=platform.release()))
         remote_version = None
         retries = 0
         while True:
