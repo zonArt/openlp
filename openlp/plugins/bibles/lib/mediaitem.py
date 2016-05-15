@@ -667,10 +667,12 @@ class BibleMediaItem(MediaManagerItem):
         # Set Bibles to use the text input from Quick search field.
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
-        # Get input from field and replace 'A-Z + . ' with ''
-        # This will check if field has any '.' after A-Z and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
-        # If Book name has '.' after number. eg. 1. Genesis, the search fails without the dot, and vice versa.
-        # A better solution would be to make '.' optional in the search results. Current solution was easier to code.
+        """
+        Get input from field and replace 'A-Z + . ' with ''
+        This will check if field has any '.' after A-Z and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
+        If Book name has '.' after number. eg. 1. Genesis, the search fails without the dot, and vice versa.
+        A better solution would be to make '.' optional in the search results. Current solution was easier to code.
+        """
         text = self.quick_search_edit.text()
         text = re.sub('\D[.]\s', ' ', text)
         # This is triggered on reference search, use the search from manager.py
@@ -732,8 +734,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug('Quick Search Button clicked')
         # If we are performing "Search while typing", this setting is set to True, here it's reset to "False"
-        if Settings().value('bibles/hide web bible error if searching while typing'):
-            Settings().setValue('bibles/hide web bible error if searching while typing', False)
+        Settings().setValue('bibles/hide web bible error if searching while typing', False)
         self.quickSearchButton.setEnabled(False)
         self.application.process_events()
         bible = self.quickVersionComboBox.currentText()
