@@ -183,4 +183,3 @@ class UiStrings(object):
         itertools.chain.from_iterable(itertools.repeat(strings, 1) if isinstance(strings, str)
                                       else strings for strings in bible_scripture_items)
         self.BibleScriptureError = ''.join(str(joined) for joined in bible_scripture_items)
-
