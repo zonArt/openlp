@@ -667,10 +667,10 @@ class BibleMediaItem(MediaManagerItem):
         # Set Bibles to use the text input from Quick search field.
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
-        # Get input from field and replace '. ' with ''
-        # This will check if field has any '.' and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
+        # Get input from field and replace 'A-Z + . ' with ''
+        # This will check if field has any '.' after A-Z and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
         text = self.quick_search_edit.text()
-        text = text.replace('. ', ' ')
+        text = re.sub('\D[.]\s', ' ', text)
         # This is triggered on reference search, use the search from manager.py
         if self.quick_search_edit.current_search_type() != BibleSearch.Text:
             self.search_results = self.plugin.manager.get_verses(bible, text)
