@@ -496,7 +496,7 @@ class Settings(QtCore.QSettings):
                     item = settings.value('{name} {counter:d}'.format(name=plugin.name, counter=counter), '')
                     if item:
                         files_list.append(item)
-                    settings.remove('{name} {counter:d}'.format=(plugin.name, counter))
+                    settings.remove('{name} {counter:d}'.format(name=plugin.name, counter=counter))
             settings.remove('{name} count'.format(name=plugin.name))
         settings.endGroup()
         return files_list

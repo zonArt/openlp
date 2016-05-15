@@ -284,9 +284,9 @@ class ActionList(object):
             actions.append(action)
             ActionList.shortcut_map[shortcuts[0]] = actions
         else:
-            log.warning('Shortcut "{shortcut}" is removed from "{action}" ''
-                        because another action already uses this shortcut.'.format(shortcut=shortcuts[0],
-                                                                                   action=action.objectName()))
+            log.warning('Shortcut "{shortcut}" is removed from "{action}" '
+                        'because another action already uses this shortcut.'.format(shortcut=shortcuts[0],
+                                                                                    action=action.objectName()))
             shortcuts.remove(shortcuts[0])
         action.setShortcuts([QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
 
