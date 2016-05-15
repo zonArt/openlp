@@ -330,7 +330,7 @@ class BibleManager(RegistryProperties):
                     translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
                     translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'
                                                            'Please use the Scripture Reference Search instead.\n\n'
-                                                           'This means that the currently used Bible or Second Bible\n'
+                                                           'This means that the currently used Bible\nor Second Bible '
                                                            'is installed as Web Bible.')
                 )
             return None

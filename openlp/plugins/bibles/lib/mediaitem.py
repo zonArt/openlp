@@ -732,7 +732,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug('Quick Search Button clicked')
         # If we are performing "Search while typing", this setting is set to True, here it's reset to "False"
-        if Settings().Value('bibles/hide web bible error if searching while typing'):
+        if Settings().value('bibles/hide web bible error if searching while typing'):
             Settings().setValue('bibles/hide web bible error if searching while typing', False)
         self.quickSearchButton.setEnabled(False)
         self.application.process_events()
