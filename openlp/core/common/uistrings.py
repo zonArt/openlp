@@ -153,6 +153,7 @@ class UiStrings(object):
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
+        self.Video = translate('OpenLP.Ui', 'Video')
         self.BibleShortSearchTitle = translate('OpenLP.Ui', 'Search is Empty or too Short')
         self.BibleShortSearch = translate('OpenLP.Ui', '<strong>The search you have entered is empty or shorter '
                                                        'than 3 characters long.<br>Please try again with '
@@ -182,3 +183,4 @@ class UiStrings(object):
         itertools.chain.from_iterable(itertools.repeat(strings, 1) if isinstance(strings, str)
                                       else strings for strings in bible_scripture_items)
         self.BibleScriptureError = ''.join(str(joined) for joined in bible_scripture_items)
+

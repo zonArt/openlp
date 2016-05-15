@@ -300,7 +300,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         """
         save_to = None
         save_from = None
-        if theme_data.background_type == 'image':
+        if theme_data.background_type == 'image' or theme_data.background_type == 'video':
             save_to = os.path.join(self.path, new_theme_name, os.path.split(str(theme_data.background_filename))[1])
             save_from = theme_data.background_filename
         theme_data.theme_name = new_theme_name
@@ -318,7 +318,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                                translate('OpenLP.ThemeManager', 'You must select a theme to edit.')):
             item = self.theme_list_widget.currentItem()
             theme = self.get_theme_data(item.data(QtCore.Qt.UserRole))
-            if theme.background_type == 'image':
+            if theme.background_type == 'image' or theme.background_type == 'video':
                 self.old_background_image = theme.background_filename
             self.theme_form.theme = theme
             self.theme_form.exec(True)

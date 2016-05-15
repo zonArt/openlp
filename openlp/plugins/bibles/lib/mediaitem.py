@@ -669,6 +669,8 @@ class BibleMediaItem(MediaManagerItem):
         second_bible = self.quickSecondComboBox.currentText()
         # Get input from field and replace 'A-Z + . ' with ''
         # This will check if field has any '.' after A-Z and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
+        # If Book name has '.' after number. eg. 1. Genesis, the search fails without the dot, and vice versa.
+        # A better solution would be to make '.' optional in the search results. Current solution was easier to code.
         text = self.quick_search_edit.text()
         text = re.sub('\D[.]\s', ' ', text)
         # This is triggered on reference search, use the search from manager.py
@@ -730,7 +732,8 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug('Quick Search Button clicked')
         # If we are performing "Search while typing", this setting is set to True, here it's reset to "False"
-        Settings().setValue('bibles/hide web bible error if searching while typing', False)
+        if Settings().Value('bibles/hide web bible error if searching while typing'):
+            Settings().setValue('bibles/hide web bible error if searching while typing', False)
         self.quickSearchButton.setEnabled(False)
         self.application.process_events()
         bible = self.quickVersionComboBox.currentText()
@@ -811,6 +814,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         This function is called when "Search as you type" is enabled for Bibles.
         It is basically the same thing as "on_quick_search_search" but all the error messages are removed.
+        This also has increased min len for text search for performance reasons.
         For commented version, please visit def on_quick_search_button.
         """
         bible = self.quickVersionComboBox.currentText()
@@ -858,14 +862,14 @@ class BibleMediaItem(MediaManagerItem):
         This would result in seeing the same message multiple times.
         This message is located in lib\manager.py, so the setting is required.
         """
-        Settings().setValue('bibles/hide web bible error if searching while typing', True)
-        # Regex for finding space + any non whitemark character. (Prevents search from starting on 1 word searches)
-        space_and_any = re.compile(' \S')
-        # Turn this into a format that may be used in if statement.
-        count_space_any = space_and_any.findall(text)
-        # Start searching if this behaviour is not disabled in settings and conditions are met.
         if Settings().value('bibles/is search while typing enabled'):
-            # If text length is less than the mininum and results are not locked, clear the results.
+            Settings().setValue('bibles/hide web bible error if searching while typing', True)
+            # Regex for finding space + any non whitemark character. (Prevents search from starting on 1 word searches)
+            space_and_any = re.compile(' \S')
+            # Turn this into a format that may be used in if statement.
+            count_space_any = space_and_any.findall(text)
+            # Start searching if this behaviour is not disabled in settings and conditions are met.
+            # If text does not have  'count_space_any' and results are not locked, clear the results.
             if len(count_space_any) == 0:
                 if not self.quickLockButton.isChecked():
                     self.list_view.clear()
