@@ -165,7 +165,7 @@ def create_button(parent, name, **kwargs):
             kwargs.setdefault('icon', ':/services/service_down.png')
             kwargs.setdefault('tooltip', translate('OpenLP.Ui', 'Move selection down one position.'))
         else:
-            log.warning('The role "%s" is not defined in create_push_button().', role)
+            log.warning('The role "{role}" is not defined in create_push_button().'.format(role=role))
     if kwargs.pop('btn_class', '') == 'toolbutton':
         button = QtWidgets.QToolButton(parent)
     else:
@@ -183,7 +183,7 @@ def create_button(parent, name, **kwargs):
         button.clicked.connect(kwargs.pop('click'))
     for key in list(kwargs.keys()):
         if key not in ['text', 'icon', 'tooltip', 'click']:
-            log.warning('Parameter %s was not consumed in create_button().', key)
+            log.warning('Parameter {key} was not consumed in create_button().'.format(key=key))
     return button
 
 
@@ -270,7 +270,7 @@ def create_action(parent, name, **kwargs):
         action.triggered.connect(kwargs.pop('triggers'))
     for key in list(kwargs.keys()):
         if key not in ['text', 'icon', 'tooltip', 'statustip', 'checked', 'can_shortcuts', 'category', 'triggers']:
-            log.warning('Parameter %s was not consumed in create_action().' % key)
+            log.warning('Parameter {key} was not consumed in create_action().'.format(key=key))
     return action
 
 

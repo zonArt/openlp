@@ -130,7 +130,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         :param settings_tab_class: The class name of the plugin's settings tab.
         :param version: Defaults to *None*, which means that the same version number is used as OpenLP's version number.
         """
-        log.debug('Plugin %s initialised' % name)
+        log.debug('Plugin {plugin} initialised'.format(plugin=name))
         super(Plugin, self).__init__()
         self.name = name
         self.text_strings = {}
@@ -154,11 +154,11 @@ class Plugin(QtCore.QObject, RegistryProperties):
         # Append a setting for files in the mediamanager (note not all plugins
         # which have a mediamanager need this).
         if media_item_class is not None:
-            default_settings['%s/%s files' % (name, name)] = []
+            default_settings['{name1}/{name2} files'.format(name1=name, name2=name)] = []
         # Add settings to the dict of all settings.
         Settings.extend_default_settings(default_settings)
-        Registry().register_function('%s_add_service_item' % self.name, self.process_add_service_event)
-        Registry().register_function('%s_config_updated' % self.name, self.config_update)
+        Registry().register_function('{name}_add_service_item'.format(name=self.name), self.process_add_service_event)
+        Registry().register_function('{name}_config_updated'.format(name=self.name), self.config_update)
 
     def check_pre_conditions(self):
         """
@@ -256,7 +256,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         """
         Generic Drag and drop handler triggered from service_manager.
         """
-        log.debug('process_add_service_event event called for plugin %s' % self.name)
+        log.debug('process_add_service_event event called for plugin {name}'.format(name=self.name))
         if replace:
             self.media_item.on_add_edit_click()
         else:

@@ -396,6 +396,7 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, Vertic
 
 log = logging.getLogger(__name__)
 
+# TODO: Verify where this is used before converting to python3
 HTMLSRC = """
 <!DOCTYPE html>
 <html>
@@ -564,13 +565,13 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     theme_data = item.theme_data
     # Image generated and poked in
     if background:
-        bgimage_src = 'src="data:image/png;base64,%s"' % background
+        bgimage_src = 'src="data:image/png;base64,{image}"'.format(image=background)
     elif item.bg_image_bytes:
-        bgimage_src = 'src="data:image/png;base64,%s"' % item.bg_image_bytes
+        bgimage_src = 'src="data:image/png;base64,{image}"'.format(image=item.bg_image_bytes)
     else:
         bgimage_src = 'style="display:none;"'
     if image:
-        image_src = 'src="data:image/png;base64,%s"' % image
+        image_src = 'src="data:image/png;base64,{image}"'.format(image=image)
     else:
         image_src = 'style="display:none;"'
     css_additions = ''
@@ -601,7 +602,7 @@ def webkit_version():
     """
     try:
         webkit_ver = float(QtWebKit.qWebKitVersion())
-        log.debug('Webkit version = %s' % webkit_ver)
+        log.debug('Webkit version = {version}'.format(version=webkit_ver))
     except AttributeError:
         webkit_ver = 0
     return webkit_ver
@@ -621,23 +622,25 @@ def build_background_css(item, width):
         if theme.background_type == BackgroundType.to_string(BackgroundType.Transparent):
             background = ''
         elif theme.background_type == BackgroundType.to_string(BackgroundType.Solid):
-            background = 'background-color: %s' % theme.background_color
+            background = 'background-color: {theme}'.format(theme=theme.background_color)
         else:
             if theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
-                background = 'background: -webkit-gradient(linear, left top, left bottom, from(%s), to(%s)) fixed' \
-                    % (theme.background_start_color, theme.background_end_color)
+                background = 'background: -webkit-gradient(linear, left top, left bottom, from({start}), to({end})) ' \
+                    'fixed'.format(start=theme.background_start_color, end=theme.background_end_color)
             elif theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.LeftTop):
-                background = 'background: -webkit-gradient(linear, left top, right bottom, from(%s), to(%s)) fixed' \
-                    % (theme.background_start_color, theme.background_end_color)
+                background = 'background: -webkit-gradient(linear, left top, right bottom, from({start}), to({end})) ' \
+                    'fixed'.format(start=theme.background_start_color, end=theme.background_end_color)
             elif theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.LeftBottom):
-                background = 'background: -webkit-gradient(linear, left bottom, right top, from(%s), to(%s)) fixed' \
-                    % (theme.background_start_color, theme.background_end_color)
+                background = 'background: -webkit-gradient(linear, left bottom, right top, from({start}), to({end})) ' \
+                    'fixed'.format(start=theme.background_start_color, end=theme.background_end_color)
             elif theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Vertical):
-                background = 'background: -webkit-gradient(linear, left top, right top, from(%s), to(%s)) fixed' % \
-                    (theme.background_start_color, theme.background_end_color)
+                background = 'background: -webkit-gradient(linear, left top, right top, from({start}), to({end})) ' \
+                    'fixed'.format(start=theme.background_start_color, end=theme.background_end_color)
             else:
-                background = 'background: -webkit-gradient(radial, %s 50%%, 100, %s 50%%, %s, from(%s), to(%s)) fixed'\
-                    % (width, width, width, theme.background_start_color, theme.background_end_color)
+                background = 'background: -webkit-gradient(radial, {width1} 50%%, 100, {width2} 50%%, {width3}, ' \
+                    'from({start}), to({end})) fixed'.format(width1=width, width2=width, width3=width,
+                                                             start=theme.background_start_color,
+                                                             end=theme.background_end_color)
     return background
 
 
@@ -652,16 +655,16 @@ def build_lyrics_css(item):
     z-index: 5;
     position: absolute;
     display: table;
-    %s
+    {stable}
 }
 .lyricscell {
     display: table-cell;
     word-wrap: break-word;
     -webkit-transition: opacity 0.4s ease;
-    %s
+    {lyrics}
 }
 .lyricsmain {
-    %s
+    {main}
 }
 """
     theme_data = item.theme_data
@@ -669,13 +672,15 @@ def build_lyrics_css(item):
     lyrics = ''
     lyricsmain = ''
     if theme_data and item.main:
-        lyricstable = 'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
+        lyricstable = 'left: {left}px; top: {top}px;'.format(left=item.main.x(), top=item.main.y())
         lyrics = build_lyrics_format_css(theme_data, item.main.width(), item.main.height())
         lyricsmain += build_lyrics_outline_css(theme_data)
         if theme_data.font_main_shadow:
-            lyricsmain += ' text-shadow: %s %spx %spx;' % \
-                (theme_data.font_main_shadow_color, theme_data.font_main_shadow_size, theme_data.font_main_shadow_size)
-    lyrics_css = style % (lyricstable, lyrics, lyricsmain)
+            lyricsmain += ' text-shadow: {theme} {shadow1}px ' \
+                '{shadow2}px;'.format(theme=theme_data.font_main_shadow_color,
+                                      shadow1=theme_data.font_main_shadow_size,
+                                      shadow2=theme_data.font_main_shadow_size)
+    lyrics_css = style.format(stable=lyricstable, lyrics=lyrics, main=lyricsmain)
     return lyrics_css
 
 
@@ -689,7 +694,9 @@ def build_lyrics_outline_css(theme_data):
         size = float(theme_data.font_main_outline_size) / 16
         fill_color = theme_data.font_main_color
         outline_color = theme_data.font_main_outline_color
-        return ' -webkit-text-stroke: %sem %s; -webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
+        return ' -webkit-text-stroke: {size}em {color}; -webkit-text-fill-color: {fill}; '.format(size=size,
+                                                                                                  color=outline_color,
+                                                                                                  fill=fill_color)
     return ''
 
 
@@ -715,13 +722,21 @@ def build_lyrics_format_css(theme_data, width, height):
         padding_bottom = '0.5em'
     else:
         padding_bottom = '0'
-    lyrics = '%s word-wrap: break-word; ' \
-             'text-align: %s; vertical-align: %s; font-family: %s; ' \
-             'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
-             'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx; height: %spx; ' % \
-        (justify, align, valign, theme_data.font_main_name, theme_data.font_main_size,
-         theme_data.font_main_color, 100 + int(theme_data.font_main_line_adjustment), padding_bottom,
-         left_margin, width, height)
+    lyrics = '{justify} word-wrap: break-word; ' \
+        'text-align: {align}; vertical-align: {valign}; font-family: {font); ' \
+        'font-size: {size}pt; color: {color}; line-height: {line:d}%%; margin: 0;' \
+        'padding: 0; padding-bottom: {bottom}; padding-left: {left}px; width: {width}px; ' \
+        'height: {height}px; '.format(justify=justify,
+                                      align=align,
+                                      valign=valign,
+                                      font=theme_data.font_main_name,
+                                      size=theme_data.font_main_size,
+                                      color=theme_data.font_main_color,
+                                      line=100 + int(theme_data.font_main_line_adjustment),
+                                      bottom=padding_bottom,
+                                      left=left_margin,
+                                      width=width,
+                                      height=height)
     if theme_data.font_main_italics:
         lyrics += 'font-style:italic; '
     if theme_data.font_main_bold:
@@ -737,20 +752,21 @@ def build_footer_css(item, height):
     :param height:
     """
     style = """
-    left: %spx;
-    bottom: %spx;
-    width: %spx;
-    font-family: %s;
-    font-size: %spt;
-    color: %s;
+    left: {left}px;
+    bottom: {bottom}px;
+    width: {width}px;
+    font-family: {family};
+    font-size: {size}pt;
+    color: {color};
     text-align: left;
-    white-space: %s;
+    white-space: {space};
     """
     theme = item.theme_data
     if not theme or not item.footer:
         return ''
     bottom = height - int(item.footer.y()) - int(item.footer.height())
     whitespace = 'normal' if Settings().value('themes/wrap footer') else 'nowrap'
-    lyrics_html = style % (item.footer.x(), bottom, item.footer.width(),
-                           theme.font_footer_name, theme.font_footer_size, theme.font_footer_color, whitespace)
+    lyrics_html = style.format(left=item.footer.x(), bottom=bottom, width=item.footer.width(),
+                               family=theme.font_footer_name, size=theme.font_footer_size,
+                               color=theme.font_footer_color, space=whitespace)
     return lyrics_html

@@ -112,7 +112,7 @@ class TestPJLink(TestCase):
     @patch.object(pjlink_test, 'projectorReceivedData')
     def projector_process_lamp_test(self, mock_projectorReceivedData):
         """
-        Test setting lamp on/off and hours
+        Test status lamp on/off and hours
         """
         # GIVEN: Test object
         pjlink = pjlink_test
@@ -129,7 +129,7 @@ class TestPJLink(TestCase):
     @patch.object(pjlink_test, 'projectorReceivedData')
     def projector_process_multiple_lamp_test(self, mock_projectorReceivedData):
         """
-        Test setting multiple lamp on/off and hours
+        Test status multiple lamp on/off and hours
         """
         # GIVEN: Test object
         pjlink = pjlink_test
@@ -156,7 +156,7 @@ class TestPJLink(TestCase):
     @patch.object(pjlink_test, 'projectorReceivedData')
     def projector_process_power_on_test(self, mock_projectorReceivedData):
         """
-        Test setting power to ON
+        Test status power to ON
         """
         # GIVEN: Test object and preset
         pjlink = pjlink_test
@@ -171,7 +171,7 @@ class TestPJLink(TestCase):
     @patch.object(pjlink_test, 'projectorReceivedData')
     def projector_process_power_off_test(self, mock_projectorReceivedData):
         """
-        Test setting power to STANDBY
+        Test status power to STANDBY
         """
         # GIVEN: Test object and preset
         pjlink = pjlink_test
@@ -182,3 +182,71 @@ class TestPJLink(TestCase):
 
         # THEN: Power should be set to STANDBY
         self.assertEquals(pjlink.power, S_STANDBY, 'Power should have been set to STANDBY')
+
+    @patch.object(pjlink_test, 'projectorUpdateIcons')
+    def projector_process_avmt_closed_unmuted_test(self, mock_projectorReceivedData):
+        """
+        Test avmt status shutter closed and audio muted
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+        pjlink.shutter = False
+        pjlink.mute = True
+
+        # WHEN: Called with setting shutter closed and mute off
+        pjlink.process_avmt('11')
+
+        # THEN: Shutter should be True and mute should be False
+        self.assertTrue(pjlink.shutter, 'Shutter should have been set to closed')
+        self.assertFalse(pjlink.mute, 'Audio should be off')
+
+    @patch.object(pjlink_test, 'projectorUpdateIcons')
+    def projector_process_avmt_open_muted_test(self, mock_projectorReceivedData):
+        """
+        Test avmt status shutter open and mute on
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+        pjlink.shutter = True
+        pjlink.mute = False
+
+        # WHEN: Called with setting shutter closed and mute on
+        pjlink.process_avmt('21')
+
+        # THEN: Shutter should be closed and mute should be True
+        self.assertFalse(pjlink.shutter, 'Shutter should have been set to closed')
+        self.assertTrue(pjlink.mute, 'Audio should be off')
+
+    @patch.object(pjlink_test, 'projectorUpdateIcons')
+    def projector_process_avmt_open_unmuted_test(self, mock_projectorReceivedData):
+        """
+        Test avmt status shutter open and mute off off
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+        pjlink.shutter = True
+        pjlink.mute = True
+
+        # WHEN: Called with setting shutter to closed and mute on
+        pjlink.process_avmt('30')
+
+        # THEN: Shutter should be closed and mute should be True
+        self.assertFalse(pjlink.shutter, 'Shutter should have been set to open')
+        self.assertFalse(pjlink.mute, 'Audio should be on')
+
+    @patch.object(pjlink_test, 'projectorUpdateIcons')
+    def projector_process_avmt_closed_muted_test(self, mock_projectorReceivedData):
+        """
+        Test avmt status shutter closed and mute off
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+        pjlink.shutter = False
+        pjlink.mute = False
+
+        # WHEN: Called with setting shutter to closed and mute on
+        pjlink.process_avmt('31')
+
+        # THEN: Shutter should be closed and mute should be True
+        self.assertTrue(pjlink.shutter, 'Shutter should have been set to closed')
+        self.assertTrue(pjlink.mute, 'Audio should be on')

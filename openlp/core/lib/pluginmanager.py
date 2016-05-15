@@ -43,7 +43,7 @@ class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
         super(PluginManager, self).__init__(parent)
         self.log_info('Plugin manager Initialising')
         self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
-        self.log_debug('Base path %s ' % self.base_path)
+        self.log_debug('Base path {path}'.forma(path=self.base_path))
         self.plugins = []
         self.log_info('Plugin manager Initialised')
 
@@ -73,7 +73,7 @@ class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
         """
         start_depth = len(os.path.abspath(self.base_path).split(os.sep))
         present_plugin_dir = os.path.join(self.base_path, 'presentations')
-        self.log_debug('finding plugins in %s at depth %d' % (self.base_path, start_depth))
+        self.log_debug('finding plugins in {path} at depth {depth:d}'.format(path=self.base_path, depth=start_depth))
         for root, dirs, files in os.walk(self.base_path):
             for name in files:
                 if name.endswith('.py') and not name.startswith('__'):
@@ -84,7 +84,9 @@ class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
                         break
                     module_name = name[:-3]
                     # import the modules
-                    self.log_debug('Importing %s from %s. Depth %d' % (module_name, root, this_depth))
+                    self.log_debug('Importing {name} from {root}. Depth {depth:d}'.format(name=module_name,
+                                                                                          root=root,
+                                                                                          depth=this_depth))
                     try:
                         # Use the "imp" library to try to get around a problem with the PyUNO library which
                         # monkey-patches the __import__ function to do some magic. This causes issues with our tests.
@@ -93,21 +95,21 @@ class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
                         # Then load the module (do the actual import) using the details from find_module()
                         imp.load_module(module_name, fp, path_name, description)
                     except ImportError as e:
-                        self.log_exception('Failed to import module %s on path %s: %s'
-                                           % (module_name, path, e.args[0]))
+                        self.log_exception('Failed to import module {name} on path {path}: '
+                                           '{args}'.format(name=module_name, path=path, args=e.args[0]))
         plugin_classes = Plugin.__subclasses__()
         plugin_objects = []
         for p in plugin_classes:
             try:
                 plugin = p()
-                self.log_debug('Loaded plugin %s' % str(p))
+                self.log_debug('Loaded plugin {plugin}'.format(plugin=str(p)))
                 plugin_objects.append(plugin)
             except TypeError:
-                self.log_exception('Failed to load plugin %s' % str(p))
+                self.log_exception('Failed to load plugin {plugin}'.format(plugin=str(p)))
         plugins_list = sorted(plugin_objects, key=lambda plugin: plugin.weight)
         for plugin in plugins_list:
             if plugin.check_pre_conditions():
-                self.log_debug('Plugin %s active' % str(plugin.name))
+                self.log_debug('Plugin {plugin} active'.format(plugin=str(plugin.name)))
                 plugin.set_status()
             else:
                 plugin.status = PluginStatus.Disabled
@@ -175,10 +177,11 @@ class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
         Loop through all the plugins and give them an opportunity to initialise themselves.
         """
         for plugin in self.plugins:
-            self.log_info('initialising plugins %s in a %s state' % (plugin.name, plugin.is_active()))
+            self.log_info('initialising plugins {plugin} in a {state} state'.format(plugin=plugin.name,
+                                                                                    state=plugin.is_active()))
             if plugin.is_active():
                 plugin.initialise()
-                self.log_info('Initialisation Complete for %s ' % plugin.name)
+                self.log_info('Initialisation Complete for {plugin}'.format(plugin=plugin.name))
 
     def finalise_plugins(self):
         """
@@ -187,7 +190,7 @@ class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
         for plugin in self.plugins:
             if plugin.is_active():
                 plugin.finalise()
-                self.log_info('Finalisation Complete for %s ' % plugin.name)
+                self.log_info('Finalisation Complete for {plugin}'.format(plugin=plugin.name))
 
     def get_plugin_by_name(self, name):
         """
