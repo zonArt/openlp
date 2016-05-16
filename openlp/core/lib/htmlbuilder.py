@@ -637,7 +637,7 @@ def build_background_css(item, width):
                 background = 'background: -webkit-gradient(linear, left top, right top, from({start}), to({end})) ' \
                     'fixed'.format(start=theme.background_start_color, end=theme.background_end_color)
             else:
-                background = 'background: -webkit-gradient(radial, {width1} 50%%, 100, {width2} 50%%, {width3}, ' \
+                background = 'background: -webkit-gradient(radial, {width1} 50%, 100, {width2} 50%, {width3}, ' \
                     'from({start}), to({end})) fixed'.format(width1=width, width2=width, width3=width,
                                                              start=theme.background_start_color,
                                                              end=theme.background_end_color)
@@ -650,21 +650,22 @@ def build_lyrics_css(item):
 
     :param item: Service Item containing theme and location information
     """
+        # TODO: Verify this before converting to python3
     style = """
 .lyricstable {
     z-index: 5;
     position: absolute;
     display: table;
-    {stable}
+    %s
 }
 .lyricscell {
     display: table-cell;
     word-wrap: break-word;
     -webkit-transition: opacity 0.4s ease;
-    {lyrics}
+    %s
 }
 .lyricsmain {
-    {main}
+    %s
 }
 """
     theme_data = item.theme_data
@@ -680,7 +681,7 @@ def build_lyrics_css(item):
                 '{shadow2}px;'.format(theme=theme_data.font_main_shadow_color,
                                       shadow1=theme_data.font_main_shadow_size,
                                       shadow2=theme_data.font_main_shadow_size)
-    lyrics_css = style.format(stable=lyricstable, lyrics=lyrics, main=lyricsmain)
+    lyrics_css = style %(lyricstable, lyrics, lyricsmain)
     return lyrics_css
 
 
@@ -723,8 +724,8 @@ def build_lyrics_format_css(theme_data, width, height):
     else:
         padding_bottom = '0'
     lyrics = '{justify} word-wrap: break-word; ' \
-        'text-align: {align}; vertical-align: {valign}; font-family: {font); ' \
-        'font-size: {size}pt; color: {color}; line-height: {line:d}%%; margin: 0;' \
+        'text-align: {align}; vertical-align: {valign}; font-family: {font}; ' \
+        'font-size: {size}pt; color: {color}; line-height: {line:d}%; margin: 0;' \
         'padding: 0; padding-bottom: {bottom}; padding-left: {left}px; width: {width}px; ' \
         'height: {height}px; '.format(justify=justify,
                                       align=align,

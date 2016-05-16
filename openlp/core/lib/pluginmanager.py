@@ -43,7 +43,7 @@ class PluginManager(RegistryMixin, OpenLPMixin, RegistryProperties):
         super(PluginManager, self).__init__(parent)
         self.log_info('Plugin manager Initialising')
         self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
-        self.log_debug('Base path {path}'.forma(path=self.base_path))
+        self.log_debug('Base path {path}'.format(path=self.base_path))
         self.plugins = []
         self.log_info('Plugin manager Initialised')
 

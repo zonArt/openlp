@@ -62,10 +62,10 @@ class SearchEdit(QtWidgets.QLineEdit):
         right_padding = self.clear_button.width() + frame_width
         if hasattr(self, 'menu_button'):
             left_padding = self.menu_button.width()
-            stylesheet = 'QLineEdit { padding-left:{left}spx; padding-right: {right}px; } '.format(left=left_padding,
-                                                                                                   right=right_padding)
+            stylesheet = 'QLineEdit {{ padding-left:{left}px; padding-right: {right}px; }} '.format(left=left_padding,
+                                                                                                    right=right_padding)
         else:
-            stylesheet = 'QLineEdit { padding-right: {right}px; } '.format(right=right_padding)
+            stylesheet = 'QLineEdit {{ padding-right: {right}px; }} '.format(right=right_padding)
         self.setStyleSheet(stylesheet)
         msz = self.minimumSizeHint()
         self.setMinimumSize(max(msz.width(), self.clear_button.width() + (frame_width * 2) + 2),
