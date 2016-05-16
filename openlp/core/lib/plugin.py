@@ -154,7 +154,7 @@ class Plugin(QtCore.QObject, RegistryProperties):
         # Append a setting for files in the mediamanager (note not all plugins
         # which have a mediamanager need this).
         if media_item_class is not None:
-            default_settings['{name1}/{name2} files'.format(name1=name, name2=name)] = []
+            default_settings['{name}/{name} files'.format(name=name)] = []
         # Add settings to the dict of all settings.
         Settings.extend_default_settings(default_settings)
         Registry().register_function('{name}_add_service_item'.format(name=self.name), self.process_add_service_event)
