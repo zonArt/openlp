@@ -206,3 +206,17 @@ class TestProjectorDB(TestCase):
         # THEN: __repr__ should return a proper string
         self.assertEqual(str(manufacturer), '<Manufacturer(name="OpenLP Test")>',
                          'Manufacturer.__repr__() should have returned a proper representation string')
+
+    def model_repr_test(self):
+        """
+        Test model class __repr__ text
+        """
+        # GIVEN: Test object
+        model = Model()
+
+        # WHEN: Name is set
+        model.name = 'OpenLP Test'
+
+        # THEN: __repr__ should return a proper string
+        self.assertEqual(str(model), '<Model(name='"OpenLP Test"')>',
+                         'Model.__repr__() should have returned a proper representation string')

@@ -71,8 +71,8 @@ class Registry(object):
         else:
             if not self.initialising:
                 trace_error_handler(log)
-                log.error('Service %s not found in list' % key)
-                raise KeyError('Service %s not found in list' % key)
+                log.error('Service {key} not found in list'.format(key=key))
+                raise KeyError('Service {key} not found in list'.format(key=key))
 
     def register(self, key, reference):
         """
@@ -83,8 +83,8 @@ class Registry(object):
         """
         if key in self.service_list:
             trace_error_handler(log)
-            log.error('Duplicate service exception %s' % key)
-            raise KeyError('Duplicate service exception %s' % key)
+            log.error('Duplicate service exception {key}'.format(key=key))
+            raise KeyError('Duplicate service exception {key}'.format(key=key))
         else:
             self.service_list[key] = reference
 
@@ -140,8 +140,8 @@ class Registry(object):
                 except TypeError:
                     # Who has called me can help in debugging
                     trace_error_handler(log)
-                    log.exception('Exception for function %s', function)
+                    log.exception('Exception for function {function}'.format(function=function))
         else:
             trace_error_handler(log)
-            log.error("Event %s called but not registered" % event)
+            log.error("Event {event} called but not registered".format(event=event))
         return results
