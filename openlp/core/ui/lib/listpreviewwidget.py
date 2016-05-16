@@ -27,7 +27,7 @@ It is based on a QTableWidget but represents its contents in list form.
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import RegistryProperties, Settings
-from openlp.core.lib import ImageSource, ServiceItem
+from openlp.core.lib import ImageSource, ItemCapabilities, ServiceItem
 
 
 class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
@@ -152,14 +152,16 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                 else:
                     label.setScaledContents(True)
                 if self.service_item.is_command():
-                    pixmap = QtGui.QPixmap(frame['image'])
-                    pixmap.setDevicePixelRatio(label.devicePixelRatio())
-                    label.setPixmap(pixmap)
+                    if self.service_item.is_capable(ItemCapabilities.HasThumbnails):
+                        image = self.image_manager.get_image(frame['image'], ImageSource.CommandPlugins)
+                        pixmap = QtGui.QPixmap.fromImage(image)
+                    else:
+                        pixmap = QtGui.QPixmap(frame['image'])
                 else:
                     image = self.image_manager.get_image(frame['path'], ImageSource.ImagePlugin)
                     pixmap = QtGui.QPixmap.fromImage(image)
-                    pixmap.setDevicePixelRatio(label.devicePixelRatio())
-                    label.setPixmap(pixmap)
+                pixmap.setDevicePixelRatio(label.devicePixelRatio())
+                label.setPixmap(pixmap)
                 slide_height = width // self.screen_ratio
                 # Setup and validate row height cap if in use.
                 max_img_row_height = Settings().value('advanced/slide max height')

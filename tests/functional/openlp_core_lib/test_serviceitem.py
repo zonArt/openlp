@@ -244,14 +244,16 @@ class TestServiceItem(TestCase):
         self.assertEqual(service_item.service_item_type, ServiceItemType.Command, 'It should be a Command')
         self.assertEqual(service_item.get_frames()[0], frame, 'Frames should match')
 
+    @patch(u'openlp.core.lib.serviceitem.ServiceItem.image_manager')
     @patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path')
-    def add_from_command_for_a_presentation_thumb_test(self, mocked_get_section_data_path):
+    def add_from_command_for_a_presentation_thumb_test(self, mocked_get_section_data_path, mocked_image_manager):
         """
-        Test the Service Item - adding a presentation, and updating the thumb path
+        Test the Service Item - adding a presentation, updating the thumb path & adding the thumb to image_manager
         """
         # GIVEN: A service item, a mocked AppLocation and presentation data
         mocked_get_section_data_path.return_value = os.path.join('mocked', 'section', 'path')
         service_item = ServiceItem(None)
+        service_item.add_capability(ItemCapabilities.HasThumbnails)
         service_item.has_original_files = False
         service_item.name = 'presentations'
         presentation_name = 'test.pptx'
@@ -270,6 +272,7 @@ class TestServiceItem(TestCase):
         # THEN: verify that it is setup as a Command and that the frame data matches
         self.assertEqual(service_item.service_item_type, ServiceItemType.Command, 'It should be a Command')
         self.assertEqual(service_item.get_frames()[0], frame, 'Frames should match')
+        self.assertEqual(1, mocked_image_manager.add_image.call_count, 'image_manager should be used')
 
     def service_item_load_optical_media_from_service_test(self):
         """
