@@ -650,7 +650,7 @@ def build_lyrics_css(item):
 
     :param item: Service Item containing theme and location information
     """
-        # TODO: Verify this before converting to python3
+    # TODO: Verify this before converting to python3
     style = """
 .lyricstable {
     z-index: 5;
@@ -681,7 +681,7 @@ def build_lyrics_css(item):
                 '{shadow2}px;'.format(theme=theme_data.font_main_shadow_color,
                                       shadow1=theme_data.font_main_shadow_size,
                                       shadow2=theme_data.font_main_shadow_size)
-    lyrics_css = style %(lyricstable, lyrics, lyricsmain)
+    lyrics_css = style % (lyricstable, lyrics, lyricsmain)
     return lyrics_css
 
 
