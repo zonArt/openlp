@@ -421,6 +421,55 @@ class TestLib(TestCase):
         except:
             pass
 
+    def create_thumb_empty_img_test(self):
+        """
+        Test the create_thumb() function with a size of only height specified.
+        """
+        # GIVEN: An image to create a thumb of.
+        image_path = os.path.join(TEST_PATH, 'church.jpg')
+        thumb_path = os.path.join(TEST_PATH, 'church_thumb.jpg')
+        thumb_size = QtCore.QSize(-1, 100)
+        expected_size_1 = QtCore.QSize(88, 88)
+        expected_size_2 = QtCore.QSize(100, 100)
+        
+
+        # Remove the thumb so that the test actually tests if the thumb will be created. Maybe it was not deleted in the
+        # last test.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+        # Only continue when the thumb does not exist.
+        self.assertFalse(os.path.exists(thumb_path), 'Test was not run, because the thumb already exists.')
+
+        # WHEN: Create the thumb.
+        with patch('openlp.core.lib.QtGui.QImageReader.size') as mocked_size:
+            mocked_size.return_value = QtCore.QSize(0, 0)
+            icon = create_thumb(image_path, thumb_path, size=None)
+
+        # THEN: Check if the thumb was created with aspect ratio of 1.
+        self.assertTrue(os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists')
+        self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
+        self.assertFalse(icon.isNull(), 'The icon should not be null')
+        self.assertEqual(expected_size_1, QtGui.QImageReader(thumb_path).size(), 'The thumb should have the given size')
+
+        # WHEN: Create the thumb.
+        with patch('openlp.core.lib.QtGui.QImageReader.size') as mocked_size:
+            mocked_size.return_value = QtCore.QSize(0, 0)
+            icon = create_thumb(image_path, thumb_path, size=thumb_size)
+        
+        # THEN: Check if the thumb was created with aspect ratio of 1.
+        self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
+        self.assertFalse(icon.isNull(), 'The icon should not be null')
+        self.assertEqual(expected_size_2, QtGui.QImageReader(thumb_path).size(), 'The thumb should have the given size')
+
+        # Remove the thumb so that the test actually tests if the thumb will be created.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
     def check_item_selected_true_test(self):
         """
         Test that the check_item_selected() function returns True when there are selected indexes

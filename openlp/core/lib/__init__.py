@@ -179,14 +179,20 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     reader = QtGui.QImageReader(image_path)
     if size is None:
         # No size given; use default height of 88
-        ratio = reader.size().width() / reader.size().height()
+        if reader.size().isEmpty():
+            ratio = 1
+        else:
+            ratio = reader.size().width() / reader.size().height()
         reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
     elif size.isValid():
         # Complete size given
         reader.setScaledSize(size)
     else:
         # Invalid size given
-        ratio = reader.size().width() / reader.size().height()
+        if reader.size().isEmpty():
+            ratio = 1
+        else:
+            ratio = reader.size().width() / reader.size().height()
         if size.width() >= 0:
             # Valid width; scale height
             reader.setScaledSize(QtCore.QSize(size.width(), int(size.width() / ratio)))
