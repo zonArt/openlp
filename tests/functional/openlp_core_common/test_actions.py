@@ -115,10 +115,14 @@ class TestCategoryActionList(TestCase):
         """
         Test the __iter__ and __next__ methods
         """
+        # GIVEN: The list including two actions
         self.list.add(self.action1)
         self.list.add(self.action2)
-
+        
+        # WHEN: Iterating over the list
         l = [a for a in self.list]
+        # THEN: Make sure they are returned in correct order
+        self.assertEquals(len(self.list), 2)
         self.assertIs(l[0], self.action1)
         self.assertIs(l[1], self.action2)
 
