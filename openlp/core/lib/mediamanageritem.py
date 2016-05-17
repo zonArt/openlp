@@ -380,8 +380,7 @@ class MediaManagerItem(QtWidgets.QWidget, RegistryProperties):
             self.load_list(full_list, target_group)
             last_dir = os.path.split(files[0])[0]
             Settings().setValue(self.settings_section + '/last directory', last_dir)
-            Settings().setValue('{section1}/{section2} files'.format(section1=self.settings_section,
-                                                                     section2=self.settings_section),
+            Settings().setValue('{section}/{section} files'.format(section=self.settings_section),
                                 self.get_file_list())
         if duplicates_found:
             critical_error_message_box(UiStrings().Duplicate,

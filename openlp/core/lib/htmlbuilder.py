@@ -637,8 +637,8 @@ def build_background_css(item, width):
                 background = 'background: -webkit-gradient(linear, left top, right top, from({start}), to({end})) ' \
                     'fixed'.format(start=theme.background_start_color, end=theme.background_end_color)
             else:
-                background = 'background: -webkit-gradient(radial, {width1} 50%, 100, {width2} 50%, {width3}, ' \
-                    'from({start}), to({end})) fixed'.format(width1=width, width2=width, width3=width,
+                background = 'background: -webkit-gradient(radial, {width} 50%, 100, {width} 50%, {width}, ' \
+                    'from({start}), to({end})) fixed'.format(width=width,
                                                              start=theme.background_start_color,
                                                              end=theme.background_end_color)
     return background
@@ -677,10 +677,9 @@ def build_lyrics_css(item):
         lyrics = build_lyrics_format_css(theme_data, item.main.width(), item.main.height())
         lyricsmain += build_lyrics_outline_css(theme_data)
         if theme_data.font_main_shadow:
-            lyricsmain += ' text-shadow: {theme} {shadow1}px ' \
-                '{shadow2}px;'.format(theme=theme_data.font_main_shadow_color,
-                                      shadow1=theme_data.font_main_shadow_size,
-                                      shadow2=theme_data.font_main_shadow_size)
+            lyricsmain += ' text-shadow: {theme} {shadow}px ' \
+                '{shadow}px;'.format(theme=teme_data.font_main_shadow_color,
+                                     shadow=theme_data.font_main_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain)
     return lyrics_css
 
