@@ -242,13 +242,13 @@ class PresentationDocument(object):
 
     def convert_thumbnail(self, file, idx):
         """
-        Convert the slide image the application made to a standard 320x240 .png image.
+        Convert the slide image the application made to a scaled 360px height .png image.
         """
         if self.check_thumbnails():
             return
         if os.path.isfile(file):
             thumb_path = self.get_thumbnail_path(idx, False)
-            create_thumb(file, thumb_path, False, QtCore.QSize(320, 240))
+            create_thumb(file, thumb_path, False, QtCore.QSize(-1, 360))
 
     def get_thumbnail_path(self, slide_no, check_exists):
         """

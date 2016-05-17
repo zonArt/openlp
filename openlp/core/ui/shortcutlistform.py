@@ -27,7 +27,7 @@ import re
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import RegistryProperties, Settings, translate
-from openlp.core.utils.actions import ActionList
+from openlp.core.common.actions import ActionList
 from .shortcutlistdialog import Ui_ShortcutListDialog
 
 REMOVE_AMPERSAND = re.compile(r'&{1}')

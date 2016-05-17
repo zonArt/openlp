@@ -23,21 +23,24 @@
 The :mod:`slidecontroller` module contains the most important part of OpenLP - the slide controller
 """
 
-import os
 import copy
+import os
 from collections import deque
 from threading import Lock
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, Settings, SlideLimits, UiStrings, translate, \
-    RegistryMixin, OpenLPMixin, is_win
-from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, \
-    ScreenList, build_icon, build_html
-from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
+    RegistryMixin, OpenLPMixin
+from openlp.core.common.actions import ActionList, CategoryOrder
+from openlp.core.lib import ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, ScreenList, build_icon, \
+    build_html
 from openlp.core.lib.ui import create_action
-from openlp.core.utils.actions import ActionList, CategoryOrder
-from openlp.core.ui.listpreviewwidget import ListPreviewWidget
+from openlp.core.ui.lib.toolbar import OpenLPToolbar
+from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
+from openlp.core.ui.lib.listpreviewwidget import ListPreviewWidget
+from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
+
 
 # Threshold which has to be trespassed to toggle.
 HIDE_MENU_THRESHOLD = 27
@@ -84,7 +87,7 @@ class DisplayController(QtWidgets.QWidget):
         super(DisplayController, self).__init__(parent)
         self.is_live = False
         self.display = None
-        self.controller_type = DisplayControllerType.Plugin
+        self.controller_type = None
 
     def send_to_plugins(self, *args):
         """
@@ -601,13 +604,21 @@ class SlideController(DisplayController, RegistryProperties):
     def __add_actions_to_widget(self, widget):
         """
         Add actions to the widget specified by `widget`
+        This defines the controls available when Live display has stolen focus.
+        Examples of this happening: Clicking anything in the live window or certain single screen mode scenarios.
+        Needles to say, blank to modes should not be removed from here.
+        For some reason this required a test. It may be found in test_slidecontroller.py as
+        "live_stolen_focus_shortcuts_test. If you want to modify things here, you must also modify them there. (Duh)
 
         :param widget: The UI widget for the actions
         """
         widget.addActions([
             self.previous_item, self.next_item,
             self.previous_service, self.next_service,
-            self.escape_item])
+            self.escape_item,
+            self.desktop_screen,
+            self.theme_screen,
+            self.blank_screen])
 
     def preview_size_changed(self):
         """
@@ -1124,9 +1135,21 @@ class SlideController(DisplayController, RegistryProperties):
         """
         self.log_debug('update_preview %s ' % self.screens.current['primary'])
         if self.service_item and self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
-            # Grab now, but try again in a couple of seconds if slide change is slow
-            QtCore.QTimer.singleShot(500, self.grab_maindisplay)
-            QtCore.QTimer.singleShot(2500, self.grab_maindisplay)
+            if self.is_live:
+                # If live, grab screen-cap of main display now
+                QtCore.QTimer.singleShot(500, self.grab_maindisplay)
+                # but take another in a couple of seconds in case slide change is slow
+                QtCore.QTimer.singleShot(2500, self.grab_maindisplay)
+            else:
+                # If not live, use the slide's thumbnail/icon instead
+                image_path = self.service_item.get_rendered_frame(self.selected_row)
+                if self.service_item.is_capable(ItemCapabilities.HasThumbnails):
+                    image = self.image_manager.get_image(image_path, ImageSource.CommandPlugins)
+                    self.slide_image = QtGui.QPixmap.fromImage(image)
+                else:
+                    self.slide_image = QtGui.QPixmap(image_path)
+                self.slide_image.setDevicePixelRatio(self.main_window.devicePixelRatio())
+                self.slide_preview.setPixmap(self.slide_image)
         else:
             self.slide_image = self.display.preview()
             self.slide_image.setDevicePixelRatio(self.main_window.devicePixelRatio())

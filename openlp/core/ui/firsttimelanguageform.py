@@ -25,7 +25,7 @@ The language selection dialog.
 from PyQt5 import QtCore, QtWidgets
 
 from openlp.core.lib.ui import create_action
-from openlp.core.utils import LanguageManager
+from openlp.core.common import LanguageManager
 from .firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
 
 

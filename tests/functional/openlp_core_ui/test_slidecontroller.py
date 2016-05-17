@@ -26,7 +26,7 @@ from PyQt5 import QtCore, QtGui
 
 from unittest import TestCase
 from openlp.core import Registry
-from openlp.core.lib import ServiceItemAction
+from openlp.core.lib import ImageSource, ServiceItemAction
 from openlp.core.ui import SlideController, LiveController, PreviewController
 from openlp.core.ui.slidecontroller import InfoLabel, WIDE_MENU, NON_TEXT_MENU
 
@@ -684,6 +684,203 @@ class TestSlideController(TestCase):
         self.assertEqual(3, mocked_execute.call_count, 'Execute should have been called 3 times')
         self.assertEqual('mocked_presentation_item_stop', mocked_execute.call_args_list[1][0][0],
                          'The presentation should have been stopped.')
+
+    def live_stolen_focus_shortcuts_test(self):
+        """
+        Test that all the needed shortcuts are available in scenarios where Live has stolen focus.
+        These are found under def __add_actions_to_widget(self, widget): in slidecontroller.py
+        """
+        # GIVEN: A slide controller, actions needed
+        slide_controller = SlideController(None)
+        mocked_widget = MagicMock()
+        slide_controller.previous_item = MagicMock()
+        slide_controller.next_item = MagicMock()
+        slide_controller.previous_service = MagicMock()
+        slide_controller.next_service = MagicMock()
+        slide_controller.escape_item = MagicMock()
+        slide_controller.desktop_screen = MagicMock()
+        slide_controller.blank_screen = MagicMock()
+        slide_controller.theme_screen = MagicMock()
+
+        # WHEN: __add_actions_to_widget is called
+        slide_controller._SlideController__add_actions_to_widget(mocked_widget)
+
+        # THEN: The call to addActions should be correct
+        mocked_widget.addActions.assert_called_with([
+            slide_controller.previous_item, slide_controller.next_item,
+            slide_controller.previous_service, slide_controller.next_service,
+            slide_controller.escape_item, slide_controller.desktop_screen,
+            slide_controller.theme_screen, slide_controller.blank_screen
+        ])
+
+    @patch(u'openlp.core.ui.slidecontroller.SlideController.image_manager')
+    @patch(u'PyQt5.QtCore.QTimer.singleShot')
+    def update_preview_test_live(self, mocked_singleShot, mocked_image_manager):
+        """
+        Test that the preview screen is updated with a screen grab for live service items
+        """
+        # GIVEN: A mocked live service item, a mocked image_manager, a mocked Registry,
+        #        and a slide controller with many mocks.
+        # Mocked Live Item
+        mocked_live_item = MagicMock()
+        mocked_live_item.get_rendered_frame.return_value = ''
+        mocked_live_item.is_capable = MagicMock()
+        mocked_live_item.is_capable.side_effect = [True, True]
+        # Mock image_manager
+        mocked_image_manager.get_image.return_value = QtGui.QImage()
+        # Mock Registry
+        Registry.create()
+        mocked_main_window = MagicMock()
+        Registry().register('main_window', mocked_main_window)
+        # Mock SlideController
+        slide_controller = SlideController(None)
+        slide_controller.service_item = mocked_live_item
+        slide_controller.is_live = True
+        slide_controller.log_debug = MagicMock()
+        slide_controller.selected_row = MagicMock()
+        slide_controller.screens = MagicMock()
+        slide_controller.screens.current = {'primary': ''}
+        slide_controller.display = MagicMock()
+        slide_controller.display.preview.return_value = QtGui.QImage()
+        slide_controller.grab_maindisplay = MagicMock()
+        slide_controller.slide_preview = MagicMock()
+        slide_controller.slide_count = 0
+
+        # WHEN: update_preview is called
+        slide_controller.update_preview()
+
+        # THEN: A screen_grab should have been called
+        self.assertEqual(0, slide_controller.slide_preview.setPixmap.call_count, 'setPixmap should not be called')
+        self.assertEqual(0, slide_controller.display.preview.call_count, 'display.preview() should not be called')
+        self.assertEqual(2, mocked_singleShot.call_count,
+                         'Timer to grab_maindisplay should have been called 2 times')
+        self.assertEqual(0, mocked_image_manager.get_image.call_count, 'image_manager not be called')
+
+    @patch(u'openlp.core.ui.slidecontroller.SlideController.image_manager')
+    @patch(u'PyQt5.QtCore.QTimer.singleShot')
+    def update_preview_test_pres(self, mocked_singleShot, mocked_image_manager):
+        """
+        Test that the preview screen is updated with the correct preview for presentation service items
+        """
+        # GIVEN: A mocked presentation service item, a mocked image_manager, a mocked Registry,
+        #        and a slide controller with many mocks.
+        # Mocked Presentation Item
+        mocked_pres_item = MagicMock()
+        mocked_pres_item.get_rendered_frame.return_value = ''
+        mocked_pres_item.is_capable = MagicMock()
+        mocked_pres_item.is_capable.side_effect = [True, True]
+        # Mock image_manager
+        mocked_image_manager.get_image.return_value = QtGui.QImage()
+        # Mock Registry
+        Registry.create()
+        mocked_main_window = MagicMock()
+        Registry().register('main_window', mocked_main_window)
+        # Mock SlideController
+        slide_controller = SlideController(None)
+        slide_controller.service_item = mocked_pres_item
+        slide_controller.is_live = False
+        slide_controller.log_debug = MagicMock()
+        slide_controller.selected_row = MagicMock()
+        slide_controller.screens = MagicMock()
+        slide_controller.screens.current = {'primary': ''}
+        slide_controller.display = MagicMock()
+        slide_controller.display.preview.return_value = QtGui.QImage()
+        slide_controller.grab_maindisplay = MagicMock()
+        slide_controller.slide_preview = MagicMock()
+        slide_controller.slide_count = 0
+
+        # WHEN: update_preview is called
+        slide_controller.update_preview()
+
+        # THEN: setPixmap and the image_manager should have been called
+        self.assertEqual(1, slide_controller.slide_preview.setPixmap.call_count, 'setPixmap should be called')
+        self.assertEqual(0, slide_controller.display.preview.call_count, 'display.preview() should not be called')
+        self.assertEqual(0, mocked_singleShot.call_count, 'Timer to grab_maindisplay should not be called')
+        self.assertEqual(1, mocked_image_manager.get_image.call_count, 'image_manager should be called')
+
+    @patch(u'openlp.core.ui.slidecontroller.SlideController.image_manager')
+    @patch(u'PyQt5.QtCore.QTimer.singleShot')
+    def update_preview_test_media(self, mocked_singleShot, mocked_image_manager):
+        """
+        Test that the preview screen is updated with the correct preview for media service items
+        """
+        # GIVEN: A mocked media service item, a mocked image_manager, a mocked Registry,
+        #        and a slide controller with many mocks.
+        # Mocked Media Item
+        mocked_media_item = MagicMock()
+        mocked_media_item.get_rendered_frame.return_value = ''
+        mocked_media_item.is_capable = MagicMock()
+        mocked_media_item.is_capable.side_effect = [True, False]
+        # Mock image_manager
+        mocked_image_manager.get_image.return_value = QtGui.QImage()
+        # Mock Registry
+        Registry.create()
+        mocked_main_window = MagicMock()
+        Registry().register('main_window', mocked_main_window)
+        # Mock SlideController
+        slide_controller = SlideController(None)
+        slide_controller.service_item = mocked_media_item
+        slide_controller.is_live = False
+        slide_controller.log_debug = MagicMock()
+        slide_controller.selected_row = MagicMock()
+        slide_controller.screens = MagicMock()
+        slide_controller.screens.current = {'primary': ''}
+        slide_controller.display = MagicMock()
+        slide_controller.display.preview.return_value = QtGui.QImage()
+        slide_controller.grab_maindisplay = MagicMock()
+        slide_controller.slide_preview = MagicMock()
+        slide_controller.slide_count = 0
+
+        # WHEN: update_preview is called
+        slide_controller.update_preview()
+
+        # THEN: setPixmap should have been called
+        self.assertEqual(1, slide_controller.slide_preview.setPixmap.call_count, 'setPixmap should be called')
+        self.assertEqual(0, slide_controller.display.preview.call_count, 'display.preview() should not be called')
+        self.assertEqual(0, mocked_singleShot.call_count, 'Timer to grab_maindisplay should not be called')
+        self.assertEqual(0, mocked_image_manager.get_image.call_count, 'image_manager should not be called')
+
+    @patch(u'openlp.core.ui.slidecontroller.SlideController.image_manager')
+    @patch(u'PyQt5.QtCore.QTimer.singleShot')
+    def update_preview_test_image(self, mocked_singleShot, mocked_image_manager):
+        """
+        Test that the preview screen is updated with the correct preview for image service items
+        """
+        # GIVEN: A mocked image service item, a mocked image_manager, a mocked Registry,
+        #        and a slide controller with many mocks.
+        # Mocked Image Item
+        mocked_img_item = MagicMock()
+        mocked_img_item.get_rendered_frame.return_value = ''
+        mocked_img_item.is_capable = MagicMock()
+        mocked_img_item.is_capable.side_effect = [False, True]
+        # Mock image_manager
+        mocked_image_manager.get_image.return_value = QtGui.QImage()
+        # Mock Registry
+        Registry.create()
+        mocked_main_window = MagicMock()
+        Registry().register('main_window', mocked_main_window)
+        # Mock SlideController
+        slide_controller = SlideController(None)
+        slide_controller.service_item = mocked_img_item
+        slide_controller.is_live = False
+        slide_controller.log_debug = MagicMock()
+        slide_controller.selected_row = MagicMock()
+        slide_controller.screens = MagicMock()
+        slide_controller.screens.current = {'primary': ''}
+        slide_controller.display = MagicMock()
+        slide_controller.display.preview.return_value = QtGui.QImage()
+        slide_controller.grab_maindisplay = MagicMock()
+        slide_controller.slide_preview = MagicMock()
+        slide_controller.slide_count = 0
+
+        # WHEN: update_preview is called
+        slide_controller.update_preview()
+
+        # THEN: setPixmap and display.preview should have been called
+        self.assertEqual(1, slide_controller.slide_preview.setPixmap.call_count, 'setPixmap should be called')
+        self.assertEqual(1, slide_controller.display.preview.call_count, 'display.preview() should be called')
+        self.assertEqual(0, mocked_singleShot.call_count, 'Timer to grab_maindisplay should not be called')
+        self.assertEqual(0, mocked_image_manager.get_image.call_count, 'image_manager should not be called')
 
 
 class TestInfoLabel(TestCase):

@@ -23,23 +23,23 @@
 The service manager sets up, loads, saves and manages services.
 """
 import html
+import json
 import os
 import shutil
 import zipfile
-import json
-from tempfile import mkstemp
 from datetime import datetime, timedelta
+from tempfile import mkstemp
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, ThemeLevel, OpenLPMixin, \
-    RegistryMixin, check_directory_exists, UiStrings, translate
-from openlp.core.lib import OpenLPToolbar, ServiceItem, ItemCapabilities, PluginStatus, build_icon
+    RegistryMixin, check_directory_exists, UiStrings, translate, split_filename, delete_file
+from openlp.core.common.actions import ActionList, CategoryOrder
+from openlp.core.lib import ServiceItem, ItemCapabilities, PluginStatus, build_icon
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
-from openlp.core.ui.printserviceform import PrintServiceForm
-from openlp.core.utils import delete_file, split_filename, format_time
-from openlp.core.utils.actions import ActionList, CategoryOrder
+from openlp.core.ui.lib import OpenLPToolbar
+from openlp.core.common.languagemanager import format_time
 
 
 class ServiceManagerList(QtWidgets.QTreeWidget):
@@ -211,7 +211,8 @@ class Ui_ServiceManager(object):
         self.layout.addWidget(self.order_toolbar)
         # Connect up our signals and slots
         self.theme_combo_box.activated.connect(self.on_theme_combo_box_selected)
-        self.service_manager_list.doubleClicked.connect(self.on_make_live)
+        self.service_manager_list.doubleClicked.connect(self.on_double_click_live)
+        self.service_manager_list.clicked.connect(self.on_single_click_preview)
         self.service_manager_list.itemCollapsed.connect(self.collapsed)
         self.service_manager_list.itemExpanded.connect(self.expanded)
         # Last little bits of setting up
@@ -319,6 +320,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         self._modified = False
         self._file_name = ''
         self.service_has_all_original_files = True
+        self.list_double_clicked = False
 
     def bootstrap_initialise(self):
         """
@@ -1321,7 +1323,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         """
         The theme may have changed in the settings dialog so make sure the theme combo box is in the correct state.
         """
-        visible = self.renderer.theme_level == ThemeLevel.Global
+        visible = not self.renderer.theme_level == ThemeLevel.Global
         self.theme_label.setVisible(visible)
         self.theme_combo_box.setVisible(visible)
 
@@ -1454,12 +1456,37 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         else:
             return self.service_items[item]['service_item']
 
-    def on_make_live(self, field=None):
+    def on_double_click_live(self, field=None):
         """
         Send the current item to the Live slide controller but triggered by a tablewidget click event.
         :param field:
         """
+        self.list_double_clicked = True
         self.make_live()
+
+    def on_single_click_preview(self, field=None):
+        """
+        If single click previewing is enabled, and triggered by a tablewidget click event,
+        start a timeout to verify a double-click hasn't triggered.
+        :param field:
+        """
+        if Settings().value('advanced/single click service preview'):
+            if not self.list_double_clicked:
+                # If a double click has not registered start a timer, otherwise wait for the existing timer to finish.
+                QtCore.QTimer.singleShot(QtWidgets.QApplication.instance().doubleClickInterval(),
+                                         self.on_single_click_preview_timeout)
+
+    def on_single_click_preview_timeout(self):
+        """
+        If a single click ok, but double click not triggered, send the current item to the Preview slide controller.
+        :param field:
+        """
+        if self.list_double_clicked:
+            # If a double click has registered, clear it.
+            self.list_double_clicked = False
+        else:
+            # Otherwise preview the item.
+            self.make_preview()
 
     def make_live(self, row=-1):
         """

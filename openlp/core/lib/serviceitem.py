@@ -334,6 +334,8 @@ class ServiceItem(RegistryProperties):
                                  file_location_hash, ntpath.basename(image))
         self._raw_frames.append({'title': file_name, 'image': image, 'path': path,
                                  'display_title': display_title, 'notes': notes})
+        if self.is_capable(ItemCapabilities.HasThumbnails):
+            self.image_manager.add_image(image, ImageSource.CommandPlugins, '#000000')
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -610,7 +612,7 @@ class ServiceItem(RegistryProperties):
                 str(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
             end = translate('OpenLP.ServiceItem', '<strong>Length</strong>: %s') % \
-                str(datetime.timedelta(seconds=self.media_length))
+                str(datetime.timedelta(seconds=self.media_length // 1000))
         if not start and not end:
             return ''
         elif start and not end:

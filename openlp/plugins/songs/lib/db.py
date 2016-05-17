@@ -29,7 +29,7 @@ from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func, text
 
 from openlp.core.lib.db import BaseModel, init_db
-from openlp.core.utils import get_natural_key
+from openlp.core.common.languagemanager import get_natural_key
 from openlp.core.lib import translate
 
 
@@ -383,7 +383,7 @@ def init_schema(url):
         # Use lazy='joined' to always load authors when the song is fetched from the database (bug 1366198)
         'authors': relation(Author, secondary=authors_songs_table, viewonly=True, lazy='joined'),
         'media_files': relation(MediaFile, backref='songs', order_by=media_files_table.c.weight),
-        'songbook_entries': relation(SongBookEntry, backref='song', cascade="all, delete-orphan"),
+        'songbook_entries': relation(SongBookEntry, backref='song', cascade='all, delete-orphan'),
         'topics': relation(Topic, backref='songs', secondary=songs_topics_table)
     })
     mapper(Topic, topics_table)

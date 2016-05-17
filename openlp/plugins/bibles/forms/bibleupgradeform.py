@@ -29,10 +29,10 @@ from tempfile import gettempdir
 
 from PyQt5 import QtCore, QtWidgets
 
-from openlp.core.common import Registry, AppLocation, UiStrings, Settings, check_directory_exists, translate
+from openlp.core.common import Registry, AppLocation, UiStrings, Settings, check_directory_exists, translate, \
+    delete_file
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import delete_file
+from openlp.core.ui.lib.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB, BiblesResourcesDB
 from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
 

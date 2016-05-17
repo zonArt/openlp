@@ -27,8 +27,8 @@ import logging
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, UiStrings, translate, is_macosx
+from openlp.core.common.actions import ActionList
 from openlp.core.lib import build_icon
-from openlp.core.utils.actions import ActionList
 
 
 log = logging.getLogger(__name__)

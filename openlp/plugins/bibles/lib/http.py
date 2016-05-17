@@ -32,7 +32,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 from openlp.core.common import Registry, RegistryProperties, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import get_web_page
+from openlp.core.lib.webpagereader import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, Book
 
@@ -504,7 +504,7 @@ class CWExtract(RegistryProperties):
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
-        content = soup.find_all(('h4', {'class': 'small-header'}))
+        content = soup.find_all('h4', {'class': 'small-header'})
         if not content:
             log.error('No books found in the Crosswalk response.')
             send_error_message('parse')
@@ -520,7 +520,7 @@ class CWExtract(RegistryProperties):
         returns a list in the form [(biblename, biblekey, language_code)]
         """
         log.debug('CWExtract.get_bibles_from_http')
-        bible_url = 'http://www.biblestudytools.com/search/bible-search.part/'
+        bible_url = 'http://www.biblestudytools.com/'
         soup = get_soup_for_bible_ref(bible_url)
         if not soup:
             return None
@@ -528,7 +528,7 @@ class CWExtract(RegistryProperties):
         if not bible_select:
             log.debug('No select tags found - did site change?')
             return None
-        option_tags = bible_select.find_all('option')
+        option_tags = bible_select.find_all('option', {'class': 'log-translation'})
         if not option_tags:
             log.debug('No option tags found - did site change?')
             return None

@@ -32,7 +32,7 @@ from PyQt5 import QtWidgets
 
 from openlp.core.common import Registry, Settings
 from openlp.core.lib.pluginmanager import PluginManager
-from tests.interfaces import MagicMock
+from tests.interfaces import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 
 
@@ -45,13 +45,12 @@ class TestPluginManager(TestCase, TestMixin):
         """
         Some pre-test setup required.
         """
-        Settings.setDefaultFormat(Settings.IniFormat)
+        self.setup_application()
         self.build_settings()
         self.temp_dir = mkdtemp('openlp')
         Settings().setValue('advanced/data path', self.temp_dir)
         Registry.create()
         Registry().register('service_list', MagicMock())
-        self.setup_application()
         self.main_window = QtWidgets.QMainWindow()
         Registry().register('main_window', self.main_window)
 
@@ -64,7 +63,13 @@ class TestPluginManager(TestCase, TestMixin):
         gc.collect()
         shutil.rmtree(self.temp_dir)
 
-    def find_plugins_test(self):
+    @patch('openlp.plugins.songusage.lib.db.init_schema')
+    @patch('openlp.plugins.songs.lib.db.init_schema')
+    @patch('openlp.plugins.images.lib.db.init_schema')
+    @patch('openlp.plugins.custom.lib.db.init_schema')
+    @patch('openlp.plugins.alerts.lib.db.init_schema')
+    @patch('openlp.plugins.bibles.lib.db.init_schema')
+    def find_plugins_test(self, mocked_is1, mocked_is2, mocked_is3, mocked_is4, mocked_is5, mocked_is6):
         """
         Test the find_plugins() method to ensure it imports the correct plugins
         """

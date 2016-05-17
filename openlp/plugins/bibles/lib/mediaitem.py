@@ -29,7 +29,7 @@ from openlp.core.lib import MediaManagerItem, ItemCapabilities, ServiceItemConte
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
     critical_error_message_box, find_and_set_in_combo_box, build_icon
-from openlp.core.utils import get_locale_key
+from openlp.core.common.languagemanager import get_locale_key
 from openlp.plugins.bibles.forms.bibleimportform import BibleImportForm
 from openlp.plugins.bibles.forms.editbibleform import EditBibleForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, VerseReferenceList, get_reference_separator, \
@@ -763,6 +763,9 @@ class BibleMediaItem(MediaManagerItem):
                     data['second_text'] = self.second_search_results[count].text
                 except IndexError:
                     log.exception('The second_search_results does not have as many verses as the search_results.')
+                    break
+                except TypeError:
+                    log.exception('The second_search_results does not have this book.')
                     break
                 bible_text = '%s %d%s%d (%s, %s)' % (book, verse.chapter, verse_separator, verse.verse, version,
                                                      second_version)

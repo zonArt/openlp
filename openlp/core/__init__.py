@@ -27,26 +27,26 @@ All the core functions of the OpenLP application including the GUI, settings,
 logging and a plugin framework are contained within the openlp.core module.
 """
 
-import os
-import sys
-import logging
 import argparse
-from traceback import format_exception
+import logging
+import os
 import shutil
+import sys
 import time
+from traceback import format_exception
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from openlp.core.common import Registry, OpenLPMixin, AppLocation, Settings, UiStrings, check_directory_exists, \
-    is_macosx, is_win, translate
+from openlp.core.common import Registry, OpenLPMixin, AppLocation, LanguageManager, Settings, UiStrings, \
+    check_directory_exists, is_macosx, is_win, translate
+from openlp.core.common.versionchecker import VersionThread, get_application_version
 from openlp.core.lib import ScreenList
 from openlp.core.resources import qInitResources
-from openlp.core.ui.mainwindow import MainWindow
-from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
-from openlp.core.ui.firsttimeform import FirstTimeForm
-from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen
-from openlp.core.utils import LanguageManager, VersionThread, get_application_version
-
+from openlp.core.ui.exceptionform import ExceptionForm
+from openlp.core.ui.firsttimeform import FirstTimeForm
+from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
+from openlp.core.ui.mainwindow import MainWindow
 
 __all__ = ['OpenLP', 'main']
 
@@ -222,10 +222,11 @@ class OpenLP(OpenLPMixin, QtWidgets.QApplication):
                     QtWidgets.QMessageBox.warning(None, translate('OpenLP', 'Backup'),
                                                   translate('OpenLP', 'Backup of the data folder failed!'))
                     return
-                QtWidgets.QMessageBox.information(None, translate('OpenLP', 'Backup'),
-                                                  translate('OpenLP',
-                                                            'A backup of the data folder has been created at %s')
-                                                  % data_folder_backup_path)
+                message = translate('OpenLP',
+                                    'A backup of the data folder has been created'
+                                    'at {text}').format(text=data_folder_backup_path)
+                QtWidgets.QMessageBox.information(None, translate('OpenLP', 'Backup'), message)
+
             # Update the version in the settings
             Settings().setValue('core/application version', openlp_version)
 
@@ -257,7 +258,7 @@ class OpenLP(OpenLPMixin, QtWidgets.QApplication):
         """
         if event.type() == QtCore.QEvent.FileOpen:
             file_name = event.file()
-            log.debug('Got open file event for %s!', file_name)
+            log.debug('Got open file event for {name}!'.format(name=file_name))
             self.args.insert(0, file_name)
             return True
         # Mac OS X should restore app window when user clicked on the OpenLP icon
@@ -311,7 +312,7 @@ def set_up_logging(log_path):
     logfile.setFormatter(logging.Formatter('%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     if log.isEnabledFor(logging.DEBUG):
-        print('Logging to: %s' % filename)
+        print('Logging to: {name}'.format(name=filename))
 
 
 def main(args=None):
@@ -351,12 +352,12 @@ def main(args=None):
         log.info('Running portable')
         portable_settings_file = os.path.abspath(os.path.join(application_path, '..', '..', 'Data', 'OpenLP.ini'))
         # Make this our settings file
-        log.info('INI file: %s', portable_settings_file)
+        log.info('INI file: {name}'.format(name=portable_settings_file))
         Settings.set_filename(portable_settings_file)
         portable_settings = Settings()
         # Set our data path
         data_path = os.path.abspath(os.path.join(application_path, '..', '..', 'Data',))
-        log.info('Data path: %s', data_path)
+        log.info('Data path: {name}'.format(name=data_path))
         # Point to our data path
         portable_settings.setValue('advanced/data path', data_path)
         portable_settings.setValue('advanced/is portable', True)

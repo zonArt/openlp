@@ -299,6 +299,7 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         # Set up UI components
         self.view_button.setEnabled(False)
         self.search_button.setEnabled(False)
+        self.search_combobox.setEnabled(False)
         self.search_progress_bar.setMinimum(0)
         self.search_progress_bar.setMaximum(0)
         self.search_progress_bar.setValue(0)
@@ -354,6 +355,7 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         self.application.process_events()
         self.set_progress_visible(False)
         self.search_button.setEnabled(True)
+        self.search_combobox.setEnabled(True)
         self.application.process_events()
 
     def on_search_results_widget_selection_changed(self):

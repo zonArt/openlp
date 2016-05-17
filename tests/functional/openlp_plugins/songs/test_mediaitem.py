@@ -23,6 +23,7 @@
 This module contains tests for the lib submodule of the Songs plugin.
 """
 from unittest import TestCase
+from unittest.mock import call
 
 from PyQt5 import QtCore
 
@@ -48,6 +49,13 @@ class TestMediaItem(TestCase, TestMixin):
         with patch('openlp.core.lib.mediamanageritem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
             self.media_item = SongMediaItem(None, MagicMock())
+            self.media_item.save_auto_select_id = MagicMock()
+            self.media_item.list_view = MagicMock()
+            self.media_item.list_view.save_auto_select_id = MagicMock()
+            self.media_item.list_view.clear = MagicMock()
+            self.media_item.list_view.addItem = MagicMock()
+            self.media_item.list_view.setCurrentItem = MagicMock()
+            self.media_item.auto_select_id = -1
             self.media_item.display_songbook = False
             self.media_item.display_copyright_symbol = False
         self.setup_application()
@@ -59,6 +67,233 @@ class TestMediaItem(TestCase, TestMixin):
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         self.destroy_settings()
+
+    def display_results_song_test(self):
+        """
+        Test displaying song search results with basic song
+        """
+        # GIVEN: Search results, plus a mocked QtListWidgetItem
+        with patch('openlp.core.lib.QtWidgets.QListWidgetItem') as MockedQListWidgetItem, \
+                patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
+            mock_search_results = []
+            mock_song = MagicMock()
+            mock_song.id = 1
+            mock_song.title = 'My Song'
+            mock_song.sort_key = 'My Song'
+            mock_song.authors = []
+            mock_song_temp = MagicMock()
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.authors = []
+            mock_author = MagicMock()
+            mock_author.display_name = 'My Author'
+            mock_song.authors.append(mock_author)
+            mock_song_temp.authors.append(mock_author)
+            mock_song.temporary = False
+            mock_song_temp.temporary = True
+            mock_search_results.append(mock_song)
+            mock_search_results.append(mock_song_temp)
+            mock_qlist_widget = MagicMock()
+            MockedQListWidgetItem.return_value = mock_qlist_widget
+            self.media_item.auto_select_id = 1
+
+            # WHEN: I display song search results
+            self.media_item.display_results_song(mock_search_results)
+
+            # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
+            self.media_item.list_view.clear.assert_called_with()
+            self.media_item.save_auto_select_id.assert_called_with()
+            MockedQListWidgetItem.assert_called_once_with('My Song (My Author)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
+            self.media_item.list_view.setCurrentItem.assert_called_with(mock_qlist_widget)
+
+    def display_results_author_test(self):
+        """
+        Test displaying song search results grouped by author with basic song
+        """
+        # GIVEN: Search results grouped by author, plus a mocked QtListWidgetItem
+        with patch('openlp.core.lib.QtWidgets.QListWidgetItem') as MockedQListWidgetItem, \
+                patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
+            mock_search_results = []
+            mock_author = MagicMock()
+            mock_song = MagicMock()
+            mock_song_temp = MagicMock()
+            mock_author.display_name = 'My Author'
+            mock_author.songs = []
+            mock_song.id = 1
+            mock_song.title = 'My Song'
+            mock_song.sort_key = 'My Song'
+            mock_song.temporary = False
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.temporary = True
+            mock_author.songs.append(mock_song)
+            mock_author.songs.append(mock_song_temp)
+            mock_search_results.append(mock_author)
+            mock_qlist_widget = MagicMock()
+            MockedQListWidgetItem.return_value = mock_qlist_widget
+
+            # WHEN: I display song search results grouped by author
+            self.media_item.display_results_author(mock_search_results)
+
+            # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
+            self.media_item.list_view.clear.assert_called_with()
+            MockedQListWidgetItem.assert_called_once_with('My Author (My Song)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
+
+    def display_results_book_test(self):
+        """
+        Test displaying song search results grouped by book and entry with basic song
+        """
+        # GIVEN: Search results grouped by book and entry, plus a mocked QtListWidgetItem
+        with patch('openlp.core.lib.QtWidgets.QListWidgetItem') as MockedQListWidgetItem, \
+                patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
+            mock_search_results = [('1', 'My Book', 'My Song', 1)]
+            mock_qlist_widget = MagicMock()
+            MockedQListWidgetItem.return_value = mock_qlist_widget
+
+            # WHEN: I display song search results grouped by book
+            self.media_item.display_results_book(mock_search_results)
+
+            # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
+            self.media_item.list_view.clear.assert_called_with()
+            MockedQListWidgetItem.assert_called_once_with('My Book #1: My Song')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, 1)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
+
+    def songbook_natural_sorting_test(self):
+        """
+        Test that songbooks are sorted naturally
+        """
+        # GIVEN: Search results grouped by book and entry, plus a mocked QtListWidgetItem
+        with patch('openlp.core.lib.QtWidgets.QListWidgetItem') as MockedQListWidgetItem:
+            mock_search_results = [('2', 'Thy Book', 'Thy Song', 50),
+                                   ('2', 'My Book', 'Your Song', 7),
+                                   ('10', 'My Book', 'Our Song', 12),
+                                   ('1', 'My Book', 'My Song', 1),
+                                   ('2', 'Thy Book', 'A Song', 8)]
+            mock_qlist_widget = MagicMock()
+            MockedQListWidgetItem.return_value = mock_qlist_widget
+
+            # WHEN: I display song search results grouped by book
+            self.media_item.display_results_book(mock_search_results)
+
+            # THEN: The songbooks are inserted in the right (natural) order,
+            #       grouped first by book, then by number, then by song title
+            calls = [call('My Book #1: My Song'), call().setData(QtCore.Qt.UserRole, 1),
+                     call('My Book #2: Your Song'), call().setData(QtCore.Qt.UserRole, 7),
+                     call('My Book #10: Our Song'), call().setData(QtCore.Qt.UserRole, 12),
+                     call('Thy Book #2: A Song'), call().setData(QtCore.Qt.UserRole, 8),
+                     call('Thy Book #2: Thy Song'), call().setData(QtCore.Qt.UserRole, 50)]
+            MockedQListWidgetItem.assert_has_calls(calls)
+
+    def display_results_topic_test(self):
+        """
+        Test displaying song search results grouped by topic with basic song
+        """
+        # GIVEN: Search results grouped by topic, plus a mocked QtListWidgetItem
+        with patch('openlp.core.lib.QtWidgets.QListWidgetItem') as MockedQListWidgetItem, \
+                patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
+            mock_search_results = []
+            mock_topic = MagicMock()
+            mock_song = MagicMock()
+            mock_song_temp = MagicMock()
+            mock_topic.name = 'My Topic'
+            mock_topic.songs = []
+            mock_song.id = 1
+            mock_song.title = 'My Song'
+            mock_song.sort_key = 'My Song'
+            mock_song.temporary = False
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.temporary = True
+            mock_topic.songs.append(mock_song)
+            mock_topic.songs.append(mock_song_temp)
+            mock_search_results.append(mock_topic)
+            mock_qlist_widget = MagicMock()
+            MockedQListWidgetItem.return_value = mock_qlist_widget
+
+            # WHEN: I display song search results grouped by topic
+            self.media_item.display_results_topic(mock_search_results)
+
+            # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
+            self.media_item.list_view.clear.assert_called_with()
+            MockedQListWidgetItem.assert_called_once_with('My Topic (My Song)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
+
+    def display_results_themes_test(self):
+        """
+        Test displaying song search results sorted by theme with basic song
+        """
+        # GIVEN: Search results sorted by theme, plus a mocked QtListWidgetItem
+        with patch('openlp.core.lib.QtWidgets.QListWidgetItem') as MockedQListWidgetItem, \
+                patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
+            mock_search_results = []
+            mock_song = MagicMock()
+            mock_song_temp = MagicMock()
+            mock_song.id = 1
+            mock_song.title = 'My Song'
+            mock_song.sort_key = 'My Song'
+            mock_song.theme_name = 'My Theme'
+            mock_song.temporary = False
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.theme_name = 'My Theme'
+            mock_song_temp.temporary = True
+            mock_search_results.append(mock_song)
+            mock_search_results.append(mock_song_temp)
+            mock_qlist_widget = MagicMock()
+            MockedQListWidgetItem.return_value = mock_qlist_widget
+
+            # WHEN: I display song search results sorted by theme
+            self.media_item.display_results_themes(mock_search_results)
+
+            # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
+            self.media_item.list_view.clear.assert_called_with()
+            MockedQListWidgetItem.assert_called_once_with('My Theme (My Song)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
+
+    def display_results_cclinumber_test(self):
+        """
+        Test displaying song search results sorted by CCLI number with basic song
+        """
+        # GIVEN: Search results sorted by CCLI number, plus a mocked QtListWidgetItem
+        with patch('openlp.core.lib.QtWidgets.QListWidgetItem') as MockedQListWidgetItem, \
+                patch('openlp.core.lib.QtCore.Qt.UserRole') as MockedUserRole:
+            mock_search_results = []
+            mock_song = MagicMock()
+            mock_song_temp = MagicMock()
+            mock_song.id = 1
+            mock_song.title = 'My Song'
+            mock_song.sort_key = 'My Song'
+            mock_song.ccli_number = '12345'
+            mock_song.temporary = False
+            mock_song_temp.id = 2
+            mock_song_temp.title = 'My Temporary'
+            mock_song_temp.sort_key = 'My Temporary'
+            mock_song_temp.ccli_number = '12346'
+            mock_song_temp.temporary = True
+            mock_search_results.append(mock_song)
+            mock_search_results.append(mock_song_temp)
+            mock_qlist_widget = MagicMock()
+            MockedQListWidgetItem.return_value = mock_qlist_widget
+
+            # WHEN: I display song search results sorted by CCLI number
+            self.media_item.display_results_cclinumber(mock_search_results)
+
+            # THEN: The current list view is cleared, the widget is created, and the relevant attributes set
+            self.media_item.list_view.clear.assert_called_with()
+            MockedQListWidgetItem.assert_called_once_with('12345 (My Song)')
+            mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
+            self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
     def build_song_footer_one_author_test(self):
         """

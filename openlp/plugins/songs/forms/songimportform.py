@@ -31,7 +31,7 @@ from PyQt5 import QtCore, QtWidgets
 from openlp.core.common import RegistryProperties, Settings, UiStrings, translate
 from openlp.core.lib import FileDialog
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
+from openlp.core.ui.lib.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
 
 log = logging.getLogger(__name__)

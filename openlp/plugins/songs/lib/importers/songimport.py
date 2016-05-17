@@ -28,7 +28,7 @@ import os
 from PyQt5 import QtCore
 
 from openlp.core.common import Registry, AppLocation, check_directory_exists, translate
-from openlp.core.ui.wizard import WizardStrings
+from openlp.core.ui.lib.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -371,7 +371,7 @@ class SongImport(QtCore.QObject):
             song_book = self.manager.get_object_filtered(Book, Book.name == self.song_book_name)
             if song_book is None:
                 song_book = Book.populate(name=self.song_book_name, publisher=self.song_book_pub)
-            song.book = song_book
+            song.add_songbook_entry(song_book, song.song_number)
         for topic_text in self.topics:
             if not topic_text:
                 continue

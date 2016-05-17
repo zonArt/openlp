@@ -30,13 +30,14 @@ from xml.etree.ElementTree import ElementTree, XML
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, RegistryProperties, AppLocation, Settings, OpenLPMixin, RegistryMixin, \
-    check_directory_exists, UiStrings, translate, is_win
-from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, ValidationError, get_text_file_string, build_icon, \
+    check_directory_exists, UiStrings, translate, is_win, get_filesystem_encoding, delete_file
+from openlp.core.lib import FileDialog, ImageSource, ValidationError, get_text_file_string, build_icon, \
     check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
 from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import delete_file, get_locale_key, get_filesystem_encoding
+from openlp.core.ui.lib import OpenLPToolbar
+from openlp.core.common.languagemanager import get_locale_key
 
 
 class Ui_ThemeManager(object):
@@ -299,7 +300,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         """
         save_to = None
         save_from = None
-        if theme_data.background_type == 'image':
+        if theme_data.background_type == 'image' or theme_data.background_type == 'video':
             save_to = os.path.join(self.path, new_theme_name, os.path.split(str(theme_data.background_filename))[1])
             save_from = theme_data.background_filename
         theme_data.theme_name = new_theme_name
@@ -317,7 +318,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                                translate('OpenLP.ThemeManager', 'You must select a theme to edit.')):
             item = self.theme_list_widget.currentItem()
             theme = self.get_theme_data(item.data(QtCore.Qt.UserRole))
-            if theme.background_type == 'image':
+            if theme.background_type == 'image' or theme.background_type == 'video':
                 self.old_background_image = theme.background_filename
             self.theme_form.theme = theme
             self.theme_form.exec(True)
@@ -760,8 +761,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                     used_count = plugin.uses_theme(theme)
                     if used_count:
                         plugin_usage = "%s%s" % (plugin_usage, (translate('OpenLP.ThemeManager',
-                                                                          '%s time(s) by %s') %
-                                                                (used_count, plugin.name)))
+                                                                          '%(count)s time(s) by %(plugin)s') %
+                                                                {'count': used_count, 'plugin': plugin.name}))
                         plugin_usage = "%s\n" % plugin_usage
                 if plugin_usage:
                     critical_error_message_box(translate('OpenLP.ThemeManager', 'Unable to delete theme'),

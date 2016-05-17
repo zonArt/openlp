@@ -56,6 +56,7 @@ class UiStrings(object):
         self.AllFiles = translate('OpenLP.Ui', 'All Files')
         self.Automatic = translate('OpenLP.Ui', 'Automatic')
         self.BackgroundColor = translate('OpenLP.Ui', 'Background Color')
+        self.BackgroundColorColon = translate('OpenLP.Ui', 'Background color:')
         self.Bottom = translate('OpenLP.Ui', 'Bottom')
         self.Browse = translate('OpenLP.Ui', 'Browse...')
         self.Cancel = translate('OpenLP.Ui', 'Cancel')
@@ -79,6 +80,7 @@ class UiStrings(object):
         self.Export = translate('OpenLP.Ui', 'Export')
         self.File = translate('OpenLP.Ui', 'File')
         self.FileNotFound = translate('OpenLP.Ui', 'File Not Found')
+        # TODO: Check before converting to python3 string
         self.FileNotFoundMessage = translate('OpenLP.Ui', 'File %s not found.\nPlease try selecting it individually.')
         self.FontSizePtUnit = translate('OpenLP.Ui', 'pt', 'Abbreviated font pointsize unit')
         self.Help = translate('OpenLP.Ui', 'Help')
@@ -109,8 +111,8 @@ class UiStrings(object):
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
         self.NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
         self.OLP = translate('OpenLP.Ui', 'OpenLP')
-        self.OLPV2 = "%s %s" % (self.OLP, "2")
-        self.OLPV2x = "%s %s" % (self.OLP, "2.4")
+        self.OLPV2 = "{name} {version}".format(name=self.OLP, version="2")
+        self.OLPV2x = "{name} {version}".format(name=self.OLP, version="2.4")
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. Do you wish to continue?')
         self.OpenService = translate('OpenLP.Ui', 'Open service.')
         self.PlaySlidesInLoop = translate('OpenLP.Ui', 'Play Slides in Loop')
@@ -138,6 +140,7 @@ class UiStrings(object):
         self.Split = translate('OpenLP.Ui', 'Optional &Split')
         self.SplitToolTip = translate('OpenLP.Ui',
                                       'Split a slide into two only if it does not fit on the screen as one slide.')
+        # TODO: Check before converting to python3 string
         self.StartTimeCode = translate('OpenLP.Ui', 'Start %s')
         self.StopPlaySlidesInLoop = translate('OpenLP.Ui', 'Stop Play Slides in Loop')
         self.StopPlaySlidesToEnd = translate('OpenLP.Ui', 'Stop Play Slides to End')
@@ -151,3 +154,4 @@ class UiStrings(object):
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
+        self.Video = translate('OpenLP.Ui', 'Video')
