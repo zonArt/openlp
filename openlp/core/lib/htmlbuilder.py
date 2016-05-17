@@ -678,7 +678,7 @@ def build_lyrics_css(item):
         lyricsmain += build_lyrics_outline_css(theme_data)
         if theme_data.font_main_shadow:
             lyricsmain += ' text-shadow: {theme} {shadow}px ' \
-                '{shadow}px;'.format(theme=teme_data.font_main_shadow_color,
+                '{shadow}px;'.format(theme=theme_data.font_main_shadow_color,
                                      shadow=theme_data.font_main_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain)
     return lyrics_css
