@@ -111,6 +111,17 @@ class TestCategoryActionList(TestCase):
         self.assertEqual(self.list.actions[0], (41, self.action2))
         self.assertEqual(self.list.actions[1], (42, self.action1))
 
+    def iterator_test(self):
+        """
+        Test the __iter__ and __next__ methods
+        """
+        self.list.add(self.action1)
+        self.list.add(self.action2)
+
+        l = [a for a in self.list]
+        self.assertIs(l[0], self.action1)
+        self.assertIs(l[1], self.action2)
+
     def remove_test(self):
         """
         Test the remove() method
