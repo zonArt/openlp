@@ -93,6 +93,7 @@ MODULES = [
     'bs4',
     'mako',
     'uno',
+    'six'
 ]
 
 

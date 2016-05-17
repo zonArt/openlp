@@ -221,9 +221,13 @@ class HttpRouter(RegistryProperties):
         self.request_data = None
         url_path_split = urlparse(url_path)
         url_query = parse_qs(url_path_split.query)
-        # GET
-        if 'data' in url_query.keys():
-            self.request_data = url_query['data'][0]
+        # Get data from HTTP request
+        if self.command == 'GET':
+            if 'data' in url_query.keys():
+                self.request_data = url_query['data'][0]
+        elif self.command == 'POST':
+            content_len = int(self.headers['content-length'])
+            self.request_data = self.rfile.read(content_len).decode("utf-8")
         for route, func in self.routes:
             match = re.match(route, url_path_split.path)
             if match:
@@ -401,10 +405,8 @@ class HttpRouter(RegistryProperties):
         log.debug('serve file request %s' % file_name)
         if not file_name:
             file_name = 'index.html'
-        elif file_name == 'stage':
-            file_name = 'stage.html'
-        elif file_name == 'main':
-            file_name = 'main.html'
+        if '.' not in file_name:
+            file_name += '.html'
         if file_name.startswith('/'):
             file_name = file_name[1:]
         path = os.path.normpath(os.path.join(self.html_dir, file_name))
