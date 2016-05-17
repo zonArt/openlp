@@ -1326,6 +1326,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         visible = not self.renderer.theme_level == ThemeLevel.Global
         self.toolbar.actions['theme_combo_box'].setVisible(visible)
         self.toolbar.actions['theme_label'].setVisible(visible)
+        self.regenerate_service_items()
+
 
     def regenerate_service_items(self, changed=False):
         """

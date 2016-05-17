@@ -236,7 +236,7 @@ class ImageManager(QtCore.QObject):
         """
         Return the ``QImage`` from the cache. If not present wait for the background thread to process it.
         """
-        log.debug('getImage %s' % path)
+        log.debug('getImage {path}'.format(path=path))
         image = self._cache[(path, source, width, height)]
         if image.image is None:
             self._conversion_queue.modify_priority(image, Priority.High)
@@ -256,7 +256,7 @@ class ImageManager(QtCore.QObject):
         """
         Returns the byte string for an image. If not present wait for the background thread to process it.
         """
-        log.debug('get_image_bytes %s' % path)
+        log.debug('get_image_bytes {path}'.format(path=path))
         image = self._cache[(path, source, width, height)]
         if image.image_bytes is None:
             self._conversion_queue.modify_priority(image, Priority.Urgent)
@@ -271,7 +271,7 @@ class ImageManager(QtCore.QObject):
         """
         Add image to cache if it is not already there.
         """
-        log.debug('add_image %s' % path)
+        log.debug('add_image {path}'.format(path=path))
         if not (path, source, width, height) in self._cache:
             image = Image(path, source, background, width, height)
             self._cache[(path, source, width, height)] = image
