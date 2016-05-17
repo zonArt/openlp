@@ -78,7 +78,7 @@ class ScreenList(object):
         ``number``
             The number of the screen, which size has changed.
         """
-        log.info('screen_resolution_changed %d' % number)
+        log.info('screen_resolution_changed {number:d}'.format(number=number))
         for screen in self.screen_list:
             if number == screen['number']:
                 new_screen = {
@@ -105,7 +105,7 @@ class ScreenList(object):
         """
         # Do not log at start up.
         if changed_screen != -1:
-            log.info('screen_count_changed %d' % self.desktop.screenCount())
+            log.info('screen_count_changed {count:d}'.format(count=self.desktop.screenCount()))
         # Remove unplugged screens.
         for screen in copy.deepcopy(self.screen_list):
             if screen['number'] == self.desktop.screenCount():
@@ -132,9 +132,11 @@ class ScreenList(object):
         """
         screen_list = []
         for screen in self.screen_list:
-            screen_name = '%s %d' % (translate('OpenLP.ScreenList', 'Screen'), screen['number'] + 1)
+            screen_name = '{name} {number:d}'.format(name=translate('OpenLP.ScreenList', 'Screen'),
+                                                     number=screen['number'] + 1)
             if screen['primary']:
-                screen_name = '%s (%s)' % (screen_name, translate('OpenLP.ScreenList', 'primary'))
+                screen_name = '{name} ({primary})'.format(name=screen_name,
+                                                          primary=translate('OpenLP.ScreenList', 'primary'))
             screen_list.append(screen_name)
         return screen_list
 
@@ -152,7 +154,7 @@ class ScreenList(object):
                     'size': PyQt5.QtCore.QRect(0, 0, 1024, 768)
                 }
         """
-        log.info('Screen %d found with resolution %s' % (screen['number'], screen['size']))
+        log.info('Screen {number:d} found with resolution {size}'.format(number=screen['number'], size=screen['size']))
         if screen['primary']:
             self.current = screen
             self.override = copy.deepcopy(self.current)
@@ -165,7 +167,7 @@ class ScreenList(object):
 
         :param number: The screen number (int).
         """
-        log.info('remove_screen %d' % number)
+        log.info('remove_screen {number:d}'.forma(number=number))
         for screen in self.screen_list:
             if screen['number'] == number:
                 self.screen_list.remove(screen)
@@ -189,7 +191,7 @@ class ScreenList(object):
 
         :param number: The screen number (int).
         """
-        log.debug('set_current_display %s' % number)
+        log.debug('set_current_display {number}'.format(number=number))
         if number + 1 > self.display_count:
             self.current = self.screen_list[0]
         else:

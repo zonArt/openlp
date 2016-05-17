@@ -107,7 +107,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
 
         :param theme_name: The theme name
         """
-        self.log_debug("_set_theme with theme %s" % theme_name)
+        self.log_debug("_set_theme with theme {theme}".format(theme=theme_name))
         if theme_name not in self._theme_dimensions:
             theme_data = self.theme_manager.get_theme_data(theme_name)
             main_rect = self.get_main_rectangle(theme_data)
@@ -183,7 +183,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
 
         :param item_theme_name: The item theme's name.
         """
-        self.log_debug("set_item_theme with theme %s" % item_theme_name)
+        self.log_debug("set_item_theme with theme {theme}".format(theme=item_theme_name))
         self._set_theme(item_theme_name)
         self.item_theme_name = item_theme_name
 
@@ -317,7 +317,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         self.width = screen_size.width()
         self.height = screen_size.height()
         self.screen_ratio = self.height / self.width
-        self.log_debug('_calculate default %s, %f' % (screen_size, self.screen_ratio))
+        self.log_debug('_calculate default {size}, {ratio:f}'.format(size=screen_size, ratio=self.screen_ratio))
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
 
@@ -354,7 +354,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         :param rect_main: The main text block.
         :param rect_footer: The footer text block.
         """
-        self.log_debug('_set_text_rectangle %s , %s' % (rect_main, rect_footer))
+        self.log_debug('_set_text_rectangle {main} , {footer}'.format(main=rect_main, footer=rect_footer))
         self._rect = rect_main
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
@@ -370,6 +370,7 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css.
+        # TODO: Verify before converting to python3 strings
         html = """<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
                 var main = document.getElementById('main');
@@ -518,7 +519,8 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
 
         :param text:  The text to check. It may contain HTML tags.
         """
-        self.web_frame.evaluateJavaScript('show_text("%s")' % text.replace('\\', '\\\\').replace('\"', '\\\"'))
+        self.web_frame.evaluateJavaScript('show_text'
+                                          '("{text}")'.format(text=text.replace('\\', '\\\\').replace('\"', '\\\"')))
         return self.web_frame.contentsSize().height() <= self.empty_height
 
 

@@ -427,7 +427,7 @@ class ThemeXML(object):
         try:
             theme_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
-            log.exception('Invalid xml %s', xml)
+            log.exception('Invalid xml {text}'.format(text=xml))
             return
         xml_iter = theme_xml.getiterator()
         for element in xml_iter:
@@ -513,6 +513,7 @@ class ThemeXML(object):
         theme_strings = []
         for key in dir(self):
             if key[0:1] != '_':
+                # TODO: Verify spacing format before converting to python3 string
                 theme_strings.append('%30s: %s' % (key, getattr(self, key)))
         return '\n'.join(theme_strings)
 
