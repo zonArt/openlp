@@ -63,6 +63,7 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
         # Initialize variables.
         self.service_item = ServiceItem()
         self.screen_ratio = screen_ratio
+        self.auto_row_height = 100
         # Connect signals
         self.verticalHeader().sectionResized.connect(self.row_resized)
 
@@ -87,8 +88,14 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                 height = self.viewport().width() // self.screen_ratio
                 max_img_row_height = Settings().value('advanced/slide max height')
                 # Adjust for row height cap if in use.
-                if isinstance(max_img_row_height, int) and max_img_row_height > 0 and height > max_img_row_height:
-                    height = max_img_row_height
+                if isinstance(max_img_row_height, int):
+                    if max_img_row_height > 0 and height > max_img_row_height:
+                        height = max_img_row_height
+                    elif max_img_row_height < 0:
+                        # If auto setting, show that number of slides, or if the resulting slides too small, 100px.
+                        # E.g. If setting is -4, 4 slides will be visible, unless those slides are < 100px high.
+                        self.auto_row_height = max(self.viewport().height() / (-1 * max_img_row_height), 100)
+                        height = min(height, self.auto_row_height)
                 # Apply new height to slides
                 for frame_number in range(len(self.service_item.get_frames())):
                     self.setRowHeight(frame_number, height)
@@ -99,7 +106,7 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
         """
         # Only for non-text slides when row height cap in use
         max_img_row_height = Settings().value('advanced/slide max height')
-        if self.service_item.is_text() or not isinstance(max_img_row_height, int) or max_img_row_height <= 0:
+        if self.service_item.is_text() or not isinstance(max_img_row_height, int) or max_img_row_height == 0:
             return
         # Get and validate label widget containing slide & adjust max width
         try:
@@ -165,11 +172,13 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                 slide_height = width // self.screen_ratio
                 # Setup and validate row height cap if in use.
                 max_img_row_height = Settings().value('advanced/slide max height')
-                if isinstance(max_img_row_height, int) and max_img_row_height > 0:
-                    if slide_height > max_img_row_height:
+                if isinstance(max_img_row_height, int) and max_img_row_height != 0:
+                    if max_img_row_height > 0 and slide_height > max_img_row_height:
                         slide_height = max_img_row_height
-                    label.setMaximumWidth(max_img_row_height * self.screen_ratio)
-                    label.resize(max_img_row_height * self.screen_ratio, max_img_row_height)
+                    elif max_img_row_height < 0 and slide_height > self.auto_row_height:
+                        slide_height = self.auto_row_height
+                    label.setMaximumWidth(slide_height * self.screen_ratio)
+                    label.resize(slide_height * self.screen_ratio, slide_height)
                     # Build widget with stretch padding
                     container = QtWidgets.QWidget()
                     hbox = QtWidgets.QHBoxLayout()
