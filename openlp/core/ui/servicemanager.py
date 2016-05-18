@@ -1328,7 +1328,6 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         self.toolbar.actions['theme_label'].setVisible(visible)
         self.regenerate_service_items()
 
-
     def regenerate_service_items(self, changed=False):
         """
         Rebuild the service list as things have changed and a repaint is the easiest way to do this.

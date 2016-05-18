@@ -431,7 +431,6 @@ class TestLib(TestCase):
         thumb_size = QtCore.QSize(-1, 100)
         expected_size_1 = QtCore.QSize(88, 88)
         expected_size_2 = QtCore.QSize(100, 100)
-        
 
         # Remove the thumb so that the test actually tests if the thumb will be created. Maybe it was not deleted in the
         # last test.
@@ -458,7 +457,7 @@ class TestLib(TestCase):
         with patch('openlp.core.lib.QtGui.QImageReader.size') as mocked_size:
             mocked_size.return_value = QtCore.QSize(0, 0)
             icon = create_thumb(image_path, thumb_path, size=thumb_size)
-        
+
         # THEN: Check if the thumb was created with aspect ratio of 1.
         self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
         self.assertFalse(icon.isNull(), 'The icon should not be null')
