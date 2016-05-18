@@ -94,6 +94,7 @@ class TestRouter(TestCase, TestMixin):
             (r'^/stage/api/poll$', {'function': mocked_function, 'secure': False}),
         ]
         self.router.routes = test_route
+        self.router.command = 'GET'
 
         # WHEN: called with a poll route
         function, args = self.router.process_http_request('/stage/api/poll', None)
@@ -121,6 +122,7 @@ class TestRouter(TestCase, TestMixin):
         self.router.send_header = MagicMock()
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
+        self.router.command = 'GET'
 
         # WHEN: called with a poll route
         self.router.do_post_processor()
@@ -205,6 +207,29 @@ class TestRouter(TestCase, TestMixin):
 
             # WHEN: call serve_file with an existing html file
             self.router.serve_file(os.path.normpath('test/dir/test.html'))
+
+            # THEN: it should return a 200 and the file
+            self.router.send_response.assert_called_once_with(200)
+            self.router.send_header.assert_called_once_with('Content-type', 'text/html')
+            self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
+
+    def serve_file_with_partial_params_test(self):
+        """
+        Test the serve_file method with an existing file
+        """
+        # GIVEN: mocked environment
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        self.router.html_dir = os.path.normpath('test/dir')
+        self.router.template_vars = MagicMock()
+        with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
+                patch('builtins.open', mock_open(read_data='123')):
+            mocked_exists.return_value = True
+
+            # WHEN: call serve_file with an existing html file
+            self.router.serve_file(os.path.normpath('test/dir/test'))
 
             # THEN: it should return a 200 and the file
             self.router.send_response.assert_called_once_with(200)
