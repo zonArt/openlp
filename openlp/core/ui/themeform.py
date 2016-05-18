@@ -31,7 +31,7 @@ from openlp.core.common import Registry, RegistryProperties, UiStrings, translat
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
-from openlp.core.ui.lib.colorbutton import ColorButton
+from openlp.core.ui.media.webkitplayer import VIDEO_EXT
 from .themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
@@ -66,10 +66,13 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         self.gradient_combo_box.currentIndexChanged.connect(self.on_gradient_combo_box_current_index_changed)
         self.color_button.colorChanged.connect(self.on_color_changed)
         self.image_color_button.colorChanged.connect(self.on_image_color_changed)
+        self.video_color_button.colorChanged.connect(self.on_video_color_changed)
         self.gradient_start_button.colorChanged.connect(self.on_gradient_start_color_changed)
         self.gradient_end_button.colorChanged.connect(self.on_gradient_end_color_changed)
         self.image_browse_button.clicked.connect(self.on_image_browse_button_clicked)
         self.image_file_edit.editingFinished.connect(self.on_image_file_edit_editing_finished)
+        self.video_browse_button.clicked.connect(self.on_video_browse_button_clicked)
+        self.video_file_edit.editingFinished.connect(self.on_video_file_edit_editing_finished)
         self.main_color_button.colorChanged.connect(self.on_main_color_changed)
         self.outline_color_button.colorChanged.connect(self.on_outline_color_changed)
         self.shadow_color_button.colorChanged.connect(self.on_shadow_color_changed)
@@ -307,6 +310,10 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
             self.image_color_button.color = self.theme.background_border_color
             self.image_file_edit.setText(self.theme.background_filename)
             self.setField('background_type', 2)
+        elif self.theme.background_type == BackgroundType.to_string(BackgroundType.Video):
+            self.video_color_button.color = self.theme.background_border_color
+            self.video_file_edit.setText(self.theme.background_filename)
+            self.setField('background_type', 4)
         elif self.theme.background_type == BackgroundType.to_string(BackgroundType.Transparent):
             self.setField('background_type', 3)
         if self.theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
@@ -384,10 +391,12 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         if self.update_theme_allowed:
             self.theme.background_type = BackgroundType.to_string(index)
             if self.theme.background_type != BackgroundType.to_string(BackgroundType.Image) and \
+                    self.theme.background_type != BackgroundType.to_string(BackgroundType.Video) and \
                     self.temp_background_filename == '':
                 self.temp_background_filename = self.theme.background_filename
                 self.theme.background_filename = ''
-            if self.theme.background_type == BackgroundType.to_string(BackgroundType.Image) and \
+            if (self.theme.background_type == BackgroundType.to_string(BackgroundType.Image) or
+                    self.theme.background_type != BackgroundType.to_string(BackgroundType.Video)) and \
                     self.temp_background_filename != '':
                 self.theme.background_filename = self.temp_background_filename
                 self.temp_background_filename = ''
@@ -408,6 +417,12 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         self.theme.background_color = color
 
     def on_image_color_changed(self, color):
+        """
+        Background / Gradient 1 _color button pushed.
+        """
+        self.theme.background_border_color = color
+
+    def on_video_color_changed(self, color):
         """
         Background / Gradient 1 _color button pushed.
         """
@@ -441,6 +456,28 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
     def on_image_file_edit_editing_finished(self):
         """
         Background image path edited
+        """
+        self.theme.background_filename = str(self.image_file_edit.text())
+
+    def on_video_browse_button_clicked(self):
+        """
+        Background video button pushed.
+        """
+        visible_formats = '(%s)' % '; '.join(VIDEO_EXT)
+        actual_formats = '(%s)' % ' '.join(VIDEO_EXT)
+        video_filter = '{trans} {visible} {actual}'.format(trans=translate('OpenLP', 'Video Files'),
+                                                           visible=visible_formats, actual=actual_formats)
+        video_filter = '{video};;{ui} (*.*)'.format(video=video_filter, ui=UiStrings().AllFiles)
+        filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(
+            self, translate('OpenLP.ThemeWizard', 'Select Video'),
+            self.video_file_edit.text(), video_filter)
+        if filename:
+            self.theme.background_filename = filename
+        self.set_background_page_values()
+
+    def on_video_file_edit_editing_finished(self):
+        """
+        Background video path edited
         """
         self.theme.background_filename = str(self.image_file_edit.text())
 
@@ -519,7 +556,8 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
             return
         save_from = None
         save_to = None
-        if self.theme.background_type == BackgroundType.to_string(BackgroundType.Image):
+        if self.theme.background_type == BackgroundType.to_string(BackgroundType.Image) or \
+           self.theme.background_type == BackgroundType.to_string(BackgroundType.Video):
             filename = os.path.split(str(self.theme.background_filename))[1]
             save_to = os.path.join(self.path, self.theme.theme_name, filename)
             save_from = self.theme.background_filename

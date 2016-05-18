@@ -83,7 +83,7 @@ def get_media_players():
     reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
     if Settings().value('media/override player') == QtCore.Qt.Checked:
         if reg_ex.exactMatch(saved_players):
-            overridden_player = '%s' % reg_ex.cap(1)
+            overridden_player = '{text}'.format(text=reg_ex.cap(1))
         else:
             overridden_player = 'auto'
     else:
@@ -102,7 +102,7 @@ def set_media_players(players_list, overridden_player='auto'):
     log.debug('set_media_players')
     players = ','.join(players_list)
     if Settings().value('media/override player') == QtCore.Qt.Checked and overridden_player != 'auto':
-        players = players.replace(overridden_player, '[%s]' % overridden_player)
+        players = players.replace(overridden_player, '[{text}]'.format(text=overridden_player))
     Settings().setValue('media/players', players)
 
 
@@ -113,7 +113,7 @@ def parse_optical_path(input_string):
     :param input_string: The string to parse
     :return: The elements extracted from the string:  filename, title, audio_track, subtitle_track, start, end
     """
-    log.debug('parse_optical_path, about to parse: "%s"' % input_string)
+    log.debug('parse_optical_path, about to parse: "{text}"'.format(text=input_string))
     clip_info = input_string.split(sep=':')
     title = int(clip_info[1])
     audio_track = int(clip_info[2])
@@ -137,7 +137,10 @@ def format_milliseconds(milliseconds):
     seconds, millis = divmod(milliseconds, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
-    return "%02d:%02d:%02d,%03d" % (hours, minutes, seconds, millis)
+    return "{hours:02d}:{minutes:02d}:{seconds:02d},{millis:03d}".format(hours=hours,
+                                                                         minutes=minutes,
+                                                                         seconds=seconds,
+                                                                         millis=millis)
 
 from .mediacontroller import MediaController
 from .playertab import PlayerTab

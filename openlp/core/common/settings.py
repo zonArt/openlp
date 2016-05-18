@@ -487,16 +487,16 @@ class Settings(QtCore.QSettings):
         # Do NOT do this anywhere else!
         settings = QtCore.QSettings(self.fileName(), Settings.IniFormat)
         settings.beginGroup(plugin.settings_section)
-        if settings.contains('%s count' % plugin.name):
+        if settings.contains('{name} count'.format(name=plugin.name)):
             # Get the count.
-            list_count = int(settings.value('%s count' % plugin.name, 0))
+            list_count = int(settings.value('{name} count'.format(name=plugin.name), 0))
             if list_count:
                 for counter in range(list_count):
                     # The keys were named e. g.: "image 0"
-                    item = settings.value('%s %d' % (plugin.name, counter), '')
+                    item = settings.value('{name} {counter:d}'.format(name=plugin.name, counter=counter), '')
                     if item:
                         files_list.append(item)
-                    settings.remove('%s %d' % (plugin.name, counter))
-            settings.remove('%s count' % plugin.name)
+                    settings.remove('{name} {counter:d}'.format(name=plugin.name, counter=counter))
+            settings.remove('{name} count'.format(name=plugin.name))
         settings.endGroup()
         return files_list

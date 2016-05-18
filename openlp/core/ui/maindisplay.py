@@ -31,13 +31,15 @@ Some of the code for this form is based on the examples at:
 
 import html
 import logging
+import os
 
 from PyQt5 import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets, QtOpenGL, QtGui, QtMultimedia
 
-from openlp.core.common import Registry, RegistryProperties, OpenLPMixin, Settings, translate, is_macosx, is_win
+from openlp.core.common import AppLocation, Registry, RegistryProperties, OpenLPMixin, Settings, translate,\
+    is_macosx, is_win
 from openlp.core.lib import ServiceItem, ImageSource, ScreenList, build_html, expand_tags, image_to_byte
 from openlp.core.lib.theme import BackgroundType
-from openlp.core.ui import HideMode, AlertLocation
+from openlp.core.ui import HideMode, AlertLocation, DisplayControllerType
 
 if is_macosx():
     from ctypes import pythonapi, c_void_p, c_char_p, py_object
@@ -459,13 +461,13 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                 background = self.image_manager.get_image_bytes(self.override['image'], ImageSource.ImagePlugin)
         self.set_transparency(self.service_item.theme_data.background_type ==
                               BackgroundType.to_string(BackgroundType.Transparent))
-        if self.service_item.theme_data.background_filename:
-            self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(
-                self.service_item.theme_data.background_filename, ImageSource.Theme)
-        if image_path:
-            image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
-        else:
-            image_bytes = None
+        image_bytes = None
+        if self.service_item.theme_data.background_type == 'image':
+            if self.service_item.theme_data.background_filename:
+                self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(
+                    self.service_item.theme_data.background_filename, ImageSource.Theme)
+            if image_path:
+                image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
         html = build_html(self.service_item, self.screen, self.is_live, background, image_bytes,
                           plugins=self.plugin_manager.plugins)
         self.web_view.setHtml(html)
@@ -477,6 +479,17 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                 Registry().execute('slidecontroller_live_unblank')
             else:
                 self.hide_display(self.hide_mode)
+        if self.service_item.theme_data.background_type == 'video' and self.is_live:
+            if self.service_item.theme_data.background_filename:
+                service_item = ServiceItem()
+                service_item.title = 'webkit'
+                service_item.processor = 'webkit'
+                path = os.path.join(AppLocation.get_section_data_path('themes'),
+                                    self.service_item.theme_data.theme_name)
+                service_item.add_from_command(path,
+                                              self.service_item.theme_data.background_filename,
+                                              ':/media/slidecontroller_multimedia.png')
+                self.media_controller.video(DisplayControllerType.Live, service_item, video_behind_text=True)
         self._hide_mouse()
 
     def footer(self, text):

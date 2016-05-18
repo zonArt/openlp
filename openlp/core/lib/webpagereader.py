@@ -133,37 +133,37 @@ def get_web_page(url, header=None, update_openlp=False):
         time.sleep(0.1)
         try:
             page = urllib.request.urlopen(req, timeout=CONNECTION_TIMEOUT)
-            log.debug('Downloaded page {}'.format(page.geturl()))
+            log.debug('Downloaded page {text}'.format(text=page.geturl()))
             break
         except urllib.error.URLError as err:
-            log.exception('URLError on {}'.format(url))
-            log.exception('URLError: {}'.format(err.reason))
+            log.exception('URLError on {text}'.format(text=url))
+            log.exception('URLError: {text}'.format(text=err.reason))
             page = None
             if retries > CONNECTION_RETRIES:
                 raise
         except socket.timeout:
-            log.exception('Socket timeout: {}'.format(url))
+            log.exception('Socket timeout: {text}'.format(text=url))
             page = None
             if retries > CONNECTION_RETRIES:
                 raise
         except socket.gaierror:
-            log.exception('Socket gaierror: {}'.format(url))
+            log.exception('Socket gaierror: {text}'.format(text=url))
             page = None
             if retries > CONNECTION_RETRIES:
                 raise
         except ConnectionRefusedError:
-            log.exception('ConnectionRefused: {}'.format(url))
+            log.exception('ConnectionRefused: {text}'.format(text=url))
             page = None
             if retries > CONNECTION_RETRIES:
                 raise
             break
         except ConnectionError:
-            log.exception('Connection error: {}'.format(url))
+            log.exception('Connection error: {text}'.format(text=url))
             page = None
             if retries > CONNECTION_RETRIES:
                 raise
         except HTTPException:
-            log.exception('HTTPException error: {}'.format(url))
+            log.exception('HTTPException error: {text}'.format(text=url))
             page = None
             if retries > CONNECTION_RETRIES:
                 raise
@@ -173,7 +173,7 @@ def get_web_page(url, header=None, update_openlp=False):
     if update_openlp:
         Registry().get('application').process_events()
     if not page:
-        log.exception('{} could not be downloaded'.format(url))
+        log.exception('{text} could not be downloaded'.format(text=url))
         return None
     log.debug(page)
     return page

@@ -60,7 +60,8 @@ class SettingsForm(QtWidgets.QDialog, Ui_SettingsDialog, RegistryProperties):
         """
         Execute the form
         """
-        # load all the settings
+        # load all the
+        self.setting_list_widget.blockSignals(True)
         self.setting_list_widget.clear()
         while self.stacked_layout.count():
             # take at 0 and the rest shuffle up.
@@ -74,6 +75,7 @@ class SettingsForm(QtWidgets.QDialog, Ui_SettingsDialog, RegistryProperties):
             if plugin.settings_tab:
                 self.insert_tab(plugin.settings_tab, plugin.is_active())
         self.setting_list_widget.setCurrentRow(0)
+        self.setting_list_widget.blockSignals(False)
         return QtWidgets.QDialog.exec(self)
 
     def insert_tab(self, tab_widget, is_visible=True):
@@ -177,6 +179,7 @@ class SettingsForm(QtWidgets.QDialog, Ui_SettingsDialog, RegistryProperties):
             # Check that the title of the tab (i.e. plugin name) is the same as the data in the list item
             if tab_widget.tab_title == list_item.data(QtCore.Qt.UserRole):
                 # Make the matching tab visible
+                tab_widget.tab_visited = True
                 self.stacked_layout.setCurrentIndex(tab_index)
                 self.stacked_layout.currentWidget().tab_visible()
 
