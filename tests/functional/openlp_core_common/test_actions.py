@@ -118,7 +118,7 @@ class TestCategoryActionList(TestCase):
         # GIVEN: The list including two actions
         self.list.add(self.action1)
         self.list.add(self.action2)
-        
+
         # WHEN: Iterating over the list
         l = [a for a in self.list]
         # THEN: Make sure they are returned in correct order
