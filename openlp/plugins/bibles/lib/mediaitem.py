@@ -669,7 +669,7 @@ class BibleMediaItem(MediaManagerItem):
         second_bible = self.quickSecondComboBox.currentText()
         """
         Get input from field and replace 'A-Z + . ' with ''
-        This will check if field has any '.' after A-Z and removes them. Eg. Gen. 1 = Gen 1 = Genesis 1
+        This will check if field has any '.' after A-Z and removes them. Eg. Gen. 1 = Ge 1 = Genesis 1
         If Book name has '.' after number. eg. 1. Genesis, the search fails without the dot, and vice versa.
         A better solution would be to make '.' optional in the search results. Current solution was easier to code.
         """
@@ -761,8 +761,8 @@ class BibleMediaItem(MediaManagerItem):
             self.on_quick_text_search()
             if not self.search_results and len(text) - text.count(' ') < 3 and bible:
                 self.main_window.information_message(
-                    ('%s' % UiStrings().BibleShortSearchTitle),
-                    ('%s' % UiStrings().BibleShortSearch))
+                    UiStrings().BibleShortSearchTitle,
+                    UiStrings().BibleShortSearch)
         elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
             # We are doing a 'Combined search'. Starting with reference search.
             # Perform only if text contains any numbers
@@ -775,8 +775,8 @@ class BibleMediaItem(MediaManagerItem):
             # if no Bibles are installed, this message is not shown - "No bibles" message is shown instead. (and bible)
             if not self.search_results and len(text) - text.count(' ') < 3 and bible:
                 self.main_window.information_message(
-                    ('%s' % UiStrings().BibleShortSearchTitle),
-                    ('%s' % UiStrings().BibleShortSearch))
+                    UiStrings().BibleShortSearchTitle,
+                    UiStrings().BibleShortSearch)
             if not self.search_results and len(text) - text.count(' ') > 2 and bible:
                 # Text search starts here if no reference was found and keyword is longer than 2.
                 #  > 2 check is required in order to avoid duplicate error messages for short keywords.
