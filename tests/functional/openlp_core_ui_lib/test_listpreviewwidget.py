@@ -251,10 +251,10 @@ class TestListPreviewWidget(TestCase):
         # Change viewport width before forcing a resize
         self.mocked_viewport_obj.width.return_value = 400
 
-        # WHEN: __recalculate_layout() is called (via resizeEvent)
-        list_preview_widget.resizeEvent(None)
+        # WHEN: __recalculate_layout() is called (via screen_size_changed)
+        list_preview_widget.screen_size_changed(1)
         self.mocked_viewport_obj.height.return_value = 200
-        list_preview_widget.resizeEvent(None)
+        list_preview_widget.screen_size_changed(1)
 
         # THEN: resizeRowsToContents() should not be called, while setRowHeight() should be called
         #       twice for each slide.
@@ -368,6 +368,41 @@ class TestListPreviewWidget(TestCase):
 
         # THEN: self.cellWidget(row, 0).children()[1].setMaximumWidth() should be called
         mocked_cellWidget_child.setMaximumWidth.assert_called_once_with(150)
+
+    @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
+    @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
+    @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.cellWidget')
+    def row_resized_test_setting_changed(self, mocked_cellWidget, mocked_setRowHeight, mocked_resizeRowsToContents):
+        """
+        Test if "Max height for non-text slides..." enabled while item live, program doesn't crash on row_resized.
+        """
+        # GIVEN: A setting to adjust "Max height for non-text slides in slide controller",
+        #        an image ServiceItem and a ListPreviewWidget.
+
+        # Mock Settings().value('advanced/slide max height')
+        self.mocked_Settings_obj.value.return_value = 0
+        # Mock self.viewport().width()
+        self.mocked_viewport_obj.width.return_value = 200
+        # Mock image service item
+        service_item = MagicMock()
+        service_item.is_text.return_value = False
+        service_item.is_capable.return_value = False
+        service_item.get_frames.return_value = [{'title': None, 'path': None, 'image': None},
+                                                {'title': None, 'path': None, 'image': None}]
+        # Mock self.cellWidget().children()
+        mocked_cellWidget_obj = MagicMock()
+        mocked_cellWidget_obj.children.return_value = None
+        mocked_cellWidget.return_value = mocked_cellWidget_obj
+        # init ListPreviewWidget and load service item
+        list_preview_widget = ListPreviewWidget(None, 1)
+        list_preview_widget.replace_service_item(service_item, 200, 0)
+        self.mocked_Settings_obj.value.return_value = 100
+
+        # WHEN: row_resized() is called
+        list_preview_widget.row_resized(0, 100, 150)
+
+        # THEN: self.cellWidget(row, 0).children()[1].setMaximumWidth() should fail
+        self.assertRaises(Exception)
 
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.selectRow')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.scrollToItem')
