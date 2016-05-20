@@ -28,7 +28,7 @@ PREREQUISITE: add_record() and get_all() functions validated.
 import os
 from unittest import TestCase
 
-from openlp.core.lib.projector.db import Manufacturer, Model, Projector, ProjectorDB, ProjectorSource
+from openlp.core.lib.projector.db import Manufacturer, Model, Projector, ProjectorDB, ProjectorSource, Source
 
 from tests.functional import MagicMock, patch
 from tests.resources.projector.data import TEST_DB, TEST1_DATA, TEST2_DATA, TEST3_DATA
@@ -206,3 +206,33 @@ class TestProjectorDB(TestCase):
         # THEN: __repr__ should return a proper string
         self.assertEqual(str(manufacturer), '<Manufacturer(name="OpenLP Test")>',
                          'Manufacturer.__repr__() should have returned a proper representation string')
+
+    def model_repr_test(self):
+        """
+        Test model class __repr__ text
+        """
+        # GIVEN: Test object
+        model = Model()
+
+        # WHEN: Name is set
+        model.name = 'OpenLP Test'
+
+        # THEN: __repr__ should return a proper string
+        self.assertEqual(str(model), '<Model(name='"OpenLP Test"')>',
+                         'Model.__repr__() should have returned a proper representation string')
+
+    def source_repr_test(self):
+        """
+        Test source.__repr__ text
+        """
+        # GIVEN: Test object
+        source = Source()
+
+        # WHEN: Source() information is set
+        source.pjlink_name = 'Test object'
+        source.pjlink_code = '11'
+        source.text = 'Input text'
+
+        # THEN: __repr__ should return a proper string
+        self.assertEqual(str(source), '<Source(pjlink_name="Test object", pjlink_code="11", text="Input text")>',
+                         'Source.__repr__() should have returned a proper representation string')

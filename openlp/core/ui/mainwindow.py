@@ -471,7 +471,8 @@ class Ui_MainWindow(object):
         self.web_site_item.setText(translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.language_group.actions():
             item.setText(item.objectName())
-            item.setStatusTip(translate('OpenLP.MainWindow', 'Set the interface language to %s') % item.objectName())
+            item.setStatusTip(translate('OpenLP.MainWindow',
+                                        'Set the interface language to {name}').format(name=item.objectName()))
         self.auto_language_item.setText(translate('OpenLP.MainWindow', '&Autodetect'))
         self.auto_language_item.setStatusTip(translate('OpenLP.MainWindow', 'Use the system language, if available.'))
         self.tools_add_tool_item.setText(translate('OpenLP.MainWindow', 'Add &Tool...'))
@@ -1334,8 +1335,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
         for file_id, filename in enumerate(recent_files_to_display):
             log.debug('Recent file name: {name}'.format(name=filename))
             # TODO: Verify ''.format() before committing
-            action = create_action(self, '', text='&%d %s' % (file_id + 1,
-                                   os.path.splitext(os.path.basename(str(filename)))[0]), data=filename,
+            action = create_action(self, '',
+                                   text='&{n} {name}'.format(n=file_id + 1,
+                                                             name=os.path.splitext(os.path.basename(str(filename)))[0]),
+                                   data=filename,
                                    triggers=self.service_manager_contents.on_recent_service_clicked)
             self.recent_files_menu.addAction(action)
         clear_recent_files_action = create_action(self, '',

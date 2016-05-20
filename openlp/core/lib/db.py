@@ -68,9 +68,11 @@ def get_db_path(plugin_name, db_file_name=None):
     :return: The path to the database as type str
     """
     if db_file_name is None:
-        return 'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
+        return 'sqlite:///{path}/{plugin}.sqlite'.format(path=AppLocation.get_section_data_path(plugin_name),
+                                                         plugin=plugin_name)
     else:
-        return 'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
+        return 'sqlite:///{path}/{name}'.format(path=AppLocation.get_section_data_path(plugin_name),
+                                                name=db_file_name)
 
 
 def handle_db_error(plugin_name, db_file_name):
@@ -82,10 +84,10 @@ def handle_db_error(plugin_name, db_file_name):
     :return: None
     """
     db_path = get_db_path(plugin_name, db_file_name)
-    log.exception('Error loading database: %s', db_path)
+    log.exception('Error loading database: {db}'.format(db=db_path))
     critical_error_message_box(translate('OpenLP.Manager', 'Database Error'),
-                               translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s')
-                               % db_path)
+                               translate('OpenLP.Manager',
+                                         'OpenLP cannot load your database.\n\nDatabase: {db}').format(db=db_path))
 
 
 def init_url(plugin_name, db_file_name=None):
@@ -101,10 +103,11 @@ def init_url(plugin_name, db_file_name=None):
     if db_type == 'sqlite':
         db_url = get_db_path(plugin_name, db_file_name)
     else:
-        db_url = '%s://%s:%s@%s/%s' % (db_type, urlquote(settings.value('db username')),
-                                       urlquote(settings.value('db password')),
-                                       urlquote(settings.value('db hostname')),
-                                       urlquote(settings.value('db database')))
+        db_url = '{type}://{user}:{password}@{host}/{db}'.format(type=db_type,
+                                                                 user=urlquote(settings.value('db username')),
+                                                                 password=urlquote(settings.value('db password')),
+                                                                 host=urlquote(settings.value('db hostname')),
+                                                                 db=urlquote(settings.value('db database')))
     settings.endGroup()
     return db_url
 
@@ -157,10 +160,10 @@ def upgrade_db(url, upgrade):
         return version, upgrade.__version__
     version += 1
     try:
-        while hasattr(upgrade, 'upgrade_%d' % version):
-            log.debug('Running upgrade_%d', version)
+        while hasattr(upgrade, 'upgrade_{version:d}'.format(version=version)):
+            log.debug('Running upgrade_{version:d}'.format(version=version))
             try:
-                upgrade_func = getattr(upgrade, 'upgrade_%d' % version)
+                upgrade_func = getattr(upgrade, 'upgrade_{version:d}'.format(version=version))
                 upgrade_func(session, metadata)
                 session.commit()
                 # Update the version number AFTER a commit so that we are sure the previous transaction happened
@@ -168,8 +171,8 @@ def upgrade_db(url, upgrade):
                 session.commit()
                 version += 1
             except (SQLAlchemyError, DBAPIError):
-                log.exception('Could not run database upgrade script "upgrade_%s", upgrade process has been halted.',
-                              version)
+                log.exception('Could not run database upgrade script '
+                              '"upgrade_{version:d}", upgrade process has been halted.'.format(version=version))
                 break
     except (SQLAlchemyError, DBAPIError):
         version_meta = Metadata.populate(key='version', value=int(upgrade.__version__))
@@ -242,9 +245,10 @@ class Manager(object):
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
                     translate('OpenLP.Manager', 'The database being loaded was created in a more recent version of '
-                              'OpenLP. The database is version %d, while OpenLP expects version %d. The database will '
-                              'not be loaded.\n\nDatabase: %s') % (db_ver, up_ver, self.db_url)
-                )
+                              'OpenLP. The database is version {db_ver}, while OpenLP expects version {db_up}. '
+                              'The database will not be loaded.\n\nDatabase: {db_name}').format(db_ver=db_ver,
+                                                                                                db_up=up_ver,
+                                                                                                db_name=self.db_url))
                 return
         if not session:
             try:
@@ -460,7 +464,7 @@ class Manager(object):
                     raise
             except InvalidRequestError:
                 self.session.rollback()
-                log.exception('Failed to delete %s records', object_class.__name__)
+                log.exception('Failed to delete {name} records'.format(name=object_class.__name__))
                 return False
             except:
                 self.session.rollback()

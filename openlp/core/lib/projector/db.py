@@ -131,7 +131,7 @@ class Source(CommonBase, Base):
         """
         Return basic representation of Source table entry.
         """
-        return '<Source(pjlink_name="{name}", pjlink_code="{code}", text="{Text}")>'.format(name=self.pjlink_name,
+        return '<Source(pjlink_name="{name}", pjlink_code="{code}", text="{text}")>'.format(name=self.pjlink_name,
                                                                                             code=self.pjlink_code,
                                                                                             text=self.text)
     model_id = Column(Integer, ForeignKey('model.id'))
