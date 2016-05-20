@@ -425,11 +425,12 @@ class ShortcutListForm(QtWidgets.QDialog, Ui_ShortcutListDialog, RegistryPropert
                 if changing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
         if not is_valid:
+            text = translate('OpenLP.ShortcutListDialog',
+                             'The shortcut "{key}" is already assigned to another action, please'
+                             ' use a different shortcut.'
+                             ).format(key=self.get_shortcut_string(key_sequence))
             self.main_window.warning_message(translate('OpenLP.ShortcutListDialog', 'Duplicate Shortcut'),
-                                             translate('OpenLP.ShortcutListDialog',
-                                                       'The shortcut "%s" is already assigned to another action, please'
-                                                       ' use a different shortcut.') %
-                                             self.get_shortcut_string(key_sequence, for_display=True))
+                                             text, for_display=True)
             self.dialog_was_shown = True
         return is_valid
 

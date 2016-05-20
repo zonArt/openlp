@@ -52,7 +52,7 @@ class AboutForm(QtWidgets.QDialog, UiAboutDialog):
         about_text = self.about_text_edit.toPlainText()
         about_text = about_text.replace('<version>', application_version['version'])
         if application_version['build']:
-            build_text = translate('OpenLP.AboutForm', ' build %s') % application_version['build']
+            build_text = translate('OpenLP.AboutForm', ' build {version}').format(version=application_version['build'])
         else:
             build_text = ''
         about_text = about_text.replace('<revision>', build_text)
