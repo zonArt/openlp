@@ -263,7 +263,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         Run the wizard.
         """
-        log.debug('Editing theme %s' % self.theme.theme_name)
+        log.debug('Editing theme {name}'.format(name=self.theme.theme_name))
         self.temp_background_filename = ''
         self.update_theme_allowed = False
         self.set_defaults()
@@ -272,7 +272,8 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         self.theme_name_edit.setVisible(not edit)
         self.edit_mode = edit
         if edit:
-            self.setWindowTitle(translate('OpenLP.ThemeWizard', 'Edit Theme - %s') % self.theme.theme_name)
+            self.setWindowTitle(translate('OpenLP.ThemeWizard', 'Edit Theme - {name}'
+                                          ).format(name=self.theme.theme_name))
             self.next()
         else:
             self.setWindowTitle(UiStrings().NewTheme)
@@ -282,7 +283,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         Set up the pages for Initial run through dialog
         """
-        log.debug('initializePage %s' % page_id)
+        log.debug('initializePage {page}'.format(page=page_id))
         wizard_page = self.page(page_id)
         if wizard_page == self.background_page:
             self.set_background_page_values()
@@ -445,7 +446,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         Background Image button pushed.
         """
         images_filter = get_images_filter()
-        images_filter = '%s;;%s (*.*)' % (images_filter, UiStrings().AllFiles)
+        images_filter = '{name};;{text} (*.*)'.format(name=images_filter, text=UiStrings().AllFiles)
         filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(
             self, translate('OpenLP.ThemeWizard', 'Select Image'),
             self.image_file_edit.text(), images_filter)
@@ -463,6 +464,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         """
         Background video button pushed.
         """
+        # TODO: Check this before converting
         visible_formats = '(%s)' % '; '.join(VIDEO_EXT)
         actual_formats = '(%s)' % ' '.join(VIDEO_EXT)
         video_filter = '{trans} {visible} {actual}'.format(trans=translate('OpenLP', 'Video Files'),

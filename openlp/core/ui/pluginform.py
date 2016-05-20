@@ -60,6 +60,7 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         self._clear_details()
         self.programatic_change = True
         plugin_list_width = 0
+        # TODO: See how to use format() with variables
         for plugin in self.plugin_manager.plugins:
             item = QtWidgets.QListWidgetItem(self.plugin_list_widget)
             # We do this just to make 100% sure the status is an integer as
@@ -94,7 +95,7 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
         """
         Set the details of the currently selected plugin
         """
-        log.debug('PluginStatus: %s', str(self.active_plugin.status))
+        log.debug('PluginStatus: {status}'.format(status=str(self.active_plugin.status)))
         self.about_text_browser.setHtml(self.active_plugin.about())
         self.programatic_change = True
         if self.active_plugin.status != PluginStatus.Disabled:
@@ -136,6 +137,7 @@ class PluginForm(QtWidgets.QDialog, Ui_PluginViewDialog, RegistryProperties):
             self.active_plugin.app_startup()
         else:
             self.active_plugin.toggle_status(PluginStatus.Inactive)
+        # TODO: Verify using format() with a variable
         status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
         if self.active_plugin.status == PluginStatus.Active:
             status_text = translate('OpenLP.PluginForm', '%s (Active)')

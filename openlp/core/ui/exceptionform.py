@@ -91,6 +91,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         super(ExceptionForm, self).__init__(None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.settings_section = 'crashreport'
+        # TODO: Need to see how to format strings when string with tags is actually a variable
         self.report_text = '**OpenLP Bug Report**\n' \
             'Version: %s\n\n' \
             '--- Details of the Exception. ---\n\n%s\n\n ' \
@@ -114,21 +115,17 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         openlp_version = get_application_version()
         description = self.description_text_edit.toPlainText()
         traceback = self.exception_text_edit.toPlainText()
-        system = translate('OpenLP.ExceptionForm', 'Platform: %s\n') % platform.platform()
-        libraries = 'Python: %s\n' % platform.python_version() + \
-            'Qt5: %s\n' % Qt.qVersion() + \
-            'PyQt5: %s\n' % Qt.PYQT_VERSION_STR + \
-            'QtWebkit: %s\n' % WEBKIT_VERSION + \
-            'SQLAlchemy: %s\n' % sqlalchemy.__version__ + \
-            'SQLAlchemy Migrate: %s\n' % MIGRATE_VERSION + \
-            'BeautifulSoup: %s\n' % bs4.__version__ + \
-            'lxml: %s\n' % etree.__version__ + \
-            'Chardet: %s\n' % CHARDET_VERSION + \
-            'PyEnchant: %s\n' % ENCHANT_VERSION + \
-            'Mako: %s\n' % MAKO_VERSION + \
-            'pyICU: %s\n' % ICU_VERSION + \
-            'pyUNO bridge: %s\n' % self._pyuno_import() + \
-            'VLC: %s\n' % VLC_VERSION
+        system = translate('OpenLP.ExceptionForm', 'Platform: {platform}\n').format(platform=platform.platform())
+        libraries = ('Python: {python}\nQt5: {qt5}\nPyQt5: {pyqt5}\nQtWebkit: {qtwebkit}\nSQLAlchemy: {sqalchemy}\n'
+                     'SQLAlchemy Migrate: {migrate}\nBeautifulSoup: {soup}\nlxml: {etree}\nChardet: {chardet}\n'
+                     'PyEnchant: {enchant}\nMako: {mako}\npyICU: {icu}\npyUNO bridge: {uno}\n'
+                     'VLC: {vlc}\n').format(python=platform.python_version(), qt5=Qt.qVersion(),
+                                            pyqt5=Qt.PYQT_VERSION_STR, qtwebkit=WEBKIT_VERSION,
+                                            sqalchemy=sqlalchemy.__version__, migrate=MIGRATE_VERSION,
+                                            soup=bs4.__version__, etree=etree.__version__, chardet=CHARDET_VERSION,
+                                            enchant=ENCHANT_VERSION, mako=MAKO_VERSION, icu=ICU_VERSION,
+                                            uno=self._pyuno_import(), vlc=VLC_VERSION)
+
         if is_linux():
             if os.environ.get('KDE_FULL_SESSION') == 'true':
                 system += 'Desktop: KDE SC\n'
@@ -178,9 +175,10 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
             if ':' in line:
                 exception = line.split('\n')[-1].split(':')[0]
-        subject = 'Bug report: %s in %s' % (exception, source)
+        subject = 'Bug report: {error} in {source}'.format(error=exception, source=source)
         mail_urlquery = QtCore.QUrlQuery()
         mail_urlquery.addQueryItem('subject', subject)
+        # TODO: Find out how to format() text that is in a variable
         mail_urlquery.addQueryItem('body', self.report_text % content)
         if self.file_attachment:
             mail_urlquery.addQueryItem('attach', self.file_attachment)
@@ -199,7 +197,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         else:
             self.__button_state(False)
         self.description_word_count.setText(
-            translate('OpenLP.ExceptionDialog', 'Description characters to enter : %s') % count)
+            translate('OpenLP.ExceptionDialog', 'Description characters to enter : {count}').format(count=count))
 
     def on_attach_file_button_clicked(self):
         """
@@ -210,7 +208,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                                                                              'Select Attachment'),
                                                                    Settings().value(self.settings_section +
                                                                                     '/last directory'),
-                                                                   '%s (*)' % UiStrings().AllFiles)
+                                                                   '{text} (*)'.format(text=UiStrings().AllFiles))
         log.info('New files(s) %s', str(files))
         if files:
             self.file_attachment = str(files)
