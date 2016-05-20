@@ -91,8 +91,8 @@ class AdvancedTab(SettingsTab):
         self.slide_max_height_combo_box.addItem('', userData=0)
         self.slide_max_height_combo_box.addItem('', userData=-4)
         # Generate numeric values for combo box dynamically
-        for px in range(60,801,5):
-            self.slide_max_height_combo_box.addItem(str(px)+'px', userData=px)
+        for px in range(60, 801, 5):
+            self.slide_max_height_combo_box.addItem(str(px) + 'px', userData=px)
         self.slide_max_height_combo_box.setObjectName('slide_max_height_combo_box')
         self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_combo_box)
         self.autoscroll_label = QtWidgets.QLabel(self.ui_group_box)
