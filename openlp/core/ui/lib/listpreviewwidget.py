@@ -174,8 +174,10 @@ class ListPreviewWidget(QtWidgets.QTableWidget, RegistryProperties):
                 max_img_row_height = Settings().value('advanced/slide max height')
                 if isinstance(max_img_row_height, int) and max_img_row_height != 0:
                     if max_img_row_height > 0 and slide_height > max_img_row_height:
+                        # Manual Setting
                         slide_height = max_img_row_height
                     elif max_img_row_height < 0 and slide_height > self.auto_row_height:
+                        # Auto Setting
                         slide_height = self.auto_row_height
                     label.setMaximumWidth(slide_height * self.screen_ratio)
                     label.resize(slide_height * self.screen_ratio, slide_height)
