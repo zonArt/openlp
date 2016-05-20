@@ -269,8 +269,8 @@ class BibleManager(RegistryProperties):
         if not bible:
             if show_error:
                 self.main_window.information_message(
-                    ('%s' % UiStrings().BibleNoBiblesTitle),
-                    ('%s' % UiStrings().BibleNoBibles))
+                    UiStrings().BibleNoBiblesTitle,
+                    UiStrings().BibleNoBibles)
             return None
         # Get the language for books.
         language_selection = self.get_language_selection(bible)
@@ -313,8 +313,8 @@ class BibleManager(RegistryProperties):
         # If no bibles are installed, message is given.
         if not bible:
             self.main_window.information_message(
-                ('%s' % UiStrings().BibleNoBiblesTitle),
-                ('%s' % UiStrings().BibleNoBibles))
+                UiStrings().BibleNoBiblesTitle,
+                UiStrings().BibleNoBibles)
             return None
         # Check if the bible or second_bible is a web bible.
         web_bible = self.db_cache[bible].get_object(BibleMeta, 'download_source')
