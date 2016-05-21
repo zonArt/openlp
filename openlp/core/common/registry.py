@@ -181,4 +181,3 @@ class Registry(object):
         """
         if key in self.working_flags:
             del self.working_flags[key]
-
