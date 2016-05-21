@@ -101,7 +101,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'download source'
             )
         ).scalar()
-        log.debug('download source: %s', value_count)
+        log.debug('download source: {count}'.format(count=value_count))
         if value_count > 0:
             session.execute(insert(metadata_table).values(
                 key='download_source',
@@ -121,7 +121,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'download name'
             )
         ).scalar()
-        log.debug('download name: %s', value_count)
+        log.debug('download name: {count}'.format(count=value_count))
         if value_count > 0:
             session.execute(insert(metadata_table).values(
                 key='download_name',
@@ -141,7 +141,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'proxy server'
             )
         ).scalar()
-        log.debug('proxy server: %s', value_count)
+        log.debug('proxy server: {count}'.format(count=value_count))
         if value_count > 0:
             session.execute(insert(metadata_table).values(
                 key='proxy_server',
@@ -161,7 +161,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'proxy username'
             )
         ).scalar()
-        log.debug('proxy username: %s', value_count)
+        log.debug('proxy username: {count}'.format(count=value_count))
         if value_count > 0:
             session.execute(insert(metadata_table).values(
                 key='proxy_username',
@@ -181,7 +181,7 @@ def upgrade_1(session, metadata):
                 metadata_table.c.key == 'proxy password'
             )
         ).scalar()
-        log.debug('proxy password: %s', value_count)
+        log.debug('proxy password: {count}'.format(count=value_count))
         if value_count > 0:
             session.execute(insert(metadata_table).values(
                 key='proxy_password',

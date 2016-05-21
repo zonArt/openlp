@@ -29,6 +29,7 @@ import os
 from unittest import TestCase
 
 from openlp.core.lib.projector.db import Manufacturer, Model, Projector, ProjectorDB, ProjectorSource, Source
+from openlp.core.lib.projector.constants import PJLINK_PORT
 
 from tests.functional import MagicMock, patch
 from tests.resources.projector.data import TEST_DB, TEST1_DATA, TEST2_DATA, TEST3_DATA
@@ -195,7 +196,7 @@ class TestProjectorDB(TestCase):
 
     def manufacturer_repr_test(self):
         """
-        Test manufacturer class __repr__ text
+        Test Manufacturer.__repr__ text
         """
         # GIVEN: Test object
         manufacturer = Manufacturer()
@@ -209,7 +210,7 @@ class TestProjectorDB(TestCase):
 
     def model_repr_test(self):
         """
-        Test model class __repr__ text
+        Test Model.__repr__ text
         """
         # GIVEN: Test object
         model = Model()
@@ -223,7 +224,7 @@ class TestProjectorDB(TestCase):
 
     def source_repr_test(self):
         """
-        Test source.__repr__ text
+        Test Source.__repr__ text
         """
         # GIVEN: Test object
         source = Source()
@@ -236,3 +237,31 @@ class TestProjectorDB(TestCase):
         # THEN: __repr__ should return a proper string
         self.assertEqual(str(source), '<Source(pjlink_name="Test object", pjlink_code="11", text="Input text")>',
                          'Source.__repr__() should have returned a proper representation string')
+
+    def projector_repr_test(self):
+        """
+        Test Projector.__repr__() text
+        """
+        # GIVEN: Test object
+        projector = Projector()
+
+        # WHEN: projector() is populated
+        # NOTE: projector.pin, projector.other, projector.sources should all return None
+        #       projector.source_list should return an empty list
+        projector.id = 0
+        projector.ip = '127.0.0.1'
+        projector.port = PJLINK_PORT
+        projector.name = 'Test One'
+        projector.location = 'Somewhere over the rainbow'
+        projector.notes = 'Not again'
+        projector.pjlink_name = 'TEST'
+        projector.manufacturer = 'IN YOUR DREAMS'
+        projector.model = 'OpenLP'
+
+        # THEN: __repr__ should return a proper string
+        self.assertEqual(str(projector),
+                         '< Projector(id="0", ip="127.0.0.1", port="4352", pin="None", name="Test One", '
+                         'location="Somewhere over the rainbow", notes="Not again", pjlink_name="TEST", '
+                         'manufacturer="IN YOUR DREAMS", model="OpenLP", other="None", sources="None", '
+                         'source_list="[]") >',
+                         'Projector.__repr__() should have returned a proper representation string')

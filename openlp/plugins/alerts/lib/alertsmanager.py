@@ -62,7 +62,7 @@ class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject, RegistryProperti
 
         :param text: The text to display
         """
-        self.log_debug('display alert called %s' % text)
+        self.log_debug('display alert called {text}'.format(text=text))
         if text:
             self.alert_list.append(text)
             if self.timer_id != 0:
