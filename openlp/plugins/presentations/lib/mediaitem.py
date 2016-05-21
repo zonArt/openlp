@@ -88,9 +88,10 @@ class PresentationMediaItem(MediaManagerItem):
                 file_types = self.controllers[controller].supports + self.controllers[controller].also_supports
                 for file_type in file_types:
                     if file_type not in file_type_string:
-                        file_type_string += '*.%s ' % file_type
+                        file_type_string += '*.{text} '.format(text=file_type)
                         self.service_manager.supported_suffixes(file_type)
-        self.on_new_file_masks = translate('PresentationPlugin.MediaItem', 'Presentations (%s)') % file_type_string
+        self.on_new_file_masks = translate('PresentationPlugin.MediaItem',
+                                           'Presentations ({text})').format(text=file_type_string)
 
     def required_icons(self):
         """
@@ -306,13 +307,13 @@ class PresentationMediaItem(MediaManagerItem):
                             os.path.join(doc.get_temp_folder(), 'mainslide001.png')):
                         doc.load_presentation()
                     i = 1
-                    image = os.path.join(doc.get_temp_folder(), 'mainslide%03d.png' % i)
+                    image = os.path.join(doc.get_temp_folder(), 'mainslide{number:0>3d}.png'.format(number=i))
                     thumbnail = os.path.join(doc.get_thumbnail_folder(), 'slide%d.png' % i)
                     while os.path.isfile(image):
                         service_item.add_from_image(image, name, thumbnail=thumbnail)
                         i += 1
-                        image = os.path.join(doc.get_temp_folder(), 'mainslide%03d.png' % i)
-                        thumbnail = os.path.join(doc.get_thumbnail_folder(), 'slide%d.png' % i)
+                        image = os.path.join(doc.get_temp_folder(), 'mainslide{number:0>3d}.png'.format(number=i))
+                        thumbnail = os.path.join(doc.get_thumbnail_folder(), 'slide{number:d}.png'.format(number=i))
                     service_item.add_capability(ItemCapabilities.HasThumbnails)
                     doc.close_presentation()
                     return True
@@ -321,7 +322,8 @@ class PresentationMediaItem(MediaManagerItem):
                     if not remote:
                         critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
                                                    translate('PresentationPlugin.MediaItem',
-                                                             'The presentation %s no longer exists.') % filename)
+                                                             'The presentation {name} no longer exists.'
+                                                             ).format(name=filename))
                     return False
         else:
             service_item.processor = self.display_type_combo_box.currentText()
@@ -367,15 +369,16 @@ class PresentationMediaItem(MediaManagerItem):
                             critical_error_message_box(translate('PresentationPlugin.MediaItem',
                                                                  'Missing Presentation'),
                                                        translate('PresentationPlugin.MediaItem',
-                                                                 'The presentation %s is incomplete, please reload.')
-                                                       % filename)
+                                                                 'The presentation {name} is incomplete, '
+                                                                 'please reload.').format(name=filename))
                         return False
                 else:
                     # File is no longer present
                     if not remote:
                         critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
                                                    translate('PresentationPlugin.MediaItem',
-                                                             'The presentation %s no longer exists.') % filename)
+                                                             'The presentation {name} no longer exists.'
+                                                             ).format(name=filename))
                     return False
 
     def find_controller_by_type(self, filename):

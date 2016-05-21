@@ -128,7 +128,7 @@ class CustomXMLParser(object):
         try:
             self.custom_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
-            log.exception('Invalid xml %s', xml)
+            log.exception('Invalid xml {xml}'.format(xml=xml))
 
     def get_verses(self):
         """

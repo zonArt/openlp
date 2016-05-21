@@ -137,7 +137,8 @@ class PresentationTab(SettingsTab):
         if checkbox.isEnabled():
             checkbox.setText(controller.name)
         else:
-            checkbox.setText(translate('PresentationPlugin.PresentationTab', '%s (unavailable)') % controller.name)
+            checkbox.setText(translate('PresentationPlugin.PresentationTab',
+                                       '{name} (unavailable)').format(name=controller.name))
 
     def load(self):
         """
