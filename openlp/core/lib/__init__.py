@@ -24,12 +24,11 @@ The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
 
-from distutils.version import LooseVersion
 import logging
 import os
+from distutils.version import LooseVersion
 
 from PyQt5 import QtCore, QtGui, Qt, QtWidgets
-
 
 from openlp.core.common import translate
 
@@ -342,7 +341,6 @@ from .exceptions import ValidationError
 from .filedialog import FileDialog
 from .screen import ScreenList
 from .formattingtags import FormattingTags
-from .spelltextedit import SpellTextEdit
 from .plugin import PluginStatus, StringContent, Plugin
 from .pluginmanager import PluginManager
 from .settingstab import SettingsTab
