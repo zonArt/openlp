@@ -88,7 +88,7 @@ class UiAboutDialog(object):
 
         :param about_dialog: The QDialog object to translate
         """
-        about_dialog.setWindowTitle('%s OpenLP' % UiStrings().About)
+        about_dialog.setWindowTitle('{about} OpenLP'.format(about=UiStrings().About))
         self.about_text_edit.setPlainText(
             translate('OpenLP.AboutForm',
                       'OpenLP <version><revision> - Open Source Lyrics Projection\n'
@@ -200,115 +200,115 @@ class UiAboutDialog(object):
                                  '    bring this software to you for free because\n'
                                  '    He has set us free.')
         self.credits_text_edit.setPlainText(
-            '%s\n'
-            '    %s\n'
+            '{titleLead}\n'
+            '    {nameLead}\n'
             '\n'
-            '%s\n'
-            '    %s\n'
+            '{titleDevs}\n'
+            '    {nameDevs}\n'
             '\n'
-            '%s\n'
-            '    %s\n'
+            '{titleContrib}\n'
+            '    {nameContrib}\n'
             '\n'
-            '%s\n'
-            '    %s\n'
+            '{titleTesters}\n'
+            '    {nameTesters}\n'
             '\n'
-            '%s\n'
-            '    %s\n'
+            '{titlePackagers}\n'
+            '    {namePackagers}\n'
             '\n'
-            '%s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
-            '    %s\n'
-            '        %s\n'
+            '{titleTranslators}\n'
+            '    {titleAF}\n'
+            '        {nameAF}\n'
+            '    {titleCS}\n'
+            '        {nameCS}\n'
+            '    {titleDA}\n'
+            '        {nameDA}\n'
+            '    {titleDE}\n'
+            '        {nameDE}\n'
+            '    {titleEL}\n'
+            '        {nameEL}\n'
+            '    {titleGB}\n'
+            '        {nameGB}\n'
+            '    {titleENZA}\n'
+            '        {nameENZA}\n'
+            '    {titleES}\n'
+            '        {nameES}\n'
+            '    {titleET}\n'
+            '        {nameET}\n'
+            '    {titleFI}\n'
+            '        {nameFI}\n'
+            '    {titleFR}\n'
+            '        {nameFR}\n'
+            '    {titleHU}\n'
+            '        {nameHU}\n'
+            '    {titleIND}\n'
+            '        {nameIND}\n'
+            '    {titleJA}\n'
+            '        {nameJA}\n'
+            '    {titleNB}\n'
+            '        {nameNB}\n'
+            '    {titleNL}\n'
+            '        {nameNL}\n'
+            '    {titlePL}\n'
+            '        {namePL}\n'
+            '    {titlePTBR}\n'
+            '        {namePTBR}\n'
+            '    {titleRU}\n'
+            '        {nameRU}\n'
+            '    {titleSV}\n'
+            '        {nameSV}\n'
+            '    {titleTALK}\n'
+            '        {nameTALK}\n'
+            '    {titleZHCN}\n'
+            '        {nameZHCN}\n'
             '\n'
-            '%s\n'
-            '    %s\n'
+            '{titleDOCS}\n'
+            '    {nameDOCS}\n'
             '\n'
-            '%s\n%s' %
-            (project_lead, lead,
-             devs, '\n    '.join(developers),
-             cons, '\n    '.join(contributors),
-             tests, '\n    '.join(testers),
-             packs, '\n    '.join(packagers),
-             laters,
-             af, '\n        '.join(translators['af']),
-             cs, '\n        '.join(translators['cs']),
-             da, '\n        '.join(translators['da']),
-             de, '\n        '.join(translators['de']),
-             el, '\n        '.join(translators['el']),
-             gb, '\n        '.join(translators['en_GB']),
-             enza, '\n        '.join(translators['en_ZA']),
-             es, '\n        '.join(translators['es']),
-             et, '\n        '.join(translators['et']),
-             fi, '\n        '.join(translators['fi']),
-             fr, '\n        '.join(translators['fr']),
-             hu, '\n        '.join(translators['hu']),
-             ind, '\n        '.join(translators['id']),
-             ja, '\n        '.join(translators['ja']),
-             nb, '\n        '.join(translators['nb']),
-             nl, '\n        '.join(translators['nl']),
-             pl, '\n        '.join(translators['pl']),
-             ptbr, '\n        '.join(translators['pt_BR']),
-             ru, '\n        '.join(translators['ru']),
-             sv, '\n        '.join(translators['sv']),
-             talk, '\n        '.join(translators['ta_LK']),
-             zhcn, '\n        '.join(translators['zh_CN']),
-             documentation, '\n    '.join(documentors),
-             built_with, final_credit))
+            '{build}\n{final}'.format(titleLead=project_lead, nameLead=lead,
+                                      titleDevs=devs, nameDevs='\n    '.join(developers),
+                                      titleContrib=cons, nameContrib='\n    '.join(contributors),
+                                      titleTesters=tests, nameTesters='\n    '.join(testers),
+                                      titlePackagers=packs, namePackagers='\n    '.join(packagers),
+                                      titleTranslators=laters,
+                                      titleAF=af, nameAF='\n        '.join(translators['af']),
+                                      titleCS=cs, nameCS='\n        '.join(translators['cs']),
+                                      titleDA=da, nameDA='\n        '.join(translators['da']),
+                                      titleDE=de, nameDE='\n        '.join(translators['de']),
+                                      titleEL=el, nameEL='\n        '.join(translators['el']),
+                                      titleGB=gb, nameGB='\n        '.join(translators['en_GB']),
+                                      titleENZA=enza, nameENZA='\n        '.join(translators['en_ZA']),
+                                      titleES=es, nameES='\n        '.join(translators['es']),
+                                      titleET=et, nameET='\n        '.join(translators['et']),
+                                      titleFI=fi, nameFI='\n        '.join(translators['fi']),
+                                      titleFR=fr, nameFR='\n        '.join(translators['fr']),
+                                      titleHU=hu, nameHU='\n        '.join(translators['hu']),
+                                      titleIND=ind, nameIND='\n        '.join(translators['id']),
+                                      titleJA=ja, nameJA='\n        '.join(translators['ja']),
+                                      titleNB=nb, nameNB='\n        '.join(translators['nb']),
+                                      titleNL=nl, nameNL='\n        '.join(translators['nl']),
+                                      titlePL=pl, namePL='\n        '.join(translators['pl']),
+                                      titlePTBR=ptbr, namePTBR='\n        '.join(translators['pt_BR']),
+                                      titleRU=ru, nameRU='\n        '.join(translators['ru']),
+                                      titleSV=sv, nameSV='\n        '.join(translators['sv']),
+                                      titleTALK=talk, nameTALK='\n        '.join(translators['ta_LK']),
+                                      titleZHCN=zhcn, nameZHCN='\n        '.join(translators['zh_CN']),
+                                      titleDOCS=documentation, nameDOCS='\n    '.join(documentors),
+                                      build=built_with,
+                                      final=final_credit))
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.credits_tab),
                                        translate('OpenLP.AboutForm', 'Credits'))
+        cr_others = ('Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
+                     'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
+                     'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '
+                     'Brian T. Meyer, Stevan Pettit, Andreas Preikschat, '
+                     'Mattias P\xf5ldaru, Christian Richter, Philip Ridout, '
+                     'Ken Roberts, Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, '
+                     'Martin Thompson, Jon Tibble, Dave Warnock, Frode Woldsund, '
+                     'Martin Zibricky, Patrick Zimmermann')
         copyright_note = translate('OpenLP.AboutForm',
-                                   'Copyright \xa9 2004-2016 %s\n'
-                                   'Portions copyright \xa9 2004-2016 %s') % \
-            ('Raoul Snyman',
-             'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
-             'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
-             'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '
-             'Brian T. Meyer, Stevan Pettit, Andreas Preikschat, '
-             'Mattias P\xf5ldaru, Christian Richter, '
-             'Philip Ridout, Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, '
-             'Martin Thompson, Jon Tibble, Dave Warnock, Frode Woldsund, '
-             'Martin Zibricky, Patrick Zimmermann')
+                                   'Copyright \xa9 2004-2016 {cr}\n\n'
+                                   'Portions copyright \xa9 2004-2016 {others}').format(cr='Raoul Snyman',
+                                                                                        others=cr_others)
         licence = translate('OpenLP.AboutForm',
                             'This program is free software; you can redistribute it and/or '
                             'modify it under the terms of the GNU General Public License as '
@@ -690,7 +690,11 @@ class UiAboutDialog(object):
                     'linking proprietary applications with the library. If this is '
                     'what you want to do, use the GNU Lesser General Public License '
                     'instead of this License.')
-        self.license_text_edit.setPlainText('%s\n\n%s\n\n%s\n\n\n%s' % (copyright_note, licence, disclaimer, gpl_text))
+        self.license_text_edit.setPlainText('{crnote}\n\n{license}\n\n{disclaimer}'
+                                            '\n\n\n{gpl}'.format(crnote=copyright_note,
+                                                                 license=licence,
+                                                                 disclaimer=disclaimer,
+                                                                 gpl=gpl_text))
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.license_tab),
                                        translate('OpenLP.AboutForm', 'License'))
         self.volunteer_button.setText(translate('OpenLP.AboutForm', 'Volunteer'))
