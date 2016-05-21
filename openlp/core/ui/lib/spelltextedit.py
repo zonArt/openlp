@@ -142,8 +142,8 @@ class SpellTextEdit(QtWidgets.QPlainTextEdit):
         """
         Replaces the selected text with word.
         """
+        tag = tag.replace('&', '')
         for html in FormattingTags.get_html_tags():
-            tag = tag.replace('&', '')
             if tag == html['desc']:
                 cursor = self.textCursor()
                 if self.textCursor().hasSelection():
