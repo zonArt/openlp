@@ -250,3 +250,17 @@ class TestPJLink(TestCase):
         # THEN: Shutter should be closed and mute should be True
         self.assertTrue(pjlink.shutter, 'Shutter should have been set to closed')
         self.assertTrue(pjlink.mute, 'Audio should be on')
+
+    def projector_process_input_test(self):
+        """
+        Test input source status shows current input
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+        pjlink.source = '0'
+
+        # WHEN: Called with input source
+        pjlink.process_inpt('1')
+
+        # THEN: Input selected should reflect current input
+        self.assertEquals(pjlink.source, '1', 'Input source should be set to "1"')
