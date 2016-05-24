@@ -280,7 +280,7 @@ class BibleMediaItem(MediaManagerItem):
     def retranslateUi(self):
         log.debug('retranslateUi')
         self.quick_search_label.setText(translate('BiblesPlugin.MediaItem', 'Find:'))
-        self.quickVersionLabel.setText('%s:' % UiStrings().Version)
+        self.quickVersionLabel.setText('{version}:'.format(version=UiStrings().Version))
         self.quickSecondLabel.setText(translate('BiblesPlugin.MediaItem', 'Second:'))
         self.quickStyleLabel.setText(UiStrings().LayoutStyle)
         self.quickStyleComboBox.setItemText(LayoutStyle.VersePerSlide, UiStrings().VersePerSlide)
@@ -294,7 +294,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advanced_verse_label.setText(translate('BiblesPlugin.MediaItem', 'Verse:'))
         self.advanced_from_label.setText(translate('BiblesPlugin.MediaItem', 'From:'))
         self.advanced_to_label.setText(translate('BiblesPlugin.MediaItem', 'To:'))
-        self.advancedVersionLabel.setText('%s:' % UiStrings().Version)
+        self.advancedVersionLabel.setText('{version}:'.format(version=UiStrings().Version))
         self.advancedSecondLabel.setText(translate('BiblesPlugin.MediaItem', 'Second:'))
         self.advancedStyleLabel.setText(UiStrings().LayoutStyle)
         self.advancedStyleComboBox.setItemText(LayoutStyle.VersePerSlide, UiStrings().VersePerSlide)
@@ -316,7 +316,8 @@ class BibleMediaItem(MediaManagerItem):
                 translate('BiblesPlugin.MediaItem', 'Text Search'),
                 translate('BiblesPlugin.MediaItem', 'Search Text...'))
         ])
-        self.quick_search_edit.set_current_search_type(Settings().value('%s/last search type' % self.settings_section))
+        text = self.settings_section
+        self.quick_search_edit.set_current_search_type(Settings().value('{text}/last search type'.format(text=text)))
         self.config_update()
         log.debug('bible manager initialise complete')
 
@@ -364,7 +365,7 @@ class BibleMediaItem(MediaManagerItem):
         :param bible: The bible to initialise (unicode).
         :param last_book_id: The "book reference id" of the book which is chosen at the moment. (int)
         """
-        log.debug('initialise_advanced_bible %s, %s', bible, last_book_id)
+        log.debug('initialise_advanced_bible {bible}, {ref}'.format(bible=bible, ref=last_book_id))
         book_data = self.plugin.manager.get_books(bible)
         second_bible = self.advancedSecondComboBox.currentText()
         if second_bible != '':
@@ -406,7 +407,7 @@ class BibleMediaItem(MediaManagerItem):
             self.initialise_chapter_verse(bible, first_book['name'], first_book['book_reference_id'])
 
     def initialise_chapter_verse(self, bible, book, book_ref_id):
-        log.debug('initialise_chapter_verse %s, %s, %s', bible, book, book_ref_id)
+        log.debug('initialise_chapter_verse {bible}, {book), {ref}'.format(bible=bible, book=book, ref=book_ref_id))
         book = self.plugin.manager.get_book_by_id(bible, book_ref_id)
         self.chapter_count = self.plugin.manager.get_chapter_count(bible, book)
         verse_count = self.plugin.manager.get_verse_count_by_book_ref_id(bible, book_ref_id, 1)
@@ -427,9 +428,11 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug('update_auto_completer')
         # Save the current search type to the configuration.
-        Settings().setValue('%s/last search type' % self.settings_section, self.quick_search_edit.current_search_type())
+        Settings().setValue('{section}/last search type'.format(section=self.settings_section),
+                            self.quick_search_edit.current_search_type())
         # Save the current bible to the configuration.
-        Settings().setValue(self.settings_section + '/quick bible', self.quickVersionComboBox.currentText())
+        Settings().setValue('{section}/quick bible'.format(section=self.settings_section),
+                            self.quickVersionComboBox.currentText())
         books = []
         # We have to do a 'Reference Search'.
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
@@ -502,9 +505,10 @@ class BibleMediaItem(MediaManagerItem):
         if bible:
             if QtWidgets.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
-                    translate('BiblesPlugin.MediaItem', 'Are you sure you want to completely delete "%s" Bible from '
-                                                        'OpenLP?\n\nYou will need to re-import this Bible to use it '
-                                                        'again.') % bible,
+                    translate('BiblesPlugin.MediaItem',
+                              'Are you sure you want to completely delete "{bible}" Bible '
+                              'from OpenLP?\n\nYou will need to re-import this Bible to use it '
+                              'again.').format(bible=bible),
                     QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                     QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
                 return
@@ -606,7 +610,7 @@ class BibleMediaItem(MediaManagerItem):
         :param combo: The combo box itself (QComboBox).
         :param restore: If True, then the combo's currentText will be restored after adjusting (if possible).
         """
-        log.debug('adjust_combo_box %s, %s, %s', combo, range_from, range_to)
+        log.debug('adjust_combo_box {box}, {start}, {end}'.format(box=combo, start=range_from, end=range_to))
         if restore:
             old_text = combo.currentText()
         combo.clear()
@@ -633,7 +637,7 @@ class BibleMediaItem(MediaManagerItem):
         range_separator = get_reference_separator('sep_r_display')
         verse_range = chapter_from + verse_separator + verse_from + range_separator + chapter_to + \
             verse_separator + verse_to
-        verse_text = '%s %s' % (book, verse_range)
+        verse_text = '{book} {verse}'.format(book=book, verse=verse_range)
         self.application.set_busy_cursor()
         self.search_results = self.plugin.manager.get_verses(bible, verse_text, book_ref_id)
         if second_bible:
@@ -678,8 +682,8 @@ class BibleMediaItem(MediaManagerItem):
                 for verse in self.search_results:
                     db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
                     if not db_book:
-                        log.debug('Passage "%s %d:%d" not found in Second Bible' %
-                                  (verse.book.name, verse.chapter, verse.verse))
+                        log.debug('Passage "{name} {chapter:d}:{verse:d}" not found in '
+                                  'Second Bible'.format(name=verse.book.name, chapter=verse.chapter, verse=verse.verse))
                         passage_not_found = True
                         count += 1
                         continue
@@ -688,9 +692,10 @@ class BibleMediaItem(MediaManagerItem):
                 if passage_not_found:
                     QtWidgets.QMessageBox.information(
                         self, translate('BiblesPlugin.MediaItem', 'Information'),
-                        translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
-                                  'that are in the main Bible. Only verses found in both Bibles will be shown. %d '
-                                  'verses have not been included in the results.') % count,
+                        translate('BiblesPlugin.MediaItem',
+                                  'The second Bible does not contain all the verses that are in the main Bible. '
+                                  'Only verses found in both Bibles will be shown. {count:d} verses have not been '
+                                  'included in the results.').format(count=count),
                         QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
                 self.search_results = new_search_results
                 self.second_search_results = bibles[second_bible].get_verses(text)
@@ -767,10 +772,19 @@ class BibleMediaItem(MediaManagerItem):
                 except TypeError:
                     log.exception('The second_search_results does not have this book.')
                     break
-                bible_text = '%s %d%s%d (%s, %s)' % (book, verse.chapter, verse_separator, verse.verse, version,
-                                                     second_version)
+                bible_text = ('{book} {chapter:d}{sep}{verse:d} '
+                              '({version1}, {version2})').format(book=book,
+                                                                 chapter=verse.chapter,
+                                                                 sep=verse_separator,
+                                                                 verse=verse.verse,
+                                                                 version1=version,
+                                                                 version2=second_version)
             else:
-                bible_text = '%s %d%s%d (%s)' % (book, verse.chapter, verse_separator, verse.verse, version)
+                bible_text = '{book} {chapter:d}{sep}{verse:d} ({version})'.format(book=book,
+                                                                                   chapter=verse.chapter,
+                                                                                   sep=verse_separator,
+                                                                                   verse=verse.verse,
+                                                                                   version=version)
             bible_verse = QtWidgets.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, data)
             items.append(bible_verse)
@@ -817,20 +831,22 @@ class BibleMediaItem(MediaManagerItem):
             verses.add(book, chapter, verse, version, copyright, permissions)
             verse_text = self.format_verse(old_chapter, chapter, verse)
             if second_bible:
-                bible_text = '%s%s\n\n%s&nbsp;%s' % (verse_text, text, verse_text, second_text)
+                bible_text = '{verse}{text1}\n\n{verse}&nbsp;{text2}'.format(verse=verse_text,
+                                                                             text1=text,
+                                                                             text2=second_text)
                 raw_slides.append(bible_text.rstrip())
                 bible_text = ''
             # If we are 'Verse Per Slide' then create a new slide.
             elif self.settings.layout_style == LayoutStyle.VersePerSlide:
-                bible_text = '%s%s' % (verse_text, text)
+                bible_text = '{verse}{text}'.format(verse=verse_text, text=text)
                 raw_slides.append(bible_text.rstrip())
                 bible_text = ''
             # If we are 'Verse Per Line' then force a new line.
             elif self.settings.layout_style == LayoutStyle.VersePerLine:
-                bible_text = '%s%s%s\n' % (bible_text, verse_text, text)
+                bible_text = '{bible}{verse}{text}\n'.format(bible=bible_text, verse=verse_text, text=text)
             # We have to be 'Continuous'.
             else:
-                bible_text = '%s %s%s\n' % (bible_text, verse_text, text)
+                bible_text = '{bible} {verse}{text}\n'.format(bible=bible_text, verse=verse_text, text=text)
             bible_text = bible_text.strip(' ')
             if not old_item:
                 start_item = bitem
@@ -857,7 +873,7 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanWordSplit)
         service_item.add_capability(ItemCapabilities.CanEditTitle)
         # Service Item: Title
-        service_item.title = '%s %s' % (verses.format_verses(), verses.format_versions())
+        service_item.title = '{verse} {version}'.format(verse=verses.format_verses(), version=verses.format_versions())
         # Service Item: Theme
         if not self.settings.bible_theme:
             service_item.theme = None
@@ -885,7 +901,7 @@ class BibleMediaItem(MediaManagerItem):
         start_bible = self._decode_qt_object(start_bitem, 'bible')
         start_second_bible = self._decode_qt_object(start_bitem, 'second_bible')
         if start_second_bible:
-            bibles = '%s, %s' % (start_bible, start_second_bible)
+            bibles = '{bible1}, {bible2}'.format(bible1=start_bible, bible2=start_second_bible)
         else:
             bibles = start_bible
         if start_chapter == old_chapter:
@@ -896,7 +912,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             verse_range = start_chapter + verse_separator + start_verse + \
                 range_separator + old_chapter + verse_separator + old_verse
-        return '%s %s (%s)' % (start_book, verse_range, bibles)
+        return '{book} {verse} ({bible})'.format(book=start_book, verse=verse_range, bible=bibles)
 
     def check_title(self, bitem, old_bitem):
         """
@@ -949,12 +965,12 @@ class BibleMediaItem(MediaManagerItem):
         else:
             verse_text = str(verse)
         if self.settings.display_style == DisplayStyle.Round:
-            return '{su}(%s){/su}&nbsp;' % verse_text
+            return '{{su}}({verse}){{/su}}&nbsp;'.format(verse=verse_text)
         if self.settings.display_style == DisplayStyle.Curly:
-            return '{su}{%s}{/su}&nbsp;' % verse_text
+            return '{{su}}{{{verse}}}{{/su}}&nbsp;'.format(verse=verse_text)
         if self.settings.display_style == DisplayStyle.Square:
-            return '{su}[%s]{/su}&nbsp;' % verse_text
-        return '{su}%s{/su}&nbsp;' % verse_text
+            return '{{su}}[{verse}]{{/su}}&nbsp;'.format(verse=verse_text)
+        return '{{su}}{verse}{{/su}}&nbsp;'.format(verse=verse_text)
 
     def search(self, string, showError):
         """

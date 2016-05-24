@@ -51,7 +51,7 @@ class SwordBible(BibleDB):
         """
         Loads a Bible from SWORD module.
         """
-        log.debug('Starting SWORD import from "%s"' % self.sword_key)
+        log.debug('Starting SWORD import from "{key}"'.format(key=self.sword_key))
         success = True
         try:
             pysword_modules = modules.SwordModules(self.sword_path)
@@ -84,14 +84,14 @@ class SwordBible(BibleDB):
                             verse_number += 1
                             self.create_verse(db_book.id, chapter_number, verse_number, verse)
                     self.wizard.increment_progress_bar(
-                        translate('BiblesPlugin.Sword', 'Importing %s...') % db_book.name)
+                        translate('BiblesPlugin.Sword', 'Importing {name}...').format(name=db_book.name))
             self.session.commit()
             self.application.process_events()
         except Exception as e:
             critical_error_message_box(
                 message=translate('BiblesPlugin.SwordImport', 'An unexpected error happened while importing the SWORD '
                                                               'bible, please report this to the OpenLP developers.\n'
-                                                              '%s' % e))
+                                                              '{error}').format(error=e))
             log.exception(str(e))
             success = False
         if self.stop_import_flag:
