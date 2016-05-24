@@ -148,7 +148,7 @@ class PptviewDocument(PresentationDocument):
             return
         log.debug('create_thumbnails proceeding')
         for idx in range(self.get_slide_count()):
-            path = '%s\\slide%s.bmp' % (self.get_temp_folder(), str(idx + 1))
+            path = '{folder}\\slide{index}.bmp'.format(folder=self.get_temp_folder(), index=str(idx + 1))
             self.convert_thumbnail(path, idx + 1)
 
     def create_titles_and_notes(self):

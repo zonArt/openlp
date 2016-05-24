@@ -104,7 +104,7 @@ class TestBSExtract(TestCase):
         result = instance.get_books_from_http('NIV')
 
         # THEN: The rest mocks should be called with known values and get_books_from_http should return None
-        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("%s")', 'NIV')
+        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("{book}")'.format(book='NIV'))
         self.mock_urllib.parse.quote.assert_called_once_with(b'NIV')
         self.mock_get_soup_for_bible_ref.assert_called_once_with(
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')
@@ -132,7 +132,7 @@ class TestBSExtract(TestCase):
         result = instance.get_books_from_http('NIV')
 
         # THEN: The rest mocks should be called with known values and get_books_from_http should return None
-        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("%s")', 'NIV')
+        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("{book}")'.format(book='NIV'))
         self.mock_urllib.parse.quote.assert_called_once_with(b'NIV')
         self.mock_get_soup_for_bible_ref.assert_called_once_with(
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')
@@ -167,7 +167,7 @@ class TestBSExtract(TestCase):
 
         # THEN: The rest mocks should be called with known values and get_books_from_http should return the two books
         #       in the test data
-        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("%s")', 'NIV')
+        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("{book}")'.format(book='NIV'))
         self.mock_urllib.parse.quote.assert_called_once_with(b'NIV')
         self.mock_get_soup_for_bible_ref.assert_called_once_with(
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')

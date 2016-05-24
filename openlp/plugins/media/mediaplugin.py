@@ -49,7 +49,7 @@ class MediaPlugin(Plugin):
     """
     The media plugin adds the ability to playback audio and video content.
     """
-    log.info('%s MediaPlugin loaded', __name__)
+    log.info('{name} MediaPlugin loaded'.format(name=__name__))
 
     def __init__(self):
         super(MediaPlugin, self).__init__('media', __default_settings__, MediaMediaItem)
