@@ -102,17 +102,18 @@ class TestRegistry(TestCase):
 
         # WHEN: I add a working flag it should save it
         my_data = 'Lamas'
+        my_data2 = 'More Lamas'
         Registry().set_flag('test1', my_data)
 
         # THEN: we should be able retrieve the saved component
-        assert Registry().get_flag('test1') == my_data, 'The working flag can be retrieved and matches'
+        temp = Registry().get_flag('test1')
+        self.assertEquals(temp, my_data, 'The value should have been saved')
 
-        # WHEN: I add a component for the second time I am mad.
-        # THEN  and I will get an exception
-        with self.assertRaises(KeyError) as context:
-            Registry().set_flag('test1', my_data)
-        self.assertEqual(context.exception.args[0], 'Duplicate Working Flag exception test1',
-                         'KeyError exception should have been thrown for duplicate working flag')
+        # WHEN: I add a component for the second time I am not mad.
+        # THEN  and I will not get an exception
+        Registry().set_flag('test1', my_data2)
+        temp = Registry().get_flag('test1')
+        self.assertEquals(temp, my_data2, 'The value should have been updated')
 
         # WHEN I try to get back a non existent Working Flag
         # THEN I will get an exception

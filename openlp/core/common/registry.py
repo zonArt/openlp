@@ -166,12 +166,7 @@ class Registry(object):
         :param key: The working_flag to be created this is usually a major class like "renderer" or "main_window" .
         :param reference: The data to be saved.
         """
-        if key in self.working_flags:
-            trace_error_handler(log)
-            log.error('Duplicate Working Flag exception {key}'.format(key=key))
-            raise KeyError('Duplicate Working Flag exception {key}'.format(key=key))
-        else:
-            self.working_flags[key] = reference
+        self.working_flags[key] = reference
 
     def remove_flag(self, key):
         """
