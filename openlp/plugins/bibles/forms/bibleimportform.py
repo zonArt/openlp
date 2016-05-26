@@ -593,22 +593,27 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the books CSV file.
         """
+        # TODO: Verify format() with varible template
         self.get_file_name(
-            WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csv_books_edit, 'last directory import', '%s (*.csv)' %
-            translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
+            WizardStrings.OpenTypeFile % WizardStrings.CSV,
+            self.csv_books_edit,
+            'last directory import',
+            '{name} (*.csv)'.format(name=translate('BiblesPlugin.ImportWizardForm', 'CSV File')))
 
     def on_csv_verses_browse_button_clicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
+        # TODO: Verify format() with variable template
         self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csv_verses_edit,
-                           'last directory import', '%s (*.csv)' %
-                                                    translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
+                           'last directory import',
+                           '{name} (*.csv)'.format(name=translate('BiblesPlugin.ImportWizardForm', 'CSV File')))
 
     def on_open_song_browse_button_clicked(self):
         """
         Show the file open dialog for the OpenSong file.
         """
+        # TODO: Verify format() with variable template
         self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.OS, self.open_song_file_edit,
                            'last directory import')
 
@@ -616,6 +621,7 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the Zefania file.
         """
+        # TODO: Verify format() with variable template
         self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.ZEF, self.zefania_file_edit,
                            'last directory import')
 
@@ -631,6 +637,7 @@ class BibleImportForm(OpenLPWizard):
         self.web_progress_bar.setVisible(True)
         self.web_progress_bar.setValue(0)
         proxy_server = self.field('proxy_server')
+        # TODO: Where does critical_error_message_box get %s string from?
         for (download_type, extractor) in ((WebDownload.Crosswalk, CWExtract(proxy_server)),
                                            (WebDownload.BibleGateway, BGExtract(proxy_server)),
                                            (WebDownload.Bibleserver, BSExtract(proxy_server))):
