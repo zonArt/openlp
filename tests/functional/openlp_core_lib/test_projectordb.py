@@ -265,3 +265,22 @@ class TestProjectorDB(TestCase):
                          'manufacturer="IN YOUR DREAMS", model="OpenLP", other="None", sources="None", '
                          'source_list="[]") >',
                          'Projector.__repr__() should have returned a proper representation string')
+
+    def projectorsource_repr_test(self):
+        """
+        Test ProjectorSource.__repr__() text
+        """
+        # GIVEN: test setup
+        projector1 = Projector(**TEST1_DATA)
+        self.projector.add_projector(projector1)
+        item = self.projector.get_projector_by_id(projector1.id)
+        item_id = item.id
+
+        # WHEN: A source entry is saved for item
+        source = ProjectorSource(projector_id=item_id, code='11', text='First RGB source')
+        self.projector.add_source(source)
+
+        # THEN: __repr__ should return a proper string
+        self.assertEqual(str(source),
+                         '<ProjectorSource(id="1", code="11", text="First RGB source", projector_id="1")>',
+                         'ProjectorSource.__repr__)_ should have returned a proper representation string')

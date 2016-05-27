@@ -192,14 +192,14 @@ class RemoteTab(SettingsTab):
                                                     'Show thumbnails of non-text slides in remote and stage view.'))
         self.android_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
         self.android_qr_description_label.setText(
-            translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="%s">download</a> to install the '
-                                                'Android app from Google Play.') %
-            'https://play.google.com/store/apps/details?id=org.openlp.android2')
+            translate('RemotePlugin.RemoteTab',
+                      'Scan the QR code or click <a href="{qr}">download</a> to install the Android app from Google '
+                      'Play.').format(qr='https://play.google.com/store/apps/details?id=org.openlp.android2'))
         self.ios_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'iOS App'))
         self.ios_qr_description_label.setText(
-            translate('RemotePlugin.RemoteTab', 'Scan the QR code or click <a href="%s">download</a> to install the '
-                                                'iOS app from the App Store.') %
-            'https://itunes.apple.com/app/id1096218725')
+            translate('RemotePlugin.RemoteTab',
+                      'Scan the QR code or click <a href="{qr}">download</a> to install the iOS app from the App '
+                      'Store.').format(qr='https://itunes.apple.com/app/id1096218725'))
         self.https_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'HTTPS Server'))
         self.https_error_label.setText(
             translate('RemotePlugin.RemoteTab', 'Could not find an SSL certificate. The HTTPS server will not be '
@@ -217,18 +217,18 @@ class RemoteTab(SettingsTab):
         Update the display based on the data input on the screen
         """
         ip_address = self.get_ip_address(self.address_edit.text())
-        http_url = 'http://%s:%s/' % (ip_address, self.port_spin_box.value())
-        https_url = 'https://%s:%s/' % (ip_address, self.https_port_spin_box.value())
-        self.remote_url.setText('<a href="%s">%s</a>' % (http_url, http_url))
-        self.remote_https_url.setText('<a href="%s">%s</a>' % (https_url, https_url))
+        http_url = 'http://{url}:{text}/'.format(url=ip_address, text=self.port_spin_box.value())
+        https_url = 'https://{url}:{text}/'.format(url=ip_address, text=self.https_port_spin_box.value())
+        self.remote_url.setText('<a href="{url}">{url}</a>'.format(url=http_url))
+        self.remote_https_url.setText('<a href="{url}">{url}</a>'.format(url=https_url))
         http_url_temp = http_url + 'stage'
         https_url_temp = https_url + 'stage'
-        self.stage_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
-        self.stage_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
+        self.stage_url.setText('<a href="{url}">{url}</a>'.format(url=http_url_temp))
+        self.stage_https_url.setText('<a href="{url}">{url}</a>'.format(url=https_url_temp))
         http_url_temp = http_url + 'main'
         https_url_temp = https_url + 'main'
-        self.live_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
-        self.live_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
+        self.live_url.setText('<a href="{url}">{url}</a>'.format(url=http_url_temp))
+        self.live_https_url.setText('<a href="{url}">{url}</a>'.format(url=https_url_temp))
 
     def get_ip_address(self, ip_address):
         """

@@ -41,6 +41,7 @@ class PowerPraiseImport(SongImport):
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return
+            # TODO: Verify format() with template strings
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
             root = objectify.parse(open(file_path, 'rb')).getroot()
             self.process_song(root)
@@ -66,7 +67,7 @@ class PowerPraiseImport(SongImport):
             else:
                 verse_def = 'o'
             verse_count[verse_def] = verse_count.get(verse_def, 0) + 1
-            verse_def = '%s%d' % (verse_def, verse_count[verse_def])
+            verse_def = '{verse}{count:d}'.format(verse=verse_def, count=verse_count[verse_def])
             verse_text = []
             for slide in part.slide:
                 if not hasattr(slide, 'line'):

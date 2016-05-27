@@ -143,6 +143,7 @@ class SongExportForm(OpenLPWizard):
         Song wizard localisation.
         """
         self.setWindowTitle(translate('SongsPlugin.ExportWizardForm', 'Song Export Wizard'))
+        # TODO: Verify format() with template variables
         self.title_label.setText(WizardStrings.HeaderStyle %
                                  translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
         self.information_label.setText(
@@ -151,7 +152,7 @@ class SongExportForm(OpenLPWizard):
         self.available_songs_page.setTitle(translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.available_songs_page.setSubTitle(translate('SongsPlugin.ExportWizardForm',
                                               'Check the songs you want to export.'))
-        self.search_label.setText('%s:' % UiStrings().Search)
+        self.search_label.setText('{text}:'.format(text=UiStrings().Search))
         self.uncheck_button.setText(translate('SongsPlugin.ExportWizardForm', 'Uncheck All'))
         self.check_button.setText(translate('SongsPlugin.ExportWizardForm', 'Check All'))
         self.export_song_page.setTitle(translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
@@ -223,7 +224,7 @@ class SongExportForm(OpenLPWizard):
             if song.temporary:
                 continue
             authors = create_separated_list([author.display_name for author in song.authors])
-            title = '%s (%s)' % (str(song.title), authors)
+            title = '{title} ({author})'.format(title=song.title, author=authors)
             item = QtWidgets.QListWidgetItem(title)
             item.setData(QtCore.Qt.UserRole, song)
             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
@@ -257,7 +258,7 @@ class SongExportForm(OpenLPWizard):
                 self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed.'))
         except OSError as ose:
             self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed because this '
-                                                  'error occurred: %s') % ose.strerror)
+                                                  'error occurred: {error}').format(error=ose.strerror))
 
     def on_search_line_edit_changed(self, text):
         """
