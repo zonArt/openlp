@@ -34,6 +34,7 @@ from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUT
 
 pjlink_test = PJLink1(name='test', ip='127.0.0.1', pin=TEST_PIN, no_poll=True)
 
+
 class DummyTimer(object):
     '''
     Dummy class to fake timers
@@ -46,6 +47,7 @@ class DummyTimer(object):
 
     def stop(self, *args, **kwargs):
         pass
+
 
 class TestPJLink(TestCase):
     """
