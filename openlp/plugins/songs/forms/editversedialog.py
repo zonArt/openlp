@@ -22,7 +22,8 @@
 
 from PyQt5 import QtWidgets
 
-from openlp.core.lib import SpellTextEdit, build_icon, translate
+from openlp.core.ui.lib import SpellTextEdit
+from openlp.core.lib import build_icon, translate
 from openlp.core.lib.ui import UiStrings, create_button_box
 from openlp.plugins.songs.lib import VerseType
 
