@@ -407,7 +407,7 @@ class BibleMediaItem(MediaManagerItem):
             self.initialise_chapter_verse(bible, first_book['name'], first_book['book_reference_id'])
 
     def initialise_chapter_verse(self, bible, book, book_ref_id):
-        log.debug('initialise_chapter_verse {bible}, {book), {ref}'.format(bible=bible, book=book, ref=book_ref_id))
+        log.debug('initialise_chapter_verse {bible}, {book}, {ref}'.format(bible=bible, book=book, ref=book_ref_id))
         book = self.plugin.manager.get_book_by_id(bible, book_ref_id)
         self.chapter_count = self.plugin.manager.get_chapter_count(bible, book)
         verse_count = self.plugin.manager.get_verse_count_by_book_ref_id(bible, book_ref_id, 1)
