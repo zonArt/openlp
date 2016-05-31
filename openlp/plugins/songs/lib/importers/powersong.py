@@ -96,7 +96,7 @@ class PowerSongImport(SongImport):
                 self.import_source = ''
         if not self.import_source or not isinstance(self.import_source, list):
             self.log_error(translate('SongsPlugin.PowerSongImport', 'No songs to import.'),
-                           translate('SongsPlugin.PowerSongImport', 'No %s files found.') % ps_string)
+                           translate('SongsPlugin.PowerSongImport', 'No {text} files found.').format(text=ps_string))
             return
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for file in self.import_source:
@@ -113,9 +113,9 @@ class PowerSongImport(SongImport):
                         field = self._read_string(song_data)
                     except ValueError:
                         parse_error = True
-                        self.log_error(os.path.basename(file), str(
-                            translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Unexpected byte value.')) %
-                            ps_string)
+                        self.log_error(os.path.basename(file),
+                                       translate('SongsPlugin.PowerSongImport',
+                                                 'Invalid {text} file. Unexpected byte value.').format(text=ps_string))
                         break
                     else:
                         if label == 'TITLE':
@@ -131,19 +131,20 @@ class PowerSongImport(SongImport):
                 continue
             # Check that file had TITLE field
             if not self.title:
-                self.log_error(os.path.basename(file), str(
-                    translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "TITLE" header.')) % ps_string)
+                self.log_error(os.path.basename(file),
+                               translate('SongsPlugin.PowerSongImport',
+                                         'Invalid {text} file. Missing "TITLE" header.').format(text=ps_string))
                 continue
             # Check that file had COPYRIGHTLINE label
             if not found_copyright:
-                self.log_error(self.title, str(
-                    translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "COPYRIGHTLINE" header.')) %
-                    ps_string)
+                self.log_error(self.title,
+                               translate('SongsPlugin.PowerSongImport',
+                                         'Invalid {text} file. Missing "COPYRIGHTLINE" header.').format(text=ps_string))
                 continue
             # Check that file had at least one verse
             if not self.verses:
-                self.log_error(self.title, str(
-                    translate('SongsPlugin.PowerSongImport', 'Verses not found. Missing "PART" header.')))
+                self.log_error(self.title,
+                               translate('SongsPlugin.PowerSongImport', 'Verses not found. Missing "PART" header.'))
                 continue
             if not self.finish():
                 self.log_error(self.title)

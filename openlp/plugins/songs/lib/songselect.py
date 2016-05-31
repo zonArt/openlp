@@ -78,7 +78,7 @@ class SongSelectImport(object):
         try:
             login_page = BeautifulSoup(self.opener.open(LOGIN_URL).read(), 'lxml')
         except (TypeError, URLError) as e:
-            log.exception('Could not login to SongSelect, %s', e)
+            log.exception('Could not login to SongSelect, {error}'.format(error=e))
             return False
         if callback:
             callback()
@@ -92,7 +92,7 @@ class SongSelectImport(object):
         try:
             posted_page = BeautifulSoup(self.opener.open(LOGIN_URL, data.encode('utf-8')).read(), 'lxml')
         except (TypeError, URLError) as e:
-            log.exception('Could not login to SongSelect, %s', e)
+            log.exception('Could not login to SongSelect, {error}'.format(error=e))
             return False
         if callback:
             callback()
@@ -105,7 +105,7 @@ class SongSelectImport(object):
         try:
             self.opener.open(LOGOUT_URL)
         except (TypeError, URLError) as e:
-            log.exception('Could not log of SongSelect, %s', e)
+            log.exception('Could not log of SongSelect, {error}'.format(error=e))
 
     def search(self, search_text, max_results, callback=None):
         """
@@ -127,7 +127,7 @@ class SongSelectImport(object):
                 results_page = BeautifulSoup(self.opener.open(SEARCH_URL + '?' + urlencode(params)).read(), 'lxml')
                 search_results = results_page.find_all('li', 'result pane')
             except (TypeError, URLError) as e:
-                log.exception('Could not search SongSelect, %s', e)
+                log.exception('Could not search SongSelect, {error}'.format(error=e))
                 search_results = None
             if not search_results:
                 break
@@ -158,7 +158,7 @@ class SongSelectImport(object):
         try:
             song_page = BeautifulSoup(self.opener.open(song['link']).read(), 'lxml')
         except (TypeError, URLError) as e:
-            log.exception('Could not get song from SongSelect, %s', e)
+            log.exception('Could not get song from SongSelect, {error}'.format(error=e))
             return None
         if callback:
             callback()
@@ -203,7 +203,7 @@ class SongSelectImport(object):
             verse_type = VerseType.from_loose_input(verse_type)
             verse_number = int(verse_number)
             song_xml.add_verse_to_lyrics(VerseType.tags[verse_type], verse_number, verse['lyrics'])
-            verse_order.append('%s%s' % (VerseType.tags[verse_type], verse_number))
+            verse_order.append('{tag}{number}'.format(tag=VerseType.tags[verse_type], number=verse_number))
         db_song.verse_order = ' '.join(verse_order)
         db_song.lyrics = song_xml.extract_xml()
         clean_song(self.db_manager, db_song)

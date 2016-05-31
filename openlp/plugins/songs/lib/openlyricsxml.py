@@ -70,6 +70,7 @@ from openlp.plugins.songs.lib.db import Author, AuthorType, Book, Song, Topic
 log = logging.getLogger(__name__)
 
 NAMESPACE = 'http://openlyrics.info/namespace/2009/song'
+# TODO: Verify format() with template variable
 NSMAP = '{' + NAMESPACE + '}' + '%s'
 
 
@@ -126,7 +127,7 @@ class SongXML(object):
         try:
             self.song_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
-            log.exception('Invalid xml %s', xml)
+            log.exception('Invalid xml {text}'.format(text=xml))
         xml_iter = self.song_xml.getiterator()
         for element in xml_iter:
             if element.tag == 'verse':
@@ -422,7 +423,7 @@ class OpenLyrics(object):
         :param tags_element: Some tag elements
         """
         available_tags = FormattingTags.get_html_tags()
-        start_tag = '{%s}' % tag_name
+        start_tag = '{{{name}}}'.format(name=tag_name)
         for tag in available_tags:
             if tag['start tag'] == start_tag:
                 # Create new formatting tag in openlyrics xml.
@@ -449,18 +450,18 @@ class OpenLyrics(object):
             xml_tags = tags_element.xpath('tag/attribute::name')
             # Some formatting tag has only starting part e.g. <br>. Handle this case.
             if tag in end_tags:
-                text = text.replace('{%s}' % tag, '<tag name="%s">' % tag)
+                text = text.replace('{{{tag}}}'.format(tag=tag), '<tag name="{tag}">'.format(tag=tag))
             else:
-                text = text.replace('{%s}' % tag, '<tag name="%s"/>' % tag)
+                text = text.replace('{{{tag}}}'.format(tag=tag), '<tag name="{tag}"/>'.format(tag=tag))
             # Add tag to <format> element if tag not present.
             if tag not in xml_tags:
                 self._add_tag_to_formatting(tag, tags_element)
         # Replace end tags.
         for tag in end_tags:
-            text = text.replace('{/%s}' % tag, '</tag>')
+            text = text.replace('{/{tag}}}'.format(tag=tag), '</tag>')
         # Replace \n with <br/>.
         text = text.replace('\n', '<br/>')
-        element = etree.XML('<lines>%s</lines>' % text)
+        element = etree.XML('<lines>{text}</lines>'.format(text=text))
         verse_element.append(element)
         return element
 
@@ -566,9 +567,9 @@ class OpenLyrics(object):
             name = tag.get('name')
             if name is None:
                 continue
-            start_tag = '{%s}' % name[:5]
+            start_tag = '{{{name}}}'.format(name=name[:5])
             # Some tags have only start tag e.g. {br}
-            end_tag = '{/' + name[:5] + '}' if hasattr(tag, 'close') else ''
+            end_tag = '{{/{name}}}'.format(name=name[:5]) if hasattr(tag, 'close') else ''
             openlp_tag = {
                 'desc': name,
                 'start tag': start_tag,
@@ -604,26 +605,30 @@ class OpenLyrics(object):
         text = ''
         use_endtag = True
         # Skip <comment> elements - not yet supported.
+        # TODO: Verify format() with template variables
         if element.tag == NSMAP % 'comment':
             if element.tail:
                 # Append tail text at chord element.
                 text += element.tail
             return text
         # Skip <chord> element - not yet supported.
+        # TODO: Verify format() with template variables
         elif element.tag == NSMAP % 'chord':
             if element.tail:
                 # Append tail text at chord element.
                 text += element.tail
             return text
         # Convert line breaks <br/> to \n.
+        # TODO: Verify format() with template variables
         elif newlines and element.tag == NSMAP % 'br':
             text += '\n'
             if element.tail:
                 text += element.tail
             return text
         # Start formatting tag.
+        # TODO: Verify format() with template variables
         if element.tag == NSMAP % 'tag':
-            text += '{%s}' % element.get('name')
+            text += '{{{name}}}'.format(name=element.get('name'))
             # Some formattings may have only start tag.
             # Handle this case if element has no children and contains no text.
             if not element and not element.text:
@@ -636,8 +641,9 @@ class OpenLyrics(object):
             # Use recursion since nested formatting tags are allowed.
             text += self._process_lines_mixed_content(child, newlines)
         # Append text from tail and add formatting end tag.
+        # TODO: Verify format() with template variables
         if element.tag == NSMAP % 'tag' and use_endtag:
-            text += '{/%s}' % element.get('name')
+            text += '{/{name}}}'.format(name=element.get('name'))
         # Append text from tail.
         if element.tail:
             text += element.tail
@@ -663,6 +669,7 @@ class OpenLyrics(object):
             # Loop over the "line" elements removing comments and chords.
             for line in element:
                 # Skip comment lines.
+                # TODO: Verify format() with template variables
                 if line.tag == NSMAP % 'comment':
                     continue
                 if text:

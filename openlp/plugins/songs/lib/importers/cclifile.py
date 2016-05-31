@@ -58,7 +58,7 @@ class CCLIFileImport(SongImport):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             filename = str(filename)
-            log.debug('Importing CCLI File: %s', filename)
+            log.debug('Importing CCLI File: {name}'.format(name=filename))
             if os.path.isfile(filename):
                 detect_file = open(filename, 'rb')
                 detect_content = detect_file.read(2048)
@@ -76,17 +76,17 @@ class CCLIFileImport(SongImport):
                 infile.close()
                 ext = os.path.splitext(filename)[1]
                 if ext.lower() == '.usr' or ext.lower() == '.bin':
-                    log.info('SongSelect USR format file found: %s', filename)
+                    log.info('SongSelect USR format file found: {name}'.format(name=filename))
                     if not self.do_import_usr_file(lines):
                         self.log_error(filename)
                 elif ext.lower() == '.txt':
-                    log.info('SongSelect TEXT format file found: %s', filename)
+                    log.info('SongSelect TEXT format file found: {name}'.format(name=filename))
                     if not self.do_import_txt_file(lines):
                         self.log_error(filename)
                 else:
                     self.log_error(filename, translate('SongsPlugin.CCLIFileImport', 'The file does not have a valid '
                                                                                      'extension.'))
-                    log.info('Extension %s is not valid', filename)
+                    log.info('Extension {name} is not valid'.format(name=filename))
             if self.stop_import_flag:
                 return
 
@@ -146,7 +146,7 @@ class CCLIFileImport(SongImport):
 
         :param text_list: An array of strings containing the usr file content.
         """
-        log.debug('USR file text: %s', text_list)
+        log.debug('USR file text: {text}'.format(text=text_list))
         song_author = ''
         song_topics = ''
         for line in text_list:
@@ -193,7 +193,7 @@ class CCLIFileImport(SongImport):
             if check_first_verse_line:
                 if verse_lines[0].startswith('(PRE-CHORUS'):
                     verse_type = VerseType.tags[VerseType.PreChorus]
-                    log.debug('USR verse PRE-CHORUS: %s', verse_lines[0])
+                    log.debug('USR verse PRE-CHORUS: {lines}'.format(lines=verse_lines[0]))
                     verse_text = verse_lines[1]
                 elif verse_lines[0].startswith('(BRIDGE'):
                     verse_type = VerseType.tags[VerseType.Bridge]
@@ -248,7 +248,7 @@ class CCLIFileImport(SongImport):
                 # e.g. CCLI-Liedlizenznummer: 14 / CCLI License No. 14
 
         """
-        log.debug('TXT file text: %s', text_list)
+        log.debug('TXT file text: {text}'.format(text=text_list))
         line_number = 0
         check_first_verse_line = False
         verse_text = ''
