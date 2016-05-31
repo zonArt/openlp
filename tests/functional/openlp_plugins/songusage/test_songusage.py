@@ -36,7 +36,7 @@ class TestSongUsage(TestCase):
     def setUp(self):
         Registry.create()
 
-    def about_text_test(self):
+    def test_about_text(self):
         """
         Test the about text of the song usage plugin
         """
@@ -49,7 +49,7 @@ class TestSongUsage(TestCase):
         self.assertNotEquals(len(SongUsagePlugin.about()), 0)
 
     @patch('openlp.plugins.songusage.songusageplugin.Manager')
-    def song_usage_init_test(self, MockedManager):
+    def test_song_usage_init(self, MockedManager):
         """
         Test the initialisation of the SongUsagePlugin class
         """
@@ -66,7 +66,7 @@ class TestSongUsage(TestCase):
         self.assertFalse(song_usage.song_usage_active)
 
     @patch('openlp.plugins.songusage.songusageplugin.Manager')
-    def check_pre_conditions_test(self, MockedManager):
+    def test_check_pre_conditions(self, MockedManager):
         """
         Test that check_pre_condition returns true for valid manager session
         """
@@ -83,7 +83,7 @@ class TestSongUsage(TestCase):
         self.assertTrue(ret)
 
     @patch('openlp.plugins.songusage.songusageplugin.Manager')
-    def toggle_song_usage_state_test(self, MockedManager):
+    def test_toggle_song_usage_state(self, MockedManager):
         """
         Test that toggle_song_usage_state does toggle song_usage_state
         """

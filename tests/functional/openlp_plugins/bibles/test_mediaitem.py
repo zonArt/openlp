@@ -42,7 +42,7 @@ class TestMediaItem(TestCase, TestMixin):
             self.media_item = BibleMediaItem(None, MagicMock())
         self.setup_application()
 
-    def display_results_no_results_test(self):
+    def test_display_results_no_results(self):
         """
         Test the display_results method when called with a single bible, returning no results
         """
@@ -64,7 +64,7 @@ class TestMediaItem(TestCase, TestMixin):
             self.assertEqual(self.media_item.search_results, {})
             self.assertEqual(self.media_item.second_search_results, {})
 
-    def display_results_two_bibles_no_results_test(self):
+    def test_display_results_two_bibles_no_results(self):
         """
         Test the display_results method when called with two bibles, returning no results
         """
@@ -87,7 +87,7 @@ class TestMediaItem(TestCase, TestMixin):
             self.assertEqual(self.media_item.search_results, {})
             self.assertEqual(self.media_item.second_search_results, {})
 
-    def display_results_returns_lots_of_results_test_test(self):
+    def test_display_results_returns_lots_of_results(self):
             """
             Test the display_results method a large number of results (> 100) are returned
             """

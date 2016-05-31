@@ -61,7 +61,7 @@ class TestListPreviewWidget(TestCase):
         self.mocked_viewport.return_value = self.mocked_viewport_obj
         self.addCleanup(self.viewport_patcher.stop)
 
-    def new_list_preview_widget_test(self):
+    def test_new_list_preview_widget(self):
         """
         Test that creating an instance of ListPreviewWidget works
         """

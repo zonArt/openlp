@@ -100,7 +100,7 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
                 retries += 1
         self.destroy_settings()
 
-    def source_dict_test(self):
+    def test_source_dict(self):
         """
         Test that source list dict returned from sourceselectform module is a valid dict with proper entries
         """
@@ -118,7 +118,7 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
                           "Source group dictionary should match test dictionary")
 
     @patch.object(QDialog, 'exec')
-    def source_select_edit_button_test(self, mocked_qdialog):
+    def test_source_select_edit_button(self, mocked_qdialog):
         """
         Test source select form edit has Ok, Cancel, Reset, and Revert buttons
         """
@@ -138,7 +138,7 @@ class ProjectorSourceFormTest(TestCase, TestMixin):
                           '"Rest", and "Revert" buttons available')
 
     @patch.object(QDialog, 'exec')
-    def source_select_noedit_button_test(self, mocked_qdialog):
+    def test_source_select_noedit_button(self, mocked_qdialog):
         """
         Test source select form view has OK and Cancel buttons only
         """

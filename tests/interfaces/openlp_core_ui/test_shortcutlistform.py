@@ -52,7 +52,7 @@ class TestShortcutform(TestCase, TestMixin):
         del self.form
         del self.main_window
 
-    def adjust_button_test(self):
+    def test_adjust_button(self):
         """
         Test the _adjust_button() method
         """
@@ -71,7 +71,7 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_check_method.assert_called_once_with(True)
             self.assertEqual(button.isEnabled(), enabled, 'The button should be disabled.')
 
-    def space_key_press_event_test(self):
+    def test_space_key_press_event(self):
         """
         Test the keyPressEvent when the spacebar was pressed
         """
@@ -87,7 +87,7 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_key_release_event.assert_called_with(mocked_event)
             self.assertEqual(0, mocked_event.accept.call_count)
 
-    def primary_push_button_checked_key_press_event_test(self):
+    def test_primary_push_button_checked_key_press_event(self):
         """
         Test the keyPressEvent when the primary push button is checked
         """
@@ -104,7 +104,7 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_key_release_event.assert_called_with(mocked_event)
             self.assertEqual(0, mocked_event.accept.call_count)
 
-    def alternate_push_button_checked_key_press_event_test(self):
+    def test_alternate_push_button_checked_key_press_event(self):
         """
         Test the keyPressEvent when the alternate push button is checked
         """
@@ -121,7 +121,7 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_key_release_event.assert_called_with(mocked_event)
             self.assertEqual(0, mocked_event.accept.call_count)
 
-    def escape_key_press_event_test(self):
+    def test_escape_key_press_event(self):
         """
         Test the keyPressEvent when the escape key was pressed
         """
@@ -137,7 +137,7 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_event.accept.assert_called_with()
             mocked_close.assert_called_with()
 
-    def on_default_radio_button_not_toggled_test(self):
+    def test_on_default_radio_button_not_toggled(self):
         """
         Test that the default radio button method exits early when the button is not toggled
         """
@@ -150,7 +150,7 @@ class TestShortcutform(TestCase, TestMixin):
             # THEN: The method should exit early (i.e. the rest of the methods are not called)
             self.assertEqual(0, mocked_current_item_action.call_count)
 
-    def on_default_radio_button_clicked_no_action_test(self):
+    def test_on_default_radio_button_clicked_no_action(self):
         """
         Test that nothing happens when an action hasn't been selected and you click the default radio button
         """
@@ -166,7 +166,7 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_current_item_action.assert_called_with()
             self.assertEqual(0, mocked_action_shortcuts.call_count)
 
-    def on_default_radio_button_clicked_test(self):
+    def test_on_default_radio_button_clicked(self):
         """
         Test that the values are copied across correctly when the default radio button is selected
         """
@@ -191,7 +191,7 @@ class TestShortcutform(TestCase, TestMixin):
             mocked_refresh_shortcut_list.assert_called_with()
             mocked_set_text.assert_called_with('Esc')
 
-    def on_custom_radio_button_not_toggled_test(self):
+    def test_on_custom_radio_button_not_toggled(self):
         """
         Test that the custom radio button method exits early when the button is not toggled
         """
@@ -204,7 +204,7 @@ class TestShortcutform(TestCase, TestMixin):
             # THEN: The method should exit early (i.e. the rest of the methods are not called)
             self.assertEqual(0, mocked_current_item_action.call_count)
 
-    def on_custom_radio_button_clicked_test(self):
+    def test_on_custom_radio_button_clicked(self):
         """
         Test that the values are copied across correctly when the custom radio button is selected
         """

@@ -59,7 +59,7 @@ class TestBibleImportForm(TestCase, TestMixin):
     @patch('openlp.plugins.bibles.forms.bibleimportform.CWExtract.get_bibles_from_http')
     @patch('openlp.plugins.bibles.forms.bibleimportform.BGExtract.get_bibles_from_http')
     @patch('openlp.plugins.bibles.forms.bibleimportform.BSExtract.get_bibles_from_http')
-    def on_web_update_button_clicked_test(self, mocked_bsextract, mocked_bgextract, mocked_cwextract):
+    def test_on_web_update_button_clicked(self, mocked_bsextract, mocked_bgextract, mocked_cwextract):
         """
         Test that on_web_update_button_clicked handles problems correctly
         """
@@ -78,7 +78,7 @@ class TestBibleImportForm(TestCase, TestMixin):
         # THEN: The webbible list should still be empty
         self.assertEqual(self.form.web_bible_list, {}, 'The webbible list should be empty')
 
-    def custom_init_test(self):
+    def test_custom_init(self):
         """
         Test that custom_init works as expected if pysword is unavailable
         """

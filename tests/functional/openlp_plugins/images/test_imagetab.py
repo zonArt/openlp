@@ -66,7 +66,7 @@ class TestImageMediaItem(TestCase, TestMixin):
         del self.form
         self.destroy_settings()
 
-    def save_tab_nochange_test_test(self):
+    def test_save_tab_nochange(self):
         """
         Test no changes does not trigger post processing
         """
@@ -78,7 +78,7 @@ class TestImageMediaItem(TestCase, TestMixin):
         self.assertEqual(0, self.form.settings_form.register_post_process.call_count,
                          'Image Post processing should not have been requested')
 
-    def save_tab_change_test_test(self):
+    def test_save_tab_change(self):
         """
         Test a color change is applied and triggers post processing.
         """

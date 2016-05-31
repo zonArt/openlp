@@ -100,7 +100,7 @@ class TestOpenLyricsImport(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the OpenLyrics file importer
         """
@@ -114,7 +114,7 @@ class TestOpenLyricsImport(TestCase, TestMixin):
             # THEN: The importer should be an instance of SongImport
             self.assertIsInstance(importer, SongImport)
 
-    def file_import_test(self):
+    def test_file_import(self):
         """
         Test the actual import of real song files
         """
@@ -134,7 +134,7 @@ class TestOpenLyricsImport(TestCase, TestMixin):
             # THEN: The xml_to_song() method should have been called
             self.assertTrue(importer.open_lyrics.xml_to_song.called)
 
-    def process_formatting_tags_test(self):
+    def test_process_formatting_tags(self):
         """
         Test that _process_formatting_tags works
         """
@@ -155,7 +155,7 @@ class TestOpenLyricsImport(TestCase, TestMixin):
                              json.loads(str(Settings().value('formattingTags/html_tags'))),
                              'The formatting tags should contain both the old and the new')
 
-    def process_author_test(self):
+    def test_process_author(self):
         """
         Test that _process_authors works
         """
@@ -174,7 +174,7 @@ class TestOpenLyricsImport(TestCase, TestMixin):
             self.assertEquals(mocked_song.method_calls[0][1][1], 'words+music')
             self.assertEquals(mocked_song.method_calls[1][1][1], 'words')
 
-    def process_songbooks_test(self):
+    def test_process_songbooks(self):
         """
         Test that _process_songbooks works
         """

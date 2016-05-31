@@ -88,7 +88,7 @@ class TestBSExtract(TestCase):
         self.socket_patcher.stop()
         self.urllib_patcher.stop()
 
-    def get_books_from_http_no_soup_test(self):
+    def test_get_books_from_http_no_soup(self):
         """
         Test the get_books_from_http method when get_soup_for_bible_ref returns a falsey value
         """
@@ -112,7 +112,7 @@ class TestBSExtract(TestCase):
                           'BSExtract.get_books_from_http should return None when get_soup_for_bible_ref returns a '
                           'false value')
 
-    def get_books_from_http_no_content_test(self):
+    def test_get_books_from_http_no_content(self):
         """
         Test the get_books_from_http method when the specified element cannot be found in the tag object returned from
         get_soup_for_bible_ref
@@ -143,7 +143,7 @@ class TestBSExtract(TestCase):
                           'BSExtract.get_books_from_http should return None when get_soup_for_bible_ref returns a '
                           'false value')
 
-    def get_books_from_http_content_test(self):
+    def test_get_books_from_http_content(self):
         """
         Test the get_books_from_http method with sample HTML
         Also a regression test for bug #1184869. (The anchor tag in the second list item is empty)

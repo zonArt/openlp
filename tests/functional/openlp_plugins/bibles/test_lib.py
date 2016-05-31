@@ -33,7 +33,7 @@ class TestLib(TestCase):
     """
     Test the functions in the :mod:`lib` module.
     """
-    def get_reference_separator_test(self):
+    def test_get_reference_separator(self):
         """
         Test the get_reference_separator method
         """
@@ -56,7 +56,7 @@ class TestLib(TestCase):
                 self.assertEqual(separators[key], value)
             mocked_update_reference_separators.assert_called_once_with()
 
-    def search_results_creation_test(self):
+    def test_search_results_creation(self):
         """
         Test the creation and construction of the SearchResults class
         """
@@ -78,7 +78,7 @@ class TestLib(TestCase):
         self.assertEqual(search_results.chapter, chapter, 'The chapter should be 1')
         self.assertDictEqual(search_results.verse_list, verse_list, 'The verse lists should be identical')
 
-    def search_results_has_verse_list_test(self):
+    def test_search_results_has_verse_list(self):
         """
         Test that a SearchResults object with a valid verse list returns True when checking ``has_verse_list()``
         """
@@ -91,7 +91,7 @@ class TestLib(TestCase):
         # THEN: It should be True
         self.assertTrue(has_verse_list, 'The SearchResults object should have a verse list')
 
-    def search_results_has_no_verse_list_test(self):
+    def test_search_results_has_no_verse_list(self):
         """
         Test that a SearchResults object with an empty verse list returns False when checking ``has_verse_list()``
         """

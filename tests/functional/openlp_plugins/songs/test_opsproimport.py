@@ -24,19 +24,21 @@ This module contains tests for the WorshipCenter Pro song importer.
 """
 import os
 import json
-from unittest import TestCase, SkipTest
+from unittest import TestCase, skipUnless
 
-if os.name != 'nt':
-    raise SkipTest('Not Windows, skipping test')
+try:
+    from openlp.core.common import Registry
+    from openlp.plugins.songs.lib.importers.opspro import OPSProImport
+    CAN_RUN_TESTS = True
+except ImportError:
+    CAN_RUN_TESTS = False
 
 from tests.functional import patch, MagicMock
-
-from openlp.core.common import Registry
-from openlp.plugins.songs.lib.importers.opspro import OPSProImport
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'opsprosongs'))
 
 
+@skipUnless(CAN_RUN_TESTS, 'Not Windows, skipping test')
 class TestOpsProSongImport(TestCase):
     """
     Test the functions in the :mod:`opsproimport` module.
@@ -48,7 +50,7 @@ class TestOpsProSongImport(TestCase):
         Registry.create()
 
     @patch('openlp.plugins.songs.lib.importers.opspro.SongImport')
-    def create_importer_test(self, mocked_songimport):
+    def test_create_importer(self, mocked_songimport):
         """
         Test creating an instance of the OPS Pro file importer
         """
@@ -62,7 +64,7 @@ class TestOpsProSongImport(TestCase):
         self.assertIsNotNone(importer, 'Import should not be none')
 
     @patch('openlp.plugins.songs.lib.importers.opspro.SongImport')
-    def detect_chorus_test(self, mocked_songimport):
+    def test_detect_chorus(self, mocked_songimport):
         """
         Test importing lyrics with a chorus in OPS Pro
         """
@@ -82,7 +84,7 @@ class TestOpsProSongImport(TestCase):
         self.assertListEqual(importer.verse_order_list_generated, self._get_data(result_data, 'verse_order_list'))
 
     @patch('openlp.plugins.songs.lib.importers.opspro.SongImport')
-    def join_and_split_test(self, mocked_songimport):
+    def test_join_and_split(self, mocked_songimport):
         """
         Test importing lyrics with a split and join tags works in OPS Pro
         """
@@ -102,7 +104,7 @@ class TestOpsProSongImport(TestCase):
         self.assertListEqual(importer.verse_order_list_generated, self._get_data(result_data, 'verse_order_list'))
 
     @patch('openlp.plugins.songs.lib.importers.opspro.SongImport')
-    def trans_off_tag_test(self, mocked_songimport):
+    def test_trans_off_tag(self, mocked_songimport):
         """
         Test importing lyrics with a split and join and translations tags works in OPS Pro
         """
@@ -122,7 +124,7 @@ class TestOpsProSongImport(TestCase):
         self.assertListEqual(importer.verse_order_list_generated, self._get_data(result_data, 'verse_order_list'))
 
     @patch('openlp.plugins.songs.lib.importers.opspro.SongImport')
-    def trans_tag_test(self, mocked_songimport):
+    def test_trans_tag(self, mocked_songimport):
         """
         Test importing lyrics with various translations tags works in OPS Pro
         """

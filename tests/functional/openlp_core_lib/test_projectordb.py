@@ -107,7 +107,7 @@ class TestProjectorDB(TestCase):
                 time.sleep(1)
                 retries += 1
 
-    def find_record_by_ip_test(self):
+    def test_find_record_by_ip(self):
         """
         Test find record by IP
         """
@@ -121,7 +121,7 @@ class TestProjectorDB(TestCase):
         self.assertTrue(compare_data(Projector(**TEST2_DATA), record),
                         'Record found should have been test_2 data')
 
-    def find_record_by_name_test(self):
+    def test_find_record_by_name(self):
         """
         Test find record by name
         """
@@ -135,7 +135,7 @@ class TestProjectorDB(TestCase):
         self.assertTrue(compare_data(Projector(**TEST2_DATA), record),
                         'Record found should have been test_2 data')
 
-    def record_delete_test(self):
+    def test_record_delete(self):
         """
         Test record can be deleted
         """
@@ -150,7 +150,7 @@ class TestProjectorDB(TestCase):
         found = self.projector.get_projector_by_ip(TEST3_DATA['ip'])
         self.assertFalse(found, 'test_3 record should have been deleted')
 
-    def record_edit_test(self):
+    def test_record_edit(self):
         """
         Test edited record returns the same record ID with different data
         """
@@ -176,7 +176,7 @@ class TestProjectorDB(TestCase):
         self.assertEqual(record_id, record.id, 'Edited record should have the same ID')
         self.assertTrue(compare_data(Projector(**TEST3_DATA), record), 'Edited record should have new data')
 
-    def source_add_test(self):
+    def test_source_add(self):
         """
         Test source entry for projector item
         """
@@ -194,7 +194,7 @@ class TestProjectorDB(TestCase):
         item = self.projector.get_projector_by_id(item_id)
         self.assertTrue(compare_source(item.source_list[0], source))
 
-    def manufacturer_repr_test(self):
+    def test_manufacturer_repr(self):
         """
         Test Manufacturer.__repr__ text
         """
@@ -208,7 +208,7 @@ class TestProjectorDB(TestCase):
         self.assertEqual(str(manufacturer), '<Manufacturer(name="OpenLP Test")>',
                          'Manufacturer.__repr__() should have returned a proper representation string')
 
-    def model_repr_test(self):
+    def test_model_repr(self):
         """
         Test Model.__repr__ text
         """
@@ -222,7 +222,7 @@ class TestProjectorDB(TestCase):
         self.assertEqual(str(model), '<Model(name='"OpenLP Test"')>',
                          'Model.__repr__() should have returned a proper representation string')
 
-    def source_repr_test(self):
+    def test_source_repr(self):
         """
         Test Source.__repr__ text
         """
@@ -238,7 +238,7 @@ class TestProjectorDB(TestCase):
         self.assertEqual(str(source), '<Source(pjlink_name="Test object", pjlink_code="11", text="Input text")>',
                          'Source.__repr__() should have returned a proper representation string')
 
-    def projector_repr_test(self):
+    def test_projector_repr(self):
         """
         Test Projector.__repr__() text
         """
@@ -266,7 +266,7 @@ class TestProjectorDB(TestCase):
                          'source_list="[]") >',
                          'Projector.__repr__() should have returned a proper representation string')
 
-    def projectorsource_repr_test(self):
+    def test_projectorsource_repr(self):
         """
         Test ProjectorSource.__repr__() text
         """

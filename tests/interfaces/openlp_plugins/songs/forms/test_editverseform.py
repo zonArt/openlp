@@ -53,7 +53,7 @@ class TestEditVerseForm(TestCase, TestMixin):
         del self.form
         del self.main_window
 
-    def ui_defaults_test(self):
+    def test_ui_defaults(self):
         """
         Test the EditVerseForm defaults are correct
         """
@@ -76,7 +76,7 @@ class TestEditVerseForm(TestCase, TestMixin):
         self.assertEqual(text, self.form.verse_text_edit.toPlainText(),
                          'The verse text edit should have the typed out verse')
 
-    def insert_verse_test(self):
+    def test_insert_verse(self):
         """
         Test that clicking the insert button inserts the correct verse marker
         """
@@ -88,7 +88,7 @@ class TestEditVerseForm(TestCase, TestMixin):
         self.assertIn('---[Verse:1]---', self.form.verse_text_edit.toPlainText(),
                       'The verse text edit should have a verse marker')
 
-    def insert_verse_2_test(self):
+    def test_insert_verse_2(self):
         """
         Test that clicking the up button on the spin box and then clicking the insert button inserts the correct marker
         """
@@ -101,7 +101,7 @@ class TestEditVerseForm(TestCase, TestMixin):
         self.assertIn('---[Verse:2]---', self.form.verse_text_edit.toPlainText(),
                       'The verse text edit should have a "Verse 2" marker')
 
-    def insert_chorus_test(self):
+    def test_insert_chorus(self):
         """
         Test that clicking the verse type combo box and then clicking the insert button inserts the correct marker
         """
