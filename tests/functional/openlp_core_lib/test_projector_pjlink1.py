@@ -35,6 +35,20 @@ from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUT
 pjlink_test = PJLink1(name='test', ip='127.0.0.1', pin=TEST_PIN, no_poll=True)
 
 
+class DummyTimer(object):
+    '''
+    Dummy class to fake timers
+    '''
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def start(self, *args, **kwargs):
+        pass
+
+    def stop(self, *args, **kwargs):
+        pass
+
+
 class TestPJLink(TestCase):
     """
     Tests for the PJLink module
@@ -43,13 +57,10 @@ class TestPJLink(TestCase):
     @patch.object(pjlink_test, 'send_command')
     @patch.object(pjlink_test, 'waitForReadyRead')
     @patch('openlp.core.common.qmd5_hash')
-    def authenticated_connection_call_test(self,
-                                           mock_qmd5_hash,
-                                           mock_waitForReadyRead,
-                                           mock_send_command,
+    def authenticated_connection_call_test(self, mock_qmd5_hash, mock_waitForReadyRead, mock_send_command,
                                            mock_readyRead):
         """
-        Fix for projector connect with PJLink authentication exception. Ticket 92187.
+        Ticket 92187: Fix for projector connect with PJLink authentication exception.
         """
         # GIVEN: Test object
         pjlink = pjlink_test
@@ -63,9 +74,23 @@ class TestPJLink(TestCase):
         self.assertTrue(mock_qmd5_hash.called_with(TEST_PIN,
                                                    "Connection request should have been called with TEST_PIN"))
 
+    def projector_class_test(self):
+        """
+        Test class version from projector
+        """
+        # GIVEN: Test object
+        pjlink = pjlink_test
+
+        # WHEN: Process class response
+        pjlink.process_clss('1')
+
+        # THEN: Projector class should be set to 1
+        self.assertEquals(pjlink.pjlink_class, '1',
+                          'Projector should have returned class=1')
+
     def non_standard_class_reply_test(self):
         """
-        bugfix 1550891 - CLSS request returns non-standard 'Class N' reply
+        Bugfix 1550891: CLSS request returns non-standard 'Class N' reply
         """
         # GIVEN: Test object
         pjlink = pjlink_test
@@ -264,3 +289,46 @@ class TestPJLink(TestCase):
 
         # THEN: Input selected should reflect current input
         self.assertEquals(pjlink.source, '1', 'Input source should be set to "1"')
+
+    def projector_reset_information_test(self):
+        """
+        Test reset_information() resets all information and stops timers
+        """
+        # GIVEN: Test object and test data
+        pjlink = pjlink_test
+        pjlink.power = S_ON
+        pjlink.pjlink_name = 'OPENLPTEST'
+        pjlink.manufacturer = 'PJLINK'
+        pjlink.model = '1'
+        pjlink.shutter = True
+        pjlink.mute = True
+        pjlink.lamp = True
+        pjlink.fan = True
+        pjlink.source_available = True
+        pjlink.other_info = 'ANOTHER TEST'
+        pjlink.send_queue = True
+        pjlink.send_busy = True
+        pjlink.timer = DummyTimer()
+        pjlink.socket_timer = DummyTimer()
+
+        # WHEN: reset_information() is called
+        with patch.object(pjlink.timer, 'stop') as mock_timer:
+            with patch.object(pjlink.socket_timer, 'stop') as mock_socket_timer:
+                pjlink.reset_information()
+
+        # THEN: All information should be reset and timers stopped
+        self.assertEquals(pjlink.power, S_OFF, 'Projector power should be OFF')
+        self.assertIsNone(pjlink.pjlink_name, 'Projector pjlink_name should be None')
+        self.assertIsNone(pjlink.manufacturer, 'Projector manufacturer should be None')
+        self.assertIsNone(pjlink.model, 'Projector model should be None')
+        self.assertIsNone(pjlink.shutter, 'Projector shutter should be None')
+        self.assertIsNone(pjlink.mute, 'Projector shuttter should be None')
+        self.assertIsNone(pjlink.lamp, 'Projector lamp should be None')
+        self.assertIsNone(pjlink.fan, 'Projector fan should be None')
+        self.assertIsNone(pjlink.source_available, 'Projector source_available should be None')
+        self.assertIsNone(pjlink.source, 'Projector source should be None')
+        self.assertIsNone(pjlink.other_info, 'Projector other_info should be None')
+        self.assertEquals(pjlink.send_queue, [], 'Projector send_queue should be an empty list')
+        self.assertFalse(pjlink.send_busy, 'Projector send_busy should be False')
+        self.assertTrue(mock_timer.called, 'Projector timer.stop()  should have been called')
+        self.assertTrue(mock_socket_timer.called, 'Projector socket_timer.stop() should have been called')

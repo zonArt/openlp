@@ -58,7 +58,7 @@ SocketSTate = QAbstractSocket.SocketState
 
 PJLINK_PREFIX = '%'
 PJLINK_CLASS = '1'
-PJLINK_HEADER = '%s%s' % (PJLINK_PREFIX, PJLINK_CLASS)
+PJLINK_HEADER = '{prefix}{linkclass}'.format(prefix=PJLINK_PREFIX, linkclass=PJLINK_CLASS)
 PJLINK_SUFFIX = CR
 
 
@@ -160,8 +160,10 @@ class PJLink1(QTcpSocket):
         self.source = None
         self.other_info = None
         if hasattr(self, 'timer'):
+            log.debug('({ip}): Calling timer.stop()'.format(ip=self.ip))
             self.timer.stop()
         if hasattr(self, 'socket_timer'):
+            log.debug('({ip}): Calling socket_timer.stop()'.format(ip=self.ip))
             self.socket_timer.stop()
         self.send_queue = []
         self.send_busy = False
