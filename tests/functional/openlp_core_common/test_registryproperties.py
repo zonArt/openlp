@@ -75,4 +75,3 @@ class TestRegistryProperties(TestCase, RegistryProperties):
 
         # THEN the application should be none
         self.assertEqual(self.application, application, 'The application value should match')
-
