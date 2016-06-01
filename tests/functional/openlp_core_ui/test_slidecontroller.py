@@ -715,7 +715,7 @@ class TestSlideController(TestCase):
 
     @patch(u'openlp.core.ui.slidecontroller.SlideController.image_manager')
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
-    def update_preview_test_live(self, mocked_singleShot, mocked_image_manager):
+    def test_update_preview_live(self, mocked_singleShot, mocked_image_manager):
         """
         Test that the preview screen is updated with a screen grab for live service items
         """
@@ -758,7 +758,7 @@ class TestSlideController(TestCase):
 
     @patch(u'openlp.core.ui.slidecontroller.SlideController.image_manager')
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
-    def update_preview_test_pres(self, mocked_singleShot, mocked_image_manager):
+    def test_update_preview_pres(self, mocked_singleShot, mocked_image_manager):
         """
         Test that the preview screen is updated with the correct preview for presentation service items
         """
@@ -800,7 +800,7 @@ class TestSlideController(TestCase):
 
     @patch(u'openlp.core.ui.slidecontroller.SlideController.image_manager')
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
-    def update_preview_test_media(self, mocked_singleShot, mocked_image_manager):
+    def test_update_preview_media(self, mocked_singleShot, mocked_image_manager):
         """
         Test that the preview screen is updated with the correct preview for media service items
         """
@@ -842,7 +842,7 @@ class TestSlideController(TestCase):
 
     @patch(u'openlp.core.ui.slidecontroller.SlideController.image_manager')
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
-    def update_preview_test_image(self, mocked_singleShot, mocked_image_manager):
+    def test_update_preview_image(self, mocked_singleShot, mocked_image_manager):
         """
         Test that the preview screen is updated with the correct preview for image service items
         """

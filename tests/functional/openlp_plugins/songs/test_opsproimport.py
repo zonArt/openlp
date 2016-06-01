@@ -148,7 +148,7 @@ class TestOpsProSongImport(TestCase):
             return data[key]
         return ''
 
-    def _build_test_data(self, test_file, dual_language):
+    def test__build_data(self, test_file, dual_language):
         song = MagicMock()
         song.ID = 100
         song.SongNumber = 123

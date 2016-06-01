@@ -134,7 +134,7 @@ class TestSettingsForm(TestCase, TestMixin):
         # THEN the processing stack should still have two items
         assert len(self.form.processes) == 2, 'No new processes should have been added to the stack'
 
-    def register_image_manager_trigger_test_one(self):
+    def test_register_image_manager_trigger_one(self):
         """
         Test the triggering of the image manager rebuild event from image background change
         """
@@ -152,7 +152,7 @@ class TestSettingsForm(TestCase, TestMixin):
         assert self.dummy2.call_count == 0, 'dummy2 should not have been called at all'
         assert self.dummy3.call_count == 1, 'dummy3 should have been called once'
 
-    def register_image_manager_trigger_test_two(self):
+    def test_register_image_manager_trigger_two(self):
         """
         Test the triggering of the image manager rebuild event from screen dimension change
         """
@@ -170,7 +170,7 @@ class TestSettingsForm(TestCase, TestMixin):
         assert self.dummy2.call_count == 1, 'dummy2 should have been called once'
         assert self.dummy3.call_count == 1, 'dummy3 should have been called once'
 
-    def register_image_manager_trigger_test_three(self):
+    def test_register_image_manager_trigger_three(self):
         """
         Test the triggering of the image manager rebuild event from image background change and a change to the
         screen dimension.

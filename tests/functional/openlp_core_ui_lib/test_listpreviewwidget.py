@@ -77,7 +77,7 @@ class TestListPreviewWidget(TestCase):
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.image_manager')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
-    def replace_service_item_test_thumbs(self, mocked_setRowHeight, mocked_resizeRowsToContents,
+    def test_replace_service_item_thumbs(self, mocked_setRowHeight, mocked_resizeRowsToContents,
                                          mocked_image_manager):
         """
         Test that thubmails for different slides are loaded properly in replace_service_item.
@@ -123,7 +123,7 @@ class TestListPreviewWidget(TestCase):
 
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
-    def replace_recalculate_layout_test_text(self, mocked_setRowHeight, mocked_resizeRowsToContents):
+    def test_replace_recalculate_layout_text(self, mocked_setRowHeight, mocked_resizeRowsToContents):
         """
         Test if "Max height for non-text slides..." enabled, txt slides unchanged in replace_service_item & __recalc...
         """
@@ -155,7 +155,7 @@ class TestListPreviewWidget(TestCase):
 
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
-    def replace_recalculate_layout_test_img(self, mocked_setRowHeight, mocked_resizeRowsToContents):
+    def test_replace_recalculate_layout_img(self, mocked_setRowHeight, mocked_resizeRowsToContents):
         """
         Test if "Max height for non-text slides..." disabled, img slides unchanged in replace_service_item & __recalc...
         """
@@ -192,7 +192,7 @@ class TestListPreviewWidget(TestCase):
 
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
-    def replace_recalculate_layout_test_img_max(self, mocked_setRowHeight, mocked_resizeRowsToContents):
+    def test_replace_recalculate_layout_img_max(self, mocked_setRowHeight, mocked_resizeRowsToContents):
         """
         Test if "Max height for non-text slides..." enabled, img slides resized in replace_service_item & __recalc...
         """
@@ -228,7 +228,7 @@ class TestListPreviewWidget(TestCase):
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.cellWidget')
-    def row_resized_test_text(self, mocked_cellWidget, mocked_setRowHeight, mocked_resizeRowsToContents):
+    def test_row_resized_text(self, mocked_cellWidget, mocked_setRowHeight, mocked_resizeRowsToContents):
         """
         Test if "Max height for non-text slides..." enabled, text-based slides not affected in row_resized.
         """
@@ -262,7 +262,7 @@ class TestListPreviewWidget(TestCase):
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.cellWidget')
-    def row_resized_test_img(self, mocked_cellWidget, mocked_setRowHeight, mocked_resizeRowsToContents):
+    def test_row_resized_img(self, mocked_cellWidget, mocked_setRowHeight, mocked_resizeRowsToContents):
         """
         Test if "Max height for non-text slides..." disabled, image-based slides not affected in row_resized.
         """
@@ -299,7 +299,7 @@ class TestListPreviewWidget(TestCase):
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.resizeRowsToContents')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.setRowHeight')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.cellWidget')
-    def row_resized_test_img_max(self, mocked_cellWidget, mocked_setRowHeight, mocked_resizeRowsToContents):
+    def test_row_resized_img_max(self, mocked_cellWidget, mocked_setRowHeight, mocked_resizeRowsToContents):
         """
         Test if "Max height for non-text slides..." enabled, image-based slides are scaled in row_resized.
         """
@@ -335,7 +335,7 @@ class TestListPreviewWidget(TestCase):
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.scrollToItem')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.item')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.slide_count')
-    def autoscroll_test_setting_invalid(self, mocked_slide_count, mocked_item, mocked_scrollToItem, mocked_selectRow):
+    def test_autoscroll_setting_invalid(self, mocked_slide_count, mocked_item, mocked_scrollToItem, mocked_selectRow):
         """
         Test if 'advanced/autoscrolling' setting None or invalid, that no autoscrolling occurs on change_slide().
         """
@@ -371,7 +371,7 @@ class TestListPreviewWidget(TestCase):
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.scrollToItem')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.item')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.slide_count')
-    def autoscroll_test_dist_bounds(self, mocked_slide_count, mocked_item, mocked_scrollToItem, mocked_selectRow):
+    def test_autoscroll_dist_bounds(self, mocked_slide_count, mocked_item, mocked_scrollToItem, mocked_selectRow):
         """
         Test if 'advanced/autoscrolling' setting asks to scroll beyond list bounds, that it does not beyond.
         """
@@ -401,7 +401,7 @@ class TestListPreviewWidget(TestCase):
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.scrollToItem')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.item')
     @patch(u'openlp.core.ui.lib.listpreviewwidget.ListPreviewWidget.slide_count')
-    def autoscroll_test_normal(self, mocked_slide_count, mocked_item, mocked_scrollToItem, mocked_selectRow):
+    def test_autoscroll_normal(self, mocked_slide_count, mocked_item, mocked_scrollToItem, mocked_selectRow):
         """
         Test if 'advanced/autoscrolling' setting valid, autoscrolling called as expected.
         """
