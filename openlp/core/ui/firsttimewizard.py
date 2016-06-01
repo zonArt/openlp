@@ -228,12 +228,13 @@ class UiFirstTimeWizard(object):
         :param first_time_wizard: The wizard form
         """
         first_time_wizard.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'First Time Wizard'))
-        first_time_wizard.title_label.setText('<span style="font-size:14pt; font-weight:600;">%s</span>' %
-                                              translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
+        text = translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard')
+        first_time_wizard.title_label.setText('<span style="font-size:14pt; font-weight:600;">{text}'
+                                              '</span>'.format(text=text))
+        button = clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.NextButton))
         first_time_wizard.information_label.setText(
             translate('OpenLP.FirstTimeWizard', 'This wizard will help you to configure OpenLP for initial use. '
-                                                'Click the %s button below to start.') %
-            clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.NextButton)))
+                                                'Click the {button} button below to start.').format(button=button))
         self.download_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Downloading Resource Index'))
         self.download_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Please wait while the resource index is '
                                                                            'downloaded.'))
@@ -264,18 +265,19 @@ class UiFirstTimeWizard(object):
         self.no_internet_page.setTitle(translate('OpenLP.FirstTimeWizard', 'No Internet Connection'))
         self.no_internet_page.setSubTitle(
             translate('OpenLP.FirstTimeWizard', 'Unable to detect an Internet connection.'))
+        button = clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.FinishButton))
         self.no_internet_text = translate('OpenLP.FirstTimeWizard',
                                           'No Internet connection was found. The First Time Wizard needs an Internet '
                                           'connection in order to be able to download sample songs, Bibles and themes.'
-                                          '  Click the %s button now to start OpenLP with initial settings and '
+                                          '  Click the {button} button now to start OpenLP with initial settings and '
                                           'no sample data.\n\nTo re-run the First Time Wizard and import this sample '
                                           'data at a later time, check your Internet connection and re-run this '
-                                          'wizard by selecting "Tools/Re-run First Time Wizard" from OpenLP.') % \
-            clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.FinishButton))
+                                          'wizard by selecting "Tools/Re-run First Time Wizard" from OpenLP.'
+                                          ).format(button=button)
+        button = clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.CancelButton))
         self.cancel_wizard_text = translate('OpenLP.FirstTimeWizard',
                                             '\n\nTo cancel the First Time Wizard completely (and not start OpenLP), '
-                                            'click the %s button now.') % \
-            clean_button_text(first_time_wizard.buttonText(QtWidgets.QWizard.CancelButton))
+                                            'click the {button} button now.').format(button=button)
         self.songs_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Songs'))
         self.songs_page.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select and download public domain songs.'))
         self.bibles_page.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Bibles'))

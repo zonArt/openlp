@@ -85,7 +85,7 @@ class SettingsForm(QtWidgets.QDialog, Ui_SettingsDialog, RegistryProperties):
         :param tab_widget: The widget to add
         :param is_visible: If this tab should be visible
         """
-        log.debug('Inserting %s tab' % tab_widget.tab_title)
+        log.debug('Inserting {text} tab'.format(text=tab_widget.tab_title))
         # add the tab to get it to display in the correct part of the screen
         self.stacked_layout.addWidget(tab_widget)
         if is_visible:

@@ -56,13 +56,13 @@ try:
     from .importers.songsoffellowship import SongsOfFellowshipImport
     HAS_SOF = True
 except ImportError:
-    log.exception('Error importing %s', 'SongsOfFellowshipImport')
+    log.exception('Error importing {text}'.format(text='SongsOfFellowshipImport'))
     HAS_SOF = False
 try:
     from .importers.openoffice import OpenOfficeImport
     HAS_OOO = True
 except ImportError:
-    log.exception('Error importing %s', 'OooImport')
+    log.exception('Error importing {text}'.format(text='OooImport'))
     HAS_OOO = False
 HAS_MEDIASHOUT = False
 if is_win():
@@ -70,21 +70,21 @@ if is_win():
         from .importers.mediashout import MediaShoutImport
         HAS_MEDIASHOUT = True
     except ImportError:
-        log.exception('Error importing %s', 'MediaShoutImport')
+        log.exception('Error importing {text}'.format(text='MediaShoutImport'))
 HAS_WORSHIPCENTERPRO = False
 if is_win():
     try:
         from .importers.worshipcenterpro import WorshipCenterProImport
         HAS_WORSHIPCENTERPRO = True
     except ImportError:
-        log.exception('Error importing %s', 'WorshipCenterProImport')
+        log.exception('Error importing {text}'.format(text='WorshipCenterProImport'))
 HAS_OPSPRO = False
 if is_win():
     try:
         from .importers.opspro import OPSProImport
         HAS_OPSPRO = True
     except ImportError:
-        log.exception('Error importing %s', 'OPSProImport')
+        log.exception('Error importing {text}'.format(text='OPSProImport'))
 
 
 class SongFormatSelect(object):
@@ -198,7 +198,7 @@ class SongFormat(object):
             'class': OpenLyricsImport,
             'name': 'OpenLyrics',
             'prefix': 'openLyrics',
-            'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
+            'filter': '{text} (*.xml)'.format(text=translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files')),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2 Exported Song')
         },
         OpenLP2: {
@@ -206,7 +206,7 @@ class SongFormat(object):
             'name': UiStrings().OLPV2,
             'prefix': 'openLP2',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.sqlite)' % (translate('SongsPlugin.ImportWizardForm', 'OpenLP 2 Databases'))
+            'filter': '{text} (*.sqlite)'.format(text=translate('SongsPlugin.ImportWizardForm', 'OpenLP 2 Databases'))
         },
         Generic: {
             'name': translate('SongsPlugin.ImportWizardForm', 'Generic Document/Presentation'),
@@ -221,46 +221,50 @@ class SongFormat(object):
             'class': CCLIFileImport,
             'name': 'CCLI/SongSelect',
             'prefix': 'ccli',
-            'filter': '%s (*.usr *.txt *.bin)' % translate('SongsPlugin.ImportWizardForm', 'CCLI SongSelect Files')
+            'filter': '{text} (*.usr *.txt *.bin)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                                         'CCLI SongSelect Files'))
         },
         DreamBeam: {
             'class': DreamBeamImport,
             'name': 'DreamBeam',
             'prefix': 'dreamBeam',
-            'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'DreamBeam Song Files')
+            'filter': '{text} (*.xml)'.format(text=translate('SongsPlugin.ImportWizardForm', 'DreamBeam Song Files'))
         },
         EasySlides: {
             'class': EasySlidesImport,
             'name': 'EasySlides',
             'prefix': 'easySlides',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'EasySlides XML File')
+            'filter': '{text} (*.xml)'.format(text=translate('SongsPlugin.ImportWizardForm', 'EasySlides XML File'))
         },
         EasyWorshipDB: {
             'class': EasyWorshipSongImport,
             'name': 'EasyWorship Song Database',
             'prefix': 'ew',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.db)' % translate('SongsPlugin.ImportWizardForm', 'EasyWorship Song Database')
+            'filter': '{text} (*.db)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                            'EasyWorship Song Database'))
         },
         EasyWorshipService: {
             'class': EasyWorshipSongImport,
             'name': 'EasyWorship Service File',
             'prefix': 'ew',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.ews)' % translate('SongsPlugin.ImportWizardForm', 'EasyWorship Service File')
+            'filter': '{text} (*.ews)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                             'EasyWorship Service File'))
         },
         FoilPresenter: {
             'class': FoilPresenterImport,
             'name': 'Foilpresenter',
             'prefix': 'foilPresenter',
-            'filter': '%s (*.foil)' % translate('SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
+            'filter': '{text} (*.foil)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                              'Foilpresenter Song Files'))
         },
         Lyrix: {
             'class': LyrixImport,
             'name': 'LyriX',
             'prefix': 'lyrix',
-            'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'LyriX Files'),
+            'filter': '{text} (*.txt)'.format(text=translate('SongsPlugin.ImportWizardForm', 'LyriX Files')),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'LyriX (Exported TXT-files)')
         },
         MediaShout: {
@@ -268,7 +272,7 @@ class SongFormat(object):
             'prefix': 'mediaShout',
             'canDisable': True,
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm', 'MediaShout Database'),
+            'filter': '{text} (*.mdb)'.format(text=translate('SongsPlugin.ImportWizardForm', 'MediaShout Database')),
             'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                                            'The MediaShout importer is only supported on Windows. It has '
                                            'been disabled due to a missing Python module. If you want to '
@@ -285,7 +289,7 @@ class SongFormat(object):
             'prefix': 'OPSPro',
             'canDisable': True,
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm', 'OPS Pro database'),
+            'filter': '{text} (*.mdb)'.format(text=translate('SongsPlugin.ImportWizardForm', 'OPS Pro database')),
             'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                                            'The OPS Pro importer is only supported on Windows. It has been '
                                            'disabled due to a missing Python module. If you want to use this '
@@ -295,7 +299,7 @@ class SongFormat(object):
             'class': PowerPraiseImport,
             'name': 'PowerPraise',
             'prefix': 'powerPraise',
-            'filter': '%s (*.ppl)' % translate('SongsPlugin.ImportWizardForm', 'PowerPraise Song Files')
+            'filter': '{text} (*.ppl)'.format(text=translate('SongsPlugin.ImportWizardForm', 'PowerPraise Song Files'))
         },
         PowerSong: {
             'class': PowerSongImport,
@@ -309,26 +313,29 @@ class SongFormat(object):
             'class': PresentationManagerImport,
             'name': 'PresentationManager',
             'prefix': 'presentationManager',
-            'filter': '%s (*.sng)' % translate('SongsPlugin.ImportWizardForm', 'PresentationManager Song Files')
+            'filter': '{text} (*.sng)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                             'PresentationManager Song Files'))
         },
         ProPresenter: {
             'class': ProPresenterImport,
             'name': 'ProPresenter 4, 5 and 6',
             'prefix': 'proPresenter',
-            'filter': '%s (*.pro4 *.pro5 *.pro6)' % translate('SongsPlugin.ImportWizardForm', 'ProPresenter Song Files')
+            'filter': '{text} (*.pro4 *.pro5 *.pro6)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                                            'ProPresenter Song Files'))
         },
         SongBeamer: {
             'class': SongBeamerImport,
             'name': 'SongBeamer',
             'prefix': 'songBeamer',
-            'filter': '%s (*.sng)' % translate('SongsPlugin.ImportWizardForm', 'SongBeamer Files')
+            'filter': '{text} (*.sng)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                             'SongBeamer Files'))
         },
         SongPro: {
             'class': SongProImport,
             'name': 'SongPro',
             'prefix': 'songPro',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'SongPro Text Files'),
+            'filter': '{text} (*.txt)'.format(text=translate('SongsPlugin.ImportWizardForm', 'SongPro Text Files')),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'SongPro (Export File)'),
             'descriptionText': translate('SongsPlugin.ImportWizardForm',
                                          'In SongPro, export your songs using the File -> Export menu')
@@ -337,13 +344,15 @@ class SongFormat(object):
             'class': SongShowPlusImport,
             'name': 'SongShow Plus',
             'prefix': 'songShowPlus',
-            'filter': '%s (*.sbsong)' % translate('SongsPlugin.ImportWizardForm', 'SongShow Plus Song Files')
+            'filter': '{text} (*.sbsong)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                                'SongShow Plus Song Files'))
         },
         SongsOfFellowship: {
             'name': 'Songs of Fellowship',
             'prefix': 'songsOfFellowship',
             'canDisable': True,
-            'filter': '%s (*.rtf)' % translate('SongsPlugin.ImportWizardForm', 'Songs Of Fellowship Song Files'),
+            'filter': '{text} (*.rtf)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                             'Songs Of Fellowship Song Files')),
             'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                                            'The Songs of Fellowship importer has been disabled because '
                                            'OpenLP cannot access OpenOffice or LibreOffice.')
@@ -352,30 +361,33 @@ class SongFormat(object):
             'class': SundayPlusImport,
             'name': 'SundayPlus',
             'prefix': 'sundayPlus',
-            'filter': '%s (*.ptf)' % translate('SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
+            'filter': '{text} (*.ptf)'.format(text=translate('SongsPlugin.ImportWizardForm', 'SundayPlus Song Files'))
         },
         VideoPsalm: {
             'class': VideoPsalmImport,
             'name': 'VideoPsalm',
             'prefix': 'videopsalm',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.json)' % translate('SongsPlugin.ImportWizardForm', 'VideoPsalm Files'),
+            'filter': '{text} (*.json)'.format(text=translate('SongsPlugin.ImportWizardForm', 'VideoPsalm Files')),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'VideoPsalm'),
             'descriptionText': translate('SongsPlugin.ImportWizardForm', 'The VideoPsalm songbooks are normally located'
-                                         ' in %s') % 'C:\\Users\\Public\\Documents\\VideoPsalm\\SongBooks\\'
+                                         ' in {path}').format(path='C:\\Users\\Public\\Documents\\VideoPsalm'
+                                                                   '\\SongBooks\\')
         },
         WordsOfWorship: {
             'class': WordsOfWorshipImport,
             'name': 'Words of Worship',
             'prefix': 'wordsOfWorship',
-            'filter': '%s (*.wsg *.wow-song)' % translate('SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
+            'filter': '{text} (*.wsg *.wow-song)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                                        'Words Of Worship Song Files'))
         },
         WorshipAssistant: {
             'class': WorshipAssistantImport,
             'name': 'Worship Assistant 0',
             'prefix': 'worshipAssistant',
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.csv)' % translate('SongsPlugin.ImportWizardForm', 'Worship Assistant Files'),
+            'filter': '{text} (*.csv)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                             'Worship Assistant Files')),
             'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'Worship Assistant (CSV)'),
             'descriptionText': translate('SongsPlugin.ImportWizardForm',
                                          'In Worship Assistant, export your Database to a CSV file.')
@@ -385,7 +397,8 @@ class SongFormat(object):
             'prefix': 'worshipCenterPro',
             'canDisable': True,
             'selectMode': SongFormatSelect.SingleFile,
-            'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm', 'WorshipCenter Pro Song Files'),
+            'filter': '{text} (*.mdb)'.format(text=translate('SongsPlugin.ImportWizardForm',
+                                                             'WorshipCenter Pro Song Files')),
             'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                                            'The WorshipCenter Pro importer is only supported on Windows. It has been '
                                            'disabled due to a missing Python module. If you want to use this '

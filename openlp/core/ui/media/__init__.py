@@ -134,6 +134,7 @@ def format_milliseconds(milliseconds):
     :param milliseconds: Milliseconds to format
     :return: Time string in format: hh.mm.ss,ttt
     """
+    milliseconds = int(milliseconds)
     seconds, millis = divmod(milliseconds, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)

@@ -164,7 +164,8 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
         books = self.manager.get_all_objects(Book)
         books.sort(key=get_book_key)
         for book in books:
-            book_name = QtWidgets.QListWidgetItem('%s (%s)' % (book.name, book.publisher))
+            book_name = QtWidgets.QListWidgetItem('{name} ({publisher})'.format(name=book.name,
+                                                                                publisher=book.publisher))
             book_name.setData(QtCore.Qt.UserRole, book.id)
             self.song_books_list_widget.addItem(book_name)
 
@@ -310,11 +311,12 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
                 else:
                     critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm', 'Could not save your changes.'))
-            elif critical_error_message_box(message=translate(
-                'SongsPlugin.SongMaintenanceForm', 'The author %s already exists. Would you like to make songs with '
-                'author %s use the existing author %s?') %
-                    (author.display_name, temp_display_name, author.display_name), parent=self, question=True) == \
-                    QtWidgets.QMessageBox.Yes:
+            elif critical_error_message_box(
+                    message=translate(
+                        'SongsPlugin.SongMaintenanceForm',
+                        'The author {original} already exists. Would you like to make songs with author {new} use the '
+                        'existing author {original}?').format(original=author.display_name, new=temp_display_name),
+                    parent=self, question=True) == QtWidgets.QMessageBox.Yes:
                 self._merge_objects(author, self.merge_authors, self.reset_authors)
             else:
                 # We restore the author's old first and last name as well as
@@ -346,9 +348,10 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
                     critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm', 'Could not save your changes.'))
             elif critical_error_message_box(
-                message=translate('SongsPlugin.SongMaintenanceForm',
-                                  'The topic %s already exists. Would you like to make songs with topic %s use the '
-                                  'existing topic %s?') % (topic.name, temp_name, topic.name),
+                    message=translate('SongsPlugin.SongMaintenanceForm',
+                                      'The topic {original} already exists. Would you like to make songs with '
+                                      'topic {new} use the existing topic {original}?').format(original=topic.name,
+                                                                                               new=temp_name),
                     parent=self, question=True) == QtWidgets.QMessageBox.Yes:
                 self._merge_objects(topic, self.merge_topics, self.reset_topics)
             else:
@@ -384,9 +387,10 @@ class SongMaintenanceForm(QtWidgets.QDialog, Ui_SongMaintenanceDialog, RegistryP
                     critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm', 'Could not save your changes.'))
             elif critical_error_message_box(
-                message=translate('SongsPlugin.SongMaintenanceForm',
-                                  'The book %s already exists. Would you like to make '
-                                  'songs with book %s use the existing book %s?') % (book.name, temp_name, book.name),
+                    message=translate('SongsPlugin.SongMaintenanceForm',
+                                      'The book {original} already exists. Would you like to make songs with '
+                                      'book {new} use the existing book {original}?').format(original=book.name,
+                                                                                             new=temp_name),
                     parent=self, question=True) == QtWidgets.QMessageBox.Yes:
                 self._merge_objects(book, self.merge_song_books, self.reset_song_books)
             else:

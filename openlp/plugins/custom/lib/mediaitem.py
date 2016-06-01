@@ -94,7 +94,7 @@ class CustomMediaItem(MediaManagerItem):
         """
 
         """
-        self.search_text_label.setText('%s:' % UiStrings().Search)
+        self.search_text_label.setText('{text}:'.format(text=UiStrings().Search))
         self.search_text_button.setText(UiStrings().Search)
 
     def initialise(self):
@@ -105,7 +105,8 @@ class CustomMediaItem(MediaManagerItem):
             [(CustomSearch.Titles, ':/songs/song_search_title.png', translate('SongsPlugin.MediaItem', 'Titles'),
               translate('SongsPlugin.MediaItem', 'Search Titles...')),
              (CustomSearch.Themes, ':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)])
-        self.search_text_edit.set_current_search_type(Settings().value('%s/last search type' % self.settings_section))
+        text = '{section}/last search type'.format(section=self.settings_section)
+        self.search_text_edit.set_current_search_type(Settings().value(text))
         self.load_list(self.plugin.db_manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
         self.config_update()
 
@@ -190,7 +191,8 @@ class CustomMediaItem(MediaManagerItem):
             if QtWidgets.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
                     translate('CustomPlugin.MediaItem',
-                              'Are you sure you want to delete the "%d" selected custom slide(s)?') % len(items),
+                              'Are you sure you want to delete the "{items:d}" '
+                              'selected custom slide(s)?').format(items=len(items)),
                     QtWidgets.QMessageBox.StandardButtons(
                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                     QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
@@ -249,10 +251,11 @@ class CustomMediaItem(MediaManagerItem):
         Search the plugin database
         """
         # Save the current search type to the configuration.
-        Settings().setValue('%s/last search type' % self.settings_section, self.search_text_edit.current_search_type())
+        Settings().setValue('{section}/last search type'.format(section=self.settings_section),
+                            self.search_text_edit.current_search_type())
         # Reload the list considering the new search type.
         search_type = self.search_text_edit.current_search_type()
-        search_keywords = '%' + self.whitespace.sub(' ', self.search_text_edit.displayText()) + '%'
+        search_keywords = '%{search}%'.format(search=self.whitespace.sub(' ', self.search_text_edit.displayText()))
         if search_type == CustomSearch.Titles:
             log.debug('Titles Search')
             search_results = self.plugin.db_manager.get_all_objects(CustomSlide,
@@ -347,7 +350,7 @@ class CustomMediaItem(MediaManagerItem):
         :param string: The search string
         :param show_error: The error string to be show.
         """
-        search = '%' + string.lower() + '%'
+        search = '%{search}%'.forma(search=string.lower())
         search_results = self.plugin.db_manager.get_all_objects(CustomSlide,
                                                                 or_(func.lower(CustomSlide.title).like(search),
                                                                     func.lower(CustomSlide.text).like(search)),

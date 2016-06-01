@@ -87,7 +87,7 @@ class PdfController(PresentationController):
             if found_gs:
                 program_type = 'gs'
                 break
-        log.debug('in check_binary, found: %s', program_type)
+        log.debug('in check_binary, found: {text}'.format(text=program_type))
         return program_type
 
     def check_available(self):
@@ -255,11 +255,13 @@ class PdfDocument(PresentationDocument):
                 os.makedirs(self.get_temp_folder())
             if self.controller.mudrawbin:
                 log.debug('loading presentation using mudraw')
+                # TODO: Find out where the string conversion actually happens
                 runlog = check_output([self.controller.mudrawbin, '-w', str(size.width()), '-h', str(size.height()),
                                        '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path],
                                       startupinfo=self.startupinfo)
             elif self.controller.mutoolbin:
                 log.debug('loading presentation using mutool')
+                # TODO: Find out where the string convertsion actually happens
                 runlog = check_output([self.controller.mutoolbin, 'draw', '-w', str(size.width()), '-h',
                                        str(size.height()),
                                        '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path],
@@ -267,6 +269,7 @@ class PdfDocument(PresentationDocument):
             elif self.controller.gsbin:
                 log.debug('loading presentation using gs')
                 resolution = self.gs_get_resolution(size)
+                # TODO: Find out where the string conversion actually happens
                 runlog = check_output([self.controller.gsbin, '-dSAFER', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m',
                                        '-r' + str(resolution), '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4',
                                        '-sOutputFile=' + os.path.join(self.get_temp_folder(), 'mainslide%03d.png'),

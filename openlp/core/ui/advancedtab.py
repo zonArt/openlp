@@ -312,8 +312,8 @@ class AdvancedTab(SettingsTab):
         self.service_name_label.setText(translate('OpenLP.AdvancedTab', 'Name:'))
         self.service_name_edit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.service_name_revert_button.setToolTip(
-            translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') %
-            UiStrings().DefaultServiceName)
+            translate('OpenLP.AdvancedTab',
+                      'Revert to the default service name "{name}".').format(name=UiStrings().DefaultServiceName))
         self.service_name_example_label.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hide_mouse_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
         self.hide_mouse_check_box.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
@@ -398,16 +398,16 @@ class AdvancedTab(SettingsTab):
         # Since data location can be changed, make sure the path is present.
         self.current_data_path = AppLocation.get_data_path()
         if not os.path.exists(self.current_data_path):
-            log.error('Data path not found %s' % self.current_data_path)
+            log.error('Data path not found {path}'.format(path=self.current_data_path))
             answer = QtWidgets.QMessageBox.critical(
                 self, translate('OpenLP.AdvancedTab', 'Data Directory Error'),
-                translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n%s\n\n'
+                translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n{path}\n\n'
                           'This data directory was previously changed from the OpenLP '
                           'default location.  If the new location was on removable '
                           'media, that media needs to be made available.\n\n'
                           'Click "No" to stop loading OpenLP. allowing you to fix the the problem.\n\n'
                           'Click "Yes" to reset the data directory to the default '
-                          'location.').replace('%s', self.current_data_path),
+                          'location.').format(path=self.current_data_path),
                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                 QtWidgets.QMessageBox.No)
             if answer == QtWidgets.QMessageBox.No:
@@ -417,7 +417,7 @@ class AdvancedTab(SettingsTab):
             # Set data location to default.
             settings.remove('advanced/data path')
             self.current_data_path = AppLocation.get_data_path()
-            log.warning('User requested data path set to default %s' % self.current_data_path)
+            log.warning('User requested data path set to default {path}'.format(path=self.current_data_path))
         self.data_directory_label.setText(os.path.abspath(self.current_data_path))
         # Don't allow data directory move if running portable.
         if settings.value('advanced/is portable'):
@@ -551,9 +551,9 @@ class AdvancedTab(SettingsTab):
         # Make sure they want to change the data.
         answer = QtWidgets.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
                                                 translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
-                                                          'location of the OpenLP data directory to:\n\n%s\n\nThe data '
-                                                          'directory will be changed when OpenLP is closed.').
-                                                replace('%s', new_data_path),
+                                                          'location of the OpenLP data directory to:\n\n{path}'
+                                                          '\n\nThe data directory will be changed when OpenLP is '
+                                                          'closed.').format(path=new_data_path),
                                                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
                                                                                       QtWidgets.QMessageBox.No),
                                                 QtWidgets.QMessageBox.No)
@@ -617,10 +617,10 @@ class AdvancedTab(SettingsTab):
             answer = QtWidgets.QMessageBox.warning(self,
                                                    translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
                                                    translate('OpenLP.AdvancedTab',
-                                                             'WARNING: \n\nThe location you have selected \n\n%s\n\n'
-                                                             'appears to contain OpenLP data files. Do you wish to '
-                                                             'replace these files with the current data files?').
-                                                   replace('%s', os.path.abspath(data_path,)),
+                                                             'WARNING: \n\nThe location you have selected \n\n{path}'
+                                                             '\n\nappears to contain OpenLP data files. Do you wish to '
+                                                             'replace these files with the current data '
+                                                             'files?').format(path=os.path.abspath(data_path,)),
                                                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
                                                                                          QtWidgets.QMessageBox.No),
                                                    QtWidgets.QMessageBox.No)
