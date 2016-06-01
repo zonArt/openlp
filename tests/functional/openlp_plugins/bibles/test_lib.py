@@ -26,35 +26,38 @@ from unittest import TestCase
 
 from openlp.plugins.bibles import lib
 from openlp.plugins.bibles.lib import SearchResults
-from tests.functional import MagicMock, patch
+from tests.functional import patch
 
 
 class TestLib(TestCase):
     """
     Test the functions in the :mod:`lib` module.
     """
-    def test_get_reference_separator(self):
+    @patch('openlp.plugins.bibles.lib.update_reference_separators')
+    def test_get_reference_separator(self, mocked_update_reference_separators):
         """
         Test the get_reference_separator method
         """
-        # GIVEN: A list of expected separators
+        # GIVEN: A list of expected separators and the lib module's constant is empty
+        lib.REFERENCE_SEPARATORS = None
         separators = {'sep_r': '\\s*(?:e)\\s*', 'sep_e_default': 'end', 'sep_v_display': 'w', 'sep_l_display': 'r',
                       'sep_v_default': ':|v|V|verse|verses', 'sep_l': '\\s*(?:r)\\s*', 'sep_l_default': ',|and',
                       'sep_e': '\\s*(?:t)\\s*', 'sep_v': '\\s*(?:w)\\s*', 'sep_r_display': 'e', 'sep_r_default': '-|to'}
-
-        def side_effect():
+        def _update_side_effect():
+            """
+            Update the references after mocking out the method
+            """
             lib.REFERENCE_SEPARATORS = separators
 
-        with patch('openlp.plugins.bibles.lib.update_reference_separators',
-                   **{'side_effect': side_effect}) as mocked_update_reference_separators:
+        mocked_update_reference_separators.side_effect = _update_side_effect
 
-            # WHEN: Calling get_reference_separator
-            for key, value in separators.items():
-                ret = lib.get_reference_separator(key)
+        # WHEN: Calling get_reference_separator
+        for key, value in separators.items():
+            _ = lib.get_reference_separator(key)
 
-                # THEN: get_reference_separator should return the correct separator
-                self.assertEqual(separators[key], value)
-            mocked_update_reference_separators.assert_called_once_with()
+            # THEN: get_reference_separator should return the correct separator
+            self.assertEqual(separators[key], value)
+        mocked_update_reference_separators.assert_called_once_with()
 
     def test_search_results_creation(self):
         """

@@ -38,6 +38,35 @@ from tests.functional import patch, MagicMock
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'opsprosongs'))
 
 
+def _get_item(data, key):
+    """
+    Get an item or return a blank string
+    """
+    if key in data:
+        return data[key]
+    return ''
+
+
+def _build_data(test_file, dual_language):
+    """
+    Build the test data
+    """
+    song = MagicMock()
+    song.ID = 100
+    song.SongNumber = 123
+    song.SongBookName = 'The Song Book'
+    song.Title = 'Song Title'
+    song.CopyrightText = 'Music and text by me'
+    song.Version = '1'
+    song.Origin = '...'
+    lyrics = MagicMock()
+    test_file = open(os.path.join(TEST_PATH, test_file), 'rb')
+    lyrics.Lyrics = test_file.read().decode()
+    lyrics.Type = 1
+    lyrics.IsDualLanguage = dual_language
+    return song, lyrics
+
+
 @skipUnless(CAN_RUN_TESTS, 'Not Windows, skipping test')
 class TestOpsProSongImport(TestCase):
     """
@@ -72,7 +101,7 @@ class TestOpsProSongImport(TestCase):
         mocked_manager = MagicMock()
         importer = OPSProImport(mocked_manager, filenames=[])
         importer.finish = MagicMock()
-        song, lyrics = self._build_test_data('you are so faithfull.txt', False)
+        song, lyrics = _build_data('you are so faithfull.txt', False)
 
         # WHEN: An importer object is created
         importer.process_song(song, lyrics, [])
@@ -80,8 +109,8 @@ class TestOpsProSongImport(TestCase):
         # THEN: The imported data should look like expected
         result_file = open(os.path.join(TEST_PATH, 'You are so faithful.json'), 'rb')
         result_data = json.loads(result_file.read().decode())
-        self.assertListEqual(importer.verses, self._get_data(result_data, 'verses'))
-        self.assertListEqual(importer.verse_order_list_generated, self._get_data(result_data, 'verse_order_list'))
+        self.assertListEqual(importer.verses, _get_item(result_data, 'verses'))
+        self.assertListEqual(importer.verse_order_list_generated, _get_item(result_data, 'verse_order_list'))
 
     @patch('openlp.plugins.songs.lib.importers.opspro.SongImport')
     def test_join_and_split(self, mocked_songimport):
@@ -92,7 +121,7 @@ class TestOpsProSongImport(TestCase):
         mocked_manager = MagicMock()
         importer = OPSProImport(mocked_manager, filenames=[])
         importer.finish = MagicMock()
-        song, lyrics = self._build_test_data('amazing grace.txt', False)
+        song, lyrics = _build_data('amazing grace.txt', False)
 
         # WHEN: An importer object is created
         importer.process_song(song, lyrics, [])
@@ -100,8 +129,8 @@ class TestOpsProSongImport(TestCase):
         # THEN: The imported data should look like expected
         result_file = open(os.path.join(TEST_PATH, 'Amazing Grace.json'), 'rb')
         result_data = json.loads(result_file.read().decode())
-        self.assertListEqual(importer.verses, self._get_data(result_data, 'verses'))
-        self.assertListEqual(importer.verse_order_list_generated, self._get_data(result_data, 'verse_order_list'))
+        self.assertListEqual(importer.verses, _get_item(result_data, 'verses'))
+        self.assertListEqual(importer.verse_order_list_generated, _get_item(result_data, 'verse_order_list'))
 
     @patch('openlp.plugins.songs.lib.importers.opspro.SongImport')
     def test_trans_off_tag(self, mocked_songimport):
@@ -112,7 +141,7 @@ class TestOpsProSongImport(TestCase):
         mocked_manager = MagicMock()
         importer = OPSProImport(mocked_manager, filenames=[])
         importer.finish = MagicMock()
-        song, lyrics = self._build_test_data('amazing grace2.txt', True)
+        song, lyrics = _build_data('amazing grace2.txt', True)
 
         # WHEN: An importer object is created
         importer.process_song(song, lyrics, [])
@@ -120,8 +149,8 @@ class TestOpsProSongImport(TestCase):
         # THEN: The imported data should look like expected
         result_file = open(os.path.join(TEST_PATH, 'Amazing Grace.json'), 'rb')
         result_data = json.loads(result_file.read().decode())
-        self.assertListEqual(importer.verses, self._get_data(result_data, 'verses'))
-        self.assertListEqual(importer.verse_order_list_generated, self._get_data(result_data, 'verse_order_list'))
+        self.assertListEqual(importer.verses, _get_item(result_data, 'verses'))
+        self.assertListEqual(importer.verse_order_list_generated, _get_item(result_data, 'verse_order_list'))
 
     @patch('openlp.plugins.songs.lib.importers.opspro.SongImport')
     def test_trans_tag(self, mocked_songimport):
@@ -132,7 +161,7 @@ class TestOpsProSongImport(TestCase):
         mocked_manager = MagicMock()
         importer = OPSProImport(mocked_manager, filenames=[])
         importer.finish = MagicMock()
-        song, lyrics = self._build_test_data('amazing grace3.txt', True)
+        song, lyrics = _build_data('amazing grace3.txt', True)
 
         # WHEN: An importer object is created
         importer.process_song(song, lyrics, [])
@@ -140,26 +169,6 @@ class TestOpsProSongImport(TestCase):
         # THEN: The imported data should look like expected
         result_file = open(os.path.join(TEST_PATH, 'Amazing Grace3.json'), 'rb')
         result_data = json.loads(result_file.read().decode())
-        self.assertListEqual(importer.verses, self._get_data(result_data, 'verses'))
-        self.assertListEqual(importer.verse_order_list_generated, self._get_data(result_data, 'verse_order_list'))
+        self.assertListEqual(importer.verses, _get_item(result_data, 'verses'))
+        self.assertListEqual(importer.verse_order_list_generated, _get_item(result_data, 'verse_order_list'))
 
-    def _get_data(self, data, key):
-        if key in data:
-            return data[key]
-        return ''
-
-    def test__build_data(self, test_file, dual_language):
-        song = MagicMock()
-        song.ID = 100
-        song.SongNumber = 123
-        song.SongBookName = 'The Song Book'
-        song.Title = 'Song Title'
-        song.CopyrightText = 'Music and text by me'
-        song.Version = '1'
-        song.Origin = '...'
-        lyrics = MagicMock()
-        test_file = open(os.path.join(TEST_PATH, test_file), 'rb')
-        lyrics.Lyrics = test_file.read().decode()
-        lyrics.Type = 1
-        lyrics.IsDualLanguage = dual_language
-        return song, lyrics

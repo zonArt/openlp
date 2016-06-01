@@ -62,7 +62,7 @@ class TestEditVerseForm(TestCase, TestMixin):
         # THEN: The default value is correct
         self.assertEqual(self.form.verse_text_edit.toPlainText(), '', 'The verse edit box is empty.')
 
-    def type_verse_text_tests(self):
+    def test_type_verse_text(self):
         """
         Test that typing into the verse text edit box returns the correct text
         """
