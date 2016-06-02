@@ -73,7 +73,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
         self.vlc_patcher.stop()
         del self.main_window
 
-    def basic_test(self):
+    def test_basic(self):
         """
         Test if the dialog is correctly set up.
         """
@@ -85,7 +85,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
             # THEN: The media path should be empty.
             assert self.form.media_path_combobox.currentText() == '', 'There should not be any text in the media path.'
 
-    def click_load_button_test(self):
+    def test_click_load_button(self):
         """
         Test that the correct function is called when load is clicked, and that it behaves as expected.
         """
@@ -126,7 +126,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
                 'The media path should be the given one.'
             mocked_critical_error_message_box.assert_called_with(message='VLC player failed playing the media')
 
-    def title_combobox_test(self):
+    def test_title_combobox(self):
         """
         Test the behavior when the title combobox is updated
         """
@@ -153,7 +153,7 @@ class TestMediaClipSelectorForm(TestCase, TestMixin):
             self.form.audio_tracks_combobox.itemData.assert_any_call(1)
             self.form.subtitle_tracks_combobox.itemData.assert_any_call(0)
 
-    def click_save_button_test(self):
+    def test_click_save_button(self):
         """
         Test that the correct function is called when save is clicked, and that it behaves as expected.
         """

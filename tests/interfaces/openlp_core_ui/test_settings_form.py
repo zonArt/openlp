@@ -66,7 +66,7 @@ class TestSettingsForm(TestCase, TestMixin):
         """
         del self.form
 
-    def basic_cancel_test(self):
+    def test_basic_cancel(self):
         """
         Test running the settings form and pressing Cancel
         """
@@ -80,7 +80,7 @@ class TestSettingsForm(TestCase, TestMixin):
             # THEN the dialog reject should have been called
             assert mocked_reject.call_count == 1, 'The QDialog.reject should have been called'
 
-    def basic_accept_test(self):
+    def test_basic_accept(self):
         """
         Test running the settings form and pressing Ok
         """
@@ -94,7 +94,7 @@ class TestSettingsForm(TestCase, TestMixin):
             # THEN the dialog reject should have been called
             assert mocked_accept.call_count == 1, 'The QDialog.accept should have been called'
 
-    def basic_register_test(self):
+    def test_basic_register(self):
         """
         Test running the settings form and adding a single function
         """
@@ -109,7 +109,7 @@ class TestSettingsForm(TestCase, TestMixin):
             # THEN the processing stack should be empty
             assert len(self.form.processes) == 0, 'The one requested process should have been removed from the stack'
 
-    def register_multiple_functions_test(self):
+    def test_register_multiple_functions(self):
         """
         Test running the settings form and adding multiple functions
         """
@@ -134,7 +134,7 @@ class TestSettingsForm(TestCase, TestMixin):
         # THEN the processing stack should still have two items
         assert len(self.form.processes) == 2, 'No new processes should have been added to the stack'
 
-    def register_image_manager_trigger_test_one(self):
+    def test_register_image_manager_trigger_one(self):
         """
         Test the triggering of the image manager rebuild event from image background change
         """
@@ -152,7 +152,7 @@ class TestSettingsForm(TestCase, TestMixin):
         assert self.dummy2.call_count == 0, 'dummy2 should not have been called at all'
         assert self.dummy3.call_count == 1, 'dummy3 should have been called once'
 
-    def register_image_manager_trigger_test_two(self):
+    def test_register_image_manager_trigger_two(self):
         """
         Test the triggering of the image manager rebuild event from screen dimension change
         """
@@ -170,7 +170,7 @@ class TestSettingsForm(TestCase, TestMixin):
         assert self.dummy2.call_count == 1, 'dummy2 should have been called once'
         assert self.dummy3.call_count == 1, 'dummy3 should have been called once'
 
-    def register_image_manager_trigger_test_three(self):
+    def test_register_image_manager_trigger_three(self):
         """
         Test the triggering of the image manager rebuild event from image background change and a change to the
         screen dimension.

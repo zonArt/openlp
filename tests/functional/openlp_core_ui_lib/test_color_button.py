@@ -49,7 +49,7 @@ class TestColorDialog(TestCase):
         self.mocked_qt_widgets = self.qt_gui_patcher.start()
         self.mocked_translate = self.translate_patcher.start()
 
-    def constructor_test(self):
+    def test_constructor(self):
         """
         Test that constructing a ColorButton object works correctly
         """
@@ -67,7 +67,7 @@ class TestColorDialog(TestCase):
             mocked_set_tool_tip.assert_called_once_with('Tool Tip Text')
             self.mocked_clicked.connect.assert_called_once_with(widget.on_clicked)
 
-    def change_color_test(self):
+    def test_change_color(self):
         """
         Test that change_color sets the new color and the stylesheet
         """
@@ -87,7 +87,7 @@ class TestColorDialog(TestCase):
 
         self.mocked_change_color = self.change_color_patcher.start()
 
-    def color_test(self):
+    def test_color(self):
         """
         Test that the color property method returns the set color
         """
@@ -102,7 +102,7 @@ class TestColorDialog(TestCase):
         # THEN: The value set in _color should be returned
         self.assertEqual(value, '#000000', 'The value returned should be equal to the one we set')
 
-    def color_test(self):
+    def test_color(self):
         """
         Test that the color property method returns the set color
         """
@@ -117,7 +117,7 @@ class TestColorDialog(TestCase):
         # THEN: The value set in _color should be returned
         self.assertEqual(value, '#000000', 'The value returned should be equal to the one we set')
 
-    def color_setter_test(self):
+    def test_color_setter(self):
         """
         Test that the color property setter method sets the color
         """
@@ -132,7 +132,7 @@ class TestColorDialog(TestCase):
             # THEN: Then change_color should have been called with the value we set
             self.mocked_change_color.assert_called_once_with('#000000')
 
-    def on_clicked_invalid_color_test(self):
+    def test_on_clicked_invalid_color(self):
         """
         Test the on_click method when an invalid color has been supplied
         """
@@ -154,7 +154,7 @@ class TestColorDialog(TestCase):
             self.mocked_color_changed.emit.call_count, 0,
             'colorChange signal should not have been emitted with an invalid color')
 
-    def on_clicked_same_color_test(self):
+    def test_on_clicked_same_color(self):
         """
         Test the on_click method when a new color has not been chosen
         """
@@ -178,7 +178,7 @@ class TestColorDialog(TestCase):
             self.mocked_color_changed.emit.call_count, 0,
             'colorChange signal should not have been emitted when the color has not changed')
 
-    def on_clicked_new_color_test(self):
+    def test_on_clicked_new_color(self):
         """
         Test the on_click method when a new color has been chosen and is valid
         """

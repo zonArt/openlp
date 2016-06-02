@@ -66,7 +66,7 @@ class TestProjectorEditForm(TestCase, TestMixin):
         del(self.projector_form)
         self.destroy_settings()
 
-    def edit_form_add_projector_test(self):
+    def test_edit_form_add_projector(self):
         """
         Test projector edit form with no parameters creates a new entry.
 
@@ -85,7 +85,7 @@ class TestProjectorEditForm(TestCase, TestMixin):
             self.assertTrue((item.ip is None and item.name is None),
                             'Projector edit form should have a new Projector() instance to edit')
 
-    def edit_form_edit_projector_test(self):
+    def test_edit_form_edit_projector(self):
         """
         Test projector edit form with existing projector entry
 

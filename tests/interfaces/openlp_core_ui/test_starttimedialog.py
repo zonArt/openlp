@@ -51,7 +51,7 @@ class TestStartTimeDialog(TestCase, TestMixin):
         del self.form
         del self.main_window
 
-    def ui_defaults_test(self):
+    def test_ui_defaults(self):
         """
         Test StartTimeDialog are defaults correct
         """
@@ -78,7 +78,7 @@ class TestStartTimeDialog(TestCase, TestMixin):
         self.assertEqual(self.form.second_finish_spin_box.maximum(), 59,
                          'The maximum finish second should stay the same as the dialog')
 
-    def time_display_test(self):
+    def test_time_display(self):
         """
         Test StartTimeDialog display functionality
         """

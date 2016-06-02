@@ -29,7 +29,7 @@ from openlp.core.common import UiStrings
 
 class TestUiStrings(TestCase):
 
-    def check_same_instance_test(self):
+    def test_check_same_instance(self):
         """
         Test the UiStrings class - we always should have only one instance of the UiStrings class.
         """

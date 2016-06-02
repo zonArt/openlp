@@ -57,7 +57,7 @@ class TestPJLink(TestCase):
     @patch.object(pjlink_test, 'send_command')
     @patch.object(pjlink_test, 'waitForReadyRead')
     @patch('openlp.core.common.qmd5_hash')
-    def authenticated_connection_call_test(self, mock_qmd5_hash, mock_waitForReadyRead, mock_send_command,
+    def test_authenticated_connection_call(self, mock_qmd5_hash, mock_waitForReadyRead, mock_send_command,
                                            mock_readyRead):
         """
         Ticket 92187: Fix for projector connect with PJLink authentication exception.
@@ -74,7 +74,7 @@ class TestPJLink(TestCase):
         self.assertTrue(mock_qmd5_hash.called_with(TEST_PIN,
                                                    "Connection request should have been called with TEST_PIN"))
 
-    def projector_class_test(self):
+    def test_projector_class(self):
         """
         Test class version from projector
         """
@@ -88,7 +88,7 @@ class TestPJLink(TestCase):
         self.assertEquals(pjlink.pjlink_class, '1',
                           'Projector should have returned class=1')
 
-    def non_standard_class_reply_test(self):
+    def test_non_standard_class_reply(self):
         """
         Bugfix 1550891: CLSS request returns non-standard 'Class N' reply
         """
@@ -103,7 +103,7 @@ class TestPJLink(TestCase):
                           'Non-standard class reply should have set proper class')
 
     @patch.object(pjlink_test, 'change_status')
-    def status_change_test(self, mock_change_status):
+    def test_status_change(self, mock_change_status):
         """
         Test process_command call with ERR2 (Parameter) status
         """
@@ -120,7 +120,7 @@ class TestPJLink(TestCase):
                                            ERROR_STRING[E_PARAMETER]))
 
     @patch.object(pjlink_test, 'process_inpt')
-    def projector_return_ok_test(self, mock_process_inpt):
+    def test_projector_return_ok(self, mock_process_inpt):
         """
         Test projector calls process_inpt command when process_command is called with INPT option
         """
@@ -135,7 +135,7 @@ class TestPJLink(TestCase):
                                       "process_inpt should have been called with 31")
 
     @patch.object(pjlink_test, 'projectorReceivedData')
-    def projector_process_lamp_test(self, mock_projectorReceivedData):
+    def test_projector_process_lamp(self, mock_projectorReceivedData):
         """
         Test status lamp on/off and hours
         """
@@ -152,7 +152,7 @@ class TestPJLink(TestCase):
                           'Lamp hours should have been set to 22222')
 
     @patch.object(pjlink_test, 'projectorReceivedData')
-    def projector_process_multiple_lamp_test(self, mock_projectorReceivedData):
+    def test_projector_process_multiple_lamp(self, mock_projectorReceivedData):
         """
         Test status multiple lamp on/off and hours
         """
@@ -179,7 +179,7 @@ class TestPJLink(TestCase):
                           'Lamp 3 hours should have been set to 33333')
 
     @patch.object(pjlink_test, 'projectorReceivedData')
-    def projector_process_power_on_test(self, mock_projectorReceivedData):
+    def test_projector_process_power_on(self, mock_projectorReceivedData):
         """
         Test status power to ON
         """
@@ -194,7 +194,7 @@ class TestPJLink(TestCase):
         self.assertEquals(pjlink.power, S_ON, 'Power should have been set to ON')
 
     @patch.object(pjlink_test, 'projectorReceivedData')
-    def projector_process_power_off_test(self, mock_projectorReceivedData):
+    def test_projector_process_power_off(self, mock_projectorReceivedData):
         """
         Test status power to STANDBY
         """
@@ -209,7 +209,7 @@ class TestPJLink(TestCase):
         self.assertEquals(pjlink.power, S_STANDBY, 'Power should have been set to STANDBY')
 
     @patch.object(pjlink_test, 'projectorUpdateIcons')
-    def projector_process_avmt_closed_unmuted_test(self, mock_projectorReceivedData):
+    def test_projector_process_avmt_closed_unmuted(self, mock_projectorReceivedData):
         """
         Test avmt status shutter closed and audio muted
         """
@@ -226,7 +226,7 @@ class TestPJLink(TestCase):
         self.assertFalse(pjlink.mute, 'Audio should be off')
 
     @patch.object(pjlink_test, 'projectorUpdateIcons')
-    def projector_process_avmt_open_muted_test(self, mock_projectorReceivedData):
+    def test_projector_process_avmt_open_muted(self, mock_projectorReceivedData):
         """
         Test avmt status shutter open and mute on
         """
@@ -243,7 +243,7 @@ class TestPJLink(TestCase):
         self.assertTrue(pjlink.mute, 'Audio should be off')
 
     @patch.object(pjlink_test, 'projectorUpdateIcons')
-    def projector_process_avmt_open_unmuted_test(self, mock_projectorReceivedData):
+    def test_projector_process_avmt_open_unmuted(self, mock_projectorReceivedData):
         """
         Test avmt status shutter open and mute off off
         """
@@ -260,7 +260,7 @@ class TestPJLink(TestCase):
         self.assertFalse(pjlink.mute, 'Audio should be on')
 
     @patch.object(pjlink_test, 'projectorUpdateIcons')
-    def projector_process_avmt_closed_muted_test(self, mock_projectorReceivedData):
+    def test_projector_process_avmt_closed_muted(self, mock_projectorReceivedData):
         """
         Test avmt status shutter closed and mute off
         """
@@ -276,7 +276,7 @@ class TestPJLink(TestCase):
         self.assertTrue(pjlink.shutter, 'Shutter should have been set to closed')
         self.assertTrue(pjlink.mute, 'Audio should be on')
 
-    def projector_process_input_test(self):
+    def test_projector_process_input(self):
         """
         Test input source status shows current input
         """
@@ -290,7 +290,7 @@ class TestPJLink(TestCase):
         # THEN: Input selected should reflect current input
         self.assertEquals(pjlink.source, '1', 'Input source should be set to "1"')
 
-    def projector_reset_information_test(self):
+    def test_projector_reset_information(self):
         """
         Test reset_information() resets all information and stops timers
         """

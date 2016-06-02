@@ -46,7 +46,7 @@ class TestZionWorxImport(TestCase):
         """
         Registry.create()
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the ZionWorx file importer
         """

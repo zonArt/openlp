@@ -57,7 +57,7 @@ class TestEditCustomForm(TestCase, TestMixin):
         del self.form
         del self.main_window
 
-    def load_themes_test(self):
+    def test_load_themes(self):
         """
         Test the load_themes() method.
         """
@@ -70,7 +70,7 @@ class TestEditCustomForm(TestCase, TestMixin):
         # THEN: There should be three items in the combo box.
         assert self.form.theme_combo_box.count() == 3, 'There should be three items (themes) in the combo box.'
 
-    def load_custom_test(self):
+    def test_load_custom(self):
         """
         Test the load_custom() method.
         """
@@ -81,7 +81,7 @@ class TestEditCustomForm(TestCase, TestMixin):
         self.assertEqual(self.form.title_edit.text(), '', 'The title edit should be empty')
         self.assertEqual(self.form.credit_edit.text(), '', 'The credit edit should be empty')
 
-    def on_add_button_clicked_test(self):
+    def test_on_add_button_clicked(self):
         """
         Test the on_add_button_clicked_test method / add_button button.
         """
@@ -93,7 +93,7 @@ class TestEditCustomForm(TestCase, TestMixin):
             # THEN: One slide should be added.
             assert self.form.slide_list_view.count() == 1, 'There should be one slide added.'
 
-    def validate_not_valid_part1_test(self):
+    def test_validate_not_valid_part1(self):
         """
         Test the _validate() method.
         """
@@ -112,7 +112,7 @@ class TestEditCustomForm(TestCase, TestMixin):
             mocked_setFocus.assert_called_with()
             mocked_critical_error_message_box.assert_called_with(message='You need to type in a title.')
 
-    def validate_not_valid_part2_test(self):
+    def test_validate_not_valid_part2(self):
         """
         Test the _validate() method.
         """
@@ -129,7 +129,7 @@ class TestEditCustomForm(TestCase, TestMixin):
             assert not result, 'The _validate() method should have retured False'
             mocked_critical_error_message_box.assert_called_with(message='You need to add at least one slide.')
 
-    def update_slide_list_test(self):
+    def test_update_slide_list(self):
         """
         Test the update_slide_list() method
         """
