@@ -52,7 +52,7 @@ class TestImageMediaItem(TestCase):
 
     @patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_list')
     @patch('openlp.plugins.images.lib.mediaitem.Settings')
-    def validate_and_load_test(self, mocked_settings, mocked_load_list):
+    def test_validate_and_load(self, mocked_settings, mocked_load_list):
         """
         Test that the validate_and_load_test() method when called without a group
         """
@@ -69,7 +69,7 @@ class TestImageMediaItem(TestCase):
 
     @patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_list')
     @patch('openlp.plugins.images.lib.mediaitem.Settings')
-    def validate_and_load_group_test(self, mocked_settings, mocked_load_list):
+    def test_validate_and_load_group(self, mocked_settings, mocked_load_list):
         """
         Test that the validate_and_load_test() method when called with a group
         """
@@ -85,7 +85,7 @@ class TestImageMediaItem(TestCase):
         mocked_settings().setValue.assert_called_once_with(ANY, '/path1')
 
     @patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list')
-    def save_new_images_list_empty_list_test(self, mocked_load_full_list):
+    def test_save_new_images_list_empty_list(self, mocked_load_full_list):
         """
         Test that the save_new_images_list() method handles empty lists gracefully
         """
@@ -101,7 +101,7 @@ class TestImageMediaItem(TestCase):
                           'The save_object() method should not have been called')
 
     @patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list')
-    def save_new_images_list_single_image_with_reload_test(self, mocked_load_full_list):
+    def test_save_new_images_list_single_image_with_reload(self, mocked_load_full_list):
         """
         Test that the save_new_images_list() calls load_full_list() when reload_list is set to True
         """
@@ -120,7 +120,7 @@ class TestImageMediaItem(TestCase):
         delattr(ImageFilenames, 'filename')
 
     @patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list')
-    def save_new_images_list_single_image_without_reload_test(self, mocked_load_full_list):
+    def test_save_new_images_list_single_image_without_reload(self, mocked_load_full_list):
         """
         Test that the save_new_images_list() doesn't call load_full_list() when reload_list is set to False
         """
@@ -135,7 +135,7 @@ class TestImageMediaItem(TestCase):
         self.assertEquals(mocked_load_full_list.call_count, 0, 'load_full_list() should not have been called')
 
     @patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list')
-    def save_new_images_list_multiple_images_test(self, mocked_load_full_list):
+    def test_save_new_images_list_multiple_images(self, mocked_load_full_list):
         """
         Test that the save_new_images_list() saves all images in the list
         """
@@ -151,7 +151,7 @@ class TestImageMediaItem(TestCase):
                           'load_full_list() should have been called three times')
 
     @patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list')
-    def save_new_images_list_other_objects_in_list_test(self, mocked_load_full_list):
+    def test_save_new_images_list_other_objects_in_list(self, mocked_load_full_list):
         """
         Test that the save_new_images_list() ignores everything in the provided list except strings
         """
@@ -166,7 +166,7 @@ class TestImageMediaItem(TestCase):
         self.assertEquals(self.media_item.manager.save_object.call_count, 2,
                           'load_full_list() should have been called only once')
 
-    def on_reset_click_test(self):
+    def test_on_reset_click(self):
         """
         Test that on_reset_click() actually resets the background
         """
@@ -181,7 +181,7 @@ class TestImageMediaItem(TestCase):
         self.media_item.live_controller.display.reset_image.assert_called_with()
 
     @patch('openlp.plugins.images.lib.mediaitem.delete_file')
-    def recursively_delete_group_test(self, mocked_delete_file):
+    def test_recursively_delete_group(self, mocked_delete_file):
         """
         Test that recursively_delete_group() works
         """
@@ -233,7 +233,7 @@ class TestImageMediaItem(TestCase):
 
     @patch('openlp.plugins.images.lib.mediaitem.delete_file')
     @patch('openlp.plugins.images.lib.mediaitem.check_item_selected')
-    def on_delete_click_test(self, mocked_check_item_selected, mocked_delete_file):
+    def test_on_delete_click(self, mocked_check_item_selected, mocked_delete_file):
         """
         Test that on_delete_click() works
         """
@@ -257,7 +257,7 @@ class TestImageMediaItem(TestCase):
         # THEN: delete_file should have been called twice
         self.assertEquals(mocked_delete_file.call_count, 2, 'delete_file() should have been called twice')
 
-    def create_item_from_id_test(self):
+    def test_create_item_from_id(self):
         """
         Test that the create_item_from_id() method returns a valid QTreeWidgetItem with a pre-created ImageFilenames
         """

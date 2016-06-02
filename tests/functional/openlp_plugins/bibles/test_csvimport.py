@@ -50,7 +50,7 @@ class TestCSVImport(TestCase):
         self.registry_patcher.stop()
         self.manager_patcher.stop()
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the CSV file importer
         """
@@ -63,7 +63,7 @@ class TestCSVImport(TestCase):
         # THEN: The importer should be an instance of BibleDB
         self.assertIsInstance(importer, BibleDB)
 
-    def file_import_test(self):
+    def test_file_import(self):
         """
         Test the actual import of CSV Bible file
         """

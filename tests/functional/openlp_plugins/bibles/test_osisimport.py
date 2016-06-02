@@ -50,7 +50,7 @@ class TestOsisImport(TestCase):
         self.registry_patcher.stop()
         self.manager_patcher.stop()
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the OSIS file importer
         """
@@ -63,7 +63,7 @@ class TestOsisImport(TestCase):
         # THEN: The importer should be an instance of BibleDB
         self.assertIsInstance(importer, BibleDB)
 
-    def file_import_nested_tags_test(self):
+    def test_file_import_nested_tags(self):
         """
         Test the actual import of OSIS Bible file, with nested chapter and verse tags
         """
@@ -93,7 +93,7 @@ class TestOsisImport(TestCase):
             for verse_tag, verse_text in test_data['verses']:
                 importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
 
-    def file_import_mixed_tags_test(self):
+    def test_file_import_mixed_tags(self):
         """
         Test the actual import of OSIS Bible file, with chapter tags containing milestone verse tags.
         """
@@ -123,7 +123,7 @@ class TestOsisImport(TestCase):
             for verse_tag, verse_text in test_data['verses']:
                 importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
 
-    def file_import_milestone_tags_test(self):
+    def test_file_import_milestone_tags(self):
         """
         Test the actual import of OSIS Bible file, with milestone chapter and verse tags.
         """
@@ -153,7 +153,7 @@ class TestOsisImport(TestCase):
             for verse_tag, verse_text in test_data['verses']:
                 importer.create_verse.assert_any_call(importer.create_book().id, '1', verse_tag, verse_text)
 
-    def file_import_empty_verse_tags_test(self):
+    def test_file_import_empty_verse_tags(self):
         """
         Test the actual import of OSIS Bible file, with an empty verse tags.
         """

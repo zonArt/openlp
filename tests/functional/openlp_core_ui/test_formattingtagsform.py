@@ -50,7 +50,7 @@ class TestFormattingTagForm(TestCase):
         """
         self.setup_patcher.stop()
 
-    def on_row_selected_test(self):
+    def test_on_row_selected(self):
         """
         Test that the appropriate actions are preformed when on_row_selected is called
         """
@@ -64,7 +64,7 @@ class TestFormattingTagForm(TestCase):
         # THEN: setEnabled and should have been called on delete_button
         form.delete_button.setEnabled.assert_called_with(True)
 
-    def on_new_clicked_test(self):
+    def test_on_new_clicked(self):
         """
         Test that clicking the Add a new tag button does the right thing
         """

@@ -57,7 +57,7 @@ class TestImageManager(TestCase, TestMixin):
         """
         del self.app
 
-    def basic_image_manager_test(self):
+    def test_basic_image_manager(self):
         """
         Test the Image Manager setup basic functionality
         """
@@ -83,7 +83,7 @@ class TestImageManager(TestCase, TestMixin):
             self.image_manager.get_image(TEST_PATH, 'church1.jpg')
         self.assertNotEquals(context.exception, '', 'KeyError exception should have been thrown for missing image')
 
-    def different_dimension_image_test(self):
+    def test_different_dimension_image(self):
         """
         Test the Image Manager with dimensions
         """
@@ -115,7 +115,7 @@ class TestImageManager(TestCase, TestMixin):
             self.image_manager.get_image(full_path, 'church.jpg', 120, 120)
         self.assertNotEquals(context.exception, '', 'KeyError exception should have been thrown for missing dimension')
 
-    def process_cache_test(self):
+    def test_process_cache(self):
         """
         Test the process_cache method
         """

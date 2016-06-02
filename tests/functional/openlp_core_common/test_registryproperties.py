@@ -39,7 +39,7 @@ class TestRegistryProperties(TestCase, RegistryProperties):
         """
         Registry.create()
 
-    def no_application_test(self):
+    def test_no_application(self):
         """
         Test property if no registry value assigned
         """
@@ -48,7 +48,7 @@ class TestRegistryProperties(TestCase, RegistryProperties):
         # THEN the application should be none
         self.assertEqual(self.application, None, 'The application value should be None')
 
-    def application_test(self):
+    def test_application(self):
         """
         Test property if registry value assigned
         """
@@ -62,7 +62,7 @@ class TestRegistryProperties(TestCase, RegistryProperties):
         self.assertEqual(self.application, application, 'The application value should match')
 
     @patch('openlp.core.common.registryproperties.is_win')
-    def application_on_windows_test(self, mocked_is_win):
+    def test_application_on_windows(self, mocked_is_win):
         """
         Test property if registry value assigned on Windows
         """

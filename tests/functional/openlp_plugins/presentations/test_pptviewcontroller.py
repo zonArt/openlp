@@ -65,7 +65,7 @@ class TestPptviewController(TestCase, TestMixin):
         self.destroy_settings()
         shutil.rmtree(self.temp_folder)
 
-    def constructor_test(self):
+    def test_constructor(self):
         """
         Test the Constructor from the PptViewController
         """
@@ -79,7 +79,7 @@ class TestPptviewController(TestCase, TestMixin):
         self.assertEqual('Powerpoint Viewer', controller.name,
                          'The name of the presentation controller should be correct')
 
-    def check_available_test(self):
+    def test_check_available(self):
         """
         Test check_available / check_installed
         """
@@ -162,7 +162,7 @@ class TestPptviewDocument(TestCase):
         self.screen_list_patcher.stop()
         shutil.rmtree(self.temp_folder)
 
-    def load_presentation_succesfull_test(self):
+    def test_load_presentation_succesfull(self):
         """
         Test the PptviewDocument.load_presentation() method when the PPT is successfully opened
         """
@@ -181,7 +181,7 @@ class TestPptviewDocument(TestCase):
             # THEN: PptviewDocument.load_presentation should return True
             self.assertTrue(result)
 
-    def load_presentation_un_succesfull_test(self):
+    def test_load_presentation_un_succesfull(self):
         """
         Test the PptviewDocument.load_presentation() method when the temporary directory does not exist and the PPT is
         not successfully opened
@@ -202,7 +202,7 @@ class TestPptviewDocument(TestCase):
                 mock_makedirs.assert_called_once_with(self.temp_folder)
                 self.assertFalse(result)
 
-    def create_titles_and_notes_test(self):
+    def test_create_titles_and_notes(self):
         """
         Test PowerpointController.create_titles_and_notes
         """
@@ -219,7 +219,7 @@ class TestPptviewDocument(TestCase):
                                                           ['Notes for slide 1', 'Inserted', 'Notes for slide 2',
                                                            'Notes \nfor slide 4', 'Notes for slide 3'])
 
-    def create_titles_and_notes_nonexistent_file_test(self):
+    def test_create_titles_and_notes_nonexistent_file(self):
         """
         Test PowerpointController.create_titles_and_notes with nonexistent file
         """
@@ -242,7 +242,7 @@ class TestPptviewDocument(TestCase):
             mocked_exists.assert_any_call('Idontexist.pptx')
             self.assertEqual(mocked_open.call_count, 0, 'There should be no calls to open a file.')
 
-    def create_titles_and_notes_invalid_file_test(self):
+    def test_create_titles_and_notes_invalid_file(self):
         """
         Test PowerpointController.create_titles_and_notes with invalid file
         """

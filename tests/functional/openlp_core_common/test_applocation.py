@@ -36,7 +36,7 @@ class TestAppLocation(TestCase):
     """
     A test suite to test out various methods around the AppLocation class.
     """
-    def get_data_path_test(self):
+    def test_get_data_path(self):
         """
         Test the AppLocation.get_data_path() method
         """
@@ -60,7 +60,7 @@ class TestAppLocation(TestCase):
             mocked_check_directory_exists.assert_called_with(os.path.join('test', 'dir'))
             self.assertEqual(os.path.join('test', 'dir'), data_path, 'Result should be "test/dir"')
 
-    def get_data_path_with_custom_location_test(self):
+    def test_get_data_path_with_custom_location(self):
         """
         Test the AppLocation.get_data_path() method when a custom location is set in the settings
         """
@@ -80,7 +80,7 @@ class TestAppLocation(TestCase):
             mocked_settings.value.assert_called_with('advanced/data path')
             self.assertEqual('custom/dir', data_path, 'Result should be "custom/dir"')
 
-    def get_files_no_section_no_extension_test(self):
+    def test_get_files_no_section_no_extension(self):
         """
         Test the AppLocation.get_files() method with no parameters passed.
         """
@@ -96,7 +96,7 @@ class TestAppLocation(TestCase):
             # Then: check if the file lists are identical.
             self.assertListEqual(FILE_LIST, result, 'The file lists should be identical.')
 
-    def get_files_test(self):
+    def test_get_files(self):
         """
         Test the AppLocation.get_files() method with all parameters passed.
         """
@@ -115,7 +115,7 @@ class TestAppLocation(TestCase):
             # Then: check if the file lists are identical.
             self.assertListEqual(['file5.mp3', 'file6.mp3'], result, 'The file lists should be identical.')
 
-    def get_section_data_path_test(self):
+    def test_get_section_data_path(self):
         """
         Test the AppLocation.get_section_data_path() method
         """
@@ -132,7 +132,7 @@ class TestAppLocation(TestCase):
             mocked_check_directory_exists.assert_called_with(os.path.join('test', 'dir', 'section'))
             self.assertEqual(os.path.join('test', 'dir', 'section'), data_path, 'Result should be "test/dir/section"')
 
-    def get_directory_for_app_dir_test(self):
+    def test_get_directory_for_app_dir(self):
         """
         Test the AppLocation.get_directory() method for AppLocation.AppDir
         """
@@ -146,7 +146,7 @@ class TestAppLocation(TestCase):
             # THEN: check that the correct directory is returned
             self.assertEqual(os.path.join('app', 'dir'), directory, 'Directory should be "app/dir"')
 
-    def get_directory_for_plugins_dir_test(self):
+    def test_get_directory_for_plugins_dir(self):
         """
         Test the AppLocation.get_directory() method for AppLocation.PluginsDir
         """
@@ -167,7 +167,7 @@ class TestAppLocation(TestCase):
             # THEN: The correct directory should be returned
             self.assertEqual(os.path.join('plugins', 'dir'), directory, 'Directory should be "plugins/dir"')
 
-    def get_frozen_path_in_unfrozen_app_test(self):
+    def test_get_frozen_path_in_unfrozen_app(self):
         """
         Test the _get_frozen_path() function when the application is not frozen (compiled by PyInstaller)
         """
@@ -181,7 +181,7 @@ class TestAppLocation(TestCase):
             # THEN: The non-frozen parameter is returned
             self.assertEqual('not frozen', frozen_path, '_get_frozen_path should return "not frozen"')
 
-    def get_frozen_path_in_frozen_app_test(self):
+    def test_get_frozen_path_in_frozen_app(self):
         """
         Test the get_frozen_path() function when the application is frozen (compiled by PyInstaller)
         """

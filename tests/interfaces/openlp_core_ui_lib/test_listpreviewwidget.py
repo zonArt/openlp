@@ -57,7 +57,7 @@ class TestListPreviewWidget(TestCase, TestMixin):
         del self.preview_widget
         del self.main_window
 
-    def initial_slide_count_test(self):
+    def test_initial_slide_count(self):
         """
         Test the initial slide count .
         """
@@ -66,7 +66,7 @@ class TestListPreviewWidget(TestCase, TestMixin):
         # THEN: The count of items should be zero.
         self.assertEqual(self.preview_widget.slide_count(), 0, 'The slide list should be empty.')
 
-    def initial_slide_number_test(self):
+    def test_initial_slide_number(self):
         """
         Test the initial current slide number.
         """
@@ -75,7 +75,7 @@ class TestListPreviewWidget(TestCase, TestMixin):
         # THEN: The number of the current item should be -1.
         self.assertEqual(self.preview_widget.current_slide_number(), -1, 'The slide number should be -1.')
 
-    def replace_service_item_test(self):
+    def test_replace_service_item(self):
         """
         Test item counts and current number with a service item.
         """
@@ -90,7 +90,7 @@ class TestListPreviewWidget(TestCase, TestMixin):
         self.assertEqual(self.preview_widget.slide_count(), 2, 'The slide count should be 2.')
         self.assertEqual(self.preview_widget.current_slide_number(), 1, 'The current slide number should  be 1.')
 
-    def change_slide_test(self):
+    def test_change_slide(self):
         """
         Test the change_slide method.
         """

@@ -60,7 +60,7 @@ class TestSongBeamerImport(TestCase):
         """
         Registry.create()
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the SongBeamer file importer
         """
@@ -74,7 +74,7 @@ class TestSongBeamerImport(TestCase):
             # THEN: The importer object should not be None
             self.assertIsNotNone(importer, 'Import should not be none')
 
-    def invalid_import_source_test(self):
+    def test_invalid_import_source(self):
         """
         Test SongBeamerImport.do_import handles different invalid import_source values
         """
@@ -95,7 +95,7 @@ class TestSongBeamerImport(TestCase):
                 self.assertEqual(mocked_import_wizard.progress_bar.setMaximum.called, False,
                                  'setMaxium on import_wizard.progress_bar should not have been called')
 
-    def valid_import_source_test(self):
+    def test_valid_import_source(self):
         """
         Test SongBeamerImport.do_import handles different invalid import_source values
         """
@@ -116,7 +116,7 @@ class TestSongBeamerImport(TestCase):
                               'do_import should return None when import_source is a list and stop_import_flag is True')
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(len(importer.import_source))
 
-    def check_verse_marks_test(self):
+    def test_check_verse_marks(self):
         """
         Tests different lines to see if a verse mark is detected or not
         """

@@ -49,7 +49,7 @@ class TestPluginManager(TestCase):
         Registry().register('main_window', self.mocked_main_window)
         Registry().register('settings_form', self.mocked_settings_form)
 
-    def hook_media_manager_with_disabled_plugin_test(self):
+    def test_hook_media_manager_with_disabled_plugin(self):
         """
         Test running the hook_media_manager() method with a disabled plugin
         """
@@ -66,7 +66,7 @@ class TestPluginManager(TestCase):
         self.assertEqual(0, mocked_plugin.create_media_manager_item.call_count,
                          'The create_media_manager_item() method should not have been called.')
 
-    def hook_media_manager_with_active_plugin_test(self):
+    def test_hook_media_manager_with_active_plugin(self):
         """
         Test running the hook_media_manager() method with an active plugin
         """
@@ -82,7 +82,7 @@ class TestPluginManager(TestCase):
         # THEN: The create_media_manager_item() method should have been called
         mocked_plugin.create_media_manager_item.assert_called_with()
 
-    def hook_settings_tabs_with_disabled_plugin_and_no_form_test(self):
+    def test_hook_settings_tabs_with_disabled_plugin_and_no_form(self):
         """
         Test running the hook_settings_tabs() method with a disabled plugin and no form
         """
@@ -99,7 +99,7 @@ class TestPluginManager(TestCase):
         self.assertEqual(0, mocked_plugin.create_media_manager_item.call_count,
                          'The create_media_manager_item() method should not have been called.')
 
-    def hook_settings_tabs_with_disabled_plugin_and_mocked_form_test(self):
+    def test_hook_settings_tabs_with_disabled_plugin_and_mocked_form(self):
         """
         Test running the hook_settings_tabs() method with a disabled plugin and a mocked form
         """
@@ -121,7 +121,7 @@ class TestPluginManager(TestCase):
         self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
                          'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
-    def hook_settings_tabs_with_active_plugin_and_mocked_form_test(self):
+    def test_hook_settings_tabs_with_active_plugin_and_mocked_form(self):
         """
         Test running the hook_settings_tabs() method with an active plugin and a mocked settings form
         """
@@ -143,7 +143,7 @@ class TestPluginManager(TestCase):
         self.assertEqual(plugin_manager.plugins, mocked_settings_form.plugin_manager.plugins,
                          'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
-    def hook_settings_tabs_with_active_plugin_and_no_form_test(self):
+    def test_hook_settings_tabs_with_active_plugin_and_no_form(self):
         """
         Test running the hook_settings_tabs() method with an active plugin and no settings form
         """
@@ -159,7 +159,7 @@ class TestPluginManager(TestCase):
         # THEN: The create_settings_tab() method should have been called
         mocked_plugin.create_settings_tab.assert_called_with(self.mocked_settings_form)
 
-    def hook_import_menu_with_disabled_plugin_test(self):
+    def test_hook_import_menu_with_disabled_plugin(self):
         """
         Test running the hook_import_menu() method with a disabled plugin
         """
@@ -176,7 +176,7 @@ class TestPluginManager(TestCase):
         self.assertEqual(0, mocked_plugin.add_import_menu_item.call_count,
                          'The add_import_menu_item() method should not have been called.')
 
-    def hook_import_menu_with_active_plugin_test(self):
+    def test_hook_import_menu_with_active_plugin(self):
         """
         Test running the hook_import_menu() method with an active plugin
         """
@@ -192,7 +192,7 @@ class TestPluginManager(TestCase):
         # THEN: The add_import_menu_item() method should have been called
         mocked_plugin.add_import_menu_item.assert_called_with(self.mocked_main_window.file_import_menu)
 
-    def hook_export_menu_with_disabled_plugin_test(self):
+    def test_hook_export_menu_with_disabled_plugin(self):
         """
         Test running the hook_export_menu() method with a disabled plugin
         """
@@ -209,7 +209,7 @@ class TestPluginManager(TestCase):
         self.assertEqual(0, mocked_plugin.add_export_menu_item.call_count,
                          'The add_export_menu_item() method should not have been called.')
 
-    def hook_export_menu_with_active_plugin_test(self):
+    def test_hook_export_menu_with_active_plugin(self):
         """
         Test running the hook_export_menu() method with an active plugin
         """
@@ -225,7 +225,7 @@ class TestPluginManager(TestCase):
         # THEN: The add_export_menu_item() method should have been called
         mocked_plugin.add_export_menu_item.assert_called_with(self.mocked_main_window.file_export_menu)
 
-    def hook_upgrade_plugin_settings_with_disabled_plugin_test(self):
+    def test_hook_upgrade_plugin_settings_with_disabled_plugin(self):
         """
         Test running the hook_upgrade_plugin_settings() method with a disabled plugin
         """
@@ -243,7 +243,7 @@ class TestPluginManager(TestCase):
         self.assertEqual(0, mocked_plugin.upgrade_settings.call_count,
                          'The upgrade_settings() method should not have been called.')
 
-    def hook_upgrade_plugin_settings_with_active_plugin_test(self):
+    def test_hook_upgrade_plugin_settings_with_active_plugin(self):
         """
         Test running the hook_upgrade_plugin_settings() method with an active plugin
         """
@@ -260,7 +260,7 @@ class TestPluginManager(TestCase):
         # THEN: The add_export_menu_item() method should have been called
         mocked_plugin.upgrade_settings.assert_called_with(settings)
 
-    def hook_tools_menu_with_disabled_plugin_test(self):
+    def test_hook_tools_menu_with_disabled_plugin(self):
         """
         Test running the hook_tools_menu() method with a disabled plugin
         """
@@ -277,7 +277,7 @@ class TestPluginManager(TestCase):
         self.assertEqual(0, mocked_plugin.add_tools_menu_item.call_count,
                          'The add_tools_menu_item() method should not have been called.')
 
-    def hook_tools_menu_with_active_plugin_test(self):
+    def test_hook_tools_menu_with_active_plugin(self):
         """
         Test running the hook_tools_menu() method with an active plugin
         """
@@ -293,7 +293,7 @@ class TestPluginManager(TestCase):
         # THEN: The add_tools_menu_item() method should have been called
         mocked_plugin.add_tools_menu_item.assert_called_with(self.mocked_main_window.tools_menu)
 
-    def initialise_plugins_with_disabled_plugin_test(self):
+    def test_initialise_plugins_with_disabled_plugin(self):
         """
         Test running the initialise_plugins() method with a disabled plugin
         """
@@ -311,7 +311,7 @@ class TestPluginManager(TestCase):
         mocked_plugin.is_active.assert_called_with()
         self.assertEqual(0, mocked_plugin.initialise.call_count, 'The initialise() method should not have been called.')
 
-    def initialise_plugins_with_active_plugin_test(self):
+    def test_initialise_plugins_with_active_plugin(self):
         """
         Test running the initialise_plugins() method with an active plugin
         """
@@ -329,7 +329,7 @@ class TestPluginManager(TestCase):
         mocked_plugin.is_active.assert_called_with()
         mocked_plugin.initialise.assert_called_with()
 
-    def finalise_plugins_with_disabled_plugin_test(self):
+    def test_finalise_plugins_with_disabled_plugin(self):
         """
         Test running the finalise_plugins() method with a disabled plugin
         """
@@ -347,7 +347,7 @@ class TestPluginManager(TestCase):
         mocked_plugin.is_active.assert_called_with()
         self.assertEqual(0, mocked_plugin.finalise.call_count, 'The finalise() method should not have been called.')
 
-    def finalise_plugins_with_active_plugin_test(self):
+    def test_finalise_plugins_with_active_plugin(self):
         """
         Test running the finalise_plugins() method with an active plugin
         """
@@ -365,7 +365,7 @@ class TestPluginManager(TestCase):
         mocked_plugin.is_active.assert_called_with()
         mocked_plugin.finalise.assert_called_with()
 
-    def get_plugin_by_name_does_not_exist_test(self):
+    def test_get_plugin_by_name_does_not_exist(self):
         """
         Test running the get_plugin_by_name() method to find a plugin that does not exist
         """
@@ -381,7 +381,7 @@ class TestPluginManager(TestCase):
         # THEN: The is_active() and finalise() methods should have been called
         self.assertIsNone(result, 'The result for get_plugin_by_name should be None')
 
-    def get_plugin_by_name_exists_test(self):
+    def test_get_plugin_by_name_exists(self):
         """
         Test running the get_plugin_by_name() method to find a plugin that exists
         """
@@ -397,7 +397,7 @@ class TestPluginManager(TestCase):
         # THEN: The is_active() and finalise() methods should have been called
         self.assertEqual(result, mocked_plugin, 'The result for get_plugin_by_name should be the mocked plugin')
 
-    def new_service_created_with_disabled_plugin_test(self):
+    def test_new_service_created_with_disabled_plugin(self):
         """
         Test running the new_service_created() method with a disabled plugin
         """
@@ -416,7 +416,7 @@ class TestPluginManager(TestCase):
         self.assertEqual(0, mocked_plugin.new_service_created.call_count,
                          'The new_service_created() method should not have been called.')
 
-    def new_service_created_with_active_plugin_test(self):
+    def test_new_service_created_with_active_plugin(self):
         """
         Test running the new_service_created() method with an active plugin
         """

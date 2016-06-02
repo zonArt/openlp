@@ -70,7 +70,7 @@ class TestMainDisplay(TestCase, TestMixin):
         self.mocked_audio_player.stop()
         del self.screens
 
-    def initial_main_display_test(self):
+    def test_initial_main_display(self):
         """
         Test the initial Main Display state
         """
@@ -84,7 +84,7 @@ class TestMainDisplay(TestCase, TestMixin):
         # THEN: The controller should be a live controller.
         self.assertEqual(main_display.is_live, True, 'The main display should be a live controller')
 
-    def set_transparency_enabled_test(self):
+    def test_set_transparency_enabled(self):
         """
         Test setting the display to be transparent
         """
@@ -103,7 +103,7 @@ class TestMainDisplay(TestCase, TestMixin):
         self.assertTrue(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
                         'The MainDisplay should have a translucent background')
 
-    def set_transparency_disabled_test(self):
+    def test_set_transparency_disabled(self):
         """
         Test setting the display to be opaque
         """
@@ -120,7 +120,7 @@ class TestMainDisplay(TestCase, TestMixin):
         self.assertFalse(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
                          'The MainDisplay should not have a translucent background')
 
-    def css_changed_test(self):
+    def test_css_changed(self):
         """
         Test that when the CSS changes, the plugins are looped over and given an opportunity to update the CSS
         """
@@ -143,7 +143,7 @@ class TestMainDisplay(TestCase, TestMixin):
         mocked_bibles_plugin.refresh_css.assert_called_with(main_display.frame)
 
     @skipUnless(is_macosx(), 'Can only run test on Mac OS X due to pyobjc dependency.')
-    def macosx_display_window_flags_state_test(self):
+    def test_macosx_display_window_flags_state(self):
         """
         Test that on Mac OS X we set the proper window flags
         """
@@ -160,7 +160,7 @@ class TestMainDisplay(TestCase, TestMixin):
                          'The window flags should be Qt.Window, and Qt.FramelessWindowHint.')
 
     @skipUnless(is_macosx(), 'Can only run test on Mac OS X due to pyobjc dependency.')
-    def macosx_display_test(self):
+    def test_macosx_display(self):
         """
         Test display on Mac OS X
         """
@@ -186,7 +186,7 @@ class TestMainDisplay(TestCase, TestMixin):
                          'Window collection behavior should be NSWindowCollectionBehaviorManaged')
 
     @patch(u'openlp.core.ui.maindisplay.Settings')
-    def show_display_startup_logo_test(self, MockedSettings):
+    def test_show_display_startup_logo(self, MockedSettings):
         # GIVEN: Mocked show_display, setting for logo visibility
         display = MagicMock()
         main_display = MainDisplay(display)
@@ -206,7 +206,7 @@ class TestMainDisplay(TestCase, TestMixin):
         main_display.setVisible.assert_called_once_with(True)
 
     @patch(u'openlp.core.ui.maindisplay.Settings')
-    def show_display_hide_startup_logo_test(self, MockedSettings):
+    def test_show_display_hide_startup_logo(self, MockedSettings):
         # GIVEN: Mocked show_display, setting for logo visibility
         display = MagicMock()
         main_display = MainDisplay(display)
@@ -227,7 +227,7 @@ class TestMainDisplay(TestCase, TestMixin):
 
     @patch(u'openlp.core.ui.maindisplay.Settings')
     @patch(u'openlp.core.ui.maindisplay.build_html')
-    def build_html_no_video_test(self, MockedSettings, Mocked_build_html):
+    def test_build_html_no_video(self, MockedSettings, Mocked_build_html):
         # GIVEN: Mocked display
         display = MagicMock()
         mocked_media_controller = MagicMock()
@@ -255,7 +255,7 @@ class TestMainDisplay(TestCase, TestMixin):
 
     @patch(u'openlp.core.ui.maindisplay.Settings')
     @patch(u'openlp.core.ui.maindisplay.build_html')
-    def build_html_video_test(self, MockedSettings, Mocked_build_html):
+    def test_build_html_video(self, MockedSettings, Mocked_build_html):
         # GIVEN: Mocked display
         display = MagicMock()
         mocked_media_controller = MagicMock()

@@ -69,7 +69,7 @@ class TestSearchEdit(TestCase, TestMixin):
         del self.search_edit
         del self.main_window
 
-    def set_search_types_test(self):
+    def test_set_search_types(self):
         """
         Test setting the search types of the search edit.
         """
@@ -81,7 +81,7 @@ class TestSearchEdit(TestCase, TestMixin):
         # THEN: The first search type should be the first one in the list.
         assert self.search_edit.current_search_type() == SearchTypes.First, "The first search type should be selected."
 
-    def set_current_search_type_test(self):
+    def test_set_current_search_type(self):
         """
         Test if changing the search type works.
         """
@@ -96,7 +96,7 @@ class TestSearchEdit(TestCase, TestMixin):
         assert self.search_edit.placeholderText() == SECOND_PLACEHOLDER_TEXT,\
             "The correct placeholder text should be 'Second Placeholder Text'."
 
-    def clear_button_visibility_test(self):
+    def test_clear_button_visibility(self):
         """
         Test if the clear button is hidden/shown correctly.
         """
@@ -110,7 +110,7 @@ class TestSearchEdit(TestCase, TestMixin):
         # THEN: The clear button should not be hidden any more.
         assert not self.search_edit.clear_button.isHidden(), "The clear button should be visible."
 
-    def press_clear_button_test(self):
+    def test_press_clear_button(self):
         """
         Check if the search edit behaves correctly when pressing the clear button.
         """

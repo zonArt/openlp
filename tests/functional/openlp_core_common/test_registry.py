@@ -33,7 +33,7 @@ TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../', '..',
 
 class TestRegistry(TestCase):
 
-    def registry_service_test(self):
+    def test_registry_service(self):
         """
         Test the registry creation and its usage
         """
@@ -65,7 +65,7 @@ class TestRegistry(TestCase):
         temp = Registry().get('test1')
         self.assertEqual(temp, None, 'None should have been returned for deleted service')
 
-    def registry_function_test(self):
+    def test_registry_function(self):
         """
         Test the registry function creation and their usages
         """
@@ -93,7 +93,7 @@ class TestRegistry(TestCase):
         # THEN: I expect then function to have been called and a return given
         self.assertEqual(return_value[0], 'function_2', 'A return value is provided and matches')
 
-    def registry_working_flags_test(self):
+    def test_registry_working_flags(self):
         """
         Test the registry working flags creation and its usage
         """
@@ -130,7 +130,7 @@ class TestRegistry(TestCase):
         self.assertEqual(context.exception.args[0], 'Working Flag test1 not found in list',
                          'KeyError exception should have been thrown for duplicate working flag')
 
-    def remove_function_test(self):
+    def test_remove_function(self):
         """
         Test the remove_function() method
         """

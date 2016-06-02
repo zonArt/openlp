@@ -216,7 +216,7 @@ class Htmbuilder(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def build_html_test(self):
+    def test_build_html(self):
         """
         Test the build_html() function
         """
@@ -246,7 +246,7 @@ class Htmbuilder(TestCase, TestMixin):
             # THEN: The returned html should match.
             self.assertEqual(html, HTML, 'The returned html should match')
 
-    def build_background_css_radial_test(self):
+    def test_build_background_css_radial(self):
         """
         Test the build_background_css() function with a radial background
         """
@@ -262,7 +262,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: The returned css should match.
         self.assertEqual(BACKGROUND_CSS_RADIAL, css, 'The background css should be equal.')
 
-    def build_lyrics_css_test(self):
+    def test_build_lyrics_css(self):
         """
         Test the build_lyrics_css() function
         """
@@ -283,7 +283,7 @@ class Htmbuilder(TestCase, TestMixin):
             # THEN: The css should be equal.
             self.assertEqual(LYRICS_CSS, css, 'The lyrics css should be equal.')
 
-    def build_lyrics_outline_css_test(self):
+    def test_build_lyrics_outline_css(self):
         """
         Test the build_lyrics_outline_css() function
         """
@@ -300,7 +300,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: The css should be equal.
         self.assertEqual(LYRICS_OUTLINE_CSS, css, 'The outline css should be equal.')
 
-    def build_lyrics_format_css_test(self):
+    def test_build_lyrics_format_css(self):
         """
         Test the build_lyrics_format_css() function
         """
@@ -323,7 +323,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: They should be equal.
         self.assertEqual(LYRICS_FORMAT_CSS, css, 'The lyrics format css should be equal.')
 
-    def build_footer_css_test(self):
+    def test_build_footer_css(self):
         """
         Test the build_footer_css() function
         """
@@ -341,7 +341,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: THE css should be the same.
         self.assertEqual(FOOTER_CSS, css, 'The footer strings should be equal.')
 
-    def build_footer_css_wrap_test(self):
+    def test_build_footer_css_wrap(self):
         """
         Test the build_footer_css() function
         """
@@ -360,7 +360,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: Footer should wrap
         self.assertEqual(FOOTER_CSS_WRAP, css, 'The footer strings should be equal.')
 
-    def build_footer_invalid_test(self):
+    def test_build_footer_invalid(self):
         """
         Test the build_footer_css() function
         """
@@ -381,7 +381,7 @@ class Htmbuilder(TestCase, TestMixin):
         self.assertEqual(FOOTER_CSS_INVALID, css[0], 'The footer strings should be blank.')
         self.assertEqual(FOOTER_CSS_INVALID, css[1], 'The footer strings should be blank.')
 
-    def webkit_version_test(self):
+    def test_webkit_version(self):
         """
         Test the webkit_version() function
         """

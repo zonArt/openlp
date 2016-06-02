@@ -40,7 +40,7 @@ class TestAlertManager(TestCase):
         """
         Registry.create()
 
-    def remove_message_text_test(self):
+    def test_remove_message_text(self):
         """
         Test that Alerts are not triggered with empty strings
         """
@@ -54,7 +54,7 @@ class TestAlertManager(TestCase):
         # THEN: the display should not have been triggered
         self.assertFalse(alert_manager.display_alert.called, 'The Alert should not have been called')
 
-    def trigger_message_text_test(self):
+    def test_trigger_message_text(self):
         """
         Test that Alerts are triggered with a text string
         """
@@ -68,7 +68,7 @@ class TestAlertManager(TestCase):
         # THEN: the display should have been triggered
         self.assertTrue(alert_manager.display_alert.called, 'The Alert should have been called')
 
-    def line_break_message_text_test(self):
+    def test_line_break_message_text(self):
         """
         Test that Alerts are triggered with a text string but line breaks are removed
         """
