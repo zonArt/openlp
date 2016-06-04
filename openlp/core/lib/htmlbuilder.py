@@ -396,74 +396,74 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, Vertic
 
 log = logging.getLogger(__name__)
 
-# TODO: Tested at home
+# TODO: Verify where this is used before converting to python3
 HTMLSRC = """
 <!DOCTYPE html>
 <html>
 <head>
 <title>OpenLP Display</title>
 <style>
-*{{
+*{
     margin: 0;
     padding: 0;
     border: 0;
     overflow: hidden;
     -webkit-user-select: none;
-}}
-body {{
-    {background_css};
-}}
-.size {{
+}
+body {
+    %s;
+}
+.size {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: 100%;
-    height: 100%;
-}}
-#black {{
+    width: 100%%;
+    height: 100%%;
+}
+#black {
     z-index: 8;
     background-color: black;
     display: none;
-}}
-#bgimage {{
+}
+#bgimage {
     z-index: 1;
-}}
-#image {{
+}
+#image {
     z-index: 2;
-}}
-{additions}
-#footer {{
+}
+%s
+#footer {
     position: absolute;
     z-index: 6;
-    {footer_css}
-}}
+    %s
+}
 /* lyric css */
-{lyrics_css}
-sup {{
+%s
+sup {
     font-size: 0.6em;
     vertical-align: top;
     position: relative;
     top: -0.3em;
-}}
+}
 </style>
 <script>
     var timer = null;
-    var transition = {transitions};
-    {js_additions}
+    var transition = %s;
+    %s
 
-    function show_image(src){{
+    function show_image(src){
         var img = document.getElementById('image');
         img.src = src;
         if(src == '')
             img.style.display = 'none';
         else
             img.style.display = 'block';
-    }}
+    }
 
-    function show_blank(state){{
+    function show_blank(state){
         var black = 'none';
         var lyrics = '';
-        switch(state){{
+        switch(state){
             case 'theme':
                 lyrics = 'hidden';
                 break;
@@ -472,18 +472,18 @@ sup {{
                 break;
             case 'desktop':
                 break;
-        }}
+        }
         document.getElementById('black').style.display = black;
         document.getElementById('lyricsmain').style.visibility = lyrics;
         document.getElementById('image').style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
-    }}
+    }
 
-    function show_footer(footertext){{
+    function show_footer(footertext){
         document.getElementById('footer').innerHTML = footertext;
-    }}
+    }
 
-    function show_text(new_text){{
+    function show_text(new_text){
         var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
@@ -493,35 +493,35 @@ sup {{
         but only in this scenario.
         */
         var txt = document.getElementById('lyricsmain');
-        if(window.getComputedStyle(txt).textAlign == 'justify'){{
-            if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){{
+        if(window.getComputedStyle(txt).textAlign == 'justify'){
+            if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
                 new_text = new_text.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
-                    function(match) {{
+                    function(match) {
                         return '</span>' + match + '<span>';
-                    }});
+                    });
                 new_text = '<span>' + new_text + '</span>';
-            }}
-        }}
+            }
+        }
         text_fade('lyricsmain', new_text);
-    }}
+    }
 
-    function text_fade(id, new_text){{
+    function text_fade(id, new_text){
         /*
         Show the text.
         */
         var text = document.getElementById(id);
         if(text == null) return;
-        if(!transition){{
+        if(!transition){
             text.innerHTML = new_text;
             return;
-        }}
+        }
         // Fade text out. 0.1 to minimize the time "nothing" is shown on the screen.
         text.style.opacity = '0.1';
         // Fade new text in after the old text has finished fading out.
-        timer = window.setTimeout(function(){{_show_text(text, new_text)}}, 400);
-    }}
+        timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
+    }
 
-    function _show_text(text, new_text) {{
+    function _show_text(text, new_text) {
         /*
         Helper function to show the new_text delayed.
         */
@@ -529,18 +529,18 @@ sup {{
         text.style.opacity = '1';
         // Wait until the text is completely visible. We want to save the timer id, to be able to call
         // clearTimeout(timer) when the text has changed before finishing fading.
-        timer = window.setTimeout(function(){{timer = null;}}, 400);
-    }}
+        timer = window.setTimeout(function(){timer = null;}, 400);
+    }
 
-    function show_text_completed(){{
+    function show_text_completed(){
         return (timer == null);
-    }}
+    }
 </script>
 </head>
 <body>
-<img id="bgimage" class="size" {bgimage} />
-<img id="image" class="size" {image} />
-{html_additions}
+<img id="bgimage" class="size" %s />
+<img id="image" class="size" %s />
+%s
 <div class="lyricstable"><div id="lyricsmain" style="opacity:1" class="lyricscell lyricsmain"></div></div>
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
@@ -582,17 +582,17 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
             css_additions += plugin.get_display_css()
             js_additions += plugin.get_display_javascript()
             html_additions += plugin.get_display_html()
-    html = HTMLSRC.format(background_css=build_background_css(item, width),
-                          additions=css_additions,
-                          footer_css=build_footer_css(item, height),
-                          lyrics_css=build_lyrics_css(item),
-                          transitions='true' if (theme_data and
-                                                 theme_data.display_slide_transition and
-                                                 is_live) else 'false',
-                          js_additions=js_additions,
-                          bgimage=bgimage_src,
-                          image=image_src,
-                          html_additions=html_additions)
+    html = HTMLSRC % (
+        build_background_css(item, width),
+        css_additions,
+        build_footer_css(item, height),
+        build_lyrics_css(item),
+        'true' if theme_data and theme_data.display_slide_transition and is_live else 'false',
+        js_additions,
+        bgimage_src,
+        image_src,
+        html_additions
+    )
     return html
 
 
@@ -650,23 +650,23 @@ def build_lyrics_css(item):
 
     :param item: Service Item containing theme and location information
     """
-    # TODO: Tested at home
+    # TODO: Verify this before converting to python3
     style = """
-.lyricstable {{
+.lyricstable {
     z-index: 5;
     position: absolute;
     display: table;
-    {stable}
-}}
-.lyricscell {{
+    %s
+}
+.lyricscell {
     display: table-cell;
     word-wrap: break-word;
     -webkit-transition: opacity 0.4s ease;
-    {lyrics}
-}}
-.lyricsmain {{
-    {main}
-}}
+    %s
+}
+.lyricsmain {
+    %s
+}
 """
     theme_data = item.theme_data
     lyricstable = ''
@@ -680,7 +680,7 @@ def build_lyrics_css(item):
             lyricsmain += ' text-shadow: {theme} {shadow}px ' \
                 '{shadow}px;'.format(theme=theme_data.font_main_shadow_color,
                                      shadow=theme_data.font_main_shadow_size)
-    lyrics_css = style.format(stable=lyricstable, lyrics=lyrics, main=lyricsmain)
+    lyrics_css = style % (lyricstable, lyrics, lyricsmain)
     return lyrics_css
 
 
