@@ -29,24 +29,10 @@ from openlp.core.lib.projector.pjlink1 import PJLink1
 from openlp.core.lib.projector.constants import E_PARAMETER, ERROR_STRING, S_OFF, S_STANDBY, S_WARMUP, S_ON, \
     S_COOLDOWN, PJLINK_POWR_STATUS
 
-from tests.functional import patch
+from tests.functional import MagicMock, patch
 from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUTHENTICATE
 
 pjlink_test = PJLink1(name='test', ip='127.0.0.1', pin=TEST_PIN, no_poll=True)
-
-
-class DummyTimer(object):
-    '''
-    Dummy class to fake timers
-    '''
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def start(self, *args, **kwargs):
-        pass
-
-    def stop(self, *args, **kwargs):
-        pass
 
 
 class TestPJLink(TestCase):
@@ -308,8 +294,8 @@ class TestPJLink(TestCase):
         pjlink.other_info = 'ANOTHER TEST'
         pjlink.send_queue = True
         pjlink.send_busy = True
-        pjlink.timer = DummyTimer()
-        pjlink.socket_timer = DummyTimer()
+        pjlink.timer = MagicMock()
+        pjlink.socket_timer = MagicMock()
 
         # WHEN: reset_information() is called
         with patch.object(pjlink.timer, 'stop') as mock_timer:
