@@ -80,8 +80,9 @@ class UiStrings(object):
         self.Export = translate('OpenLP.Ui', 'Export')
         self.File = translate('OpenLP.Ui', 'File')
         self.FileNotFound = translate('OpenLP.Ui', 'File Not Found')
-        # TODO: Check before converting to python3 string
-        self.FileNotFoundMessage = translate('OpenLP.Ui', 'File %s not found.\nPlease try selecting it individually.')
+        # TODO: Passed nose - verify in real life example
+        self.FileNotFoundMessage = translate('OpenLP.Ui',
+                                             'File {name} not found.\nPlease try selecting it individually.')
         self.FontSizePtUnit = translate('OpenLP.Ui', 'pt', 'Abbreviated font pointsize unit')
         self.Help = translate('OpenLP.Ui', 'Help')
         self.Hours = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')
@@ -140,8 +141,8 @@ class UiStrings(object):
         self.Split = translate('OpenLP.Ui', 'Optional &Split')
         self.SplitToolTip = translate('OpenLP.Ui',
                                       'Split a slide into two only if it does not fit on the screen as one slide.')
-        # TODO: Check before converting to python3 string
-        self.StartTimeCode = translate('OpenLP.Ui', 'Start %s')
+        # TODO: WHERE is this used at? cannot find where it's used at in code.
+        self.StartTimeCode = translate('OpenLP.Ui', 'Start {code}')
         self.StopPlaySlidesInLoop = translate('OpenLP.Ui', 'Stop Play Slides in Loop')
         self.StopPlaySlidesToEnd = translate('OpenLP.Ui', 'Stop Play Slides to End')
         self.Theme = translate('OpenLP.Ui', 'Theme', 'Singular')

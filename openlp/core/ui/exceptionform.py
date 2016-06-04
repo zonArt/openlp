@@ -91,13 +91,13 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         super(ExceptionForm, self).__init__(None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.settings_section = 'crashreport'
-        # TODO: Need to see how to format strings when string with tags is actually a variable
+        # TODO: Should work - need to test
         self.report_text = '**OpenLP Bug Report**\n' \
-            'Version: %s\n\n' \
-            '--- Details of the Exception. ---\n\n%s\n\n ' \
-            '--- Exception Traceback ---\n%s\n' \
-            '--- System information ---\n%s\n' \
-            '--- Library Versions ---\n%s\n'
+            'Version: {version}\n\n' \
+            '--- Details of the Exception. ---\n\n{description}\n\n ' \
+            '--- Exception Traceback ---\n{traceback}\n' \
+            '--- System information ---\n{system}\n' \
+            '--- Library Versions ---\n{libs}\n'
 
     def exec(self):
         """
@@ -133,7 +133,15 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                 system += 'Desktop: GNOME\n'
             elif os.environ.get('DESKTOP_SESSION') == 'xfce':
                 system += 'Desktop: Xfce\n'
-        return openlp_version, description, traceback, system, libraries
+        # NOTE: This needs to return a string that format() will use. See __init__.self.report_text for names.
+        return ("version='{version}', "
+                "description='{description}', "
+                "traceback='{traceback}', "
+                "libs='{libs}'").format(version=openlp_version,
+                                        description=description,
+                                        traceback=traceback,
+                                        system=system,
+                                        libs=libraries)
 
     def on_save_report_button_clicked(self):
         """
@@ -147,7 +155,8 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         if filename:
             filename = str(filename).replace('/', os.path.sep)
             Settings().setValue(self.settings_section + '/last directory', os.path.dirname(filename))
-            report_text = self.report_text % self._create_report()
+            # NOTE: self._create_report() should return a string with the key names for format()
+            report_text = self.report_text.format(self._create_report())
             try:
                 report_file = open(filename, 'w')
                 try:
@@ -167,6 +176,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         Opening systems default email client and inserting exception log and system information.
         """
+        # NOTE: self._create_report() should return a string with keys for format()
         content = self._create_report()
         source = ''
         exception = ''
@@ -178,8 +188,8 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         subject = 'Bug report: {error} in {source}'.format(error=exception, source=source)
         mail_urlquery = QtCore.QUrlQuery()
         mail_urlquery.addQueryItem('subject', subject)
-        # TODO: Find out how to format() text that is in a variable
-        mail_urlquery.addQueryItem('body', self.report_text % content)
+        # TODO: Should be good - need to test
+        mail_urlquery.addQueryItem('body', self.report_text.format(content))
         if self.file_attachment:
             mail_urlquery.addQueryItem('attach', self.file_attachment)
         mail_to_url = QtCore.QUrl('mailto:bugs@openlp.org')

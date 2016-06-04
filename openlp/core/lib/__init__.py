@@ -323,8 +323,7 @@ def create_separated_list(string_list):
         return ''
     elif len(string_list) == 1:
         return string_list[0]
-    # TODO:
-    #   Cannot convert these strings to python3 yet until I can figure out how to mock translate() with the new format
+    # TODO: Verify mocking of translate() test before conversion
     elif len(string_list) == 2:
         return translate('OpenLP.core.lib', '%s and %s',
                          'Locale list separator: 2 items') % (string_list[0], string_list[1])

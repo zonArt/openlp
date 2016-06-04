@@ -370,21 +370,22 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css.
-        # TODO: Verify before converting to python3 strings
+        # TODO: Tested at home
         html = """<!DOCTYPE html><html><head><script>
-            function show_text(newtext) {
+            function show_text(newtext) {{
                 var main = document.getElementById('main');
                 main.innerHTML = newtext;
                 // We need to be sure that the page is loaded, that is why we
                 // return the element's height (even though we do not use the
                 // returned value).
                 return main.offsetHeight;
-            }
-            </script><style>*{margin: 0; padding: 0; border: 0;}
-            #main {position: absolute; top: 0px; %s %s}</style></head><body>
-            <div id="main"></div></body></html>""" % \
-            (build_lyrics_format_css(theme_data, self.page_width, self.page_height),
-             build_lyrics_outline_css(theme_data))
+            }}
+            </script><style>*{{margin: 0; padding: 0; border: 0;}}
+            #main {{position: absolute; top: 0px; {format_css} {outline_css}}}</style></head><body>
+            <div id="main"></div></body></html>""".format(format_css=build_lyrics_format_css(theme_data,
+                                                                                             self.page_width,
+                                                                                             self.page_height),
+                                                          outline_css=build_lyrics_outline_css(theme_data))
         self.web.setHtml(html)
         self.empty_height = self.web_frame.contentsSize().height()
 

@@ -51,9 +51,9 @@ class FileDialog(QtWidgets.QFileDialog):
                 file = parse.unquote(file)
                 if not os.path.exists(file):
                     log.error('File {text} not found.'.format(text=file))
-                    # TODO: Test with UiStrings() before converting to python3 strings
+                    # TODO: Should work - need to verify
                     QtWidgets.QMessageBox.information(parent, UiStrings().FileNotFound,
-                                                      UiStrings().FileNotFoundMessage % file)
+                                                      UiStrings().FileNotFoundMessage.format(name=file))
                     continue
             file_list.append(file)
         return file_list
