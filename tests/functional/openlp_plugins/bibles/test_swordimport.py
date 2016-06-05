@@ -25,19 +25,21 @@ This module contains tests for the SWORD Bible importer.
 
 import os
 import json
-from unittest import TestCase, SkipTest
+from unittest import TestCase, skipUnless
 
 from tests.functional import MagicMock, patch
 try:
     from openlp.plugins.bibles.lib.sword import SwordBible
+    HAS_PYSWORD = True
 except ImportError:
-    raise SkipTest('PySword is not installed, skipping SWORD test.')
+    HAS_PYSWORD = False
 from openlp.plugins.bibles.lib.db import BibleDB
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                          '..', '..', '..', 'resources', 'bibles'))
 
 
+@skipUnless(HAS_PYSWORD, 'pysword not installed')
 class TestSwordImport(TestCase):
     """
     Test the functions in the :mod:`swordimport` module.
@@ -53,7 +55,7 @@ class TestSwordImport(TestCase):
         self.registry_patcher.stop()
         self.manager_patcher.stop()
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the Sword file importer
         """
@@ -69,7 +71,7 @@ class TestSwordImport(TestCase):
     @patch('openlp.plugins.bibles.lib.sword.SwordBible.application')
     @patch('openlp.plugins.bibles.lib.sword.modules')
     @patch('openlp.plugins.bibles.lib.db.BiblesResourcesDB')
-    def simple_import_test(self, mocked_bible_res_db, mocked_pysword_modules, mocked_application):
+    def test_simple_import(self, mocked_bible_res_db, mocked_pysword_modules, mocked_application):
         """
         Test that a simple SWORD import works
         """

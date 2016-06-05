@@ -59,7 +59,7 @@ class TestImpressController(TestCase, TestMixin):
         self.destroy_settings()
         shutil.rmtree(self.temp_folder)
 
-    def constructor_test(self):
+    def test_constructor(self):
         """
         Test the Constructor from the ImpressController
         """
@@ -86,7 +86,7 @@ class TestImpressDocument(TestCase):
         self.ppc = ImpressController(mocked_plugin)
         self.doc = ImpressDocument(self.ppc, self.file_name)
 
-    def create_titles_and_notes_test(self):
+    def test_create_titles_and_notes(self):
         """
         Test ImpressDocument.create_titles_and_notes
         """
@@ -114,7 +114,7 @@ class TestImpressDocument(TestCase):
         # two arrays of two elements
         self.doc.save_titles_and_notes.assert_called_once_with(['\n', '\n'], [' ', ' '])
 
-    def get_text_from_page_out_of_bound_test(self):
+    def test_get_text_from_page_out_of_bound(self):
         """
         Test ImpressDocument.__get_text_from_page with out-of-bounds index
         """
@@ -143,7 +143,7 @@ class TestImpressDocument(TestCase):
         self.assertEqual(self.doc.document.getDrawPages().getByIndex.call_count, 0,
                          'There should be no call to getByIndex')
 
-    def get_text_from_page_wrong_type_test(self):
+    def test_get_text_from_page_wrong_type(self):
         """
         Test ImpressDocument.__get_text_from_page with wrong TextType
         """
@@ -159,7 +159,7 @@ class TestImpressDocument(TestCase):
         self.assertEqual(self.doc.document.getDrawPages().getByIndex.call_count, 0,
                          'There should be no call to getByIndex')
 
-    def get_text_from_page_valid_params_test(self):
+    def test_get_text_from_page_valid_params(self):
         """
         Test ImpressDocument.__get_text_from_page with valid parameters
         """

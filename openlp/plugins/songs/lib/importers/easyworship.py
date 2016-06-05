@@ -171,15 +171,16 @@ class EasyWorshipSongImport(SongImport):
                 if copyright:
                     self.copyright += ', '
                 self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
-                                            'Administered by %s') % admin
+                                            'Administered by {admin}').format(admin=admin)
             # Set the SongImport object members.
             self.set_song_import_object(authors, inflated_content)
             if self.stop_import_flag:
                 break
             if self.entry_error_log:
                 self.log_error(self.import_source,
-                               translate('SongsPlugin.EasyWorshipSongImport', '"%s" could not be imported. %s')
-                               % (self.title, self.entry_error_log))
+                               translate('SongsPlugin.EasyWorshipSongImport',
+                                         '"{title}" could not be imported. {entry}').format(title=self.title,
+                                                                                            entry=self.entry_error_log))
                 self.entry_error_log = ''
             elif not self.finish():
                 self.log_error(self.import_source)
@@ -306,7 +307,7 @@ class EasyWorshipSongImport(SongImport):
                         if copy:
                             self.copyright += ', '
                         self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
-                                                    'Administered by %s') % admin.decode(self.encoding)
+                                                    'Administered by {admin}').format(admin=admin.decode(self.encoding))
                     if ccli:
                         self.ccli_number = ccli.decode(self.encoding)
                     if authors:
@@ -319,15 +320,17 @@ class EasyWorshipSongImport(SongImport):
                         break
                     if self.entry_error_log:
                         self.log_error(self.import_source,
-                                       translate('SongsPlugin.EasyWorshipSongImport', '"%s" could not be imported. %s')
-                                       % (self.title, self.entry_error_log))
+                                       translate('SongsPlugin.EasyWorshipSongImport',
+                                                 '"{title}" could not be imported. '
+                                                 '{entry}').format(title=self.title, entry=self.entry_error_log))
                         self.entry_error_log = ''
                     elif not self.finish():
                         self.log_error(self.import_source)
                 except Exception as e:
                     self.log_error(self.import_source,
-                                   translate('SongsPlugin.EasyWorshipSongImport', '"%s" could not be imported. %s')
-                                   % (self.title, e))
+                                   translate('SongsPlugin.EasyWorshipSongImport',
+                                             '"{title}" could not be imported. {error}').format(title=self.title,
+                                                                                                error=e))
         db_file.close()
         self.memo_file.close()
 
@@ -421,7 +424,7 @@ class EasyWorshipSongImport(SongImport):
         fsl = ['>']
         for field_desc in field_descriptions:
             if field_desc.field_type == FieldType.String:
-                fsl.append('%ds' % field_desc.size)
+                fsl.append('{size:d}s'.format(size=field_desc.size))
             elif field_desc.field_type == FieldType.Int16:
                 fsl.append('H')
             elif field_desc.field_type == FieldType.Int32:
@@ -429,13 +432,13 @@ class EasyWorshipSongImport(SongImport):
             elif field_desc.field_type == FieldType.Logical:
                 fsl.append('B')
             elif field_desc.field_type == FieldType.Memo:
-                fsl.append('%ds' % field_desc.size)
+                fsl.append('{size:d}s'.format(size=field_desc.size))
             elif field_desc.field_type == FieldType.Blob:
-                fsl.append('%ds' % field_desc.size)
+                fsl.append('{size:d}s'.format(size=field_desc.size))
             elif field_desc.field_type == FieldType.Timestamp:
                 fsl.append('Q')
             else:
-                fsl.append('%ds' % field_desc.size)
+                fsl.append('{size:d}s'.format(size=field_desc.size))
         self.record_structure = struct.Struct(''.join(fsl))
         self.field_descriptions = field_descriptions
 

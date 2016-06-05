@@ -34,7 +34,7 @@ class TestThemeManager(TestCase):
     """
     Test the functions in the ThemeManager Class
     """
-    def select_image_file_dialog_cancelled_test(self):
+    def test_select_image_file_dialog_cancelled(self):
         """
         Test the select image file dialog when the user presses cancel
         """
@@ -62,7 +62,7 @@ class TestThemeManager(TestCase):
                                                               'All Files (*.*)')
             mocked_set_background_page_values.assert_called_once_with()
 
-    def select_image_file_dialog_new_file_test(self):
+    def test_select_image_file_dialog_new_file(self):
         """
         Test the select image file dialog when the user presses ok
         """

@@ -153,7 +153,7 @@ class TestEasyWorshipSongImport(TestCase):
         """
         Registry.create()
 
-    def create_field_desc_entry_test(self):
+    def test_create_field_desc_entry(self):
         """
         Test creating an instance of the :class`FieldDescEntry` class.
         """
@@ -172,7 +172,7 @@ class TestEasyWorshipSongImport(TestCase):
                          'FieldDescEntry.type should be the same as the type argument')
         self.assertEqual(field_desc_entry.size, size, 'FieldDescEntry.size should be the same as the size argument')
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the EasyWorship file importer
         """
@@ -186,7 +186,7 @@ class TestEasyWorshipSongImport(TestCase):
             # THEN: The importer object should not be None
             self.assertIsNotNone(importer, 'Import should not be none')
 
-    def find_field_exists_test(self):
+    def test_find_field_exists(self):
         """
         Test finding an existing field in a given list using the :mod:`find_field`
         """
@@ -204,7 +204,7 @@ class TestEasyWorshipSongImport(TestCase):
                 # THEN: The item corresponding the index returned should have the same name attribute
                 self.assertEqual(importer.field_descriptions[importer.find_field(field_name)].name, field_name)
 
-    def find_non_existing_field_test(self):
+    def test_find_non_existing_field(self):
         """
         Test finding an non-existing field in a given list using the :mod:`find_field`
         """
@@ -221,7 +221,7 @@ class TestEasyWorshipSongImport(TestCase):
                 # THEN: The importer object should not be None
                 self.assertRaises(IndexError, importer.find_field, field_name)
 
-    def set_record_struct_test(self):
+    def test_set_record_struct(self):
         """
         Test the :mod:`set_record_struct` module
         """
@@ -240,7 +240,7 @@ class TestEasyWorshipSongImport(TestCase):
             self.assertIsNone(return_value, 'set_record_struct should return None')
             mocked_struct.Struct.assert_called_with('>50sHIB250s250s10sQ')
 
-    def get_field_test(self):
+    def test_get_field(self):
         """
         Test the :mod:`get_field` module
         """
@@ -262,7 +262,7 @@ class TestEasyWorshipSongImport(TestCase):
                                  'get_field should return "%s" when called with "%s"' %
                                  (result, TEST_FIELDS[field_index]))
 
-    def get_memo_field_test(self):
+    def test_get_memo_field(self):
         """
         Test the :mod:`get_field` module
         """
@@ -294,7 +294,7 @@ class TestEasyWorshipSongImport(TestCase):
                     else:
                         mocked_memo_file.seek.assert_any_call(call[0], call[1])
 
-    def do_import_source_test(self):
+    def test_do_import_source(self):
         """
         Test the :mod:`do_import` module opens the correct files
         """
@@ -313,7 +313,7 @@ class TestEasyWorshipSongImport(TestCase):
             mocked_os_path.isfile.assert_any_call('Songs.DB')
             mocked_os_path.isfile.assert_any_call('Songs.MB')
 
-    def do_import_source_invalid_test(self):
+    def test_do_import_source_invalid(self):
         """
         Test the :mod:`do_import` module produces an error when Songs.MB not found.
         """
@@ -333,7 +333,7 @@ class TestEasyWorshipSongImport(TestCase):
             importer.log_error.assert_any_call(importer.import_source, 'Could not find the "Songs.MB" file. It must be '
                                                                        'in the same folder as the "Songs.DB" file.')
 
-    def do_import_database_validity_test(self):
+    def test_do_import_database_validity(self):
         """
         Test the :mod:`do_import` module handles invalid database files correctly
         """
@@ -352,7 +352,7 @@ class TestEasyWorshipSongImport(TestCase):
             self.assertIsNone(importer.do_import(), 'do_import should return None when db_size is less than 0x800')
             mocked_os_path.getsize.assert_any_call('Songs.DB')
 
-    def do_import_memo_validty_test(self):
+    def test_do_import_memo_validty(self):
         """
         Test the :mod:`do_import` module handles invalid memo files correctly
         """
@@ -379,7 +379,7 @@ class TestEasyWorshipSongImport(TestCase):
                 mocked_open().close.reset_mock()
                 self.assertIs(mocked_open().seek.called, False, 'db_file.seek should not have been called.')
 
-    def code_page_to_encoding_test(self):
+    def test_code_page_to_encoding(self):
         """
         Test the :mod:`do_import` converts the code page to the encoding correctly
         """
@@ -405,7 +405,7 @@ class TestEasyWorshipSongImport(TestCase):
                 self.assertIsNone(importer.do_import(), 'do_import should return None when db_size is less than 0x800')
                 mocked_retrieve_windows_encoding.assert_any_call(encoding)
 
-    def db_file_import_test(self):
+    def test_db_file_import(self):
         """
         Test the actual import of real song database files and check that the imported data is correct.
         """
@@ -461,7 +461,7 @@ class TestEasyWorshipSongImport(TestCase):
                                      'verse_order_list for %s should be %s' % (title, verse_order_list))
                 mocked_finish.assert_called_with()
 
-    def ews_file_import_test(self):
+    def test_ews_file_import(self):
         """
         Test the actual import of song from ews file and check that the imported data is correct.
         """
@@ -502,7 +502,7 @@ class TestEasyWorshipSongImport(TestCase):
                 mocked_add_verse.assert_any_call(verse_text, verse_tag)
             mocked_finish.assert_called_with()
 
-    def import_rtf_unescaped_unicode_test(self):
+    def test_import_rtf_unescaped_unicode(self):
         """
         Test import of rtf without the expected escaping of unicode
         """

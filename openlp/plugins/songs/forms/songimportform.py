@@ -132,6 +132,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
         Song wizard localisation.
         """
         self.setWindowTitle(translate('SongsPlugin.ImportWizardForm', 'Song Import Wizard'))
+        # TODO: Verify format() with template variables
         self.title_label.setText(WizardStrings.HeaderStyle % translate('OpenLP.Ui',
                                                                        'Welcome to the Song Import Wizard'))
         self.information_label.setText(
@@ -236,7 +237,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
         """
         if filters:
             filters += ';;'
-        filters += '%s (*)' % UiStrings().AllFiles
+        filters += '{text} (*)'.format(text=UiStrings().AllFiles)
         file_names = FileDialog.getOpenFileNames(
             self, title,
             Settings().value(self.plugin.settings_section + '/last directory import'), filters)
@@ -271,9 +272,11 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
         select_mode, format_name, ext_filter = SongFormat.get(this_format, 'selectMode', 'name', 'filter')
         file_path_edit = self.format_widgets[this_format]['file_path_edit']
         if select_mode == SongFormatSelect.SingleFile:
+            # TODO: Verify format() with template variables
             self.get_file_name(
                 WizardStrings.OpenTypeFile % format_name, file_path_edit, 'last directory import', ext_filter)
         elif select_mode == SongFormatSelect.SingleFolder:
+            # TODO: Verify format() with template variables
             self.get_folder(WizardStrings.OpenTypeFolder % format_name, file_path_edit, 'last directory import')
 
     def on_add_button_clicked(self):
@@ -283,6 +286,7 @@ class SongImportForm(OpenLPWizard, RegistryProperties):
         this_format = self.current_format
         select_mode, format_name, ext_filter, custom_title = \
             SongFormat.get(this_format, 'selectMode', 'name', 'filter', 'getFilesTitle')
+        # TODO: Verify format() with template variables
         title = custom_title if custom_title else WizardStrings.OpenTypeFile % format_name
         if select_mode == SongFormatSelect.MultipleFiles:
             self.get_files(title, self.format_widgets[this_format]['file_list_widget'], ext_filter)

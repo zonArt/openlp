@@ -66,7 +66,7 @@ class TestOpenSongImport(TestCase):
         """
         Registry.create()
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the OpenSong file importer
         """
@@ -80,7 +80,7 @@ class TestOpenSongImport(TestCase):
             # THEN: The importer object should not be None
             self.assertIsNotNone(importer, 'Import should not be none')
 
-    def invalid_import_source_test(self):
+    def test_invalid_import_source(self):
         """
         Test OpenSongImport.do_import handles different invalid import_source values
         """
@@ -101,7 +101,7 @@ class TestOpenSongImport(TestCase):
                 self.assertEqual(mocked_import_wizard.progress_bar.setMaximum.called, False,
                                  'setMaximum on import_wizard.progress_bar should not have been called')
 
-    def valid_import_source_test(self):
+    def test_valid_import_source(self):
         """
         Test OpenSongImport.do_import handles different invalid import_source values
         """

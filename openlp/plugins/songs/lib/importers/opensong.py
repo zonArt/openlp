@@ -254,8 +254,8 @@ class OpenSongImport(SongImport):
             length = 0
             while length < len(verse_num) and verse_num[length].isnumeric():
                 length += 1
-            verse_def = '%s%s' % (verse_tag, verse_num[:length])
-            verse_joints[verse_def] = '%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
+            verse_def = '{tag}{number}'.format(tag=verse_tag, number=verse_num[:length])
+            verse_joints[verse_def] = '{verse}\n[---]\n{lines}'.format(verse=verse_joints[verse_def], lines=lines) \
                 if verse_def in verse_joints else lines
         # Parsing the dictionary produces the elements in a non-intuitive order.  While it "works", it's not a
         # natural layout should the user come back to edit the song.  Instead we sort by the verse type, so that we
@@ -287,11 +287,11 @@ class OpenSongImport(SongImport):
                     verse_num = '1'
                 verse_index = VerseType.from_loose_input(verse_tag)
                 verse_tag = VerseType.tags[verse_index]
-                verse_def = '%s%s' % (verse_tag, verse_num)
+                verse_def = '{tag}{number}'.format(tag=verse_tag, number=verse_num)
                 if verse_num in verses.get(verse_tag, {}):
                     self.verse_order_list.append(verse_def)
                 else:
-                    log.info('Got order %s but not in verse tags, dropping this item from presentation order',
-                             verse_def)
+                    log.info('Got order {order} but not in verse tags, dropping this item from presentation '
+                             'order'.format(order=verse_def))
         if not self.finish():
             self.log_error(file.name)

@@ -51,7 +51,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
     """
     media_go_live = QtCore.pyqtSignal(list)
     media_add_to_service = QtCore.pyqtSignal(list)
-    log.info('%s MediaMediaItem loaded', __name__)
+    log.info('{name} MediaMediaItem loaded'.format(name=__name__))
 
     def __init__(self, parent, plugin):
         self.setup()
@@ -232,7 +232,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 critical_error_message_box(UiStrings().LiveBGError,
                                            translate('MediaPlugin.MediaItem',
                                                      'There was a problem replacing your background, '
-                                                     'the media file "%s" no longer exists.') % filename)
+                                                     'the media file "{name}" no longer exists.').format(name=filename))
 
     def generate_slide_data(self, service_item, item=None, xml_version=False, remote=False,
                             context=ServiceItemContext.Service):
@@ -258,7 +258,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                     # Optical disc is no longer present
                     critical_error_message_box(
                         translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                        translate('MediaPlugin.MediaItem', 'The optical disc %s is no longer available.') % name)
+                        translate('MediaPlugin.MediaItem',
+                                  'The optical disc {name} is no longer available.').format(name=name))
                 return False
             service_item.processor = self.display_type_combo_box.currentText()
             service_item.add_from_command(filename, name, CLAPPERBOARD)
@@ -275,7 +276,7 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                     # File is no longer present
                     critical_error_message_box(
                         translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                        translate('MediaPlugin.MediaItem', 'The file %s no longer exists.') % filename)
+                        translate('MediaPlugin.MediaItem', 'The file {name} no longer exists.').format(name=filename))
                 return False
             (path, name) = os.path.split(filename)
             service_item.title = name
@@ -308,9 +309,11 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
         Rebuild the tab in the media manager when changes are made in the settings.
         """
         self.populate_display_types()
-        self.on_new_file_masks = translate('MediaPlugin.MediaItem', 'Videos (%s);;Audio (%s);;%s (*)') % (
-            ' '.join(self.media_controller.video_extensions_list),
-            ' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
+        self.on_new_file_masks = translate('MediaPlugin.MediaItem',
+                                           'Videos ({video});;Audio ({audio});;{files} '
+                                           '(*)').format(video=' '.join(self.media_controller.video_extensions_list),
+                                                         audio=' '.join(self.media_controller.audio_extensions_list),
+                                                         files=UiStrings().AllFiles)
 
     def populate_display_types(self):
         """
@@ -365,7 +368,9 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 item_name = QtWidgets.QListWidgetItem(clip_name)
                 item_name.setIcon(self.optical_icon)
                 item_name.setData(QtCore.Qt.UserRole, track)
-                item_name.setToolTip('%s@%s-%s' % (file_name, format_milliseconds(start), format_milliseconds(end)))
+                item_name.setToolTip('{name}@{start}-{end}'.format(name=file_name,
+                                                                   start=format_milliseconds(start),
+                                                                   end=format_milliseconds(end)))
             elif not os.path.exists(track):
                 # File doesn't exist, mark as error.
                 file_name = os.path.split(str(track))[1]
@@ -377,7 +382,8 @@ class MediaMediaItem(MediaManagerItem, RegistryProperties):
                 # Normal media file handling.
                 file_name = os.path.split(str(track))[1]
                 item_name = QtWidgets.QListWidgetItem(file_name)
-                if '*.%s' % (file_name.split('.')[-1].lower()) in self.media_controller.audio_extensions_list:
+                search = file_name.split('.')[-1].lower()
+                if '*.{text}'.format(text=search) in self.media_controller.audio_extensions_list:
                     item_name.setIcon(self.audio_icon)
                 else:
                     item_name.setIcon(self.video_icon)

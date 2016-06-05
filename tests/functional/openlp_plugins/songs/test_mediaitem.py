@@ -68,7 +68,7 @@ class TestMediaItem(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def display_results_song_test(self):
+    def test_display_results_song(self):
         """
         Test displaying song search results with basic song
         """
@@ -109,7 +109,7 @@ class TestMediaItem(TestCase, TestMixin):
             self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
             self.media_item.list_view.setCurrentItem.assert_called_with(mock_qlist_widget)
 
-    def display_results_author_test(self):
+    def test_display_results_author(self):
         """
         Test displaying song search results grouped by author with basic song
         """
@@ -145,7 +145,7 @@ class TestMediaItem(TestCase, TestMixin):
             mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
             self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
-    def display_results_book_test(self):
+    def test_display_results_book(self):
         """
         Test displaying song search results grouped by book and entry with basic song
         """
@@ -165,7 +165,7 @@ class TestMediaItem(TestCase, TestMixin):
             mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, 1)
             self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
-    def songbook_natural_sorting_test(self):
+    def test_songbook_natural_sorting(self):
         """
         Test that songbooks are sorted naturally
         """
@@ -191,7 +191,7 @@ class TestMediaItem(TestCase, TestMixin):
                      call('Thy Book #2: Thy Song'), call().setData(QtCore.Qt.UserRole, 50)]
             MockedQListWidgetItem.assert_has_calls(calls)
 
-    def display_results_topic_test(self):
+    def test_display_results_topic(self):
         """
         Test displaying song search results grouped by topic with basic song
         """
@@ -227,7 +227,7 @@ class TestMediaItem(TestCase, TestMixin):
             mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
             self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
-    def display_results_themes_test(self):
+    def test_display_results_themes(self):
         """
         Test displaying song search results sorted by theme with basic song
         """
@@ -261,7 +261,7 @@ class TestMediaItem(TestCase, TestMixin):
             mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
             self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
-    def display_results_cclinumber_test(self):
+    def test_display_results_cclinumber(self):
         """
         Test displaying song search results sorted by CCLI number with basic song
         """
@@ -295,7 +295,7 @@ class TestMediaItem(TestCase, TestMixin):
             mock_qlist_widget.setData.assert_called_once_with(MockedUserRole, mock_song.id)
             self.media_item.list_view.addItem.assert_called_once_with(mock_qlist_widget)
 
-    def build_song_footer_one_author_test(self):
+    def test_build_song_footer_one_author(self):
         """
         Test build songs footer with basic song and one author
         """
@@ -320,7 +320,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.assertEqual(author_list, ['my author'],
                          'The author list should be returned correctly with one author')
 
-    def build_song_footer_two_authors_test(self):
+    def test_build_song_footer_two_authors(self):
         """
         Test build songs footer with basic song and two authors
         """
@@ -359,7 +359,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.assertEqual(author_list, ['another author', 'my author', 'translator'],
                          'The author list should be returned correctly with two authors')
 
-    def build_song_footer_base_ccli_test(self):
+    def test_build_song_footer_base_ccli(self):
         """
         Test build songs footer with basic song and a CCLI number
         """
@@ -385,7 +385,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'CCLI License: 4321'],
                          'The array should be returned correctly with a song, an author, copyright and amended ccli')
 
-    def build_song_footer_base_songbook_test(self):
+    def test_build_song_footer_base_songbook(self):
         """
         Test build songs footer with basic song and multiple songbooks
         """
@@ -418,7 +418,7 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: The songbook should be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright', 'My songbook #12, Thy songbook #502A'])
 
-    def build_song_footer_copyright_enabled_test(self):
+    def test_build_song_footer_copyright_enabled(self):
         """
         Test building song footer with displaying the copyright symbol
         """
@@ -435,7 +435,7 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: The copyright symbol should be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', '© My copyright'])
 
-    def build_song_footer_copyright_disabled_test(self):
+    def test_build_song_footer_copyright_disabled(self):
         """
         Test building song footer without displaying the copyright symbol
         """
@@ -451,7 +451,7 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: The copyright symbol should not be in the footer
         self.assertEqual(service_item.raw_footer, ['My Song', 'My copyright'])
 
-    def authors_match_test(self):
+    def test_authors_match(self):
         """
         Test the author matching when importing a song from a service
         """
@@ -477,7 +477,7 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: They should match
         self.assertTrue(result, "Authors should match")
 
-    def authors_dont_match_test(self):
+    def test_authors_dont_match(self):
         # GIVEN: A song and a string with authors
         song = MagicMock()
         song.authors = []
@@ -500,7 +500,7 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: They should not match
         self.assertFalse(result, "Authors should not match")
 
-    def build_remote_search_test(self):
+    def test_build_remote_search(self):
         """
         Test results for the remote search api
         """

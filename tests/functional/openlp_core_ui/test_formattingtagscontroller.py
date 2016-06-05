@@ -32,7 +32,7 @@ class TestFormattingTagController(TestCase):
     def setUp(self):
         self.services = FormattingTagController()
 
-    def strip_test(self):
+    def test_strip(self):
         """
         Test that the _strip strips the correct chars
         """
@@ -45,7 +45,7 @@ class TestFormattingTagController(TestCase):
         # THEN: The tag should be returned with the wrappers removed.
         self.assertEqual(result, 'tag', 'FormattingTagForm._strip should return u\'tag\' when called with u\'{tag}\'')
 
-    def end_tag_changed_processes_correctly_test(self):
+    def test_end_tag_changed_processes_correctly(self):
         """
         Test that the end html tags are generated correctly
         """
@@ -70,7 +70,7 @@ class TestFormattingTagController(TestCase):
             self.assertTrue(error == test['valid'], 'Function should not generate unexpected error messages : %s ' %
                                                     error)
 
-    def start_tag_changed_processes_correctly_test(self):
+    def test_start_tag_changed_processes_correctly(self):
         """
         Test that the end html tags are generated correctly
         """
@@ -93,7 +93,7 @@ class TestFormattingTagController(TestCase):
             self.assertTrue(error == test['valid'], 'Function should not generate unexpected error messages : %s ' %
                                                     error)
 
-    def start_html_to_end_html_test(self):
+    def test_start_html_to_end_html(self):
         """
         Test that the end html tags are generated correctly
         """

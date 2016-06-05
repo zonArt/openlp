@@ -39,7 +39,7 @@ class Author(BaseModel):
     """
     def get_display_name(self, author_type=None):
         if author_type:
-            return "%s (%s)" % (self.display_name, AuthorType.Types[author_type])
+            return "{name} ({author})".format(name=self.display_name, author=AuthorType.Types[author_type])
         return self.display_name
 
 
@@ -105,7 +105,9 @@ class Book(BaseModel):
     Book model
     """
     def __repr__(self):
-        return '<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
+        return '<Book id="{myid:d}" name="{name}" publisher="{publisher}" />'.format(myid=self.id,
+                                                                                     name=self.name,
+                                                                                     publisher=self.publisher)
 
 
 class MediaFile(BaseModel):
@@ -187,7 +189,7 @@ class SongBookEntry(BaseModel):
     @staticmethod
     def get_display_name(songbook_name, entry):
         if entry:
-            return "%s #%s" % (songbook_name, entry)
+            return "{name} #{entry}".format(name=songbook_name, entry=entry)
         return songbook_name
 
 

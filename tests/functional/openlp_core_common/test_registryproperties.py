@@ -25,7 +25,8 @@ Test the registry properties
 from unittest import TestCase
 
 from openlp.core.common import Registry, RegistryProperties
-from tests.functional import MagicMock
+
+from tests.functional import MagicMock, patch
 
 
 class TestRegistryProperties(TestCase, RegistryProperties):
@@ -38,7 +39,7 @@ class TestRegistryProperties(TestCase, RegistryProperties):
         """
         Registry.create()
 
-    def no_application_test(self):
+    def test_no_application(self):
         """
         Test property if no registry value assigned
         """
@@ -47,13 +48,31 @@ class TestRegistryProperties(TestCase, RegistryProperties):
         # THEN the application should be none
         self.assertEqual(self.application, None, 'The application value should be None')
 
-    def application_test(self):
+    def test_application(self):
         """
         Test property if registry value assigned
         """
         # GIVEN an Empty Registry
         application = MagicMock()
+
         # WHEN the application is registered
         Registry().register('application', application)
+
         # THEN the application should be none
         self.assertEqual(self.application, application, 'The application value should match')
+
+    @patch('openlp.core.common.registryproperties.is_win')
+    def test_application_on_windows(self, mocked_is_win):
+        """
+        Test property if registry value assigned on Windows
+        """
+        # GIVEN an Empty Registry and we're on Windows
+        application = MagicMock()
+        mocked_is_win.return_value = True
+
+        # WHEN the application is registered
+        Registry().register('application', application)
+
+        # THEN the application should be none
+        self.assertEqual(self.application, application, 'The application value should match')
+

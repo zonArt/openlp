@@ -69,7 +69,7 @@ class TestBibleManager(TestCase, TestMixin):
         del self.manager
         self.destroy_settings()
 
-    def parse_reference_one_test(self):
+    def test_parse_reference_one(self):
         """
         Test the parse_reference method with 1 Timothy 1
         """
@@ -79,7 +79,7 @@ class TestBibleManager(TestCase, TestMixin):
         # THEN a verse array should be returned
         self.assertEqual([(54, 1, 1, -1)], results, "The bible verses should matches the expected results")
 
-    def parse_reference_two_test(self):
+    def test_parse_reference_two(self):
         """
         Test the parse_reference method with 1 Timothy 1:1-2
         """
@@ -89,7 +89,7 @@ class TestBibleManager(TestCase, TestMixin):
         # THEN a verse array should be returned
         self.assertEqual([(54, 1, 1, 2)], results, "The bible verses should matches the expected results")
 
-    def parse_reference_three_test(self):
+    def test_parse_reference_three(self):
         """
         Test the parse_reference method with 1 Timothy 1:1-2
         """
@@ -100,7 +100,7 @@ class TestBibleManager(TestCase, TestMixin):
         self.assertEqual([(54, 1, 1, -1), (54, 2, 1, 1)], results,
                          "The bible verses should match the expected results")
 
-    def parse_reference_four_test(self):
+    def test_parse_reference_four(self):
         """
         Test the parse_reference method with non existence book
         """
@@ -110,7 +110,7 @@ class TestBibleManager(TestCase, TestMixin):
         # THEN a verse array should be returned
         self.assertEqual(False, results, "The bible Search should return False")
 
-    def parse_reference_five_test(self):
+    def test_parse_reference_five(self):
         """
         Test the parse_reference method with 1 Timothy 1:3-end
         """

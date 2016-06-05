@@ -39,7 +39,7 @@ class TestSettingsForm(TestCase):
         """
         Registry.create()
 
-    def insert_tab_visible_test(self):
+    def test_insert_tab_visible(self):
         """
         Test that the insert_tab() method works correctly when a visible tab is inserted
         """
@@ -59,7 +59,7 @@ class TestSettingsForm(TestCase):
             mocked_add_widget.assert_called_with(general_tab)
             self.assertEqual(1, mocked_add_item.call_count, 'addItem should have been called')
 
-    def insert_tab_not_visible_test(self):
+    def test_insert_tab_not_visible(self):
         """
         Test that the insert_tab() method works correctly when a tab that should not be visible is inserted
         """
@@ -77,7 +77,7 @@ class TestSettingsForm(TestCase):
             mocked_add_widget.assert_called_with(general_tab)
             self.assertEqual(0, mocked_add_item.call_count, 'addItem should not have been called')
 
-    def accept_with_inactive_plugins_test(self):
+    def test_accept_with_inactive_plugins(self):
         """
         Test that the accept() method works correctly when some of the plugins are inactive
         """
@@ -105,7 +105,7 @@ class TestSettingsForm(TestCase):
         mocked_general_save.assert_called_with()
         self.assertEqual(0, mocked_theme_save.call_count, 'The Themes tab\'s save() should not have been called')
 
-    def list_item_changed_invalid_item_test(self):
+    def test_list_item_changed_invalid_item(self):
         """
         Test that the list_item_changed() slot handles a non-existent item
         """
@@ -124,7 +124,7 @@ class TestSettingsForm(TestCase):
             # THEN: The rest of the method should not have been called
             self.assertEqual(0, mocked_count.call_count, 'The count method of the stacked layout should not be called')
 
-    def reject_with_inactive_items_test(self):
+    def test_reject_with_inactive_items(self):
         """
         Test that the reject() method works correctly when some of the plugins are inactive
         """

@@ -34,7 +34,7 @@ class MediaFilesForm(QtWidgets.QDialog, Ui_MediaFilesDialog):
     """
     Class to show a list of files from the
     """
-    log.info('%s MediaFilesForm loaded', __name__)
+    log.info('{name} MediaFilesForm loaded'.format(name=__name__))
 
     def __init__(self, parent):
         super(MediaFilesForm, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)

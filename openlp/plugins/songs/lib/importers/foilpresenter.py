@@ -121,6 +121,7 @@ class FoilPresenterImport(SongImport):
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return
+            # TODO: Verify format() with template strings
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 parsed_file = etree.parse(file_path, parser)
@@ -128,7 +129,7 @@ class FoilPresenterImport(SongImport):
                 self.foil_presenter.xml_to_song(xml)
             except etree.XMLSyntaxError:
                 self.log_error(file_path, SongStrings.XMLSyntaxError)
-                log.exception('XML syntax error in file %s' % file_path)
+                log.exception('XML syntax error in file {path}'.format(path=file_path))
 
 
 class FoilPresenter(object):

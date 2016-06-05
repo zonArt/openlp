@@ -102,8 +102,8 @@ class LyrixImport(SongImport):
                     else:
                         current_verse += '\n' + line
         except Exception as e:
-            self.log_error(translate('SongsPlugin.LyrixImport', 'File %s' % file.name),
-                           translate('SongsPlugin.LyrixImport', 'Error: %s') % e)
+            self.log_error(translate('SongsPlugin.LyrixImport', 'File {name}').format(name=file.name),
+                           translate('SongsPlugin.LyrixImport', 'Error: {error}').format(error=e))
             return
         self.title = song_title
         self.parse_author(author)

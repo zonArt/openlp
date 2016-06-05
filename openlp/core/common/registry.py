@@ -55,6 +55,7 @@ class Registry(object):
         registry = cls()
         registry.service_list = {}
         registry.functions_list = {}
+        registry.working_flags = {}
         # Allow the tests to remove Registry entries but not the live system
         registry.running_under_test = 'nose' in sys.argv[0]
         registry.initialising = True
@@ -90,8 +91,7 @@ class Registry(object):
 
     def remove(self, key):
         """
-        Removes the registry value from the list based on the key passed in (Only valid and active for testing
-        framework).
+        Removes the registry value from the list based on the key passed in.
 
         :param key: The service to be deleted.
         """
@@ -145,3 +145,34 @@ class Registry(object):
             trace_error_handler(log)
             log.error("Event {event} called but not registered".format(event=event))
         return results
+
+    def get_flag(self, key):
+        """
+        Extracts the working_flag value from the list based on the key passed in
+
+        :param key: The flag to be retrieved.
+        """
+        if key in self.working_flags:
+            return self.working_flags[key]
+        else:
+            trace_error_handler(log)
+            log.error('Working Flag {key} not found in list'.format(key=key))
+            raise KeyError('Working Flag {key} not found in list'.format(key=key))
+
+    def set_flag(self, key, reference):
+        """
+        Sets a working_flag based on the key passed in.
+
+        :param key: The working_flag to be created this is usually a major class like "renderer" or "main_window" .
+        :param reference: The data to be saved.
+        """
+        self.working_flags[key] = reference
+
+    def remove_flag(self, key):
+        """
+        Removes the working flags value from the list based on the key passed.
+
+        :param key: The working_flag to be deleted.
+        """
+        if key in self.working_flags:
+            del self.working_flags[key]

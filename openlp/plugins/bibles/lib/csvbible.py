@@ -86,7 +86,7 @@ class CSVBible(BibleDB):
         success = True
         language_id = self.get_language(bible_name)
         if not language_id:
-            log.error('Importing books from "%s" failed' % self.filename)
+            log.error('Importing books from "{name}" failed'.format(name=self.filename))
             return False
         books_file = None
         book_list = {}
@@ -98,11 +98,11 @@ class CSVBible(BibleDB):
             for line in books_reader:
                 if self.stop_import_flag:
                     break
-                self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing books... %s')
-                                                   % line[2])
+                self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible',
+                                                             'Importing books... {text}').format(text=line[2]))
                 book_ref_id = self.get_book_ref_id_by_name(line[2], 67, language_id)
                 if not book_ref_id:
-                    log.error('Importing books from "%s" failed' % self.books_file)
+                    log.error('Importing books from "{name}" failed'.format(name=self.books_file))
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 self.create_book(line[2], book_ref_id, book_details['testament_id'])
@@ -134,9 +134,11 @@ class CSVBible(BibleDB):
                 if book_ptr != line_book:
                     book = self.get_book(line_book)
                     book_ptr = book.name
+                    # TODO: Check out this conversion in translations
                     self.wizard.increment_progress_bar(
                         translate('BiblesPlugin.CSVBible',
-                                  'Importing verses from %s...' % book.name, 'Importing verses from <book name>...'))
+                                  'Importing verses from {name}...'.format(name=book.name),
+                                  'Importing verses from <book name>...'))
                     self.session.commit()
                 verse_text = line[3]
                 self.create_verse(book.id, line[1], line[2], verse_text)

@@ -62,7 +62,7 @@ class TestServiceManager(TestCase, TestMixin):
         """
         del self.main_window
 
-    def basic_service_manager_test(self):
+    def test_basic_service_manager(self):
         """
         Test the Service Manager UI Functionality
         """
@@ -74,7 +74,7 @@ class TestServiceManager(TestCase, TestMixin):
         self.assertEqual(self.service_manager.service_manager_list.topLevelItemCount(), 0,
                          'The service manager list should be empty ')
 
-    def default_context_menu_test(self):
+    def test_default_context_menu(self):
         """
         Test the context_menu() method with a default service item
         """
@@ -116,7 +116,7 @@ class TestServiceManager(TestCase, TestMixin):
             self.service_manager.auto_start_action.setVisible.assert_called_once_with(False), \
                 'The action should be set invisible.'
 
-    def edit_context_menu_test(self):
+    def test_edit_context_menu(self):
         """
         Test the context_menu() method with a edit service item
         """
@@ -160,7 +160,7 @@ class TestServiceManager(TestCase, TestMixin):
             self.service_manager.auto_start_action.setVisible.assert_called_once_with(False), \
                 'The action should be set invisible.'
 
-    def maintain_context_menu_test(self):
+    def test_maintain_context_menu(self):
         """
         Test the context_menu() method with a maintain
         """
@@ -203,7 +203,7 @@ class TestServiceManager(TestCase, TestMixin):
             self.service_manager.auto_start_action.setVisible.assert_called_once_with(False), \
                 'The action should be set invisible.'
 
-    def loopy_context_menu_test(self):
+    def test_loopy_context_menu(self):
         """
         Test the context_menu() method with a loop
         """
@@ -248,7 +248,7 @@ class TestServiceManager(TestCase, TestMixin):
             self.service_manager.auto_start_action.setVisible.assert_called_once_with(False), \
                 'The action should be set invisible.'
 
-    def start_time_context_menu_test(self):
+    def test_start_time_context_menu(self):
         """
         Test the context_menu() method with a start time
         """
@@ -291,7 +291,7 @@ class TestServiceManager(TestCase, TestMixin):
             self.service_manager.auto_start_action.setVisible.assert_called_once_with(False), \
                 'The action should be set invisible.'
 
-    def auto_start_context_menu_test(self):
+    def test_auto_start_context_menu(self):
         """
         Test the context_menu() method with can auto start
         """
@@ -337,7 +337,7 @@ class TestServiceManager(TestCase, TestMixin):
             self.service_manager.rename_action.setVisible.assert_called_once_with(False), \
                 'The action should be set invisible.'
 
-    def click_on_new_service_test(self):
+    def test_click_on_new_service(self):
         """
         Test the on_new_service event handler is called by the UI
         """
