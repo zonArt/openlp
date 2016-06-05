@@ -776,7 +776,6 @@ class BibleMediaItem(MediaManagerItem):
         "Eg. "Reference Search", "Text Search" or "Combined search".
         """
         log.debug('Quick Search Button clicked')
-        # If we are performing "Search while typing", this setting is set to True, here it's reset to "False"
         self.quickSearchButton.setEnabled(False)
         self.application.process_events()
         bible = self.quickVersionComboBox.currentText()
@@ -814,7 +813,7 @@ class BibleMediaItem(MediaManagerItem):
             # This check needs to be here in order to avoid duplicate errors.
             # If keyword is shorter than 3 (not including spaces), message is given. It's actually possible to find
             # verses with less than 3 chars (Eg. G1 = Genesis 1) thus this error is not shown if any results are found.
-            # if no Bibles are installed, this message is not shown - "No bibles" message is shown instead. (and bible)
+            # if no Bibles are installed, this message is not shown - "No bibles" message is shown instead.
             if not self.search_results and len(text) - text.count(' ') < 3 and bible:
                 self.main_window.information_message(
                     UiStrings().BibleShortSearchTitle,
