@@ -62,8 +62,7 @@ __default_settings__ = {
     'bibles/end separator': '',
     'bibles/last directory import': '',
     'bibles/hide combined quick error': False,
-    'bibles/is search while typing enabled': True,
-    'bibles/hide web bible error if searching while typing': True
+    'bibles/is search while typing enabled': True
 }
 
 

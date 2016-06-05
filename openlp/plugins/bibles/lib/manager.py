@@ -324,18 +324,52 @@ class BibleManager(RegistryProperties):
         if web_bible or second_web_bible:
             # If either Bible is Web, cursor is reset to normal and message is given.
             self.application.set_normal_cursor()
-            # If we are performing "Search while typing", do not show this error.
-            if not Settings().value('bibles/hide web bible error if searching while typing'):
-                self.main_window.information_message(
-                    translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
-                    translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'
-                                                           'Please use the Scripture Reference Search instead.\n\n'
-                                                           'This means that the currently used Bible\nor Second Bible '
-                                                           'is installed as Web Bible.')
-                )
+            self.main_window.information_message(
+                translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used in Text Search'),
+                translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.\n'
+                                                       'Please use the Scripture Reference Search instead.\n\n'
+                                                       'This means that the currently used Bible\nor Second Bible '
+                                                       'is installed as Web Bible.\n\n'
+                                                       'If you were trying to perform a Reference search\nin Combined '
+                                                       'Search, your reference is invalid.')
+            )
             return None
         # Shorter than 3 char searches break OpenLP with very long search times, thus they are blocked.
         if len(text) - text.count(' ') < 3:
+            return None
+        # Fetch the results from db. If no results are found, return None, no message is given for this.
+        elif text:
+            return self.db_cache[bible].verse_search(text)
+        else:
+            return None
+
+    def verse_search_while_typing(self, bible, second_bible, text):
+        """
+        Does a verse search for the given bible and text.
+        This is used during "Search while typing"
+        It's the same thing as the normal text search, but it does not show the web Bible error.
+        (It would result in the error popping every time a char is entered or removed)
+        It also does not have a minimum text len, this is set in mediaitem.py
+
+        :param bible: The bible to search in (unicode).
+        :param second_bible: The second bible (unicode). We do not search in this bible.
+        :param text: The text to search for (unicode).
+        """
+        log.debug('BibleManager.verse_search("%s", "%s")', bible, text)
+        # If no bibles are installed, message is given.
+        if not bible:
+            self.main_window.information_message(
+                UiStrings().BibleNoBiblesTitle,
+                UiStrings().BibleNoBibles)
+            return None
+        # Check if the bible or second_bible is a web bible.
+        web_bible = self.db_cache[bible].get_object(BibleMeta, 'download_source')
+        second_web_bible = ''
+        if second_bible:
+            second_web_bible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
+        if web_bible or second_web_bible:
+            # If either Bible is Web, cursor is reset to normal and search ends w/o any message.
+            self.application.set_normal_cursor()
             return None
         # Fetch the results from db. If no results are found, return None, no message is given for this.
         elif text:

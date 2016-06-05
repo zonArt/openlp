@@ -727,6 +727,53 @@ class BibleMediaItem(MediaManagerItem):
             self.search_results = new_search_results
             self.second_search_results = bibles[second_bible].get_verses(text)
 
+    def on_quick_text_search_while_typing(self):
+        """
+        We are doing a 'Text Search' while typing
+        Call the verse_search_while_typing from manager.py
+        It does not show web bible errors while typing.
+        (It would result in the error popping every time a char is entered or removed)
+        """
+        # Set Bibles to use the text input from Quick search field.
+        bible = self.quickVersionComboBox.currentText()
+        second_bible = self.quickSecondComboBox.currentText()
+        text = self.quick_search_edit.text()
+        self.application.set_busy_cursor()
+        # Get Bibles list
+        bibles = self.plugin.manager.get_bibles()
+        # Add results to "search_results"
+        self.search_results = self.plugin.manager.verse_search_while_typing(bible, second_bible, text)
+        if second_bible and self.search_results:
+            # new_search_results is needed to make sure 2nd bible contains all verses. (And counting them on error)
+            text = []
+            new_search_results = []
+            count = 0
+            passage_not_found = False
+            # Search second bible for results of search_results to make sure everythigns there.
+            # Count all the unfound passages.
+            for verse in self.search_results:
+                db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
+                if not db_book:
+                    log.debug('Passage ("{versebookname}","{versechapter}","{verseverse}") not found in Second Bible'
+                              .format(versebookname=verse.book.name, versechapter='verse.chapter',
+                                      verseverse=verse.verse))
+                    passage_not_found = True
+                    count += 1
+                    continue
+                new_search_results.append(verse)
+                text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
+            if passage_not_found:
+                # This is for the 2nd Bible.
+                self.main_window.information_message(
+                    translate('BiblesPlugin.MediaItem', 'Information'),
+                    translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
+                                                        'that are in the main Bible.\nOnly verses found in both Bibles'
+                                                        ' will be shown.\n\n {count} verses have not been included '
+                                                        'in the results.').format(count=count))
+            # Join the searches so only verses that are found on both Bibles are shown.
+            self.search_results = new_search_results
+            self.second_search_results = bibles[second_bible].get_verses(text)
+
     def on_quick_search_button(self):
         """
         This triggers the proper Quick search based on which search type is used.
@@ -734,7 +781,6 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug('Quick Search Button clicked')
         # If we are performing "Search while typing", this setting is set to True, here it's reset to "False"
-        Settings().setValue('bibles/hide web bible error if searching while typing', False)
         self.quickSearchButton.setEnabled(False)
         self.application.process_events()
         bible = self.quickVersionComboBox.currentText()
@@ -827,7 +873,7 @@ class BibleMediaItem(MediaManagerItem):
             if (char.isdigit() for char in text) and len(text) > 1:
                 self.on_quick_reference_search()
             if not self.search_results and len(text) > 7:
-                self.on_quick_text_search()
+                self.on_quick_text_search_while_typing()
         elif self.quick_search_edit.current_search_type() == BibleSearch.Reference:
             self.on_quick_reference_search()
         elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
@@ -857,14 +903,13 @@ class BibleMediaItem(MediaManagerItem):
         """
         If search automatically while typing is enabled, perform the search and list results when conditions are met.
         """
-        text = self.quick_search_edit.text()
         """
         If web bible is used, don't show the error while searching and typing.
         This would result in seeing the same message multiple times.
         This message is located in lib\manager.py, so the setting is required.
         """
         if Settings().value('bibles/is search while typing enabled'):
-            Settings().setValue('bibles/hide web bible error if searching while typing', True)
+            text = self.quick_search_edit.text()
             # Regex for finding space + any non whitemark character. (Prevents search from starting on 1 word searches)
             space_and_any = re.compile(' \S')
             # Turn this into a format that may be used in if statement.
