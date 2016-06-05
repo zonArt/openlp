@@ -171,4 +171,3 @@ class TestOpsProSongImport(TestCase):
         result_data = json.loads(result_file.read().decode())
         self.assertListEqual(importer.verses, _get_item(result_data, 'verses'))
         self.assertListEqual(importer.verse_order_list_generated, _get_item(result_data, 'verse_order_list'))
-
