@@ -182,19 +182,33 @@ LYRICS_CSS = """
 }
 """
 LYRICS_OUTLINE_CSS = ' -webkit-text-stroke: 0.125em #000000; -webkit-text-fill-color: #FFFFFF; '
-LYRICS_FORMAT_CSS = ' word-wrap: break-word; text-align: justify; vertical-align: bottom; ' + \
-    'font-family: Arial; font-size: 40pt; color: #FFFFFF; line-height: 108%; margin: 0;padding: 0; ' + \
-    'padding-bottom: 0.5em; padding-left: 2px; width: 1580px; height: 810px; font-style:italic; font-weight:bold; '
+LYRICS_FORMAT_CSS = """
+word-wrap: break-word;
+text-align: justify;
+vertical-align: bottom;
+font-family: Arial;
+font-size: 40pt;
+color: #FFFFFF;
+line-height: 108%;
+margin: 0;
+padding: 0;
+padding-bottom: 0.5em;
+padding-left: 2px;
+width: 1580px;
+height: 810px;
+font-style:italic;
+font-weight:bold;
+"""
 FOOTER_CSS_BASE = """
-    left: 10px;
-    bottom: 0px;
-    width: 1260px;
-    font-family: Arial;
-    font-size: 12pt;
-    color: #FFFFFF;
-    text-align: left;
-    white-space: %s;
-    """
+left: 10px;
+bottom: 0px;
+width: 1260px;
+font-family: Arial;
+font-size: 12pt;
+color: #FFFFFF;
+text-align: left;
+white-space: %s;
+"""
 FOOTER_CSS = FOOTER_CSS_BASE % ('nowrap')
 FOOTER_CSS_WRAP = FOOTER_CSS_BASE % ('normal')
 FOOTER_CSS_INVALID = ''

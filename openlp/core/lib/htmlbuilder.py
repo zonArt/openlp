@@ -390,14 +390,14 @@ is the function which has to be called from outside. The generated and returned 
 import logging
 
 from PyQt5 import QtWebKit
+from string import Template
 
 from openlp.core.common import Settings
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, VerticalType, HorizontalType
 
 log = logging.getLogger(__name__)
 
-# TODO: Verify where this is used before converting to python3
-HTMLSRC = """
+HTML_SRC = Template("""
 <!DOCTYPE html>
 <html>
 <head>
@@ -411,14 +411,14 @@ HTMLSRC = """
     -webkit-user-select: none;
 }
 body {
-    %s;
+    ${bg_css};
 }
 .size {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: 100%%;
-    height: 100%%;
+    width: 100%;
+    height: 100%;
 }
 #black {
     z-index: 8;
@@ -431,14 +431,14 @@ body {
 #image {
     z-index: 2;
 }
-%s
+${css_additions}
 #footer {
     position: absolute;
     z-index: 6;
-    %s
+    ${footer_css}
 }
 /* lyric css */
-%s
+${lyrics_css}
 sup {
     font-size: 0.6em;
     vertical-align: top;
@@ -448,8 +448,8 @@ sup {
 </style>
 <script>
     var timer = null;
-    var transition = %s;
-    %s
+    var transition = ${transitions};
+    ${js_additions}
 
     function show_image(src){
         var img = document.getElementById('image');
@@ -538,15 +538,60 @@ sup {
 </script>
 </head>
 <body>
-<img id="bgimage" class="size" %s />
-<img id="image" class="size" %s />
-%s
+<img id="bgimage" class="size" ${bg_image} />
+<img id="image" class="size" ${image} />
+${html_additions}
 <div class="lyricstable"><div id="lyricsmain" style="opacity:1" class="lyricscell lyricsmain"></div></div>
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
 </body>
 </html>
-"""
+""")
+
+LYRICS_SRC = Template("""
+.lyricstable {
+    z-index: 5;
+    position: absolute;
+    display: table;
+    ${stable}
+}
+.lyricscell {
+    display: table-cell;
+    word-wrap: break-word;
+    -webkit-transition: opacity 0.4s ease;
+    ${lyrics}
+}
+.lyricsmain {
+    ${main}
+}
+""")
+
+FOOTER_SRC = Template("""
+left: ${left}px;
+bottom: ${bottom}px;
+width: ${width}px;
+font-family: ${family};
+font-size: ${size}pt;
+color: ${color};
+text-align: left;
+white-space: ${space};
+""")
+
+LYRICS_FORMAT_SRC = Template("""
+${justify}word-wrap: break-word;
+text-align: ${align};
+vertical-align: ${valign};
+font-family: ${font};
+font-size: ${size}pt;
+color: ${color};
+line-height: ${line}%;
+margin: 0;
+padding: 0;
+padding-bottom: ${bottom};
+padding-left: ${left}px;
+width: ${width}px;
+height: ${height}px;${font_style}${font_weight}
+""")
 
 
 def build_html(item, screen, is_live, background, image=None, plugins=None):
@@ -582,18 +627,17 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
             css_additions += plugin.get_display_css()
             js_additions += plugin.get_display_javascript()
             html_additions += plugin.get_display_html()
-    html = HTMLSRC % (
-        build_background_css(item, width),
-        css_additions,
-        build_footer_css(item, height),
-        build_lyrics_css(item),
-        'true' if theme_data and theme_data.display_slide_transition and is_live else 'false',
-        js_additions,
-        bgimage_src,
-        image_src,
-        html_additions
-    )
-    return html
+    return HTML_SRC.substitute(bg_css=build_background_css(item, width),
+                               css_additions=css_additions,
+                               footer_css=build_footer_css(item, height),
+                               lyrics_css=build_lyrics_css(item),
+                               transitions='true' if (theme_data and
+                                                      theme_data.display_slide_transition and
+                                                      is_live) else 'false',
+                               js_additions=js_additions,
+                               bg_image=bgimage_src,
+                               image=image_src,
+                               html_additions=html_additions)
 
 
 def webkit_version():
@@ -650,24 +694,6 @@ def build_lyrics_css(item):
 
     :param item: Service Item containing theme and location information
     """
-    # TODO: Verify this before converting to python3
-    style = """
-.lyricstable {
-    z-index: 5;
-    position: absolute;
-    display: table;
-    %s
-}
-.lyricscell {
-    display: table-cell;
-    word-wrap: break-word;
-    -webkit-transition: opacity 0.4s ease;
-    %s
-}
-.lyricsmain {
-    %s
-}
-"""
     theme_data = item.theme_data
     lyricstable = ''
     lyrics = ''
@@ -680,8 +706,7 @@ def build_lyrics_css(item):
             lyricsmain += ' text-shadow: {theme} {shadow}px ' \
                 '{shadow}px;'.format(theme=theme_data.font_main_shadow_color,
                                      shadow=theme_data.font_main_shadow_size)
-    lyrics_css = style % (lyricstable, lyrics, lyricsmain)
-    return lyrics_css
+    return LYRICS_SRC.substitute(stable=lyricstable, lyrics=lyrics, main=lyricsmain)
 
 
 def build_lyrics_outline_css(theme_data):
@@ -710,38 +735,23 @@ def build_lyrics_format_css(theme_data, width, height):
     """
     align = HorizontalType.Names[theme_data.display_horizontal_align]
     valign = VerticalType.Names[theme_data.display_vertical_align]
-    if theme_data.font_main_outline:
-        left_margin = int(theme_data.font_main_outline_size) * 2
-    else:
-        left_margin = 0
-    justify = 'white-space:pre-wrap;'
+    left_margin = (int(theme_data.font_main_outline_size) * 2) if theme_data.font_main_outline else 0
     # fix tag incompatibilities
-    if theme_data.display_horizontal_align == HorizontalType.Justify:
-        justify = ''
-    if theme_data.display_vertical_align == VerticalType.Bottom:
-        padding_bottom = '0.5em'
-    else:
-        padding_bottom = '0'
-    lyrics = '{justify} word-wrap: break-word; ' \
-        'text-align: {align}; vertical-align: {valign}; font-family: {font}; ' \
-        'font-size: {size}pt; color: {color}; line-height: {line:d}%; margin: 0;' \
-        'padding: 0; padding-bottom: {bottom}; padding-left: {left}px; width: {width}px; ' \
-        'height: {height}px; '.format(justify=justify,
-                                      align=align,
-                                      valign=valign,
-                                      font=theme_data.font_main_name,
-                                      size=theme_data.font_main_size,
-                                      color=theme_data.font_main_color,
-                                      line=100 + int(theme_data.font_main_line_adjustment),
-                                      bottom=padding_bottom,
-                                      left=left_margin,
-                                      width=width,
-                                      height=height)
-    if theme_data.font_main_italics:
-        lyrics += 'font-style:italic; '
-    if theme_data.font_main_bold:
-        lyrics += 'font-weight:bold; '
-    return lyrics
+    justify = '' if (theme_data.display_horizontal_align == HorizontalType.Justify) else 'white-space:pre-wrap;\n'
+    padding_bottom = '0.5em' if (theme_data.display_vertical_align == VerticalType.Bottom) else '0'
+    return LYRICS_FORMAT_SRC.substitute(justify=justify,
+                                        align=align,
+                                        valign=valign,
+                                        font=theme_data.font_main_name,
+                                        size=theme_data.font_main_size,
+                                        color=theme_data.font_main_color,
+                                        line='{line:d}'.format(line=100 + int(theme_data.font_main_line_adjustment)),
+                                        bottom=padding_bottom,
+                                        left=left_margin,
+                                        width=width,
+                                        height=height,
+                                        font_style='\nfont-style:italic;' if theme_data.font_main_italics else '',
+                                        font_weight='\nfont-weight:bold;' if theme_data.font_main_bold else '')
 
 
 def build_footer_css(item, height):
@@ -751,22 +761,11 @@ def build_footer_css(item, height):
     :param item: Service Item to be processed.
     :param height:
     """
-    style = """
-    left: {left}px;
-    bottom: {bottom}px;
-    width: {width}px;
-    font-family: {family};
-    font-size: {size}pt;
-    color: {color};
-    text-align: left;
-    white-space: {space};
-    """
     theme = item.theme_data
     if not theme or not item.footer:
         return ''
     bottom = height - int(item.footer.y()) - int(item.footer.height())
     whitespace = 'normal' if Settings().value('themes/wrap footer') else 'nowrap'
-    lyrics_html = style.format(left=item.footer.x(), bottom=bottom, width=item.footer.width(),
-                               family=theme.font_footer_name, size=theme.font_footer_size,
-                               color=theme.font_footer_color, space=whitespace)
-    return lyrics_html
+    return FOOTER_SRC.substitute(left=item.footer.x(), bottom=bottom, width=item.footer.width(),
+                                 family=theme.font_footer_name, size=theme.font_footer_size,
+                                 color=theme.font_footer_color, space=whitespace)
