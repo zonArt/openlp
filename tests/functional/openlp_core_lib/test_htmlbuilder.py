@@ -256,8 +256,6 @@ class Htmbuilder(TestCase, TestMixin):
             # WHEN: Create the html.
             html = build_html(item, screen, is_live, background, plugins=plugins)
 
-            self.maxDiff = None
-
             # THEN: The returned html should match.
             self.assertEqual(html, HTML, 'The returned html should match')
 
