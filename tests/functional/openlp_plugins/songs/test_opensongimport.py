@@ -22,13 +22,13 @@
 """
 This module contains tests for the OpenSong song importer.
 """
-
 import os
 from unittest import TestCase
 
-from tests.helpers.songfileimport import SongImportTestHelper
 from openlp.plugins.songs.lib.importers.opensong import OpenSongImport
 from openlp.core.common import Registry
+
+from tests.helpers.songfileimport import SongImportTestHelper
 from tests.functional import patch, MagicMock
 
 TEST_PATH = os.path.abspath(
@@ -54,6 +54,8 @@ class TestOpenSongFileImport(SongImportTestHelper):
                          self.load_external_result_data(os.path.join(TEST_PATH, 'One, Two, Three, Four, Five.json')))
         self.file_import([os.path.join(TEST_PATH, 'Amazing Grace2')],
                          self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
+        self.file_import([os.path.join(TEST_PATH, 'Amazing Grace with bad CCLI')],
+                         self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace without CCLI.json')))
 
 
 class TestOpenSongImport(TestCase):
