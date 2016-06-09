@@ -565,7 +565,7 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
             if self.has_run_wizard:
                 text = translate('OpenLP.FirstTimeWizard',
                                  'Download complete. Click the {button} button to return to OpenLP.'
-                                 ).format(text=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                                 ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
                 self.progress_label.setText(text)
             else:
                 text = translate('OpenLP.FirstTimeWizard',
