@@ -696,6 +696,8 @@ class BibleMediaItem(MediaManagerItem):
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quick_search_edit.text()
+        # If Text search ends with "," OpenLP will crash, prevent this from happening by removing all ","s.
+        text = re.sub('[,]', '', text)
         self.application.set_busy_cursor()
         # Get Bibles list
         bibles = self.plugin.manager.get_bibles()
@@ -742,6 +744,8 @@ class BibleMediaItem(MediaManagerItem):
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quick_search_edit.text()
+        # If Text search ends with "," OpenLP will crash, prevent this from happening by removing all ","s.
+        text = re.sub('[,]', '', text)
         self.application.set_busy_cursor()
         # Get Bibles list
         bibles = self.plugin.manager.get_bibles()
@@ -905,15 +909,18 @@ class BibleMediaItem(MediaManagerItem):
         """
         if Settings().value('bibles/is search while typing enabled'):
             text = self.quick_search_edit.text()
+            if len(text) == 0:
+                self.check_search_result()
             # Regex for finding space + any non whitemark character. (Prevents search from starting on 1 word searches)
             space_and_any = re.compile(' \S')
             # Turn this into a format that may be used in if statement.
             count_space_any = space_and_any.findall(text)
             # Start searching if this behaviour is not disabled in settings and conditions are met.
             # If text does not have  'count_space_any' and results are not locked, clear the results.
-            if len(count_space_any) == 0:
+            if len(count_space_any) == 0 and len(text) > 0:
                 if not self.quickLockButton.isChecked():
                     self.list_view.clear()
+                self.check_search_result_banana()
             else:
                 """
                 Start search if no chars are entered or deleted for 0.2 s
@@ -996,7 +1003,12 @@ class BibleMediaItem(MediaManagerItem):
                                                                                    version=version)
             bible_verse = QtWidgets.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, data)
-            items.append(bible_verse)
+            # 32rfa
+            if self.quickLockButton.isChecked():
+                if count in search_results:
+                    items.append(bible_verse)
+            else:
+                items.append(bible_verse)
         return items
 
     def generate_slide_data(self, service_item, item=None, xml_version=False, remote=False,

@@ -651,6 +651,20 @@ class MediaManagerItem(QtWidgets.QWidget, RegistryProperties):
         item.setFont(font)
         self.list_view.addItem(item)
 
+    def check_search_result_banana(self):
+        """
+        Checks if the list_view is empty and adds a "No Search Results" item.
+        """
+        if self.list_view.count():
+            return
+        message = translate('OpenLP.MediaManagerItem', 'Search is too short for: "Search while typing."')
+        item = QtWidgets.QListWidgetItem(message)
+        item.setFlags(QtCore.Qt.NoItemFlags)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        item.setFont(font)
+        self.list_view.addItem(item)
+
     def _get_id_of_item_to_generate(self, item, remote_item):
         """
         Utility method to check items being submitted for slide generation.

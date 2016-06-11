@@ -158,10 +158,8 @@ class UiStrings(object):
         self.Video = translate('OpenLP.Ui', 'Video')
         self.BibleShortSearchTitle = translate('OpenLP.Ui', 'Search is Empty or too Short')
         self.BibleShortSearch = translate('OpenLP.Ui', '<strong>The search you have entered is empty or shorter '
-                                                       'than 3 characters long.<br>Please try again with '
-                                                       'a longer search.</strong><br><br>You can separate different '
-                                                       'keywords by a space to search for all of your keywords and you '
-                                                       'can separate them by a comma to search for one of them.')
+                                                       'than 3 characters long.</strong><br><br>Please try again with '
+                                                       'a longer search.')
         self.BibleNoBiblesTitle = translate('OpenLP.Ui', 'No Bibles Available')
         self.BibleNoBibles = translate('OpenLP.Ui', '<strong>There are no Bibles currently installed.</strong><br><br>'
                                                     'Please use the Import Wizard to install one or more Bibles.')
