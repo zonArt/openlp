@@ -869,7 +869,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.quick_search_edit.current_search_type() == BibleSearch.Combined:
             # If text has no numbers, auto search limit is min 8 characters for performance reasons.
             # If you change this value, also change it in biblestab.py (Count) in enabling search while typing.
-            if (char.isdigit() for char in text) and len(text) > 1:
+            if (char.isdigit() for char in text) and len(text) > 2:
                 self.on_quick_reference_search()
             if not self.search_results and len(text) > 7:
                 self.on_quick_text_search_while_typing()
@@ -887,54 +887,82 @@ class BibleMediaItem(MediaManagerItem):
         self.check_search_result()
         self.application.set_normal_cursor()
 
-    def display_results(self, bible, second_bible=''):
-        """
-        Displays the search results in the media manager. All data needed for further action is saved for/in each row.
-        """
-        items = self.build_display_results(bible, second_bible, self.search_results)
-        for bible_verse in items:
-            self.list_view.addItem(bible_verse)
-        self.list_view.selectAll()
-        self.search_results = {}
-        self.second_search_results = {}
-
     def on_search_text_edit_changed(self):
         """
         If search automatically while typing is enabled, perform the search and list results when conditions are met.
         """
-        """
-        If web bible is used, don't show the error while searching and typing.
-        This would result in seeing the same message multiple times.
-        This message is located in lib\manager.py, so the setting is required.
-        """
         if Settings().value('bibles/is search while typing enabled'):
             text = self.quick_search_edit.text()
-            if len(text) == 0:
-                self.check_search_result()
-            # Regex for finding space + any non whitemark character. (Prevents search from starting on 1 word searches)
-            space_and_any = re.compile(' \S')
+            """
+            Use Regex for finding space + number in reference search and space + 2 characters in text search.
+            These are used to prevent bad search queries from starting. (Long/crashing queries)
+            """
+            space_and_digit_reference = re.compile(' \d')
+            space_and_two_chars_text = re.compile(' \S\S')
             # Turn this into a format that may be used in if statement.
-            count_space_any = space_and_any.findall(text)
-            # Start searching if this behaviour is not disabled in settings and conditions are met.
-            # If text does not have  'count_space_any' and results are not locked, clear the results.
-            if len(count_space_any) == 0 and len(text) > 0:
+            count_space_digit_reference = space_and_digit_reference.findall(text)
+            count_spaces_two_chars_text = space_and_two_chars_text.findall(text)
+            """
+            The Limit is required for setting the proper "No items found" message.
+            "Limit" is also hard coded to on_quick_search_while_typing, it must be there to avoid bad search
+            performance. Limit 8 = Text search, 3 = Reference search.
+            """
+            limit = 8
+            if self.quick_search_edit.current_search_type() == BibleSearch.Combined:
+                if len(count_space_digit_reference) != 0:
+                    limit = 3
+            elif self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+                limit = 3
+            """
+            If text is empty, clear the list.
+            else: Start by checking if the search is suitable for "Search while typing"
+            """
+            if len(text) == 0:
                 if not self.quickLockButton.isChecked():
                     self.list_view.clear()
-                self.check_search_result_banana()
+                self.check_search_result()
             else:
-                """
-                Start search if no chars are entered or deleted for 0.2 s
-                If no Timer is set, Text search will break the search by sending repeative search Quaries on all chars
-                Use the self.on_quick_search_while_typing, this does not contain any error messages.
-                """
-                self.search_timer = ()
-                if self.search_timer:
-                    self.search_timer.stop()
-                    self.search_timer.deleteLater()
-                self.search_timer = QtCore.QTimer()
-                self.search_timer.timeout.connect(self.on_quick_search_while_typing)
-                self.search_timer.setSingleShot(True)
-                self.search_timer.start(200)
+                if limit == 3 and (len(text) < limit or len(count_space_digit_reference) == 0):
+                    if not self.quickLockButton.isChecked():
+                        self.list_view.clear()
+                    self.check_search_result()
+                elif limit == 8 and (len(text) < limit or len(count_spaces_two_chars_text) == 0):
+                    if not self.quickLockButton.isChecked():
+                        self.list_view.clear()
+                    self.check_search_result_search_while_typing_short()
+                else:
+                    """
+                    Start search if no chars are entered or deleted for 0.2 s
+                    If no Timer is set, Text search will break the search by sending repeative search Quaries on
+                    all chars. Use the self.on_quick_search_while_typing, this does not contain any error messages.
+                    """
+                    self.search_timer = ()
+                    if self.search_timer:
+                        self.search_timer.stop()
+                        self.search_timer.deleteLater()
+                    self.search_timer = QtCore.QTimer()
+                    self.search_timer.timeout.connect(self.on_quick_search_while_typing)
+                    self.search_timer.setSingleShot(True)
+                    self.search_timer.start(200)
+
+    def display_results(self, bible, second_bible=''):
+        """
+        Displays the search results in the media manager. All data needed for further action is saved for/in each row.
+        """
+
+        items = self.build_display_results(bible, second_bible, self.search_results)
+        if not self.quickLockButton.isChecked():
+            for bible_verse in items:
+                self.list_view.addItem(bible_verse)
+        if self.quickLockButton.isChecked():
+            for bible_verse in range(self.list_view.count()):
+                listItem = self.list_view.item(items)
+                itemRow = self.list_view.row(listItem)
+                if itemRow:
+                    self.list_view.takeItem(itemRow)
+        self.list_view.selectAll()
+        self.search_results = {}
+        self.second_search_results = {}
 
     def build_display_results(self, bible, second_bible, search_results):
         """
@@ -1003,12 +1031,7 @@ class BibleMediaItem(MediaManagerItem):
                                                                                    version=version)
             bible_verse = QtWidgets.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, data)
-            # 32rfa
-            if self.quickLockButton.isChecked():
-                if count in search_results:
-                    items.append(bible_verse)
-            else:
-                items.append(bible_verse)
+            items.append(bible_verse)
         return items
 
     def generate_slide_data(self, service_item, item=None, xml_version=False, remote=False,
