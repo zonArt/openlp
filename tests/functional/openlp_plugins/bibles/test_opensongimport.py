@@ -50,7 +50,7 @@ class TestOpenSongImport(TestCase):
         self.registry_patcher.stop()
         self.manager_patcher.stop()
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the OpenSong file importer
         """
@@ -63,7 +63,7 @@ class TestOpenSongImport(TestCase):
         # THEN: The importer should be an instance of BibleDB
         self.assertIsInstance(importer, BibleDB)
 
-    def file_import_test(self):
+    def test_file_import(self):
         """
         Test the actual import of OpenSong Bible file
         """
@@ -93,7 +93,7 @@ class TestOpenSongImport(TestCase):
             for verse_tag, verse_text in test_data['verses']:
                 importer.create_verse.assert_any_call(importer.create_book().id, 1, int(verse_tag), verse_text)
 
-    def zefania_import_error_test(self):
+    def test_zefania_import_error(self):
         """
         Test that we give an error message if trying to import a zefania bible
         """

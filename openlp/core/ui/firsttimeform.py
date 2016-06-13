@@ -72,7 +72,7 @@ class ThemeScreenshotWorker(QtCore.QObject):
         if self.was_download_cancelled:
             return
         try:
-            urllib.request.urlretrieve('%s%s' % (self.themes_url, self.screenshot),
+            urllib.request.urlretrieve('{host}{name}'.format(host=self.themes_url, name=self.screenshot),
                                        os.path.join(gettempdir(), 'openlp', self.screenshot))
             # Signal that the screenshot has been downloaded
             self.screenshot_downloaded.emit(self.title, self.filename, self.sha256)
@@ -180,11 +180,13 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
         user_agent = 'OpenLP/' + Registry().get('application').applicationVersion()
         self.application.process_events()
         try:
-            web_config = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
+            web_config = get_web_page('{host}{name}'.format(host=self.web, name='download.cfg'),
+                                      header=('User-Agent', user_agent))
         except (urllib.error.URLError, ConnectionError) as err:
             msg = QtWidgets.QMessageBox()
             title = translate('OpenLP.FirstTimeWizard', 'Network Error')
-            msg.setText('{} {}'.format(title, err.code if hasattr(err, 'code') else ''))
+            msg.setText('{title} {error}'.format(title=title,
+                                                 error=err.code if hasattr(err, 'code') else ''))
             msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
                                              'There was a network error attempting to '
                                              'connect to retrieve initial configuration information'))
@@ -205,6 +207,7 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                 trace_error_handler(log)
         self.update_screen_list_combo()
         self.application.process_events()
+        # TODO: Figure out how to use a variable with format()
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         if self.has_run_wizard:
             self.songs_check_box.setChecked(self.plugin_manager.get_plugin_by_name('songs').is_active())
@@ -223,9 +226,9 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
             songs = songs.split(',')
             for song in songs:
                 self.application.process_events()
-                title = self.config.get('songs_%s' % song, 'title')
-                filename = self.config.get('songs_%s' % song, 'filename')
-                sha256 = self.config.get('songs_%s' % song, 'sha256', fallback='')
+                title = self.config.get('songs_{song}'.format(song=song), 'title')
+                filename = self.config.get('songs_{song}'.format(song=song), 'filename')
+                sha256 = self.config.get('songs_{song}'.format(song=song), 'sha256', fallback='')
                 item = QtWidgets.QListWidgetItem(title, self.songs_list_widget)
                 item.setData(QtCore.Qt.UserRole, (filename, sha256))
                 item.setCheckState(QtCore.Qt.Unchecked)
@@ -234,15 +237,15 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
             bible_languages = bible_languages.split(',')
             for lang in bible_languages:
                 self.application.process_events()
-                language = self.config.get('bibles_%s' % lang, 'title')
+                language = self.config.get('bibles_{lang}'.format(lang=lang), 'title')
                 lang_item = QtWidgets.QTreeWidgetItem(self.bibles_tree_widget, [language])
-                bibles = self.config.get('bibles_%s' % lang, 'translations')
+                bibles = self.config.get('bibles_{lang}'.format(lang=lang), 'translations')
                 bibles = bibles.split(',')
                 for bible in bibles:
                     self.application.process_events()
-                    title = self.config.get('bible_%s' % bible, 'title')
-                    filename = self.config.get('bible_%s' % bible, 'filename')
-                    sha256 = self.config.get('bible_%s' % bible, 'sha256', fallback='')
+                    title = self.config.get('bible_{bible}'.format(bible=bible), 'title')
+                    filename = self.config.get('bible_{bible}'.format(bible=bible), 'filename')
+                    sha256 = self.config.get('bible_{bible}'.format(bible=bible), 'sha256', fallback='')
                     item = QtWidgets.QTreeWidgetItem(lang_item, [title])
                     item.setData(0, QtCore.Qt.UserRole, (filename, sha256))
                     item.setCheckState(0, QtCore.Qt.Unchecked)
@@ -252,10 +255,10 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
             # Download the theme screenshots
             themes = self.config.get('themes', 'files').split(',')
             for theme in themes:
-                title = self.config.get('theme_%s' % theme, 'title')
-                filename = self.config.get('theme_%s' % theme, 'filename')
-                sha256 = self.config.get('theme_%s' % theme, 'sha256', fallback='')
-                screenshot = self.config.get('theme_%s' % theme, 'screenshot')
+                title = self.config.get('theme_{theme}'.format(theme=theme), 'title')
+                filename = self.config.get('theme_{theme}'.format(theme=theme), 'filename')
+                sha256 = self.config.get('theme_{theme}'.format(theme=theme), 'sha256', fallback='')
+                screenshot = self.config.get('theme_{theme}'.format(theme=theme), 'screenshot')
                 worker = ThemeScreenshotWorker(self.themes_url, title, filename, sha256, screenshot)
                 self.theme_screenshot_workers.append(worker)
                 worker.screenshot_downloaded.connect(self.on_screenshot_downloaded)
@@ -421,7 +424,7 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                     self._download_progress(block_count, block_size)
                 filename.close()
                 if sha256 and hasher.hexdigest() != sha256:
-                    log.error('sha256 sums did not match for file: {}'.format(f_path))
+                    log.error('sha256 sums did not match for file: {file}'.format(file=f_path))
                     os.remove(f_path)
                     return False
             except (urllib.error.URLError, socket.timeout) as err:
@@ -447,7 +450,7 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
         themes = self.config.get('themes', 'files')
         themes = themes.split(',')
         for index, theme in enumerate(themes):
-            screenshot = self.config.get('theme_%s' % theme, 'screenshot')
+            screenshot = self.config.get('theme_{theme}'.format(theme=theme), 'screenshot')
             item = self.themes_list_widget.item(index)
             if item:
                 item.setIcon(build_icon(os.path.join(gettempdir(), 'openlp', screenshot)))
@@ -507,7 +510,7 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                 item = self.songs_list_widget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
                     filename, sha256 = item.data(QtCore.Qt.UserRole)
-                    size = self._get_file_size('%s%s' % (self.songs_url, filename))
+                    size = self._get_file_size('{path}{name}'.format(path=self.songs_url, name=filename))
                     self.max_progress += size
             # Loop through the Bibles list and increase for each selected item
             iterator = QtWidgets.QTreeWidgetItemIterator(self.bibles_tree_widget)
@@ -516,7 +519,7 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                 item = iterator.value()
                 if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                     filename, sha256 = item.data(0, QtCore.Qt.UserRole)
-                    size = self._get_file_size('%s%s' % (self.bibles_url, filename))
+                    size = self._get_file_size('{path}{name}'.format(path=self.bibles_url, name=filename))
                     self.max_progress += size
                 iterator += 1
             # Loop through the themes list and increase for each selected item
@@ -525,7 +528,7 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                 item = self.themes_list_widget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
                     filename, sha256 = item.data(QtCore.Qt.UserRole)
-                    size = self._get_file_size('%s%s' % (self.themes_url, filename))
+                    size = self._get_file_size('{path}{name}'.format(path=self.themes_url, name=filename))
                     self.max_progress += size
         except urllib.error.URLError:
             trace_error_handler(log)
@@ -560,22 +563,26 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
         if self.max_progress:
             self.progress_bar.setValue(self.progress_bar.maximum())
             if self.has_run_wizard:
-                self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
-                                            'Download complete. Click the %s button to return to OpenLP.') %
-                                            clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                text = translate('OpenLP.FirstTimeWizard',
+                                 'Download complete. Click the {button} button to return to OpenLP.'
+                                 ).format(text=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                self.progress_label.setText(text)
             else:
-                self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
-                                            'Download complete. Click the %s button to start OpenLP.') %
-                                            clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                text = translate('OpenLP.FirstTimeWizard',
+                                 'Download complete. Click the {button} button to start OpenLP.'
+                                 ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                self.progress_label.setText()
         else:
             if self.has_run_wizard:
-                self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
-                                            'Click the %s button to return to OpenLP.') %
-                                            clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                text = translate('OpenLP.FirstTimeWizard',
+                                 'Click the {button} button to return to OpenLP.'
+                                 ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                self.progress_label.setText(text)
             else:
-                self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
-                                            'Click the %s button to start OpenLP.') %
-                                            clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                text = translate('OpenLP.FirstTimeWizard',
+                                 'Click the {button} button to start OpenLP.'
+                                 ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                self.progress_label.setText()
         self.finish_button.setVisible(True)
         self.finish_button.setEnabled(True)
         self.cancel_button.setVisible(False)
@@ -628,8 +635,9 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                 self._increment_progress_bar(self.downloading % filename, 0)
                 self.previous_size = 0
                 destination = os.path.join(songs_destination, str(filename))
-                if not self.url_get_file('%s%s' % (self.songs_url, filename), destination, sha256):
-                    missed_files.append('Song: {}'.format(filename))
+                if not self.url_get_file('{path}{name}'.format(path=self.songs_url, name=filename),
+                                         destination, sha256):
+                    missed_files.append('Song: {name}'.format(name=filename))
         # Download Bibles
         bibles_iterator = QtWidgets.QTreeWidgetItemIterator(self.bibles_tree_widget)
         while bibles_iterator.value():
@@ -638,31 +646,34 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                 bible, sha256 = item.data(0, QtCore.Qt.UserRole)
                 self._increment_progress_bar(self.downloading % bible, 0)
                 self.previous_size = 0
-                if not self.url_get_file('%s%s' % (self.bibles_url, bible), os.path.join(bibles_destination, bible),
+                if not self.url_get_file('{path}{name}'.format(path=self.bibles_url, name=bible),
+                                         os.path.join(bibles_destination, bible),
                                          sha256):
-                    missed_files.append('Bible: {}'.format(bible))
+                    missed_files.append('Bible: {name}'.format(name=bible))
             bibles_iterator += 1
         # Download themes
         for i in range(self.themes_list_widget.count()):
             item = self.themes_list_widget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 theme, sha256 = item.data(QtCore.Qt.UserRole)
+                # TODO: Verify how to use format() with strings in a variable
                 self._increment_progress_bar(self.downloading % theme, 0)
                 self.previous_size = 0
-                if not self.url_get_file('%s%s' % (self.themes_url, theme), os.path.join(themes_destination, theme),
+                if not self.url_get_file('{path}{name}'.format(path=self.themes_url, name=theme),
+                                         os.path.join(themes_destination, theme),
                                          sha256):
-                    missed_files.append('Theme: {}'.format(theme))
+                    missed_files.append('Theme: {name}'.format(name=theme))
         if missed_files:
             file_list = ''
             for entry in missed_files:
-                file_list += '{}<br \>'.format(entry)
+                file_list += '{text}<br \>'.format(text=entry)
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Warning)
             msg.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'Network Error'))
             msg.setText(translate('OpenLP.FirstTimeWizard', 'Unable to download some files'))
             msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
                                              'The following files were not able to be '
-                                             'downloaded:<br \>{}'.format(file_list)))
+                                             'downloaded:<br \>{text}'.format(text=file_list)))
             msg.setStandardButtons(msg.Ok)
             ans = msg.exec()
         return True

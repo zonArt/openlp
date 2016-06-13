@@ -47,7 +47,7 @@ class TestInit(TestCase, TestMixin):
         self.destroy_settings()
         del self.openlp
 
-    def event_test(self):
+    def test_event(self):
         """
         Test the reimplemented event method
         """
@@ -66,7 +66,7 @@ class TestInit(TestCase, TestMixin):
         self.assertEqual(self.openlp.args[0], file_path, "The path should be in args.")
 
     @patch('openlp.core.is_macosx')
-    def application_activate_event_test(self, mocked_is_macosx):
+    def test_application_activate_event(self, mocked_is_macosx):
         """
         Test that clicking on the dock icon on Mac OS X restores the main window if it is minimized
         """
@@ -84,7 +84,7 @@ class TestInit(TestCase, TestMixin):
         self.assertTrue(result, "The method should have returned True.")
         # self.assertFalse(self.openlp.main_window.isMinimized())
 
-    def backup_on_upgrade_first_install_test(self):
+    def test_backup_on_upgrade_first_install(self):
         """
         Test that we don't try to backup on a new install
         """
@@ -108,7 +108,7 @@ class TestInit(TestCase, TestMixin):
             self.assertEqual(Settings().value('core/application version'), '2.2.0', 'Version should be the same!')
             self.assertEqual(mocked_question.call_count, 0, 'No question should have been asked!')
 
-    def backup_on_upgrade_test(self):
+    def test_backup_on_upgrade(self):
         """
         Test that we try to backup on a new install
         """

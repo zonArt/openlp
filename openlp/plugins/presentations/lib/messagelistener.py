@@ -48,14 +48,14 @@ class Controller(object):
         self.is_live = live
         self.doc = None
         self.hide_mode = None
-        log.info('%s controller loaded' % live)
+        log.info('{name} controller loaded'.format(name=live))
 
     def add_handler(self, controller, file, hide_mode, slide_no):
         """
         Add a handler, which is an instance of a presentation and slidecontroller combination. If the slidecontroller
         has a display then load the presentation.
         """
-        log.debug('Live = %s, add_handler %s' % (self.is_live, file))
+        log.debug('Live = {live}, add_handler {handler}'.format(live=self.is_live, handler=file))
         self.controller = controller
         if self.doc is not None:
             self.shutdown()
@@ -67,7 +67,7 @@ class Controller(object):
             return
         self.doc.slidenumber = slide_no
         self.hide_mode = hide_mode
-        log.debug('add_handler, slide_number: %d' % slide_no)
+        log.debug('add_handler, slide_number: {slide:d}'.format(slide=slide_no))
         if self.is_live:
             if hide_mode == HideMode.Screen:
                 Registry().execute('live_display_hide', HideMode.Screen)
@@ -87,14 +87,14 @@ class Controller(object):
         """
         Active the presentation, and show it on the screen. Use the last slide number.
         """
-        log.debug('Live = %s, activate' % self.is_live)
+        log.debug('Live = {live}, activate'.format(live=self.is_live))
         if not self.doc:
             return False
         if self.doc.is_active():
             return True
         if not self.doc.is_loaded():
             if not self.doc.load_presentation():
-                log.warning('Failed to activate %s' % self.doc.file_path)
+                log.warning('Failed to activate {path}'.format(path=self.doc.file_path))
                 return False
         if self.is_live:
             self.doc.start_presentation()
@@ -105,14 +105,14 @@ class Controller(object):
         if self.doc.is_active():
             return True
         else:
-            log.warning('Failed to activate %s' % self.doc.file_path)
+            log.warning('Failed to activate {path}'.format(path=self.doc.file_path))
             return False
 
     def slide(self, slide):
         """
         Go to a specific slide
         """
-        log.debug('Live = %s, slide' % self.is_live)
+        log.debug('Live = {live}, slide'.format(live=self.is_live))
         if not self.doc:
             return
         if not self.is_live:
@@ -130,7 +130,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers the first slide.
         """
-        log.debug('Live = %s, first' % self.is_live)
+        log.debug('Live = {live}, first'.format(live=self.is_live))
         if not self.doc:
             return
         if not self.is_live:
@@ -148,7 +148,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers the last slide.
         """
-        log.debug('Live = %s, last' % self.is_live)
+        log.debug('Live = {live}, last'.format(live=self.is_live))
         if not self.doc:
             return
         if not self.is_live:
@@ -166,7 +166,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers the next slide event.
         """
-        log.debug('Live = %s, next' % self.is_live)
+        log.debug('Live = {live}, next'.format(live=self.is_live))
         if not self.doc:
             return
         if not self.is_live:
@@ -191,7 +191,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers the previous slide event.
         """
-        log.debug('Live = %s, previous' % self.is_live)
+        log.debug('Live = {live}, previous'.formta(live=self.is_live))
         if not self.doc:
             return
         if not self.is_live:
@@ -212,7 +212,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers slide show to shut down.
         """
-        log.debug('Live = %s, shutdown' % self.is_live)
+        log.debug('Live = {live}, shutdown'.format(live=self.is_live))
         if not self.doc:
             return
         self.doc.close_presentation()
@@ -222,7 +222,7 @@ class Controller(object):
         """
         Instruct the controller to blank the presentation.
         """
-        log.debug('Live = %s, blank' % self.is_live)
+        log.debug('Live = {live}, blank'.format(live=self.is_live))
         self.hide_mode = hide_mode
         if not self.doc:
             return
@@ -243,7 +243,7 @@ class Controller(object):
         """
         Instruct the controller to stop and hide the presentation.
         """
-        log.debug('Live = %s, stop' % self.is_live)
+        log.debug('Live = {live}, stop'.format(live=self.is_live))
         # The document has not been loaded yet, so don't do anything. This can happen when going live with a
         # presentation while blanked to desktop.
         if not self.doc:
@@ -266,7 +266,7 @@ class Controller(object):
         """
         Instruct the controller to unblank the presentation.
         """
-        log.debug('Live = %s, unblank' % self.is_live)
+        log.debug('Live = {live}, unblank'.format(live=self.is_live))
         self.hide_mode = None
         if not self.doc:
             return
@@ -321,7 +321,7 @@ class MessageListener(object):
         """
         Start of new presentation. Save the handler as any new presentations start here
         """
-        log.debug('Startup called with message %s' % message)
+        log.debug('Startup called with message {text}'.format(text=message))
         is_live = message[1]
         item = message[0]
         hide_mode = message[2]
@@ -332,7 +332,7 @@ class MessageListener(object):
         # the conversion has already been done at this point.
         file_type = os.path.splitext(file.lower())[1][1:]
         if file_type in PDF_CONTROLLER_FILETYPES:
-            log.debug('Converting from pdf/xps/oxps to images for serviceitem with file %s', file)
+            log.debug('Converting from pdf/xps/oxps to images for serviceitem with file {name}'.format(name=file))
             # Create a copy of the original item, and then clear the original item so it can be filled with images
             item_cpy = copy.copy(item)
             item.__init__(None)

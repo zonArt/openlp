@@ -29,8 +29,8 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate, get_images_filter
-from openlp.core.lib import ColorButton, SettingsTab, build_icon
+from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
+from openlp.core.lib import SettingsTab, build_icon
 from openlp.core.common.languagemanager import format_time
 
 log = logging.getLogger(__name__)
@@ -45,10 +45,12 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        self.default_image = ':/graphics/openlp-splash-screen.png'
-        self.default_color = '#ffffff'
         self.data_exists = False
         self.icon_path = ':/system/system_settings.png'
+        self.autoscroll_map = [None, {'dist': -1, 'pos': 0}, {'dist': -1, 'pos': 1}, {'dist': -1, 'pos': 2},
+                               {'dist': 0, 'pos': 0}, {'dist': 0, 'pos': 1}, {'dist': 0, 'pos': 2},
+                               {'dist': 0, 'pos': 3}, {'dist': 1, 'pos': 0}, {'dist': 1, 'pos': 1},
+                               {'dist': 1, 'pos': 2}, {'dist': 1, 'pos': 3}]
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
         super(AdvancedTab, self).__init__(parent, 'Advanced', advanced_translated)
 
@@ -85,11 +87,21 @@ class AdvancedTab(SettingsTab):
         self.ui_layout.addRow(self.expand_service_item_check_box)
         self.slide_max_height_label = QtWidgets.QLabel(self.ui_group_box)
         self.slide_max_height_label.setObjectName('slide_max_height_label')
-        self.slide_max_height_spin_box = QtWidgets.QSpinBox(self.ui_group_box)
-        self.slide_max_height_spin_box.setObjectName('slide_max_height_spin_box')
-        self.slide_max_height_spin_box.setRange(0, 1000)
-        self.slide_max_height_spin_box.setSingleStep(20)
-        self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_spin_box)
+        self.slide_max_height_combo_box = QtWidgets.QComboBox(self.ui_group_box)
+        self.slide_max_height_combo_box.addItem('', userData=0)
+        self.slide_max_height_combo_box.addItem('', userData=-4)
+        # Generate numeric values for combo box dynamically
+        for px in range(60, 801, 5):
+            self.slide_max_height_combo_box.addItem(str(px) + 'px', userData=px)
+        self.slide_max_height_combo_box.setObjectName('slide_max_height_combo_box')
+        self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_combo_box)
+        self.autoscroll_label = QtWidgets.QLabel(self.ui_group_box)
+        self.autoscroll_label.setObjectName('autoscroll_label')
+        self.autoscroll_combo_box = QtWidgets.QComboBox(self.ui_group_box)
+        self.autoscroll_combo_box.addItems(['', '', '', '', '', '', '', '', '', '', '', ''])
+        self.autoscroll_combo_box.setObjectName('autoscroll_combo_box')
+        self.ui_layout.addRow(self.autoscroll_label)
+        self.ui_layout.addRow(self.autoscroll_combo_box)
         self.search_as_type_check_box = QtWidgets.QCheckBox(self.ui_group_box)
         self.search_as_type_check_box.setObjectName('SearchAsType_check_box')
         self.ui_layout.addRow(self.search_as_type_check_box)
@@ -180,33 +192,6 @@ class AdvancedTab(SettingsTab):
         self.data_directory_layout.addRow(self.new_data_directory_has_files_label)
         self.left_layout.addWidget(self.data_directory_group_box)
         self.left_layout.addStretch()
-        # Default Image
-        self.default_image_group_box = QtWidgets.QGroupBox(self.right_column)
-        self.default_image_group_box.setObjectName('default_image_group_box')
-        self.default_image_layout = QtWidgets.QFormLayout(self.default_image_group_box)
-        self.default_image_layout.setObjectName('default_image_layout')
-        self.default_color_label = QtWidgets.QLabel(self.default_image_group_box)
-        self.default_color_label.setObjectName('default_color_label')
-        self.default_color_button = ColorButton(self.default_image_group_box)
-        self.default_color_button.setObjectName('default_color_button')
-        self.default_image_layout.addRow(self.default_color_label, self.default_color_button)
-        self.default_file_label = QtWidgets.QLabel(self.default_image_group_box)
-        self.default_file_label.setObjectName('default_file_label')
-        self.default_file_edit = QtWidgets.QLineEdit(self.default_image_group_box)
-        self.default_file_edit.setObjectName('default_file_edit')
-        self.default_browse_button = QtWidgets.QToolButton(self.default_image_group_box)
-        self.default_browse_button.setObjectName('default_browse_button')
-        self.default_browse_button.setIcon(build_icon(':/general/general_open.png'))
-        self.default_revert_button = QtWidgets.QToolButton(self.default_image_group_box)
-        self.default_revert_button.setObjectName('default_revert_button')
-        self.default_revert_button.setIcon(build_icon(':/general/general_revert.png'))
-        self.default_file_layout = QtWidgets.QHBoxLayout()
-        self.default_file_layout.setObjectName('default_file_layout')
-        self.default_file_layout.addWidget(self.default_file_edit)
-        self.default_file_layout.addWidget(self.default_browse_button)
-        self.default_file_layout.addWidget(self.default_revert_button)
-        self.default_image_layout.addRow(self.default_file_label, self.default_file_layout)
-        self.right_layout.addWidget(self.default_image_group_box)
         # Hide mouse
         self.hide_mouse_group_box = QtWidgets.QGroupBox(self.right_column)
         self.hide_mouse_group_box.setObjectName('hide_mouse_group_box')
@@ -253,9 +238,6 @@ class AdvancedTab(SettingsTab):
         self.service_name_time.timeChanged.connect(self.update_service_name_example)
         self.service_name_edit.textChanged.connect(self.update_service_name_example)
         self.service_name_revert_button.clicked.connect(self.on_service_name_revert_button_clicked)
-        self.default_color_button.colorChanged.connect(self.on_background_color_changed)
-        self.default_browse_button.clicked.connect(self.on_default_browse_button_clicked)
-        self.default_revert_button.clicked.connect(self.on_default_revert_button_clicked)
         self.alternate_rows_check_box.toggled.connect(self.on_alternate_rows_check_box_toggled)
         self.data_directory_browse_button.clicked.connect(self.on_data_directory_browse_button_clicked)
         self.data_directory_default_button.clicked.connect(self.on_data_directory_default_button_clicked)
@@ -286,7 +268,33 @@ class AdvancedTab(SettingsTab):
                                                              'Expand new service items on creation'))
         self.slide_max_height_label.setText(translate('OpenLP.AdvancedTab',
                                                       'Max height for non-text slides\nin slide controller:'))
-        self.slide_max_height_spin_box.setSpecialValueText(translate('OpenLP.AdvancedTab', 'Disabled'))
+        self.slide_max_height_combo_box.setItemText(0, translate('OpenLP.AdvancedTab', 'Disabled'))
+        self.slide_max_height_combo_box.setItemText(1, translate('OpenLP.AdvancedTab', 'Automatic'))
+        self.autoscroll_label.setText(translate('OpenLP.AdvancedTab',
+                                                'When changing slides:'))
+        self.autoscroll_combo_box.setItemText(0, translate('OpenLP.AdvancedTab', 'Do not auto-scroll'))
+        self.autoscroll_combo_box.setItemText(1, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the previous slide into view'))
+        self.autoscroll_combo_box.setItemText(2, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the previous slide to top'))
+        self.autoscroll_combo_box.setItemText(3, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the previous slide to middle'))
+        self.autoscroll_combo_box.setItemText(4, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the current slide into view'))
+        self.autoscroll_combo_box.setItemText(5, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the current slide to top'))
+        self.autoscroll_combo_box.setItemText(6, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the current slide to middle'))
+        self.autoscroll_combo_box.setItemText(7, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the current slide to bottom'))
+        self.autoscroll_combo_box.setItemText(8, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the next slide into view'))
+        self.autoscroll_combo_box.setItemText(9, translate('OpenLP.AdvancedTab',
+                                                           'Auto-scroll the next slide to top'))
+        self.autoscroll_combo_box.setItemText(10, translate('OpenLP.AdvancedTab',
+                                                            'Auto-scroll the next slide to middle'))
+        self.autoscroll_combo_box.setItemText(11, translate('OpenLP.AdvancedTab',
+                                                            'Auto-scroll the next slide to bottom'))
         self.enable_auto_close_check_box.setText(translate('OpenLP.AdvancedTab',
                                                            'Enable application exit confirmation'))
         self.service_name_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Default Service Name'))
@@ -304,16 +312,11 @@ class AdvancedTab(SettingsTab):
         self.service_name_label.setText(translate('OpenLP.AdvancedTab', 'Name:'))
         self.service_name_edit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.service_name_revert_button.setToolTip(
-            translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') %
-            UiStrings().DefaultServiceName)
+            translate('OpenLP.AdvancedTab',
+                      'Revert to the default service name "{name}".').format(name=UiStrings().DefaultServiceName))
         self.service_name_example_label.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hide_mouse_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
         self.hide_mouse_check_box.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
-        self.default_image_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Default Image'))
-        self.default_color_label.setText(translate('OpenLP.AdvancedTab', 'Background color:'))
-        self.default_file_label.setText(translate('OpenLP.AdvancedTab', 'Image file:'))
-        self.default_browse_button.setToolTip(translate('OpenLP.AdvancedTab', 'Browse for an image file to display.'))
-        self.default_revert_button.setToolTip(translate('OpenLP.AdvancedTab', 'Revert to the default OpenLP logo.'))
         self.data_directory_current_label.setText(translate('OpenLP.AdvancedTab', 'Current path:'))
         self.data_directory_new_label.setText(translate('OpenLP.AdvancedTab', 'Custom path:'))
         self.data_directory_browse_button.setToolTip(translate('OpenLP.AdvancedTab',
@@ -356,7 +359,14 @@ class AdvancedTab(SettingsTab):
         self.single_click_preview_check_box.setChecked(settings.value('single click preview'))
         self.single_click_service_preview_check_box.setChecked(settings.value('single click service preview'))
         self.expand_service_item_check_box.setChecked(settings.value('expand service item'))
-        self.slide_max_height_spin_box.setValue(settings.value('slide max height'))
+        slide_max_height_value = settings.value('slide max height')
+        for i in range(0, self.slide_max_height_combo_box.count()):
+            if self.slide_max_height_combo_box.itemData(i) == slide_max_height_value:
+                self.slide_max_height_combo_box.setCurrentIndex(i)
+        autoscroll_value = settings.value('autoscrolling')
+        for i in range(0, len(self.autoscroll_map)):
+            if self.autoscroll_map[i] == autoscroll_value and i < self.autoscroll_combo_box.count():
+                self.autoscroll_combo_box.setCurrentIndex(i)
         self.enable_auto_close_check_box.setChecked(settings.value('enable exit confirmation'))
         self.hide_mouse_check_box.setChecked(settings.value('hide mouse'))
         self.service_name_day.setCurrentIndex(settings.value('default service day'))
@@ -368,8 +378,6 @@ class AdvancedTab(SettingsTab):
         self.service_name_check_box.setChecked(default_service_enabled)
         self.service_name_check_box_toggled(default_service_enabled)
         self.x11_bypass_check_box.setChecked(settings.value('x11 bypass wm'))
-        self.default_color = settings.value('default color')
-        self.default_file_edit.setText(settings.value('default image'))
         self.slide_limits = settings.value('slide limits')
         self.is_search_as_you_type_enabled = settings.value('search as type')
         self.search_as_type_check_box.setChecked(self.is_search_as_you_type_enabled)
@@ -390,16 +398,16 @@ class AdvancedTab(SettingsTab):
         # Since data location can be changed, make sure the path is present.
         self.current_data_path = AppLocation.get_data_path()
         if not os.path.exists(self.current_data_path):
-            log.error('Data path not found %s' % self.current_data_path)
+            log.error('Data path not found {path}'.format(path=self.current_data_path))
             answer = QtWidgets.QMessageBox.critical(
                 self, translate('OpenLP.AdvancedTab', 'Data Directory Error'),
-                translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n%s\n\n'
+                translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n{path}\n\n'
                           'This data directory was previously changed from the OpenLP '
                           'default location.  If the new location was on removable '
                           'media, that media needs to be made available.\n\n'
                           'Click "No" to stop loading OpenLP. allowing you to fix the the problem.\n\n'
                           'Click "Yes" to reset the data directory to the default '
-                          'location.').replace('%s', self.current_data_path),
+                          'location.').format(path=self.current_data_path),
                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                 QtWidgets.QMessageBox.No)
             if answer == QtWidgets.QMessageBox.No:
@@ -409,9 +417,8 @@ class AdvancedTab(SettingsTab):
             # Set data location to default.
             settings.remove('advanced/data path')
             self.current_data_path = AppLocation.get_data_path()
-            log.warning('User requested data path set to default %s' % self.current_data_path)
+            log.warning('User requested data path set to default {path}'.format(path=self.current_data_path))
         self.data_directory_label.setText(os.path.abspath(self.current_data_path))
-        self.default_color_button.color = self.default_color
         # Don't allow data directory move if running portable.
         if settings.value('advanced/is portable'):
             self.data_directory_group_box.hide()
@@ -439,12 +446,13 @@ class AdvancedTab(SettingsTab):
         settings.setValue('single click preview', self.single_click_preview_check_box.isChecked())
         settings.setValue('single click service preview', self.single_click_service_preview_check_box.isChecked())
         settings.setValue('expand service item', self.expand_service_item_check_box.isChecked())
-        settings.setValue('slide max height', self.slide_max_height_spin_box.value())
+        slide_max_height_index = self.slide_max_height_combo_box.currentIndex()
+        slide_max_height_value = self.slide_max_height_combo_box.itemData(slide_max_height_index)
+        settings.setValue('slide max height', slide_max_height_value)
+        settings.setValue('autoscrolling', self.autoscroll_map[self.autoscroll_combo_box.currentIndex()])
         settings.setValue('enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue('hide mouse', self.hide_mouse_check_box.isChecked())
         settings.setValue('alternate rows', self.alternate_rows_check_box.isChecked())
-        settings.setValue('default color', self.default_color)
-        settings.setValue('default image', self.default_file_edit.text())
         settings.setValue('slide limits', self.slide_limits)
         if self.x11_bypass_check_box.isChecked() != settings.value('x11 bypass wm'):
             settings.setValue('x11 bypass wm', self.x11_bypass_check_box.isChecked())
@@ -522,24 +530,6 @@ class AdvancedTab(SettingsTab):
         self.service_name_edit.setText(UiStrings().DefaultServiceName)
         self.service_name_edit.setFocus()
 
-    def on_background_color_changed(self, color):
-        """
-        Select the background colour of the default display screen.
-        """
-        self.default_color = color
-
-    def on_default_browse_button_clicked(self):
-        """
-        Select an image for the default display screen.
-        """
-        file_filters = '%s;;%s (*.*)' % (get_images_filter(), UiStrings().AllFiles)
-        filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(self,
-                                                                      translate('OpenLP.AdvancedTab', 'Open File'), '',
-                                                                      file_filters)
-        if filename:
-            self.default_file_edit.setText(filename)
-        self.default_file_edit.setFocus()
-
     def on_data_directory_browse_button_clicked(self):
         """
         Browse for a new data directory location.
@@ -561,9 +551,9 @@ class AdvancedTab(SettingsTab):
         # Make sure they want to change the data.
         answer = QtWidgets.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
                                                 translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
-                                                          'location of the OpenLP data directory to:\n\n%s\n\nThe data '
-                                                          'directory will be changed when OpenLP is closed.').
-                                                replace('%s', new_data_path),
+                                                          'location of the OpenLP data directory to:\n\n{path}'
+                                                          '\n\nThe data directory will be changed when OpenLP is '
+                                                          'closed.').format(path=new_data_path),
                                                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
                                                                                       QtWidgets.QMessageBox.No),
                                                 QtWidgets.QMessageBox.No)
@@ -627,10 +617,10 @@ class AdvancedTab(SettingsTab):
             answer = QtWidgets.QMessageBox.warning(self,
                                                    translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
                                                    translate('OpenLP.AdvancedTab',
-                                                             'WARNING: \n\nThe location you have selected \n\n%s\n\n'
-                                                             'appears to contain OpenLP data files. Do you wish to '
-                                                             'replace these files with the current data files?').
-                                                   replace('%s', os.path.abspath(data_path,)),
+                                                             'WARNING: \n\nThe location you have selected \n\n{path}'
+                                                             '\n\nappears to contain OpenLP data files. Do you wish to '
+                                                             'replace these files with the current data '
+                                                             'files?').format(path=os.path.abspath(data_path,)),
                                                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
                                                                                          QtWidgets.QMessageBox.No),
                                                    QtWidgets.QMessageBox.No)
@@ -656,13 +646,6 @@ class AdvancedTab(SettingsTab):
         self.data_directory_copy_check_box.hide()
         self.data_directory_cancel_button.hide()
         self.new_data_directory_has_files_label.hide()
-
-    def on_default_revert_button_clicked(self):
-        """
-        Revert the default screen back to the default settings.
-        """
-        self.default_file_edit.setText(':/graphics/openlp-splash-screen.png')
-        self.default_file_edit.setFocus()
 
     def on_alternate_rows_check_box_toggled(self, checked):
         """

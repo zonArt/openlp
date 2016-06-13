@@ -24,6 +24,7 @@ The :mod:`common` module contains most of the components and libraries that make
 OpenLP work.
 """
 import hashlib
+
 import logging
 import os
 import re
@@ -31,6 +32,7 @@ import sys
 import traceback
 from ipaddress import IPv4Address, IPv6Address, AddressValueError
 from shutil import which
+from subprocess import check_output, CalledProcessError, STDOUT
 
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QCryptographicHash as QHash
@@ -53,7 +55,9 @@ def trace_error_handler(logger):
     """
     log_string = "OpenLP Error trace"
     for tb in traceback.extract_stack():
-        log_string = '%s\n   File %s at line %d \n\t called %s' % (log_string, tb[0], tb[1], tb[3])
+        log_string += '\n   File {file} at line {line} \n\t called {data}'.format(file=tb[0],
+                                                                                  line=tb[1],
+                                                                                  data=tb[3])
     logger.error(log_string)
 
 
@@ -65,7 +69,7 @@ def check_directory_exists(directory, do_not_log=False):
     :param do_not_log: To not log anything. This is need for the start up, when the log isn't ready.
     """
     if not do_not_log:
-        log.debug('check_directory_exists %s' % directory)
+        log.debug('check_directory_exists {text}'.format(text=directory))
     try:
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -200,13 +204,13 @@ def md5_hash(salt, data=None):
     :param data: OPTIONAL Data to hash
     :returns: str
     """
-    log.debug('md5_hash(salt="%s")' % salt)
+    log.debug('md5_hash(salt="{text}")'.format(text=salt))
     hash_obj = hashlib.new('md5')
     hash_obj.update(salt)
     if data:
         hash_obj.update(data)
     hash_value = hash_obj.hexdigest()
-    log.debug('md5_hash() returning "%s"' % hash_value)
+    log.debug('md5_hash() returning "{text}"'.format(text=hash_value))
     return hash_value
 
 
@@ -219,12 +223,12 @@ def qmd5_hash(salt, data=None):
     :param data: OPTIONAL Data to hash
     :returns: str
     """
-    log.debug('qmd5_hash(salt="%s"' % salt)
+    log.debug('qmd5_hash(salt="{text}"'.format(text=salt))
     hash_obj = QHash(QHash.Md5)
     hash_obj.addData(salt)
     hash_obj.addData(data)
     hash_value = hash_obj.result().toHex()
-    log.debug('qmd5_hash() returning "%s"' % hash_value)
+    log.debug('qmd5_hash() returning "{text}"'.format(text=hash_value))
     return hash_value.data()
 
 
@@ -246,6 +250,9 @@ from .settings import Settings
 from .applocation import AppLocation
 from .actions import ActionList
 from .languagemanager import LanguageManager
+
+if is_win():
+    from subprocess import STARTUPINFO, STARTF_USESHOWWINDOW
 
 
 def add_actions(target, actions):
@@ -278,7 +285,7 @@ def get_uno_command(connection_type='pipe'):
         CONNECTION = '"--accept=pipe,name=openlp_pipe;urp;"'
     else:
         CONNECTION = '"--accept=socket,host=localhost,port=2002;urp;"'
-    return '%s %s %s' % (command, OPTIONS, CONNECTION)
+    return '{cmd} {opt} {conn}'.format(cmd=command, opt=OPTIONS, conn=CONNECTION)
 
 
 def get_uno_instance(resolver, connection_type='pipe'):
@@ -328,7 +335,7 @@ def delete_file(file_path_name):
             os.remove(file_path_name)
         return True
     except (IOError, OSError):
-        log.exception("Unable to delete file %s" % file_path_name)
+        log.exception("Unable to delete file {text}".format(text=file_path_name))
         return False
 
 
@@ -340,9 +347,11 @@ def get_images_filter():
     if not IMAGES_FILTER:
         log.debug('Generating images filter.')
         formats = list(map(bytes.decode, list(map(bytes, QtGui.QImageReader.supportedImageFormats()))))
-        visible_formats = '(*.%s)' % '; *.'.join(formats)
-        actual_formats = '(*.%s)' % ' *.'.join(formats)
-        IMAGES_FILTER = '%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
+        visible_formats = '(*.{text})'.format(text='; *.'.join(formats))
+        actual_formats = '(*.{text})'.format(text=' *.'.join(formats))
+        IMAGES_FILTER = '{text} {visible} {actual}'.format(text=translate('OpenLP', 'Image Files'),
+                                                           visible=visible_formats,
+                                                           actual=actual_formats)
     return IMAGES_FILTER
 
 
@@ -371,3 +380,28 @@ def clean_filename(filename):
     if not isinstance(filename, str):
         filename = str(filename, 'utf-8')
     return INVALID_FILE_CHARS.sub('_', CONTROL_CHARS.sub('', filename))
+
+
+def check_binary_exists(program_path):
+    """
+    Function that checks whether a binary exists.
+
+    :param program_path:The full path to the binary to check.
+    :return: program output to be parsed
+    """
+    log.debug('testing program_path: {text}'.format(text=program_path))
+    try:
+        # Setup startupinfo options for check_output to avoid console popping up on windows
+        if is_win():
+            startupinfo = STARTUPINFO()
+            startupinfo.dwFlags |= STARTF_USESHOWWINDOW
+        else:
+            startupinfo = None
+        runlog = check_output([program_path, '--help'], stderr=STDOUT, startupinfo=startupinfo)
+    except CalledProcessError as e:
+        runlog = e.output
+    except Exception:
+        trace_error_handler(log)
+        runlog = ''
+    log.debug('check_output returned: {text}'.format(text=runlog))
+    return runlog

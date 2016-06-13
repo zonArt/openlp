@@ -53,7 +53,7 @@ class TestEditVerseForm(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def update_suggested_verse_number_test(self):
+    def test_update_suggested_verse_number(self):
         """
         Test that update_suggested_verse_number() has no effect when editing a single verse
         """

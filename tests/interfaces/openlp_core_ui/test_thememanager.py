@@ -50,7 +50,7 @@ class TestThemeManager(TestCase, TestMixin):
         self.destroy_settings()
         del self.theme_manager
 
-    def initialise_test(self):
+    def test_initialise(self):
         """
         Test the thememanager initialise - basic test
         """
@@ -70,7 +70,7 @@ class TestThemeManager(TestCase, TestMixin):
         self.assertEqual(self.theme_manager.global_theme, 'my_theme',
                          'The global theme should have been set to my_theme')
 
-    def build_theme_path_test(self):
+    def test_build_theme_path(self):
         """
         Test the thememanager build_theme_path - basic test
         """
@@ -90,7 +90,7 @@ class TestThemeManager(TestCase, TestMixin):
         assert self.theme_manager.thumb_path.startswith(self.theme_manager.path) is True, \
             'The thumb path and the main path should start with the same value'
 
-    def click_on_new_theme_test(self):
+    def test_click_on_new_theme(self):
         """
         Test the on_add_theme event handler is called by the UI
         """
@@ -108,7 +108,7 @@ class TestThemeManager(TestCase, TestMixin):
 
     @patch('openlp.core.ui.themeform.ThemeForm._setup')
     @patch('openlp.core.ui.filerenameform.FileRenameForm._setup')
-    def bootstrap_post_test(self, mocked_theme_form, mocked_rename_form):
+    def test_bootstrap_post(self, mocked_theme_form, mocked_rename_form):
         """
         Test the functions of bootstrap_post_setup are called.
         """

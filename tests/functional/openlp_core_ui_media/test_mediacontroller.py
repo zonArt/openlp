@@ -38,7 +38,7 @@ class TestMediaController(TestCase, TestMixin):
         Registry.create()
         Registry().register('service_manager', MagicMock())
 
-    def generate_extensions_lists_test(self):
+    def test_generate_extensions_lists(self):
         """
         Test that the extensions are create correctly
         """
@@ -59,7 +59,7 @@ class TestMediaController(TestCase, TestMixin):
         self.assertListEqual(media_player.audio_extensions_list, media_controller.audio_extensions_list,
                              'Audio extensions should be the same')
 
-    def resize_test(self):
+    def test_resize(self):
         """
         Test that the resize method is called correctly
         """
@@ -74,14 +74,15 @@ class TestMediaController(TestCase, TestMixin):
         # THEN: The player's resize method should be called correctly
         mocked_player.resize.assert_called_with(mocked_display)
 
-    def check_file_type_no_players_test(self):
+    def test_check_file_type_no_players(self):
         """
         Test that we don't try to play media when no players available
         """
-        # GIVEN: A mocked UiStrings, get_media_players, controller, display and service_item
-        with patch('openlp.core.ui.media.mediacontroller.get_media_players') as mocked_get_media_players,\
+        # GIVEN: A mocked UiStrings, get_used_players, controller, display and service_item
+        with patch('openlp.core.ui.media.mediacontroller.MediaController._get_used_players') as \
+                mocked_get_used_players,\
                 patch('openlp.core.ui.media.mediacontroller.UiStrings') as mocked_uistrings:
-            mocked_get_media_players.return_value = ([], '')
+            mocked_get_used_players.return_value = ([])
             mocked_ret_uistrings = MagicMock()
             mocked_ret_uistrings.Automatic = 1
             mocked_uistrings.return_value = mocked_ret_uistrings
@@ -97,14 +98,14 @@ class TestMediaController(TestCase, TestMixin):
             # THEN: it should return False
             self.assertFalse(ret, '_check_file_type should return False when no mediaplayers are available.')
 
-    @patch('openlp.core.ui.media.mediacontroller.get_media_players')
+    @patch('openlp.core.ui.media.mediacontroller.MediaController._get_used_players')
     @patch('openlp.core.ui.media.mediacontroller.UiStrings')
-    def check_file_type_no_processor_test(self, mocked_uistrings, mocked_get_media_players):
+    def test_check_file_type_no_processor(self, mocked_uistrings, mocked_get_used_players):
         """
         Test that we don't try to play media when the processor for the service item is None
         """
         # GIVEN: A mocked UiStrings, get_media_players, controller, display and service_item
-        mocked_get_media_players.return_value = ([], '')
+        mocked_get_used_players.return_value = ([], '')
         mocked_ret_uistrings = MagicMock()
         mocked_ret_uistrings.Automatic = 1
         mocked_uistrings.return_value = mocked_ret_uistrings
@@ -120,14 +121,14 @@ class TestMediaController(TestCase, TestMixin):
         # THEN: it should return False
         self.assertFalse(ret, '_check_file_type should return False when the processor for service_item is None.')
 
-    @patch('openlp.core.ui.media.mediacontroller.get_media_players')
+    @patch('openlp.core.ui.media.mediacontroller.MediaController._get_used_players')
     @patch('openlp.core.ui.media.mediacontroller.UiStrings')
-    def check_file_type_automatic_processor_test(self, mocked_uistrings, mocked_get_media_players):
+    def test_check_file_type_automatic_processor(self, mocked_uistrings, mocked_get_used_players):
         """
         Test that we can play media when players are available and we have a automatic processor from the service item
         """
         # GIVEN: A mocked UiStrings, get_media_players, controller, display and service_item
-        mocked_get_media_players.return_value = (['vlc', 'webkit'], '')
+        mocked_get_used_players.return_value = (['vlc', 'webkit'])
         mocked_ret_uistrings = MagicMock()
         mocked_ret_uistrings.Automatic = 1
         mocked_uistrings.return_value = mocked_ret_uistrings
@@ -150,21 +151,21 @@ class TestMediaController(TestCase, TestMixin):
         self.assertTrue(ret, '_check_file_type should return True when mediaplayers are available and '
                              'the service item has an automatic processor.')
 
-    @patch('openlp.core.ui.media.mediacontroller.get_media_players')
+    @patch('openlp.core.ui.media.mediacontroller.MediaController._get_used_players')
     @patch('openlp.core.ui.media.mediacontroller.UiStrings')
-    def check_file_type_processor_different_from_available_test(self, mocked_uistrings, mocked_get_media_players):
+    def test_check_file_type_processor_different_from_available(self, mocked_uistrings, mocked_get_used_players):
         """
         Test that we can play media when players available are different from the processor from the service item
         """
         # GIVEN: A mocked UiStrings, get_media_players, controller, display and service_item
-        mocked_get_media_players.return_value = (['phonon'], '')
+        mocked_get_used_players.return_value = (['system'])
         mocked_ret_uistrings = MagicMock()
         mocked_ret_uistrings.Automatic = 'automatic'
         mocked_uistrings.return_value = mocked_ret_uistrings
         media_controller = MediaController()
         mocked_phonon = MagicMock()
         mocked_phonon.video_extensions_list = ['*.mp4']
-        media_controller.media_players = {'phonon': mocked_phonon}
+        media_controller.media_players = {'system': mocked_phonon}
         mocked_controller = MagicMock()
         mocked_suffix = MagicMock()
         mocked_suffix.return_value = 'mp4'
@@ -180,7 +181,7 @@ class TestMediaController(TestCase, TestMixin):
         self.assertTrue(ret, '_check_file_type should return True when the players available are different'
                              'from the processor from the service item.')
 
-    def media_play_msg_test(self):
+    def test_media_play_msg(self):
         """
         Test that the media controller responds to the request to play a loaded video
         """
@@ -195,7 +196,7 @@ class TestMediaController(TestCase, TestMixin):
         # THEN: The underlying method is called
         mocked_media_play.assert_called_with(1, False)
 
-    def media_pause_msg_test(self):
+    def test_media_pause_msg(self):
         """
         Test that the media controller responds to the request to pause a loaded video
         """
@@ -210,7 +211,7 @@ class TestMediaController(TestCase, TestMixin):
         # THEN: The underlying method is called
         mocked_media_pause.assert_called_with(1)
 
-    def media_stop_msg_test(self):
+    def test_media_stop_msg(self):
         """
         Test that the media controller responds to the request to stop a loaded video
         """
@@ -225,7 +226,7 @@ class TestMediaController(TestCase, TestMixin):
         # THEN: The underlying method is called
         mocked_media_stop.assert_called_with(1)
 
-    def media_volume_msg_test(self):
+    def test_media_volume_msg(self):
         """
         Test that the media controller responds to the request to change the volume
         """
@@ -240,7 +241,7 @@ class TestMediaController(TestCase, TestMixin):
         # THEN: The underlying method is called
         mocked_media_volume.assert_called_with(1, 50)
 
-    def media_seek_msg_test(self):
+    def test_media_seek_msg(self):
         """
         Test that the media controller responds to the request to seek to a particular position
         """

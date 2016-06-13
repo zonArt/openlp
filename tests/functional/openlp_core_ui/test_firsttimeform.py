@@ -78,7 +78,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
         if os.path.isfile(self.tempfile):
             os.remove(self.tempfile)
 
-    def initialise_test(self):
+    def test_initialise(self):
         """
         Test if we can intialise the FirstTimeForm
         """
@@ -97,7 +97,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
         self.assertListEqual([], frw.theme_screenshot_workers, 'The list of workers should be empty')
         self.assertFalse(frw.has_run_wizard, 'has_run_wizard should be False')
 
-    def set_defaults_test(self):
+    def test_set_defaults(self):
         """
         Test that the default values are set when set_defaults() is run
         """
@@ -134,7 +134,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
             mocked_gettempdir.assert_called_with()
             mocked_check_directory_exists.assert_called_with(expected_temp_path)
 
-    def update_screen_list_combo_test(self):
+    def test_update_screen_list_combo(self):
         """
         Test that the update_screen_list_combo() method works correctly
         """
@@ -157,7 +157,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
             mocked_display_combo_box.count.assert_called_with()
             mocked_display_combo_box.setCurrentIndex.assert_called_with(1)
 
-    def on_cancel_button_clicked_test(self):
+    def test_on_cancel_button_clicked(self):
         """
         Test that the cancel button click slot shuts down the threads correctly
         """
@@ -184,7 +184,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
             self.assertEqual(1, mocked_time.sleep.call_count, 'sleep() should have only been called once')
             mocked_set_normal_cursor.assert_called_with()
 
-    def broken_config_test(self):
+    def test_broken_config(self):
         """
         Test if we can handle an config file with missing data
         """
@@ -200,7 +200,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
             # THEN: The First Time Form should not have web access
             self.assertFalse(first_time_form.web_access, 'There should not be web access with a broken config file')
 
-    def invalid_config_test(self):
+    def test_invalid_config(self):
         """
         Test if we can handle an config file in invalid format
         """
@@ -218,7 +218,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
 
     @patch('openlp.core.ui.firsttimeform.get_web_page')
     @patch('openlp.core.ui.firsttimeform.QtWidgets.QMessageBox')
-    def network_error_test(self, mocked_message_box, mocked_get_web_page):
+    def test_network_error(self, mocked_message_box, mocked_get_web_page):
         """
         Test we catch a network error in First Time Wizard - bug 1409627
         """
@@ -238,7 +238,7 @@ class TestFirstTimeForm(TestCase, TestMixin):
                           'first_time_form should have caught Network Error')
 
     @patch('openlp.core.ui.firsttimeform.urllib.request.urlopen')
-    def socket_timeout_test(self, mocked_urlopen):
+    def test_socket_timeout(self, mocked_urlopen):
         """
         Test socket timeout gets caught
         """

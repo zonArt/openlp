@@ -299,12 +299,14 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         # Set up UI components
         self.view_button.setEnabled(False)
         self.search_button.setEnabled(False)
+        self.search_combobox.setEnabled(False)
         self.search_progress_bar.setMinimum(0)
         self.search_progress_bar.setMaximum(0)
         self.search_progress_bar.setValue(0)
         self.set_progress_visible(True)
         self.search_results_widget.clear()
-        self.result_count_label.setText(translate('SongsPlugin.SongSelectForm', 'Found %s song(s)') % self.song_count)
+        self.result_count_label.setText(translate('SongsPlugin.SongSelectForm',
+                                                  'Found {count:d} song(s)').format(count=self.song_count))
         self.application.process_events()
         self.song_count = 0
         search_history = self.search_combobox.getItems()
@@ -342,7 +344,8 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         :param song:
         """
         self.song_count += 1
-        self.result_count_label.setText(translate('SongsPlugin.SongSelectForm', 'Found %s song(s)') % self.song_count)
+        self.result_count_label.setText(translate('SongsPlugin.SongSelectForm',
+                                                  'Found {count:d} song(s)').format(count=self.song_count))
         item_title = song['title'] + ' (' + ', '.join(song['authors']) + ')'
         song_item = QtWidgets.QListWidgetItem(item_title, self.search_results_widget)
         song_item.setData(QtCore.Qt.UserRole, song)
@@ -354,6 +357,7 @@ class SongSelectForm(QtWidgets.QDialog, Ui_SongSelectDialog):
         self.application.process_events()
         self.set_progress_visible(False)
         self.search_button.setEnabled(True)
+        self.search_combobox.setEnabled(True)
         self.application.process_events()
 
     def on_search_results_widget_selection_changed(self):

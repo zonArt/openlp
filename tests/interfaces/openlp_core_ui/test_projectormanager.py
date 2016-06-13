@@ -63,7 +63,7 @@ class TestProjectorManager(TestCase, TestMixin):
         self.destroy_settings()
         del self.projector_manager
 
-    def bootstrap_initialise_test(self):
+    def test_bootstrap_initialise(self):
         """
         Test initialize calls correct startup functions
         """
@@ -73,7 +73,7 @@ class TestProjectorManager(TestCase, TestMixin):
         self.assertEqual(type(self.projector_manager.projectordb), ProjectorDB,
                          'Initialization should have created a ProjectorDB() instance')
 
-    def bootstrap_post_set_up_test(self):
+    def test_bootstrap_post_set_up(self):
         """
         Test post-initialize calls proper setups
         """

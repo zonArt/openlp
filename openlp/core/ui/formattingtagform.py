@@ -90,9 +90,10 @@ class FormattingTagForm(QtWidgets.QDialog, Ui_FormattingTagDialog, FormattingTag
         """
         new_row = self.tag_table_widget.rowCount()
         self.tag_table_widget.insertRow(new_row)
-        self.tag_table_widget.setItem(new_row, 0, QtWidgets.QTableWidgetItem(translate('OpenLP.FormattingTagForm',
-                                                                                       'New Tag %d' % new_row)))
-        self.tag_table_widget.setItem(new_row, 1, QtWidgets.QTableWidgetItem('n%d' % new_row))
+        self.tag_table_widget.setItem(new_row, 0,
+                                      QtWidgets.QTableWidgetItem(translate('OpenLP.FormattingTagForm',
+                                                                           'New Tag {row:d}').format(row=new_row)))
+        self.tag_table_widget.setItem(new_row, 1, QtWidgets.QTableWidgetItem('n{row:d}'.format(row=new_row)))
         self.tag_table_widget.setItem(new_row, 2,
                                       QtWidgets.QTableWidgetItem(translate('OpenLP.FormattingTagForm', '<HTML here>')))
         self.tag_table_widget.setItem(new_row, 3, QtWidgets.QTableWidgetItem(''))

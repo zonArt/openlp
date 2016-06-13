@@ -48,7 +48,7 @@ class TestInit(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def add_actions_empty_list_test(self):
+    def test_add_actions_empty_list(self):
         """
         Test that no actions are added when the list is empty
         """
@@ -63,7 +63,7 @@ class TestInit(TestCase, TestMixin):
         self.assertEqual(0, mocked_target.addSeparator.call_count, 'addSeparator method should not have been called')
         self.assertEqual(0, mocked_target.addAction.call_count, 'addAction method should not have been called')
 
-    def add_actions_none_action_test(self):
+    def test_add_actions_none_action(self):
         """
         Test that a separator is added when a None action is in the list
         """
@@ -78,7 +78,7 @@ class TestInit(TestCase, TestMixin):
         mocked_target.addSeparator.assert_called_with()
         self.assertEqual(0, mocked_target.addAction.call_count, 'addAction method should not have been called')
 
-    def add_actions_add_action_test(self):
+    def test_add_actions_add_action(self):
         """
         Test that an action is added when a valid action is in the list
         """
@@ -93,7 +93,7 @@ class TestInit(TestCase, TestMixin):
         self.assertEqual(0, mocked_target.addSeparator.call_count, 'addSeparator method should not have been called')
         mocked_target.addAction.assert_called_with('action')
 
-    def add_actions_action_and_none_test(self):
+    def test_add_actions_action_and_none(self):
         """
         Test that an action and a separator are added when a valid action and None are in the list
         """
@@ -108,7 +108,7 @@ class TestInit(TestCase, TestMixin):
         mocked_target.addSeparator.assert_called_with()
         mocked_target.addAction.assert_called_with('action')
 
-    def get_uno_instance_pipe_test(self):
+    def test_get_uno_instance_pipe(self):
         """
         Test that when the UNO connection type is "pipe" the resolver is given the "pipe" URI
         """
@@ -121,7 +121,7 @@ class TestInit(TestCase, TestMixin):
         # THEN: the resolve method is called with the correct argument
         mock_resolver.resolve.assert_called_with('uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
 
-    def get_uno_instance_socket_test(self):
+    def test_get_uno_instance_socket(self):
         """
         Test that when the UNO connection type is other than "pipe" the resolver is given the "socket" URI
         """
@@ -134,7 +134,7 @@ class TestInit(TestCase, TestMixin):
         # THEN: the resolve method is called with the correct argument
         mock_resolver.resolve.assert_called_with('uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
 
-    def get_uno_command_libreoffice_command_exists_test(self):
+    def test_get_uno_command_libreoffice_command_exists(self):
         """
         Test the ``get_uno_command`` function uses the libreoffice command when available.
         :return:
@@ -151,7 +151,7 @@ class TestInit(TestCase, TestMixin):
                               'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
                               ' "--accept=pipe,name=openlp_pipe;urp;"')
 
-    def get_uno_command_only_soffice_command_exists_test(self):
+    def test_get_uno_command_only_soffice_command_exists(self):
         """
         Test the ``get_uno_command`` function uses the soffice command when the libreoffice command is not available.
         :return:
@@ -169,7 +169,7 @@ class TestInit(TestCase, TestMixin):
             self.assertEquals(result, 'soffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
                                       ' "--accept=pipe,name=openlp_pipe;urp;"')
 
-    def get_uno_command_when_no_command_exists_test(self):
+    def test_get_uno_command_when_no_command_exists(self):
         """
         Test the ``get_uno_command`` function raises an FileNotFoundError when neither the libreoffice or soffice
         commands are available.
@@ -183,7 +183,7 @@ class TestInit(TestCase, TestMixin):
             # THEN: a FileNotFoundError exception should be raised
             self.assertRaises(FileNotFoundError, get_uno_command)
 
-    def get_uno_command_connection_type_test(self):
+    def test_get_uno_command_connection_type(self):
         """
         Test the ``get_uno_command`` function when the connection type is anything other than pipe.
         :return:
@@ -198,7 +198,7 @@ class TestInit(TestCase, TestMixin):
             self.assertEqual(result, 'libreoffice --nologo --norestore --minimized --nodefault --nofirststartwizard'
                                      ' "--accept=socket,host=localhost,port=2002;urp;"')
 
-    def get_filesystem_encoding_sys_function_not_called_test(self):
+    def test_get_filesystem_encoding_sys_function_not_called(self):
         """
         Test the get_filesystem_encoding() function does not call the sys.getdefaultencoding() function
         """
@@ -215,7 +215,7 @@ class TestInit(TestCase, TestMixin):
             self.assertEqual(0, mocked_getdefaultencoding.called, 'getdefaultencoding should not have been called')
             self.assertEqual('cp1252', result, 'The result should be "cp1252"')
 
-    def get_filesystem_encoding_sys_function_is_called_test(self):
+    def test_get_filesystem_encoding_sys_function_is_called(self):
         """
         Test the get_filesystem_encoding() function calls the sys.getdefaultencoding() function
         """
@@ -233,7 +233,7 @@ class TestInit(TestCase, TestMixin):
             mocked_getdefaultencoding.assert_called_with()
             self.assertEqual('utf-8', result, 'The result should be "utf-8"')
 
-    def split_filename_with_file_path_test(self):
+    def test_split_filename_with_file_path(self):
         """
         Test the split_filename() function with a path to a file
         """
@@ -253,7 +253,7 @@ class TestInit(TestCase, TestMixin):
             # THEN: A tuple should be returned.
             self.assertEqual(wanted_result, result, 'A tuple with the dir and file name should have been returned')
 
-    def split_filename_with_dir_path_test(self):
+    def test_split_filename_with_dir_path(self):
         """
         Test the split_filename() function with a path to a directory
         """
@@ -274,7 +274,7 @@ class TestInit(TestCase, TestMixin):
             self.assertEqual(wanted_result, result,
                              'A two-entry tuple with the directory and file name (empty) should have been returned.')
 
-    def clean_filename_test(self):
+    def test_clean_filename(self):
         """
         Test the clean_filename() function
         """
@@ -288,7 +288,7 @@ class TestInit(TestCase, TestMixin):
         # THEN: The file name should be cleaned.
         self.assertEqual(wanted_name, result, 'The file name should not contain any special characters.')
 
-    def delete_file_no_path_test(self):
+    def test_delete_file_no_path(self):
         """
         Test the delete_file function when called with out a valid path
         """
@@ -299,7 +299,7 @@ class TestInit(TestCase, TestMixin):
         # THEN: delete_file should return False
         self.assertFalse(result, "delete_file should return False when called with ''")
 
-    def delete_file_path_success_test(self):
+    def test_delete_file_path_success(self):
         """
         Test the delete_file function when it successfully deletes a file
         """
@@ -312,7 +312,7 @@ class TestInit(TestCase, TestMixin):
             # THEN: delete_file should return True
             self.assertTrue(result, 'delete_file should return True when it successfully deletes a file')
 
-    def delete_file_path_no_file_exists_test(self):
+    def test_delete_file_path_no_file_exists(self):
         """
         Test the delete_file function when the file to remove does not exist
         """
@@ -325,7 +325,7 @@ class TestInit(TestCase, TestMixin):
             # THEN: delete_file should return True
             self.assertTrue(result, 'delete_file should return True when the file doesnt exist')
 
-    def delete_file_path_exception_test(self):
+    def test_delete_file_path_exception(self):
         """
         Test the delete_file function when os.remove raises an exception
         """

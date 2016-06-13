@@ -71,7 +71,7 @@ class TestRemoteTab(TestCase, TestMixin):
         del self.form
         self.destroy_settings()
 
-    def get_ip_address_default_test(self):
+    def test_get_ip_address_default(self):
         """
         Test the get_ip_address function with ZERO_URL
         """
@@ -81,7 +81,7 @@ class TestRemoteTab(TestCase, TestMixin):
         self.assertTrue(re.match('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', ip_address),
                         'The return value should be a valid ip address')
 
-    def get_ip_address_with_ip_test(self):
+    def test_get_ip_address_with_ip(self):
         """
         Test the get_ip_address function with given ip address
         """
@@ -93,7 +93,7 @@ class TestRemoteTab(TestCase, TestMixin):
         # THEN: the default ip address will be returned
         self.assertEqual(ip_address, given_ip, 'The return value should be %s' % given_ip)
 
-    def set_basic_urls_test(self):
+    def test_set_basic_urls(self):
         """
         Test the set_urls function with standard defaults
         """
@@ -121,7 +121,7 @@ class TestRemoteTab(TestCase, TestMixin):
             self.assertEqual(self.form.user_login_group_box.isChecked(), False,
                              'The authentication box should not be enabled')
 
-    def set_certificate_urls_test(self):
+    def test_set_certificate_urls(self):
         """
         Test the set_urls function with certificate available
         """

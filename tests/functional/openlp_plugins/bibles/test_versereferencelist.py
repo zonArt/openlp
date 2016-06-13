@@ -31,7 +31,7 @@ class TestVerseReferenceList(TestCase):
     """
     Test the VerseReferenceList class
     """
-    def add_first_verse_test(self):
+    def test_add_first_verse(self):
         """
         Test the addition of a verse to the empty list
         """
@@ -57,7 +57,7 @@ class TestVerseReferenceList(TestCase):
                                                                            version)
         self.assertEqual(reference_list.verse_list[0]['end'], verse, 'The end in first entry should be %u' % verse)
 
-    def add_next_verse_test(self):
+    def test_add_next_verse(self):
         """
         Test the addition of the following verse
         """
@@ -80,7 +80,7 @@ class TestVerseReferenceList(TestCase):
         self.assertEqual(reference_list.verse_list[0]['end'], next_verse,
                          'The end in first entry should be %u' % next_verse)
 
-    def add_another_verse_test(self):
+    def test_add_another_verse(self):
         """
         Test the addition of a verse in another book
         """
@@ -103,7 +103,7 @@ class TestVerseReferenceList(TestCase):
         # THEN: the current index should be 1
         self.assertEqual(reference_list.current_index, 1, 'The current index should be 1')
 
-    def add_version_test(self):
+    def test_add_version(self):
         """
         Test the addition of a version to the list
         """
@@ -122,7 +122,7 @@ class TestVerseReferenceList(TestCase):
                          {'version': version, 'copyright': copyright_, 'permission': permission},
                          'The version data should be appended')
 
-    def add_existing_version_test(self):
+    def test_add_existing_version(self):
         """
         Test the addition of an existing version to the list
         """

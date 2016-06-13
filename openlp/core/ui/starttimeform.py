@@ -56,9 +56,9 @@ class StartTimeForm(QtWidgets.QDialog, Ui_StartTimeDialog, RegistryProperties):
         self.hour_finish_spin_box.setValue(hours)
         self.minute_finish_spin_box.setValue(minutes)
         self.second_finish_spin_box.setValue(seconds)
-        self.hour_finish_label.setText('%s%s' % (str(hour), UiStrings().Hours))
-        self.minute_finish_label.setText('%s%s' % (str(minutes), UiStrings().Minutes))
-        self.second_finish_label.setText('%s%s' % (str(seconds), UiStrings().Seconds))
+        self.hour_finish_label.setText('{val:d}{text}'.format(val=hour, text=UiStrings().Hours))
+        self.minute_finish_label.setText('{val:d}{text}'.format(val=minutes, text=UiStrings().Minutes))
+        self.second_finish_label.setText('{val:d}{text}'.format(val=seconds, text=UiStrings().Seconds))
         return QtWidgets.QDialog.exec(self)
 
     def accept(self):

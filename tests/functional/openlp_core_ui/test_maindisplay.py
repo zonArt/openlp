@@ -26,9 +26,10 @@ from unittest import TestCase, skipUnless
 
 from PyQt5 import QtCore
 
-from openlp.core.common import Registry, is_macosx
-from openlp.core.lib import ScreenList
+from openlp.core.common import Registry, is_macosx, Settings
+from openlp.core.lib import ScreenList, PluginManager
 from openlp.core.ui import MainDisplay
+from openlp.core.ui.media import MediaController
 from openlp.core.ui.maindisplay import TRANSPARENT_STYLESHEET, OPAQUE_STYLESHEET
 
 from tests.helpers.testmixin import TestMixin
@@ -69,7 +70,7 @@ class TestMainDisplay(TestCase, TestMixin):
         self.mocked_audio_player.stop()
         del self.screens
 
-    def initial_main_display_test(self):
+    def test_initial_main_display(self):
         """
         Test the initial Main Display state
         """
@@ -83,7 +84,7 @@ class TestMainDisplay(TestCase, TestMixin):
         # THEN: The controller should be a live controller.
         self.assertEqual(main_display.is_live, True, 'The main display should be a live controller')
 
-    def set_transparency_enabled_test(self):
+    def test_set_transparency_enabled(self):
         """
         Test setting the display to be transparent
         """
@@ -102,7 +103,7 @@ class TestMainDisplay(TestCase, TestMixin):
         self.assertTrue(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
                         'The MainDisplay should have a translucent background')
 
-    def set_transparency_disabled_test(self):
+    def test_set_transparency_disabled(self):
         """
         Test setting the display to be opaque
         """
@@ -119,7 +120,7 @@ class TestMainDisplay(TestCase, TestMixin):
         self.assertFalse(main_display.testAttribute(QtCore.Qt.WA_TranslucentBackground),
                          'The MainDisplay should not have a translucent background')
 
-    def css_changed_test(self):
+    def test_css_changed(self):
         """
         Test that when the CSS changes, the plugins are looped over and given an opportunity to update the CSS
         """
@@ -142,7 +143,7 @@ class TestMainDisplay(TestCase, TestMixin):
         mocked_bibles_plugin.refresh_css.assert_called_with(main_display.frame)
 
     @skipUnless(is_macosx(), 'Can only run test on Mac OS X due to pyobjc dependency.')
-    def macosx_display_window_flags_state_test(self):
+    def test_macosx_display_window_flags_state(self):
         """
         Test that on Mac OS X we set the proper window flags
         """
@@ -159,7 +160,7 @@ class TestMainDisplay(TestCase, TestMixin):
                          'The window flags should be Qt.Window, and Qt.FramelessWindowHint.')
 
     @skipUnless(is_macosx(), 'Can only run test on Mac OS X due to pyobjc dependency.')
-    def macosx_display_test(self):
+    def test_macosx_display(self):
         """
         Test display on Mac OS X
         """
@@ -183,3 +184,101 @@ class TestMainDisplay(TestCase, TestMixin):
                          'Window level should be NSMainMenuWindowLevel + 2')
         self.assertEqual(pyobjc_nsview.window().collectionBehavior(), NSWindowCollectionBehaviorManaged,
                          'Window collection behavior should be NSWindowCollectionBehaviorManaged')
+
+    @patch(u'openlp.core.ui.maindisplay.Settings')
+    def test_show_display_startup_logo(self, MockedSettings):
+        # GIVEN: Mocked show_display, setting for logo visibility
+        display = MagicMock()
+        main_display = MainDisplay(display)
+        main_display.frame = MagicMock()
+        main_display.isHidden = MagicMock()
+        main_display.isHidden.return_value = True
+        main_display.setVisible = MagicMock()
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        main_display.shake_web_view = MagicMock()
+
+        # WHEN: show_display is called.
+        main_display.show_display()
+
+        # THEN: setVisible should had been called with "True"
+        main_display.setVisible.assert_called_once_with(True)
+
+    @patch(u'openlp.core.ui.maindisplay.Settings')
+    def test_show_display_hide_startup_logo(self, MockedSettings):
+        # GIVEN: Mocked show_display, setting for logo visibility
+        display = MagicMock()
+        main_display = MainDisplay(display)
+        main_display.frame = MagicMock()
+        main_display.isHidden = MagicMock()
+        main_display.isHidden.return_value = False
+        main_display.setVisible = MagicMock()
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        main_display.shake_web_view = MagicMock()
+
+        # WHEN: show_display is called.
+        main_display.show_display()
+
+        # THEN: setVisible should had not been called
+        main_display.setVisible.assert_not_called()
+
+    @patch(u'openlp.core.ui.maindisplay.Settings')
+    @patch(u'openlp.core.ui.maindisplay.build_html')
+    def test_build_html_no_video(self, MockedSettings, Mocked_build_html):
+        # GIVEN: Mocked display
+        display = MagicMock()
+        mocked_media_controller = MagicMock()
+        Registry.create()
+        Registry().register('media_controller', mocked_media_controller)
+        main_display = MainDisplay(display)
+        main_display.frame = MagicMock()
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        main_display.shake_web_view = MagicMock()
+        service_item = MagicMock()
+        mocked_plugin = MagicMock()
+        display.plugin_manager = PluginManager()
+        display.plugin_manager.plugins = [mocked_plugin]
+        main_display.web_view = MagicMock()
+
+        # WHEN: build_html is called with a normal service item and a non video theme.
+        main_display.build_html(service_item)
+
+        # THEN: the following should had not been called
+        self.assertEquals(main_display.web_view.setHtml.call_count, 1, 'setHTML should be called once')
+        self.assertEquals(main_display.media_controller.video.call_count, 0,
+                          'Media Controller video should not have been called')
+
+    @patch(u'openlp.core.ui.maindisplay.Settings')
+    @patch(u'openlp.core.ui.maindisplay.build_html')
+    def test_build_html_video(self, MockedSettings, Mocked_build_html):
+        # GIVEN: Mocked display
+        display = MagicMock()
+        mocked_media_controller = MagicMock()
+        Registry.create()
+        Registry().register('media_controller', mocked_media_controller)
+        main_display = MainDisplay(display)
+        main_display.frame = MagicMock()
+        mocked_settings = MagicMock()
+        mocked_settings.value.return_value = False
+        MockedSettings.return_value = mocked_settings
+        main_display.shake_web_view = MagicMock()
+        service_item = MagicMock()
+        service_item.theme_data = MagicMock()
+        service_item.theme_data.background_type = 'video'
+        mocked_plugin = MagicMock()
+        display.plugin_manager = PluginManager()
+        display.plugin_manager.plugins = [mocked_plugin]
+        main_display.web_view = MagicMock()
+
+        # WHEN: build_html is called with a normal service item and a video theme.
+        main_display.build_html(service_item)
+
+        # THEN: the following should had not been called
+        self.assertEquals(main_display.web_view.setHtml.call_count, 1, 'setHTML should be called once')
+        self.assertEquals(main_display.media_controller.video.call_count, 1,
+                          'Media Controller video should have been called once')

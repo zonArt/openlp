@@ -29,7 +29,7 @@ from tempfile import mkdtemp
 from PyQt5 import QtCore, QtGui
 
 from openlp.plugins.presentations.lib.pdfcontroller import PdfController, PdfDocument
-from tests.functional import MagicMock
+from tests.functional import MagicMock, patch
 from openlp.core.common import Settings
 from openlp.core.lib import ScreenList
 from tests.utils.constants import TEST_RESOURCES_PATH
@@ -78,7 +78,7 @@ class TestPdfController(TestCase, TestMixin):
         shutil.rmtree(self.thumbnail_folder)
         shutil.rmtree(self.temp_folder)
 
-    def constructor_test(self):
+    def test_constructor(self):
         """
         Test the Constructor from the PdfController
         """
@@ -91,7 +91,7 @@ class TestPdfController(TestCase, TestMixin):
         # THEN: The name of the presentation controller should be correct
         self.assertEqual('Pdf', controller.name, 'The name of the presentation controller should be correct')
 
-    def load_pdf_test(self):
+    def test_load_pdf(self):
         """
         Test loading of a Pdf using the PdfController
         """
@@ -111,7 +111,7 @@ class TestPdfController(TestCase, TestMixin):
         self.assertTrue(loaded, 'The loading of the PDF should succeed.')
         self.assertEqual(3, document.get_slide_count(), 'The pagecount of the PDF should be 3.')
 
-    def load_pdf_pictures_test(self):
+    def test_load_pdf_pictures(self):
         """
         Test loading of a Pdf and check size of generate pictures
         """
@@ -137,3 +137,74 @@ class TestPdfController(TestCase, TestMixin):
         else:
             self.assertEqual(768, image.height(), 'The height should be 768')
             self.assertEqual(543, image.width(), 'The width should be 543')
+
+    @patch('openlp.plugins.presentations.lib.pdfcontroller.check_binary_exists')
+    def test_process_check_binary_mudraw(self, mocked_check_binary_exists):
+        """
+        Test that the correct output from mudraw is detected
+        """
+        # GIVEN: A mocked check_binary_exists that returns mudraw output
+        mudraw_output = (b'usage: mudraw [options] input [pages]\n\t-o -\toutput filename (%d for page number)n\t\tsupp'
+                         b'orted formats: pgm, ppm, pam, png, pbmn\t-p -\tpasswordn\t-r -\tresolution in dpi (default: '
+                         b'72)n\t-w -\twidth (in pixels) (maximum width if -r is specified)n\t-h -\theight (in pixels) '
+                         b'(maximum height if -r is specified)')
+        mocked_check_binary_exists.return_value = mudraw_output
+
+        # WHEN: Calling process_check_binary
+        ret = PdfController.process_check_binary('test')
+
+        # THEN: mudraw should be detected
+        self.assertEqual('mudraw', ret, 'mudraw should have been detected')
+
+    @patch('openlp.plugins.presentations.lib.pdfcontroller.check_binary_exists')
+    def test_process_check_binary_new_motool(self, mocked_check_binary_exists):
+        """
+        Test that the correct output from the new mutool is detected
+        """
+        # GIVEN: A mocked check_binary_exists that returns new mutool output
+        new_mutool_output = (b'usage: mutool <command> [options]\n\tdraw\t-- convert document\n\trun\t-- run javascript'
+                             b'\n\tclean\t-- rewrite pdf file\n\textract\t-- extract font and image resources\n\tinfo\t'
+                             b'-- show information about pdf resources\n\tpages\t-- show information about pdf pages\n'
+                             b'\tposter\t-- split large page into many tiles\n\tshow\t-- show internal pdf objects\n\t'
+                             b'create\t-- create pdf document\n\tmerge\t-- merge pages from multiple pdf sources into a'
+                             b'new pdf\n')
+        mocked_check_binary_exists.return_value = new_mutool_output
+
+        # WHEN: Calling process_check_binary
+        ret = PdfController.process_check_binary('test')
+
+        # THEN: mutool should be detected
+        self.assertEqual('mutool', ret, 'mutool should have been detected')
+
+    @patch('openlp.plugins.presentations.lib.pdfcontroller.check_binary_exists')
+    def test_process_check_binary_old_motool(self, mocked_check_binary_exists):
+        """
+        Test that the output from the old mutool is not accepted
+        """
+        # GIVEN: A mocked check_binary_exists that returns old mutool output
+        old_mutool_output = (b'usage: mutool <command> [options]\n\tclean\t-- rewrite pdf file\n\textract\t-- extract '
+                             b'font and image resources\n\tinfo\t-- show information about pdf resources\n\tposter\t-- '
+                             b'split large page into many tiles\n\tshow\t-- show internal pdf objects')
+        mocked_check_binary_exists.return_value = old_mutool_output
+
+        # WHEN: Calling process_check_binary
+        ret = PdfController.process_check_binary('test')
+
+        # THEN: mutool should be detected
+        self.assertIsNone(ret, 'old mutool should not be accepted!')
+
+    @patch('openlp.plugins.presentations.lib.pdfcontroller.check_binary_exists')
+    def test_process_check_binary_gs(self, mocked_check_binary_exists):
+        """
+        Test that the correct output from gs is detected
+        """
+        # GIVEN: A mocked check_binary_exists that returns gs output
+        gs_output = (b'GPL Ghostscript 9.19 (2016-03-23)\nCopyright (C) 2016 Artifex Software, Inc.  All rights reserv'
+                     b'ed.\nUsage: gs [switches] [file1.ps file2.ps ...]')
+        mocked_check_binary_exists.return_value = gs_output
+
+        # WHEN: Calling process_check_binary
+        ret = PdfController.process_check_binary('test')
+
+        # THEN: mutool should be detected
+        self.assertEqual('gs', ret, 'mutool should have been detected')

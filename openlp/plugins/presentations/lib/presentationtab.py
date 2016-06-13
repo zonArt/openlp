@@ -137,7 +137,8 @@ class PresentationTab(SettingsTab):
         if checkbox.isEnabled():
             checkbox.setText(controller.name)
         else:
-            checkbox.setText(translate('PresentationPlugin.PresentationTab', '%s (unavailable)') % controller.name)
+            checkbox.setText(translate('PresentationPlugin.PresentationTab',
+                                       '{name} (unavailable)').format(name=controller.name))
 
     def load(self):
         """
@@ -235,7 +236,7 @@ class PresentationTab(SettingsTab):
             self, translate('PresentationPlugin.PresentationTab', 'Select mudraw or ghostscript binary.'),
             self.pdf_program_path.text())
         if filename:
-            program_type = PdfController.check_binary(filename)
+            program_type = PdfController.process_check_binary(filename)
             if not program_type:
                 critical_error_message_box(UiStrings().Error,
                                            translate('PresentationPlugin.PresentationTab',

@@ -29,7 +29,7 @@ import logging
 import re
 import struct
 
-from openlp.core.ui.wizard import WizardStrings
+from openlp.core.ui.lib.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType, retrieve_windows_encoding
 from openlp.plugins.songs.lib.importers.songimport import SongImport
 
@@ -101,6 +101,7 @@ class SongShowPlusImport(SongImport):
             self.other_count = 0
             self.other_list = {}
             file_name = os.path.split(file)[1]
+            # TODO: Verify format() with template variables
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % file_name, 0)
             song_data = open(file, 'rb')
             while True:
@@ -145,13 +146,16 @@ class SongShowPlusImport(SongImport):
                     if match:
                         self.ccli_number = int(match.group())
                     else:
-                        log.warning("Can't parse CCLI Number from string: %s" % self.decode(data))
+                        log.warning("Can't parse CCLI Number from string: {text}".format(text=self.decode(data)))
                 elif block_key == VERSE:
-                    self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
+                    self.add_verse(self.decode(data), "{tag}{number}".format(tag=VerseType.tags[VerseType.Verse],
+                                                                             number=verse_no))
                 elif block_key == CHORUS:
-                    self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Chorus], verse_no))
+                    self.add_verse(self.decode(data), "{tag}{number}".format(tag=VerseType.tags[VerseType.Chorus],
+                                                                             number=verse_no))
                 elif block_key == BRIDGE:
-                    self.add_verse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Bridge], verse_no))
+                    self.add_verse(self.decode(data), "{tag}{number}".format(tag=VerseType.tags[VerseType.Bridge],
+                                                                             number=verse_no))
                 elif block_key == TOPIC:
                     self.topics.append(self.decode(data))
                 elif block_key == COMMENTS:
@@ -170,7 +174,7 @@ class SongShowPlusImport(SongImport):
                     verse_tag = self.to_openlp_verse_tag(verse_name)
                     self.add_verse(self.decode(data), verse_tag)
                 else:
-                    log.debug("Unrecognised blockKey: %s, data: %s" % (block_key, data))
+                    log.debug("Unrecognised blockKey: {key}, data: {data}".format(key=block_key, data=data))
                     song_data.seek(next_block_starts)
             self.verse_order_list = self.ssp_verse_order_list
             song_data.close()

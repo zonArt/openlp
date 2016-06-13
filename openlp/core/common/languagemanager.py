@@ -68,7 +68,7 @@ class LanguageManager(object):
         """
         Find all available language files in this OpenLP install
         """
-        log.debug('Translation files: %s', AppLocation.get_directory(AppLocation.LanguageDir))
+        log.debug('Translation files: {files}'.format(files=AppLocation.get_directory(AppLocation.LanguageDir)))
         trans_dir = QtCore.QDir(AppLocation.get_directory(AppLocation.LanguageDir))
         file_names = trans_dir.entryList(['*.qm'], QtCore.QDir.Files, QtCore.QDir.Name)
         # Remove qm files from the list which start with "qt_".
@@ -93,7 +93,7 @@ class LanguageManager(object):
         """
         language = Settings().value('core/language')
         language = str(language)
-        log.info('Language file: \'%s\' Loaded from conf file' % language)
+        log.info("Language file: '{language}' Loaded from conf file".format(language=language))
         if re.match(r'[[].*[]]', language):
             LanguageManager.auto_language = True
             language = re.sub(r'[\[\]]', '', language)
@@ -117,9 +117,9 @@ class LanguageManager(object):
                 qm_list = LanguageManager.get_qm_list()
                 language = str(qm_list[action_name])
         if LanguageManager.auto_language:
-            language = '[%s]' % language
+            language = '[{language}]'.format(language=language)
         Settings().setValue('core/language', language)
-        log.info('Language file: \'%s\' written to conf file' % language)
+        log.info("Language file: '{language}' written to conf file".format(language=language))
         if message:
             QtWidgets.QMessageBox.information(None,
                                               translate('OpenLP.LanguageManager', 'Language'),
@@ -136,7 +136,8 @@ class LanguageManager(object):
         for counter, qmf in enumerate(qm_files):
             reg_ex = QtCore.QRegExp("^.*i18n/(.*).qm")
             if reg_ex.exactMatch(qmf):
-                name = '%s' % reg_ex.cap(1)
+                name = '{regex}'.format(regex=reg_ex.cap(1))
+                # TODO: Test before converting to python3 string format
                 LanguageManager.__qm_list__['%#2i %s' % (counter + 1, LanguageManager.language_name(qmf))] = name
 
     @staticmethod

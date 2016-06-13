@@ -51,7 +51,7 @@ class TestStartNoteDialog(TestCase, TestMixin):
         del self.form
         del self.main_window
 
-    def basic_display_test(self):
+    def test_basic_display(self):
         """
         Test Service Note form functionality
         """

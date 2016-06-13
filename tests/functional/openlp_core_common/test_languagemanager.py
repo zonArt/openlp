@@ -33,7 +33,7 @@ class TestLanguageManager(TestCase):
     A test suite to test out various methods around the common __init__ class.
     """
 
-    def get_locale_key_test(self):
+    def test_get_locale_key(self):
         """
         Test the get_locale_key(string) function
         """
@@ -50,7 +50,7 @@ class TestLanguageManager(TestCase):
             self.assertEqual(['Aushang', '\u00C4u\u00DFerung', 'Auszug'], sorted_list,
                              'Strings should be sorted properly')
 
-    def get_natural_key_test(self):
+    def test_get_natural_key(self):
         """
         Test the get_natural_key(string) function
         """

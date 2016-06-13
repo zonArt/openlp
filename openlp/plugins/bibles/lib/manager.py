@@ -31,7 +31,10 @@ from .http import HTTPBible
 from .opensong import OpenSongBible
 from .osis import OSISBible
 from .zefania import ZefaniaBible
-
+try:
+    from .sword import SwordBible
+except:
+    pass
 
 log = logging.getLogger(__name__)
 
@@ -46,6 +49,7 @@ class BibleFormat(object):
     OpenSong = 2
     WebDownload = 3
     Zefania = 4
+    SWORD = 5
 
     @staticmethod
     def get_class(bible_format):
@@ -64,6 +68,8 @@ class BibleFormat(object):
             return HTTPBible
         elif bible_format == BibleFormat.Zefania:
             return ZefaniaBible
+        elif bible_format == BibleFormat.SWORD:
+            return SwordBible
         else:
             return None
 
@@ -78,6 +84,7 @@ class BibleFormat(object):
             BibleFormat.OpenSong,
             BibleFormat.WebDownload,
             BibleFormat.Zefania,
+            BibleFormat.SWORD
         ]
 
 
@@ -115,7 +122,7 @@ class BibleManager(RegistryProperties):
         files = AppLocation.get_files(self.settings_section, self.suffix)
         if 'alternative_book_names.sqlite' in files:
             files.remove('alternative_book_names.sqlite')
-        log.debug('Bible Files %s', files)
+        log.debug('Bible Files {text}'.format(text=files))
         self.db_cache = {}
         self.old_bible_databases = []
         for filename in files:
@@ -128,7 +135,7 @@ class BibleManager(RegistryProperties):
                 bible.session.close()
                 delete_file(os.path.join(self.path, filename))
                 continue
-            log.debug('Bible Name: "%s"', name)
+            log.debug('Bible Name: "{name}"'.format(name=name))
             self.db_cache[name] = bible
             # Look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_object(BibleMeta, 'download_source')
@@ -170,7 +177,7 @@ class BibleManager(RegistryProperties):
 
         :param name: The name of the bible.
         """
-        log.debug('BibleManager.delete_bible("%s")', name)
+        log.debug('BibleManager.delete_bible("{name}")'.format(name=name))
         bible = self.db_cache[name]
         bible.session.close()
         bible.session = None
@@ -189,7 +196,7 @@ class BibleManager(RegistryProperties):
 
         :param bible: Unicode. The Bible to get the list of books from.
         """
-        log.debug('BibleManager.get_books("%s")', bible)
+        log.debug('BibleManager.get_books("{bible}")'.format(bible=bible))
         return [
             {
                 'name': book.name,
@@ -206,7 +213,7 @@ class BibleManager(RegistryProperties):
         :param bible: Unicode. The Bible to get the list of books from.
         :param id: Unicode. The book_reference_id to get the book for.
         """
-        log.debug('BibleManager.get_book_by_id("%s", "%s")', bible, id)
+        log.debug('BibleManager.get_book_by_id("{bible}", "{ref}")'.format(bible=bible, ref=id))
         return self.db_cache[bible].get_book_by_book_ref_id(id)
 
     def get_chapter_count(self, bible, book):
@@ -216,14 +223,16 @@ class BibleManager(RegistryProperties):
         :param bible: Unicode. The Bible to get the list of books from.
         :param book: The book object to get the chapter count for.
         """
-        log.debug('BibleManager.get_book_chapter_count ("%s", "%s")', bible, book.name)
+        log.debug('BibleManager.get_book_chapter_count ("{bible}", "{name}")'.format(bible=bible, name=book.name))
         return self.db_cache[bible].get_chapter_count(book)
 
     def get_verse_count(self, bible, book, chapter):
         """
         Returns all the number of verses for a given book and chapterMaxBibleBookVerses.
         """
-        log.debug('BibleManager.get_verse_count("%s", "%s", %s)', bible, book, chapter)
+        log.debug('BibleManager.get_verse_count("{bible}", "{book}", {chapter})'.format(bible=bible,
+                                                                                        book=book,
+                                                                                        chapter=chapter))
         language_selection = self.get_language_selection(bible)
         book_ref_id = self.db_cache[bible].get_book_ref_id_by_localised_name(book, language_selection)
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
@@ -233,7 +242,8 @@ class BibleManager(RegistryProperties):
         Returns all the number of verses for a given
         book_ref_id and chapterMaxBibleBookVerses.
         """
-        log.debug('BibleManager.get_verse_count_by_book_ref_id("%s", "%s", "%s")', bible, book_ref_id, chapter)
+        log.debug('BibleManager.get_verse_count_by_book_ref_id("{bible}", '
+                  '"{book}", "{chapter}")'.format(bible=bible, book=book_ref_id, chapter=chapter))
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
     def get_verses(self, bible, verse_text, book_ref_id=False, show_error=True):
@@ -257,7 +267,7 @@ class BibleManager(RegistryProperties):
             For second bible this is necessary.
         :param show_error:
         """
-        log.debug('BibleManager.get_verses("%s", "%s")', bible, verse_text)
+        log.debug('BibleManager.get_verses("{bible}", "{verse}")'.format(bible=bible, verse=verse_text))
         if not bible:
             if show_error:
                 self.main_window.information_message(
@@ -301,7 +311,7 @@ class BibleManager(RegistryProperties):
 
         :param bible:  Unicode. The Bible to get the language selection from.
         """
-        log.debug('BibleManager.get_language_selection("%s")', bible)
+        log.debug('BibleManager.get_language_selection("{bible}")'.format(bible=bible))
         language_selection = self.get_meta_data(bible, 'book_name_language')
         if not language_selection or language_selection.value == "None" or language_selection.value == "-1":
             # If None is returned, it's not the singleton object but a
@@ -323,7 +333,7 @@ class BibleManager(RegistryProperties):
         :param second_bible: The second bible (unicode). We do not search in this bible.
         :param text: The text to search for (unicode).
         """
-        log.debug('BibleManager.verse_search("%s", "%s")', bible, text)
+        log.debug('BibleManager.verse_search("{bible}", "{text}")'.format(bible=bible, text=text))
         if not bible:
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
@@ -358,7 +368,10 @@ class BibleManager(RegistryProperties):
         """
         Saves the bibles meta data.
         """
-        log.debug('save_meta data %s, %s, %s, %s', bible, version, copyright, permissions)
+        log.debug('save_meta data {bible}, {version}, {copyright}, {perms}'.format(bible=bible,
+                                                                                   version=version,
+                                                                                   cr=copyright,
+                                                                                   perms=permissions))
         self.db_cache[bible].save_meta('name', version)
         self.db_cache[bible].save_meta('copyright', copyright)
         self.db_cache[bible].save_meta('permissions', permissions)
@@ -368,14 +381,14 @@ class BibleManager(RegistryProperties):
         """
         Returns the meta data for a given key.
         """
-        log.debug('get_meta %s,%s', bible, key)
+        log.debug('get_meta {bible},{key}'.format(bible=bible, key=key))
         return self.db_cache[bible].get_object(BibleMeta, key)
 
     def update_book(self, bible, book):
         """
         Update a book of the bible.
         """
-        log.debug('BibleManager.update_book("%s", "%s")', bible, book.name)
+        log.debug('BibleManager.update_book("{bible}", "{name}")'.format(bible=bible, name=book.name))
         self.db_cache[bible].update_book(book)
 
     def exists(self, name):
@@ -385,7 +398,7 @@ class BibleManager(RegistryProperties):
         if not isinstance(name, str):
             name = str(name)
         for bible in list(self.db_cache.keys()):
-            log.debug('Bible from cache in is_new_bible %s', bible)
+            log.debug('Bible from cache in is_new_bible {bible}'.format(bible=bible))
             if not isinstance(bible, str):
                 bible = str(bible)
             if bible == name:

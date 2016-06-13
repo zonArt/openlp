@@ -63,7 +63,7 @@ class OpenSongBible(BibleDB):
         """
         Loads a Bible from file.
         """
-        log.debug('Starting OpenSong import from "%s"' % self.filename)
+        log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
         if not isinstance(self.filename, str):
             self.filename = str(self.filename, 'utf8')
         import_file = None
@@ -84,14 +84,14 @@ class OpenSongBible(BibleDB):
             # No language info in the opensong format, so ask the user
             language_id = self.get_language(bible_name)
             if not language_id:
-                log.error('Importing books from "%s" failed' % self.filename)
+                log.error('Importing books from "{name}" failed'.format(name=self.filename))
                 return False
             for book in bible.b:
                 if self.stop_import_flag:
                     break
                 book_ref_id = self.get_book_ref_id_by_name(str(book.attrib['n']), len(bible.b), language_id)
                 if not book_ref_id:
-                    log.error('Importing books from "%s" failed' % self.filename)
+                    log.error('Importing books from "{name}" failed'.format(name=self.filename))
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 db_book = self.create_book(book.attrib['n'], book_ref_id, book_details['testament_id'])
@@ -117,14 +117,14 @@ class OpenSongBible(BibleDB):
                                 if len(verse_parts) > 1:
                                     number = int(verse_parts[0])
                             except TypeError:
-                                log.warning('Illegal verse number: %s', str(verse.attrib['n']))
+                                log.warning('Illegal verse number: {verse:d}'.format(verse.attrib['n']))
                             verse_number = number
                         else:
                             verse_number += 1
                         self.create_verse(db_book.id, chapter_number, verse_number, self.get_text(verse))
-                    self.wizard.increment_progress_bar(
-                        translate('BiblesPlugin.Opensong', 'Importing %(bookname)s %(chapter)s...') %
-                        {'bookname': db_book.name, 'chapter': chapter_number})
+                    self.wizard.increment_progress_bar(translate('BiblesPlugin.Opensong',
+                                                                 'Importing {name} {chapter}...'
+                                                                 ).format(name=db_book.name, chapter=chapter_number))
                 self.session.commit()
             self.application.process_events()
         except etree.XMLSyntaxError as inst:

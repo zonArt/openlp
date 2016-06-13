@@ -27,9 +27,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import Registry, AppLocation, Settings, UiStrings, check_directory_exists, translate, \
     delete_file, get_images_filter
-from openlp.core.lib import ItemCapabilities, MediaManagerItem, ServiceItemContext, StringContent, TreeWidgetWithDnD,\
-    build_icon, check_item_selected, create_thumb, validate_thumb
+from openlp.core.lib import ItemCapabilities, MediaManagerItem, ServiceItemContext, StringContent, build_icon, \
+    check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
+from openlp.core.ui.lib.treewidgetwithdnd import TreeWidgetWithDnD
 from openlp.core.common.languagemanager import get_locale_key
 from openlp.plugins.images.forms import AddGroupForm, ChooseGroupForm
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
@@ -73,7 +74,7 @@ class ImageMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.on_new_prompt = translate('ImagePlugin.MediaItem', 'Select Image(s)')
         file_formats = get_images_filter()
-        self.on_new_file_masks = '%s;;%s (*)' % (file_formats, UiStrings().AllFiles)
+        self.on_new_file_masks = '{formats};;{files} (*)'.format(formats=file_formats, files=UiStrings().AllFiles)
         self.add_group_action.setText(UiStrings().AddGroup)
         self.add_group_action.setToolTip(UiStrings().AddGroup)
         self.replace_action.setText(UiStrings().ReplaceBG)
@@ -112,7 +113,7 @@ class ImageMediaItem(MediaManagerItem):
         self.list_view = TreeWidgetWithDnD(self, self.plugin.name)
         self.list_view.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.list_view.setAlternatingRowColors(True)
-        self.list_view.setObjectName('%sTreeView' % self.plugin.name)
+        self.list_view.setObjectName('{name}TreeView'.format(name=self.plugin.name))
         # Add to pageLayout
         self.page_layout.addWidget(self.list_view)
         # define and add the context menu
@@ -126,21 +127,21 @@ class ImageMediaItem(MediaManagerItem):
             create_widget_action(self.list_view, separator=True)
         create_widget_action(
             self.list_view,
-            'listView%s%sItem' % (self.plugin.name.title(), StringContent.Preview.title()),
+            'listView{name}{preview}Item'.format(name=self.plugin.name.title(), preview=StringContent.Preview.title()),
             text=self.plugin.get_string(StringContent.Preview)['title'],
             icon=':/general/general_preview.png',
             can_shortcuts=True,
             triggers=self.on_preview_click)
         create_widget_action(
             self.list_view,
-            'listView%s%sItem' % (self.plugin.name.title(), StringContent.Live.title()),
+            'listView{name}{live}Item'.format(name=self.plugin.name.title(), live=StringContent.Live.title()),
             text=self.plugin.get_string(StringContent.Live)['title'],
             icon=':/general/general_live.png',
             can_shortcuts=True,
             triggers=self.on_live_click)
         create_widget_action(
             self.list_view,
-            'listView%s%sItem' % (self.plugin.name.title(), StringContent.Service.title()),
+            'listView{name}{service}Item'.format(name=self.plugin.name.title(), service=StringContent.Service.title()),
             can_shortcuts=True,
             text=self.plugin.get_string(StringContent.Service)['title'],
             icon=':/general/general_add.png',
@@ -156,7 +157,7 @@ class ImageMediaItem(MediaManagerItem):
         if self.has_delete_icon:
             create_widget_action(
                 self.list_view,
-                'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
+                'listView{name}{delete}Item'.format(name=self.plugin.name.title(), delete=StringContent.Delete.title()),
                 text=self.plugin.get_string(StringContent.Delete)['title'],
                 icon=':/general/general_delete.png',
                 can_shortcuts=True, triggers=self.on_delete_click)
@@ -195,7 +196,7 @@ class ImageMediaItem(MediaManagerItem):
         Add custom buttons to the end of the toolbar
         """
         self.replace_action = self.toolbar.add_toolbar_action('replace_action',
-                                                              icon=':/slides/slide_blank.png',
+                                                              icon=':/slides/slide_theme.png',
                                                               triggers=self.on_replace_click)
         self.reset_action = self.toolbar.add_toolbar_action('reset_action',
                                                             icon=':/system/system_close.png',
@@ -244,8 +245,8 @@ class ImageMediaItem(MediaManagerItem):
                                 self.list_view.parent(),
                                 translate('ImagePlugin.MediaItem', 'Remove group'),
                                 translate('ImagePlugin.MediaItem',
-                                          'Are you sure you want to remove "%s" and everything in it?') %
-                                item_data.group_name,
+                                          'Are you sure you want to remove "{name}" and everything in it?'
+                                          ).format(name=item_data.group_name),
                                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
                                                                       QtWidgets.QMessageBox.No)
                         ) == QtWidgets.QMessageBox.Yes:
@@ -354,7 +355,7 @@ class ImageMediaItem(MediaManagerItem):
         # characters.
         images.sort(key=lambda image_object: get_locale_key(os.path.split(str(image_object.filename))[1]))
         for image_file in images:
-            log.debug('Loading image: %s', image_file.filename)
+            log.debug('Loading image: {name}'.format(name=image_file.filename))
             filename = os.path.split(image_file.filename)[1]
             thumb = self.generate_thumbnail_path(image_file)
             if not os.path.exists(image_file.filename):
@@ -480,7 +481,7 @@ class ImageMediaItem(MediaManagerItem):
         for filename in images_list:
             if not isinstance(filename, str):
                 continue
-            log.debug('Adding new image: %s', filename)
+            log.debug('Adding new image: {name}'.format(name=filename))
             image_file = ImageFilenames()
             image_file.group_id = group_id
             image_file.filename = str(filename)
@@ -588,14 +589,15 @@ class ImageMediaItem(MediaManagerItem):
             if not remote:
                 critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                    translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s')
-                    % '\n'.join(missing_items_file_names))
+                    translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: {names}'
+                              ).format(names='\n'.join(missing_items_file_names)))
             return False
         # We have missing as well as existing images. We ask what to do.
         elif missing_items_file_names and QtWidgets.QMessageBox.question(
                 self, translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s\n'
-                          'Do you want to add the other images anyway?') % '\n'.join(missing_items_file_names),
+                translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: {names}\n'
+                          'Do you want to add the other images anyway?'
+                          ).format(names='\n'.join(missing_items_file_names)),
                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes)) == \
                 QtWidgets.QMessageBox.No:
             return False
@@ -687,7 +689,7 @@ class ImageMediaItem(MediaManagerItem):
                 critical_error_message_box(
                     UiStrings().LiveBGError,
                     translate('ImagePlugin.MediaItem', 'There was a problem replacing your background, '
-                              'the image file "%s" no longer exists.') % filename)
+                              'the image file "{name}" no longer exists.').format(name=filename))
 
     def search(self, string, show_error=True):
         """

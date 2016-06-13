@@ -23,8 +23,9 @@
 from PyQt5 import QtGui, QtWidgets
 
 from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import ColorButton, SettingsTab
+from openlp.core.lib import SettingsTab
 from openlp.core.lib.ui import create_valign_selection_widgets
+from openlp.core.ui.lib.colorbutton import ColorButton
 
 
 class AlertsTab(SettingsTab):
@@ -196,5 +197,6 @@ class AlertsTab(SettingsTab):
         font.setBold(True)
         font.setPointSize(self.font_size)
         self.font_preview.setFont(font)
-        self.font_preview.setStyleSheet('background-color: %s; color: %s' % (self.background_color, self.font_color))
+        self.font_preview.setStyleSheet('background-color: {back}; color: {front}'.format(back=self.background_color,
+                                                                                          front=self.font_color))
         self.changed = True

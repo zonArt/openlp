@@ -60,7 +60,7 @@ class TestPresentationController(TestCase):
     def tearDown(self):
         self.get_thumbnail_folder_patcher.stop()
 
-    def constructor_test(self):
+    def test_constructor(self):
         """
         Test the Constructor
         """
@@ -72,7 +72,7 @@ class TestPresentationController(TestCase):
         self.assertEqual('PresentationController', self.presentation.name,
                          'The name of the presentation controller should be correct')
 
-    def save_titles_and_notes_test(self):
+    def test_save_titles_and_notes(self):
         """
         Test PresentationDocument.save_titles_and_notes method with two valid lists
         """
@@ -95,7 +95,7 @@ class TestPresentationController(TestCase):
             mocked_open().write.assert_any_call('one')
             mocked_open().write.assert_any_call('two')
 
-    def save_titles_and_notes_with_None_test(self):
+    def test_save_titles_and_notes_with_None(self):
         """
         Test PresentationDocument.save_titles_and_notes method with no data
         """
@@ -111,7 +111,7 @@ class TestPresentationController(TestCase):
             # THEN: No file should have been created
             self.assertEqual(mocked_open.call_count, 0, 'No file should be created')
 
-    def get_titles_and_notes_test(self):
+    def test_get_titles_and_notes(self):
         """
         Test PresentationDocument.get_titles_and_notes method
         """
@@ -137,7 +137,7 @@ class TestPresentationController(TestCase):
             mocked_open.assert_any_call(os.path.join('test', 'slideNotes2.txt'), encoding='utf-8')
             self.assertEqual(mocked_exists.call_count, 3, 'Three files should have been checked')
 
-    def get_titles_and_notes_with_file_not_found_test(self):
+    def test_get_titles_and_notes_with_file_not_found(self):
         """
         Test PresentationDocument.get_titles_and_notes method with file not found
         """
@@ -159,7 +159,7 @@ class TestPresentationController(TestCase):
             self.assertEqual(mocked_open.call_count, 0, 'No calls to open files')
             self.assertEqual(mocked_exists.call_count, 1, 'There should be one call to file exists')
 
-    def get_titles_and_notes_with_file_error_test(self):
+    def test_get_titles_and_notes_with_file_error(self):
         """
         Test PresentationDocument.get_titles_and_notes method with file errors
         """
@@ -238,7 +238,7 @@ class TestPresentationDocument(TestCase):
         self.os_patcher.stop()
         self._setup_patcher.stop()
 
-    def initialise_presentation_document_test(self):
+    def test_initialise_presentation_document(self):
         """
         Test the PresentationDocument __init__ method when initialising the PresentationDocument Class
         """
@@ -251,7 +251,7 @@ class TestPresentationDocument(TestCase):
         # THEN: PresentationDocument._setup should have been called with the argument 'Name'
         self.mock_setup.assert_called_once_with('Name')
 
-    def presentation_document_setup_test(self):
+    def test_presentation_document_setup(self):
         """
         Test the PresentationDocument _setup method when initialising the PresentationDocument Class
         """
@@ -267,7 +267,7 @@ class TestPresentationDocument(TestCase):
 
         self._setup_patcher.start()
 
-    def load_presentation_test(self):
+    def test_load_presentation(self):
         """
         Test the PresentationDocument.load_presentation method.
         """
@@ -281,7 +281,7 @@ class TestPresentationDocument(TestCase):
         # THEN: load_presentation should return false
         self.assertFalse(result, "PresentationDocument.load_presentation should return false.")
 
-    def get_file_name_test(self):
+    def test_get_file_name(self):
         """
         Test the PresentationDocument.get_file_name method.
         """

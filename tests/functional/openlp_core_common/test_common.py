@@ -34,7 +34,7 @@ class TestCommonFunctions(TestCase):
     """
     A test suite to test out various functions in the openlp.core.common module.
     """
-    def check_directory_exists_test(self):
+    def test_check_directory_exists(self):
         """
         Test the check_directory_exists() function
         """
@@ -73,7 +73,7 @@ class TestCommonFunctions(TestCase):
             mocked_exists.assert_called_with(directory_to_check)
             self.assertRaises(ValueError, check_directory_exists, directory_to_check)
 
-    def de_hump_conversion_test(self):
+    def test_de_hump_conversion(self):
         """
         Test the de_hump function with a class name
         """
@@ -86,7 +86,7 @@ class TestCommonFunctions(TestCase):
         # THEN: the new string should be converted to python format
         self.assertTrue(new_string == "my_class", 'The class name should have been converted')
 
-    def de_hump_static_test(self):
+    def test_de_hump_static(self):
         """
         Test the de_hump function with a python string
         """
@@ -99,7 +99,7 @@ class TestCommonFunctions(TestCase):
         # THEN: the new string should be converted to python format
         self.assertTrue(new_string == "my_class", 'The class name should have been preserved')
 
-    def trace_error_handler_test(self):
+    def test_trace_error_handler(self):
         """
         Test the trace_error_handler() method
         """
@@ -115,7 +115,7 @@ class TestCommonFunctions(TestCase):
             mocked_logger.error.assert_called_with(
                 'OpenLP Error trace\n   File openlp.fake at line 56 \n\t called trace_error_handler_test')
 
-    def translate_test(self):
+    def test_translate(self):
         """
         Test the translate() function
         """
@@ -132,7 +132,7 @@ class TestCommonFunctions(TestCase):
         mocked_translate.assert_called_with(context, text, comment)
         self.assertEqual('Translated string', result, 'The translated string should have been returned')
 
-    def is_win_test(self):
+    def test_is_win(self):
         """
         Test the is_win() function
         """
@@ -148,7 +148,7 @@ class TestCommonFunctions(TestCase):
             self.assertFalse(is_macosx(), 'is_macosx() should return False')
             self.assertFalse(is_linux(), 'is_linux() should return False')
 
-    def is_macosx_test(self):
+    def test_is_macosx(self):
         """
         Test the is_macosx() function
         """
@@ -164,7 +164,7 @@ class TestCommonFunctions(TestCase):
             self.assertFalse(is_win(), 'is_win() should return False')
             self.assertFalse(is_linux(), 'is_linux() should return False')
 
-    def is_linux_test(self):
+    def test_is_linux(self):
         """
         Test the is_linux() function
         """
@@ -180,7 +180,7 @@ class TestCommonFunctions(TestCase):
             self.assertFalse(is_win(), 'is_win() should return False')
             self.assertFalse(is_macosx(), 'is_macosx() should return False')
 
-    def clean_button_text_test(self):
+    def test_clean_button_text(self):
         """
         Test the clean_button_text() function.
         """

@@ -141,7 +141,8 @@ class HttpRouter(RegistryProperties):
         """
         Initialise the router stack and any other variables.
         """
-        auth_code = "%s:%s" % (Settings().value('remotes/user id'), Settings().value('remotes/password'))
+        auth_code = "{user}:{password}".format(user=Settings().value('remotes/user id'),
+                                               password=Settings().value('remotes/password'))
         try:
             self.auth = base64.b64encode(auth_code)
         except TypeError:
@@ -189,7 +190,7 @@ class HttpRouter(RegistryProperties):
             if self.headers['Authorization'] is None:
                 self.do_authorisation()
                 self.wfile.write(bytes('no auth header received', 'UTF-8'))
-            elif self.headers['Authorization'] == 'Basic %s' % self.auth:
+            elif self.headers['Authorization'] == 'Basic {auth}'.format(auth=self.auth):
                 self.do_http_success()
                 self.call_function(function, *args)
             else:
@@ -221,13 +222,17 @@ class HttpRouter(RegistryProperties):
         self.request_data = None
         url_path_split = urlparse(url_path)
         url_query = parse_qs(url_path_split.query)
-        # GET
-        if 'data' in url_query.keys():
-            self.request_data = url_query['data'][0]
+        # Get data from HTTP request
+        if self.command == 'GET':
+            if 'data' in url_query.keys():
+                self.request_data = url_query['data'][0]
+        elif self.command == 'POST':
+            content_len = int(self.headers['content-length'])
+            self.request_data = self.rfile.read(content_len).decode("utf-8")
         for route, func in self.routes:
             match = re.match(route, url_path_split.path)
             if match:
-                log.debug('Route "%s" matched "%s"', route, url_path)
+                log.debug('Route "{route}" matched "{path}"'.format(route=route, path=url_path))
                 args = []
                 for param in match.groups():
                     args.append(param)
@@ -315,9 +320,9 @@ class HttpRouter(RegistryProperties):
         stage = translate('RemotePlugin.Mobile', 'Stage View')
         live = translate('RemotePlugin.Mobile', 'Live View')
         self.template_vars = {
-            'app_title': "%s %s" % (UiStrings().OLPV2x, remote),
-            'stage_title': "%s %s" % (UiStrings().OLPV2x, stage),
-            'live_title': "%s %s" % (UiStrings().OLPV2x, live),
+            'app_title': "{main} {remote}".format(main=UiStrings().OLPV2x, remote=remote),
+            'stage_title': "{main} {stage}".format(main=UiStrings().OLPV2x, stage=stage),
+            'live_title': "{main} {live}".format(main=UiStrings().OLPV2x, live=live),
             'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
             'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
@@ -350,7 +355,7 @@ class HttpRouter(RegistryProperties):
         :param file_name: file name with path
         :return:
         """
-        log.debug('serve file request %s' % file_name)
+        log.debug('serve file request {name}'.format(name=file_name))
         parts = file_name.split('/')
         if len(parts) == 1:
             file_name = os.path.join(parts[0], 'stage.html')
@@ -377,10 +382,10 @@ class HttpRouter(RegistryProperties):
                 content = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
             else:
                 file_handle = open(path, 'rb')
-                log.debug('Opened %s' % path)
+                log.debug('Opened {path}'.format(path=path))
                 content = file_handle.read()
         except IOError:
-            log.exception('Failed to open %s' % path)
+            log.exception('Failed to open {path}'.format(path=path))
             return self.do_not_found()
         finally:
             if file_handle:
@@ -398,13 +403,11 @@ class HttpRouter(RegistryProperties):
         Ultimately for i18n, this could first look for xx/file.html before falling back to file.html.
         where xx is the language, e.g. 'en'
         """
-        log.debug('serve file request %s' % file_name)
+        log.debug('serve file request {name}'.format(name=file_name))
         if not file_name:
             file_name = 'index.html'
-        elif file_name == 'stage':
-            file_name = 'stage.html'
-        elif file_name == 'main':
-            file_name = 'main.html'
+        if '.' not in file_name:
+            file_name += '.html'
         if file_name.startswith('/'):
             file_name = file_name[1:]
         path = os.path.normpath(os.path.join(self.html_dir, file_name))
@@ -431,7 +434,9 @@ class HttpRouter(RegistryProperties):
         :param dimensions: image size
         :param controller_name: controller to be called
         """
-        log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name, dimensions, file_name))
+        log.debug('serve thumbnail {cname}/thumbnails{dim}/{fname}'.format(cname=controller_name,
+                                                                           dim=dimensions,
+                                                                           fname=file_name))
         supported_controllers = ['presentations', 'images']
         # -1 means use the default dimension in ImageManager
         width = -1
@@ -537,7 +542,7 @@ class HttpRouter(RegistryProperties):
 
         :param var: variable - not used
         """
-        log.debug("controller_text var = %s" % var)
+        log.debug("controller_text var = {var}".format(var=var))
         current_item = self.live_controller.service_item
         data = []
         if current_item:
@@ -592,7 +597,8 @@ class HttpRouter(RegistryProperties):
         :param display_type: This is the type of slide controller, either ``preview`` or ``live``.
         :param action: The action to perform.
         """
-        event = getattr(self.live_controller, 'slidecontroller_%s_%s' % (display_type, action))
+        event = getattr(self.live_controller, 'slidecontroller_{display}_{action}'.format(display=display_type,
+                                                                                          action=action))
         if self.request_data:
             try:
                 data = json.loads(self.request_data)['request']['id']
@@ -621,7 +627,7 @@ class HttpRouter(RegistryProperties):
 
         :param action: The action to perform.
         """
-        event = getattr(self.service_manager, 'servicemanager_%s_item' % action)
+        event = getattr(self.service_manager, 'servicemanager_{action}_item'.format(action=action))
         if self.request_data:
             try:
                 data = int(json.loads(self.request_data)['request']['id'])
@@ -678,7 +684,7 @@ class HttpRouter(RegistryProperties):
             return self.do_http_error()
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
-            getattr(plugin.media_item, '%s_go_live' % plugin_name).emit([request_id, True])
+            getattr(plugin.media_item, '{name}_go_live'.format(name=plugin_name)).emit([request_id, True])
         return self.do_http_success()
 
     def add_to_service(self, plugin_name):
@@ -694,5 +700,5 @@ class HttpRouter(RegistryProperties):
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
             item_id = plugin.media_item.create_item_from_id(request_id)
-            getattr(plugin.media_item, '%s_add_to_service' % plugin_name).emit([item_id, True])
+            getattr(plugin.media_item, '{name}_add_to_service'.format(name=plugin_name)).emit([item_id, True])
         self.do_http_success()

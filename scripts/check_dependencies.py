@@ -93,6 +93,7 @@ MODULES = [
     'bs4',
     'mako',
     'uno',
+    'six'
 ]
 
 
@@ -102,6 +103,7 @@ OPTIONAL_MODULES = [
     ('nose', '(testing framework)', True),
     ('mock', '(testing module)', sys.version_info[1] < 3),
     ('jenkins', '(access jenkins api - package name: jenkins-webapi)', True),
+    ('pysword', '(import SWORD bibles)', True),
 ]
 
 w = sys.stdout.write

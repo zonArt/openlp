@@ -54,7 +54,7 @@ class TestServiceItem(TestCase):
         Registry().register('renderer', mocked_renderer)
         Registry().register('image_manager', MagicMock())
 
-    def service_item_basic_test(self):
+    def test_service_item_basic(self):
         """
         Test the Service Item - basic test
         """
@@ -67,7 +67,7 @@ class TestServiceItem(TestCase):
         self.assertTrue(service_item.is_valid, 'The new service item should be valid')
         self.assertTrue(service_item.missing_frames(), 'There should not be any frames in the service item')
 
-    def service_item_load_custom_from_service_test(self):
+    def test_service_item_load_custom_from_service(self):
         """
         Test the Service Item - adding a custom slide from a saved service
         """
@@ -97,7 +97,7 @@ class TestServiceItem(TestCase):
         self.assertEqual('Slide 2', service_item.get_frame_title(1), '"Slide 2" has been returned as the title')
         self.assertEqual('', service_item.get_frame_title(2), 'Blank has been returned as the title of slide 3')
 
-    def service_item_load_image_from_service_test(self):
+    def test_service_item_load_image_from_service(self):
         """
         Test the Service Item - adding an image from a saved service
         """
@@ -141,7 +141,7 @@ class TestServiceItem(TestCase):
         self.assertTrue(service_item.is_capable(ItemCapabilities.CanAppend),
                         'This service item should be able to have new items added to it')
 
-    def service_item_load_image_from_local_service_test(self):
+    def test_service_item_load_image_from_local_service(self):
         """
         Test the Service Item - adding an image from a saved local service
         """
@@ -206,7 +206,7 @@ class TestServiceItem(TestCase):
         self.assertTrue(service_item.is_capable(ItemCapabilities.CanAppend),
                         'This service item should be able to have new items added to it')
 
-    def add_from_command_for_a_presentation_test(self):
+    def test_add_from_command_for_a_presentation(self):
         """
         Test the Service Item - adding a presentation
         """
@@ -226,7 +226,7 @@ class TestServiceItem(TestCase):
         self.assertEqual(service_item.service_item_type, ServiceItemType.Command, 'It should be a Command')
         self.assertEqual(service_item.get_frames()[0], frame, 'Frames should match')
 
-    def add_from_comamnd_without_display_title_and_notes_test(self):
+    def test_add_from_comamnd_without_display_title_and_notes(self):
         """
         Test the Service Item - add from command, but not presentation
         """
@@ -244,14 +244,16 @@ class TestServiceItem(TestCase):
         self.assertEqual(service_item.service_item_type, ServiceItemType.Command, 'It should be a Command')
         self.assertEqual(service_item.get_frames()[0], frame, 'Frames should match')
 
+    @patch(u'openlp.core.lib.serviceitem.ServiceItem.image_manager')
     @patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path')
-    def add_from_command_for_a_presentation_thumb_test(self, mocked_get_section_data_path):
+    def test_add_from_command_for_a_presentation_thumb(self, mocked_get_section_data_path, mocked_image_manager):
         """
-        Test the Service Item - adding a presentation, and updating the thumb path
+        Test the Service Item - adding a presentation, updating the thumb path & adding the thumb to image_manager
         """
         # GIVEN: A service item, a mocked AppLocation and presentation data
         mocked_get_section_data_path.return_value = os.path.join('mocked', 'section', 'path')
         service_item = ServiceItem(None)
+        service_item.add_capability(ItemCapabilities.HasThumbnails)
         service_item.has_original_files = False
         service_item.name = 'presentations'
         presentation_name = 'test.pptx'
@@ -270,8 +272,9 @@ class TestServiceItem(TestCase):
         # THEN: verify that it is setup as a Command and that the frame data matches
         self.assertEqual(service_item.service_item_type, ServiceItemType.Command, 'It should be a Command')
         self.assertEqual(service_item.get_frames()[0], frame, 'Frames should match')
+        self.assertEqual(1, mocked_image_manager.add_image.call_count, 'image_manager should be used')
 
-    def service_item_load_optical_media_from_service_test(self):
+    def test_service_item_load_optical_media_from_service(self):
         """
         Test the Service Item - load an optical media item
         """
@@ -292,7 +295,7 @@ class TestServiceItem(TestCase):
         self.assertEqual(service_item.end_time, 672.069, 'End time should be 672.069')
         self.assertEqual(service_item.media_length, 17.694, 'Media length should be 17.694')
 
-    def service_item_load_song_and_audio_from_service_test(self):
+    def test_service_item_load_song_and_audio_from_service(self):
         """
         Test the Service Item - adding a song slide from a saved service
         """

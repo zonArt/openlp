@@ -26,6 +26,8 @@ import os
 
 from unittest import TestCase
 
+from PyQt5 import QtWidgets
+
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.lib.ui import UiStrings
 from openlp.core.common.registry import Registry
@@ -70,7 +72,7 @@ class TestMainWindow(TestCase, TestMixin):
     def tearDown(self):
         del self.main_window
 
-    def cmd_line_file_test(self):
+    def test_cmd_line_file(self):
         """
         Test that passing a service file from the command line loads the service.
         """
@@ -85,7 +87,7 @@ class TestMainWindow(TestCase, TestMixin):
             # THEN the service from the arguments is loaded
             mocked_load_path.assert_called_with(service), 'load_path should have been called with the service\'s path'
 
-    def cmd_line_arg_test(self):
+    def test_cmd_line_arg(self):
         """
         Test that passing a non service file does nothing.
         """
@@ -100,7 +102,7 @@ class TestMainWindow(TestCase, TestMixin):
             # THEN the file should not be opened
             assert not mocked_load_path.called, 'load_path should not have been called'
 
-    def main_window_title_test(self):
+    def test_main_window_title(self):
         """
         Test that running a new instance of OpenLP set the window title correctly
         """
@@ -112,7 +114,7 @@ class TestMainWindow(TestCase, TestMixin):
         self.assertEqual(self.main_window.windowTitle(), UiStrings().OLPV2x,
                          'The main window\'s title should be the same as the OLPV2x string in UiStrings class')
 
-    def set_service_modifed_test(self):
+    def test_set_service_modifed(self):
         """
         Test that when setting the service's title the main window's title is set correctly
         """
@@ -125,7 +127,7 @@ class TestMainWindow(TestCase, TestMixin):
         self.assertEqual(self.main_window.windowTitle(), '%s - %s*' % (UiStrings().OLPV2x, 'test.osz'),
                          'The main window\'s title should be set to "<the contents of UiStrings().OLPV2x> - test.osz*"')
 
-    def set_service_unmodified_test(self):
+    def test_set_service_unmodified(self):
         """
         Test that when setting the service's title the main window's title is set correctly
         """
@@ -138,7 +140,7 @@ class TestMainWindow(TestCase, TestMixin):
         self.assertEqual(self.main_window.windowTitle(), '%s - %s' % (UiStrings().OLPV2x, 'test.osz'),
                          'The main window\'s title should be set to "<the contents of UiStrings().OLPV2x> - test.osz"')
 
-    def mainwindow_configuration_test(self):
+    def test_mainwindow_configuration(self):
         """
         Check that the Main Window initialises the Registry Correctly
         """
@@ -148,7 +150,7 @@ class TestMainWindow(TestCase, TestMixin):
 
         # THEN: the following registry functions should have been registered
         self.assertEqual(len(self.registry.service_list), 6, 'The registry should have 6 services.')
-        self.assertEqual(len(self.registry.functions_list), 16, 'The registry should have 16 functions')
+        self.assertEqual(len(self.registry.functions_list), 17, 'The registry should have 17 functions')
         self.assertTrue('application' in self.registry.service_list, 'The application should have been registered.')
         self.assertTrue('main_window' in self.registry.service_list, 'The main_window should have been registered.')
         self.assertTrue('media_controller' in self.registry.service_list, 'The media_controller should have been '
@@ -156,7 +158,7 @@ class TestMainWindow(TestCase, TestMixin):
         self.assertTrue('plugin_manager' in self.registry.service_list,
                         'The plugin_manager should have been registered.')
 
-    def on_search_shortcut_triggered_shows_media_manager_test(self):
+    def test_on_search_shortcut_triggered_shows_media_manager(self):
         """
         Test that the media manager is made visible when the search shortcut is triggered
         """
@@ -172,7 +174,7 @@ class TestMainWindow(TestCase, TestMixin):
             # THEN: The media manager dock is made visible
             mocked_media_manager_dock.setVisible.assert_called_with(True)
 
-    def on_search_shortcut_triggered_focuses_widget_test(self):
+    def test_on_search_shortcut_triggered_focuses_widget(self):
         """
         Test that the focus is set on the widget when the search shortcut is triggered
         """
@@ -189,3 +191,57 @@ class TestMainWindow(TestCase, TestMixin):
             # THEN: The media manager dock is made visible
             self.assertEqual(0, mocked_media_manager_dock.setVisible.call_count)
             mocked_widget.on_focus.assert_called_with()
+
+    @patch('openlp.core.ui.mainwindow.MainWindow.plugin_manager')
+    @patch('openlp.core.ui.mainwindow.MainWindow.first_time')
+    @patch('openlp.core.ui.mainwindow.MainWindow.application')
+    @patch('openlp.core.ui.mainwindow.FirstTimeForm')
+    @patch('openlp.core.ui.mainwindow.QtWidgets.QMessageBox.warning')
+    @patch('openlp.core.ui.mainwindow.Settings')
+    def test_on_first_time_wizard_clicked_show_projectors_after(self, mocked_Settings, mocked_warning,
+                                                                mocked_FirstTimeForm, mocked_application,
+                                                                mocked_first_time,
+                                                                mocked_plugin_manager):
+        # GIVEN: Main_window, patched things, patched "Yes" as confirmation to re-run wizard, settings to True.
+        mocked_Settings_obj = MagicMock()
+        mocked_Settings_obj.value.return_value = True
+        mocked_Settings.return_value = mocked_Settings_obj
+        mocked_warning.return_value = QtWidgets.QMessageBox.Yes
+        mocked_FirstTimeForm_obj = MagicMock()
+        mocked_FirstTimeForm_obj.was_cancelled = False
+        mocked_FirstTimeForm.return_value = mocked_FirstTimeForm_obj
+        mocked_plugin_manager.plugins = []
+        self.main_window.projector_manager_dock = MagicMock()
+
+        # WHEN: on_first_time_wizard_clicked is called
+        self.main_window.on_first_time_wizard_clicked()
+
+        # THEN: projector_manager_dock.setVisible should had been called once
+        self.main_window.projector_manager_dock.setVisible.assert_called_once_with(True)
+
+    @patch('openlp.core.ui.mainwindow.MainWindow.plugin_manager')
+    @patch('openlp.core.ui.mainwindow.MainWindow.first_time')
+    @patch('openlp.core.ui.mainwindow.MainWindow.application')
+    @patch('openlp.core.ui.mainwindow.FirstTimeForm')
+    @patch('openlp.core.ui.mainwindow.QtWidgets.QMessageBox.warning')
+    @patch('openlp.core.ui.mainwindow.Settings')
+    def test_on_first_time_wizard_clicked_hide_projectors_after(self, mocked_Settings, mocked_warning,
+                                                                mocked_FirstTimeForm, mocked_application,
+                                                                mocked_first_time,
+                                                                mocked_plugin_manager):
+        # GIVEN: Main_window, patched things, patched "Yes" as confirmation to re-run wizard, settings to False.
+        mocked_Settings_obj = MagicMock()
+        mocked_Settings_obj.value.return_value = False
+        mocked_Settings.return_value = mocked_Settings_obj
+        mocked_warning.return_value = QtWidgets.QMessageBox.Yes
+        mocked_FirstTimeForm_obj = MagicMock()
+        mocked_FirstTimeForm_obj.was_cancelled = False
+        mocked_FirstTimeForm.return_value = mocked_FirstTimeForm_obj
+        mocked_plugin_manager.plugins = []
+        self.main_window.projector_manager_dock = MagicMock()
+
+        # WHEN: on_first_time_wizard_clicked is called
+        self.main_window.on_first_time_wizard_clicked()
+
+        # THEN: projector_manager_dock.setVisible should had been called once
+        self.main_window.projector_manager_dock.setVisible.assert_called_once_with(False)

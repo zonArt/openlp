@@ -84,10 +84,11 @@ class ZionWorxImport(SongImport):
                 records = list(songs_reader)
             except csv.Error as e:
                 self.log_error(translate('SongsPlugin.ZionWorxImport', 'Error reading CSV file.'),
-                               translate('SongsPlugin.ZionWorxImport', 'Line %d: %s') % (songs_reader.line_num, e))
+                               translate('SongsPlugin.ZionWorxImport',
+                                         'Line {number:d}: {error}').format(number=songs_reader.line_num, error=e))
                 return
             num_records = len(records)
-            log.info('%s records found in CSV file' % num_records)
+            log.info('{count} records found in CSV file'.format(count=num_records))
             self.import_wizard.progress_bar.setMaximum(num_records)
             for index, record in enumerate(records, 1):
                 if self.stop_import_flag:
@@ -101,12 +102,12 @@ class ZionWorxImport(SongImport):
                     self.add_copyright(self._decode(record['Copyright']))
                     lyrics = self._decode(record['Lyrics'])
                 except UnicodeDecodeError as e:
-                    self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record %d' % index),
-                                   translate('SongsPlugin.ZionWorxImport', 'Decoding error: %s') % e)
+                    self.log_error(translate('SongsPlugin.ZionWorxImport', 'Record {index}').format(index=index),
+                                   translate('SongsPlugin.ZionWorxImport', 'Decoding error: {error}').format(error=e))
                     continue
                 except TypeError as e:
-                    self.log_error(translate(
-                        'SongsPlugin.ZionWorxImport', 'File not valid ZionWorx CSV format.'), 'TypeError: %s' % e)
+                    self.log_error(translate('SongsPlugin.ZionWorxImport', 'File not valid ZionWorx CSV format.'),
+                                   'TypeError: {error}'.format(error=e))
                     return
                 verse = ''
                 for line in lyrics.splitlines():

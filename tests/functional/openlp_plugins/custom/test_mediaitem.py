@@ -41,7 +41,7 @@ class TestMediaItem(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def service_load_inactive_test(self):
+    def test_service_load_inactive(self):
         """
         Test the service load in custom with a default service item
         """
@@ -54,7 +54,7 @@ class TestMediaItem(TestCase, TestMixin):
         # THEN: the processing should be ignored
         self.assertEqual(item, None, 'The Service item is inactive so processing should be bypassed')
 
-    def service_load_basic_custom_false_test(self):
+    def test_service_load_basic_custom_false(self):
         """
         Test the service load in custom with a default service item and no requirement to add to the database
         """
@@ -77,7 +77,7 @@ class TestMediaItem(TestCase, TestMixin):
             self.assertEqual(self.media_item.create_from_service_item.call_count, 0,
                              'The item should not have been added to the database')
 
-    def service_load_basic_custom_true_test(self):
+    def test_service_load_basic_custom_true(self):
         """
         Test the service load in custom with a default service item and a requirement to add to the database
         """

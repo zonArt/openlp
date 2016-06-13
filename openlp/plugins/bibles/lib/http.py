@@ -90,7 +90,7 @@ class BGExtract(RegistryProperties):
     Extract verses from BibleGateway
     """
     def __init__(self, proxy_url=None):
-        log.debug('BGExtract.init("%s")', proxy_url)
+        log.debug('BGExtract.init("{url}")'.format(url=proxy_url))
         self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
 
@@ -188,7 +188,7 @@ class BGExtract(RegistryProperties):
                     if len(verse_parts) > 1:
                         verse = int(verse_parts[0])
                 except TypeError:
-                    log.warning('Illegal verse number: %s', str(verse))
+                    log.warning('Illegal verse number: {verse:d}'.format(verse=verse))
                 verses.append((verse, text))
         verse_list = {}
         for verse, text in verses[::-1]:
@@ -221,7 +221,7 @@ class BGExtract(RegistryProperties):
                 if len(verse_parts) > 1:
                     clean_verse_num = int(verse_parts[0])
             except TypeError:
-                log.warning('Illegal verse number: %s', str(raw_verse_num))
+                log.warning('Illegal verse number: {verse:d}'.format(verse=raw_verse_num))
             if clean_verse_num:
                 verse_text = raw_verse_num.next_element
                 part = raw_verse_num.next_element.next_element
@@ -244,11 +244,15 @@ class BGExtract(RegistryProperties):
         :param book_name: Name of the Book.
         :param chapter: Chapter number.
         """
-        log.debug('BGExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
+        log.debug('BGExtract.get_bible_chapter("{version}", "{name}", "{chapter}")'.format(version=version,
+                                                                                           name=book_name,
+                                                                                           chapter=chapter))
         url_book_name = urllib.parse.quote(book_name.encode("utf-8"))
-        url_params = 'search=%s+%s&version=%s' % (url_book_name, chapter, version)
+        url_params = 'search={name}+{chapter}&version={version}'.format(name=url_book_name,
+                                                                        chapter=chapter,
+                                                                        version=version)
         soup = get_soup_for_bible_ref(
-            'http://legacy.biblegateway.com/passage/?%s' % url_params,
+            'http://legacy.biblegateway.com/passage/?{url}'.format(url=url_params),
             pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='')
         if not soup:
             return None
@@ -257,7 +261,7 @@ class BGExtract(RegistryProperties):
             return None
         self._clean_soup(div)
         span_list = div.find_all('span', 'text')
-        log.debug('Span list: %s', span_list)
+        log.debug('Span list: {span}'.format(span=span_list))
         if not span_list:
             # If we don't get any spans then we must have the old HTML format
             verse_list = self._extract_verses_old(div)
@@ -275,9 +279,9 @@ class BGExtract(RegistryProperties):
 
         :param version: The version of the Bible like NIV for New International Version
         """
-        log.debug('BGExtract.get_books_from_http("%s")', version)
-        url_params = urllib.parse.urlencode({'action': 'getVersionInfo', 'vid': '%s' % version})
-        reference_url = 'http://legacy.biblegateway.com/versions/?%s#books' % url_params
+        log.debug('BGExtract.get_books_from_http("{version}")'.format(version=version))
+        url_params = urllib.parse.urlencode({'action': 'getVersionInfo', 'vid': '{version}'.format(version=version)})
+        reference_url = 'http://legacy.biblegateway.com/versions/?{url}#books'.format(url=url_params)
         page = get_web_page(reference_url)
         if not page:
             send_error_message('download')
@@ -353,7 +357,7 @@ class BSExtract(RegistryProperties):
     Extract verses from Bibleserver.com
     """
     def __init__(self, proxy_url=None):
-        log.debug('BSExtract.init("%s")', proxy_url)
+        log.debug('BSExtract.init("{url}")'.format(url=proxy_url))
         self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
 
@@ -365,10 +369,14 @@ class BSExtract(RegistryProperties):
         :param book_name: Text name of bible book e.g. Genesis, 1. John, 1John or Offenbarung
         :param chapter: Chapter number
         """
-        log.debug('BSExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
+        log.debug('BSExtract.get_bible_chapter("{version}", "{book}", "{chapter}")'.format(version=version,
+                                                                                           book=book_name,
+                                                                                           chapter=chapter))
         url_version = urllib.parse.quote(version.encode("utf-8"))
         url_book_name = urllib.parse.quote(book_name.encode("utf-8"))
-        chapter_url = 'http://m.bibleserver.com/text/%s/%s%d' % (url_version, url_book_name, chapter)
+        chapter_url = 'http://m.bibleserver.com/text/{version}/{name}{chapter:d}'.format(version=url_version,
+                                                                                         name=url_book_name,
+                                                                                         chapter=chapter)
         header = ('Accept-Language', 'en')
         soup = get_soup_for_bible_ref(chapter_url, header)
         if not soup:
@@ -393,9 +401,9 @@ class BSExtract(RegistryProperties):
 
         :param version: The version of the Bible like NIV for New International Version
         """
-        log.debug('BSExtract.get_books_from_http("%s")', version)
+        log.debug('BSExtract.get_books_from_http("{version}")'.format(version=version))
         url_version = urllib.parse.quote(version.encode("utf-8"))
-        chapter_url = 'http://m.bibleserver.com/overlay/selectBook?translation=%s' % url_version
+        chapter_url = 'http://m.bibleserver.com/overlay/selectBook?translation={version}'.format(version=url_version)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
@@ -450,7 +458,7 @@ class CWExtract(RegistryProperties):
     Extract verses from CrossWalk/BibleStudyTools
     """
     def __init__(self, proxy_url=None):
-        log.debug('CWExtract.init("%s")', proxy_url)
+        log.debug('CWExtract.init("{url}")'.format(url=proxy_url))
         self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
 
@@ -462,11 +470,15 @@ class CWExtract(RegistryProperties):
         :param book_name:  Text name of in english e.g. 'gen' for Genesis
         :param chapter: Chapter number
         """
-        log.debug('CWExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
+        log.debug('CWExtract.get_bible_chapter("{version}", "{book}", "{chapter}")'.format(version=version,
+                                                                                           book=book_name,
+                                                                                           chapter=chapter))
         url_book_name = book_name.replace(' ', '-')
         url_book_name = url_book_name.lower()
         url_book_name = urllib.parse.quote(url_book_name.encode("utf-8"))
-        chapter_url = 'http://www.biblestudytools.com/%s/%s/%s.html' % (version, url_book_name, chapter)
+        chapter_url = 'http://www.biblestudytools.com/{version}/{book}/{chapter}.html'.format(version=version,
+                                                                                              book=url_book_name,
+                                                                                              chapter=chapter)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
@@ -499,8 +511,8 @@ class CWExtract(RegistryProperties):
 
         :param version: The version of the bible like NIV for New International Version
         """
-        log.debug('CWExtract.get_books_from_http("%s")', version)
-        chapter_url = 'http://www.biblestudytools.com/%s/' % version
+        log.debug('CWExtract.get_books_from_http("{version}")'.format(version=version))
+        chapter_url = 'http://www.biblestudytools.com/{version}/'.format(version=version)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
@@ -520,7 +532,7 @@ class CWExtract(RegistryProperties):
         returns a list in the form [(biblename, biblekey, language_code)]
         """
         log.debug('CWExtract.get_bibles_from_http')
-        bible_url = 'http://www.biblestudytools.com/search/bible-search.part/'
+        bible_url = 'http://www.biblestudytools.com/'
         soup = get_soup_for_bible_ref(bible_url)
         if not soup:
             return None
@@ -528,7 +540,7 @@ class CWExtract(RegistryProperties):
         if not bible_select:
             log.debug('No select tags found - did site change?')
             return None
-        option_tags = bible_select.find_all('option')
+        option_tags = bible_select.find_all('option', {'class': 'log-translation'})
         if not option_tags:
             log.debug('No option tags found - did site change?')
             return None
@@ -559,7 +571,7 @@ class CWExtract(RegistryProperties):
 
 
 class HTTPBible(BibleDB, RegistryProperties):
-    log.info('%s HTTPBible loaded', __name__)
+    log.info('{name} HTTPBible loaded'.format(name=__name__))
 
     def __init__(self, parent, **kwargs):
         """
@@ -615,8 +627,8 @@ class HTTPBible(BibleDB, RegistryProperties):
             handler = BSExtract(self.proxy_server)
         books = handler.get_books_from_http(self.download_name)
         if not books:
-            log.error('Importing books from %s - download name: "%s" failed' %
-                      (self.download_source, self.download_name))
+            log.error('Importing books from {source} - download name: "{name}" '
+                      'failed'.format(source=self.download_source, name=self.download_name))
             return False
         self.wizard.progress_bar.setMaximum(len(books) + 2)
         self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible', 'Registering Language...'))
@@ -625,21 +637,24 @@ class HTTPBible(BibleDB, RegistryProperties):
         else:
             self.language_id = self.get_language(bible_name)
         if not self.language_id:
-            log.error('Importing books from %s failed' % self.filename)
+            log.error('Importing books from {name} failed'.format(name=self.filename))
             return False
         for book in books:
             if self.stop_import_flag:
                 break
-            self.wizard.increment_progress_bar(translate(
-                'BiblesPlugin.HTTPBible', 'Importing %s...', 'Importing <book name>...') % book)
+            self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible',
+                                                         'Importing {book}...',
+                                                         'Importing <book name>...').format(book=book))
             book_ref_id = self.get_book_ref_id_by_name(book, len(books), self.language_id)
             if not book_ref_id:
-                log.error('Importing books from %s - download name: "%s" failed' %
-                          (self.download_source, self.download_name))
+                log.error('Importing books from {source} - download name: "{name}" '
+                          'failed'.format(source=self.download_source, name=self.download_name))
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-            log.debug('Book details: Name:%s; id:%s; testament_id:%s',
-                      book, book_ref_id, book_details['testament_id'])
+            log.debug('Book details: Name:{book}; id:{ref}; '
+                      'testament_id:{detail}'.format(book=book,
+                                                     ref=book_ref_id,
+                                                     detail=book_details['testament_id']))
             self.create_book(book, book_ref_id, book_details['testament_id'])
         if self.stop_import_flag:
             return False
@@ -664,7 +679,7 @@ class HTTPBible(BibleDB, RegistryProperties):
 
                 [('35', 1, 1, 1), ('35', 2, 2, 3)]
         """
-        log.debug('HTTPBible.get_verses("%s")', reference_list)
+        log.debug('HTTPBible.get_verses("{ref}")'.format(ref=reference_list))
         for reference in reference_list:
             book_id = reference[0]
             db_book = self.get_book_by_book_ref_id(book_id)
@@ -698,8 +713,8 @@ class HTTPBible(BibleDB, RegistryProperties):
         """
         Receive the request and call the relevant handler methods.
         """
-        log.debug('HTTPBible.get_chapter("%s", "%s")', book, chapter)
-        log.debug('source = %s', self.download_source)
+        log.debug('HTTPBible.get_chapter("{book}", "{chapter}")'.format(book=book, chapter=chapter))
+        log.debug('source = {source}'.format(source=self.download_source))
         if self.download_source.lower() == 'crosswalk':
             handler = CWExtract(self.proxy_server)
         elif self.download_source.lower() == 'biblegateway':
@@ -712,7 +727,7 @@ class HTTPBible(BibleDB, RegistryProperties):
         """
         Return the list of books.
         """
-        log.debug('HTTPBible.get_books("%s")', Book.name)
+        log.debug('HTTPBible.get_books("{name}")'.format(name=Book.name))
         return self.get_all_objects(Book, order_by_ref=Book.id)
 
     def get_chapter_count(self, book):
@@ -721,7 +736,7 @@ class HTTPBible(BibleDB, RegistryProperties):
 
         :param book: The book object to get the chapter count for.
         """
-        log.debug('HTTPBible.get_chapter_count("%s")', book.name)
+        log.debug('HTTPBible.get_chapter_count("{name}")'.format(name=book.name))
         return BiblesResourcesDB.get_chapter_count(book.book_reference_id)
 
     def get_verse_count(self, book_id, chapter):
@@ -731,7 +746,7 @@ class HTTPBible(BibleDB, RegistryProperties):
         :param book_id: The name of the book.
         :param chapter: The chapter whose verses are being counted.
         """
-        log.debug('HTTPBible.get_verse_count("%s", %s)', book_id, chapter)
+        log.debug('HTTPBible.get_verse_count("{ref}", {chapter})'.format(ref=book_id, chapter=chapter))
         return BiblesResourcesDB.get_verse_count(book_id, chapter)
 
 

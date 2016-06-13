@@ -24,10 +24,13 @@ The Media plugin
 """
 
 import logging
+import os
+import re
+from shutil import which
 
 from PyQt5 import QtCore
 
-from openlp.core.common import Settings, translate
+from openlp.core.common import AppLocation, Settings, translate, check_binary_exists, is_win
 from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
@@ -46,7 +49,7 @@ class MediaPlugin(Plugin):
     """
     The media plugin adds the ability to playback audio and video content.
     """
-    log.info('%s MediaPlugin loaded', __name__)
+    log.info('{name} MediaPlugin loaded'.format(name=__name__))
 
     def __init__(self):
         super(MediaPlugin, self).__init__('media', __default_settings__, MediaMediaItem)
@@ -60,14 +63,20 @@ class MediaPlugin(Plugin):
         """
         Override the inherited initialise() method in order to upgrade the media before trying to load it
         """
-        # FIXME: Remove after 2.2 release.
-        # This is needed to load the list of media from the config saved before the settings rewrite.
-        if self.media_item_class is not None:
-            loaded_list = Settings().get_files_from_config(self)
-            # Now save the list to the config using our Settings class.
-            if loaded_list:
-                Settings().setValue('%s/%s files' % (self.settings_section, self.name), loaded_list)
         super().initialise()
+
+    def check_pre_conditions(self):
+        """
+        Check it we have a valid environment.
+        :return: true or false
+        """
+        log.debug('check_installed Mediainfo')
+        # Try to find mediainfo in the path
+        exists = process_check_binary('mediainfo')
+        # If mediainfo is not in the path, try to find it in the application folder
+        if not exists:
+            exists = process_check_binary(os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'mediainfo'))
+        return exists
 
     def app_startup(self):
         """
@@ -144,3 +153,20 @@ class MediaPlugin(Plugin):
         Add html code to htmlbuilder.
         """
         return self.media_controller.get_media_display_html()
+
+
+def process_check_binary(program_path):
+    """
+    Function that checks whether a binary MediaInfo is present
+
+    :param program_path:The full path to the binary to check.
+    :return: If exists or not
+    """
+    program_type = None
+    runlog = check_binary_exists(program_path)
+    # Analyse the output to see it the program is mediainfo
+    for line in runlog.splitlines():
+        decoded_line = line.decode()
+        if re.search('MediaInfo Command line', decoded_line, re.IGNORECASE):
+            return True
+    return False

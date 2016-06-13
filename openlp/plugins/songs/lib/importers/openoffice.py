@@ -161,7 +161,7 @@ class OpenOfficeImport(SongImport):
             else:
                 self.import_wizard.increment_progress_bar('Processing file ' + file_path, 0)
         except AttributeError:
-            log.exception("open_ooo_file failed: %s", url)
+            log.exception("open_ooo_file failed: {url}".format(url=url))
         return
 
     def create_property(self, name, value):

@@ -38,7 +38,7 @@ class TestFirstTimeWizard(TestMixin, TestCase):
     """
     Test First Time Wizard import functions
     """
-    def webpage_connection_retry_test(self):
+    def test_webpage_connection_retry(self):
         """
         Test get_web_page will attempt CONNECTION_RETRIES+1 connections - bug 1409031
         """

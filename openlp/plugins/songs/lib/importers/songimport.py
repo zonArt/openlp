@@ -28,7 +28,7 @@ import os
 from PyQt5 import QtCore
 
 from openlp.core.common import Registry, AppLocation, check_directory_exists, translate
-from openlp.core.ui.wizard import WizardStrings
+from openlp.core.ui.lib.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -117,7 +117,7 @@ class SongImport(QtCore.QObject):
             self.import_wizard.error_report_text_edit.setVisible(True)
             self.import_wizard.error_copy_to_button.setVisible(True)
             self.import_wizard.error_save_to_button.setVisible(True)
-        self.import_wizard.error_report_text_edit.append('- %s (%s)' % (file_path, reason))
+        self.import_wizard.error_report_text_edit.append('- {path} ({error})'.format(path=file_path, error=reason))
 
     def stop_import(self):
         """
@@ -326,10 +326,11 @@ class SongImport(QtCore.QObject):
         if not self.check_complete():
             self.set_defaults()
             return False
-        log.info('committing song %s to database', self.title)
+        log.info('committing song {title} to database'.format(title=self.title))
         song = Song()
         song.title = self.title
         if self.import_wizard is not None:
+            # TODO: Verify format() with template variables
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % song.title)
         song.alternate_title = self.alternate_title
         # Values will be set when cleaning the song.
@@ -344,11 +345,11 @@ class SongImport(QtCore.QObject):
             if verse_def[0].lower() in VerseType.tags:
                 verse_tag = verse_def[0].lower()
             else:
-                new_verse_def = '%s%d' % (VerseType.tags[VerseType.Other], other_count)
+                new_verse_def = '{tag}{count:d}'.format(tag=VerseType.tags[VerseType.Other], count=other_count)
                 verses_changed_to_other[verse_def] = new_verse_def
                 other_count += 1
                 verse_tag = VerseType.tags[VerseType.Other]
-                log.info('Versetype %s changing to %s', verse_def, new_verse_def)
+                log.info('Versetype {old} changing to {new}'.format(old=verse_def, new=new_verse_def))
                 verse_def = new_verse_def
             sxml.add_verse_to_lyrics(verse_tag, verse_def[1:], verse_text, lang)
         song.lyrics = str(sxml.extract_xml(), 'utf-8')

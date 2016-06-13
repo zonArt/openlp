@@ -59,7 +59,7 @@ class EditVerseForm(QtWidgets.QDialog, Ui_EditVerseDialog):
         if self.verse_text_edit.textCursor().columnNumber() != 0:
             self.verse_text_edit.insertPlainText('\n')
         verse_tag = VerseType.translated_name(verse_tag)
-        self.verse_text_edit.insertPlainText('---[%s:%s]---\n' % (verse_tag, verse_num))
+        self.verse_text_edit.insertPlainText('---[{tag}:{number}]---\n'.format(tag=verse_tag, number=verse_num))
         self.verse_text_edit.setFocus()
 
     def on_split_button_clicked(self):
@@ -107,7 +107,7 @@ class EditVerseForm(QtWidgets.QDialog, Ui_EditVerseDialog):
             self.verse_type_combo_box.currentIndex()]
         if not text:
             return
-        position = text.rfind('---[%s' % verse_name, 0, position)
+        position = text.rfind('---[{verse}'.format(verse=verse_name), 0, position)
         if position == -1:
             self.verse_number_box.setValue(1)
             return
@@ -124,7 +124,7 @@ class EditVerseForm(QtWidgets.QDialog, Ui_EditVerseDialog):
                 verse_num = 1
             self.verse_number_box.setValue(verse_num)
 
-    def set_verse(self, text, single=False, tag='%s1' % VerseType.tags[VerseType.Verse]):
+    def set_verse(self, text, single=False, tag='{verse}1'.format(verse=VerseType.tags[VerseType.Verse])):
         """
         Save the verse
 
@@ -142,7 +142,7 @@ class EditVerseForm(QtWidgets.QDialog, Ui_EditVerseDialog):
             self.insert_button.setVisible(False)
         else:
             if not text:
-                text = '---[%s:1]---\n' % VerseType.translated_names[VerseType.Verse]
+                text = '---[{tag}:1]---\n'.format(tag=VerseType.translated_names[VerseType.Verse])
             self.verse_type_combo_box.setCurrentIndex(0)
             self.verse_number_box.setValue(1)
             self.insert_button.setVisible(True)
@@ -167,5 +167,5 @@ class EditVerseForm(QtWidgets.QDialog, Ui_EditVerseDialog):
         """
         text = self.verse_text_edit.toPlainText()
         if not text.startswith('---['):
-            text = '---[%s:1]---\n%s' % (VerseType.translated_names[VerseType.Verse], text)
+            text = '---[{tag}:1]---\n{text}'.format(tag=VerseType.translated_names[VerseType.Verse], text=text)
         return text

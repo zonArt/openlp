@@ -61,23 +61,29 @@ class VerseReferenceList(object):
         result = ''
         for index, verse in enumerate(self.verse_list):
             if index == 0:
-                result = '%s %s%s%s' % (verse['book'], verse['chapter'], verse_sep, verse['start'])
+                result = '{book} {chapter}{sep}{verse}'.format(book=verse['book'],
+                                                               chapter=verse['chapter'],
+                                                               sep=verse_sep,
+                                                               verse=verse['start'])
                 if verse['start'] != verse['end']:
-                    result = '%s%s%s' % (result, range_sep, verse['end'])
+                    result = '{result}{sep}{end}'.format(result=result, sep=range_sep, end=verse['end'])
                 continue
             prev = index - 1
             if self.verse_list[prev]['version'] != verse['version']:
-                result = '%s (%s)' % (result, self.verse_list[prev]['version'])
-            result += '%s ' % list_sep
+                result = '{result} ({version})'.format(result=result, version=self.verse_list[prev]['version'])
+            result += '{sep} '.format(sep=list_sep)
             if self.verse_list[prev]['book'] != verse['book']:
-                result = '%s%s %s%s' % (result, verse['book'], verse['chapter'], verse_sep)
+                result = '{result}{book} {chapter}{sep}'.format(result=result,
+                                                                book=verse['book'],
+                                                                chapter=verse['chapter'],
+                                                                sep=verse_sep)
             elif self.verse_list[prev]['chapter'] != verse['chapter']:
-                result = '%s%s%s' % (result, verse['chapter'], verse_sep)
+                result = '{result}{chapter}{sep}'.format(result=result, chapter=verse['chapter'], sep=verse_sep)
             result += str(verse['start'])
             if verse['start'] != verse['end']:
-                result = '%s%s%s' % (result, range_sep, verse['end'])
+                result = '{result}{sep}{end}'.format(result=result, sep=range_sep, end=verse['end'])
         if len(self.version_list) > 1:
-            result = '%s (%s)' % (result, verse['version'])
+            result = '{result} ({version})'.format(result=result, version=verse['version'])
         return result
 
     def format_versions(self, copyright=True, permission=True):

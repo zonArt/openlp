@@ -25,9 +25,10 @@ The Create/Edit theme wizard
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from openlp.core.common import UiStrings, translate, is_macosx
-from openlp.core.lib import build_icon, ColorButton
+from openlp.core.lib import build_icon
 from openlp.core.lib.theme import HorizontalType, BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import add_welcome_page, create_valign_selection_widgets
+from openlp.core.ui.lib.colorbutton import ColorButton
 
 
 class Ui_ThemeWizard(object):
@@ -61,7 +62,7 @@ class Ui_ThemeWizard(object):
         self.background_label = QtWidgets.QLabel(self.background_page)
         self.background_label.setObjectName('background_label')
         self.background_combo_box = QtWidgets.QComboBox(self.background_page)
-        self.background_combo_box.addItems(['', '', '', ''])
+        self.background_combo_box.addItems(['', '', '', '', ''])
         self.background_combo_box.setObjectName('background_combo_box')
         self.background_type_layout.addRow(self.background_label, self.background_combo_box)
         self.background_type_layout.setItem(1, QtWidgets.QFormLayout.LabelRole, self.spacer)
@@ -134,6 +135,30 @@ class Ui_ThemeWizard(object):
         self.transparent_layout.setObjectName('Transparent_layout')
         self.background_stack.addWidget(self.transparent_widget)
         self.background_layout.addLayout(self.background_stack)
+        self.video_widget = QtWidgets.QWidget(self.background_page)
+        self.video_widget.setObjectName('video_widget')
+        self.video_layout = QtWidgets.QFormLayout(self.video_widget)
+        self.video_layout.setContentsMargins(0, 0, 0, 0)
+        self.video_layout.setObjectName('video_layout')
+        self.video_color_label = QtWidgets.QLabel(self.color_widget)
+        self.video_color_label.setObjectName('video_color_label')
+        self.video_color_button = ColorButton(self.color_widget)
+        self.video_color_button.setObjectName('video_color_button')
+        self.video_layout.addRow(self.video_color_label, self.video_color_button)
+        self.video_label = QtWidgets.QLabel(self.video_widget)
+        self.video_label.setObjectName('video_label')
+        self.video_file_layout = QtWidgets.QHBoxLayout()
+        self.video_file_layout.setObjectName('video_file_layout')
+        self.video_file_edit = QtWidgets.QLineEdit(self.video_widget)
+        self.video_file_edit.setObjectName('video_file_edit')
+        self.video_file_layout.addWidget(self.video_file_edit)
+        self.video_browse_button = QtWidgets.QToolButton(self.video_widget)
+        self.video_browse_button.setObjectName('video_browse_button')
+        self.video_browse_button.setIcon(build_icon(':/general/general_open.png'))
+        self.video_file_layout.addWidget(self.video_browse_button)
+        self.video_layout.addRow(self.video_label, self.video_file_layout)
+        self.video_layout.setItem(2, QtWidgets.QFormLayout.LabelRole, self.spacer)
+        self.background_stack.addWidget(self.video_widget)
         theme_wizard.addPage(self.background_page)
         # Main Area Page
         self.main_area_page = QtWidgets.QWizardPage()
@@ -380,8 +405,8 @@ class Ui_ThemeWizard(object):
         Translate the UI on the fly
         """
         theme_wizard.setWindowTitle(translate('OpenLP.ThemeWizard', 'Theme Wizard'))
-        self.title_label.setText('<span style="font-size:14pt; font-weight:600;">%s</span>' %
-                                 translate('OpenLP.ThemeWizard', 'Welcome to the Theme Wizard'))
+        text = translate('OpenLP.ThemeWizard', 'Welcome to the Theme Wizard')
+        self.title_label.setText('<span style="font-size:14pt; font-weight:600;">{text}</span>'.format(text=text))
         self.information_label.setText(
             translate('OpenLP.ThemeWizard', 'This wizard will help you to create and edit your themes. Click the next '
                       'button below to start the process by setting up your background.'))
@@ -389,11 +414,10 @@ class Ui_ThemeWizard(object):
         self.background_page.setSubTitle(translate('OpenLP.ThemeWizard', 'Set up your theme\'s background '
                                          'according to the parameters below.'))
         self.background_label.setText(translate('OpenLP.ThemeWizard', 'Background type:'))
-        self.background_combo_box.setItemText(BackgroundType.Solid,
-                                              translate('OpenLP.ThemeWizard', 'Solid color'))
-        self.background_combo_box.setItemText(BackgroundType.Gradient,
-                                              translate('OpenLP.ThemeWizard', 'Gradient'))
+        self.background_combo_box.setItemText(BackgroundType.Solid, translate('OpenLP.ThemeWizard', 'Solid color'))
+        self.background_combo_box.setItemText(BackgroundType.Gradient, translate('OpenLP.ThemeWizard', 'Gradient'))
         self.background_combo_box.setItemText(BackgroundType.Image, UiStrings().Image)
+        self.background_combo_box.setItemText(BackgroundType.Video, UiStrings().Video)
         self.background_combo_box.setItemText(BackgroundType.Transparent,
                                               translate('OpenLP.ThemeWizard', 'Transparent'))
         self.color_label.setText(translate('OpenLP.ThemeWizard', 'color:'))
@@ -411,7 +435,9 @@ class Ui_ThemeWizard(object):
         self.gradient_combo_box.setItemText(BackgroundGradientType.LeftBottom,
                                             translate('OpenLP.ThemeWizard', 'Bottom Left - Top Right'))
         self.image_color_label.setText(translate('OpenLP.ThemeWizard', 'Background color:'))
-        self.image_label.setText('%s:' % UiStrings().Image)
+        self.image_label.setText('{text}:'.format(text=UiStrings().Image))
+        self.video_color_label.setText(translate('OpenLP.ThemeWizard', 'Background color:'))
+        self.video_label.setText('{text}:'.format(text=UiStrings().Video))
         self.main_area_page.setTitle(translate('OpenLP.ThemeWizard', 'Main Area Font Details'))
         self.main_area_page.setSubTitle(translate('OpenLP.ThemeWizard', 'Define the font and display '
                                                   'characteristics for the Display text'))

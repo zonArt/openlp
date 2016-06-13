@@ -37,7 +37,7 @@ class TestDB(TestCase):
     """
     A test case for all the tests for the :mod:`~openlp.core.lib.db` module.
     """
-    def init_db_calls_correct_functions_test(self):
+    def test_init_db_calls_correct_functions(self):
         """
         Test that the init_db function makes the correct function calls
         """
@@ -67,7 +67,7 @@ class TestDB(TestCase):
             self.assertIs(session, mocked_scoped_session_object, 'The ``session`` object should be the mock')
             self.assertIs(metadata, mocked_metadata, 'The ``metadata`` object should be the mock')
 
-    def init_db_defaults_test(self):
+    def test_init_db_defaults(self):
         """
         Test that initialising an in-memory SQLite database via ``init_db`` uses the defaults
         """
@@ -81,7 +81,7 @@ class TestDB(TestCase):
         self.assertIsInstance(session, ScopedSession, 'The ``session`` object should be a ``ScopedSession`` instance')
         self.assertIsInstance(metadata, MetaData, 'The ``metadata`` object should be a ``MetaData`` instance')
 
-    def get_upgrade_op_test(self):
+    def test_get_upgrade_op(self):
         """
         Test that the ``get_upgrade_op`` function creates a MigrationContext and an Operations object
         """
@@ -105,7 +105,7 @@ class TestDB(TestCase):
             MockedMigrationContext.configure.assert_called_with(mocked_connection)
             MockedOperations.assert_called_with(mocked_context)
 
-    def delete_database_without_db_file_name_test(self):
+    def test_delete_database_without_db_file_name(self):
         """
         Test that the ``delete_database`` function removes a database file, without the file name parameter
         """
@@ -125,7 +125,7 @@ class TestDB(TestCase):
             mocked_delete_file.assert_called_with(test_location)
             self.assertTrue(result, 'The result of delete_file should be True (was rigged that way)')
 
-    def delete_database_with_db_file_name_test(self):
+    def test_delete_database_with_db_file_name(self):
         """
         Test that the ``delete_database`` function removes a database file, with the file name supplied
         """

@@ -59,7 +59,7 @@ class TestRenderer(TestCase):
         """
         del self.screens
 
-    def default_screen_layout_test(self):
+    def test_default_screen_layout(self):
         """
         Test the default layout calculations
         """
@@ -73,7 +73,7 @@ class TestRenderer(TestCase):
         self.assertEqual(renderer.footer_start, 691, 'The base renderer should be a live controller')
 
     @patch('openlp.core.lib.renderer.FormattingTags.get_html_tags')
-    def get_start_tags_test(self, mocked_get_html_tags):
+    def test_get_start_tags(self, mocked_get_html_tags):
         """
         Test the get_start_tags() method
         """
@@ -95,7 +95,7 @@ class TestRenderer(TestCase):
         self.assertEqual(result, expected_tuple), 'A tuple should be returned containing the text with correct ' \
             'tags, the opening tags, and the opening html tags.'
 
-    def word_split_test(self):
+    def test_word_split(self):
         """
         Test the word_split() method
         """
@@ -109,7 +109,7 @@ class TestRenderer(TestCase):
         # THEN: The word lists should be the same.
         self.assertListEqual(result_words, expected_words)
 
-    def format_slide_logical_split_test(self):
+    def test_format_slide_logical_split(self):
         """
         Test that a line with text and a logic break does not break the renderer just returns the input
         """
@@ -126,7 +126,7 @@ class TestRenderer(TestCase):
         # THEN: The word lists should be the same.
         self.assertListEqual(result_words, expected_words)
 
-    def format_slide_blank_before_split_test(self):
+    def test_format_slide_blank_before_split(self):
         """
         Test that a line with blanks before the logical split at handled
         """
@@ -143,7 +143,7 @@ class TestRenderer(TestCase):
         # THEN: The blanks have been removed.
         self.assertListEqual(result_words, expected_words)
 
-    def format_slide_blank_after_split_test(self):
+    def test_format_slide_blank_after_split(self):
         """
         Test that a line with blanks before the logical split at handled
         """

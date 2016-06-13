@@ -247,7 +247,7 @@ class ServiceItem(RegistryProperties):
             self.renderer.set_item_theme(self.theme)
             self.theme_data, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
-            log.debug('Formatting slides: %s' % self.title)
+            log.debug('Formatting slides: {title}'.format(title=self.title))
             # Save rendered pages to this dict. In the case that a slide is used twice we can use the pages saved to
             # the dict instead of rendering them again.
             previous_pages = {}
@@ -270,7 +270,7 @@ class ServiceItem(RegistryProperties):
         elif self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command:
             pass
         else:
-            log.error('Invalid value renderer: %s' % self.service_item_type)
+            log.error('Invalid value renderer: {item}'.format(item=self.service_item_type))
         self.title = clean_tags(self.title)
         # The footer should never be None, but to be compatible with a few
         # nightly builds between 1.9.4 and 1.9.5, we have to correct this to
@@ -325,7 +325,8 @@ class ServiceItem(RegistryProperties):
         self.service_item_type = ServiceItemType.Command
         # If the item should have a display title but this frame doesn't have one, we make one up
         if self.is_capable(ItemCapabilities.HasDisplayTitle) and not display_title:
-            display_title = translate('OpenLP.ServiceItem', '[slide %d]') % (len(self._raw_frames) + 1)
+            display_title = translate('OpenLP.ServiceItem',
+                                      '[slide {frame:d}]').format(frame=len(self._raw_frames) + 1)
         # Update image path to match servicemanager location if file was loaded from service
         if image and not self.has_original_files and self.name == 'presentations':
             file_location = os.path.join(path, file_name)
@@ -334,6 +335,8 @@ class ServiceItem(RegistryProperties):
                                  file_location_hash, ntpath.basename(image))
         self._raw_frames.append({'title': file_name, 'image': image, 'path': path,
                                  'display_title': display_title, 'notes': notes})
+        if self.is_capable(ItemCapabilities.HasThumbnails):
+            self.image_manager.add_image(image, ImageSource.CommandPlugins, '#000000')
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -390,7 +393,7 @@ class ServiceItem(RegistryProperties):
         :param path: Defaults to *None*. This is the service manager path for things which have their files saved
             with them or None when the saved service is lite and the original file paths need to be preserved.
         """
-        log.debug('set_from_service called with path %s' % path)
+        log.debug('set_from_service called with path {path}'.format(path=path))
         header = service_item['serviceitem']['header']
         self.title = header['title']
         self.name = header['name']
@@ -606,11 +609,13 @@ class ServiceItem(RegistryProperties):
         start = None
         end = None
         if self.start_time != 0:
-            start = translate('OpenLP.ServiceItem', '<strong>Start</strong>: %s') % \
-                str(datetime.timedelta(seconds=self.start_time))
+            time = str(datetime.timedelta(seconds=self.start_time))
+            start = translate('OpenLP.ServiceItem',
+                              '<strong>Start</strong>: {start}').format(start=time)
         if self.media_length != 0:
-            end = translate('OpenLP.ServiceItem', '<strong>Length</strong>: %s') % \
-                str(datetime.timedelta(seconds=self.media_length))
+            length = str(datetime.timedelta(seconds=self.media_length // 1000))
+            end = translate('OpenLP.ServiceItem', '<strong>Length</strong>: {length}').format(length=length)
+
         if not start and not end:
             return ''
         elif start and not end:
@@ -618,7 +623,7 @@ class ServiceItem(RegistryProperties):
         elif not start and end:
             return end
         else:
-            return '%s <br>%s' % (start, end)
+            return '{start} <br>{end}'.format(start=start, end=end)
 
     def update_theme(self, theme):
         """

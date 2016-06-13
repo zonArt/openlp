@@ -242,13 +242,13 @@ class PresentationDocument(object):
 
     def convert_thumbnail(self, file, idx):
         """
-        Convert the slide image the application made to a standard 320x240 .png image.
+        Convert the slide image the application made to a scaled 360px height .png image.
         """
         if self.check_thumbnails():
             return
         if os.path.isfile(file):
             thumb_path = self.get_thumbnail_path(idx, False)
-            create_thumb(file, thumb_path, False, QtCore.QSize(320, 240))
+            create_thumb(file, thumb_path, False, QtCore.QSize(-1, 360))
 
     def get_thumbnail_path(self, slide_no, check_exists):
         """
@@ -278,7 +278,7 @@ class PresentationDocument(object):
             prefix = 'live'
         else:
             prefix = 'preview'
-        Registry().execute('slidecontroller_%s_change' % prefix, self.slide_number - 1)
+        Registry().execute('slidecontroller_{prefix}_change'.format(prefix=prefix), self.slide_number - 1)
 
     def get_slide_text(self, slide_no):
         """
@@ -312,7 +312,7 @@ class PresentationDocument(object):
                 log.exception('Failed to open/read existing titles file')
                 titles = []
         for slide_no, title in enumerate(titles, 1):
-            notes_file = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % slide_no)
+            notes_file = os.path.join(self.get_thumbnail_folder(), 'slideNotes{number:d}.txt'.format(number=slide_no))
             note = ''
             if os.path.exists(notes_file):
                 try:
@@ -335,7 +335,8 @@ class PresentationDocument(object):
                 fo.writelines(titles)
         if notes:
             for slide_no, note in enumerate(notes, 1):
-                notes_file = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % slide_no)
+                notes_file = os.path.join(self.get_thumbnail_folder(),
+                                          'slideNotes{number:d}.txt'.format(number=slide_no))
                 with open(notes_file, mode='wt', encoding='utf-8') as fn:
                     fn.write(note)
 

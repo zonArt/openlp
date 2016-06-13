@@ -33,11 +33,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from openlp.core.common import Registry, RegistryProperties, Settings, SlideLimits, UiStrings, translate, \
     RegistryMixin, OpenLPMixin
 from openlp.core.common.actions import ActionList, CategoryOrder
-from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, \
-    ScreenList, build_icon, build_html
+from openlp.core.lib import ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, ScreenList, build_icon, \
+    build_html
 from openlp.core.lib.ui import create_action
+from openlp.core.ui.lib.toolbar import OpenLPToolbar
+from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
+from openlp.core.ui.lib.listpreviewwidget import ListPreviewWidget
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
-from openlp.core.ui.listpreviewwidget import ListPreviewWidget
+
 
 # Threshold which has to be trespassed to toggle.
 HIDE_MENU_THRESHOLD = 27
@@ -84,7 +87,7 @@ class DisplayController(QtWidgets.QWidget):
         super(DisplayController, self).__init__(parent)
         self.is_live = False
         self.display = None
-        self.controller_type = DisplayControllerType.Plugin
+        self.controller_type = None
 
     def send_to_plugins(self, *args):
         """
@@ -95,7 +98,7 @@ class DisplayController(QtWidgets.QWidget):
         """
         sender = self.sender().objectName() if self.sender().objectName() else self.sender().text()
         controller = self
-        Registry().execute('%s' % sender, [controller, args])
+        Registry().execute('{text}'.format(text=sender), [controller, args])
 
 
 class InfoLabel(QtWidgets.QLabel):
@@ -392,7 +395,7 @@ class SlideController(DisplayController, RegistryProperties):
                 {'key': 'O', 'configurable': True, 'text': translate('OpenLP.SlideController', 'Go to "Other"')}
             ]
             shortcuts.extend([{'key': str(number)} for number in range(10)])
-            self.controller.addActions([create_action(self, 'shortcutAction_%s' % s['key'],
+            self.controller.addActions([create_action(self, 'shortcutAction_{key}'.format(key=s['key']),
                                                       text=s.get('text'),
                                                       can_shortcuts=True,
                                                       context=QtCore.Qt.WidgetWithChildrenShortcut,
@@ -414,14 +417,20 @@ class SlideController(DisplayController, RegistryProperties):
             self.preview_widget.doubleClicked.connect(self.on_preview_double_click)
             self.toolbar.set_widget_visible(['editSong'], False)
             self.controller.addActions([self.next_item, self.previous_item])
-        Registry().register_function('slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
-        Registry().register_function('slidecontroller_%s_change' % self.type_prefix, self.on_slide_change)
-        Registry().register_function('slidecontroller_%s_blank' % self.type_prefix, self.on_slide_blank)
-        Registry().register_function('slidecontroller_%s_unblank' % self.type_prefix, self.on_slide_unblank)
+        Registry().register_function('slidecontroller_{text}_stop_loop'.format(text=self.type_prefix),
+                                     self.on_stop_loop)
+        Registry().register_function('slidecontroller_{text}_change'.format(text=self.type_prefix),
+                                     self.on_slide_change)
+        Registry().register_function('slidecontroller_{text}_blank'.format(text=self.type_prefix),
+                                     self.on_slide_blank)
+        Registry().register_function('slidecontroller_{text}_unblank'.format(text=self.type_prefix),
+                                     self.on_slide_unblank)
         Registry().register_function('slidecontroller_update_slide_limits', self.update_slide_limits)
-        getattr(self, 'slidecontroller_%s_set' % self.type_prefix).connect(self.on_slide_selected_index)
-        getattr(self, 'slidecontroller_%s_next' % self.type_prefix).connect(self.on_slide_selected_next)
-        getattr(self, 'slidecontroller_%s_previous' % self.type_prefix).connect(self.on_slide_selected_previous)
+        getattr(self, 'slidecontroller_{text}_set'.format(text=self.type_prefix)).connect(self.on_slide_selected_index)
+        getattr(self, 'slidecontroller_{text}_next'.format(text=self.type_prefix)).connect(self.on_slide_selected_next)
+        # NOTE: {t} used to keep line length < maxline
+        getattr(self,
+                'slidecontroller_{t}_previous'.format(t=self.type_prefix)).connect(self.on_slide_selected_previous)
 
     def _slide_shortcut_activated(self):
         """
@@ -844,7 +853,8 @@ class SlideController(DisplayController, RegistryProperties):
         self.service_item = copy.copy(service_item)
         if self.service_item.is_command():
             Registry().execute(
-                '%s_start' % service_item.name.lower(), [self.service_item, self.is_live, self.hide_mode(), slide_no])
+                '{text}_start'.format(text=service_item.name.lower()),
+                [self.service_item, self.is_live, self.hide_mode(), slide_no])
         # Reset blanking if needed
         if old_item and self.is_live and (old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay) or
                                           self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay)):
@@ -882,8 +892,8 @@ class SlideController(DisplayController, RegistryProperties):
                 if frame['verseTag']:
                     # These tags are already translated.
                     verse_def = frame['verseTag']
-                    verse_def = '%s%s' % (verse_def[0], verse_def[1:])
-                    two_line_def = '%s\n%s' % (verse_def[0], verse_def[1:])
+                    verse_def = '{def1}{def2}'.format(def1=verse_def[0], def2=verse_def[1:])
+                    two_line_def = '{def1}\n{def2}'.format(def1=verse_def[0], def2=verse_def[1:])
                     row = two_line_def
                     if verse_def not in self.slide_list:
                         self.slide_list[verse_def] = frame_number
@@ -918,10 +928,10 @@ class SlideController(DisplayController, RegistryProperties):
             # close the previous, so make sure we don't close the new one.
             if old_item.is_command() and not self.service_item.is_command() or \
                     old_item.is_command() and not old_item.is_media() and self.service_item.is_media():
-                Registry().execute('%s_stop' % old_item.name.lower(), [old_item, self.is_live])
+                Registry().execute('{name}_stop'.format(name=old_item.name.lower()), [old_item, self.is_live])
             if old_item.is_media() and not self.service_item.is_media():
                 self.on_media_close()
-        Registry().execute('slidecontroller_%s_started' % self.type_prefix, [self.service_item])
+        Registry().execute('slidecontroller_{item}_started'.format(item=self.type_prefix), [self.service_item])
 
     def on_slide_selected_index(self, message):
         """
@@ -933,7 +943,8 @@ class SlideController(DisplayController, RegistryProperties):
         if not self.service_item:
             return
         if self.service_item.is_command():
-            Registry().execute('%s_slide' % self.service_item.name.lower(), [self.service_item, self.is_live, index])
+            Registry().execute('{name}_slide'.format(name=self.service_item.name.lower()),
+                               [self.service_item, self.is_live, index])
             self.update_preview()
             self.selected_row = index
         else:
@@ -978,7 +989,7 @@ class SlideController(DisplayController, RegistryProperties):
         """
         if checked is None:
             checked = self.blank_screen.isChecked()
-        self.log_debug('on_blank_display %s' % checked)
+        self.log_debug('on_blank_display {text}'.format(text=checked))
         self.hide_menu.setDefaultAction(self.blank_screen)
         self.blank_screen.setChecked(checked)
         self.theme_screen.setChecked(False)
@@ -999,7 +1010,7 @@ class SlideController(DisplayController, RegistryProperties):
         """
         if checked is None:
             checked = self.theme_screen.isChecked()
-        self.log_debug('on_theme_display %s' % checked)
+        self.log_debug('on_theme_display {text}'.format(text=checked))
         self.hide_menu.setDefaultAction(self.theme_screen)
         self.blank_screen.setChecked(False)
         self.theme_screen.setChecked(checked)
@@ -1020,7 +1031,7 @@ class SlideController(DisplayController, RegistryProperties):
         """
         if checked is None:
             checked = self.desktop_screen.isChecked()
-        self.log_debug('on_hide_display %s' % checked)
+        self.log_debug('on_hide_display {text}'.format(text=checked))
         self.hide_menu.setDefaultAction(self.desktop_screen)
         self.blank_screen.setChecked(False)
         self.theme_screen.setChecked(False)
@@ -1038,17 +1049,18 @@ class SlideController(DisplayController, RegistryProperties):
         Blank/Hide the display screen within a plugin if required.
         """
         hide_mode = self.hide_mode()
-        self.log_debug('blank_plugin %s ' % hide_mode)
+        self.log_debug('blank_plugin {text}'.format(text=hide_mode))
         if self.service_item is not None:
             if hide_mode:
                 if not self.service_item.is_command():
                     Registry().execute('live_display_hide', hide_mode)
-                Registry().execute('%s_blank' %
-                                   self.service_item.name.lower(), [self.service_item, self.is_live, hide_mode])
+                Registry().execute('{text}_blank'.format(text=self.service_item.name.lower()),
+                                   [self.service_item, self.is_live, hide_mode])
             else:
                 if not self.service_item.is_command():
                     Registry().execute('live_display_show')
-                Registry().execute('%s_unblank' % self.service_item.name.lower(), [self.service_item, self.is_live])
+                Registry().execute('{text}_unblank'.format(text=self.service_item.name.lower()),
+                                   [self.service_item, self.is_live])
         else:
             if hide_mode:
                 Registry().execute('live_display_hide', hide_mode)
@@ -1059,15 +1071,17 @@ class SlideController(DisplayController, RegistryProperties):
         """
         Tell the plugin to hide the display screen.
         """
-        self.log_debug('hide_plugin %s ' % hide)
+        self.log_debug('hide_plugin {text}'.format(text=hide))
         if self.service_item is not None:
             if hide:
                 Registry().execute('live_display_hide', HideMode.Screen)
-                Registry().execute('%s_hide' % self.service_item.name.lower(), [self.service_item, self.is_live])
+                Registry().execute('{text}_hide'.format(text=self.service_item.name.lower()),
+                                   [self.service_item, self.is_live])
             else:
                 if not self.service_item.is_command():
                     Registry().execute('live_display_show')
-                Registry().execute('%s_unblank' % self.service_item.name.lower(), [self.service_item, self.is_live])
+                Registry().execute('{text}_unblank'.format(text=self.service_item.name.lower()),
+                                   [self.service_item, self.is_live])
         else:
             if hide:
                 Registry().execute('live_display_hide', HideMode.Screen)
@@ -1111,8 +1125,8 @@ class SlideController(DisplayController, RegistryProperties):
         if -1 < row < self.preview_widget.slide_count():
             if self.service_item.is_command():
                 if self.is_live and not start:
-                    Registry().execute('%s_slide' %
-                                       self.service_item.name.lower(), [self.service_item, self.is_live, row])
+                    Registry().execute('{text}_slide'.format(text=self.service_item.name.lower()),
+                                       [self.service_item, self.is_live, row])
             else:
                 to_display = self.service_item.get_rendered_frame(row)
                 if self.service_item.is_text():
@@ -1145,11 +1159,23 @@ class SlideController(DisplayController, RegistryProperties):
         """
         This updates the preview frame, for example after changing a slide or using *Blank to Theme*.
         """
-        self.log_debug('update_preview %s ' % self.screens.current['primary'])
+        self.log_debug('update_preview {text} '.format(text=self.screens.current['primary']))
         if self.service_item and self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
-            # Grab now, but try again in a couple of seconds if slide change is slow
-            QtCore.QTimer.singleShot(500, self.grab_maindisplay)
-            QtCore.QTimer.singleShot(2500, self.grab_maindisplay)
+            if self.is_live:
+                # If live, grab screen-cap of main display now
+                QtCore.QTimer.singleShot(500, self.grab_maindisplay)
+                # but take another in a couple of seconds in case slide change is slow
+                QtCore.QTimer.singleShot(2500, self.grab_maindisplay)
+            else:
+                # If not live, use the slide's thumbnail/icon instead
+                image_path = self.service_item.get_rendered_frame(self.selected_row)
+                if self.service_item.is_capable(ItemCapabilities.HasThumbnails):
+                    image = self.image_manager.get_image(image_path, ImageSource.CommandPlugins)
+                    self.slide_image = QtGui.QPixmap.fromImage(image)
+                else:
+                    self.slide_image = QtGui.QPixmap(image_path)
+                self.slide_image.setDevicePixelRatio(self.main_window.devicePixelRatio())
+                self.slide_preview.setPixmap(self.slide_image)
         else:
             self.slide_image = self.display.preview()
             self.slide_image.setDevicePixelRatio(self.main_window.devicePixelRatio())
@@ -1185,7 +1211,8 @@ class SlideController(DisplayController, RegistryProperties):
         if not self.service_item:
             return
         if self.service_item.is_command():
-            Registry().execute('%s_next' % self.service_item.name.lower(), [self.service_item, self.is_live])
+            Registry().execute('{text}_next'.format(text=self.service_item.name.lower()),
+                               [self.service_item, self.is_live])
             if self.is_live:
                 self.update_preview()
         else:
@@ -1213,7 +1240,8 @@ class SlideController(DisplayController, RegistryProperties):
         if not self.service_item:
             return
         if self.service_item.is_command():
-            Registry().execute('%s_previous' % self.service_item.name.lower(), [self.service_item, self.is_live])
+            Registry().execute('{text}_previous'.format(text=self.service_item.name.lower()),
+                               [self.service_item, self.is_live])
             if self.is_live:
                 self.update_preview()
         else:
@@ -1265,7 +1293,7 @@ class SlideController(DisplayController, RegistryProperties):
             checked = self.play_slides_loop.isChecked()
         else:
             self.play_slides_loop.setChecked(checked)
-        self.log_debug('on_play_slides_loop %s' % checked)
+        self.log_debug('on_play_slides_loop {text}'.format(text=checked))
         if checked:
             self.play_slides_loop.setIcon(build_icon(':/media/media_stop.png'))
             self.play_slides_loop.setText(UiStrings().StopPlaySlidesInLoop)
@@ -1290,7 +1318,7 @@ class SlideController(DisplayController, RegistryProperties):
             checked = self.play_slides_once.isChecked()
         else:
             self.play_slides_once.setChecked(checked)
-        self.log_debug('on_play_slides_once %s' % checked)
+        self.log_debug('on_play_slides_once {text}'.format(text=checked))
         if checked:
             self.play_slides_once.setIcon(build_icon(':/media/media_stop.png'))
             self.play_slides_once.setText(UiStrings().StopPlaySlidesToEnd)
@@ -1358,7 +1386,8 @@ class SlideController(DisplayController, RegistryProperties):
                 # Live and Preview have issues if we have video or presentations
                 # playing in both at the same time.
                 if self.service_item.is_command():
-                    Registry().execute('%s_stop' % self.service_item.name.lower(), [self.service_item, self.is_live])
+                    Registry().execute('{text}_stop'.format(text=self.service_item.name.lower()),
+                                       [self.service_item, self.is_live])
                 if self.service_item.is_media():
                     self.on_media_close()
                 self.on_go_live()

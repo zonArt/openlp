@@ -52,7 +52,7 @@ class TestLib(TestCase):
             old rugged cross till my trophies at last i lay down i will cling to the old rugged cross and exchange it
             some day for a crown'''
 
-    def clean_string_test(self):
+    def test_clean_string(self):
         """
         Test the clean_string() function
         """
@@ -65,7 +65,7 @@ class TestLib(TestCase):
         # THEN: The string should be cleaned up and lower-cased
         self.assertEqual(result, 'aint gonna find you there ', 'The string should be cleaned up properly')
 
-    def clean_title_test(self):
+    def test_clean_title(self):
         """
         Test the clean_title() function
         """
@@ -78,7 +78,7 @@ class TestLib(TestCase):
         # THEN: The string should be cleaned up
         self.assertEqual(result, 'This is a dirty string', 'The title should be cleaned up properly: "%s"' % result)
 
-    def songs_probably_equal_same_song_test(self):
+    def test_songs_probably_equal_same_song(self):
         """
         Test the songs_probably_equal function with twice the same song.
         """
@@ -92,7 +92,7 @@ class TestLib(TestCase):
         # THEN: The result should be a tuple..
         assert result == (2, 4), 'The result should be the tuble of song positions'
 
-    def songs_probably_equal_short_song_test(self):
+    def test_songs_probably_equal_short_song(self):
         """
         Test the songs_probably_equal function with a song and a shorter version of the same song.
         """
@@ -106,7 +106,7 @@ class TestLib(TestCase):
         # THEN: The result should be a tuple..
         assert result == (1, 3), 'The result should be the tuble of song positions'
 
-    def songs_probably_equal_error_song_test(self):
+    def test_songs_probably_equal_error_song(self):
         """
         Test the songs_probably_equal function with a song and a  very erroneous version of the same song.
         """
@@ -120,7 +120,7 @@ class TestLib(TestCase):
         # THEN: The result should be a tuple of song positions.
         assert result == (4, 7), 'The result should be the tuble of song positions'
 
-    def songs_probably_equal_different_song_test(self):
+    def test_songs_probably_equal_different_song(self):
         """
         Test the songs_probably_equal function with two different songs.
         """
@@ -134,7 +134,7 @@ class TestLib(TestCase):
         # THEN: The result should be None.
         assert result is None, 'The result should be None'
 
-    def remove_typos_beginning_test(self):
+    def test_remove_typos_beginning(self):
         """
         Test the _remove_typos function with a typo at the beginning.
         """
@@ -148,7 +148,7 @@ class TestLib(TestCase):
         assert len(result) == 1, 'The result should contain only one element.'
         assert result[0][0] == 'equal', 'The result should contain an equal element.'
 
-    def remove_typos_beginning_negated_test(self):
+    def test_remove_typos_beginning_negated(self):
         """
         Test the _remove_typos function with a large difference at the beginning.
         """
@@ -161,7 +161,7 @@ class TestLib(TestCase):
         # THEN: There diff should not have changed.
         assert result == diff
 
-    def remove_typos_end_test(self):
+    def test_remove_typos_end(self):
         """
         Test the _remove_typos function with a typo at the end.
         """
@@ -175,7 +175,7 @@ class TestLib(TestCase):
         assert len(result) == 1, 'The result should contain only one element.'
         assert result[0][0] == 'equal', 'The result should contain an equal element.'
 
-    def remove_typos_end_negated_test(self):
+    def test_remove_typos_end_negated(self):
         """
         Test the _remove_typos function with a large difference at the end.
         """
@@ -188,7 +188,7 @@ class TestLib(TestCase):
         # THEN: There diff should not have changed.
         assert result == diff
 
-    def remove_typos_middle_test(self):
+    def test_remove_typos_middle(self):
         """
         Test the _remove_typos function with a typo in the middle.
         """
@@ -206,7 +206,7 @@ class TestLib(TestCase):
         assert result[0][3] == 0, 'The start indices should be kept.'
         assert result[0][4] == 21, 'The stop indices should be kept.'
 
-    def remove_typos_beginning_negated_test(self):
+    def test_remove_typos_beginning_negated(self):
         """
         Test the _remove_typos function with a large difference in the middle.
         """
@@ -219,7 +219,7 @@ class TestLib(TestCase):
         # THEN: There diff should not have changed.
         assert result == diff
 
-    def op_length_test(self):
+    def test_op_length(self):
         """
         Test the _op_length function.
         """
@@ -232,7 +232,7 @@ class TestLib(TestCase):
         # THEN: The maximum length should be returned.
         assert result == 10, 'The length should be 10.'
 
-    def strip_rtf_charsets_test(self):
+    def test_strip_rtf_charsets(self):
         """
         Test that the strip_rtf() method properly decodes the supported charsets.
         """
@@ -270,7 +270,7 @@ class TestVerseType(TestCase):
     This is a test case to test various methods in the VerseType enumeration class.
     """
 
-    def translated_tag_test(self):
+    def test_translated_tag(self):
         """
         Test that the translated_tag() method returns the correct tags
         """
@@ -290,7 +290,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be "C"
             self.assertEqual(result, 'C', 'The result should be "C"')
 
-    def translated_invalid_tag_test(self):
+    def test_translated_invalid_tag(self):
         """
         Test that the translated_tag() method returns the default tag when passed an invalid tag
         """
@@ -304,7 +304,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be "O"
             self.assertEqual(result, 'O', 'The result should be "O", but was "%s"' % result)
 
-    def translated_invalid_tag_with_specified_default_test(self):
+    def test_translated_invalid_tag_with_specified_default(self):
         """
         Test that the translated_tag() method returns the specified default tag when passed an invalid tag
         """
@@ -318,7 +318,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be "B"
             self.assertEqual(result, 'B', 'The result should be "B", but was "%s"' % result)
 
-    def translated_invalid_tag_with_invalid_default_test(self):
+    def test_translated_invalid_tag_with_invalid_default(self):
         """
         Test that the translated_tag() method returns a sane default tag when passed an invalid default
         """
@@ -332,7 +332,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be "O"
             self.assertEqual(result, 'O', 'The result should be "O", but was "%s"' % result)
 
-    def translated_name_test(self):
+    def test_translated_name(self):
         """
         Test that the translated_name() method returns the correct name
         """
@@ -352,7 +352,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be "Chorus"
             self.assertEqual(result, 'Chorus', 'The result should be "Chorus"')
 
-    def translated_invalid_name_test(self):
+    def test_translated_invalid_name(self):
         """
         Test that the translated_name() method returns the default name when passed an invalid tag
         """
@@ -366,7 +366,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be "Other"
             self.assertEqual(result, 'Other', 'The result should be "Other", but was "%s"' % result)
 
-    def translated_invalid_name_with_specified_default_test(self):
+    def test_translated_invalid_name_with_specified_default(self):
         """
         Test that the translated_name() method returns the specified default name when passed an invalid tag
         """
@@ -380,7 +380,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be "Bridge"
             self.assertEqual(result, 'Bridge', 'The result should be "Bridge", but was "%s"' % result)
 
-    def translated_invalid_name_with_invalid_default_test(self):
+    def test_translated_invalid_name_with_invalid_default(self):
         """
         Test that the translated_name() method returns the specified default tag when passed an invalid tag
         """
@@ -394,7 +394,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be "Other"
             self.assertEqual(result, 'Other', 'The result should be "Other", but was "%s"' % result)
 
-    def from_tag_test(self):
+    def test_from_tag(self):
         """
         Test that the from_tag() method returns the correct VerseType.
         """
@@ -408,7 +408,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be VerseType.Verse
             self.assertEqual(result, VerseType.Verse, 'The result should be VerseType.Verse, but was "%s"' % result)
 
-    def from_tag_with_invalid_tag_test(self):
+    def test_from_tag_with_invalid_tag(self):
         """
         Test that the from_tag() method returns the default VerseType when it is passed an invalid tag.
         """
@@ -422,7 +422,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be VerseType.Other
             self.assertEqual(result, VerseType.Other, 'The result should be VerseType.Other, but was "%s"' % result)
 
-    def from_tag_with_specified_default_test(self):
+    def test_from_tag_with_specified_default(self):
         """
         Test that the from_tag() method returns the specified default when passed an invalid tag.
         """
@@ -436,7 +436,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be VerseType.Chorus
             self.assertEqual(result, VerseType.Chorus, 'The result should be VerseType.Chorus, but was "%s"' % result)
 
-    def from_tag_with_invalid_intdefault_test(self):
+    def test_from_tag_with_invalid_intdefault(self):
         """
         Test that the from_tag() method returns a sane default when passed an invalid tag and an invalid int default.
         """
@@ -450,7 +450,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be VerseType.Other
             self.assertEqual(result, VerseType.Other, 'The result should be VerseType.Other, but was "%s"' % result)
 
-    def from_tag_with_invalid_default_test(self):
+    def test_from_tag_with_invalid_default(self):
         """
         Test that the from_tag() method returns a sane default when passed an invalid tag and an invalid default.
         """
@@ -464,7 +464,7 @@ class TestVerseType(TestCase):
             # THEN: The result should be VerseType.Other
             self.assertEqual(result, VerseType.Other, 'The result should be VerseType.Other, but was "%s"' % result)
 
-    def from_tag_with_none_default_test(self):
+    def test_from_tag_with_none_default(self):
         """
         Test that the from_tag() method returns a sane default when passed an invalid tag and None as default.
         """
@@ -479,7 +479,7 @@ class TestVerseType(TestCase):
             self.assertIsNone(result, 'The result should be None, but was "%s"' % result)
 
     @patch('openlp.plugins.songs.lib.VerseType.translated_tags', new_callable=PropertyMock, return_value=['x'])
-    def from_loose_input_with_invalid_input_test(self, mocked_translated_tags):
+    def test_from_loose_input_with_invalid_input(self, mocked_translated_tags):
         """
         Test that the from_loose_input() method returns a sane default when passed an invalid tag and None as default.
         """
@@ -491,7 +491,7 @@ class TestVerseType(TestCase):
         self.assertIsNone(result, 'The result should be None, but was "%s"' % result)
 
     @patch('openlp.plugins.songs.lib.VerseType.translated_tags', new_callable=PropertyMock, return_value=['x'])
-    def from_loose_input_with_valid_input_test(self, mocked_translated_tags):
+    def test_from_loose_input_with_valid_input(self, mocked_translated_tags):
         """
         Test that the from_loose_input() method returns valid output on valid input.
         """

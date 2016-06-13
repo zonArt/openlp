@@ -40,7 +40,7 @@ class TestServiceManager(TestCase):
         """
         Registry.create()
 
-    def initial_service_manager_test(self):
+    def test_initial_service_manager(self):
         """
         Test the initial of service manager.
         """
@@ -50,7 +50,7 @@ class TestServiceManager(TestCase):
         # THEN: The the controller should be registered in the registry.
         self.assertNotEqual(Registry().get('service_manager'), None, 'The base service manager should be registered')
 
-    def create_basic_service_test(self):
+    def test_create_basic_service(self):
         """
         Test the create basic service array
         """
@@ -65,7 +65,7 @@ class TestServiceManager(TestCase):
         self.assertEqual(service['openlp_core']['service-theme'], 'test_theme', 'The test theme should be saved')
         self.assertEqual(service['openlp_core']['lite-service'], False, 'The lite service should be saved')
 
-    def supported_suffixes_test(self):
+    def test_supported_suffixes(self):
         """
         Test the create basic service array
         """
@@ -79,7 +79,7 @@ class TestServiceManager(TestCase):
         self.assertEqual('ppt' in service_manager.suffixes, True, 'The suffix ppt should be in the list')
         self.assertEqual('pptx' in service_manager.suffixes, True, 'The suffix pptx should be in the list')
 
-    def build_context_menu_test(self):
+    def test_build_context_menu(self):
         """
         Test the creation of a context menu from a null service item.
         """
@@ -123,7 +123,7 @@ class TestServiceManager(TestCase):
         self.assertEquals(service_manager.theme_menu.menuAction().setVisible.call_count, 1,
                           'Should have been called once')
 
-    def build_song_context_menu_test(self):
+    def test_build_song_context_menu(self):
         """
         Test the creation of a context menu from service item of type text from Songs.
         """
@@ -189,7 +189,7 @@ class TestServiceManager(TestCase):
         self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 1, 'Should have be called once')
         self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 1, 'Should have be called once')
 
-    def build_bible_context_menu_test(self):
+    def test_build_bible_context_menu(self):
         """
         Test the creation of a context menu from service item of type text from Bibles.
         """
@@ -254,7 +254,7 @@ class TestServiceManager(TestCase):
         self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 1, 'Should have be called once')
         self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 1, 'Should have be called once')
 
-    def build_custom_context_menu_test(self):
+    def test_build_custom_context_menu(self):
         """
         Test the creation of a context menu from service item of type text from Custom.
         """
@@ -319,7 +319,7 @@ class TestServiceManager(TestCase):
         self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 1, 'Should have be called once')
         self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 1, 'Should have be called once')
 
-    def build_image_context_menu_test(self):
+    def test_build_image_context_menu(self):
         """
         Test the creation of a context menu from service item of type Image from Image.
         """
@@ -382,7 +382,7 @@ class TestServiceManager(TestCase):
         self.assertEquals(service_manager.auto_play_slides_loop.setChecked.call_count, 1, 'Should have be called once')
         self.assertEquals(service_manager.timed_slide_interval.setChecked.call_count, 1, 'Should have be called once')
 
-    def build_media_context_menu_test(self):
+    def test_build_media_context_menu(self):
         """
         Test the creation of a context menu from service item of type Command from Media.
         """
@@ -439,7 +439,7 @@ class TestServiceManager(TestCase):
         # THEN the following additional calls should have occurred.
         self.assertEquals(service_manager.time_action.setVisible.call_count, 3, 'Should have be called three times')
 
-    def build_presentation_pdf_context_menu_test(self):
+    def test_build_presentation_pdf_context_menu(self):
         """
         Test the creation of a context menu from service item of type Command with PDF from Presentation.
         """
@@ -492,7 +492,7 @@ class TestServiceManager(TestCase):
         self.assertEquals(service_manager.theme_menu.menuAction().setVisible.call_count, 1,
                           'Should have be called once')
 
-    def build_presentation_non_pdf_context_menu_test(self):
+    def test_build_presentation_non_pdf_context_menu(self):
         """
         Test the creation of a context menu from service item of type Command with Impress from Presentation.
         """
@@ -544,7 +544,7 @@ class TestServiceManager(TestCase):
 
     @patch(u'openlp.core.ui.servicemanager.Settings')
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
-    def single_click_preview_test_true(self, mocked_singleShot, MockedSettings):
+    def test_single_click_preview_true(self, mocked_singleShot, MockedSettings):
         """
         Test that when "Preview items when clicked in Service Manager" enabled the preview timer starts
         """
@@ -561,7 +561,7 @@ class TestServiceManager(TestCase):
 
     @patch(u'openlp.core.ui.servicemanager.Settings')
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
-    def single_click_preview_test_false(self, mocked_singleShot, MockedSettings):
+    def test_single_click_preview_false(self, mocked_singleShot, MockedSettings):
         """
         Test that when "Preview items when clicked in Service Manager" disabled the preview timer doesn't start
         """
@@ -578,7 +578,7 @@ class TestServiceManager(TestCase):
     @patch(u'openlp.core.ui.servicemanager.Settings')
     @patch(u'PyQt5.QtCore.QTimer.singleShot')
     @patch(u'openlp.core.ui.servicemanager.ServiceManager.make_live')
-    def single_click_preview_test_double(self, mocked_make_live, mocked_singleShot, MockedSettings):
+    def test_single_click_preview_double(self, mocked_make_live, mocked_singleShot, MockedSettings):
         """
         Test that when a double click has registered the preview timer doesn't start
         """
@@ -594,7 +594,7 @@ class TestServiceManager(TestCase):
         self.assertEquals(mocked_singleShot.call_count, 0, 'Should not be called')
 
     @patch(u'openlp.core.ui.servicemanager.ServiceManager.make_preview')
-    def single_click_timeout_test_single(self, mocked_make_preview):
+    def test_single_click_timeout_single(self, mocked_make_preview):
         """
         Test that when a single click has been registered, the item is sent to preview
         """
@@ -607,7 +607,7 @@ class TestServiceManager(TestCase):
 
     @patch(u'openlp.core.ui.servicemanager.ServiceManager.make_preview')
     @patch(u'openlp.core.ui.servicemanager.ServiceManager.make_live')
-    def single_click_timeout_test_double(self, mocked_make_live, mocked_make_preview):
+    def test_single_click_timeout_double(self, mocked_make_live, mocked_make_preview):
         """
         Test that when a double click has been registered, the item does not goes to preview
         """

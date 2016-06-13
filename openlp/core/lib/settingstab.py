@@ -135,4 +135,4 @@ class SettingsTab(QtWidgets.QWidget, RegistryProperties):
         """
         Tab has just been made visible to the user
         """
-        self.tab_visited = True
+        pass

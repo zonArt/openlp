@@ -33,7 +33,7 @@ class TestUtils(TestCase):
     """
     A test suite to test out various methods around the AppLocation class.
     """
-    def get_user_agent_linux_test(self):
+    def test_get_user_agent_linux(self):
         """
         Test that getting a user agent on Linux returns a user agent suitable for Linux
         """
@@ -49,7 +49,7 @@ class TestUtils(TestCase):
             result = 'Linux' in user_agent or 'CrOS' in user_agent
             self.assertTrue(result, 'The user agent should be a valid Linux user agent')
 
-    def get_user_agent_windows_test(self):
+    def test_get_user_agent_windows(self):
         """
         Test that getting a user agent on Windows returns a user agent suitable for Windows
         """
@@ -64,7 +64,7 @@ class TestUtils(TestCase):
             # THEN: The user agent is a Linux (or ChromeOS) user agent
             self.assertIn('Windows', user_agent, 'The user agent should be a valid Windows user agent')
 
-    def get_user_agent_macos_test(self):
+    def test_get_user_agent_macos(self):
         """
         Test that getting a user agent on OS X returns a user agent suitable for OS X
         """
@@ -79,7 +79,7 @@ class TestUtils(TestCase):
             # THEN: The user agent is a Linux (or ChromeOS) user agent
             self.assertIn('Mac OS X', user_agent, 'The user agent should be a valid OS X user agent')
 
-    def get_user_agent_default_test(self):
+    def test_get_user_agent_default(self):
         """
         Test that getting a user agent on a non-Linux/Windows/OS X platform returns the default user agent
         """
@@ -94,7 +94,7 @@ class TestUtils(TestCase):
             # THEN: The user agent is a Linux (or ChromeOS) user agent
             self.assertIn('NetBSD', user_agent, 'The user agent should be the default user agent')
 
-    def get_web_page_no_url_test(self):
+    def test_get_web_page_no_url(self):
         """
         Test that sending a URL of None to the get_web_page method returns None
         """
@@ -107,7 +107,7 @@ class TestUtils(TestCase):
         # THEN: None should be returned
         self.assertIsNone(result, 'The return value of get_web_page should be None')
 
-    def get_web_page_test(self):
+    def test_get_web_page(self):
         """
         Test that the get_web_page method works correctly
         """
@@ -137,7 +137,7 @@ class TestUtils(TestCase):
             self.assertEqual(0, MockRegistry.call_count, 'The Registry() object should have never been called')
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
 
-    def get_web_page_with_header_test(self):
+    def test_get_web_page_with_header(self):
         """
         Test that adding a header to the call to get_web_page() adds the header to the request
         """
@@ -166,7 +166,7 @@ class TestUtils(TestCase):
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
 
-    def get_web_page_with_user_agent_in_headers_test(self):
+    def test_get_web_page_with_user_agent_in_headers(self):
         """
         Test that adding a user agent in the header when calling get_web_page() adds that user agent to the request
         """
@@ -194,7 +194,7 @@ class TestUtils(TestCase):
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
 
-    def get_web_page_update_openlp_test(self):
+    def test_get_web_page_update_openlp(self):
         """
         Test that passing "update_openlp" as true to get_web_page calls Registry().get('app').process_events()
         """

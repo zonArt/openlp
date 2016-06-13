@@ -26,7 +26,7 @@ class TestFileDialog(TestCase):
         self.qt_gui_patcher.stop()
         self.ui_strings_patcher.stop()
 
-    def get_open_file_names_canceled_test(self):
+    def test_get_open_file_names_canceled(self):
         """
             Test that FileDialog.getOpenFileNames() returns and empty QStringList when QFileDialog is canceled
             (returns an empty QStringList)
@@ -45,7 +45,7 @@ class TestFileDialog(TestCase):
                          'FileDialog.getOpenFileNames should return and empty list when QFileDialog.getOpenFileNames '
                          'is canceled')
 
-    def returned_file_list_test(self):
+    def test_returned_file_list(self):
         """
             Test that FileDialog.getOpenFileNames handles a list of files properly when QFileList.getOpenFileNames
             returns a good file name, a url encoded file name and a non-existing file

@@ -30,7 +30,7 @@ from PyQt5 import QtCore, QtWidgets
 from openlp.core.common import Registry, UiStrings, translate
 from openlp.core.lib import create_separated_list, build_icon
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
+from openlp.core.ui.lib.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.db import Song
 from openlp.plugins.songs.lib.openlyricsexport import OpenLyricsExport
 
@@ -143,6 +143,7 @@ class SongExportForm(OpenLPWizard):
         Song wizard localisation.
         """
         self.setWindowTitle(translate('SongsPlugin.ExportWizardForm', 'Song Export Wizard'))
+        # TODO: Verify format() with template variables
         self.title_label.setText(WizardStrings.HeaderStyle %
                                  translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
         self.information_label.setText(
@@ -151,7 +152,7 @@ class SongExportForm(OpenLPWizard):
         self.available_songs_page.setTitle(translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.available_songs_page.setSubTitle(translate('SongsPlugin.ExportWizardForm',
                                               'Check the songs you want to export.'))
-        self.search_label.setText('%s:' % UiStrings().Search)
+        self.search_label.setText('{text}:'.format(text=UiStrings().Search))
         self.uncheck_button.setText(translate('SongsPlugin.ExportWizardForm', 'Uncheck All'))
         self.check_button.setText(translate('SongsPlugin.ExportWizardForm', 'Check All'))
         self.export_song_page.setTitle(translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
@@ -203,6 +204,10 @@ class SongExportForm(OpenLPWizard):
         """
         Set default form values for the song export wizard.
         """
+        def get_song_key(song):
+            """Get the key to sort by"""
+            return song.sort_key
+
         self.restart()
         self.finish_button.setVisible(False)
         self.cancel_button.setVisible(True)
@@ -213,13 +218,13 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         self.application.set_busy_cursor()
         songs = self.plugin.manager.get_all_objects(Song)
-        songs.sort(key=lambda song: song.sort_key)
+        songs.sort(key=get_song_key)
         for song in songs:
             # No need to export temporary songs.
             if song.temporary:
                 continue
             authors = create_separated_list([author.display_name for author in song.authors])
-            title = '%s (%s)' % (str(song.title), authors)
+            title = '{title} ({author})'.format(title=song.title, author=authors)
             item = QtWidgets.QListWidgetItem(title)
             item.setData(QtCore.Qt.UserRole, song)
             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
@@ -253,7 +258,7 @@ class SongExportForm(OpenLPWizard):
                 self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed.'))
         except OSError as ose:
             self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed because this '
-                                                  'error occurred: %s') % ose.strerror)
+                                                  'error occurred: {error}').format(error=ose.strerror))
 
     def on_search_line_edit_changed(self, text):
         """

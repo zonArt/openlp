@@ -88,6 +88,7 @@ JAVASCRIPT = """
         }
     }
 """
+# TODO: Verify format() with variable templates
 CSS = """
     #alert {
         position: absolute;
@@ -244,6 +245,9 @@ class AlertsPlugin(Plugin):
         :param frame: The Web frame holding the page.
         """
         align = VerticalType.Names[self.settings_tab.location]
-        frame.evaluateJavaScript('update_css("%s", "%s", "%s", "%s", "%s")' %
-                                 (align, self.settings_tab.font_face, self.settings_tab.font_size,
-                                  self.settings_tab.font_color, self.settings_tab.background_color))
+        frame.evaluateJavaScript('update_css("{align}", "{face}", "{size}", "{color}", '
+                                 '"{background}")'.format(align=align,
+                                                          face=self.settings_tab.font_face,
+                                                          size=self.settings_tab.font_size,
+                                                          color=self.settings_tab.font_color,
+                                                          background=self.settings_tab.background_color))
