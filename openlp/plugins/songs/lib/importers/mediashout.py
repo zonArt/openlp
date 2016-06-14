@@ -47,7 +47,6 @@ class MediaShoutImport(SongImport):
         Initialise the MediaShout importer.
         """
         super(MediaShoutImport, self).__init__(manager, **kwargs)
-        #SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """
@@ -70,9 +69,11 @@ class MediaShoutImport(SongImport):
             topics = []
             if self.stop_import_flag:
                 break
-            cursor.execute('SELECT Type, Number, Text FROM Verses WHERE Record = ? ORDER BY Type, Number', float(song.Record))
+            cursor.execute('SELECT Type, Number, Text FROM Verses WHERE Record = ? ORDER BY Type, Number',
+                           float(song.Record))
             verses = cursor.fetchall()
-            cursor.execute('SELECT Type, Number, POrder FROM PlayOrder WHERE Record = ? ORDER BY POrder', float(song.Record))
+            cursor.execute('SELECT Type, Number, POrder FROM PlayOrder WHERE Record = ? ORDER BY POrder',
+                           float(song.Record))
             verse_order = cursor.fetchall()
             if cursor.tables(table='TableName', tableType='TABLE').fetchone():
                 cursor.execute('SELECT Name FROM Themes INNER JOIN SongThemes ON SongThemes.ThemeId = Themes.ThemeId '
