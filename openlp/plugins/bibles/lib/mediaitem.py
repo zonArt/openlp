@@ -813,11 +813,13 @@ class BibleMediaItem(MediaManagerItem):
             # Perform only if text contains any numbers
             if (char.isdigit() for char in text):
                 self.on_quick_reference_search()
-            # If results are found, search will be finalized.
-            # This check needs to be here in order to avoid duplicate errors.
-            # If keyword is shorter than 3 (not including spaces), message is given. It's actually possible to find
-            # verses with less than 3 chars (Eg. G1 = Genesis 1) thus this error is not shown if any results are found.
-            # if no Bibles are installed, this message is not shown - "No bibles" message is shown instead.
+            """
+            If results are found, search will be finalized.
+            This check needs to be here in order to avoid duplicate errors.
+            If keyword is shorter than 3 (not including spaces), message is given. It's actually possible to find
+            verses with less than 3 chars (Eg. G1 = Genesis 1) thus this error is not shown if any results are found.
+            if no Bibles are installed, this message is not shown - "No bibles" message is shown instead.
+            """
             if not self.search_results and len(text) - text.count(' ') < 3 and bible:
                 self.main_window.information_message(
                     UiStrings().BibleShortSearchTitle,
@@ -895,12 +897,15 @@ class BibleMediaItem(MediaManagerItem):
             text = self.quick_search_edit.text()
             """
             Use Regex for finding space + number in reference search and space + 2 characters in text search.
+            Also search for two characters (Searches require at least two sets of two characters)
             These are used to prevent bad search queries from starting. (Long/crashing queries)
             """
             space_and_digit_reference = re.compile(' \d')
+            two_chars_text = re.compile('\S\S')
             space_and_two_chars_text = re.compile(' \S\S')
             # Turn this into a format that may be used in if statement.
             count_space_digit_reference = space_and_digit_reference.findall(text)
+            count_two_chars_text = two_chars_text.findall(text)
             count_spaces_two_chars_text = space_and_two_chars_text.findall(text)
             """
             The Limit is required for setting the proper "No items found" message.
@@ -926,7 +931,8 @@ class BibleMediaItem(MediaManagerItem):
                     if not self.quickLockButton.isChecked():
                         self.list_view.clear()
                     self.check_search_result()
-                elif limit == 8 and (len(text) < limit or len(count_spaces_two_chars_text) == 0):
+                elif limit == 8 and (len(text) < limit or len(count_spaces_two_chars_text) == 0
+                                     or len(count_two_chars_text) < 2):
                     if not self.quickLockButton.isChecked():
                         self.list_view.clear()
                     self.check_search_result_search_while_typing_short()
@@ -951,15 +957,8 @@ class BibleMediaItem(MediaManagerItem):
         """
 
         items = self.build_display_results(bible, second_bible, self.search_results)
-        if not self.quickLockButton.isChecked():
-            for bible_verse in items:
-                self.list_view.addItem(bible_verse)
-        if self.quickLockButton.isChecked():
-            for bible_verse in range(self.list_view.count()):
-                listItem = self.list_view.item(items)
-                itemRow = self.list_view.row(listItem)
-                if itemRow:
-                    self.list_view.takeItem(itemRow)
+        for bible_verse in items:
+            self.list_view.addItem(bible_verse)
         self.list_view.selectAll()
         self.search_results = {}
         self.second_search_results = {}
