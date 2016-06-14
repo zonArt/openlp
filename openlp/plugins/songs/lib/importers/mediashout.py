@@ -24,15 +24,17 @@ The :mod:`mediashout` module provides the functionality for importing
 a MediaShout database into the OpenLP database.
 """
 
-# WARNING: See https://docs.python.org/2/library/sqlite3.html for value substitution
+# WARNING: See https://docs.python.org/3/library/sqlite3.html for value substitution
 #          in SQL statements
 
 import pyodbc
+import logging
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.importers.songimport import SongImport
 
 VERSE_TAGS = ['V', 'C', 'B', 'O', 'P', 'I', 'E']
+log = logging.getLogger(__name__)
 
 
 class MediaShoutImport(SongImport):
@@ -44,17 +46,19 @@ class MediaShoutImport(SongImport):
         """
         Initialise the MediaShout importer.
         """
-        SongImport.__init__(self, manager, **kwargs)
+        super(MediaShoutImport, self).__init__(manager, **kwargs)
+        #SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """
         Receive a single file to import.
         """
         try:
-            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ={source};'
-                                  'PWD=6NOZ4eHK7k'.format(sorce=self.import_source))
-        except:
+            conn = pyodbc.connect('DRIVER={{Microsoft Access Driver (*.mdb)}};DBQ={source};'
+                                  'PWD=6NOZ4eHK7k'.format(source=self.import_source))
+        except Exception as e:
             # Unfortunately no specific exception type
+            log.exception(e)
             self.log_error(self.import_source, translate('SongsPlugin.MediaShoutImport',
                                                          'Unable to open the MediaShout database.'))
             return
@@ -63,17 +67,19 @@ class MediaShoutImport(SongImport):
         songs = cursor.fetchall()
         self.import_wizard.progress_bar.setMaximum(len(songs))
         for song in songs:
+            topics = []
             if self.stop_import_flag:
                 break
-            cursor.execute('SELECT Type, Number, Text FROM Verses WHERE Record = ? ORDER BY Type, Number', song.Record)
+            cursor.execute('SELECT Type, Number, Text FROM Verses WHERE Record = ? ORDER BY Type, Number', float(song.Record))
             verses = cursor.fetchall()
-            cursor.execute('SELECT Type, Number, POrder FROM PlayOrder WHERE Record = ? ORDER BY POrder', song.Record)
+            cursor.execute('SELECT Type, Number, POrder FROM PlayOrder WHERE Record = ? ORDER BY POrder', float(song.Record))
             verse_order = cursor.fetchall()
-            cursor.execute('SELECT Name FROM Themes INNER JOIN SongThemes ON SongThemes.ThemeId = Themes.ThemeId '
-                           'WHERE SongThemes.Record = ?', song.Record)
-            topics = cursor.fetchall()
+            if cursor.tables(table='TableName', tableType='TABLE').fetchone():
+                cursor.execute('SELECT Name FROM Themes INNER JOIN SongThemes ON SongThemes.ThemeId = Themes.ThemeId '
+                               'WHERE SongThemes.Record = ?', float(song.Record))
+                topics = cursor.fetchall()
             cursor.execute('SELECT Name FROM Groups INNER JOIN SongGroups ON SongGroups.GroupId = Groups.GroupId '
-                           'WHERE SongGroups.Record = ?', song.Record)
+                           'WHERE SongGroups.Record = ?', float(song.Record))
             topics += cursor.fetchall()
             self.process_song(song, verses, verse_order, topics)
 
