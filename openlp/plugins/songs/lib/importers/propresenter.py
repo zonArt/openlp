@@ -46,6 +46,7 @@ class ProPresenterImport(SongImport):
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return
+            # TODO: Verify format() with template strings
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
             root = objectify.parse(open(file_path, 'rb')).getroot()
             self.process_song(root, file_path)
@@ -87,7 +88,7 @@ class ProPresenterImport(SongImport):
                 RTFData = slide.displayElements.RVTextElement.get('RTFData')
                 rtf = base64.standard_b64decode(RTFData)
                 words, encoding = strip_rtf(rtf.decode())
-                self.add_verse(words, "v%d" % count)
+                self.add_verse(words, "v{count}".format(count=count))
 
         # ProPresenter 5
         elif(self.version >= 500 and self.version < 600):
@@ -103,7 +104,7 @@ class ProPresenterImport(SongImport):
                     RTFData = slide.displayElements.RVTextElement.get('RTFData')
                     rtf = base64.standard_b64decode(RTFData)
                     words, encoding = strip_rtf(rtf.decode())
-                    self.add_verse(words, "v%d" % count)
+                    self.add_verse(words, "v{count:d}".format(count=count))
 
         # ProPresenter 6
         elif(self.version >= 600 and self.version < 700):
@@ -127,7 +128,7 @@ class ProPresenterImport(SongImport):
                                 words, encoding = strip_rtf(data.decode())
                                 break
                         if words:
-                            self.add_verse(words, "v%d" % count)
+                            self.add_verse(words, "v{count:d}".format(count=count))
 
         if not self.finish():
             self.log_error(self.import_source)

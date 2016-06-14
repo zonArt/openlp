@@ -28,6 +28,7 @@ from .dockwidget import OpenLPDockWidget
 from .wizard import OpenLPWizard, WizardStrings
 from .mediadockmanager import MediaDockManager
 from .listpreviewwidget import ListPreviewWidget
+from .spelltextedit import SpellTextEdit
 
 __all__ = ['ColorButton', 'ListPreviewWidget', 'ListWidgetWithDnD', 'OpenLPToolbar', 'OpenLPDockWidget',
-           'OpenLPWizard', 'WizardStrings', 'MediaDockManager', 'ListPreviewWidget']
+           'OpenLPWizard', 'WizardStrings', 'MediaDockManager', 'ListPreviewWidget', 'SpellTextEdit']

@@ -39,7 +39,7 @@ class TestOpenLPImport(TestCase):
         """
         Registry.create()
 
-    def create_importer_test(self):
+    def test_create_importer(self):
         """
         Test creating an instance of the OpenLP database importer
         """
@@ -53,7 +53,7 @@ class TestOpenLPImport(TestCase):
             # THEN: The importer object should not be None
             self.assertIsNotNone(importer, 'Import should not be none')
 
-    def invalid_import_source_test(self):
+    def test_invalid_import_source(self):
         """
         Test OpenLPSongImport.do_import handles different invalid import_source values
         """

@@ -45,7 +45,7 @@ class EasySlidesImport(SongImport):
         super(EasySlidesImport, self).__init__(manager, **kwargs)
 
     def do_import(self):
-        log.info('Importing EasySlides XML file %s', self.import_source)
+        log.info('Importing EasySlides XML file {source}'.format(source=self.import_source))
         parser = etree.XMLParser(remove_blank_text=True)
         parsed_file = etree.parse(self.import_source, parser)
         xml = etree.tostring(parsed_file).decode()
@@ -96,10 +96,10 @@ class EasySlidesImport(SongImport):
         try:
             setattr(self, self_attribute, str(import_attribute).strip())
         except UnicodeDecodeError:
-            log.exception('UnicodeDecodeError decoding %s' % import_attribute)
+            log.exception('UnicodeDecodeError decoding {attribute}'.format(attribute=import_attribute))
             self._success = False
         except AttributeError:
-            log.exception('No attribute %s' % import_attribute)
+            log.exception('No attribute {attribute}'.format(attribute=import_attribute))
             if mandatory:
                 self._success = False
 
@@ -119,7 +119,7 @@ class EasySlidesImport(SongImport):
         try:
             self.add_copyright(str(element).strip())
         except UnicodeDecodeError:
-            log.exception('Unicode error on decoding copyright: %s' % element)
+            log.exception('Unicode error on decoding copyright: {element}'.format(element=element))
             self._success = False
         except AttributeError:
             pass
@@ -157,9 +157,10 @@ class EasySlidesImport(SongImport):
         separators = (separator_lines > 0)
         # the number of different regions in song - 1
         if len(region_lines) > 1:
-            log.info('EasySlidesImport: the file contained a song named "%s"'
-                     'with more than two regions, but only two regions are tested, encountered regions were: %s',
-                     self.title, ','.join(list(region_lines.keys())))
+            log.info('EasySlidesImport: the file contained a song named "{title}"'
+                     'with more than two regions, but only two regions are tested, '
+                     'encountered regions were: {keys}'.format(title=self.title,
+                                                               keys=','.join(list(region_lines.keys()))))
         # if the song has regions
         regions = (len(region_lines) > 0)
         # if the regions are inside verses
@@ -232,7 +233,7 @@ class EasySlidesImport(SongImport):
         for [reg, vt, vn, inst] in our_verse_order:
             if self._list_has(verses, [reg, vt, vn, inst]):
                 # this is false, but needs user input
-                versetag = '%s%s' % (vt, vn)
+                versetag = '{tag}{number}'.format(tag=vt, number=vn)
                 versetags.append(versetag)
                 lines = '\n'.join(verses[reg][vt][vn][inst])
                 self.add_verse(lines, versetag)
@@ -259,7 +260,8 @@ class EasySlidesImport(SongImport):
                 if tag in versetags:
                     self.verse_order_list.append(tag)
                 else:
-                    log.info('Got order item %s, which is not in versetags, dropping item from presentation order', tag)
+                    log.info('Got order item {tag}, which is not in versetags, dropping item from presentation '
+                             'order'.format(tag=tag))
         except UnicodeDecodeError:
             log.exception('Unicode decode error while decoding Sequence')
             self._success = False

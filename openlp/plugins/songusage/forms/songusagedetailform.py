@@ -81,9 +81,10 @@ class SongUsageDetailForm(QtWidgets.QDialog, Ui_SongUsageDetailDialog, RegistryP
             )
             return
         check_directory_exists(path)
-        file_name = translate('SongUsagePlugin.SongUsageDetailForm', 'usage_detail_%s_%s.txt') % \
-            (self.from_date_calendar.selectedDate().toString('ddMMyyyy'),
-             self.to_date_calendar.selectedDate().toString('ddMMyyyy'))
+        file_name = translate('SongUsagePlugin.SongUsageDetailForm',
+                              'usage_detail_{old}_{new}.txt'
+                              ).format(old=self.from_date_calendar.selectedDate().toString('ddMMyyyy'),
+                                       new=self.to_date_calendar.selectedDate().toString('ddMMyyyy'))
         Settings().setValue(self.plugin.settings_section + '/from date', self.from_date_calendar.selectedDate())
         Settings().setValue(self.plugin.settings_section + '/to date', self.to_date_calendar.selectedDate())
         usage = self.plugin.manager.get_all_objects(
@@ -95,21 +96,23 @@ class SongUsageDetailForm(QtWidgets.QDialog, Ui_SongUsageDetailDialog, RegistryP
         try:
             file_handle = open(report_file_name, 'wb')
             for instance in usage:
-                record = '\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
-                    '\"%s\",\"%s\"\n' % \
-                         (instance.usagedate, instance.usagetime, instance.title, instance.copyright,
-                          instance.ccl_number, instance.authors, instance.plugin_name, instance.source)
+                record = ('\"{date}\",\"{time}\",\"{title}\",\"{copyright}\",\"{ccli}\",\"{authors}\",'
+                          '\"{name}\",\"{source}\"\n').format(date=instance.usagedate, time=instance.usagetime,
+                                                              title=instance.title, copyright=instance.copyright,
+                                                              ccli=instance.ccl_number, authors=instance.authors,
+                                                              name=instance.plugin_name, source=instance.source)
                 file_handle.write(record.encode('utf-8'))
             self.main_window.information_message(
                 translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation'),
                 translate('SongUsagePlugin.SongUsageDetailForm',
-                          'Report \n%s \nhas been successfully created. ') % report_file_name
+                          'Report \n{name} \nhas been successfully created. ').format(name=report_file_name)
             )
         except OSError as ose:
             log.exception('Failed to write out song usage records')
             critical_error_message_box(translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation Failed'),
                                        translate('SongUsagePlugin.SongUsageDetailForm',
-                                                 'An error occurred while creating the report: %s') % ose.strerror)
+                                                 'An error occurred while creating the report: {error}'
+                                                 ).format(error=ose.strerror))
         finally:
             if file_handle:
                 file_handle.close()

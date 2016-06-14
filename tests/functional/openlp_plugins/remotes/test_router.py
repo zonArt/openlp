@@ -67,7 +67,7 @@ class TestRouter(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def password_encrypter_test(self):
+    def test_password_encrypter(self):
         """
         Test hash userid and password function
         """
@@ -84,7 +84,7 @@ class TestRouter(TestCase, TestMixin):
         self.assertEqual(router.auth, test_value,
                          'The result for make_sha_hash should return the correct encrypted password')
 
-    def process_http_request_test(self):
+    def test_process_http_request(self):
         """
         Test the router control functionality
         """
@@ -103,7 +103,7 @@ class TestRouter(TestCase, TestMixin):
         self.assertEqual(mocked_function, function['function'], 'The mocked function should match defined value.')
         self.assertFalse(function['secure'], 'The mocked function should not require any security.')
 
-    def process_secure_http_request_test(self):
+    def test_process_secure_http_request(self):
         """
         Test the router control functionality
         """
@@ -131,7 +131,7 @@ class TestRouter(TestCase, TestMixin):
         self.router.send_response.assert_called_once_with(401)
         self.assertEqual(self.router.send_header.call_count, 5, 'The header should have been called five times.')
 
-    def get_content_type_test(self):
+    def test_get_content_type(self):
         """
         Test the get_content_type logic
         """
@@ -151,7 +151,7 @@ class TestRouter(TestCase, TestMixin):
             # THEN: all types should match
             self.assertEqual(content_type, header[1], 'Mismatch of content type')
 
-    def main_poll_test(self):
+    def test_main_poll(self):
         """
         Test the main poll logic
         """
@@ -171,7 +171,7 @@ class TestRouter(TestCase, TestMixin):
         self.assertEqual(results.decode('utf-8'), '{"results": {"slide_count": 2}}',
                          'The resulting json strings should match')
 
-    def serve_file_without_params_test(self):
+    def test_serve_file_without_params(self):
         """
         Test the serve_file method without params
         """
@@ -190,7 +190,7 @@ class TestRouter(TestCase, TestMixin):
         self.router.send_response.assert_called_once_with(404)
         self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
 
-    def serve_file_with_valid_params_test(self):
+    def test_serve_file_with_valid_params(self):
         """
         Test the serve_file method with an existing file
         """
@@ -213,7 +213,7 @@ class TestRouter(TestCase, TestMixin):
             self.router.send_header.assert_called_once_with('Content-type', 'text/html')
             self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
 
-    def serve_file_with_partial_params_test(self):
+    def test_serve_file_with_partial_params(self):
         """
         Test the serve_file method with an existing file
         """
@@ -236,7 +236,7 @@ class TestRouter(TestCase, TestMixin):
             self.router.send_header.assert_called_once_with('Content-type', 'text/html')
             self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
 
-    def serve_thumbnail_without_params_test(self):
+    def test_serve_thumbnail_without_params(self):
         """
         Test the serve_thumbnail routine without params
         """
@@ -254,7 +254,7 @@ class TestRouter(TestCase, TestMixin):
         self.assertEqual(self.router.send_response.call_count, 1, 'Send response should be called once')
         self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers should be called once')
 
-    def serve_thumbnail_with_invalid_params_test(self):
+    def test_serve_thumbnail_with_invalid_params(self):
         """
         Test the serve_thumbnail routine with invalid params
         """
@@ -287,7 +287,7 @@ class TestRouter(TestCase, TestMixin):
         # THEN: return a 404
         self.router.send_response.assert_called_once_with(404)
 
-    def serve_thumbnail_with_valid_params_test(self):
+    def test_serve_thumbnail_with_valid_params(self):
         """
         Test the serve_thumbnail routine with valid params
         """
@@ -326,7 +326,7 @@ class TestRouter(TestCase, TestMixin):
                                                                                          'slide1.png')),
                                                            'slide1.png', width, height)
 
-    def remote_next_test(self):
+    def test_remote_next(self):
         """
         Test service manager receives remote next click properly (bug 1407445)
         """
@@ -347,7 +347,7 @@ class TestRouter(TestCase, TestMixin):
             # THEN: service_manager.next_item() should have been called
             self.assertTrue(mocked_next_item.called, 'next_item() should have been called in service_manager')
 
-    def remote_previous_test(self):
+    def test_remote_previous(self):
         """
         Test service manager receives remote previous click properly (bug 1407445)
         """
@@ -368,7 +368,7 @@ class TestRouter(TestCase, TestMixin):
             # THEN: service_manager.next_item() should have been called
             self.assertTrue(mocked_previous_item.called, 'previous_item() should have been called in service_manager')
 
-    def remote_stage_personal_html_test(self):
+    def test_remote_stage_personal_html(self):
         """
         Test the stage url with a parameter after loaded a url/stage.html file
         """
@@ -386,7 +386,7 @@ class TestRouter(TestCase, TestMixin):
         # THEN: we should use the specific stage file instance
         self.router._process_file.assert_called_with(os.path.join('trb', 'stage.html'))
 
-    def remote_stage_personal_css_test(self):
+    def test_remote_stage_personal_css(self):
         """
         Test the html with reference stages/trb/trb.css then loaded a stages/trb/trb.css file
         """

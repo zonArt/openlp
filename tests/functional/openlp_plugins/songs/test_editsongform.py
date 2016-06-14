@@ -57,7 +57,7 @@ class TestEditSongForm(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def validate_matching_tags_test(self):
+    def test_validate_matching_tags(self):
         # Given a set of tags
         tags = ['{r}', '{/r}', '{bl}', '{/bl}', '{su}', '{/su}']
 
@@ -67,7 +67,7 @@ class TestEditSongForm(TestCase, TestMixin):
         # THEN they should be valid
         self.assertTrue(valid, "The tags list should be valid")
 
-    def validate_nonmatching_tags_test(self):
+    def test_validate_nonmatching_tags(self):
         # Given a set of tags
         tags = ['{r}', '{/r}', '{bl}', '{/bl}', '{br}', '{su}', '{/su}']
 

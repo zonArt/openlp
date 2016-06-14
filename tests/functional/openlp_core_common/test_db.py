@@ -67,7 +67,7 @@ class TestUtilsDBFunctions(TestCase):
                 time.sleep(1)
                 retries += 1
 
-    def delete_column_test(self):
+    def test_delete_column(self):
         """
         Test deleting a single column in a table
         """
@@ -85,7 +85,7 @@ class TestUtilsDBFunctions(TestCase):
             if column.name == 'song_book_id':
                 self.fail("The column 'song_book_id' should have been deleted.")
 
-    def delete_columns_test(self):
+    def test_delete_columns(self):
         """
         Test deleting multiple columns in a table
         """

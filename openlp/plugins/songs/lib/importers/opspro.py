@@ -23,6 +23,10 @@
 The :mod:`opspro` module provides the functionality for importing
 a OPS Pro database into the OpenLP database.
 """
+
+# WARNING: See https://docs.python.org/2/library/sqlite3.html for value substitution
+#          in SQL statements
+
 import logging
 import re
 import pyodbc
@@ -51,10 +55,11 @@ class OPSProImport(SongImport):
         """
         password = self.extract_mdb_password()
         try:
-            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s;PWD=%s' % (self.import_source,
-                                                                                              password))
+            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ={source};'
+                                  'PWD={password}'.format(source=self.import_source, password=password))
         except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError) as e:
-            log.warning('Unable to connect the OPS Pro database %s. %s', self.import_source, str(e))
+            log.warning('Unable to connect the OPS Pro database {source}. {error}'.format(source=self.import_source,
+                                                                                          error=str(e)))
             # Unfortunately no specific exception type
             self.log_error(self.import_source, translate('SongsPlugin.OPSProImport',
                                                          'Unable to connect the OPS Pro database.'))
@@ -68,19 +73,19 @@ class OPSProImport(SongImport):
             if self.stop_import_flag:
                 break
             # Type means: 0=Original, 1=Projection, 2=Own
-            cursor.execute('SELECT Lyrics, Type, IsDualLanguage FROM Lyrics WHERE SongID = %d AND Type < 2 '
-                           'ORDER BY Type DESC' % song.ID)
+            cursor.execute('SELECT Lyrics, Type, IsDualLanguage FROM Lyrics WHERE SongID = ? AND Type < 2 '
+                           'ORDER BY Type DESC', song.ID)
             lyrics = cursor.fetchone()
             cursor.execute('SELECT CategoryName FROM Category INNER JOIN SongCategory '
-                           'ON Category.ID = SongCategory.CategoryID WHERE SongCategory.SongID = %d '
-                           'ORDER BY CategoryName' % song.ID)
+                           'ON Category.ID = SongCategory.CategoryID WHERE SongCategory.SongID = ? '
+                           'ORDER BY CategoryName', song.ID)
             topics = cursor.fetchall()
             try:
                 self.process_song(song, lyrics, topics)
             except Exception as e:
                 self.log_error(self.import_source,
-                               translate('SongsPlugin.OPSProImport', '"%s" could not be imported. %s')
-                               % (song.Title, e))
+                               translate('SongsPlugin.OPSProImport',
+                                         '"{title}" could not be imported. {error}').format(title=song.Title, error=e))
 
     def process_song(self, song, lyrics, topics):
         """

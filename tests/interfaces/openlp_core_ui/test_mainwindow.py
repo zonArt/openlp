@@ -65,7 +65,7 @@ class TestMainWindow(TestCase, TestMixin):
         """
         del self.main_window
 
-    def restore_current_media_manager_item_test(self):
+    def test_restore_current_media_manager_item(self):
         """
         Regression test for bug #1152509.
         """
@@ -80,7 +80,7 @@ class TestMainWindow(TestCase, TestMixin):
             # THEN: The current widget should have been set.
             self.main_window.media_tool_box.setCurrentIndex.assert_called_with(2)
 
-    def projector_manager_dock_locked_test(self):
+    def test_projector_manager_dock_locked(self):
         """
         Projector Manager enable UI options -  bug #1390702
         """
@@ -93,7 +93,7 @@ class TestMainWindow(TestCase, TestMixin):
         # THEN: Projector manager dock should have been called with disable UI features
         projector_dock.setFeatures.assert_called_with(0)
 
-    def projector_manager_dock_unlocked_test(self):
+    def test_projector_manager_dock_unlocked(self):
         """
         Projector Manager disable UI options -  bug #1390702
         """

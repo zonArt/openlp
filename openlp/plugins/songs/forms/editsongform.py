@@ -50,7 +50,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
     """
     Class to manage the editing of a song
     """
-    log.info('%s EditSongForm loaded', __name__)
+    log.info('{name} EditSongForm loaded'.format(name=__name__))
 
     def __init__(self, media_item, parent, manager):
         """
@@ -185,20 +185,23 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             verse = verse.data(QtCore.Qt.UserRole)
             if verse not in verse_names:
                 verses.append(verse)
-                verse_names.append('%s%s' % (VerseType.translated_tag(verse[0]), verse[1:]))
+                verse_names.append('{verse1}{verse2}'.format(verse1=VerseType.translated_tag(verse[0]),
+                                                             verse2=verse[1:]))
         for count, item in enumerate(order):
             if item not in verses:
                 invalid_verses.append(order_names[count])
         if invalid_verses:
             valid = create_separated_list(verse_names)
             if len(invalid_verses) > 1:
-                msg = translate('SongsPlugin.EditSongForm', 'There are no verses corresponding to "%(invalid)s". '
-                                'Valid entries are %(valid)s.\nPlease enter the verses separated by spaces.') % \
-                    {'invalid': ', '.join(invalid_verses), 'valid': valid}
+                msg = translate('SongsPlugin.EditSongForm',
+                                'There are no verses corresponding to "{invalid}". Valid entries are {valid}.\n'
+                                'Please enter the verses separated by spaces.'
+                                ).format(invalid=', '.join(invalid_verses), valid=valid)
             else:
-                msg = translate('SongsPlugin.EditSongForm', 'There is no verse corresponding to "%(invalid)s".'
-                                'Valid entries are %(valid)s.\nPlease enter the verses separated by spaces.') % \
-                    {'invalid': invalid_verses[0], 'valid': valid}
+                msg = translate('SongsPlugin.EditSongForm',
+                                'There is no verse corresponding to "{invalid}". Valid entries are {valid}.\n'
+                                'Please enter the verses separated by spaces.').format(invalid=invalid_verses[0],
+                                                                                       valid=valid)
             critical_error_message_box(title=translate('SongsPlugin.EditSongForm', 'Invalid Verse Order'),
                                        message=msg)
         return len(invalid_verses) == 0
@@ -242,23 +245,24 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             field = item.data(QtCore.Qt.UserRole)
             verse_tags.append(field)
             if not self._validate_tags(tags):
-                misplaced_tags.append('%s %s' % (VerseType.translated_name(field[0]), field[1:]))
+                misplaced_tags.append('{field1} {field2}'.format(field1=VerseType.translated_name(field[0]),
+                                                                 field2=field[1:]))
         if misplaced_tags:
             critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',
-                                  'There are misplaced formatting tags in the following verses:\n\n%s\n\n'
-                                  'Please correct these tags before continuing.' % ', '.join(misplaced_tags)))
+                                  'There are misplaced formatting tags in the following verses:\n\n{tag}\n\n'
+                                  'Please correct these tags before continuing.').format(tag=', '.join(misplaced_tags)))
             return False
         for tag in verse_tags:
             if verse_tags.count(tag) > 26:
                 # lp#1310523: OpenLyrics allows only a-z variants of one verse:
                 # http://openlyrics.info/dataformat.html#verse-name
                 critical_error_message_box(message=translate(
-                    'SongsPlugin.EditSongForm', 'You have %(count)s verses named %(name)s %(number)s. '
-                                                'You can have at most 26 verses with the same name' %
-                                                {'count': verse_tags.count(tag),
-                                                 'name': VerseType.translated_name(tag[0]),
-                                                 'number': tag[1:]}))
+                    'SongsPlugin.EditSongForm',
+                    'You have {count} verses named {name} {number}. You can have at most '
+                    '26 verses with the same name').format(count=verse_tags.count(tag),
+                                                           name=VerseType.translated_name(tag[0]),
+                                                           number=tag[1:]))
                 return False
         return True
 
@@ -313,7 +317,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                 self.song.verse_order = re.sub('([' + verse.upper() + verse.lower() + '])(\W|$)',
                                                r'\g<1>1\2', self.song.verse_order)
         except:
-            log.exception('Problem processing song Lyrics \n%s', sxml.dump_xml())
+            log.exception('Problem processing song Lyrics \n{xml}'.forma(xml=sxml.dump_xml()))
             raise
 
     def keyPressEvent(self, event):
@@ -492,7 +496,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                 verse[0]['type'] = VerseType.tags[index]
                 if verse[0]['label'] == '':
                     verse[0]['label'] = '1'
-                verse_def = '%s%s' % (verse[0]['type'], verse[0]['label'])
+                verse_def = '{verse}{label}'.format(verse=verse[0]['type'], label=verse[0]['label'])
                 item = QtWidgets.QTableWidgetItem(verse[1])
                 item.setData(QtCore.Qt.UserRole, verse_def)
                 self.verse_list_widget.setItem(count, 0, item)
@@ -501,7 +505,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             for count, verse in enumerate(verses):
                 self.verse_list_widget.setRowCount(self.verse_list_widget.rowCount() + 1)
                 item = QtWidgets.QTableWidgetItem(verse)
-                verse_def = '%s%s' % (VerseType.tags[VerseType.Verse], str(count + 1))
+                verse_def = '{verse}{count:d}'.format(verse=VerseType.tags[VerseType.Verse], count=(count + 1))
                 item.setData(QtCore.Qt.UserRole, verse_def)
                 self.verse_list_widget.setItem(count, 0, item)
         if self.song.verse_order:
@@ -514,7 +518,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                 if verse_index is None:
                     verse_index = VerseType.from_tag(verse_def[0])
                 verse_tag = VerseType.translated_tags[verse_index].upper()
-                translated.append('%s%s' % (verse_tag, verse_def[1:]))
+                translated.append('{tag}{verse}'.format(tag=verse_tag, verse=verse_def[1:]))
             self.verse_order_edit.setText(' '.join(translated))
         else:
             self.verse_order_edit.setText('')
@@ -554,7 +558,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             item = self.verse_list_widget.item(row, 0)
             verse_def = item.data(QtCore.Qt.UserRole)
             verse_tag = VerseType.translated_tag(verse_def[0])
-            row_def = '%s%s' % (verse_tag, verse_def[1:])
+            row_def = '{tag}{verse}'.format(tag=verse_tag, verse=verse_def[1:])
             row_label.append(row_def)
         self.verse_list_widget.setVerticalHeaderLabels(row_label)
         self.verse_list_widget.resizeRowsToContents()
@@ -742,7 +746,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         self.verse_form.set_verse('', True)
         if self.verse_form.exec():
             after_text, verse_tag, verse_num = self.verse_form.get_verse()
-            verse_def = '%s%s' % (verse_tag, verse_num)
+            verse_def = '{tag}{number}'.format(tag=verse_tag, number=verse_num)
             item = QtWidgets.QTableWidgetItem(after_text)
             item.setData(QtCore.Qt.UserRole, verse_def)
             item.setText(after_text)
@@ -760,7 +764,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
             self.verse_form.set_verse(temp_text, True, verse_id)
             if self.verse_form.exec():
                 after_text, verse_tag, verse_num = self.verse_form.get_verse()
-                verse_def = '%s%s' % (verse_tag, verse_num)
+                verse_def = '{tag}{number}'.format(tag=verse_tag, number=verse_num)
                 item.setData(QtCore.Qt.UserRole, verse_def)
                 item.setText(after_text)
                 # number of lines has changed, repaint the list moving the data
@@ -793,7 +797,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                 field = item.data(QtCore.Qt.UserRole)
                 verse_tag = VerseType.translated_name(field[0])
                 verse_num = field[1:]
-                verse_list += '---[%s:%s]---\n' % (verse_tag, verse_num)
+                verse_list += '---[{tag}:{number}]---\n'.format(tag=verse_tag, number=verse_num)
                 verse_list += item.text()
                 verse_list += '\n'
             self.verse_form.set_verse(verse_list)
@@ -828,7 +832,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                             verse_num = match.group(1)
                         else:
                             verse_num = '1'
-                        verse_def = '%s%s' % (verse_tag, verse_num)
+                        verse_def = '{tag}{number}'.format(tag=verse_tag, number=verse_num)
                     else:
                         if parts.endswith('\n'):
                             parts = parts.rstrip('\n')
@@ -919,7 +923,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         """
         Loads file(s) from the filesystem.
         """
-        filters = '%s (*)' % UiStrings().AllFiles
+        filters = '{text} (*)'.format(text=UiStrings().AllFiles)
         file_names = FileDialog.getOpenFileNames(self, translate('SongsPlugin.EditSongForm', 'Open File(s)'), '',
                                                  filters)
         for filename in file_names:
@@ -1027,7 +1031,7 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
         for item in order_text.split():
             verse_tag = VerseType.tags[VerseType.from_translated_tag(item[0])]
             verse_num = item[1:].lower()
-            order.append('%s%s' % (verse_tag, verse_num))
+            order.append('{tag}{number}'.format(tag=verse_tag, number=verse_num))
         self.song.verse_order = ' '.join(order)
         self.song.ccli_number = self.ccli_number_edit.text()
         theme_name = self.theme_combo_box.currentText()
@@ -1082,12 +1086,12 @@ class EditSongForm(QtWidgets.QDialog, Ui_EditSongDialog, RegistryProperties):
                 try:
                     os.remove(audio)
                 except:
-                    log.exception('Could not remove file: %s', audio)
+                    log.exception('Could not remove file: {audio}'.format(audio=audio))
         if not files:
             try:
                 os.rmdir(save_path)
             except OSError:
-                log.exception('Could not remove directory: %s', save_path)
+                log.exception('Could not remove directory: {path}'.format(path=save_path))
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
         self.media_item.auto_select_id = self.song.id

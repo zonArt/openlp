@@ -91,11 +91,11 @@ class WorshipAssistantImport(SongImport):
             records = list(songs_reader)
         except csv.Error as e:
             self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Error reading CSV file.'),
-                           translate('SongsPlugin.WorshipAssistantImport', 'Line %d: %s') %
-                           (songs_reader.line_num, e))
+                           translate('SongsPlugin.WorshipAssistantImport',
+                                     'Line {number:d}: {error}').format(number=songs_reader.line_num, error=e))
             return
         num_records = len(records)
-        log.info('%s records found in CSV file' % num_records)
+        log.info('{count} records found in CSV file'.format(count=num_records))
         self.import_wizard.progress_bar.setMaximum(num_records)
         # Create regex to strip html tags
         re_html_strip = re.compile(r'<[^>]+>')
@@ -122,12 +122,14 @@ class WorshipAssistantImport(SongImport):
                     verse_order_list = [x.strip() for x in record['ROADMAP'].split(',')]
                 lyrics = record['LYRICS2']
             except UnicodeDecodeError as e:
-                self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d' % index),
-                               translate('SongsPlugin.WorshipAssistantImport', 'Decoding error: %s') % e)
+                self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record {count:d}').format(count=index),
+                               translate('SongsPlugin.WorshipAssistantImport',
+                                         'Decoding error: {error}').format(error=e))
                 continue
             except TypeError as e:
                 self.log_error(translate('SongsPlugin.WorshipAssistantImport',
-                                         'File not valid WorshipAssistant CSV format.'), 'TypeError: %s' % e)
+                                         'File not valid WorshipAssistant CSV format.'),
+                               'TypeError: {error}'.format(error=e))
                 return
             verse = ''
             used_verses = []
@@ -180,6 +182,7 @@ class WorshipAssistantImport(SongImport):
                         cleaned_verse_order_list.append(verse)
                 self.verse_order_list = cleaned_verse_order_list
             if not self.finish():
-                self.log_error(translate('SongsPlugin.WorshipAssistantImport', 'Record %d') % index +
+                self.log_error(translate('SongsPlugin.WorshipAssistantImport',
+                                         'Record {count:d}').format(count=index) +
                                (': "' + self.title + '"' if self.title else ''))
             songs_file.close()

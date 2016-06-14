@@ -33,7 +33,7 @@ TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../', '..',
 
 class TestRegistry(TestCase):
 
-    def registry_service_test(self):
+    def test_registry_service(self):
         """
         Test the registry creation and its usage
         """
@@ -59,13 +59,13 @@ class TestRegistry(TestCase):
         temp = Registry().get('test2')
         self.assertEqual(temp, None, 'None should have been returned for missing service')
 
-        # WHEN I try to replace a component I should be allowed (testing only)
+        # WHEN I try to replace a component I should be allowed
         Registry().remove('test1')
         # THEN I will get an exception
         temp = Registry().get('test1')
         self.assertEqual(temp, None, 'None should have been returned for deleted service')
 
-    def registry_function_test(self):
+    def test_registry_function(self):
         """
         Test the registry function creation and their usages
         """
@@ -93,7 +93,44 @@ class TestRegistry(TestCase):
         # THEN: I expect then function to have been called and a return given
         self.assertEqual(return_value[0], 'function_2', 'A return value is provided and matches')
 
-    def remove_function_test(self):
+    def test_registry_working_flags(self):
+        """
+        Test the registry working flags creation and its usage
+        """
+        # GIVEN: A new registry
+        Registry.create()
+
+        # WHEN: I add a working flag it should save it
+        my_data = 'Lamas'
+        my_data2 = 'More Lamas'
+        Registry().set_flag('test1', my_data)
+
+        # THEN: we should be able retrieve the saved component
+        temp = Registry().get_flag('test1')
+        self.assertEquals(temp, my_data, 'The value should have been saved')
+
+        # WHEN: I add a component for the second time I am not mad.
+        # THEN  and I will not get an exception
+        Registry().set_flag('test1', my_data2)
+        temp = Registry().get_flag('test1')
+        self.assertEquals(temp, my_data2, 'The value should have been updated')
+
+        # WHEN I try to get back a non existent Working Flag
+        # THEN I will get an exception
+        with self.assertRaises(KeyError) as context1:
+            temp = Registry().get_flag('test2')
+        self.assertEqual(context1.exception.args[0], 'Working Flag test2 not found in list',
+                         'KeyError exception should have been thrown for missing working flag')
+
+        # WHEN I try to replace a working flag I should be allowed
+        Registry().remove_flag('test1')
+        # THEN I will get an exception
+        with self.assertRaises(KeyError) as context:
+            temp = Registry().get_flag('test1')
+        self.assertEqual(context.exception.args[0], 'Working Flag test1 not found in list',
+                         'KeyError exception should have been thrown for duplicate working flag')
+
+    def test_remove_function(self):
         """
         Test the remove_function() method
         """

@@ -44,7 +44,7 @@ class TestVersionchecker(TestMixin, TestCase):
         """
         self.destroy_settings()
 
-    def version_thread_triggered_test(self):
+    def test_version_thread_triggered(self):
         """
         Test the version thread call does not trigger UI
         :return:

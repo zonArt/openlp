@@ -47,7 +47,7 @@ class TestSettings(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def recent_files_conv_test(self):
+    def test_recent_files_conv(self):
         """
         Test that recent_files_conv, converts various possible types of values correctly.
         """
@@ -66,7 +66,7 @@ class TestSettings(TestCase, TestMixin):
             # THEN: The actual result should be the same as the expected result
             self.assertEqual(actual_result, expected_result)
 
-    def settings_basic_test(self):
+    def test_settings_basic(self):
         """
         Test the Settings creation and its default usage
         """
@@ -84,7 +84,7 @@ class TestSettings(TestCase, TestMixin):
         # THEN the new value is returned when re-read
         self.assertTrue(Settings().value('core/has run wizard'), 'The saved value should have been returned')
 
-    def settings_override_test(self):
+    def test_settings_override(self):
         """
         Test the Settings creation and its override usage
         """
@@ -106,7 +106,7 @@ class TestSettings(TestCase, TestMixin):
         # THEN the new value is returned when re-read
         self.assertEqual('very short', Settings().value('test/extend'), 'The saved value should be returned')
 
-    def settings_override_with_group_test(self):
+    def test_settings_override_with_group(self):
         """
         Test the Settings creation and its override usage - with groups
         """
@@ -130,7 +130,7 @@ class TestSettings(TestCase, TestMixin):
         # THEN the new value is returned when re-read
         self.assertEqual('very short', Settings().value('test/extend'), 'The saved value should be returned')
 
-    def settings_nonexisting_test(self):
+    def test_settings_nonexisting(self):
         """
         Test the Settings on query for non-existing value
         """
@@ -142,7 +142,7 @@ class TestSettings(TestCase, TestMixin):
         # THEN: An exception with the non-existing key should be thrown
         self.assertEqual(str(cm.exception), "'core/does not exists'", 'We should get an exception')
 
-    def extend_default_settings_test(self):
+    def test_extend_default_settings(self):
         """
         Test that the extend_default_settings method extends the default settings
         """

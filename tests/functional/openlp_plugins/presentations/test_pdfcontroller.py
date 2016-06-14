@@ -78,7 +78,7 @@ class TestPdfController(TestCase, TestMixin):
         shutil.rmtree(self.thumbnail_folder)
         shutil.rmtree(self.temp_folder)
 
-    def constructor_test(self):
+    def test_constructor(self):
         """
         Test the Constructor from the PdfController
         """
@@ -91,7 +91,7 @@ class TestPdfController(TestCase, TestMixin):
         # THEN: The name of the presentation controller should be correct
         self.assertEqual('Pdf', controller.name, 'The name of the presentation controller should be correct')
 
-    def load_pdf_test(self):
+    def test_load_pdf(self):
         """
         Test loading of a Pdf using the PdfController
         """
@@ -111,7 +111,7 @@ class TestPdfController(TestCase, TestMixin):
         self.assertTrue(loaded, 'The loading of the PDF should succeed.')
         self.assertEqual(3, document.get_slide_count(), 'The pagecount of the PDF should be 3.')
 
-    def load_pdf_pictures_test(self):
+    def test_load_pdf_pictures(self):
         """
         Test loading of a Pdf and check size of generate pictures
         """
@@ -139,7 +139,7 @@ class TestPdfController(TestCase, TestMixin):
             self.assertEqual(543, image.width(), 'The width should be 543')
 
     @patch('openlp.plugins.presentations.lib.pdfcontroller.check_binary_exists')
-    def process_check_binary_mudraw_test(self, mocked_check_binary_exists):
+    def test_process_check_binary_mudraw(self, mocked_check_binary_exists):
         """
         Test that the correct output from mudraw is detected
         """
@@ -157,7 +157,7 @@ class TestPdfController(TestCase, TestMixin):
         self.assertEqual('mudraw', ret, 'mudraw should have been detected')
 
     @patch('openlp.plugins.presentations.lib.pdfcontroller.check_binary_exists')
-    def process_check_binary_new_motool_test(self, mocked_check_binary_exists):
+    def test_process_check_binary_new_motool(self, mocked_check_binary_exists):
         """
         Test that the correct output from the new mutool is detected
         """
@@ -177,7 +177,7 @@ class TestPdfController(TestCase, TestMixin):
         self.assertEqual('mutool', ret, 'mutool should have been detected')
 
     @patch('openlp.plugins.presentations.lib.pdfcontroller.check_binary_exists')
-    def process_check_binary_old_motool_test(self, mocked_check_binary_exists):
+    def test_process_check_binary_old_motool(self, mocked_check_binary_exists):
         """
         Test that the output from the old mutool is not accepted
         """
@@ -194,7 +194,7 @@ class TestPdfController(TestCase, TestMixin):
         self.assertIsNone(ret, 'old mutool should not be accepted!')
 
     @patch('openlp.plugins.presentations.lib.pdfcontroller.check_binary_exists')
-    def process_check_binary_gs_test(self, mocked_check_binary_exists):
+    def test_process_check_binary_gs(self, mocked_check_binary_exists):
         """
         Test that the correct output from gs is detected
         """

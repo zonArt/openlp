@@ -51,7 +51,7 @@ class TestOpenLyricsExport(TestCase, TestMixin):
         """
         shutil.rmtree(self.temp_folder)
 
-    def export_same_filename_test(self):
+    def test_export_same_filename(self):
         """
         Test that files is not overwritten if songs has same title and author
         """

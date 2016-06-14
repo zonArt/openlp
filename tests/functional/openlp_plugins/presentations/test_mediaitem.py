@@ -46,7 +46,7 @@ class TestMediaItem(TestCase, TestMixin):
             self.media_item = PresentationMediaItem(None, MagicMock, MagicMock())
         self.setup_application()
 
-    def build_file_mask_string_test(self):
+    def test_build_file_mask_string(self):
         """
         Test the build_file_mask_string() method
         """
@@ -85,7 +85,7 @@ class TestMediaItem(TestCase, TestMixin):
         self.assertIn('*.xps', self.media_item.on_new_file_masks, 'The file mask should contain the xps extension')
         self.assertIn('*.oxps', self.media_item.on_new_file_masks, 'The file mask should contain the oxps extension')
 
-    def clean_up_thumbnails_test(self):
+    def test_clean_up_thumbnails(self):
         """
         Test that the clean_up_thumbnails method works as expected when files exists.
         """
@@ -110,7 +110,7 @@ class TestMediaItem(TestCase, TestMixin):
         #       the presentation_file's mtime.
         mocked_doc.assert_has_calls([call.get_thumbnail_path(1, True), call.presentation_deleted()], True)
 
-    def clean_up_thumbnails_missing_file_test(self):
+    def test_clean_up_thumbnails_missing_file(self):
         """
         Test that the clean_up_thumbnails method works as expected when file is missing.
         """

@@ -44,6 +44,7 @@ class PresentationManagerImport(SongImport):
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return
+            # TODO: Verify format() with template strings
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 tree = etree.parse(file_path, parser=etree.XMLParser(recover=True))
@@ -96,7 +97,7 @@ class PresentationManagerImport(SongImport):
                 verse_def = 'o'
             if not is_duplicate:  # Only increment verse number if no duplicate
                 verse_count[verse_def] = verse_count.get(verse_def, 0) + 1
-            verse_def = '%s%d' % (verse_def, verse_count[verse_def])
+            verse_def = '{verse}{count:d}'.format(verse=verse_def, count=verse_count[verse_def])
             if not is_duplicate:  # Only add verse if no duplicate
                 self.add_verse(str(verse).strip(), verse_def)
             verse_order_list.append(verse_def)

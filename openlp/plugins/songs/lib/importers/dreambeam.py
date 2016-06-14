@@ -90,7 +90,7 @@ class DreamBeamImport(SongImport):
                 try:
                     parsed_file = etree.parse(open(file, 'r'), parser)
                 except etree.XMLSyntaxError:
-                    log.exception('XML syntax error in file %s' % file)
+                    log.exception('XML syntax error in file {name}'.format(name=file))
                     self.log_error(file, SongStrings.XMLSyntaxError)
                     continue
                 xml = etree.tostring(parsed_file).decode()
@@ -115,15 +115,17 @@ class DreamBeamImport(SongImport):
                             verse_type = lyrics_item.get('Type')
                             verse_number = lyrics_item.get('Number')
                             verse_text = str(lyrics_item.text)
-                            self.add_verse(verse_text, ('%s%s' % (verse_type[:1], verse_number)))
+                            self.add_verse(verse_text,
+                                           '{verse}{number}'.format(verse=verse_type[:1], number=verse_number))
                     if hasattr(song_xml, 'Collection'):
                         self.song_book_name = str(song_xml.Collection.text)
                     if hasattr(song_xml, 'Number'):
                         self.song_number = str(song_xml.Number.text)
                     if hasattr(song_xml, 'Sequence'):
                         for lyrics_sequence_item in (song_xml.Sequence.iterchildren()):
-                            self.verse_order_list.append("%s%s" % (lyrics_sequence_item.get('Type')[:1],
-                                                         lyrics_sequence_item.get('Number')))
+                            item = lyrics_sequence_item.get('Type')[:1]
+                            self.verse_order_list.append("{item}{number}".format(item=item),
+                                                         lyrics_sequence_item.get('Number'))
                     if hasattr(song_xml, 'Notes'):
                         self.comments = str(song_xml.Notes.text)
                 else:

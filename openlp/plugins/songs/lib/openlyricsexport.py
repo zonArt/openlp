@@ -61,18 +61,20 @@ class OpenLyricsExport(RegistryProperties):
             if self.parent.stop_export_flag:
                 return False
             self.parent.increment_progress_bar(
-                translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') % song.title)
+                translate('SongsPlugin.OpenLyricsExport', 'Exporting "{title}"...').format(title=song.title))
             xml = open_lyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml.encode()))
-            filename = '%s (%s)' % (song.title, ', '.join([author.display_name for author in song.authors]))
+            filename = '{title} ({author})'.format(title=song.title,
+                                                   author=', '.join([author.display_name for author in song.authors]))
             filename = clean_filename(filename)
             # Ensure the filename isn't too long for some filesystems
-            filename_with_ext = '%s.xml' % filename[0:250 - len(self.save_path)]
+            filename_with_ext = '{name}.xml'.format(name=filename[0:250 - len(self.save_path)])
             # Make sure we're not overwriting an existing file
             conflicts = 0
             while os.path.exists(os.path.join(self.save_path, filename_with_ext)):
                 conflicts += 1
-                filename_with_ext = '%s-%d.xml' % (filename[0:247 - len(self.save_path)], conflicts)
+                filename_with_ext = '{name}-{extra}.xml'.format(name=filename[0:247 - len(self.save_path)],
+                                                                extra=conflicts)
             # Pass a file object, because lxml does not cope with some special
             # characters in the path (see lp:757673 and lp:744337).
             tree.write(open(os.path.join(self.save_path, filename_with_ext), 'wb'), encoding='utf-8',

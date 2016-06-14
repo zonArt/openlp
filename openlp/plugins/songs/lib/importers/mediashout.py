@@ -23,6 +23,10 @@
 The :mod:`mediashout` module provides the functionality for importing
 a MediaShout database into the OpenLP database.
 """
+
+# WARNING: See https://docs.python.org/2/library/sqlite3.html for value substitution
+#          in SQL statements
+
 import pyodbc
 
 from openlp.core.lib import translate
@@ -47,8 +51,8 @@ class MediaShoutImport(SongImport):
         Receive a single file to import.
         """
         try:
-            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s;PWD=6NOZ4eHK7k' %
-                                  self.import_source)
+            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ={source};'
+                                  'PWD=6NOZ4eHK7k'.format(sorce=self.import_source))
         except:
             # Unfortunately no specific exception type
             self.log_error(self.import_source, translate('SongsPlugin.MediaShoutImport',
@@ -61,16 +65,15 @@ class MediaShoutImport(SongImport):
         for song in songs:
             if self.stop_import_flag:
                 break
-            cursor.execute('SELECT Type, Number, Text FROM Verses WHERE Record = %s ORDER BY Type, Number'
-                           % song.Record)
+            cursor.execute('SELECT Type, Number, Text FROM Verses WHERE Record = ? ORDER BY Type, Number', song.Record)
             verses = cursor.fetchall()
-            cursor.execute('SELECT Type, Number, POrder FROM PlayOrder WHERE Record = %s ORDER BY POrder' % song.Record)
+            cursor.execute('SELECT Type, Number, POrder FROM PlayOrder WHERE Record = ? ORDER BY POrder', song.Record)
             verse_order = cursor.fetchall()
             cursor.execute('SELECT Name FROM Themes INNER JOIN SongThemes ON SongThemes.ThemeId = Themes.ThemeId '
-                           'WHERE SongThemes.Record = %s' % song.Record)
+                           'WHERE SongThemes.Record = ?', song.Record)
             topics = cursor.fetchall()
             cursor.execute('SELECT Name FROM Groups INNER JOIN SongGroups ON SongGroups.GroupId = Groups.GroupId '
-                           'WHERE SongGroups.Record = %s' % song.Record)
+                           'WHERE SongGroups.Record = ?', song.Record)
             topics += cursor.fetchall()
             self.process_song(song, verses, verse_order, topics)
 

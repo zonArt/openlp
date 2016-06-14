@@ -69,7 +69,7 @@ class TestPluginManager(TestCase, TestMixin):
     @patch('openlp.plugins.custom.lib.db.init_schema')
     @patch('openlp.plugins.alerts.lib.db.init_schema')
     @patch('openlp.plugins.bibles.lib.db.init_schema')
-    def find_plugins_test(self, mocked_is1, mocked_is2, mocked_is3, mocked_is4, mocked_is5, mocked_is6):
+    def test_find_plugins(self, mocked_is1, mocked_is2, mocked_is3, mocked_is4, mocked_is5, mocked_is6):
         """
         Test the find_plugins() method to ensure it imports the correct plugins
         """
