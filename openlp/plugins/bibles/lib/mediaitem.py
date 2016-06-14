@@ -58,6 +58,7 @@ class BibleMediaItem(MediaManagerItem):
     log.info('Bible Media Item loaded')
 
     def __init__(self, parent, plugin):
+        self.clear_icon = build_icon(':/bibles/bibles_search_clear.png')
         self.lock_icon = build_icon(':/bibles/bibles_search_lock.png')
         self.unlock_icon = build_icon(':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin)
@@ -159,10 +160,15 @@ class BibleMediaItem(MediaManagerItem):
         search_button_layout = QtWidgets.QHBoxLayout()
         search_button_layout.setObjectName(prefix + 'search_button_layout')
         search_button_layout.addStretch()
+        clear_button = QtWidgets.QPushButton(tab)
+        clear_button.setFixedSize(22, 22)
+        clear_button.setIcon(self.clear_icon)
+        clear_button.setObjectName(prefix + 'ClearButton')
         lock_button = QtWidgets.QToolButton(tab)
         lock_button.setIcon(self.unlock_icon)
         lock_button.setCheckable(True)
         lock_button.setObjectName(prefix + 'LockButton')
+        search_button_layout.addWidget(clear_button)
         search_button_layout.addWidget(lock_button)
         search_button = QtWidgets.QPushButton(tab)
         search_button.setObjectName(prefix + 'SearchButton')
@@ -178,6 +184,7 @@ class BibleMediaItem(MediaManagerItem):
         setattr(self, prefix + 'SecondComboBox', second_combo_box)
         setattr(self, prefix + 'StyleLabel', style_label)
         setattr(self, prefix + 'StyleComboBox', style_combo_box)
+        setattr(self, prefix + 'ClearButton', clear_button)
         setattr(self, prefix + 'LockButton', lock_button)
         setattr(self, prefix + 'SearchButtonLayout', search_button_layout)
         setattr(self, prefix + 'SearchButton', search_button)
@@ -247,6 +254,8 @@ class BibleMediaItem(MediaManagerItem):
         self.quickStyleComboBox.activated.connect(self.on_quick_style_combo_box_changed)
         self.advancedStyleComboBox.activated.connect(self.on_advanced_style_combo_box_changed)
         # Buttons
+        self.advancedClearButton.clicked.connect(self.on_clear_button)
+        self.quickClearButton.clicked.connect(self.on_clear_button)
         self.advancedSearchButton.clicked.connect(self.on_advanced_search_button)
         self.quickSearchButton.clicked.connect(self.on_quick_search_button)
         # Other stuff
@@ -289,6 +298,7 @@ class BibleMediaItem(MediaManagerItem):
         self.quickStyleComboBox.setItemText(LayoutStyle.VersePerSlide, UiStrings().VersePerSlide)
         self.quickStyleComboBox.setItemText(LayoutStyle.VersePerLine, UiStrings().VersePerLine)
         self.quickStyleComboBox.setItemText(LayoutStyle.Continuous, UiStrings().Continuous)
+        self.quickClearButton.setToolTip(translate('BiblesPlugin.MediaItem', 'Clear the search results.'))
         self.quickLockButton.setToolTip(translate('BiblesPlugin.MediaItem',
                                                   'Toggle to keep or clear the previous results.'))
         self.quickSearchButton.setText(UiStrings().Search)
@@ -303,6 +313,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedStyleComboBox.setItemText(LayoutStyle.VersePerSlide, UiStrings().VersePerSlide)
         self.advancedStyleComboBox.setItemText(LayoutStyle.VersePerLine, UiStrings().VersePerLine)
         self.advancedStyleComboBox.setItemText(LayoutStyle.Continuous, UiStrings().Continuous)
+        self.advancedClearButton.setToolTip(translate('BiblesPlugin.MediaItem', 'Clear the search results.'))
         self.advancedLockButton.setToolTip(translate('BiblesPlugin.MediaItem',
                                                      'Toggle to keep or clear the previous results.'))
         self.advancedSearchButton.setText(UiStrings().Search)
@@ -536,6 +547,11 @@ class BibleMediaItem(MediaManagerItem):
             self.quickTab.setVisible(False)
             self.advancedTab.setVisible(True)
             self.advanced_book_combo_box.setFocus()
+
+    def on_clear_button(self):
+        # Clear the list, then set the "No search Results" message.
+        self.list_view.clear()
+        self.check_search_result()
 
     def on_lock_button_toggled(self, checked):
         if checked:
