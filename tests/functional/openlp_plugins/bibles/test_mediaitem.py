@@ -23,7 +23,6 @@
 This module contains tests for the lib submodule of the Presentations plugin.
 """
 from unittest import TestCase
-
 from openlp.core.common import Registry
 from openlp.plugins.bibles.lib.mediaitem import BibleMediaItem
 from tests.functional import MagicMock, patch

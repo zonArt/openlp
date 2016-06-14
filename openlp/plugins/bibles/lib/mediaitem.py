@@ -971,7 +971,6 @@ class BibleMediaItem(MediaManagerItem):
         """
         Displays the search results in the media manager. All data needed for further action is saved for/in each row.
         """
-
         items = self.build_display_results(bible, second_bible, self.search_results)
         for bible_verse in items:
             self.list_view.addItem(bible_verse)
