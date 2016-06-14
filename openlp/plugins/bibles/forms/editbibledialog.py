@@ -104,7 +104,7 @@ class Ui_EditBibleDialog(object):
         for book in BiblesResourcesDB.get_books():
             self.book_name_label[book['abbreviation']] = QtWidgets.QLabel(self.book_name_widget)
             self.book_name_label[book['abbreviation']].setObjectName(
-                'book_name_label[{name}]'.format(book=book['abbreviation']))
+                'book_name_label[{book}]'.format(book=book['abbreviation']))
             self.book_name_edit[book['abbreviation']] = QtWidgets.QLineEdit(self.book_name_widget)
             self.book_name_edit[book['abbreviation']].setObjectName(
                 'book_name_edit[{name}]'.format(name=book['abbreviation']))
