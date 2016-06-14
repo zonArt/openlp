@@ -931,8 +931,8 @@ class BibleMediaItem(MediaManagerItem):
                     if not self.quickLockButton.isChecked():
                         self.list_view.clear()
                     self.check_search_result()
-                elif limit == 8 and (len(text) < limit or len(count_spaces_two_chars_text) == 0
-                                     or len(count_two_chars_text) < 2):
+                elif (limit == 8 and (len(text) < limit or len(count_spaces_two_chars_text) == 0 or
+                                      len(count_two_chars_text) < 2)):
                     if not self.quickLockButton.isChecked():
                         self.list_view.clear()
                     self.check_search_result_search_while_typing_short()

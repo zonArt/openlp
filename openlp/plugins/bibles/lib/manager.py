@@ -368,6 +368,7 @@ class BibleManager(RegistryProperties):
             second_web_bible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
         if web_bible or second_web_bible:
             # If either Bible is Web, cursor is reset to normal and search ends w/o any message.
+            self.check_search_result()
             self.application.set_normal_cursor()
             return None
         # Fetch the results from db. If no results are found, return None, no message is given for this.
