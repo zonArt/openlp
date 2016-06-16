@@ -381,9 +381,12 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
                 // returned value).
                 return main.offsetHeight;
             }
-            </script><style>*{margin: 0; padding: 0; border: 0;}
-            #main {position: absolute; top: 0px; ${format_css} ${outline_css}}</style></head><body>
-            <div id="main"></div></body></html>""")
+            </script>
+            <style>
+                *{margin: 0; padding: 0; border: 0;}
+                #main {position: absolute; top: 0px; ${format_css} ${outline_css}}
+            </style></head>
+            <body><div id="main"></div></body></html>""")
         self.web.setHtml(html.substitute(format_css=build_lyrics_format_css(theme_data,
                                                                             self.page_width,
                                                                             self.page_height),

@@ -29,6 +29,7 @@ from PyQt5 import QtCore
 from openlp.core.common import Registry
 from openlp.core.lib import Renderer, ScreenList, ServiceItem, FormattingTags
 from openlp.core.lib.renderer import words_split, get_start_tags
+from openlp.core.lib.theme import ThemeXML
 
 from tests.functional import MagicMock, patch
 
@@ -37,6 +38,24 @@ SCREEN = {
     'number': 1,
     'size': QtCore.QRect(0, 0, 1024, 768)
 }
+
+
+# WARNING: Leave formatting alone - this is how it's returned in renderer.py
+CSS_TEST_ONE = """<!DOCTYPE html><html><head><script>
+            function show_text(newtext) {
+                var main = document.getElementById('main');
+                main.innerHTML = newtext;
+                // We need to be sure that the page is loaded, that is why we
+                // return the element's height (even though we do not use the
+                // returned value).
+                return main.offsetHeight;
+            }
+            </script>
+            <style>
+                *{margin: 0; padding: 0; border: 0;}
+                #main {position: absolute; top: 0px;  FORMAT CSS;   OUTLINE CSS; }
+            </style></head>
+            <body><div id="main"></div></body></html>'"""
 
 
 class TestRenderer(TestCase):
@@ -159,3 +178,28 @@ class TestRenderer(TestCase):
 
         # THEN: The blanks have been removed.
         self.assertListEqual(result_words, expected_words)
+
+    @patch('openlp.core.lib.renderer.QtWebKitWidgets.QWebView.setHtml')
+    @patch('openlp.core.lib.renderer.build_lyrics_format_css')
+    @patch('openlp.core.lib.renderer.build_lyrics_outline_css')
+    def test_set_text_rectangle(self, mock_outline_css, mock_lyrics_css, mock_webview):
+        """
+        Test set_set_text_rectangle returns a proper html string
+        """
+        # GIVEN: test object and data
+        mock_lyrics_css.return_value = ' FORMAT CSS; '
+        mock_outline_css.return_value = ' OUTLINE CSS; '
+        theme_data = ThemeXML()
+        theme_data.font_main_name = 'Arial'
+        theme_data.font_main_size = 20
+        theme_data.font_main_color = '#FFFFFF'
+        theme_data.font_main_outline_color = '#FFFFFF'
+        main = QtCore.QRect(10, 10, 1280, 900)
+        foot = QtCore.QRect(10, 1000, 1260, 24)
+        renderer = Renderer()
+
+        # WHEN: Calling methd
+        renderer._set_text_rectangle(theme_data=theme_data, rect_main=main, rect_footer=foot)
+
+        # THEN: QtWebKitWidgets should be called with the proper string
+        mock_webview.setHtml.called_with(CSS_TEST_ONE, 'Should be the same')
