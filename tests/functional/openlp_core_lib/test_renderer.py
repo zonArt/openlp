@@ -179,12 +179,12 @@ class TestRenderer(TestCase):
         # THEN: The blanks have been removed.
         self.assertListEqual(result_words, expected_words)
 
-    @patch('openlp.core.lib.renderer.QtWebKitWidgets.QWebView.setHtml')
+    @patch('openlp.core.lib.renderer.QtWebKitWidgets.QWebView')
     @patch('openlp.core.lib.renderer.build_lyrics_format_css')
     @patch('openlp.core.lib.renderer.build_lyrics_outline_css')
     def test_set_text_rectangle(self, mock_outline_css, mock_lyrics_css, mock_webview):
         """
-        Test set_set_text_rectangle returns a proper html string
+        Test set_text_rectangle returns a proper html string
         """
         # GIVEN: test object and data
         mock_lyrics_css.return_value = ' FORMAT CSS; '
@@ -198,7 +198,7 @@ class TestRenderer(TestCase):
         foot = QtCore.QRect(10, 1000, 1260, 24)
         renderer = Renderer()
 
-        # WHEN: Calling methd
+        # WHEN: Calling method
         renderer._set_text_rectangle(theme_data=theme_data, rect_main=main, rect_footer=foot)
 
         # THEN: QtWebKitWidgets should be called with the proper string
