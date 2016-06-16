@@ -549,9 +549,11 @@ class BibleMediaItem(MediaManagerItem):
             self.advanced_book_combo_box.setFocus()
 
     def on_clear_button(self):
-        # Clear the list, then set the "No search Results" message.
+        # Clear the list, then set the "No search Results" message, then clear the text field and give it focus.
         self.list_view.clear()
         self.check_search_result()
+        self.quick_search_edit.clear()
+        self.quick_search_edit.setFocus()
 
     def on_lock_button_toggled(self, checked):
         if checked:
