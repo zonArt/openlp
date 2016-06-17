@@ -335,12 +335,12 @@ class TestPJLink(TestCase):
 
     @patch.object(pjlink_test, 'send_command')
     @patch.object(pjlink_test, 'waitForReadyRead')
-    @patch.object(pjlink_test, 'projectorNoAuthentication')
+    @patch.object(pjlink_test, 'projectorAuthentication')
     @patch.object(pjlink_test, 'timer')
     @patch.object(pjlink_test, 'socket_timer')
     def test_bug_1593882_no_pin_authenticated_connection(self, mock_socket_timer,
                                                          mock_timer,
-                                                         mock_no_authentication,
+                                                         mock_authentication,
                                                          mock_ready_read,
                                                          mock_send_command):
         """
@@ -352,7 +352,7 @@ class TestPJLink(TestCase):
         mock_ready_read.return_value = True
 
         # WHEN: call with authentication request and pin not set
-        pjlink.check_login(data='PJLink 1 123abc')
+        pjlink.check_login(data=TEST_CONNECT_AUTHENTICATE)
 
         # THEN: No Authentication signal should have been sent
-        mock_no_authentication.called_with(pjlink.name, 'projectorNoAuthentication should have been called')
+        mock_authentication.called_with(pjlink.name, 'projectorAuthentication should have been called')

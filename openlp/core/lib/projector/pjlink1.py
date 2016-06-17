@@ -356,8 +356,8 @@ class PJLink1(QTcpSocket):
                 log.warning('({ip}) Authenticated connection but no pin set'.format(ip=self.name))
                 self.disconnect_from_host()
                 self.change_status(E_AUTHENTICATION)
-                log.debug('({ip}) Emitting projectorNoAuthentication() signal'.format(ip=self.name))
-                self.projectorNoAuthentication.emit(self.name)
+                log.debug('({ip}) Emitting projectorAuthentication() signal'.format(ip=self.name))
+                self.projectorAuthentication.emit(self.name)
                 return
             else:
                 log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
