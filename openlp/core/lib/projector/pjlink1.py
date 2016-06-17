@@ -49,7 +49,7 @@ from codecs import decode
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtNetwork import QAbstractSocket, QTcpSocket
 
-from openlp.core.common import translate, qmd5_hash
+from openlp.core.common import translate, md5_hash
 from openlp.core.lib.projector.constants import *
 
 # Shortcuts
@@ -362,7 +362,7 @@ class PJLink1(QTcpSocket):
             else:
                 log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
                 log.debug('({ip}) pin="{data}"'.format(ip=self.ip, data=self.pin))
-                salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii')).encode('utf-8')
+                salt = md5_hash(salt=data_check[2], data=self.pin)
         else:
             salt = None
         # We're connected at this point, so go ahead and do regular I/O
