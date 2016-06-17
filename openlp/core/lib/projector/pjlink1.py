@@ -344,16 +344,25 @@ class PJLink1(QTcpSocket):
             return
         elif data_check[1] == '0' and self.pin is not None:
             # Pin set and no authentication needed
+            log.warning('({ip}) Regular connection but PIN set'.format(ip=self.name))
             self.disconnect_from_host()
             self.change_status(E_AUTHENTICATION)
-            log.debug('({ip}) emitting projectorNoAuthentication() signal'.format(ip=self.name))
+            log.debug('({ip}) Emitting projectorNoAuthentication() signal'.format(ip=self.name))
             self.projectorNoAuthentication.emit(self.name)
             return
         elif data_check[1] == '1':
             # Authenticated login with salt
-            log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
-            log.debug('({ip}) pin="{data}"'.format(ip=self.ip, data=self.pin))
-            salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
+            if pin is None:
+                log.warning('({ip}) Authenticated connection but no pin set'.format(ip=self.name))
+                self.disconnect_from_host()
+                self.change_status(E_AUTHENTICATION)
+                log.debug('({ip}) Emitting projectorNoAuthentication() signal'.format(ip=self.name))
+                self.projectorNoAuthentication.emit(self.name)
+                return
+            else:
+                log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
+                log.debug('({ip}) pin="{data}"'.format(ip=self.ip, data=self.pin))
+                salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
         else:
             salt = None
         # We're connected at this point, so go ahead and do regular I/O
