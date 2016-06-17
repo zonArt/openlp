@@ -297,6 +297,8 @@ class PJLink1(QTcpSocket):
         Processes the initial connection and authentication (if needed).
         Starts poll timer if connection is established.
 
+        NOTE: Qt md5 hash function doesn't work with projector authentication. Use the python md5 hash function.
+
         :param data: Optional data if called from another routine
         """
         log.debug('({ip}) check_login(data="{data}")'.format(ip=self.ip, data=data))
