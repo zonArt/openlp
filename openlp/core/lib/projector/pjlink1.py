@@ -352,7 +352,7 @@ class PJLink1(QTcpSocket):
             return
         elif data_check[1] == '1':
             # Authenticated login with salt
-            if pin is None:
+            if self.pin is None:
                 log.warning('({ip}) Authenticated connection but no pin set'.format(ip=self.name))
                 self.disconnect_from_host()
                 self.change_status(E_AUTHENTICATION)
@@ -362,7 +362,7 @@ class PJLink1(QTcpSocket):
             else:
                 log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
                 log.debug('({ip}) pin="{data}"'.format(ip=self.ip, data=self.pin))
-                salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
+                salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii')).encode('utf-8')
         else:
             salt = None
         # We're connected at this point, so go ahead and do regular I/O

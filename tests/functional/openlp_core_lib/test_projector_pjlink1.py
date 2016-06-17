@@ -332,3 +332,27 @@ class TestPJLink(TestCase):
         self.assertFalse(pjlink.send_busy, 'Projector send_busy should be False')
         self.assertTrue(mock_timer.called, 'Projector timer.stop()  should have been called')
         self.assertTrue(mock_socket_timer.called, 'Projector socket_timer.stop() should have been called')
+
+    @patch.object(pjlink_test, 'send_command')
+    @patch.object(pjlink_test, 'waitForReadyRead')
+    @patch.object(pjlink_test, 'projectorNoAuthentication')
+    @patch.object(pjlink_test, 'timer')
+    @patch.object(pjlink_test, 'socket_timer')
+    def test_bug_1593882_no_pin_authenticated_connection(self, mock_socket_timer,
+                                                         mock_timer,
+                                                         mock_no_authentication,
+                                                         mock_ready_read,
+                                                         mock_send_command):
+        """
+        Test bug 1593882 no pin and authenticated request exception
+        """
+        # GIVEN: Test object and mocks
+        pjlink = pjlink_test
+        pjlink.pin = None
+        mock_ready_read.return_value = True
+
+        # WHEN: call with authentication request and pin not set
+        pjlink.check_login(data='PJLink 1 123abc')
+
+        # THEN: No Authentication signal should have been sent
+        mock_no_authentication.called_with(pjlink.name, 'projectorNoAuthentication should have been called')
