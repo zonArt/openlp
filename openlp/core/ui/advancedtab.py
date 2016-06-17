@@ -87,11 +87,14 @@ class AdvancedTab(SettingsTab):
         self.ui_layout.addRow(self.expand_service_item_check_box)
         self.slide_max_height_label = QtWidgets.QLabel(self.ui_group_box)
         self.slide_max_height_label.setObjectName('slide_max_height_label')
-        self.slide_max_height_spin_box = QtWidgets.QSpinBox(self.ui_group_box)
-        self.slide_max_height_spin_box.setObjectName('slide_max_height_spin_box')
-        self.slide_max_height_spin_box.setRange(0, 1000)
-        self.slide_max_height_spin_box.setSingleStep(20)
-        self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_spin_box)
+        self.slide_max_height_combo_box = QtWidgets.QComboBox(self.ui_group_box)
+        self.slide_max_height_combo_box.addItem('', userData=0)
+        self.slide_max_height_combo_box.addItem('', userData=-4)
+        # Generate numeric values for combo box dynamically
+        for px in range(60, 801, 5):
+            self.slide_max_height_combo_box.addItem(str(px) + 'px', userData=px)
+        self.slide_max_height_combo_box.setObjectName('slide_max_height_combo_box')
+        self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_combo_box)
         self.autoscroll_label = QtWidgets.QLabel(self.ui_group_box)
         self.autoscroll_label.setObjectName('autoscroll_label')
         self.autoscroll_combo_box = QtWidgets.QComboBox(self.ui_group_box)
@@ -265,7 +268,8 @@ class AdvancedTab(SettingsTab):
                                                              'Expand new service items on creation'))
         self.slide_max_height_label.setText(translate('OpenLP.AdvancedTab',
                                                       'Max height for non-text slides\nin slide controller:'))
-        self.slide_max_height_spin_box.setSpecialValueText(translate('OpenLP.AdvancedTab', 'Disabled'))
+        self.slide_max_height_combo_box.setItemText(0, translate('OpenLP.AdvancedTab', 'Disabled'))
+        self.slide_max_height_combo_box.setItemText(1, translate('OpenLP.AdvancedTab', 'Automatic'))
         self.autoscroll_label.setText(translate('OpenLP.AdvancedTab',
                                                 'When changing slides:'))
         self.autoscroll_combo_box.setItemText(0, translate('OpenLP.AdvancedTab', 'Do not auto-scroll'))
@@ -355,10 +359,13 @@ class AdvancedTab(SettingsTab):
         self.single_click_preview_check_box.setChecked(settings.value('single click preview'))
         self.single_click_service_preview_check_box.setChecked(settings.value('single click service preview'))
         self.expand_service_item_check_box.setChecked(settings.value('expand service item'))
-        self.slide_max_height_spin_box.setValue(settings.value('slide max height'))
+        slide_max_height_value = settings.value('slide max height')
+        for i in range(0, self.slide_max_height_combo_box.count()):
+            if self.slide_max_height_combo_box.itemData(i) == slide_max_height_value:
+                self.slide_max_height_combo_box.setCurrentIndex(i)
         autoscroll_value = settings.value('autoscrolling')
         for i in range(0, len(self.autoscroll_map)):
-            if self.autoscroll_map[i] == autoscroll_value:
+            if self.autoscroll_map[i] == autoscroll_value and i < self.autoscroll_combo_box.count():
                 self.autoscroll_combo_box.setCurrentIndex(i)
         self.enable_auto_close_check_box.setChecked(settings.value('enable exit confirmation'))
         self.hide_mouse_check_box.setChecked(settings.value('hide mouse'))
@@ -439,7 +446,9 @@ class AdvancedTab(SettingsTab):
         settings.setValue('single click preview', self.single_click_preview_check_box.isChecked())
         settings.setValue('single click service preview', self.single_click_service_preview_check_box.isChecked())
         settings.setValue('expand service item', self.expand_service_item_check_box.isChecked())
-        settings.setValue('slide max height', self.slide_max_height_spin_box.value())
+        slide_max_height_index = self.slide_max_height_combo_box.currentIndex()
+        slide_max_height_value = self.slide_max_height_combo_box.itemData(slide_max_height_index)
+        settings.setValue('slide max height', slide_max_height_value)
         settings.setValue('autoscrolling', self.autoscroll_map[self.autoscroll_combo_box.currentIndex()])
         settings.setValue('enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue('hide mouse', self.hide_mouse_check_box.isChecked())

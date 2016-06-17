@@ -564,14 +564,14 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
             self.progress_bar.setValue(self.progress_bar.maximum())
             if self.has_run_wizard:
                 text = translate('OpenLP.FirstTimeWizard',
-                                 'Download complete. Click the {text} button to return to OpenLP.'
-                                 ).format(text=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                                 'Download complete. Click the {button} button to return to OpenLP.'
+                                 ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
                 self.progress_label.setText(text)
             else:
                 text = translate('OpenLP.FirstTimeWizard',
                                  'Download complete. Click the {button} button to start OpenLP.'
                                  ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
-                self.progress_label.setText()
+                self.progress_label.setText(text)
         else:
             if self.has_run_wizard:
                 text = translate('OpenLP.FirstTimeWizard',
@@ -582,7 +582,7 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                 text = translate('OpenLP.FirstTimeWizard',
                                  'Click the {button} button to start OpenLP.'
                                  ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
-                self.progress_label.setText()
+                self.progress_label.setText(text)
         self.finish_button.setVisible(True)
         self.finish_button.setEnabled(True)
         self.cancel_button.setVisible(False)

@@ -106,6 +106,7 @@ class SongShowPlusImport(SongImport):
             song_data = open(file, 'rb')
             while True:
                 block_key, = struct.unpack("I", song_data.read(4))
+                log.debug('block_key: %d' % block_key)
                 # The file ends with 4 NULL's
                 if block_key == 0:
                     break
@@ -117,7 +118,13 @@ class SongShowPlusImport(SongImport):
                     null, verse_name_length, = struct.unpack("BB", song_data.read(2))
                     verse_name = self.decode(song_data.read(verse_name_length))
                 length_descriptor_size, = struct.unpack("B", song_data.read(1))
-                log.debug(length_descriptor_size)
+                log.debug('length_descriptor_size: %d' % length_descriptor_size)
+                # In the case of song_numbers the number is in the data from the
+                # current position to the next block starts
+                if block_key == SONG_NUMBER:
+                    sn_bytes = song_data.read(length_descriptor_size - 1)
+                    self.song_number = int.from_bytes(sn_bytes, byteorder='little')
+                    continue
                 # Detect if/how long the length descriptor is
                 if length_descriptor_size == 12 or length_descriptor_size == 20:
                     length_descriptor, = struct.unpack("I", song_data.read(4))
@@ -127,8 +134,9 @@ class SongShowPlusImport(SongImport):
                     length_descriptor = 0
                 else:
                     length_descriptor, = struct.unpack("B", song_data.read(1))
-                log.debug(length_descriptor_size)
+                log.debug('length_descriptor: %d' % length_descriptor)
                 data = song_data.read(length_descriptor)
+                log.debug(data)
                 if block_key == TITLE:
                     self.title = self.decode(data)
                 elif block_key == AUTHOR:
@@ -168,8 +176,6 @@ class SongShowPlusImport(SongImport):
                         self.ssp_verse_order_list.append(verse_tag)
                 elif block_key == SONG_BOOK:
                     self.song_book_name = self.decode(data)
-                elif block_key == SONG_NUMBER:
-                    self.song_number = ord(data)
                 elif block_key == CUSTOM_VERSE:
                     verse_tag = self.to_openlp_verse_tag(verse_name)
                     self.add_verse(self.decode(data), verse_tag)
