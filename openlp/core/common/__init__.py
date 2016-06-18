@@ -226,7 +226,8 @@ def qmd5_hash(salt, data=None):
     log.debug('qmd5_hash(salt="{text}"'.format(text=salt))
     hash_obj = QHash(QHash.Md5)
     hash_obj.addData(salt.encode('ascii'))
-    hash_obj.addData(data.encode('ascii'))
+    if data:
+        hash_obj.addData(data.encode('ascii'))
     hash_value = hash_obj.result().toHex()
     log.debug('qmd5_hash() returning "{hash}"'.format(hash=hash_value))
     return hash_value

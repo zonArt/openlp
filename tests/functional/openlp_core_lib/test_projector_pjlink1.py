@@ -30,7 +30,7 @@ from openlp.core.lib.projector.constants import E_PARAMETER, ERROR_STRING, S_OFF
     S_COOLDOWN, PJLINK_POWR_STATUS
 
 from tests.functional import patch
-from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUTHENTICATE
+from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUTHENTICATE, TEST_HASH
 
 pjlink_test = PJLink1(name='test', ip='127.0.0.1', pin=TEST_PIN, no_poll=True)
 
@@ -355,4 +355,30 @@ class TestPJLink(TestCase):
         pjlink.check_login(data=TEST_CONNECT_AUTHENTICATE)
 
         # THEN: No Authentication signal should have been sent
-        mock_authentication.called_with(pjlink.name, 'projectorAuthentication should have been called')
+        mock_authentication.assert_called_with(pjlink.name, 'projectorAuthentication should have been called')
+
+    @patch.object(pjlink_test, 'waitForReadyRead')
+    @patch.object(pjlink_test, 'state')
+    @patch.object(pjlink_test, '_send_command')
+    @patch.object(pjlink_test, 'timer')
+    @patch.object(pjlink_test, 'socket_timer')
+    def test_bug_1593883_pjlink_authentication(self, mock_socket_timer,
+                                               mock_timer,
+                                               mock_send_command,
+                                               mock_state,
+                                               mock_waitForReadyRead):
+        """
+        Test bugfix 1593883 pjlink authentication
+        """
+        # GIVEN: Test object and data
+        pjlink = pjlink_test
+        pjlink_pin = TEST_PIN
+        mock_state.return_value = pjlink.ConnectedState
+        mock_waitForReadyRead.return_value = True
+
+        # WHEN: Athenticated connection is called
+        pjlink.check_login(data=TEST_CONNECT_AUTHENTICATE)
+
+        # THEN: send_command should have the proper authentication
+        self.assertEquals("{test}".format(test=mock_send_command.call_args_list[0]),
+                          "call(data='{hash}%1CLSS ?\\r')".format(hash=TEST_HASH))
