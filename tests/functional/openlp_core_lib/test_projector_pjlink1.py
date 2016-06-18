@@ -355,7 +355,7 @@ class TestPJLink(TestCase):
         pjlink.check_login(data=TEST_CONNECT_AUTHENTICATE)
 
         # THEN: No Authentication signal should have been sent
-        mock_authentication.assert_called_with(pjlink.name, 'projectorAuthentication should have been called')
+        mock_authentication.emit.assert_called_with(pjlink.name)
 
     @patch.object(pjlink_test, 'waitForReadyRead')
     @patch.object(pjlink_test, 'state')
@@ -372,7 +372,7 @@ class TestPJLink(TestCase):
         """
         # GIVEN: Test object and data
         pjlink = pjlink_test
-        pjlink_pin = TEST_PIN
+        pjlink.pin = TEST_PIN
         mock_state.return_value = pjlink.ConnectedState
         mock_waitForReadyRead.return_value = True
 
@@ -380,5 +380,5 @@ class TestPJLink(TestCase):
         pjlink.check_login(data=TEST_CONNECT_AUTHENTICATE)
 
         # THEN: send_command should have the proper authentication
-        self.assertEquals("{test}".format(test=mock_send_command.call_args_list[0]),
+        self.assertEquals("{test}".format(test=mock_send_command.call_args),
                           "call(data='{hash}%1CLSS ?\\r')".format(hash=TEST_HASH))
