@@ -370,7 +370,7 @@ class BibleManager(RegistryProperties):
         """
         log.debug('save_meta data {bible}, {version}, {copyright}, {perms}'.format(bible=bible,
                                                                                    version=version,
-                                                                                   cr=copyright,
+                                                                                   copyright=copyright,
                                                                                    perms=permissions))
         self.db_cache[bible].save_meta('name', version)
         self.db_cache[bible].save_meta('copyright', copyright)
