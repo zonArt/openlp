@@ -91,7 +91,6 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         super(ExceptionForm, self).__init__(None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setupUi(self)
         self.settings_section = 'crashreport'
-        # TODO: Should work - need to test
         self.report_text = '**OpenLP Bug Report**\n' \
             'Version: {version}\n\n' \
             '--- Details of the Exception. ---\n\n{description}\n\n ' \
@@ -133,16 +132,9 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                 system += 'Desktop: GNOME\n'
             elif os.environ.get('DESKTOP_SESSION') == 'xfce':
                 system += 'Desktop: Xfce\n'
-        # NOTE: This needs to return a string that format() will use. See __init__.self.report_text for names.
-        return ("version='{version}', "
-                "system='{system}', "
-                "description='{description}', "
-                "traceback='{traceback}', "
-                "libs='{libs}'").format(version=openlp_version,
-                                        description=description,
-                                        traceback=traceback,
-                                        system=system,
-                                        libs=libraries))
+        # NOTE: Keys match the expected input for self.report_text.format()
+        return {'version': openlp_version, 'description': description, 'traceback': traceback,
+                'system': system, 'libs': libraries}
 
     def on_save_report_button_clicked(self):
         """
@@ -156,8 +148,9 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         if filename:
             filename = str(filename).replace('/', os.path.sep)
             Settings().setValue(self.settings_section + '/last directory', os.path.dirname(filename))
-            # NOTE: self._create_report() should return a string with the key names for format()
-            report_text = self.report_text.format(self._create_report())
+            opts = self._create_report()
+            report_text = self.report_text.format(version=opts['version'], description=opts['description'],
+                                                  traceback=opts['traceback'], libs=ops['libs'])
             try:
                 report_file = open(filename, 'w')
                 try:
@@ -177,11 +170,10 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         """
         Opening systems default email client and inserting exception log and system information.
         """
-        # NOTE: self._create_report() should return a string with keys for format()
         content = self._create_report()
         source = ''
         exception = ''
-        for line in content[2].split('\n'):
+        for line in content['traceback'].split('\n'):
             if re.search(r'[/\\]openlp[/\\]', line):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
             if ':' in line:
@@ -189,8 +181,11 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
         subject = 'Bug report: {error} in {source}'.format(error=exception, source=source)
         mail_urlquery = QtCore.QUrlQuery()
         mail_urlquery.addQueryItem('subject', subject)
-        # TODO: Should be good - need to test
-        mail_urlquery.addQueryItem('body', self.report_text.format(content))
+        mail_urlquery.addQueryItem('body', self.report_text.format(version=content['version'],
+                                                                   description=content['description'],
+                                                                   traceback=content['traceback'],
+                                                                   system=content['system'],
+                                                                   libs=content['libs']))
         if self.file_attachment:
             mail_urlquery.addQueryItem('attach', self.file_attachment)
         mail_to_url = QtCore.QUrl('mailto:bugs@openlp.org')
@@ -220,7 +215,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                                                                    Settings().value(self.settings_section +
                                                                                     '/last directory'),
                                                                    '{text} (*)'.format(text=UiStrings().AllFiles))
-        log.info('New files(s) %s', str(files))
+        log.info('New files(s) {files}'.format(str(files)))
         if files:
             self.file_attachment = str(files)
 
