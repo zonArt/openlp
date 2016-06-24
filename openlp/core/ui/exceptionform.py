@@ -135,6 +135,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                 system += 'Desktop: Xfce\n'
         # NOTE: This needs to return a string that format() will use. See __init__.self.report_text for names.
         return ("version='{version}', "
+                "system='{system}', "
                 "description='{description}', "
                 "traceback='{traceback}', "
                 "libs='{libs}'").format(version=openlp_version,
