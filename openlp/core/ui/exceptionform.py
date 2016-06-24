@@ -142,7 +142,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                                         description=description,
                                         traceback=traceback,
                                         system=system,
-                                        libs=libraries)
+                                        libs=libraries))
 
     def on_save_report_button_clicked(self):
         """
