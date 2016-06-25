@@ -188,7 +188,7 @@ class TestExceptionForm(TestMixin, TestCase):
         mocked_qt.PYQT_VERSION_STR = 'PyQt5 Test'
         mocked_is_linux.return_value = False
         mocked_application_version.return_value = 'Trunk Test'
-        mocked_save_filename.return_value = ['testfile.txt',]
+        mocked_save_filename.return_value = ['testfile.txt', ]
 
         test_form = exceptionform.ExceptionForm()
         test_form.file_attachment = None
