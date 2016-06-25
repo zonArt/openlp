@@ -150,7 +150,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
             Settings().setValue(self.settings_section + '/last directory', os.path.dirname(filename))
             opts = self._create_report()
             report_text = self.report_text.format(version=opts['version'], description=opts['description'],
-                                                  traceback=opts['traceback'], libs=ops['libs'])
+                                                  traceback=opts['traceback'], libs=opts['libs'], system=opts['system'])
             try:
                 report_file = open(filename, 'w')
                 try:
