@@ -1395,8 +1395,8 @@ class SlideController(DisplayController, RegistryProperties):
                     self.on_media_close()
                 self.on_go_live()
             # If ('advanced/double click live') is not enabled, double clicking preview adds the item to Service.
-            # Prevent same item in preview from being sent to Service multiple times. Changing preview slide resets
-            # this setting. Sending to preview from Service does not reset this setting, this is a design choise.
+            # Prevent same item in preview from being sent to Service multiple times.
+            # Changing the preview slide resets this flag to False.
             # Do note that this still allows to add item to Service multiple times if icon is clicked.
             elif not Registry().get_flag('has doubleclick added item to service') == True:
                 self.on_preview_add_to_service()
