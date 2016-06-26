@@ -164,8 +164,6 @@ class Settings(QtCore.QSettings):
         'core/display on monitor': True,
         'core/override position': False,
         'core/application version': '0.0',
-        'core/is live item edited and replaced': False,
-        'core/has doubleclicking preview added item to service': False,
         'images/background color': '#000000',
         'media/players': 'system,webkit',
         'media/override player': QtCore.Qt.Unchecked,

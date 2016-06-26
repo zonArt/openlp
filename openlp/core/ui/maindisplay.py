@@ -475,7 +475,7 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
             self.footer(service_item.foot_text)
         # if was hidden keep it hidden
         if self.hide_mode and self.is_live and not service_item.is_media():
-            if Settings().value('core/auto unblank') and not Settings().value('core/is live item edited and replaced'):
+            if Settings().value('core/auto unblank'):
                 Registry().execute('slidecontroller_live_unblank')
             else:
                 self.hide_display(self.hide_mode)

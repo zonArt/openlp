@@ -139,6 +139,7 @@ class SlideController(DisplayController, RegistryProperties):
         Set up the Slide Controller.
         """
         super(SlideController, self).__init__(parent)
+        Registry().set_flag('replace service manager item', False)
 
     def post_set_up(self):
         """
@@ -797,18 +798,18 @@ class SlideController(DisplayController, RegistryProperties):
 
     def replace_service_manager_item(self, item):
         """
-        Replacement item following a remote edit
+        Replacement item following a remote edit.
         This action  also takes place when a song that is sent to live from Service Manager is edited.
         If display is blanked, it will get unblanked if automatic unblanking is enabled. We prevent this from happening
-        by setting a hidden setting to "True" and then to "False" after the processing is done.
-        The setting is also set to "False" on every start up, should the program ever crash during this process.
+        by setting a flag to "True" and then to "False" after the processing is done.
+        The flag is also set to "False" on startup so display may be unblanked properly.
 
         :param item: The current service item
         """
         if item == self.service_item:
-            Settings().setValue('core/is live item edited and replaced', True)
+            Registry().set_flag('replace service manager item', True)
             self._process_item(item, self.preview_widget.current_slide_number())
-            Settings().setValue('core/is live item edited and replaced', False)
+            Registry().set_flag('replace service manager item', False)
 
     def add_service_manager_item(self, item, slide_no):
         """
@@ -977,9 +978,12 @@ class SlideController(DisplayController, RegistryProperties):
 
     def on_slide_unblank(self):
         """
-        Handle the slidecontroller unblank event
+        Handle the slidecontroller unblank event.
+        If we are re-processing service item, don't unblank the display
+        (Found in def replace_service_manager_item)
         """
-        self.on_blank_display(False)
+        if not Registry().get_flag('replace service manager item') == True:
+            self.on_blank_display(False)
 
     def on_blank_display(self, checked=None):
         """
@@ -1111,13 +1115,12 @@ class SlideController(DisplayController, RegistryProperties):
                                % timeout)
             return
         # If "click live slide to unblank" is enabled, unblank the display. And start = Item is sent to Live.
-        # 'core/is live item edited and replaced' is only True when replacing Live item with the same item from Service.
         # Note: If this if statement is placed at the bottom of this function instead of top slide transitions are lost.
         if self.is_live and Settings().value('core/click live slide to unblank'):
             # With this display stays blanked when "auto unblank" setting is not enabled and new item is sent to Live.
             if not Settings().value('core/auto unblank') and start:
                 ()
-            if not start and not Settings().value('core/is live item edited and replaced'):
+            if not start:
                 Registry().execute('slidecontroller_live_unblank')
         row = self.preview_widget.current_slide_number()
         old_selected_row = self.selected_row
@@ -1395,9 +1398,9 @@ class SlideController(DisplayController, RegistryProperties):
             # Prevent same item in preview from being sent to Service multiple times. Changing preview slide resets
             # this setting. Sending to preview from Service does not reset this setting, this is a design choise.
             # Do note that this still allows to add item to Service multiple times if icon is clicked.
-            elif not Settings().value('core/has doubleclicking preview added item to service'):
+            elif not Registry().get_flag('has doubleclick added item to service') == True:
                 self.on_preview_add_to_service()
-                Settings().setValue('core/has doubleclicking preview added item to service', True)
+                Registry().set_flag('has doubleclick added item to service', True)
 
     def on_go_live(self, field=None):
         """
