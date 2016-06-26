@@ -72,7 +72,7 @@ class SongProImport(SongImport):
         Receive a single file or a list of files to import.
         """
         self.encoding = None
-        with open(self.import_source, 'rt') as songs_file:
+        with open(self.import_source, 'rt', errors='ignore') as songs_file:
             self.import_wizard.progress_bar.setMaximum(0)
             tag = ''
             text = ''
