@@ -27,9 +27,6 @@ import logging
 from unittest import TestCase
 
 from pylint import epylint as lint
-import multiprocessing
-
-log = logging.getLogger(__name__)
 
 
 class TestPylint(TestCase):
@@ -39,14 +36,18 @@ class TestPylint(TestCase):
         Test for pylint errors
         """
         # GIVEN: The openlp base folder
-        path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'openlp'))
+        enabled_checks = 'missing-format-argument-key,unused-format-string-argument'
+        disabled_checks = 'all'
 
-        # WHEN: Running pylint 
-        (pylint_stdout, pylint_stderr) = lint.py_run('{path} --disable=all  --enable=missing-format-argument-key,unused-format-string-argument -r n -j {cpu_count}'.format(path='openlp', cpu_count=multiprocessing.cpu_count()), return_std=True)
+        # WHEN: Running pylint
+        (pylint_stdout, pylint_stderr) = \
+            lint.py_run('{path} --disable={disabled} --enable={enabled} --reports=no'.format(path='openlp',
+                                                                                             disabled=disabled_checks,
+                                                                                             enabled=enabled_checks),
+                        return_std=True)
         stdout = pylint_stdout.read()
         stderr = pylint_stderr.read()
-        log.debug(stdout)
-        log.debug(stderr)
+        print(stdout)
 
         # THEN: The output should be empty
-        self.assertEqual(stdout, '', 'PyLint should find no errors')
+        self.assertTrue(stdout == '', 'PyLint should find no errors')
