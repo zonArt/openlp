@@ -10,9 +10,9 @@ from datetime import datetime
 from distutils.version import LooseVersion
 from subprocess import Popen, PIPE
 
-from openlp.core.common import AppLocation, Settings
-
 from PyQt5 import QtCore
+
+from openlp.core.common import AppLocation, Settings
 
 log = logging.getLogger(__name__)
 

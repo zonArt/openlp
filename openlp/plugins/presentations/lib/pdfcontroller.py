@@ -80,7 +80,7 @@ class PdfController(PresentationController):
             found_mutool = re.search('usage: mutool.*', decoded_line, re.IGNORECASE)
             if found_mutool:
                 # Test that mutool contains mudraw
-                if re.search('draw\s+--\s+convert document.*', runlog.decode(), re.IGNORECASE | re.MULTILINE):
+                if re.search(r'draw\s+--\s+convert document.*', runlog.decode(), re.IGNORECASE | re.MULTILINE):
                     program_type = 'mutool'
                     break
             found_gs = re.search('GPL Ghostscript.*', decoded_line, re.IGNORECASE)
@@ -215,8 +215,8 @@ class PdfDocument(PresentationDocument):
         height = 0.0
         for line in runlog.splitlines():
             try:
-                width = float(re.search('.*Size: x: (\d+\.?\d*), y: \d+.*', line.decode()).group(1))
-                height = float(re.search('.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line.decode()).group(1))
+                width = float(re.search(r'.*Size: x: (\d+\.?\d*), y: \d+.*', line.decode()).group(1))
+                height = float(re.search(r'.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line.decode()).group(1))
                 break
             except AttributeError:
                 continue

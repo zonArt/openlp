@@ -310,10 +310,10 @@ class PJLink1(QTcpSocket):
             read = self.readLine(self.maxSize)
             dontcare = self.readLine(self.maxSize)  # Clean out the trailing \r\n
             if read is None:
-                log.warn('({ip}) read is None - socket error?'.format(ip=self.ip))
+                log.warning('({ip}) read is None - socket error?'.format(ip=self.ip))
                 return
             elif len(read) < 8:
-                log.warn('({ip}) Not enough data read)'.format(ip=self.ip))
+                log.warning('({ip}) Not enough data read)'.format(ip=self.ip))
                 return
             data = decode(read, 'ascii')
             # Possibility of extraneous data on input when reading.
@@ -402,7 +402,7 @@ class PJLink1(QTcpSocket):
             self.projectorReceivedData.emit()
             return
         elif '=' not in data:
-            log.warn('({ip}) get_data(): Invalid packet received'.format(ip=self.ip))
+            log.warning('({ip}) get_data(): Invalid packet received'.format(ip=self.ip))
             self.send_busy = False
             self.projectorReceivedData.emit()
             return
@@ -410,15 +410,15 @@ class PJLink1(QTcpSocket):
         try:
             (prefix, class_, cmd, data) = (data_split[0][0], data_split[0][1], data_split[0][2:], data_split[1])
         except ValueError as e:
-            log.warn('({ip}) get_data(): Invalid packet - expected header + command + data'.format(ip=self.ip))
-            log.warn('({ip}) get_data(): Received data: "{data}"'.format(ip=self.ip, data=data_in.strip()))
+            log.warning('({ip}) get_data(): Invalid packet - expected header + command + data'.format(ip=self.ip))
+            log.warning('({ip}) get_data(): Received data: "{data}"'.format(ip=self.ip, data=data_in.strip()))
             self.change_status(E_INVALID_DATA)
             self.send_busy = False
             self.projectorReceivedData.emit()
             return
 
         if not (self.pjlink_class in PJLINK_VALID_CMD and cmd in PJLINK_VALID_CMD[self.pjlink_class]):
-            log.warn('({ip}) get_data(): Invalid packet - unknown command "{data}"'.format(ip=self.ip, data=cmd))
+            log.warning('({ip}) get_data(): Invalid packet - unknown command "{data}"'.format(ip=self.ip, data=cmd))
             self.send_busy = False
             self.projectorReceivedData.emit()
             return
@@ -461,7 +461,7 @@ class PJLink1(QTcpSocket):
         :param queue: Option to force add to queue rather than sending directly
         """
         if self.state() != self.ConnectedState:
-            log.warn('({ip}) send_command(): Not connected - returning'.format(ip=self.ip))
+            log.warning('({ip}) send_command(): Not connected - returning'.format(ip=self.ip))
             self.send_queue = []
             return
         self.projectorNetwork.emit(S_NETWORK_SENDING)
@@ -577,7 +577,7 @@ class PJLink1(QTcpSocket):
         if cmd in self.PJLINK1_FUNC:
             self.PJLINK1_FUNC[cmd](data)
         else:
-            log.warn('({ip}) Invalid command {data}'.format(ip=self.ip, data=cmd))
+            log.warning('({ip}) Invalid command {data}'.format(ip=self.ip, data=cmd))
         self.send_busy = False
         self.projectorReceivedData.emit()
 
@@ -596,7 +596,7 @@ class PJLink1(QTcpSocket):
                 fill = {'Hours': int(data_dict[0]), 'On': False if data_dict[1] == '0' else True}
             except ValueError:
                 # In case of invalid entry
-                log.warn('({ip}) process_lamp(): Invalid data "{data}"'.format(ip=self.ip, data=data))
+                log.warning('({ip}) process_lamp(): Invalid data "{data}"'.format(ip=self.ip, data=data))
                 return
             lamps.append(fill)
             data_dict.pop(0)  # Remove lamp hours
@@ -623,7 +623,7 @@ class PJLink1(QTcpSocket):
                     self.send_command('INST')
         else:
             # Log unknown status response
-            log.warn('({ip}) Unknown power response: {data}'.format(ip=self.ip, data=data))
+            log.warning('({ip}) Unknown power response: {data}'.format(ip=self.ip, data=data))
         return
 
     def process_avmt(self, data):
@@ -648,7 +648,7 @@ class PJLink1(QTcpSocket):
             shutter = True
             mute = True
         else:
-            log.warn('({ip}) Unknown shutter response: {data}'.format(ip=self.ip, data=data))
+            log.warning('({ip}) Unknown shutter response: {data}'.format(ip=self.ip, data=data))
         update_icons = shutter != self.shutter
         update_icons = update_icons or mute != self.mute
         self.shutter = shutter
@@ -797,7 +797,7 @@ class PJLink1(QTcpSocket):
         Initiate connection to projector.
         """
         if self.state() == self.ConnectedState:
-            log.warn('({ip}) connect_to_host(): Already connected - returning'.format(ip=self.ip))
+            log.warning('({ip}) connect_to_host(): Already connected - returning'.format(ip=self.ip))
             return
         self.change_status(S_CONNECTING)
         self.connectToHost(self.ip, self.port if type(self.port) is int else int(self.port))
@@ -809,9 +809,9 @@ class PJLink1(QTcpSocket):
         """
         if abort or self.state() != self.ConnectedState:
             if abort:
-                log.warn('({ip}) disconnect_from_host(): Aborting connection'.format(ip=self.ip))
+                log.warning('({ip}) disconnect_from_host(): Aborting connection'.format(ip=self.ip))
             else:
-                log.warn('({ip}) disconnect_from_host(): Not connected - returning'.format(ip=self.ip))
+                log.warning('({ip}) disconnect_from_host(): Not connected - returning'.format(ip=self.ip))
             self.reset_information()
         self.disconnectFromHost()
         try:

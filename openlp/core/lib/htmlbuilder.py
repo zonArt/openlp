@@ -389,8 +389,8 @@ is the function which has to be called from outside. The generated and returned 
 """
 import logging
 
-from PyQt5 import QtWebKit
 from string import Template
+from PyQt5 import QtWebKit
 
 from openlp.core.common import Settings
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, VerticalType, HorizontalType
@@ -647,7 +647,7 @@ def webkit_version():
         webkit_ver = float(QtWebKit.qWebKitVersion())
         log.debug('Webkit version = {version}'.format(version=webkit_ver))
     except AttributeError:
-        webkit_ver = 0
+        webkit_ver = 0.0
     return webkit_ver
 
 

@@ -27,6 +27,7 @@ import logging
 from unittest import TestCase
 
 from pylint import epylint as lint
+from pylint.__pkginfo__ import pylint_version
 
 
 class TestPylint(TestCase):
@@ -37,17 +38,19 @@ class TestPylint(TestCase):
         """
         # GIVEN: The openlp base folder
         enabled_checks = 'missing-format-argument-key,unused-format-string-argument'
-        disabled_checks = 'all'
+        #disabled_checks = 'all'
+        disabled_checks = ''
 
         # WHEN: Running pylint
         (pylint_stdout, pylint_stderr) = \
             lint.py_run('{path} --disable={disabled} --enable={enabled} --reports=no'.format(path='openlp',
                                                                                              disabled=disabled_checks,
                                                                                              enabled=enabled_checks),
-                        return_std=True)
+                        return_std=True, script='pylint3')
         stdout = pylint_stdout.read()
         stderr = pylint_stderr.read()
         print(stdout)
+        print(stderr)
 
         # THEN: The output should be empty
-        self.assertTrue(stdout == '', 'PyLint should find no errors')
+        self.assertTrue(stdout == 's', 'PyLint should find no errors')
