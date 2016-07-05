@@ -24,11 +24,14 @@ Package to test for proper bzr tags.
 """
 import os
 import logging
-from unittest import TestCase
+import platform
+from unittest import TestCase, SkipTest
 
-from pylint import epylint as lint
-from pylint.__pkginfo__ import pylint_version
-
+try:
+    from pylint import epylint as lint
+    from pylint.__pkginfo__ import version
+except ImportError:
+    raise SkipTest('pylint not installed - skipping tests using pylint.')
 
 class TestPylint(TestCase):
 
@@ -36,17 +39,20 @@ class TestPylint(TestCase):
         """
         Test for pylint errors
         """
-        # GIVEN: The openlp base folder
+        # GIVEN: Some checks to disable and enable, and the pylint script
+        disabled_checks = 'no-member,import-error,no-name-in-module'
         enabled_checks = 'missing-format-argument-key,unused-format-string-argument'
-        #disabled_checks = 'all'
-        disabled_checks = ''
+        if 'arch' in platform.dist()[0].lower():
+            pylint_script = 'pylint'
+        else:
+            pylint_script = 'pylint3'
 
         # WHEN: Running pylint
         (pylint_stdout, pylint_stderr) = \
-            lint.py_run('{path} --disable={disabled} --enable={enabled} --reports=no'.format(path='openlp',
-                                                                                             disabled=disabled_checks,
-                                                                                             enabled=enabled_checks),
-                        return_std=True, script='pylint3')
+            lint.py_run('openlp --errors-only --disable={disabled} --enable={enabled} --reports=no --output-format=parseable'.format(
+                                                                                        disabled=disabled_checks,
+                                                                                        enabled=enabled_checks),
+                        return_std=True, script=pylint_script)
         stdout = pylint_stdout.read()
         stderr = pylint_stderr.read()
         print(stdout)
