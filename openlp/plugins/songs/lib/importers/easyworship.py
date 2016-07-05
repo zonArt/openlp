@@ -27,6 +27,7 @@ import os
 import struct
 import re
 import zlib
+import logging
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
@@ -37,6 +38,8 @@ from .songimport import SongImport
 SLIDE_BREAK_REGEX = re.compile(r'\n *?\n[\n ]*')
 NUMBER_REGEX = re.compile(r'[0-9]+')
 NOTE_REGEX = re.compile(r'\(.*?\)')
+
+log = logging.getLogger(__name__)
 
 
 class FieldDescEntry:
