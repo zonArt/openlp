@@ -127,8 +127,6 @@ class OSISBible(BibleDB):
                 etree.strip_tags(book, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}div'))
                 book_ref_id = self.get_book_ref_id_by_name(book.get('osisID'), num_books, language_id)
                 if not book_ref_id:
-                    book_ref_id = self.get_book_ref_id_by_localised_name(book.get('osisID'))
-                if not book_ref_id:
                     log.error('Importing books from "{name}" failed'.format(name=self.filename))
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)

@@ -255,7 +255,7 @@ class CCLIFileImport(SongImport):
         song_author = ''
         verse_start = False
         for line in text_list:
-            verse_type= 'v'
+            verse_type = 'v'
             clean_line = line.strip()
             if not clean_line:
                 if line_number == 0:

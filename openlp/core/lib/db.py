@@ -122,6 +122,21 @@ def get_upgrade_op(session):
     return Operations(context)
 
 
+class BaseModel(object):
+    """
+    BaseModel provides a base object with a set of generic functions
+    """
+    @classmethod
+    def populate(cls, **kwargs):
+        """
+        Creates an instance of a class and populates it, returning the instance
+        """
+        instance = cls()
+        for key, value in kwargs.items():
+            instance.__setattr__(key, value)
+        return instance
+
+
 def upgrade_db(url, upgrade):
     """
     Upgrade a database.
@@ -195,21 +210,6 @@ def delete_database(plugin_name, db_file_name=None):
     else:
         db_file_path = os.path.join(AppLocation.get_section_data_path(plugin_name), plugin_name)
     return delete_file(db_file_path)
-
-
-class BaseModel(object):
-    """
-    BaseModel provides a base object with a set of generic functions
-    """
-    @classmethod
-    def populate(cls, **kwargs):
-        """
-        Creates an instance of a class and populates it, returning the instance
-        """
-        instance = cls()
-        for key, value in kwargs.items():
-            instance.__setattr__(key, value)
-        return instance
 
 
 class Manager(object):
