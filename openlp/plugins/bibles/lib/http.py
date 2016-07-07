@@ -532,28 +532,26 @@ class CWExtract(RegistryProperties):
         returns a list in the form [(biblename, biblekey, language_code)]
         """
         log.debug('CWExtract.get_bibles_from_http')
-        bible_url = 'http://www.biblestudytools.com/'
+        bible_url = 'http://www.biblestudytools.com/bible-versions/'
         soup = get_soup_for_bible_ref(bible_url)
         if not soup:
             return None
-        bible_select = soup.find('select')
-        if not bible_select:
-            log.debug('No select tags found - did site change?')
-            return None
-        option_tags = bible_select.find_all('option', {'class': 'log-translation'})
-        if not option_tags:
-            log.debug('No option tags found - did site change?')
+        h4_tags = soup.find_all('h4', {'class': 'small-header'})
+        if not h4_tags:
+            log.debug('No h4 tags found - did site change?')
             return None
         bibles = []
-        for ot in option_tags:
-            tag_text = ot.get_text().strip()
-            try:
-                tag_value = ot['value']
-            except KeyError:
-                log.exception('No value attribute found - did site change?')
+        for h4t in h4_tags:
+            short_name = None
+            if h4t.span:
+                short_name = h4t.span.get_text().strip().lower()
+            else:
+                log.error('No span tag found - did site change?')
                 return None
-            if not tag_value:
+            if not short_name:
                 continue
+            h4t.span.extract()
+            tag_text = h4t.get_text().strip()
             # The names of non-english bibles has their language in parentheses at the end
             if tag_text.endswith(')'):
                 language = tag_text[tag_text.rfind('(') + 1:-1]
@@ -561,12 +559,20 @@ class CWExtract(RegistryProperties):
                     language_code = CROSSWALK_LANGUAGES[language]
                 else:
                     language_code = ''
-            # ... except for the latin vulgate
+            # ... except for those that don't...
             elif 'latin' in tag_text.lower():
                 language_code = 'la'
+            elif 'la biblia' in tag_text.lower() or 'nueva' in tag_text.lower():
+                language_code = 'es'
+            elif 'chinese' in tag_text.lower():
+                language_code = 'zh'
+            elif 'greek' in tag_text.lower():
+                language_code = 'el'
+            elif 'nova' in tag_text.lower():
+                language_code = 'pt'
             else:
                 language_code = 'en'
-            bibles.append((tag_text, tag_value, language_code))
+            bibles.append((tag_text, short_name, language_code))
         return bibles
 
 

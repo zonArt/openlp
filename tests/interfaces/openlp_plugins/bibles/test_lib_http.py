@@ -146,7 +146,6 @@ class TestBibleHTTP(TestCase):
         self.assertIsNotNone(bibles)
         self.assertIn(('Holman Christian Standard Bible', 'HCSB', 'en'), bibles)
 
-    @skip("Waiting for Crosswalk to fix their server")
     def test_crosswalk_get_bibles(self):
         """
         Test getting list of bibles from Crosswalk.com
