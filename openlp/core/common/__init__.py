@@ -226,10 +226,11 @@ def qmd5_hash(salt, data=None):
     log.debug('qmd5_hash(salt="{text}"'.format(text=salt))
     hash_obj = QHash(QHash.Md5)
     hash_obj.addData(salt)
-    hash_obj.addData(data)
+    if data:
+        hash_obj.addData(data)
     hash_value = hash_obj.result().toHex()
-    log.debug('qmd5_hash() returning "{text}"'.format(text=hash_value))
-    return hash_value.data()
+    log.debug('qmd5_hash() returning "{hash}"'.format(hash=hash_value))
+    return hash_value
 
 
 def clean_button_text(button_text):
