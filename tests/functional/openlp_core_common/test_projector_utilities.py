@@ -124,7 +124,7 @@ class testProjectorUtilities(TestCase):
         Test MD5 hash from salt+data pass (python)
         """
         # WHEN: Given a known salt+data
-        hash_ = md5_hash(salt=salt.encode('ascii'), data=pin.encode('ascii'))
+        hash_ = md5_hash(salt=salt.encode('utf-8'), data=pin.encode('utf-8'))
 
         # THEN: Validate return has is same
         self.assertEquals(hash_, test_hash, 'MD5 should have returned a good hash')
@@ -134,7 +134,7 @@ class testProjectorUtilities(TestCase):
         Test MD5 hash from salt+data fail (python)
         """
         # WHEN: Given a different salt+hash
-        hash_ = md5_hash(salt=pin.encode('ascii'), data=salt.encode('ascii'))
+        hash_ = md5_hash(salt=pin.encode('utf-8'), data=salt.encode('utf-8'))
 
         # THEN: return data is different
         self.assertNotEquals(hash_, test_hash, 'MD5 should have returned a bad hash')
@@ -144,7 +144,7 @@ class testProjectorUtilities(TestCase):
         Test MD5 hash from salt+data pass (Qt)
         """
         # WHEN: Given a known salt+data
-        hash_ = qmd5_hash(salt=salt.encode('ascii'), data=pin.encode('ascii'))
+        hash_ = qmd5_hash(salt=salt.encode('utf-8'), data=pin.encode('utf-8'))
 
         # THEN: Validate return has is same
         self.assertEquals(hash_, test_hash, 'Qt-MD5 should have returned a good hash')
@@ -154,7 +154,7 @@ class testProjectorUtilities(TestCase):
         Test MD5 hash from salt+hash fail (Qt)
         """
         # WHEN: Given a different salt+hash
-        hash_ = qmd5_hash(salt=pin.encode('ascii'), data=salt.encode('ascii'))
+        hash_ = qmd5_hash(salt=pin.encode('utf-8'), data=salt.encode('utf-8'))
 
         # THEN: return data is different
         self.assertNotEquals(hash_, test_hash, 'Qt-MD5 should have returned a bad hash')
@@ -174,7 +174,7 @@ class testProjectorUtilities(TestCase):
         Test MD5 hash with non-ascii string - bug 1417809
         """
         # WHEN: Non-ascii string is hashed
-        hash_ = md5_hash(salt=test_non_ascii_string.encode('utf-8'), data=None)
+        hash_ = md5_hash(data=test_non_ascii_string.encode('utf-8'))
 
         # THEN: Valid MD5 hash should be returned
         self.assertEqual(hash_, test_non_ascii_hash, 'Qt-MD5 should have returned a valid hash')
