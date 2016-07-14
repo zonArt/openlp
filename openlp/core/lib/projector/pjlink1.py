@@ -49,7 +49,7 @@ from codecs import decode
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtNetwork import QAbstractSocket, QTcpSocket
 
-from openlp.core.common import translate, qmd5_hash
+from openlp.core.common import translate, md5_hash
 from openlp.core.lib.projector.constants import *
 
 # Shortcuts
@@ -297,6 +297,8 @@ class PJLink1(QTcpSocket):
         Processes the initial connection and authentication (if needed).
         Starts poll timer if connection is established.
 
+        NOTE: Qt md5 hash function doesn't work with projector authentication. Use the python md5 hash function.
+
         :param data: Optional data if called from another routine
         """
         log.debug('({ip}) check_login(data="{data}")'.format(ip=self.ip, data=data))
@@ -344,16 +346,25 @@ class PJLink1(QTcpSocket):
             return
         elif data_check[1] == '0' and self.pin is not None:
             # Pin set and no authentication needed
+            log.warning('({ip}) Regular connection but PIN set'.format(ip=self.name))
             self.disconnect_from_host()
             self.change_status(E_AUTHENTICATION)
-            log.debug('({ip}) emitting projectorNoAuthentication() signal'.format(ip=self.name))
+            log.debug('({ip}) Emitting projectorNoAuthentication() signal'.format(ip=self.name))
             self.projectorNoAuthentication.emit(self.name)
             return
         elif data_check[1] == '1':
             # Authenticated login with salt
-            log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
-            log.debug('({ip}) pin="{data}"'.format(ip=self.ip, data=self.pin))
-            salt = qmd5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
+            if self.pin is None:
+                log.warning('({ip}) Authenticated connection but no pin set'.format(ip=self.name))
+                self.disconnect_from_host()
+                self.change_status(E_AUTHENTICATION)
+                log.debug('({ip}) Emitting projectorAuthentication() signal'.format(ip=self.name))
+                self.projectorAuthentication.emit(self.name)
+                return
+            else:
+                log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
+                log.debug('({ip}) pin="{data}"'.format(ip=self.ip, data=self.pin))
+                salt = md5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
         else:
             salt = None
         # We're connected at this point, so go ahead and do regular I/O

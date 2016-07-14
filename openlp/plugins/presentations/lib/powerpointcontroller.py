@@ -362,7 +362,7 @@ class PowerpointDocument(PresentationDocument):
         # it is the powerpoint presentation window.
         (left, top, right, bottom) = win32gui.GetWindowRect(hwnd)
         window_title = win32gui.GetWindowText(hwnd)
-        log.debug('window size:  left=left:d}, top={top:d}, '
+        log.debug('window size:  left={left:d}, top={top:d}, '
                   'right={right:d}, bottom={bottom:d}'.format(left=left, top=top, right=right, bottom=bottom))
         log.debug('compare size:  {y:d} and {top:d}, {height:d} and {vertical:d}, '
                   '{x:d} and {left}, {width:d} and {horizontal:d}'.format(y=size.y(),
