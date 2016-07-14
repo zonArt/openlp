@@ -718,7 +718,7 @@ class TestSlideController(TestCase):
         # GIVEN: A slide controller, actions needed, settins set to True.
         slide_controller = SlideController(None)
         mocked_settings = MagicMock()
-        mocked_settings.value.return_value = True
+        mocked_settings.return_value = True
         MockedSettings.return_value = mocked_settings
         slide_controller.service_item = MagicMock()
         slide_controller.service_item.is_media = MagicMock()
@@ -726,6 +726,11 @@ class TestSlideController(TestCase):
         slide_controller.on_go_live = MagicMock()
         slide_controller.on_preview_add_to_service = MagicMock()
         slide_controller.media_reset = MagicMock()
+
+        Registry.create()
+        reg_value = True
+        Registry().set_flag('has doubleclick added item to service', reg_value)
+        temp = Registry().get_flag('has doubleclick added item to service')
 
         # WHEN: on_preview_double_click is called
         slide_controller.on_preview_double_click()

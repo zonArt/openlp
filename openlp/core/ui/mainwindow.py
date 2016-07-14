@@ -662,6 +662,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
                 plugin.app_startup()
                 self.application.process_events()
 
+
     def first_time(self):
         """
         Import themes if first time
