@@ -982,7 +982,7 @@ class SlideController(DisplayController, RegistryProperties):
         If we are re-processing service item, don't unblank the display
         (Found in def replace_service_manager_item)
         """
-        if not Registry().get_flag('replace service manager item') == True:
+        if not Registry().get_flag('replace service manager item') is True:
             self.on_blank_display(False)
 
     def on_blank_display(self, checked=None):
@@ -1398,7 +1398,7 @@ class SlideController(DisplayController, RegistryProperties):
             # Prevent same item in preview from being sent to Service multiple times.
             # Changing the preview slide resets this flag to False.
             # Do note that this still allows to add item to Service multiple times if icon is clicked.
-            elif not Registry().get_flag('has doubleclick added item to service') == True:
+            elif not Registry().get_flag('has doubleclick added item to service') is True:
                 self.on_preview_add_to_service()
                 Registry().set_flag('has doubleclick added item to service', True)
 
