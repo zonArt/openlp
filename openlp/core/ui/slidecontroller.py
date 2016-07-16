@@ -800,9 +800,6 @@ class SlideController(DisplayController, RegistryProperties):
         """
         Replacement item following a remote edit.
         This action  also takes place when a song that is sent to live from Service Manager is edited.
-        If display is blanked, it will get unblanked if automatic unblanking is enabled. We prevent this from happening
-        by setting a flag to "True" and then to "False" after the processing is done.
-        The flag is also set to "False" on startup so display may be unblanked properly.
 
         :param item: The current service item
         """
@@ -979,8 +976,6 @@ class SlideController(DisplayController, RegistryProperties):
     def on_slide_unblank(self):
         """
         Handle the slidecontroller unblank event.
-        If we are re-processing service item, don't unblank the display
-        (Found in def replace_service_manager_item)
         """
         if not Registry().get_flag('replace service manager item') is True:
             self.on_blank_display(False)
