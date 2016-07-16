@@ -726,11 +726,9 @@ class TestSlideController(TestCase):
         slide_controller.on_go_live = MagicMock()
         slide_controller.on_preview_add_to_service = MagicMock()
         slide_controller.media_reset = MagicMock()
-
         Registry.create()
         reg_value = True
         Registry().set_flag('has doubleclick added item to service', reg_value)
-        temp = Registry().get_flag('has doubleclick added item to service')
 
         # WHEN: on_preview_double_click is called
         slide_controller.on_preview_double_click()
@@ -752,6 +750,9 @@ class TestSlideController(TestCase):
         slide_controller.on_go_live = MagicMock()
         slide_controller.on_preview_add_to_service = MagicMock()
         slide_controller.media_reset = MagicMock()
+        Registry.create()
+        reg_value = False
+        Registry().set_flag('has doubleclick added item to service', reg_value)
 
         # WHEN: on_preview_double_click is called
         slide_controller.on_preview_double_click()
