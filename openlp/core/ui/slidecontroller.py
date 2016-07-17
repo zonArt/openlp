@@ -1113,9 +1113,6 @@ class SlideController(DisplayController, RegistryProperties):
         # If "click live slide to unblank" is enabled, unblank the display. And start = Item is sent to Live.
         # Note: If this if statement is placed at the bottom of this function instead of top slide transitions are lost.
         if self.is_live and Settings().value('core/click live slide to unblank'):
-            # With this display stays blanked when "auto unblank" setting is not enabled and new item is sent to Live.
-            if not Settings().value('core/auto unblank') and start:
-                ()
             if not start:
                 Registry().execute('slidecontroller_live_unblank')
         row = self.preview_widget.current_slide_number()
