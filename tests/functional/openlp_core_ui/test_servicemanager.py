@@ -679,4 +679,3 @@ class TestServiceManager(TestCase):
         # THEN: The "save_as" method is called to save the service
         self.assertTrue(result)
         mocked_save_file_as.assert_called_with()
-
