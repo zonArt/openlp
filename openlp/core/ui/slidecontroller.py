@@ -88,6 +88,8 @@ class DisplayController(QtWidgets.QWidget):
         self.is_live = False
         self.display = None
         self.controller_type = None
+        Registry().set_flag('has doubleclick added item to service', True)
+        Registry().set_flag('replace service manager item', False)
 
     def send_to_plugins(self, *args):
         """
@@ -1508,8 +1510,6 @@ class PreviewController(RegistryMixin, OpenLPMixin, SlideController):
         self.split = 0
         self.type_prefix = 'preview'
         self.category = 'Preview Toolbar'
-        Registry().set_flag('has doubleclick added item to service', True)
-        Registry().set_flag('replace service manager item', False)
 
     def bootstrap_post_set_up(self):
         """
