@@ -598,7 +598,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         if success:
             try:
                 shutil.copy(temp_file_name, path_file_name)
-            except shutil.Error:
+            except (shutil.Error, PermissionError):
                 return self.save_file_as()
             except OSError as ose:
                 QtWidgets.QMessageBox.critical(self, translate('OpenLP.ServiceManager', 'Error Saving File'),

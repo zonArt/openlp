@@ -625,9 +625,38 @@ class TestServiceManager(TestCase):
     @patch(u'openlp.core.ui.servicemanager.shutil.copy')
     @patch(u'openlp.core.ui.servicemanager.zipfile')
     @patch(u'openlp.core.ui.servicemanager.ServiceManager.save_file_as')
-    def test_save_raises_permission_error(self, mocked_save_file_as, mocked_zipfile, mocked_shutil_copy):
+    def test_save_file_raises_permission_error(self, mocked_save_file_as, mocked_zipfile, mocked_shutil_copy):
         """
         Test that when a PermissionError is raised when trying to save a file, it is handled correctly
+        """
+        # GIVEN: A service manager, a service to save
+        mocked_main_window = MagicMock()
+        mocked_main_window.service_manager_settings_section = 'servicemanager'
+        Registry().register('main_window', mocked_main_window)
+        Registry().register('application', MagicMock())
+        service_manager = ServiceManager(None)
+        service_manager._file_name = os.path.join('temp', 'filename.osz')
+        service_manager._save_lite = False
+        service_manager.service_items = []
+        service_manager.service_theme = 'Default'
+        service_manager.service_manager_list = MagicMock()
+        mocked_save_file_as.return_value = True
+        mocked_zipfile.ZipFile.return_value = MagicMock()
+        mocked_shutil_copy.side_effect = PermissionError
+
+        # WHEN: The service is saved and a PermissionError is thrown
+        result = service_manager.save_file()
+
+        # THEN: The "save_as" method is called to save the service
+        self.assertTrue(result)
+        mocked_save_file_as.assert_called_with()
+
+    @patch(u'openlp.core.ui.servicemanager.shutil.copy')
+    @patch(u'openlp.core.ui.servicemanager.zipfile')
+    @patch(u'openlp.core.ui.servicemanager.ServiceManager.save_file_as')
+    def test_save_local_file_raises_permission_error(self, mocked_save_file_as, mocked_zipfile, mocked_shutil_copy):
+        """
+        Test that when a PermissionError is raised when trying to save a local file, it is handled correctly
         """
         # GIVEN: A service manager, a service to save
         mocked_main_window = MagicMock()
