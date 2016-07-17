@@ -1509,6 +1509,7 @@ class PreviewController(RegistryMixin, OpenLPMixin, SlideController):
         self.split = 0
         self.type_prefix = 'preview'
         self.category = 'Preview Toolbar'
+        Registry().set_flag('has doubleclick added item to service', True)
 
     def bootstrap_post_set_up(self):
         """
