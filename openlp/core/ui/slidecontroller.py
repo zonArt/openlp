@@ -139,7 +139,6 @@ class SlideController(DisplayController, RegistryProperties):
         Set up the Slide Controller.
         """
         super(SlideController, self).__init__(parent)
-        Registry().set_flag('replace service manager item', False)
 
     def post_set_up(self):
         """
@@ -1510,6 +1509,7 @@ class PreviewController(RegistryMixin, OpenLPMixin, SlideController):
         self.type_prefix = 'preview'
         self.category = 'Preview Toolbar'
         Registry().set_flag('has doubleclick added item to service', True)
+        Registry().set_flag('replace service manager item', False)
 
     def bootstrap_post_set_up(self):
         """
