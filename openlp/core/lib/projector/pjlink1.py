@@ -46,15 +46,14 @@ __all__ = ['PJLink1']
 
 from codecs import decode
 
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtNetwork import QAbstractSocket, QTcpSocket
+from PyQt5 import QtCore, QtNetwork
 
 from openlp.core.common import translate, md5_hash
 from openlp.core.lib.projector.constants import *
 
 # Shortcuts
-SocketError = QAbstractSocket.SocketError
-SocketSTate = QAbstractSocket.SocketState
+SocketError = QtNetwork.QAbstractSocket.SocketError
+SocketSTate = QtNetwork.QAbstractSocket.SocketState
 
 PJLINK_PREFIX = '%'
 PJLINK_CLASS = '1'
@@ -62,18 +61,18 @@ PJLINK_HEADER = '{prefix}{linkclass}'.format(prefix=PJLINK_PREFIX, linkclass=PJL
 PJLINK_SUFFIX = CR
 
 
-class PJLink1(QTcpSocket):
+class PJLink1(QtNetwork.QTcpSocket):
     """
     Socket service for connecting to a PJLink-capable projector.
     """
     # Signals sent by this module
-    changeStatus = pyqtSignal(str, int, str)
-    projectorNetwork = pyqtSignal(int)  # Projector network activity
-    projectorStatus = pyqtSignal(int)  # Status update
-    projectorAuthentication = pyqtSignal(str)  # Authentication error
-    projectorNoAuthentication = pyqtSignal(str)  # PIN set and no authentication needed
-    projectorReceivedData = pyqtSignal()  # Notify when received data finished processing
-    projectorUpdateIcons = pyqtSignal()  # Update the status icons on toolbar
+    changeStatus = QtCore.pyqtSignal(str, int, str)
+    projectorNetwork = QtCore.pyqtSignal(int)  # Projector network activity
+    projectorStatus = QtCore.pyqtSignal(int)  # Status update
+    projectorAuthentication = QtCore.pyqtSignal(str)  # Authentication error
+    projectorNoAuthentication = QtCore.pyqtSignal(str)  # PIN set and no authentication needed
+    projectorReceivedData = QtCore.pyqtSignal()  # Notify when received data finished processing
+    projectorUpdateIcons = QtCore.pyqtSignal()  # Update the status icons on toolbar
 
     def __init__(self, name=None, ip=None, port=PJLINK_PORT, pin=None, *args, **kwargs):
         """
@@ -116,8 +115,8 @@ class PJLink1(QTcpSocket):
         self.error_status = S_OK
         # Socket information
         # Add enough space to input buffer for extraneous \n \r
-        self.maxSize = PJLINK_MAX_PACKET + 2
-        self.setReadBufferSize(self.maxSize)
+        self.max_size = PJLINK_MAX_PACKET + 2
+        self.setReadBufferSize(self.max_size)
         # PJLink information
         self.pjlink_class = '1'  # Default class
         self.reset_information()
@@ -129,19 +128,20 @@ class PJLink1(QTcpSocket):
         # Socket timer for some possible brain-dead projectors or network cable pulled
         self.socket_timer = None
         # Map command to function
-        self.PJLINK1_FUNC = {'AVMT': self.process_avmt,
-                             'CLSS': self.process_clss,
-                             'ERST': self.process_erst,
-                             'INFO': self.process_info,
-                             'INF1': self.process_inf1,
-                             'INF2': self.process_inf2,
-                             'INPT': self.process_inpt,
-                             'INST': self.process_inst,
-                             'LAMP': self.process_lamp,
-                             'NAME': self.process_name,
-                             'PJLINK': self.check_login,
-                             'POWR': self.process_powr
-                             }
+        self.pjlink1_functions = {
+            'AVMT': self.process_avmt,
+            'CLSS': self.process_clss,
+            'ERST': self.process_erst,
+            'INFO': self.process_info,
+            'INF1': self.process_inf1,
+            'INF2': self.process_inf2,
+            'INPT': self.process_inpt,
+            'INST': self.process_inst,
+            'LAMP': self.process_lamp,
+            'NAME': self.process_name,
+            'PJLINK': self.check_login,
+            'POWR': self.process_powr
+        }
 
     def reset_information(self):
         """
@@ -291,7 +291,7 @@ class PJLink1(QTcpSocket):
                                                                     message=status_message if msg is None else msg))
         self.changeStatus.emit(self.ip, status, message)
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def check_login(self, data=None):
         """
         Processes the initial connection and authentication (if needed).
@@ -309,8 +309,8 @@ class PJLink1(QTcpSocket):
                 log.error('({ip}) Socket timeout waiting for login'.format(ip=self.ip))
                 self.change_status(E_SOCKET_TIMEOUT)
                 return
-            read = self.readLine(self.maxSize)
-            dontcare = self.readLine(self.maxSize)  # Clean out the trailing \r\n
+            read = self.readLine(self.max_size)
+            dontcare = self.readLine(self.max_size)  # Clean out the trailing \r\n
             if read is None:
                 log.warn('({ip}) read is None - socket error?'.format(ip=self.ip))
                 return
@@ -320,7 +320,7 @@ class PJLink1(QTcpSocket):
             data = decode(read, 'ascii')
             # Possibility of extraneous data on input when reading.
             # Clean out extraneous characters in buffer.
-            dontcare = self.readLine(self.maxSize)
+            dontcare = self.readLine(self.max_size)
             log.debug('({ip}) check_login() read "{data}"'.format(ip=self.ip, data=data.strip()))
         # At this point, we should only have the initial login prompt with
         # possible authentication
@@ -378,7 +378,7 @@ class PJLink1(QTcpSocket):
             self.timer.setInterval(2000)  # Set 2 seconds for initial information
             self.timer.start()
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def get_data(self):
         """
         Socket interface to retrieve data.
@@ -388,7 +388,7 @@ class PJLink1(QTcpSocket):
             log.debug('({ip}) get_data(): Not connected - returning'.format(ip=self.ip))
             self.send_busy = False
             return
-        read = self.readLine(self.maxSize)
+        read = self.readLine(self.max_size)
         if read == -1:
             # No data available
             log.debug('({ip}) get_data(): No data available (-1)'.format(ip=self.ip))
@@ -435,7 +435,7 @@ class PJLink1(QTcpSocket):
             return
         return self.process_command(cmd, data)
 
-    @pyqtSlot(int)
+    @QtCore.pyqtSlot(int)
     def get_error(self, err):
         """
         Process error from SocketError signal.
@@ -472,7 +472,7 @@ class PJLink1(QTcpSocket):
         :param queue: Option to force add to queue rather than sending directly
         """
         if self.state() != self.ConnectedState:
-            log.warn('({ip}) send_command(): Not connected - returning'.format(ip=self.ip))
+            log.warning('({ip}) send_command(): Not connected - returning'.format(ip=self.ip))
             self.send_queue = []
             return
         self.projectorNetwork.emit(S_NETWORK_SENDING)
@@ -503,7 +503,7 @@ class PJLink1(QTcpSocket):
             log.debug('({ip}) send_command() calling _send_string()'.format(ip=self.ip))
             self._send_command()
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def _send_command(self, data=None):
         """
         Socket interface to send data. If data=None, then check queue.
@@ -585,10 +585,10 @@ class PJLink1(QTcpSocket):
             self.projectorReceivedData.emit()
             return
 
-        if cmd in self.PJLINK1_FUNC:
-            self.PJLINK1_FUNC[cmd](data)
+        if cmd in self.pjlink1_functions:
+            self.pjlink1_functions[cmd](data)
         else:
-            log.warn('({ip}) Invalid command {data}'.format(ip=self.ip, data=cmd))
+            log.warning('({ip}) Invalid command {data}'.format(ip=self.ip, data=cmd))
         self.send_busy = False
         self.projectorReceivedData.emit()
 
@@ -811,9 +811,9 @@ class PJLink1(QTcpSocket):
             log.warn('({ip}) connect_to_host(): Already connected - returning'.format(ip=self.ip))
             return
         self.change_status(S_CONNECTING)
-        self.connectToHost(self.ip, self.port if type(self.port) is int else int(self.port))
+        self.connectToHost(self.ip, self.port if isinstance(self.port, int) else int(self.port))
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def disconnect_from_host(self, abort=False):
         """
         Close socket and cleanup.

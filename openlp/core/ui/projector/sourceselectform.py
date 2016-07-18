@@ -25,18 +25,16 @@
     Provides the dialog window for selecting video source for projector.
 """
 import logging
-log = logging.getLogger(__name__)
-log.debug('editform loaded')
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import pyqtSlot, QSize
-from PyQt5.QtWidgets import QDialog, QButtonGroup, QDialogButtonBox, QFormLayout, QLineEdit, QRadioButton, \
-    QStyle, QStylePainter, QStyleOptionTab, QTabBar, QTabWidget, QVBoxLayout, QWidget
 
 from openlp.core.common import translate, is_macosx
 from openlp.core.lib import build_icon
 from openlp.core.lib.projector.db import ProjectorSource
 from openlp.core.lib.projector.constants import PJLINK_DEFAULT_SOURCES, PJLINK_DEFAULT_CODES
+
+log = logging.getLogger(__name__)
+log.debug('editform loaded')
 
 
 def source_group(inputs, source_text):
@@ -78,7 +76,7 @@ def source_group(inputs, source_text):
     return keydict
 
 
-def Build_Tab(group, source_key, default, projector, projectordb, edit=False):
+def build_tab(group, source_key, default, projector, projectordb, edit=False):
     """
     Create the radio button page for a tab.
     Dictionary will be a 1-key entry where key=tab to setup, val=list of inputs.
@@ -104,8 +102,8 @@ def Build_Tab(group, source_key, default, projector, projectordb, edit=False):
     :param edit: If we're editing the source text
     """
     buttonchecked = False
-    widget = QWidget()
-    layout = QFormLayout() if edit else QVBoxLayout()
+    widget = QtWidgets.QWidget()
+    layout = QtWidgets.QFormLayout() if edit else QtWidgets.QVBoxLayout()
     layout.setSpacing(10)
     widget.setLayout(layout)
     tempkey = list(source_key.keys())[0]  # Should only be 1 key
@@ -114,7 +112,7 @@ def Build_Tab(group, source_key, default, projector, projectordb, edit=False):
     button_count = len(sourcelist)
     if edit:
         for key in sourcelist:
-            item = QLineEdit()
+            item = QtWidgets.QLineEdit()
             item.setObjectName('source_key_{key}'.format(key=key))
             source_item = projectordb.get_source_by_code(code=key, projector_id=projector.db_item.id)
             if source_item is None:
@@ -130,7 +128,7 @@ def Build_Tab(group, source_key, default, projector, projectordb, edit=False):
                 text = source_key[tempkey][key]
             else:
                 text = source_item.text
-            itemwidget = QRadioButton(text)
+            itemwidget = QtWidgets.QRadioButton(text)
             itemwidget.setAutoExclusive(True)
             if default == key:
                 itemwidget.setChecked(True)
@@ -148,23 +146,23 @@ def set_button_tooltip(bar):
     :param bar: QDialogButtonBar instance to update
     """
     for button in bar.buttons():
-        if bar.standardButton(button) == QDialogButtonBox.Cancel:
+        if bar.standardButton(button) == QtWidgets.QDialogButtonBox.Cancel:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
                                         'Ignoring current changes and return to OpenLP'))
-        elif bar.standardButton(button) == QDialogButtonBox.Reset:
+        elif bar.standardButton(button) == QtWidgets.QDialogButtonBox.Reset:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
                                         'Delete all user-defined text and revert to PJLink default text'))
-        elif bar.standardButton(button) == QDialogButtonBox.Discard:
+        elif bar.standardButton(button) == QtWidgets.QDialogButtonBox.Discard:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
                                         'Discard changes and reset to previous user-defined text'))
-        elif bar.standardButton(button) == QDialogButtonBox.Ok:
+        elif bar.standardButton(button) == QtWidgets.QDialogButtonBox.Ok:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
                                         'Save changes and return to OpenLP'))
         else:
             log.debug('No tooltip for button {text}'.format(text=button.text()))
 
 
-class FingerTabBarWidget(QTabBar):
+class FingerTabBarWidget(QtWidgets.QTabBar):
     """
     Realign west -orientation tabs to left-right text rather than south-north text
     Borrowed from
@@ -177,8 +175,8 @@ class FingerTabBarWidget(QTabBar):
         :param width: Remove default width parameter in kwargs
         :param height: Remove default height parameter in kwargs
         """
-        self.tabSize = QSize(kwargs.pop('width', 100), kwargs.pop('height', 25))
-        QTabBar.__init__(self, parent, *args, **kwargs)
+        self.tabSize = QtCore.QSize(kwargs.pop('width', 100), kwargs.pop('height', 25))
+        QtWidgets.QTabBar.__init__(self, parent, *args, **kwargs)
 
     def paintEvent(self, event):
         """
@@ -186,14 +184,14 @@ class FingerTabBarWidget(QTabBar):
 
         :param event: Repaint event signal
         """
-        painter = QStylePainter(self)
-        option = QStyleOptionTab()
+        painter = QtWidgets.QStylePainter(self)
+        option = QtWidgets.QStyleOptionTab()
 
         for index in range(self.count()):
             self.initStyleOption(option, index)
             tabRect = self.tabRect(index)
             tabRect.moveLeft(10)
-            painter.drawControl(QStyle.CE_TabBarTabShape, option)
+            painter.drawControl(QtWidgets.QStyle.CE_TabBarTabShape, option)
             painter.drawText(tabRect, QtCore.Qt.AlignVCenter |
                              QtCore.Qt.TextDontClip,
                              self.tabText(index))
@@ -209,7 +207,7 @@ class FingerTabBarWidget(QTabBar):
         return self.tabSize
 
 
-class FingerTabWidget(QTabWidget):
+class FingerTabWidget(QtWidgets.QTabWidget):
     """
     A QTabWidget equivalent which uses our FingerTabBarWidget
 
@@ -220,11 +218,11 @@ class FingerTabWidget(QTabWidget):
         """
         Initialize FingerTabWidget instance
         """
-        QTabWidget.__init__(self, parent, *args)
+        QtWidgets.QTabWidget.__init__(self, parent, *args)
         self.setTabBar(FingerTabBarWidget(self))
 
 
-class SourceSelectTabs(QDialog):
+class SourceSelectTabs(QtWidgets.QDialog):
     """
     Class for handling selecting the source for the projector to use.
     Uses tabbed interface.
@@ -248,18 +246,18 @@ class SourceSelectTabs(QDialog):
         self.setObjectName('source_select_tabs')
         self.setWindowIcon(build_icon(':/icon/openlp-log-32x32.png'))
         self.setModal(True)
-        self.layout = QVBoxLayout()
+        self.layout = QtWidgets.QVBoxLayout()
         self.layout.setObjectName('source_select_tabs_layout')
         if is_macosx():
-            self.tabwidget = QTabWidget(self)
+            self.tabwidget = QtWidgets.QTabWidget(self)
         else:
             self.tabwidget = FingerTabWidget(self)
         self.tabwidget.setObjectName('source_select_tabs_tabwidget')
         self.tabwidget.setUsesScrollButtons(False)
         if is_macosx():
-            self.tabwidget.setTabPosition(QTabWidget.North)
+            self.tabwidget.setTabPosition(QtWidgets.QTabWidget.North)
         else:
-            self.tabwidget.setTabPosition(QTabWidget.West)
+            self.tabwidget.setTabPosition(QtWidgets.QTabWidget.West)
         self.layout.addWidget(self.tabwidget)
         self.setLayout(self.layout)
 
@@ -273,12 +271,12 @@ class SourceSelectTabs(QDialog):
         self.source_text = self.projectordb.get_source_list(projector=projector)
         self.source_group = source_group(projector.source_available, self.source_text)
         # self.source_group = {'4': {'41': 'Storage 1'}, '5': {"51": 'Network 1'}}
-        self.button_group = [] if self.edit else QButtonGroup()
+        self.button_group = [] if self.edit else QtWidgets.QButtonGroup()
         keys = list(self.source_group.keys())
         keys.sort()
         if self.edit:
             for key in keys:
-                (tab, button_count, buttonchecked) = Build_Tab(group=self.button_group,
+                (tab, button_count, buttonchecked) = build_tab(group=self.button_group,
                                                                source_key={key: self.source_group[key]},
                                                                default=self.projector.source,
                                                                projector=self.projector,
@@ -287,13 +285,13 @@ class SourceSelectTabs(QDialog):
                 thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
                 if buttonchecked:
                     self.tabwidget.setCurrentIndex(thistab)
-            self.button_box = QDialogButtonBox(QtWidgets.QDialogButtonBox.Reset |
-                                               QtWidgets.QDialogButtonBox.Discard |
-                                               QtWidgets.QDialogButtonBox.Ok |
-                                               QtWidgets.QDialogButtonBox.Cancel)
+            self.button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Reset |
+                                                         QtWidgets.QDialogButtonBox.Discard |
+                                                         QtWidgets.QDialogButtonBox.Ok |
+                                                         QtWidgets.QDialogButtonBox.Cancel)
         else:
             for key in keys:
-                (tab, button_count, buttonchecked) = Build_Tab(group=self.button_group,
+                (tab, button_count, buttonchecked) = build_tab(group=self.button_group,
                                                                source_key={key: self.source_group[key]},
                                                                default=self.projector.source,
                                                                projector=self.projector,
@@ -302,15 +300,15 @@ class SourceSelectTabs(QDialog):
                 thistab = self.tabwidget.addTab(tab, PJLINK_DEFAULT_SOURCES[key])
                 if buttonchecked:
                     self.tabwidget.setCurrentIndex(thistab)
-            self.button_box = QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok |
-                                               QtWidgets.QDialogButtonBox.Cancel)
+            self.button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok |
+                                                         QtWidgets.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         set_button_tooltip(self.button_box)
         selected = super(SourceSelectTabs, self).exec()
         return selected
 
-    @pyqtSlot(object)
+    @QtCore.pyqtSlot(QtWidgets.QAbstractButton)
     def button_clicked(self, button):
         """
         Checks which button was clicked
@@ -333,6 +331,9 @@ class SourceSelectTabs(QDialog):
             return 100
 
     def delete_sources(self):
+        """
+        Delete the sources for this projector
+        """
         msg = QtWidgets.QMessageBox()
         msg.setText(translate('OpenLP.SourceSelectForm', 'Delete entries for this projector'))
         msg.setInformativeText(translate('OpenLP.SourceSelectForm',
@@ -376,7 +377,7 @@ class SourceSelectTabs(QDialog):
         self.done(selected)
 
 
-class SourceSelectSingle(QDialog):
+class SourceSelectSingle(QtWidgets.QDialog):
     """
     Class for handling selecting the source for the projector to use.
     Uses single dialog interface.
@@ -407,12 +408,12 @@ class SourceSelectSingle(QDialog):
         :param projector: Projector instance to build source list from
         """
         self.projector = projector
-        self.layout = QFormLayout() if self.edit else QVBoxLayout()
+        self.layout = QtWidgets.QFormLayout() if self.edit else QtWidgets.QVBoxLayout()
         self.layout.setObjectName('source_select_tabs_layout')
         self.layout.setSpacing(10)
         self.setLayout(self.layout)
         self.setMinimumWidth(350)
-        self.button_group = [] if self.edit else QButtonGroup()
+        self.button_group = [] if self.edit else QtWidgets.QButtonGroup()
         self.source_text = self.projectordb.get_source_list(projector=projector)
         keys = list(self.source_text.keys())
         keys.sort()
@@ -420,7 +421,7 @@ class SourceSelectSingle(QDialog):
         button_list = []
         if self.edit:
             for key in keys:
-                item = QLineEdit()
+                item = QtWidgets.QLineEdit()
                 item.setObjectName('source_key_{key}'.format(key=key))
                 source_item = self.projectordb.get_source_by_code(code=key, projector_id=self.projector.db_item.id)
                 if source_item is None:
@@ -430,10 +431,10 @@ class SourceSelectSingle(QDialog):
                     item.setText(source_item.text)
                 self.layout.addRow(PJLINK_DEFAULT_CODES[key], item)
                 self.button_group.append(item)
-            self.button_box = QDialogButtonBox(QtWidgets.QDialogButtonBox.Reset |
-                                               QtWidgets.QDialogButtonBox.Discard |
-                                               QtWidgets.QDialogButtonBox.Ok |
-                                               QtWidgets.QDialogButtonBox.Cancel)
+            self.button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Reset |
+                                                         QtWidgets.QDialogButtonBox.Discard |
+                                                         QtWidgets.QDialogButtonBox.Ok |
+                                                         QtWidgets.QDialogButtonBox.Cancel)
         else:
             for key in keys:
                 source_text = self.projectordb.get_source_by_code(code=key, projector_id=self.projector.db_item.id)
@@ -443,8 +444,8 @@ class SourceSelectSingle(QDialog):
                 self.layout.addWidget(button)
                 self.button_group.addButton(button, int(key))
                 button_list.append(key)
-            self.button_box = QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok |
-                                               QtWidgets.QDialogButtonBox.Cancel)
+            self.button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok |
+                                                         QtWidgets.QDialogButtonBox.Cancel)
         self.button_box.clicked.connect(self.button_clicked)
         self.layout.addWidget(self.button_box)
         self.setMinimumHeight(key_count * 25)
@@ -452,7 +453,7 @@ class SourceSelectSingle(QDialog):
         selected = super(SourceSelectSingle, self).exec()
         return selected
 
-    @pyqtSlot(object)
+    @QtCore.pyqtSlot(QtWidgets.QAbstractButton)
     def button_clicked(self, button):
         """
         Checks which button was clicked
@@ -488,7 +489,7 @@ class SourceSelectSingle(QDialog):
         self.projectordb.delete_all_objects(ProjectorSource, ProjectorSource.projector_id == self.projector.db_item.id)
         self.done(100)
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def accept_me(self):
         """
         Slot to accept 'OK' button

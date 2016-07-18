@@ -26,7 +26,7 @@ class and methods.
 import os
 from unittest import TestCase
 
-from openlp.core.common import Registry, Settings
+from openlp.core.common import Registry
 from openlp.core.lib.projector.db import Projector, ProjectorDB
 from openlp.core.ui import ProjectorEditForm
 
@@ -63,43 +63,41 @@ class TestProjectorEditForm(TestCase, TestMixin):
         :return: None
         """
         self.projectordb.session.close()
-        del(self.projector_form)
+        del self.projector_form
         self.destroy_settings()
 
-    def test_edit_form_add_projector(self):
+    @patch('openlp.core.ui.projector.editform.QtWidgets.QDialog.exec')
+    def test_edit_form_add_projector(self, mocked_exec):
         """
         Test projector edit form with no parameters creates a new entry.
 
         :return: None
         """
         # GIVEN: Mocked setup
-        with patch('openlp.core.ui.projector.editform.QDialog.exec'):
+        # WHEN: Calling edit form with no parameters
+        self.projector_form.exec()
+        item = self.projector_form.projector
 
-            # WHEN: Calling edit form with no parameters
-            self.projector_form.exec()
-            item = self.projector_form.projector
+        # THEN: Should be creating a new instance
+        self.assertTrue(self.projector_form.new_projector,
+                        'Projector edit form should be marked as a new entry')
+        self.assertTrue((item.ip is None and item.name is None),
+                        'Projector edit form should have a new Projector() instance to edit')
 
-            # THEN: Should be creating a new instance
-            self.assertTrue(self.projector_form.new_projector,
-                            'Projector edit form should be marked as a new entry')
-            self.assertTrue((item.ip is None and item.name is None),
-                            'Projector edit form should have a new Projector() instance to edit')
-
-    def test_edit_form_edit_projector(self):
+    @patch('openlp.core.ui.projector.editform.QtWidgets.QDialog.exec')
+    def test_edit_form_edit_projector(self, mocked_exec):
         """
         Test projector edit form with existing projector entry
 
         :return:
         """
         # GIVEN: Mocked setup
-        with patch('openlp.core.ui.projector.editform.QDialog.exec'):
+        # WHEN: Calling edit form with existing projector instance
+        self.projector_form.exec(projector=Projector(**TEST1_DATA))
+        item = self.projector_form.projector
 
-            # WHEN: Calling edit form with existing projector instance
-            self.projector_form.exec(projector=Projector(**TEST1_DATA))
-            item = self.projector_form.projector
-
-            # THEN: Should be editing an existing entry
-            self.assertFalse(self.projector_form.new_projector,
-                             'Projector edit form should be marked as existing entry')
-            self.assertTrue((item.ip is TEST1_DATA['ip'] and item.name is TEST1_DATA['name']),
-                            'Projector edit form should have TEST1_DATA() instance to edit')
+        # THEN: Should be editing an existing entry
+        self.assertFalse(self.projector_form.new_projector,
+                         'Projector edit form should be marked as existing entry')
+        self.assertTrue((item.ip is TEST1_DATA['ip'] and item.name is TEST1_DATA['name']),
+                        'Projector edit form should have TEST1_DATA() instance to edit')

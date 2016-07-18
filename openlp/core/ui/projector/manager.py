@@ -26,43 +26,46 @@
 """
 
 import logging
-log = logging.getLogger(__name__)
-log.debug('projectormanager loaded')
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QObject, QThread, pyqtSlot
-from PyQt5.QtWidgets import QWidget
 
 from openlp.core.common import RegistryProperties, Settings, OpenLPMixin, \
     RegistryMixin, translate
 from openlp.core.ui.lib import OpenLPToolbar
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.lib.projector import DialogSourceStyle
-from openlp.core.lib.projector.constants import *
+from openlp.core.lib.projector.constants import S_NOT_CONNECTED, S_CONNECTING, S_CONNECTED, S_OFF, S_INITIALIZE, \
+    S_STANDBY, S_WARMUP, S_ON, S_COOLDOWN, E_ERROR, E_NETWORK, E_AUTHENTICATION, E_UNKNOWN_SOCKET_ERROR, \
+    E_NOT_CONNECTED
 from openlp.core.lib.projector.db import ProjectorDB
 from openlp.core.lib.projector.pjlink1 import PJLink1
 from openlp.core.ui.projector.editform import ProjectorEditForm
 from openlp.core.ui.projector.sourceselectform import SourceSelectTabs, SourceSelectSingle
 
+log = logging.getLogger(__name__)
+log.debug('projectormanager loaded')
+
+
 # Dict for matching projector status to display icon
-STATUS_ICONS = {S_NOT_CONNECTED: ':/projector/projector_item_disconnect.png',
-                S_CONNECTING: ':/projector/projector_item_connect.png',
-                S_CONNECTED: ':/projector/projector_off.png',
-                S_OFF: ':/projector/projector_off.png',
-                S_INITIALIZE: ':/projector/projector_off.png',
-                S_STANDBY: ':/projector/projector_off.png',
-                S_WARMUP: ':/projector/projector_warmup.png',
-                S_ON: ':/projector/projector_on.png',
-                S_COOLDOWN: ':/projector/projector_cooldown.png',
-                E_ERROR: ':/projector/projector_error.png',
-                E_NETWORK: ':/projector/projector_not_connected_error.png',
-                E_AUTHENTICATION: ':/projector/projector_not_connected_error.png',
-                E_UNKNOWN_SOCKET_ERROR: ':/projector/projector_not_connected_error.png',
-                E_NOT_CONNECTED: ':/projector/projector_not_connected_error.png'
-                }
+STATUS_ICONS = {
+    S_NOT_CONNECTED: ':/projector/projector_item_disconnect.png',
+    S_CONNECTING: ':/projector/projector_item_connect.png',
+    S_CONNECTED: ':/projector/projector_off.png',
+    S_OFF: ':/projector/projector_off.png',
+    S_INITIALIZE: ':/projector/projector_off.png',
+    S_STANDBY: ':/projector/projector_off.png',
+    S_WARMUP: ':/projector/projector_warmup.png',
+    S_ON: ':/projector/projector_on.png',
+    S_COOLDOWN: ':/projector/projector_cooldown.png',
+    E_ERROR: ':/projector/projector_error.png',
+    E_NETWORK: ':/projector/projector_not_connected_error.png',
+    E_AUTHENTICATION: ':/projector/projector_not_connected_error.png',
+    E_UNKNOWN_SOCKET_ERROR: ':/projector/projector_not_connected_error.png',
+    E_NOT_CONNECTED: ':/projector/projector_not_connected_error.png'
+}
 
 
-class Ui_ProjectorManager(object):
+class UiProjectorManager(object):
     """
     UI part of the Projector Manager
     """
@@ -271,7 +274,7 @@ class Ui_ProjectorManager(object):
         self.update_icons()
 
 
-class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager, RegistryProperties):
+class ProjectorManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, UiProjectorManager, RegistryProperties):
     """
     Manage the projectors.
     """
@@ -720,7 +723,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         widget.setData(QtCore.Qt.UserRole, item)
         item.link.db_item = item.db_item
         item.widget = widget
-        thread = QThread(parent=self)
+        thread = QtCore.QThread(parent=self)
         thread.my_parent = self
         item.moveToThread(thread)
         thread.started.connect(item.link.thread_started)
@@ -751,7 +754,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         for item in self.projector_list:
             log.debug('New projector list - item: ({ip}) {name}'.format(ip=item.link.ip, name=item.link.name))
 
-    @pyqtSlot(str)
+    @QtCore.pyqtSlot(str)
     def add_projector_from_wizard(self, ip, opts=None):
         """
         Add a projector from the edit dialog
@@ -763,7 +766,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         item = self.projectordb.get_projector_by_ip(ip)
         self.add_projector(item)
 
-    @pyqtSlot(object)
+    @QtCore.pyqtSlot(object)
     def edit_projector_from_wizard(self, projector):
         """
         Update projector from the wizard edit page
@@ -796,7 +799,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         """
         return self.projector_list
 
-    @pyqtSlot(str, int, str)
+    @QtCore.pyqtSlot(str, int, str)
     def update_status(self, ip, status=None, msg=None):
         """
         Update the status information/icon for selected list item
@@ -846,7 +849,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
         item.setVisible(False if hidden else True)
         item.setEnabled(True if enabled else False)
 
-    @pyqtSlot()
+    @QtCore.pyqtSlot()
     def update_icons(self):
         """
         Update the icons when the selected projectors change
@@ -919,7 +922,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
             self.get_toolbar_item('blank_projector_multiple', hidden=False, enabled=True)
             self.get_toolbar_item('show_projector_multiple', hidden=False, enabled=True)
 
-    @pyqtSlot(str)
+    @QtCore.pyqtSlot(str)
     def authentication_error(self, name):
         """
         Display warning dialog when attempting to connect with invalid pin
@@ -933,7 +936,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
                                       '<br /><br />Please verify your PIN setting '
                                       'for projector item "{name}"'.format(name=name))
 
-    @pyqtSlot(str)
+    @QtCore.pyqtSlot(str)
     def no_authentication_error(self, name):
         """
         Display warning dialog when pin saved for item but projector does not
@@ -949,7 +952,7 @@ class ProjectorManager(OpenLPMixin, RegistryMixin, QWidget, Ui_ProjectorManager,
                                       'for projector item "{name}"'.format(name=name))
 
 
-class ProjectorItem(QObject):
+class ProjectorItem(QtCore.QObject):
     """
     Class for the projector list widget item.
     NOTE: Actual PJLink class instance should be saved as self.link
