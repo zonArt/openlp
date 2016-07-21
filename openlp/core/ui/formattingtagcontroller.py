@@ -84,7 +84,7 @@ class FormattingTagController(object):
             'desc': desc,
             'start tag': '{{{tag}}}'.format(tag=tag),
             'start html': start_html,
-            'end tag': '{/{tag}}}'.format(tag=tag),
+            'end tag': '{{{tag}}}'.format(tag=tag),
             'end html': end_html,
             'protected': False,
             'temporary': False

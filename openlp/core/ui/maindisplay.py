@@ -33,7 +33,7 @@ import html
 import logging
 import os
 
-from PyQt5 import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets, QtOpenGL, QtGui, QtMultimedia
+from PyQt5 import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets, QtGui, QtMultimedia
 
 from openlp.core.common import AppLocation, Registry, RegistryProperties, OpenLPMixin, Settings, translate,\
     is_macosx, is_win
@@ -468,9 +468,9 @@ class MainDisplay(OpenLPMixin, Display, RegistryProperties):
                     self.service_item.theme_data.background_filename, ImageSource.Theme)
             if image_path:
                 image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
-        html = build_html(self.service_item, self.screen, self.is_live, background, image_bytes,
-                          plugins=self.plugin_manager.plugins)
-        self.web_view.setHtml(html)
+        created_html = build_html(self.service_item, self.screen, self.is_live, background, image_bytes,
+                                  plugins=self.plugin_manager.plugins)
+        self.web_view.setHtml(created_html)
         if service_item.foot_text:
             self.footer(service_item.foot_text)
         # if was hidden keep it hidden

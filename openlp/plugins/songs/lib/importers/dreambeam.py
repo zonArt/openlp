@@ -124,8 +124,8 @@ class DreamBeamImport(SongImport):
                     if hasattr(song_xml, 'Sequence'):
                         for lyrics_sequence_item in (song_xml.Sequence.iterchildren()):
                             item = lyrics_sequence_item.get('Type')[:1]
-                            self.verse_order_list.append("{item}{number}".format(item=item),
-                                                         lyrics_sequence_item.get('Number'))
+                            number = lyrics_sequence_item.get('Number')
+                            self.verse_order_list.append("{item}{number}".format(item=item, number=number))
                     if hasattr(song_xml, 'Notes'):
                         self.comments = str(song_xml.Notes.text)
                 else:

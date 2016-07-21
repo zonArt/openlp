@@ -112,7 +112,6 @@ class TestServiceItem(TestCase):
         # WHEN: adding an image from a saved Service and mocked exists
         line = convert_file_service_item(TEST_PATH, 'serviceitem_image_1.osj')
         with patch('openlp.core.ui.servicemanager.os.path.exists') as mocked_exists,\
-                patch('openlp.core.lib.serviceitem.create_thumb') as mocked_create_thumb,\
                 patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path') as \
                 mocked_get_section_data_path:
             mocked_exists.return_value = True
@@ -164,7 +163,6 @@ class TestServiceItem(TestCase):
         line2 = convert_file_service_item(TEST_PATH, 'serviceitem_image_2.osj', 1)
 
         with patch('openlp.core.ui.servicemanager.os.path.exists') as mocked_exists, \
-                patch('openlp.core.lib.serviceitem.create_thumb') as mocked_create_thumb, \
                 patch('openlp.core.lib.serviceitem.AppLocation.get_section_data_path') as \
                 mocked_get_section_data_path:
             mocked_exists.return_value = True

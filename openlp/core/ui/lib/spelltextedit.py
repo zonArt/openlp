@@ -164,7 +164,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
     """
     Provides a text highlighter for pointing out spelling errors in text.
     """
-    WORDS = '(?iu)[\w\']+'
+    WORDS = r'(?iu)[\w\']+'
 
     def __init__(self, *args):
         """
