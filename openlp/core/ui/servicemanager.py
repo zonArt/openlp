@@ -480,9 +480,10 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         :return: service array
         """
         service = []
-        core = {'lite-service': self._save_lite,
-                'service-theme': self.service_theme
-                }
+        core = {
+            'lite-service': self._save_lite,
+            'service-theme': self.service_theme
+        }
         service.append({'openlp_core': core})
         return service
 
@@ -597,7 +598,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         if success:
             try:
                 shutil.copy(temp_file_name, path_file_name)
-            except shutil.Error:
+            except (shutil.Error, PermissionError):
                 return self.save_file_as()
             except OSError as ose:
                 QtWidgets.QMessageBox.critical(self, translate('OpenLP.ServiceManager', 'Error Saving File'),
@@ -658,7 +659,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         if success:
             try:
                 shutil.copy(temp_file_name, path_file_name)
-            except shutil.Error:
+            except (shutil.Error, PermissionError):
                 return self.save_file_as()
             self.main_window.add_recent_file(path_file_name)
             self.set_modified(False)
