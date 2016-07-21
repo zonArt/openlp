@@ -49,7 +49,7 @@ from codecs import decode
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtNetwork import QAbstractSocket, QTcpSocket
 
-from openlp.core.common import translate, md5_hash
+from openlp.core.common import translate, qmd5_hash
 from openlp.core.lib.projector.constants import *
 
 # Shortcuts
@@ -364,14 +364,15 @@ class PJLink1(QTcpSocket):
             else:
                 log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
                 log.debug('({ip}) pin="{data}"'.format(ip=self.ip, data=self.pin))
-                salt = md5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
+                data_hash = str(qmd5_hash(salt=data_check[2].encode('utf-8'), data=self.pin.encode('utf-8')),
+                                encoding='ascii')
         else:
-            salt = None
-        # We're connected at this point, so go ahead and do regular I/O
+            data_hash = None
+        # We're connected at this point, so go ahead and setup regular I/O
         self.readyRead.connect(self.get_data)
         self.projectorReceivedData.connect(self._send_command)
         # Initial data we should know about
-        self.send_command(cmd='CLSS', salt=salt)
+        self.send_command(cmd='CLSS', salt=data_hash)
         self.waitForReadyRead()
         if (not self.no_poll) and (self.state() == self.ConnectedState):
             log.debug('({ip}) Starting timer'.format(ip=self.ip))
