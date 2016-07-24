@@ -41,7 +41,8 @@ class TestThemeXML(TestCase):
         default_theme = ThemeXML()
 
         # THEN: The default values should be correct
-        self.assertEqual('#000000', default_theme.background_border_color, 'background_border_color should be "#000000"')
+        self.assertEqual('#000000', default_theme.background_border_color,
+                         'background_border_color should be "#000000"')
         self.assertEqual('solid', default_theme.background_type, 'background_type should be "solid"')
         self.assertEqual(0, default_theme.display_vertical_align, 'display_vertical_align should be 0')
         self.assertEqual('Arial', default_theme.font_footer_name, 'font_footer_name should be "Arial"')
@@ -100,4 +101,3 @@ class TestThemeXML(TestCase):
         expected_filename = os.path.join(path, 'MyBeautifulTheme', 'video.mp4')
         self.assertEqual(expected_filename, theme.background_filename)
         self.assertEqual('MyBeautifulTheme', theme.theme_name)
-
