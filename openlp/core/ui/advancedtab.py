@@ -252,7 +252,7 @@ class AdvancedTab(SettingsTab):
         self.tab_title_visible = UiStrings().Advanced
         self.ui_group_box.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.data_directory_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Data Location'))
-        self.recent_label.setText(translate('OpenLP.AdvancedTab', 'Number of recent Service files to display:'))
+        self.recent_label.setText(translate('OpenLP.AdvancedTab', 'Number of recent service files to display:'))
         self.media_plugin_check_box.setText(translate('OpenLP.AdvancedTab',
                                                       'Open the last used Library category on startup'))
         self.double_click_live_check_box.setText(translate('OpenLP.AdvancedTab',

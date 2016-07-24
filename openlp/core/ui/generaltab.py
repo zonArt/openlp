@@ -258,7 +258,8 @@ class GeneralTab(SettingsTab):
         self.settings_group_box.setTitle(translate('OpenLP.GeneralTab', 'Application Settings'))
         self.save_check_service_check_box.setText(translate('OpenLP.GeneralTab',
                                                   'Prompt to save before starting a new service'))
-        self.auto_unblank_check_box.setText(translate('OpenLP.GeneralTab', 'Unblank display when adding new Live item'))
+        self.auto_unblank_check_box.setText(translate('OpenLP.GeneralTab', 'Unblank display when sending '
+                                                                           'items to Live'))
         self.auto_preview_check_box.setText(translate('OpenLP.GeneralTab',
                                                       'Automatically preview the next item in service'))
         self.timeout_label.setText(translate('OpenLP.GeneralTab', 'Timed slide interval:'))

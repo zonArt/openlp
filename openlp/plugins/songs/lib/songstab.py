@@ -69,7 +69,7 @@ class SongsTab(SettingsTab):
         self.mode_group_box.setTitle(translate('SongsPlugin.SongsTab', 'Songs Mode'))
         self.tool_bar_active_check_box.setText(translate('SongsPlugin.SongsTab',
                                                          'Enable "Go to verse" button in Live panel'))
-        self.update_on_edit_check_box.setText(translate('SongsPlugin.SongsTab', 'Update Service from song edit'))
+        self.update_on_edit_check_box.setText(translate('SongsPlugin.SongsTab', 'Update service from song edit'))
         self.add_from_service_check_box.setText(translate('SongsPlugin.SongsTab',
                                                           'Import missing songs from Service files'))
         self.display_songbook_check_box.setText(translate('SongsPlugin.SongsTab', 'Display songbook in footer'))
