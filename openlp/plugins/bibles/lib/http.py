@@ -252,7 +252,7 @@ class BGExtract(RegistryProperties):
                                                                         chapter=chapter,
                                                                         version=version)
         soup = get_soup_for_bible_ref(
-            'http://legacy.biblegateway.com/passage/?{url}'.format(url=url_params),
+            'http://biblegateway.com/passage/?{url}'.format(url=url_params),
             pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='')
         if not soup:
             return None
@@ -281,7 +281,7 @@ class BGExtract(RegistryProperties):
         """
         log.debug('BGExtract.get_books_from_http("{version}")'.format(version=version))
         url_params = urllib.parse.urlencode({'action': 'getVersionInfo', 'vid': '{version}'.format(version=version)})
-        reference_url = 'http://legacy.biblegateway.com/versions/?{url}#books'.format(url=url_params)
+        reference_url = 'http://biblegateway.com/versions/?{url}#books'.format(url=url_params)
         page = get_web_page(reference_url)
         if not page:
             send_error_message('download')
@@ -312,7 +312,7 @@ class BGExtract(RegistryProperties):
         for book in content:
             book = book.find('td')
             if book:
-                books.append(book.contents[0])
+                books.append(book.contents[1])
         return books
 
     def get_bibles_from_http(self):
@@ -322,11 +322,11 @@ class BGExtract(RegistryProperties):
         returns a list in the form [(biblename, biblekey, language_code)]
         """
         log.debug('BGExtract.get_bibles_from_http')
-        bible_url = 'https://legacy.biblegateway.com/versions/'
+        bible_url = 'https://biblegateway.com/versions/'
         soup = get_soup_for_bible_ref(bible_url)
         if not soup:
             return None
-        bible_select = soup.find('select', {'class': 'translation-dropdown'})
+        bible_select = soup.find('select', {'class': 'search-translation-select'})
         if not bible_select:
             log.debug('No select tags found - did site change?')
             return None
