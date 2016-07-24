@@ -405,8 +405,8 @@ class Ui_ThemeWizard(object):
         Translate the UI on the fly
         """
         theme_wizard.setWindowTitle(translate('OpenLP.ThemeWizard', 'Theme Wizard'))
-        self.title_label.setText('<span style="font-size:14pt; font-weight:600;">%s</span>' %
-                                 translate('OpenLP.ThemeWizard', 'Welcome to the Theme Wizard'))
+        text = translate('OpenLP.ThemeWizard', 'Welcome to the Theme Wizard')
+        self.title_label.setText('<span style="font-size:14pt; font-weight:600;">{text}</span>'.format(text=text))
         self.information_label.setText(
             translate('OpenLP.ThemeWizard', 'This wizard will help you to create and edit your themes. Click the next '
                       'button below to start the process by setting up your background.'))
@@ -435,9 +435,9 @@ class Ui_ThemeWizard(object):
         self.gradient_combo_box.setItemText(BackgroundGradientType.LeftBottom,
                                             translate('OpenLP.ThemeWizard', 'Bottom Left - Top Right'))
         self.image_color_label.setText(translate('OpenLP.ThemeWizard', 'Background color:'))
-        self.image_label.setText('%s:' % UiStrings().Image)
+        self.image_label.setText('{text}:'.format(text=UiStrings().Image))
         self.video_color_label.setText(translate('OpenLP.ThemeWizard', 'Background color:'))
-        self.video_label.setText('%s:' % UiStrings().Video)
+        self.video_label.setText('{text}:'.format(text=UiStrings().Video))
         self.main_area_page.setTitle(translate('OpenLP.ThemeWizard', 'Main Area Font Details'))
         self.main_area_page.setSubTitle(translate('OpenLP.ThemeWizard', 'Define the font and display '
                                                   'characteristics for the Display text'))

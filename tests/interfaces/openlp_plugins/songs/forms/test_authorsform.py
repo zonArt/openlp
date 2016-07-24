@@ -53,7 +53,7 @@ class TestAuthorsForm(TestCase, TestMixin):
         del self.form
         del self.main_window
 
-    def ui_defaults_test(self):
+    def test_ui_defaults(self):
         """
         Test the AuthorForm defaults are correct
         """
@@ -61,7 +61,7 @@ class TestAuthorsForm(TestCase, TestMixin):
         self.assertEqual(self.form.last_name_edit.text(), '', 'The last name edit should be empty')
         self.assertEqual(self.form.display_edit.text(), '', 'The display name edit should be empty')
 
-    def get_first_name_property_test(self):
+    def test_get_first_name_property(self):
         """
         Test that getting the first name property on the AuthorForm works correctly
         """
@@ -74,7 +74,7 @@ class TestAuthorsForm(TestCase, TestMixin):
         # THEN: The first_name property should have the correct value
         self.assertEqual(self.form.first_name, first_name, 'The first name property should be correct')
 
-    def set_first_name_property_test(self):
+    def test_set_first_name_property(self):
         """
         Test that setting the first name property on the AuthorForm works correctly
         """
@@ -87,7 +87,7 @@ class TestAuthorsForm(TestCase, TestMixin):
         # THEN: The first_name_edit should have the correct value
         self.assertEqual(self.form.first_name_edit.text(), first_name, 'The first name should be set correctly')
 
-    def get_last_name_property_test(self):
+    def test_get_last_name_property(self):
         """
         Test that getting the last name property on the AuthorForm works correctly
         """
@@ -100,7 +100,7 @@ class TestAuthorsForm(TestCase, TestMixin):
         # THEN: The last_name property should have the correct value
         self.assertEqual(self.form.last_name, last_name, 'The last name property should be correct')
 
-    def set_last_name_property_test(self):
+    def test_set_last_name_property(self):
         """
         Test that setting the last name property on the AuthorForm works correctly
         """
@@ -113,7 +113,7 @@ class TestAuthorsForm(TestCase, TestMixin):
         # THEN: The last_name_edit should have the correct value
         self.assertEqual(self.form.last_name_edit.text(), last_name, 'The last name should be set correctly')
 
-    def get_display_name_property_test(self):
+    def test_get_display_name_property(self):
         """
         Test that getting the display name property on the AuthorForm works correctly
         """
@@ -126,7 +126,7 @@ class TestAuthorsForm(TestCase, TestMixin):
         # THEN: The display_name property should have the correct value
         self.assertEqual(self.form.display_name, display_name, 'The display name property should be correct')
 
-    def set_display_name_property_test(self):
+    def test_set_display_name_property(self):
         """
         Test that setting the display name property on the AuthorForm works correctly
         """

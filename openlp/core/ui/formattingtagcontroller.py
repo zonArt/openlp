@@ -72,19 +72,19 @@ class FormattingTagController(object):
         """
         for line_number, html1 in enumerate(self.protected_tags):
             if self._strip(html1['start tag']) == tag:
-                return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
+                return translate('OpenLP.FormattingTagForm', 'Tag {tag} already defined.').format(tag=tag)
             if self._strip(html1['desc']) == desc:
-                return translate('OpenLP.FormattingTagForm', 'Description %s already defined.') % tag
+                return translate('OpenLP.FormattingTagForm', 'Description {tag} already defined.').format(tag=tag)
         for line_number, html1 in enumerate(self.custom_tags):
             if self._strip(html1['start tag']) == tag:
-                return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
+                return translate('OpenLP.FormattingTagForm', 'Tag {tag} already defined.').format(tag=tag)
             if self._strip(html1['desc']) == desc:
-                return translate('OpenLP.FormattingTagForm', 'Description %s already defined.') % tag
+                return translate('OpenLP.FormattingTagForm', 'Description {tag} already defined.').format(tag=tag)
         tag = {
             'desc': desc,
-            'start tag': '{%s}' % tag,
+            'start tag': '{{{tag}}}'.format(tag=tag),
             'start html': start_html,
-            'end tag': '{/%s}' % tag,
+            'end tag': '{{{tag}}}'.format(tag=tag),
             'end html': end_html,
             'protected': False,
             'temporary': False
@@ -130,6 +130,7 @@ class FormattingTagController(object):
                     elif not match.group('empty'):
                         end_tags.append(tag)
                 match = self.html_tag_regex.search(start_html, match.end())
+            # TODO: Verify format() works with lambda
             return ''.join(map(lambda tag: '</%s>' % tag, reversed(end_tags)))
 
     def start_tag_changed(self, start_html, end_html):
@@ -146,7 +147,8 @@ class FormattingTagController(object):
         end = self.start_html_to_end_html(start_html)
         if not end_html:
             if not end:
-                return translate('OpenLP.FormattingTagForm', 'Start tag %s is not valid HTML') % start_html, None
+                return translate('OpenLP.FormattingTagForm',
+                                 'Start tag {tag} is not valid HTML').format(tag=start_html), None
             return None, end
         return None, None
 
@@ -165,7 +167,8 @@ class FormattingTagController(object):
         if not end_html:
             return None, end
         if end and end != end_html:
-            return translate('OpenLP.FormattingTagForm',
-                             'End tag %(end)s does not match end tag for start tag %(start)s') % \
-                {'end': end, 'start': start_html}, None
+            return (translate('OpenLP.FormattingTagForm',
+                              'End tag {end} does not match end tag for start tag {start}').format(end=end,
+                                                                                                   start=start_html),
+                    None)
         return None, None

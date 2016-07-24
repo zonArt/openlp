@@ -129,7 +129,7 @@ class SongMediaItem(MediaManagerItem):
         self.display_copyright_symbol = Settings().value(self.settings_section + '/display copyright symbol')
 
     def retranslateUi(self):
-        self.search_text_label.setText('%s:' % UiStrings().Search)
+        self.search_text_label.setText('{text}:'.format(text=UiStrings().Search))
         self.search_text_button.setText(UiStrings().Search)
         self.maintenance_action.setText(SongStrings.SongMaintenance)
         self.maintenance_action.setToolTip(translate('SongsPlugin.MediaItem',
@@ -166,12 +166,14 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'CCLI number'),
                 translate('SongsPlugin.MediaItem', 'Search CCLI number...'))
         ])
-        self.search_text_edit.set_current_search_type(Settings().value('%s/last search type' % self.settings_section))
+        self.search_text_edit.set_current_search_type(
+            Settings().value('{section}/last search type'.format(section=self.settings_section)))
         self.config_update()
 
     def on_search_text_button_clicked(self):
         # Save the current search type to the configuration.
-        Settings().setValue('%s/last search type' % self.settings_section, self.search_text_edit.current_search_type())
+        Settings().setValue('{section}/last search type'.format(section=self.settings_section),
+                            self.search_text_edit.current_search_type())
         # Reload the list considering the new search type.
         search_keywords = str(self.search_text_edit.displayText())
         search_type = self.search_text_edit.current_search_type()
@@ -181,31 +183,31 @@ class SongMediaItem(MediaManagerItem):
             self.display_results_song(search_results)
         elif search_type == SongSearch.Titles:
             log.debug('Titles Search')
-            search_string = '%' + clean_string(search_keywords) + '%'
+            search_string = '%{text}%'.format(text=clean_string(search_keywords))
             search_results = self.plugin.manager.get_all_objects(Song, Song.search_title.like(search_string))
             self.display_results_song(search_results)
         elif search_type == SongSearch.Lyrics:
             log.debug('Lyrics Search')
-            search_string = '%' + clean_string(search_keywords) + '%'
+            search_string = '%{text}%'.format(text=clean_string(search_keywords))
             search_results = self.plugin.manager.get_all_objects(Song, Song.search_lyrics.like(search_string))
             self.display_results_song(search_results)
         elif search_type == SongSearch.Authors:
             log.debug('Authors Search')
-            search_string = '%' + search_keywords + '%'
+            search_string = '%{text}%'.format(text=search_keywords)
             search_results = self.plugin.manager.get_all_objects(
                 Author, Author.display_name.like(search_string))
             self.display_results_author(search_results)
         elif search_type == SongSearch.Topics:
             log.debug('Topics Search')
-            search_string = '%' + search_keywords + '%'
+            search_string = '%{text}%'.format(text=search_keywords)
             search_results = self.plugin.manager.get_all_objects(
                 Topic, Topic.name.like(search_string))
             self.display_results_topic(search_results)
         elif search_type == SongSearch.Books:
             log.debug('Songbook Search')
             search_keywords = search_keywords.rpartition(' ')
-            search_book = search_keywords[0] + '%'
-            search_entry = search_keywords[2] + '%'
+            search_book = '{text}%'.format(text=search_keywords[0])
+            search_entry = '{text}%'.format(text=search_keywords[2])
             search_results = (self.plugin.manager.session.query(SongBookEntry.entry, Book.name, Song.title, Song.id)
                               .join(Song)
                               .join(Book)
@@ -214,26 +216,26 @@ class SongMediaItem(MediaManagerItem):
             self.display_results_book(search_results)
         elif search_type == SongSearch.Themes:
             log.debug('Theme Search')
-            search_string = '%' + search_keywords + '%'
+            search_string = '%{text}%'.format(text=search_keywords)
             search_results = self.plugin.manager.get_all_objects(
                 Song, Song.theme_name.like(search_string))
             self.display_results_themes(search_results)
         elif search_type == SongSearch.Copyright:
             log.debug('Copyright Search')
-            search_string = '%' + search_keywords + '%'
+            search_string = '%{text}%'.format(text=search_keywords)
             search_results = self.plugin.manager.get_all_objects(
                 Song, and_(Song.copyright.like(search_string), Song.copyright != ''))
             self.display_results_song(search_results)
         elif search_type == SongSearch.CCLInumber:
             log.debug('CCLI number Search')
-            search_string = '%' + search_keywords + '%'
+            search_string = '%{text}%'.format(text=search_keywords)
             search_results = self.plugin.manager.get_all_objects(
                 Song, and_(Song.ccli_number.like(search_string), Song.ccli_number != ''))
             self.display_results_cclinumber(search_results)
         self.check_search_result()
 
     def search_entire(self, search_keywords):
-        search_string = '%' + clean_string(search_keywords) + '%'
+        search_string = '%{text}%'.format(text=clean_string(search_keywords))
         return self.plugin.manager.get_all_objects(
             Song, or_(Song.search_title.like(search_string), Song.search_lyrics.like(search_string),
                       Song.comments.like(search_string)))
@@ -272,7 +274,8 @@ class SongMediaItem(MediaManagerItem):
             if song.temporary:
                 continue
             author_list = [author.display_name for author in song.authors]
-            song_detail = '%s (%s)' % (song.title, create_separated_list(author_list)) if author_list else song.title
+            text = create_separated_list(author_list) if author_list else song.title
+            song_detail = '{title} ({author})'.format(title=song.title, author=text)
             song_name = QtWidgets.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
@@ -305,7 +308,7 @@ class SongMediaItem(MediaManagerItem):
                 # Do not display temporary songs
                 if song.temporary:
                     continue
-                song_detail = '%s (%s)' % (author.display_name, song.title)
+                song_detail = '{author} ({title})'.format(author=author.display_name, title=song.title)
                 song_name = QtWidgets.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
@@ -325,7 +328,8 @@ class SongMediaItem(MediaManagerItem):
         self.list_view.clear()
         search_results.sort(key=get_songbook_key)
         for result in search_results:
-            song_detail = '%s #%s: %s' % (result[1], result[0], result[2])
+            song_detail = '{result1} #{result0}: {result2}'.format(result1=result[1], result0=result[0],
+                                                                   result2=result[2])
             song_name = QtWidgets.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, result[3])
             self.list_view.addItem(song_name)
@@ -354,7 +358,7 @@ class SongMediaItem(MediaManagerItem):
                 # Do not display temporary songs
                 if song.temporary:
                     continue
-                song_detail = '%s (%s)' % (topic.name, song.title)
+                song_detail = '{topic} ({title})'.format(topic=topic.name, title=song.title)
                 song_name = QtWidgets.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
@@ -377,7 +381,7 @@ class SongMediaItem(MediaManagerItem):
             # Do not display temporary songs
             if song.temporary:
                 continue
-            song_detail = '%s (%s)' % (song.theme_name, song.title)
+            song_detail = '{theme} ({song})'.format(theme=song.theme_name, song=song.title)
             song_name = QtWidgets.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
@@ -400,7 +404,7 @@ class SongMediaItem(MediaManagerItem):
             # Do not display temporary songs
             if song.temporary:
                 continue
-            song_detail = '%s (%s)' % (song.ccli_number, song.title)
+            song_detail = '{ccli} ({song})'.format(ccli=song.ccli_number, song=song.title)
             song_name = QtWidgets.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
@@ -456,7 +460,7 @@ class SongMediaItem(MediaManagerItem):
         Called by ServiceManager or SlideController by event passing the Song Id in the payload along with an indicator
         to say which type of display is required.
         """
-        log.debug('on_remote_edit for song %s' % song_id)
+        log.debug('on_remote_edit for song {song}'.format(song=song_id))
         song_id = int(song_id)
         valid = self.plugin.manager.get_object(Song, song_id)
         if valid:
@@ -499,7 +503,8 @@ class SongMediaItem(MediaManagerItem):
             if QtWidgets.QMessageBox.question(
                     self, UiStrings().ConfirmDelete,
                     translate('SongsPlugin.MediaItem',
-                              'Are you sure you want to delete the "%d" selected song(s)?') % len(items),
+                              'Are you sure you want to delete the "{items:d}" '
+                              'selected song(s)?').format(items=len(items)),
                     QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                     QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
                 return
@@ -524,8 +529,9 @@ class SongMediaItem(MediaManagerItem):
             old_song = self.plugin.manager.get_object(Song, item_id)
             song_xml = self.open_lyrics.song_to_xml(old_song)
             new_song = self.open_lyrics.xml_to_song(song_xml)
-            new_song.title = '%s <%s>' % \
-                             (new_song.title, translate('SongsPlugin.MediaItem', 'copy', 'For song cloning'))
+            new_song.title = '{title} <{text}>'.format(title=new_song.title,
+                                                       text=translate('SongsPlugin.MediaItem',
+                                                                      'copy', 'For song cloning'))
             # Copy audio files from the old to the new song
             if len(old_song.media_files) > 0:
                 save_path = os.path.join(AppLocation.get_section_data_path(self.plugin.name), 'audio', str(new_song.id))
@@ -552,7 +558,8 @@ class SongMediaItem(MediaManagerItem):
         :param remote: Triggered from remote
         :param context: Why is it being generated
         """
-        log.debug('generate_slide_data: %s, %s, %s' % (service_item, item, self.remote_song))
+        log.debug('generate_slide_data: {service}, {item}, {remote}'.format(service=service_item, item=item,
+                                                                            remote=self.remote_song))
         item_id = self._get_id_of_item_to_generate(item, self.remote_song)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)
@@ -581,7 +588,7 @@ class SongMediaItem(MediaManagerItem):
                 if verse_index is None:
                     verse_index = VerseType.from_tag(verse_tag)
                 verse_tag = VerseType.translated_tags[verse_index].upper()
-                verse_def = '%s%s' % (verse_tag, verse[0]['label'])
+                verse_def = '{tag}{label}'.format(tag=verse_tag, label=verse[0]['label'])
                 service_item.add_from_text(str(verse[1]), verse_def)
         else:
             # Loop through the verse list and expand the song accordingly.
@@ -596,7 +603,7 @@ class SongMediaItem(MediaManagerItem):
                         else:
                             verse_index = VerseType.from_tag(verse[0]['type'])
                         verse_tag = VerseType.translated_tags[verse_index]
-                        verse_def = '%s%s' % (verse_tag, verse[0]['label'])
+                        verse_def = '{tag}{text}'.format(tag=verse_tag, text=verse[0]['label'])
                         service_item.add_from_text(verse[1], verse_def)
         service_item.title = song.title
         author_list = self.generate_footer(service_item, song)
@@ -639,23 +646,24 @@ class SongMediaItem(MediaManagerItem):
         item.raw_footer = []
         item.raw_footer.append(song.title)
         if authors_none:
-            item.raw_footer.append("%s: %s" % (translate('OpenLP.Ui', 'Written by'),
-                                               create_separated_list(authors_none)))
+            item.raw_footer.append("{text}: {authors}".format(text=translate('OpenLP.Ui', 'Written by'),
+                                                              authors=create_separated_list(authors_none)))
         if authors_words_music:
-            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.WordsAndMusic],
-                                               create_separated_list(authors_words_music)))
+            item.raw_footer.append("{text}: {authors}".format(text=AuthorType.Types[AuthorType.WordsAndMusic],
+                                                              authors=create_separated_list(authors_words_music)))
         if authors_words:
-            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Words],
-                                               create_separated_list(authors_words)))
+            item.raw_footer.append("{text}: {authors}".format(text=AuthorType.Types[AuthorType.Words],
+                                                              authors=create_separated_list(authors_words)))
         if authors_music:
-            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Music],
-                                               create_separated_list(authors_music)))
+            item.raw_footer.append("{text}: {authors}".format(text=AuthorType.Types[AuthorType.Music],
+                                                              authors=create_separated_list(authors_music)))
         if authors_translation:
-            item.raw_footer.append("%s: %s" % (AuthorType.Types[AuthorType.Translation],
-                                               create_separated_list(authors_translation)))
+            item.raw_footer.append("{text}: {authors}".format(text=AuthorType.Types[AuthorType.Translation],
+                                                              authors=create_separated_list(authors_translation)))
         if song.copyright:
             if self.display_copyright_symbol:
-                item.raw_footer.append("%s %s" % (SongStrings.CopyrightSymbol, song.copyright))
+                item.raw_footer.append("{symbol} {song}".format(symbol=SongStrings.CopyrightSymbol,
+                                                                song=song.copyright))
             else:
                 item.raw_footer.append(song.copyright)
         if self.display_songbook and song.songbook_entries:

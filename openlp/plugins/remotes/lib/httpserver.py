@@ -136,11 +136,13 @@ class OpenLPServer(RegistryProperties):
         while loop < 4:
             try:
                 self.httpd = server_class((address, port), CustomHandler)
-                log.debug("Server started for class %s %s %d" % (server_class, address, port))
+                log.debug("Server started for class {name} {address} {port:d}".format(name=server_class,
+                                                                                      address=address,
+                                                                                      port=port))
                 break
             except OSError:
-                log.debug("failed to start http server thread state %d %s" %
-                          (loop, self.http_thread.isRunning()))
+                log.debug("failed to start http server thread state "
+                          "{loop:d} {running}".format(loop=loop, running=self.http_thread.isRunning()))
                 loop += 1
                 time.sleep(0.1)
             except:
@@ -167,7 +169,6 @@ class HTTPSServer(HTTPServer):
         local_data = AppLocation.get_directory(AppLocation.DataDir)
         self.socket = ssl.SSLSocket(
             sock=socket.socket(self.address_family, self.socket_type),
-            ssl_version=ssl.PROTOCOL_TLSv1_2,
             certfile=os.path.join(local_data, 'remotes', 'openlp.crt'),
             keyfile=os.path.join(local_data, 'remotes', 'openlp.key'),
             server_side=True)

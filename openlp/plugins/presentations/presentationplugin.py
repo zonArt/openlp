@@ -124,15 +124,15 @@ class PresentationPlugin(Plugin):
         log.debug('check_pre_conditions')
         controller_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), 'presentations', 'lib')
         for filename in os.listdir(controller_dir):
-            if filename.endswith('controller.py') and not filename == 'presentationcontroller.py':
+            if filename.endswith('controller.py') and filename != 'presentationcontroller.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     module_name = 'openlp.plugins.presentations.lib.' + os.path.splitext(filename)[0]
-                    log.debug('Importing controller %s', module_name)
+                    log.debug('Importing controller {name}'.format(name=module_name))
                     try:
                         __import__(module_name, globals(), locals(), [])
                     except ImportError:
-                        log.warning('Failed to import %s on path %s', module_name, path)
+                        log.warning('Failed to import {name} on path {path}'.format(name=module_name, path=path))
         controller_classes = PresentationController.__subclasses__()
         for controller_class in controller_classes:
             controller = controller_class(self)

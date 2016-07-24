@@ -40,7 +40,7 @@ class MediaPluginTest(TestCase, TestMixin):
 
     @patch(u'openlp.plugins.media.mediaplugin.Plugin.initialise')
     @patch(u'openlp.plugins.media.mediaplugin.Settings')
-    def initialise_test(self, _mocked_settings, mocked_initialise):
+    def test_initialise(self, _mocked_settings, mocked_initialise):
         """
         Test that the initialise() method overwrites the built-in one, but still calls it
         """
@@ -65,7 +65,7 @@ class MediaPluginTest(TestCase, TestMixin):
         self.assertNotEquals(len(MediaPlugin.about()), 0)
 
     @patch('openlp.plugins.media.mediaplugin.check_binary_exists')
-    def process_check_binary_pass_test(self, mocked_checked_binary_exists):
+    def test_process_check_binary_pass(self, mocked_checked_binary_exists):
         """
         Test that the Process check returns true if found
         """
@@ -78,7 +78,7 @@ class MediaPluginTest(TestCase, TestMixin):
         self.assertTrue(result, 'Mediainfo should have been found')
 
     @patch('openlp.plugins.media.mediaplugin.check_binary_exists')
-    def process_check_binary_fail_test(self, mocked_checked_binary_exists):
+    def test_process_check_binary_fail(self, mocked_checked_binary_exists):
         """
         Test that the Process check returns false if not found
         """

@@ -115,8 +115,6 @@ class VideoPsalmImport(SongImport):
                 for verse in song['Verses']:
                     self.add_verse(verse['Text'], 'v')
                 if not self.finish():
-                    self.log_error('Could not import %s' % self.title)
+                    self.log_error('Could not import {title}'.format(title=self.title))
         except Exception as e:
-            self.log_error(translate('SongsPlugin.VideoPsalmImport', 'File %s' % file.name),
-                           translate('SongsPlugin.VideoPsalmImport', 'Error: %s') % e)
-        song_file.close()
+            self.log_error(song_file.name, translate('SongsPlugin.VideoPsalmImport', 'Error: {error}').format(error=e))

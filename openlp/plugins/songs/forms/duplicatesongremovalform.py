@@ -130,6 +130,7 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
         Song wizard localisation.
         """
         self.setWindowTitle(translate('Wizard', 'Wizard'))
+        # TODO: Check format() using template strings
         self.title_label.setText(WizardStrings.HeaderStyle % translate('OpenLP.Ui',
                                                                        'Welcome to the Duplicate Song Removal Wizard'))
         self.information_label.setText(
@@ -148,8 +149,8 @@ class DuplicateSongRemovalForm(OpenLPWizard, RegistryProperties):
         Set the wizard review page header text.
         """
         self.review_page.setTitle(
-            translate('Wizard', 'Review duplicate songs (%s/%s)') %
-                     (self.review_current_count, self.review_total_count))
+            translate('Wizard', 'Review duplicate songs ({current}/{total})').format(current=self.review_current_count,
+                                                                                     total=self.review_total_count))
 
     def custom_page_changed(self, page_id):
         """

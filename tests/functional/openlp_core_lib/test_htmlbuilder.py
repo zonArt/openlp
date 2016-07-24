@@ -14,177 +14,190 @@ from tests.functional import MagicMock, patch
 from tests.helpers.testmixin import TestMixin
 
 HTML = """
-<!DOCTYPE html>
-<html>
-<head>
-<title>OpenLP Display</title>
-<style>
-*{
-    margin: 0;
-    padding: 0;
-    border: 0;
-    overflow: hidden;
-    -webkit-user-select: none;
-}
-body {
-    ;
-}
-.size {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-}
-#black {
-    z-index: 8;
-    background-color: black;
-    display: none;
-}
-#bgimage {
-    z-index: 1;
-}
-#image {
-    z-index: 2;
-}
-plugin CSS
-#footer {
-    position: absolute;
-    z-index: 6;
-    dummy: dummy;
-}
-/* lyric css */
-
-sup {
-    font-size: 0.6em;
-    vertical-align: top;
-    position: relative;
-    top: -0.3em;
-}
-</style>
-<script>
-    var timer = null;
-    var transition = false;
-    plugin JS
-
-    function show_image(src){
-        var img = document.getElementById('image');
-        img.src = src;
-        if(src == '')
-            img.style.display = 'none';
-        else
-            img.style.display = 'block';
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>OpenLP Display</title>
+    <style>
+    *{
+        margin: 0;
+        padding: 0;
+        border: 0;
+        overflow: hidden;
+        -webkit-user-select: none;
     }
+    body {
+        ;
+    }
+    .size {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+    }
+    #black {
+        z-index: 8;
+        background-color: black;
+        display: none;
+    }
+    #bgimage {
+        z-index: 1;
+    }
+    #image {
+        z-index: 2;
+    }
+    plugin CSS
+    #footer {
+        position: absolute;
+        z-index: 6;
+        dummy: dummy;
+    }
+    /* lyric css */
+    sup {
+        font-size: 0.6em;
+        vertical-align: top;
+        position: relative;
+        top: -0.3em;
+    }
+    </style>
+    <script>
+        var timer = null;
+        var transition = false;
+        plugin JS
 
-    function show_blank(state){
-        var black = 'none';
-        var lyrics = '';
-        switch(state){
-            case 'theme':
-                lyrics = 'hidden';
-                break;
-            case 'black':
-                black = 'block';
-                break;
-            case 'desktop':
-                break;
+        function show_image(src){
+            var img = document.getElementById('image');
+            img.src = src;
+            if(src == '')
+                img.style.display = 'none';
+            else
+                img.style.display = 'block';
         }
-        document.getElementById('black').style.display = black;
-        document.getElementById('lyricsmain').style.visibility = lyrics;
-        document.getElementById('image').style.visibility = lyrics;
-        document.getElementById('footer').style.visibility = lyrics;
-    }
 
-    function show_footer(footertext){
-        document.getElementById('footer').innerHTML = footertext;
-    }
-
-    function show_text(new_text){
-        var match = /-webkit-text-fill-color:[^;"]+/gi;
-        if(timer != null)
-            clearTimeout(timer);
-        /*
-        QtWebkit bug with outlines and justify causing outline alignment
-        problems. (Bug 859950) Surround each word with a <span> to workaround,
-        but only in this scenario.
-        */
-        var txt = document.getElementById('lyricsmain');
-        if(window.getComputedStyle(txt).textAlign == 'justify'){
-            if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
-                new_text = new_text.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
-                    function(match) {
-                        return '</span>' + match + '<span>';
-                    });
-                new_text = '<span>' + new_text + '</span>';
+        function show_blank(state){
+            var black = 'none';
+            var lyrics = '';
+            switch(state){
+                case 'theme':
+                    lyrics = 'hidden';
+                    break;
+                case 'black':
+                    black = 'block';
+                    break;
+                case 'desktop':
+                    break;
             }
+            document.getElementById('black').style.display = black;
+            document.getElementById('lyricsmain').style.visibility = lyrics;
+            document.getElementById('image').style.visibility = lyrics;
+            document.getElementById('footer').style.visibility = lyrics;
         }
-        text_fade('lyricsmain', new_text);
-    }
 
-    function text_fade(id, new_text){
-        /*
-        Show the text.
-        */
-        var text = document.getElementById(id);
-        if(text == null) return;
-        if(!transition){
+        function show_footer(footertext){
+            document.getElementById('footer').innerHTML = footertext;
+        }
+
+        function show_text(new_text){
+            var match = /-webkit-text-fill-color:[^;"]+/gi;
+            if(timer != null)
+                clearTimeout(timer);
+            /*
+            QtWebkit bug with outlines and justify causing outline alignment
+            problems. (Bug 859950) Surround each word with a <span> to workaround,
+            but only in this scenario.
+            */
+            var txt = document.getElementById('lyricsmain');
+            if(window.getComputedStyle(txt).textAlign == 'justify'){
+                if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
+                    new_text = new_text.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
+                        function(match) {
+                            return '</span>' + match + '<span>';
+                        });
+                    new_text = '<span>' + new_text + '</span>';
+                }
+            }
+            text_fade('lyricsmain', new_text);
+        }
+
+        function text_fade(id, new_text){
+            /*
+            Show the text.
+            */
+            var text = document.getElementById(id);
+            if(text == null) return;
+            if(!transition){
+                text.innerHTML = new_text;
+                return;
+            }
+            // Fade text out. 0.1 to minimize the time "nothing" is shown on the screen.
+            text.style.opacity = '0.1';
+            // Fade new text in after the old text has finished fading out.
+            timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
+        }
+
+        function _show_text(text, new_text) {
+            /*
+            Helper function to show the new_text delayed.
+            */
             text.innerHTML = new_text;
-            return;
+            text.style.opacity = '1';
+            // Wait until the text is completely visible. We want to save the timer id, to be able to call
+            // clearTimeout(timer) when the text has changed before finishing fading.
+            timer = window.setTimeout(function(){timer = null;}, 400);
         }
-        // Fade text out. 0.1 to minimize the time "nothing" is shown on the screen.
-        text.style.opacity = '0.1';
-        // Fade new text in after the old text has finished fading out.
-        timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
-    }
 
-    function _show_text(text, new_text) {
-        /*
-        Helper function to show the new_text delayed.
-        */
-        text.innerHTML = new_text;
-        text.style.opacity = '1';
-        // Wait until the text is completely visible. We want to save the timer id, to be able to call
-        // clearTimeout(timer) when the text has changed before finishing fading.
-        timer = window.setTimeout(function(){timer = null;}, 400);
-    }
-
-    function show_text_completed(){
-        return (timer == null);
-    }
-</script>
-</head>
-<body>
-<img id="bgimage" class="size" style="display:none;" />
-<img id="image" class="size" style="display:none;" />
-plugin HTML
-<div class="lyricstable"><div id="lyricsmain" style="opacity:1" class="lyricscell lyricsmain"></div></div>
-<div id="footer" class="footer"></div>
-<div id="black" class="size"></div>
-</body>
-</html>
-"""
+        function show_text_completed(){
+            return (timer == null);
+        }
+    </script>
+    </head>
+    <body>
+    <img id="bgimage" class="size" style="display:none;" />
+    <img id="image" class="size" style="display:none;" />
+    plugin HTML
+    <div class="lyricstable"><div id="lyricsmain" style="opacity:1" class="lyricscell lyricsmain"></div></div>
+    <div id="footer" class="footer"></div>
+    <div id="black" class="size"></div>
+    </body>
+    </html>
+    """
 BACKGROUND_CSS_RADIAL = 'background: -webkit-gradient(radial, 5 50%, 100, 5 50%, 5, from(#000000), to(#FFFFFF)) fixed'
 LYRICS_CSS = """
-.lyricstable {
-    z-index: 5;
-    position: absolute;
-    display: table;
-    left: 10px; top: 20px;
-}
-.lyricscell {
-    display: table-cell;
-    word-wrap: break-word;
-    -webkit-transition: opacity 0.4s ease;
-    lyrics_format_css
-}
-.lyricsmain {
-     text-shadow: #000000 5px 5px;
-}
-"""
+    .lyricstable {
+        z-index: 5;
+        position: absolute;
+        display: table;
+        left: 10px; top: 20px;
+    }
+    .lyricscell {
+        display: table-cell;
+        word-wrap: break-word;
+        -webkit-transition: opacity 0.4s ease;
+        lyrics_format_css
+    }
+    .lyricsmain {
+        text-shadow: #000000 5px 5px;
+    }
+    """
 LYRICS_OUTLINE_CSS = ' -webkit-text-stroke: 0.125em #000000; -webkit-text-fill-color: #FFFFFF; '
-LYRICS_FORMAT_CSS = ' word-wrap: break-word; text-align: justify; vertical-align: bottom; ' + \
-    'font-family: Arial; font-size: 40pt; color: #FFFFFF; line-height: 108%; margin: 0;padding: 0; ' + \
-    'padding-bottom: 0.5em; padding-left: 2px; width: 1580px; height: 810px; font-style:italic; font-weight:bold; '
+LYRICS_FORMAT_CSS = """
+    word-wrap: break-word;
+    text-align: justify;
+    vertical-align: bottom;
+    font-family: Arial;
+    font-size: 40pt;
+    color: #FFFFFF;
+    line-height: 108%;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 0.5em;
+    padding-left: 2px;
+    width: 1580px;
+    height: 810px;
+    font-style: italic;
+    font-weight: bold;
+    """
 FOOTER_CSS_BASE = """
     left: 10px;
     bottom: 0px;
@@ -216,7 +229,7 @@ class Htmbuilder(TestCase, TestMixin):
         """
         self.destroy_settings()
 
-    def build_html_test(self):
+    def test_build_html(self):
         """
         Test the build_html() function
         """
@@ -246,7 +259,7 @@ class Htmbuilder(TestCase, TestMixin):
             # THEN: The returned html should match.
             self.assertEqual(html, HTML, 'The returned html should match')
 
-    def build_background_css_radial_test(self):
+    def test_build_background_css_radial(self):
         """
         Test the build_background_css() function with a radial background
         """
@@ -262,7 +275,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: The returned css should match.
         self.assertEqual(BACKGROUND_CSS_RADIAL, css, 'The background css should be equal.')
 
-    def build_lyrics_css_test(self):
+    def test_build_lyrics_css(self):
         """
         Test the build_lyrics_css() function
         """
@@ -283,7 +296,7 @@ class Htmbuilder(TestCase, TestMixin):
             # THEN: The css should be equal.
             self.assertEqual(LYRICS_CSS, css, 'The lyrics css should be equal.')
 
-    def build_lyrics_outline_css_test(self):
+    def test_build_lyrics_outline_css(self):
         """
         Test the build_lyrics_outline_css() function
         """
@@ -300,7 +313,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: The css should be equal.
         self.assertEqual(LYRICS_OUTLINE_CSS, css, 'The outline css should be equal.')
 
-    def build_lyrics_format_css_test(self):
+    def test_build_lyrics_format_css(self):
         """
         Test the build_lyrics_format_css() function
         """
@@ -323,7 +336,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: They should be equal.
         self.assertEqual(LYRICS_FORMAT_CSS, css, 'The lyrics format css should be equal.')
 
-    def build_footer_css_test(self):
+    def test_build_footer_css(self):
         """
         Test the build_footer_css() function
         """
@@ -341,7 +354,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: THE css should be the same.
         self.assertEqual(FOOTER_CSS, css, 'The footer strings should be equal.')
 
-    def build_footer_css_wrap_test(self):
+    def test_build_footer_css_wrap(self):
         """
         Test the build_footer_css() function
         """
@@ -360,7 +373,7 @@ class Htmbuilder(TestCase, TestMixin):
         # THEN: Footer should wrap
         self.assertEqual(FOOTER_CSS_WRAP, css, 'The footer strings should be equal.')
 
-    def build_footer_invalid_test(self):
+    def test_build_footer_invalid(self):
         """
         Test the build_footer_css() function
         """
@@ -381,7 +394,7 @@ class Htmbuilder(TestCase, TestMixin):
         self.assertEqual(FOOTER_CSS_INVALID, css[0], 'The footer strings should be blank.')
         self.assertEqual(FOOTER_CSS_INVALID, css[1], 'The footer strings should be blank.')
 
-    def webkit_version_test(self):
+    def test_webkit_version(self):
         """
         Test the webkit_version() function
         """

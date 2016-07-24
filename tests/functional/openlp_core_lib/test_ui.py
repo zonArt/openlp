@@ -37,7 +37,7 @@ class TestUi(TestCase):
     Test the functions in the ui module
     """
 
-    def add_welcome_page_test(self):
+    def test_add_welcome_page(self):
         """
         Test appending a welcome page to a wizard
         """
@@ -51,7 +51,7 @@ class TestUi(TestCase):
         self.assertEqual(1, len(wizard.pageIds()), 'The wizard should have one page.')
         self.assertIsInstance(wizard.page(0).pixmap(QtWidgets.QWizard.WatermarkPixmap), QtGui.QPixmap)
 
-    def create_button_box_test(self):
+    def test_create_button_box(self):
         """
         Test creating a button box for a dialog
         """
@@ -79,7 +79,7 @@ class TestUi(TestCase):
         self.assertEqual(1, len(btnbox.buttons()))
         self.assertEqual(QtWidgets.QDialogButtonBox.HelpRole, btnbox.buttonRole(btnbox.buttons()[0]))
 
-    def create_horizontal_adjusting_combo_box_test(self):
+    def test_create_horizontal_adjusting_combo_box(self):
         """
         Test creating a horizontal adjusting combo box
         """
@@ -94,7 +94,7 @@ class TestUi(TestCase):
         self.assertEqual('combo1', combo.objectName())
         self.assertEqual(QtWidgets.QComboBox.AdjustToMinimumContentsLength, combo.sizeAdjustPolicy())
 
-    def create_button_test(self):
+    def test_create_button(self):
         """
         Test creating a button
         """
@@ -126,7 +126,7 @@ class TestUi(TestCase):
         self.assertEqual('my_btn', btn.objectName())
         self.assertTrue(btn.isEnabled())
 
-    def create_action_test(self):
+    def test_create_action(self):
         """
         Test creating an action
         """
@@ -151,7 +151,7 @@ class TestUi(TestCase):
         self.assertEqual('my tooltip', action.toolTip())
         self.assertEqual('my statustip', action.statusTip())
 
-    def create_action_on_mac_osx_test(self):
+    def test_create_action_on_mac_osx(self):
         """
         Test creating an action on OS X calls the correct method
         """
@@ -169,7 +169,7 @@ class TestUi(TestCase):
             # THEN: setIconVisibleInMenu should be called
             mocked_action.setIconVisibleInMenu.assert_called_with(False)
 
-    def create_action_not_on_mac_osx_test(self):
+    def test_create_action_not_on_mac_osx(self):
         """
         Test creating an action on something other than OS X doesn't call the method
         """
@@ -188,7 +188,7 @@ class TestUi(TestCase):
             self.assertEqual(0, mocked_action.setIconVisibleInMenu.call_count,
                              'setIconVisibleInMenu should not have been called')
 
-    def create_checked_disabled_invisible_action_test(self):
+    def test_create_checked_disabled_invisible_action(self):
         """
         Test that an invisible, disabled, checked action is created correctly
         """
@@ -203,7 +203,7 @@ class TestUi(TestCase):
         self.assertFalse(action.isEnabled(), 'The action should be disabled')
         self.assertFalse(action.isVisible(), 'The action should be invisble')
 
-    def create_action_separator_test(self):
+    def test_create_action_separator(self):
         """
         Test creating an action as separator
         """
@@ -216,7 +216,7 @@ class TestUi(TestCase):
         # THEN: The action should be a separator
         self.assertTrue(action.isSeparator(), 'The action should be a separator')
 
-    def create_valign_selection_widgets_test(self):
+    def test_create_valign_selection_widgets(self):
         """
         Test creating a combo box for valign selection
         """
@@ -233,7 +233,7 @@ class TestUi(TestCase):
         for text in [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]:
             self.assertTrue(combo.findText(text) >= 0)
 
-    def find_and_set_in_combo_box_test(self):
+    def test_find_and_set_in_combo_box(self):
         """
         Test finding a string in a combo box and setting it as the selected item if present
         """
@@ -260,7 +260,7 @@ class TestUi(TestCase):
         # THEN: The index should have changed
         self.assertEqual(2, combo.currentIndex())
 
-    def create_widget_action_test(self):
+    def test_create_widget_action(self):
         """
         Test creating an action for a widget
         """
@@ -274,7 +274,7 @@ class TestUi(TestCase):
         self.assertIsInstance(action, QtWidgets.QAction)
         self.assertEqual(action.objectName(), 'some action')
 
-    def set_case_insensitive_completer_test(self):
+    def test_set_case_insensitive_completer(self):
         """
         Test setting a case insensitive completer on a widget
         """

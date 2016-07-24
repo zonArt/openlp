@@ -74,6 +74,6 @@ class Ui_PluginViewDialog(object):
         """
         plugin_view_dialog.setWindowTitle(translate('OpenLP.PluginForm', 'Manage Plugins'))
         self.plugin_info_group_box.setTitle(translate('OpenLP.PluginForm', 'Plugin Details'))
-        self.about_label.setText('%s:' % UiStrings().About)
+        self.about_label.setText('{about}:'.format(about=UiStrings().About))
         self.status_label.setText(translate('OpenLP.PluginForm', 'Status:'))
         self.status_checkbox.setText(translate('OpenLP.PluginForm', 'Active'))

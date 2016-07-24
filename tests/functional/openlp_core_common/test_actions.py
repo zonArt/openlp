@@ -49,7 +49,7 @@ class TestCategoryActionList(TestCase):
         """
         del self.list
 
-    def contains_test(self):
+    def test_contains(self):
         """
         Test the __contains__() method
         """
@@ -61,7 +61,7 @@ class TestCategoryActionList(TestCase):
         self.assertTrue(self.action1 in self.list)
         self.assertFalse(self.action2 in self.list)
 
-    def len_test(self):
+    def test_len(self):
         """
         Test the __len__ method
         """
@@ -77,7 +77,7 @@ class TestCategoryActionList(TestCase):
         # THEN: Check the length.
         self.assertEqual(len(self.list), 1, "The length should be 1.")
 
-    def append_test(self):
+    def test_append(self):
         """
         Test the append() method
         """
@@ -92,7 +92,7 @@ class TestCategoryActionList(TestCase):
         self.assertEqual(self.list.actions[0], (0, self.action1))
         self.assertEqual(self.list.actions[1], (1, self.action2))
 
-    def add_test(self):
+    def test_add(self):
         """
         Test the add() method
         """
@@ -111,14 +111,14 @@ class TestCategoryActionList(TestCase):
         self.assertEqual(self.list.actions[0], (41, self.action2))
         self.assertEqual(self.list.actions[1], (42, self.action1))
 
-    def iterator_test(self):
+    def test_iterator(self):
         """
         Test the __iter__ and __next__ methods
         """
         # GIVEN: The list including two actions
         self.list.add(self.action1)
         self.list.add(self.action2)
-        
+
         # WHEN: Iterating over the list
         l = [a for a in self.list]
         # THEN: Make sure they are returned in correct order
@@ -126,7 +126,7 @@ class TestCategoryActionList(TestCase):
         self.assertIs(l[0], self.action1)
         self.assertIs(l[1], self.action2)
 
-    def remove_test(self):
+    def test_remove(self):
         """
         Test the remove() method
         """

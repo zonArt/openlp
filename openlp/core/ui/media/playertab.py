@@ -224,9 +224,11 @@ class PlayerTab(SettingsTab):
             self.settings_form.register_post_process('mediaitem_media_rebuild')
             self.settings_form.register_post_process('config_screen_changed')
 
-    def post_set_up(self):
+    def post_set_up(self, post_update=False):
         """
         Late setup for players as the MediaController has to be initialised first.
+
+        :param post_update: Indicates if called before or after updates.
         """
         for key, player in self.media_players.items():
             player = self.media_players[key]

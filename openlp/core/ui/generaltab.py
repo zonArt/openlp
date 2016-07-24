@@ -401,7 +401,7 @@ class GeneralTab(SettingsTab):
         """
         Select the logo file
         """
-        file_filters = '%s;;%s (*.*)' % (get_images_filter(), UiStrings().AllFiles)
+        file_filters = '{text};;{names} (*.*)'.format(text=get_images_filter(), names=UiStrings().AllFiles)
         filename, filter_used = QtWidgets.QFileDialog.getOpenFileName(self,
                                                                       translate('OpenLP.AdvancedTab', 'Open File'), '',
                                                                       file_filters)

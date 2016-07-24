@@ -24,9 +24,9 @@ The :mod:`~openlp.core.ui.media` module contains classes and objects for media p
 """
 import logging
 
-from openlp.core.common import Settings
-
 from PyQt5 import QtCore
+
+from openlp.core.common import Settings
 
 log = logging.getLogger(__name__ + '.__init__')
 
@@ -134,6 +134,7 @@ def format_milliseconds(milliseconds):
     :param milliseconds: Milliseconds to format
     :return: Time string in format: hh.mm.ss,ttt
     """
+    milliseconds = int(milliseconds)
     seconds, millis = divmod(milliseconds, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)

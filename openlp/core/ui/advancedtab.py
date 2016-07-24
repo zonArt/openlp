@@ -87,11 +87,14 @@ class AdvancedTab(SettingsTab):
         self.ui_layout.addRow(self.expand_service_item_check_box)
         self.slide_max_height_label = QtWidgets.QLabel(self.ui_group_box)
         self.slide_max_height_label.setObjectName('slide_max_height_label')
-        self.slide_max_height_spin_box = QtWidgets.QSpinBox(self.ui_group_box)
-        self.slide_max_height_spin_box.setObjectName('slide_max_height_spin_box')
-        self.slide_max_height_spin_box.setRange(0, 1000)
-        self.slide_max_height_spin_box.setSingleStep(20)
-        self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_spin_box)
+        self.slide_max_height_combo_box = QtWidgets.QComboBox(self.ui_group_box)
+        self.slide_max_height_combo_box.addItem('', userData=0)
+        self.slide_max_height_combo_box.addItem('', userData=-4)
+        # Generate numeric values for combo box dynamically
+        for px in range(60, 801, 5):
+            self.slide_max_height_combo_box.addItem(str(px) + 'px', userData=px)
+        self.slide_max_height_combo_box.setObjectName('slide_max_height_combo_box')
+        self.ui_layout.addRow(self.slide_max_height_label, self.slide_max_height_combo_box)
         self.autoscroll_label = QtWidgets.QLabel(self.ui_group_box)
         self.autoscroll_label.setObjectName('autoscroll_label')
         self.autoscroll_combo_box = QtWidgets.QComboBox(self.ui_group_box)
@@ -265,7 +268,8 @@ class AdvancedTab(SettingsTab):
                                                              'Expand new Service items on creation'))
         self.slide_max_height_label.setText(translate('OpenLP.AdvancedTab',
                                                       'Max height for non-text slides\nin slide controller:'))
-        self.slide_max_height_spin_box.setSpecialValueText(translate('OpenLP.AdvancedTab', 'Disabled'))
+        self.slide_max_height_combo_box.setItemText(0, translate('OpenLP.AdvancedTab', 'Disabled'))
+        self.slide_max_height_combo_box.setItemText(1, translate('OpenLP.AdvancedTab', 'Automatic'))
         self.autoscroll_label.setText(translate('OpenLP.AdvancedTab',
                                                 'When changing slides:'))
         self.autoscroll_combo_box.setItemText(0, translate('OpenLP.AdvancedTab', 'Do not auto-scroll'))
@@ -308,8 +312,8 @@ class AdvancedTab(SettingsTab):
         self.service_name_label.setText(translate('OpenLP.AdvancedTab', 'Name:'))
         self.service_name_edit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.service_name_revert_button.setToolTip(
-            translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') %
-            UiStrings().DefaultServiceName)
+            translate('OpenLP.AdvancedTab',
+                      'Revert to the default service name "{name}".').format(name=UiStrings().DefaultServiceName))
         self.service_name_example_label.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hide_mouse_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
         self.hide_mouse_check_box.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
@@ -355,10 +359,13 @@ class AdvancedTab(SettingsTab):
         self.single_click_preview_check_box.setChecked(settings.value('single click preview'))
         self.single_click_service_preview_check_box.setChecked(settings.value('single click service preview'))
         self.expand_service_item_check_box.setChecked(settings.value('expand service item'))
-        self.slide_max_height_spin_box.setValue(settings.value('slide max height'))
+        slide_max_height_value = settings.value('slide max height')
+        for i in range(0, self.slide_max_height_combo_box.count()):
+            if self.slide_max_height_combo_box.itemData(i) == slide_max_height_value:
+                self.slide_max_height_combo_box.setCurrentIndex(i)
         autoscroll_value = settings.value('autoscrolling')
         for i in range(0, len(self.autoscroll_map)):
-            if self.autoscroll_map[i] == autoscroll_value:
+            if self.autoscroll_map[i] == autoscroll_value and i < self.autoscroll_combo_box.count():
                 self.autoscroll_combo_box.setCurrentIndex(i)
         self.enable_auto_close_check_box.setChecked(settings.value('enable exit confirmation'))
         self.hide_mouse_check_box.setChecked(settings.value('hide mouse'))
@@ -391,16 +398,16 @@ class AdvancedTab(SettingsTab):
         # Since data location can be changed, make sure the path is present.
         self.current_data_path = AppLocation.get_data_path()
         if not os.path.exists(self.current_data_path):
-            log.error('Data path not found %s' % self.current_data_path)
+            log.error('Data path not found {path}'.format(path=self.current_data_path))
             answer = QtWidgets.QMessageBox.critical(
                 self, translate('OpenLP.AdvancedTab', 'Data Directory Error'),
-                translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n%s\n\n'
+                translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n{path}\n\n'
                           'This data directory was previously changed from the OpenLP '
                           'default location.  If the new location was on removable '
                           'media, that media needs to be made available.\n\n'
                           'Click "No" to stop loading OpenLP. allowing you to fix the the problem.\n\n'
                           'Click "Yes" to reset the data directory to the default '
-                          'location.').replace('%s', self.current_data_path),
+                          'location.').format(path=self.current_data_path),
                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No),
                 QtWidgets.QMessageBox.No)
             if answer == QtWidgets.QMessageBox.No:
@@ -410,7 +417,7 @@ class AdvancedTab(SettingsTab):
             # Set data location to default.
             settings.remove('advanced/data path')
             self.current_data_path = AppLocation.get_data_path()
-            log.warning('User requested data path set to default %s' % self.current_data_path)
+            log.warning('User requested data path set to default {path}'.format(path=self.current_data_path))
         self.data_directory_label.setText(os.path.abspath(self.current_data_path))
         # Don't allow data directory move if running portable.
         if settings.value('advanced/is portable'):
@@ -439,7 +446,9 @@ class AdvancedTab(SettingsTab):
         settings.setValue('single click preview', self.single_click_preview_check_box.isChecked())
         settings.setValue('single click service preview', self.single_click_service_preview_check_box.isChecked())
         settings.setValue('expand service item', self.expand_service_item_check_box.isChecked())
-        settings.setValue('slide max height', self.slide_max_height_spin_box.value())
+        slide_max_height_index = self.slide_max_height_combo_box.currentIndex()
+        slide_max_height_value = self.slide_max_height_combo_box.itemData(slide_max_height_index)
+        settings.setValue('slide max height', slide_max_height_value)
         settings.setValue('autoscrolling', self.autoscroll_map[self.autoscroll_combo_box.currentIndex()])
         settings.setValue('enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue('hide mouse', self.hide_mouse_check_box.isChecked())
@@ -542,9 +551,9 @@ class AdvancedTab(SettingsTab):
         # Make sure they want to change the data.
         answer = QtWidgets.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
                                                 translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
-                                                          'location of the OpenLP data directory to:\n\n%s\n\nThe data '
-                                                          'directory will be changed when OpenLP is closed.').
-                                                replace('%s', new_data_path),
+                                                          'location of the OpenLP data directory to:\n\n{path}'
+                                                          '\n\nThe data directory will be changed when OpenLP is '
+                                                          'closed.').format(path=new_data_path),
                                                 QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
                                                                                       QtWidgets.QMessageBox.No),
                                                 QtWidgets.QMessageBox.No)
@@ -608,10 +617,10 @@ class AdvancedTab(SettingsTab):
             answer = QtWidgets.QMessageBox.warning(self,
                                                    translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
                                                    translate('OpenLP.AdvancedTab',
-                                                             'WARNING: \n\nThe location you have selected \n\n%s\n\n'
-                                                             'appears to contain OpenLP data files. Do you wish to '
-                                                             'replace these files with the current data files?').
-                                                   replace('%s', os.path.abspath(data_path,)),
+                                                             'WARNING: \n\nThe location you have selected \n\n{path}'
+                                                             '\n\nappears to contain OpenLP data files. Do you wish to '
+                                                             'replace these files with the current data '
+                                                             'files?').format(path=os.path.abspath(data_path,)),
                                                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
                                                                                          QtWidgets.QMessageBox.No),
                                                    QtWidgets.QMessageBox.No)

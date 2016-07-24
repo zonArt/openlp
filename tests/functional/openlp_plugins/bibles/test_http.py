@@ -88,7 +88,7 @@ class TestBSExtract(TestCase):
         self.socket_patcher.stop()
         self.urllib_patcher.stop()
 
-    def get_books_from_http_no_soup_test(self):
+    def test_get_books_from_http_no_soup(self):
         """
         Test the get_books_from_http method when get_soup_for_bible_ref returns a falsey value
         """
@@ -104,7 +104,7 @@ class TestBSExtract(TestCase):
         result = instance.get_books_from_http('NIV')
 
         # THEN: The rest mocks should be called with known values and get_books_from_http should return None
-        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("%s")', 'NIV')
+        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("{book}")'.format(book='NIV'))
         self.mock_urllib.parse.quote.assert_called_once_with(b'NIV')
         self.mock_get_soup_for_bible_ref.assert_called_once_with(
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')
@@ -112,7 +112,7 @@ class TestBSExtract(TestCase):
                           'BSExtract.get_books_from_http should return None when get_soup_for_bible_ref returns a '
                           'false value')
 
-    def get_books_from_http_no_content_test(self):
+    def test_get_books_from_http_no_content(self):
         """
         Test the get_books_from_http method when the specified element cannot be found in the tag object returned from
         get_soup_for_bible_ref
@@ -132,7 +132,7 @@ class TestBSExtract(TestCase):
         result = instance.get_books_from_http('NIV')
 
         # THEN: The rest mocks should be called with known values and get_books_from_http should return None
-        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("%s")', 'NIV')
+        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("{book}")'.format(book='NIV'))
         self.mock_urllib.parse.quote.assert_called_once_with(b'NIV')
         self.mock_get_soup_for_bible_ref.assert_called_once_with(
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')
@@ -143,7 +143,7 @@ class TestBSExtract(TestCase):
                           'BSExtract.get_books_from_http should return None when get_soup_for_bible_ref returns a '
                           'false value')
 
-    def get_books_from_http_content_test(self):
+    def test_get_books_from_http_content(self):
         """
         Test the get_books_from_http method with sample HTML
         Also a regression test for bug #1184869. (The anchor tag in the second list item is empty)
@@ -167,7 +167,7 @@ class TestBSExtract(TestCase):
 
         # THEN: The rest mocks should be called with known values and get_books_from_http should return the two books
         #       in the test data
-        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("%s")', 'NIV')
+        self.mock_log.debug.assert_called_once_with('BSExtract.get_books_from_http("{book}")'.format(book='NIV'))
         self.mock_urllib.parse.quote.assert_called_once_with(b'NIV')
         self.mock_get_soup_for_bible_ref.assert_called_once_with(
             'http://m.bibleserver.com/overlay/selectBook?translation=NIV')

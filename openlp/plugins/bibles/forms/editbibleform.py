@@ -39,7 +39,7 @@ class EditBibleForm(QtWidgets.QDialog, Ui_EditBibleDialog, RegistryProperties):
     """
     Class to manage the editing of a bible
     """
-    log.info('%s EditBibleForm loaded', __name__)
+    log.info('{name} EditBibleForm loaded'.format(name=__name__))
 
     def __init__(self, media_item, parent, manager):
         """
@@ -168,16 +168,17 @@ class EditBibleForm(QtWidgets.QDialog, Ui_EditBibleDialog, RegistryProperties):
             self.book_name_edit[abbreviation].setFocus()
             critical_error_message_box(
                 UiStrings().EmptyField,
-                translate('BiblesPlugin.BibleEditForm', 'You need to specify a book name for "%s".') %
-                self.book_names[abbreviation])
+                translate('BiblesPlugin.BibleEditForm',
+                          'You need to specify a book name for "{text}".').format(text=self.book_names[abbreviation]))
             return False
         elif not book_regex.match(new_book_name):
             self.book_name_edit[abbreviation].setFocus()
             critical_error_message_box(
                 UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
-                          'The book name "%s" is not correct.\nNumbers can only be used at the beginning and must\nbe '
-                          'followed by one or more non-numeric characters.') % new_book_name)
+                          'The book name "{name}" is not correct.\n'
+                          'Numbers can only be used at the beginning and must\nbe '
+                          'followed by one or more non-numeric characters.').format(name=new_book_name))
             return False
         for abbr, book in self.books.items():
             if book:
@@ -187,7 +188,7 @@ class EditBibleForm(QtWidgets.QDialog, Ui_EditBibleDialog, RegistryProperties):
                     self.book_name_edit[abbreviation].setFocus()
                     critical_error_message_box(
                         translate('BiblesPlugin.BibleEditForm', 'Duplicate Book Name'),
-                        translate('BiblesPlugin.BibleEditForm', 'The Book Name "%s" has been entered more than once.')
-                        % new_book_name)
+                        translate('BiblesPlugin.BibleEditForm',
+                                  'The Book Name "{name}" has been entered more than once.').format(name=new_book_name))
                     return False
         return True

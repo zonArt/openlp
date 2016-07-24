@@ -24,12 +24,11 @@ The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
 
-from distutils.version import LooseVersion
 import logging
 import os
+from distutils.version import LooseVersion
 
 from PyQt5 import QtCore, QtGui, Qt, QtWidgets
-
 
 from openlp.core.common import translate
 
@@ -96,7 +95,7 @@ def get_text_file_string(text_file):
     content = None
     try:
         file_handle = open(text_file, 'r', encoding='utf-8')
-        if not file_handle.read(3) == '\xEF\xBB\xBF':
+        if file_handle.read(3) != '\xEF\xBB\xBF':
             # no BOM was found
             file_handle.seek(0)
         content = file_handle.read()
@@ -342,7 +341,6 @@ from .exceptions import ValidationError
 from .filedialog import FileDialog
 from .screen import ScreenList
 from .formattingtags import FormattingTags
-from .spelltextedit import SpellTextEdit
 from .plugin import PluginStatus, StringContent, Plugin
 from .pluginmanager import PluginManager
 from .settingstab import SettingsTab

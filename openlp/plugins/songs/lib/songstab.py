@@ -74,8 +74,8 @@ class SongsTab(SettingsTab):
                                                           'Import missing songs from Service files'))
         self.display_songbook_check_box.setText(translate('SongsPlugin.SongsTab', 'Display songbook in footer'))
         self.display_copyright_check_box.setText(translate('SongsPlugin.SongsTab',
-                                                           'Display "%s" symbol before copyright info') %
-                                                 SongStrings.CopyrightSymbol)
+                                                           'Display "{symbol}" symbol before copyright '
+                                                           'info').format(symbol=SongStrings.CopyrightSymbol))
 
     def on_search_as_type_check_box_changed(self, check_state):
         self.song_search = (check_state == QtCore.Qt.Checked)

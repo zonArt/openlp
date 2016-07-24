@@ -50,7 +50,7 @@ class TestHistoryComboBox(TestCase, TestMixin):
         del self.combo
         del self.main_window
 
-    def get_items_test(self):
+    def test_get_items(self):
         """
         Test the getItems() method
         """

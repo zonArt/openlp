@@ -48,7 +48,7 @@ class ZefaniaBible(BibleDB):
         """
         Loads a Bible from file.
         """
-        log.debug('Starting Zefania import from "%s"' % self.filename)
+        log.debug('Starting Zefania import from "{name}"'.format(name=self.filename))
         if not isinstance(self.filename, str):
             self.filename = str(self.filename, 'utf8')
         import_file = None
@@ -67,7 +67,7 @@ class ZefaniaBible(BibleDB):
             if not language_id:
                 language_id = self.get_language(bible_name)
             if not language_id:
-                log.error('Importing books from "%s" failed' % self.filename)
+                log.error('Importing books from "{name}" failed'.format(name=self.filename))
                 return False
             self.save_meta('language_id', language_id)
             num_books = int(zefania_bible_tree.xpath('count(//BIBLEBOOK)'))
@@ -86,13 +86,11 @@ class ZefaniaBible(BibleDB):
                     continue
                 if bname:
                     book_ref_id = self.get_book_ref_id_by_name(bname, num_books, language_id)
-                    if not book_ref_id:
-                        book_ref_id = self.get_book_ref_id_by_localised_name(bname)
                 else:
                     log.debug('Could not find a name, will use number, basically a guess.')
                     book_ref_id = int(bnumber)
                 if not book_ref_id:
-                    log.error('Importing books from "%s" failed' % self.filename)
+                    log.error('Importing books from "{name}" failed'.format(name=self.filename))
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 db_book = self.create_book(book_details['name'], book_ref_id, book_details['testament_id'])
@@ -104,8 +102,9 @@ class ZefaniaBible(BibleDB):
                         verse_number = VERS.get("vnumber")
                         self.create_verse(db_book.id, chapter_number, verse_number, VERS.text.replace('<BR/>', '\n'))
                     self.wizard.increment_progress_bar(
-                        translate('BiblesPlugin.Zefnia', 'Importing %(bookname)s %(chapter)s...') %
-                        {'bookname': db_book.name, 'chapter': chapter_number})
+                        translate('BiblesPlugin.Zefnia',
+                                  'Importing {book} {chapter}...').format(book=db_book.name,
+                                                                          chapter=chapter_number))
             self.session.commit()
             self.application.process_events()
         except Exception as e:

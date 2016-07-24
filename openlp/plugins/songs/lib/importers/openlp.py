@@ -102,7 +102,7 @@ class OpenLPSongImport(SongImport):
             self.log_error(self.import_source, translate('SongsPlugin.OpenLPSongImport',
                                                          'Not a valid OpenLP 2 song database.'))
             return
-        self.import_source = 'sqlite:///%s' % self.import_source
+        self.import_source = 'sqlite:///{url}'.format(url=self.import_source)
         # Load the db file and reflect it
         engine = create_engine(self.import_source)
         source_meta = MetaData()
@@ -239,8 +239,10 @@ class OpenLPSongImport(SongImport):
             self.manager.save_object(new_song)
             if progress_dialog:
                 progress_dialog.setValue(progress_dialog.value() + 1)
+                # TODO: Verify format() with template strings
                 progress_dialog.setLabelText(WizardStrings.ImportingType % new_song.title)
             else:
+                # TODO: Verify format() with template strings
                 self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % new_song.title)
             if self.stop_import_flag:
                 break

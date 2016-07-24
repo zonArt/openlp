@@ -38,7 +38,6 @@ from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players,\
     parse_optical_path
 from openlp.core.ui.lib.toolbar import OpenLPToolbar
-from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
 
 log = logging.getLogger(__name__)
 
@@ -175,7 +174,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         log.debug('_check_available_media_players')
         controller_dir = os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'core', 'ui', 'media')
         for filename in os.listdir(controller_dir):
-            if filename.endswith('player.py') and not filename == 'mediaplayer.py':
+            if filename.endswith('player.py') and filename != 'mediaplayer.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     module_name = 'openlp.core.ui.media.' + os.path.splitext(filename)[0]
@@ -554,7 +553,7 @@ class MediaController(RegistryMixin, OpenLPMixin, RegistryProperties):
         default_player = [used_players[0]]
         if service_item.processor and service_item.processor != UiStrings().Automatic:
             # check to see if the player is usable else use the default one.
-            if not service_item.processor.lower() in used_players:
+            if service_item.processor.lower() not in used_players:
                 used_players = default_player
             else:
                 used_players = [service_item.processor.lower()]

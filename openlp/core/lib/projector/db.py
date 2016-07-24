@@ -40,13 +40,12 @@ log.debug('projector.lib.db module loaded')
 
 from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, and_
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import relationship
 
 from openlp.core.lib.db import Manager, init_db, init_url
 from openlp.core.lib.projector.constants import PJLINK_DEFAULT_CODES
 
-metadata = MetaData()
-Base = declarative_base(metadata)
+Base = declarative_base(MetaData())
 
 
 class CommonBase(object):
@@ -54,8 +53,8 @@ class CommonBase(object):
     Base class to automate table name and ID column.
     """
     @declared_attr
-    def __tablename__(cls):
-        return cls.__name__.lower()
+    def __tablename__(self):
+        return self.__name__.lower()
 
     id = Column(Integer, primary_key=True)
 
@@ -131,7 +130,7 @@ class Source(CommonBase, Base):
         """
         Return basic representation of Source table entry.
         """
-        return '<Source(pjlink_name="{name}", pjlink_code="{code}", text="{Text}")>'.format(name=self.pjlink_name,
+        return '<Source(pjlink_name="{name}", pjlink_code="{code}", text="{text}")>'.format(name=self.pjlink_name,
                                                                                             code=self.pjlink_code,
                                                                                             text=self.text)
     model_id = Column(Integer, ForeignKey('model.id'))
@@ -257,7 +256,7 @@ class ProjectorDB(Manager):
         projector = self.get_object_filtered(Projector, Projector.id == dbid)
         if projector is None:
             # Not found
-            log.warn('get_projector_by_id() did not find {data}'.format(data=id))
+            log.warning('get_projector_by_id() did not find {data}'.format(data=id))
             return None
         log.debug('get_projectorby_id() returning 1 entry for "{entry}" id="{data}"'.format(entry=dbid,
                                                                                             data=projector.id))
@@ -290,7 +289,7 @@ class ProjectorDB(Manager):
         projector = self.get_object_filtered(Projector, Projector.ip == ip)
         if projector is None:
             # Not found
-            log.warn('get_projector_by_ip() did not find {ip}'.format(ip=ip))
+            log.warning('get_projector_by_ip() did not find {ip}'.format(ip=ip))
             return None
         log.debug('get_projectorby_ip() returning 1 entry for "{ip}" id="{data}"'.format(ip=ip,
                                                                                          data=projector.id))
@@ -307,7 +306,7 @@ class ProjectorDB(Manager):
         projector = self.get_object_filtered(Projector, Projector.name == name)
         if projector is None:
             # Not found
-            log.warn('get_projector_by_name() did not find "{name}"'.format(name=name))
+            log.warning('get_projector_by_name() did not find "{name}"'.format(name=name))
             return None
         log.debug('get_projector_by_name() returning one entry for "{name}" id="{data}"'.format(name=name,
                                                                                                 data=projector.id))
@@ -324,7 +323,7 @@ class ProjectorDB(Manager):
         """
         old_projector = self.get_object_filtered(Projector, Projector.ip == projector.ip)
         if old_projector is not None:
-            log.warn('add_new() skipping entry ip="{ip}" (Already saved)'.format(ip=old_projector.ip))
+            log.warning('add_new() skipping entry ip="{ip}" (Already saved)'.format(ip=old_projector.ip))
             return False
         log.debug('add_new() saving new entry')
         log.debug('ip="{ip}", name="{name}", location="{location}"'.format(ip=projector.ip,
@@ -408,10 +407,10 @@ class ProjectorDB(Manager):
         :param source: ProjectorSource id
         :returns: ProjetorSource instance or None
         """
-        source_entry = self.get_object_filtered(ProjetorSource, ProjectorSource.id == source)
+        source_entry = self.get_object_filtered(ProjectorSource, ProjectorSource.id == source)
         if source_entry is None:
             # Not found
-            log.warn('get_source_by_id() did not find "{source}"'.format(source=source))
+            log.warning('get_source_by_id() did not find "{source}"'.format(source=source))
             return None
         log.debug('get_source_by_id() returning one entry for "{source}""'.format(source=source))
         return source_entry
@@ -430,8 +429,8 @@ class ProjectorDB(Manager):
 
         if source_entry is None:
             # Not found
-            log.warn('get_source_by_id() not found')
-            log.warn('code="{code}" projector_id="{data}"'.format(code=code, data=projector_id))
+            log.warning('get_source_by_id() not found')
+            log.warning('code="{code}" projector_id="{data}"'.format(code=code, data=projector_id))
             return None
         log.debug('get_source_by_id() returning one entry')
         log.debug('code="{code}" projector_id="{data}"'.format(code=code, data=projector_id))

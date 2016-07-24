@@ -138,7 +138,7 @@ class CategoryList(object):
         for category in self.categories:
             if category.name == key:
                 return category
-        raise KeyError('Category "{keY}" does not exist.'.format(key=key))
+        raise KeyError('Category "{key}" does not exist.'.format(key=key))
 
     def __len__(self):
         """

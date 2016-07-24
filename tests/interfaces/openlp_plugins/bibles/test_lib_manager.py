@@ -69,7 +69,7 @@ class TestBibleManager(TestCase, TestMixin):
         del self.manager
         self.destroy_settings()
 
-    def get_books_test(self):
+    def test_get_books(self):
         """
         Test the get_books method
         """
@@ -79,7 +79,7 @@ class TestBibleManager(TestCase, TestMixin):
         # THEN a list of books should be returned
         self.assertEqual(66, len(books), 'There should be 66 books in the bible')
 
-    def get_book_by_id_test(self):
+    def test_get_book_by_id(self):
         """
         Test the get_book_by_id method
         """
@@ -89,7 +89,7 @@ class TestBibleManager(TestCase, TestMixin):
         # THEN a book should be returned
         self.assertEqual('1 Timothy', book.name, '1 Timothy should have been returned from the bible')
 
-    def get_chapter_count_test(self):
+    def test_get_chapter_count(self):
         """
         Test the get_chapter_count method
         """
@@ -100,7 +100,7 @@ class TestBibleManager(TestCase, TestMixin):
         # THEN the chapter count should be returned
         self.assertEqual(6, chapter, '1 Timothy should have 6 chapters returned from the bible')
 
-    def get_verse_count_by_book_ref_id_test(self):
+    def test_get_verse_count_by_book_ref_id(self):
         """
         Test the get_verse_count_by_book_ref_id method
         """

@@ -179,7 +179,7 @@ class PowerpointDocument(PresentationDocument):
             if not self.presentation.Slides(num + 1).SlideShowTransition.Hidden:
                 self.index_map[key] = num + 1
                 self.presentation.Slides(num + 1).Export(
-                    os.path.join(self.get_thumbnail_folder(), 'slide%d.png' % (key)), 'png', 320, 240)
+                    os.path.join(self.get_thumbnail_folder(), 'slide{key:d}.png'.format(key=key)), 'png', 320, 240)
                 key += 1
         self.slide_count = key - 1
 
@@ -345,8 +345,9 @@ class PowerpointDocument(PresentationDocument):
             # Find the presentation window and save the handle for later
             self.presentation_hwnd = None
             if ppt_window:
-                log.debug('main display size:  y=%d, height=%d, x=%d, width=%d'
-                          % (size.y(), size.height(), size.x(), size.width()))
+                log.debug('main display size:  y={y:d}, height={height:d}, '
+                          'x={x:d}, width={width:d}'.format(y=size.y(), height=size.height(),
+                                                            x=size.x(), width=size.width()))
                 win32gui.EnumWindows(self._window_enum_callback, size)
             # Make sure powerpoint doesn't steal focus, unless we're on a single screen setup
             if len(ScreenList().screen_list) > 1:
@@ -361,10 +362,18 @@ class PowerpointDocument(PresentationDocument):
         # it is the powerpoint presentation window.
         (left, top, right, bottom) = win32gui.GetWindowRect(hwnd)
         window_title = win32gui.GetWindowText(hwnd)
-        log.debug('window size:  left=%d, top=%d, right=%d, width=%d' % (left, top, right, bottom))
-        log.debug('compare size:  %d and %d, %d and %d, %d and %d, %d and %d'
-                  % (size.y(), top, size.height(), (bottom - top), size.x(), left, size.width(), (right - left)))
-        log.debug('window title: %s' % window_title)
+        log.debug('window size:  left={left:d}, top={top:d}, '
+                  'right={right:d}, bottom={bottom:d}'.format(left=left, top=top, right=right, bottom=bottom))
+        log.debug('compare size:  {y:d} and {top:d}, {height:d} and {vertical:d}, '
+                  '{x:d} and {left}, {width:d} and {horizontal:d}'.format(y=size.y(),
+                                                                          top=top,
+                                                                          height=size.height(),
+                                                                          vertical=(bottom - top),
+                                                                          x=size.x(),
+                                                                          left=left,
+                                                                          width=size.width(),
+                                                                          horizontal=(right - left)))
+        log.debug('window title: {title}'.format(title=window_title))
         filename_root, filename_ext = os.path.splitext(os.path.basename(self.file_path))
         if size.y() == top and size.height() == (bottom - top) and size.x() == left and \
                 size.width() == (right - left) and filename_root in window_title:
@@ -416,8 +425,8 @@ class PowerpointDocument(PresentationDocument):
                     and self.get_slide_number() == slide_no:
                 click_index = self.presentation.SlideShowWindow.View.GetClickIndex()
                 click_count = self.presentation.SlideShowWindow.View.GetClickCount()
-                log.debug('We are already on this slide - go to next effect if any left, idx: %d, count: %d'
-                          % (click_index, click_count))
+                log.debug('We are already on this slide - go to next effect if any left, idx: '
+                          '{index:d}, count: {count:d}'.format(index=click_index, count=click_count))
                 if click_index < click_count:
                     self.next_step()
             else:

@@ -142,6 +142,7 @@ class SpellTextEdit(QtWidgets.QPlainTextEdit):
         """
         Replaces the selected text with word.
         """
+        tag = tag.replace('&', '')
         for html in FormattingTags.get_html_tags():
             if tag == html['desc']:
                 cursor = self.textCursor()
@@ -163,7 +164,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
     """
     Provides a text highlighter for pointing out spelling errors in text.
     """
-    WORDS = '(?iu)[\w\']+'
+    WORDS = r'(?iu)[\w\']+'
 
     def __init__(self, *args):
         """

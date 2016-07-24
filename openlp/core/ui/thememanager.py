@@ -203,7 +203,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         Change the global theme when it is changed through the Themes settings tab
         """
         self.global_theme = Settings().value(self.settings_section + '/global theme')
-        self.log_debug('change_global_from_tab %s' % self.global_theme)
+        self.log_debug('change_global_from_tab {text}'.format(text=self.global_theme))
         for count in range(0, self.theme_list_widget.count()):
             # reset the old name
             item = self.theme_list_widget.item(count)
@@ -213,7 +213,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                 self.theme_list_widget.item(count).setText(new_name)
             # Set the new name
             if self.global_theme == new_name:
-                name = translate('OpenLP.ThemeManager', '%s (default)') % new_name
+                name = translate('OpenLP.ThemeManager', '{text} (default)').format(text=new_name)
                 self.theme_list_widget.item(count).setText(name)
                 self.delete_toolbar_action.setVisible(item not in self.theme_list_widget.selectedItems())
 
@@ -233,7 +233,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
             # Set the new name
             if count == selected_row:
                 self.global_theme = self.theme_list_widget.item(count).text()
-                name = translate('OpenLP.ThemeManager', '%s (default)') % self.global_theme
+                name = translate('OpenLP.ThemeManager', '{text} (default)').format(text=self.global_theme)
                 self.theme_list_widget.item(count).setText(name)
                 Settings().setValue(self.settings_section + '/global theme', self.global_theme)
                 Registry().execute('theme_update_global')
@@ -256,6 +256,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         Renames an existing theme to a new name
         :param field:
         """
+        # TODO: Check for delayed format() conversions
         if self._validate_theme_action(translate('OpenLP.ThemeManager', 'You must select a theme to rename.'),
                                        translate('OpenLP.ThemeManager', 'Rename Confirmation'),
                                        translate('OpenLP.ThemeManager', 'Rename %s theme?'), False, False):
@@ -284,7 +285,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         item = self.theme_list_widget.currentItem()
         old_theme_name = item.data(QtCore.Qt.UserRole)
         self.file_rename_form.file_name_edit.setText(translate('OpenLP.ThemeManager',
-                                                     'Copy of %s', 'Copy of <theme name>') % old_theme_name)
+                                                               'Copy of {name}',
+                                                               'Copy of <theme name>').format(name=old_theme_name))
         if self.file_rename_form.exec(True):
             new_theme_name = self.file_rename_form.file_name_edit.text()
             if self.check_if_theme_exists(new_theme_name):
@@ -331,6 +333,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         Delete a theme triggered by the UI.
         :param field:
         """
+        # TODO: Verify delayed format() conversions
         if self._validate_theme_action(translate('OpenLP.ThemeManager', 'You must select a theme to delete.'),
                                        translate('OpenLP.ThemeManager', 'Delete Confirmation'),
                                        translate('OpenLP.ThemeManager', 'Delete %s theme?')):
@@ -351,7 +354,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         :param theme: The theme to delete.
         """
         self.theme_list.remove(theme)
-        thumb = '%s.png' % theme
+        thumb = '{name}.png'.format(name=theme)
         delete_file(os.path.join(self.path, thumb))
         delete_file(os.path.join(self.thumb_path, thumb))
         try:
@@ -363,7 +366,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                 shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError as os_error:
             shutil.Error = os_error
-            self.log_exception('Error deleting theme %s' % theme)
+            self.log_exception('Error deleting theme {name}'.format(name=theme))
 
     def on_export_theme(self, field=None):
         """
@@ -376,7 +379,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
             return
         theme = item.data(QtCore.Qt.UserRole)
         path = QtWidgets.QFileDialog.getExistingDirectory(self,
-                                                          translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
+                                                          translate('OpenLP.ThemeManager',
+                                                                    'Save Theme - ({name})').format(name=theme),
                                                           Settings().value(self.settings_section +
                                                                            '/last directory export'))
         self.application.set_busy_cursor()
@@ -409,7 +413,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
             self.log_exception('Export Theme Failed')
             critical_error_message_box(translate('OpenLP.ThemeManager', 'Theme Export Failed'),
                                        translate('OpenLP.ThemeManager', 'The theme export failed because this error '
-                                                                        'occurred: %s') % ose.strerror)
+                                                                        'occurred: {err}').format(err=ose.strerror))
             if theme_zip:
                 theme_zip.close()
                 shutil.rmtree(theme_path, True)
@@ -425,7 +429,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                                             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
                                             Settings().value(self.settings_section + '/last directory import'),
                                             translate('OpenLP.ThemeManager', 'OpenLP Themes (*.otz)'))
-        self.log_info('New Themes %s' % str(files))
+        self.log_info('New Themes {name}'.format(name=str(files)))
         if not files:
             return
         self.application.set_busy_cursor()
@@ -472,10 +476,10 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
             if os.path.exists(theme):
                 text_name = os.path.splitext(name)[0]
                 if text_name == self.global_theme:
-                    name = translate('OpenLP.ThemeManager', '%s (default)') % text_name
+                    name = translate('OpenLP.ThemeManager', '{name} (default)').format(name=text_name)
                 else:
                     name = text_name
-                thumb = os.path.join(self.thumb_path, '%s.png' % text_name)
+                thumb = os.path.join(self.thumb_path, '{name}.png'.format(name=text_name))
                 item_name = QtWidgets.QListWidgetItem(name)
                 if validate_thumb(theme, thumb):
                     icon = build_icon(thumb)
@@ -506,7 +510,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         :param theme_name: Name of the theme to load from file
         :return: The theme object.
         """
-        self.log_debug('get theme data for theme %s' % theme_name)
+        self.log_debug('get theme data for theme {name}'.format(name=theme_name))
         xml_file = os.path.join(self.path, str(theme_name), str(theme_name) + '.xml')
         xml = get_text_file_string(xml_file)
         if not xml:
@@ -524,8 +528,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         """
         ret = QtWidgets.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
                                              translate('OpenLP.ThemeManager',
-                                                       'Theme %s already exists. Do you want to replace it?')
-                                             .replace('%s', theme_name),
+                                                       'Theme {name} already exists. '
+                                                       'Do you want to replace it?').format(name=theme_name),
                                              QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes |
                                                                                    QtWidgets.QMessageBox.No),
                                              QtWidgets.QMessageBox.No)
@@ -538,7 +542,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         :param file_name:
         :param directory:
         """
-        self.log_debug('Unzipping theme %s' % file_name)
+        self.log_debug('Unzipping theme {name}'.format(name=file_name))
         theme_zip = None
         out_file = None
         file_xml = None
@@ -547,7 +551,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
             theme_zip = zipfile.ZipFile(file_name)
             xml_file = [name for name in theme_zip.namelist() if os.path.splitext(name)[1].lower() == '.xml']
             if len(xml_file) != 1:
-                self.log_error('Theme contains "%s" XML files' % len(xml_file))
+                self.log_error('Theme contains "{val:d}" XML files'.format(val=len(xml_file)))
                 raise ValidationError
             xml_tree = ElementTree(element=XML(theme_zip.read(xml_file[0]))).getroot()
             theme_version = xml_tree.get('version', default=None)
@@ -579,7 +583,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                     out_file.write(theme_zip.read(name))
                 out_file.close()
         except (IOError, zipfile.BadZipfile):
-            self.log_exception('Importing theme from zip failed %s' % file_name)
+            self.log_exception('Importing theme from zip failed {name}'.format(name=file_name))
             raise ValidationError
         except ValidationError:
             critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
@@ -601,7 +605,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                     critical_error_message_box(
                         translate('OpenLP.ThemeManager', 'Validation Error'),
                         translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
-                    self.log_error('Theme file does not contain XML data %s' % file_name)
+                    self.log_error('Theme file does not contain XML data {name}'.format(name=file_name))
 
     def check_if_theme_exists(self, theme_name):
         """
@@ -682,7 +686,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
         if os.path.exists(sample_path_name):
             os.unlink(sample_path_name)
         frame.save(sample_path_name, 'png')
-        thumb = os.path.join(self.thumb_path, '%s.png' % name)
+        thumb = os.path.join(self.thumb_path, '{name}.png'.format(name=name))
         create_thumb(sample_path_name, thumb, False)
 
     def update_preview_images(self):
@@ -760,14 +764,17 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                 for plugin in self.plugin_manager.plugins:
                     used_count = plugin.uses_theme(theme)
                     if used_count:
-                        plugin_usage = "%s%s" % (plugin_usage, (translate('OpenLP.ThemeManager',
-                                                                          '%(count)s time(s) by %(plugin)s') %
-                                                                {'count': used_count, 'plugin': plugin.name}))
+                        plugin_usage = "{plug}{text}".format(plug=plugin_usage,
+                                                             text=(translate('OpenLP.ThemeManager',
+                                                                             '{count} time(s) by {plugin}'
+                                                                             ).format(name=used_count,
+                                                                                      plugin=plugin.name)))
                         plugin_usage = "%s\n" % plugin_usage
                 if plugin_usage:
                     critical_error_message_box(translate('OpenLP.ThemeManager', 'Unable to delete theme'),
-                                               translate('OpenLP.ThemeManager', 'Theme is currently used \n\n%s') %
-                                               plugin_usage)
+                                               translate('OpenLP.ThemeManager',
+                                                         'Theme is currently used \n\n{text}'
+                                                         ).format(text=plugin_usage))
 
                     return False
             return True

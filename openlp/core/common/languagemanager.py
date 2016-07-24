@@ -168,7 +168,7 @@ def format_time(text, local_time):
         """
         return local_time.strftime(match.group())
 
-    return re.sub('\%[a-zA-Z]', match_formatting, text)
+    return re.sub(r'\%[a-zA-Z]', match_formatting, text)
 
 
 def get_locale_key(string):

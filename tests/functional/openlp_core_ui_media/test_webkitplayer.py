@@ -33,7 +33,7 @@ class TestWebkitPlayer(TestCase):
     Test the functions in the :mod:`webkitplayer` module.
     """
 
-    def check_available_video_disabled_test(self):
+    def test_check_available_video_disabled(self):
         """
         Test of webkit video unavailability
         """
@@ -50,7 +50,7 @@ class TestWebkitPlayer(TestCase):
             self.assertEqual(False, available,
                              'The WebkitPlayer should not be available when video feature detection fails')
 
-    def check_available_video_enabled_test(self):
+    def test_check_available_video_enabled(self):
         """
         Test of webkit video availability
         """

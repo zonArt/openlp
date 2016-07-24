@@ -148,7 +148,7 @@ class PptviewDocument(PresentationDocument):
             return
         log.debug('create_thumbnails proceeding')
         for idx in range(self.get_slide_count()):
-            path = '%s\\slide%s.bmp' % (self.get_temp_folder(), str(idx + 1))
+            path = '{folder}\\slide{index}.bmp'.format(folder=self.get_temp_folder(), index=str(idx + 1))
             self.convert_thumbnail(path, idx + 1)
 
     def create_titles_and_notes(self):
@@ -181,13 +181,13 @@ class PptviewDocument(PresentationDocument):
                     index = -1
                     list_to_add = None
                     # check if it is a slide
-                    match = re.search("slides/slide(.+)\.xml", zip_info.filename)
+                    match = re.search(r'slides/slide(.+)\.xml', zip_info.filename)
                     if match:
                         index = int(match.group(1)) - 1
                         node_type = 'ctrTitle'
                         list_to_add = titles
                     # or a note
-                    match = re.search("notesSlides/notesSlide(.+)\.xml", zip_info.filename)
+                    match = re.search(r'notesSlides/notesSlide(.+)\.xml', zip_info.filename)
                     if match:
                         index = int(match.group(1)) - 1
                         node_type = 'body'

@@ -197,5 +197,6 @@ class AlertsTab(SettingsTab):
         font.setBold(True)
         font.setPointSize(self.font_size)
         self.font_preview.setFont(font)
-        self.font_preview.setStyleSheet('background-color: %s; color: %s' % (self.background_color, self.font_color))
+        self.font_preview.setStyleSheet('background-color: {back}; color: {front}'.format(back=self.background_color,
+                                                                                          front=self.font_color))
         self.changed = True

@@ -38,7 +38,7 @@ TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 
 
 class TestLib(TestCase):
 
-    def str_to_bool_with_bool_true_test(self):
+    def test_str_to_bool_with_bool_true(self):
         """
         Test the str_to_bool function with boolean input of True
         """
@@ -52,7 +52,7 @@ class TestLib(TestCase):
         self.assertIsInstance(true_result, bool, 'The result should be a boolean')
         self.assertTrue(true_result, 'The result should be True')
 
-    def str_to_bool_with_bool_false_test(self):
+    def test_str_to_bool_with_bool_false(self):
         """
         Test the str_to_bool function with boolean input of False
         """
@@ -66,7 +66,7 @@ class TestLib(TestCase):
         self.assertIsInstance(false_result, bool, 'The result should be a boolean')
         self.assertFalse(false_result, 'The result should be True')
 
-    def str_to_bool_with_integer_test(self):
+    def test_str_to_bool_with_integer(self):
         """
         Test the str_to_bool function with an integer input
         """
@@ -79,7 +79,7 @@ class TestLib(TestCase):
         # THEN: we should get back a false
         self.assertFalse(int_result, 'The result should be False')
 
-    def str_to_bool_with_invalid_string_test(self):
+    def test_str_to_bool_with_invalid_string(self):
         """
         Test the str_to_bool function with an invalid string
         """
@@ -92,7 +92,7 @@ class TestLib(TestCase):
         # THEN: we should get back a false
         self.assertFalse(str_result, 'The result should be False')
 
-    def str_to_bool_with_string_false_test(self):
+    def test_str_to_bool_with_string_false(self):
         """
         Test the str_to_bool function with a string saying "false"
         """
@@ -105,7 +105,7 @@ class TestLib(TestCase):
         # THEN: we should get back a false
         self.assertFalse(false_result, 'The result should be False')
 
-    def str_to_bool_with_string_no_test(self):
+    def test_str_to_bool_with_string_no(self):
         """
         Test the str_to_bool function with a string saying "NO"
         """
@@ -118,7 +118,7 @@ class TestLib(TestCase):
         # THEN: we should get back a false
         self.assertFalse(str_result, 'The result should be False')
 
-    def str_to_bool_with_true_string_value_test(self):
+    def test_str_to_bool_with_true_string_value(self):
         """
         Test the str_to_bool function with a string set to "True"
         """
@@ -131,7 +131,7 @@ class TestLib(TestCase):
         # THEN: we should get back a true
         self.assertTrue(true_result, 'The result should be True')
 
-    def str_to_bool_with_yes_string_value_test(self):
+    def test_str_to_bool_with_yes_string_value(self):
         """
         Test the str_to_bool function with a string set to "yes"
         """
@@ -144,7 +144,7 @@ class TestLib(TestCase):
         # THEN: we should get back a true
         self.assertTrue(str_result, 'The result should be True')
 
-    def get_text_file_string_no_file_test(self):
+    def test_get_text_file_string_no_file(self):
         """
         Test the get_text_file_string() function when a file does not exist
         """
@@ -160,7 +160,7 @@ class TestLib(TestCase):
             mocked_isfile.assert_called_with(filename)
             self.assertFalse(result, 'False should be returned if no file exists')
 
-    def get_text_file_string_read_error_test(self):
+    def test_get_text_file_string_read_error(self):
         """
         Test the get_text_file_string() method when a read error happens
         """
@@ -179,13 +179,13 @@ class TestLib(TestCase):
             mocked_open.assert_called_with(filename, 'r', encoding='utf-8')
             self.assertIsNone(result, 'None should be returned if the file cannot be opened')
 
-    def get_text_file_string_decode_error_test(self):
+    def test_get_text_file_string_decode_error(self):
         """
         Test the get_text_file_string() method when the contents cannot be decoded
         """
         self.skipTest('Impossible to test due to conflicts when mocking out the "open" function')
 
-    def build_icon_with_qicon_test(self):
+    def test_build_icon_with_qicon(self):
         """
         Test the build_icon() function with a QIcon instance
         """
@@ -200,7 +200,7 @@ class TestLib(TestCase):
             # THEN: The result should be our mocked QIcon
             self.assertIs(mocked_icon, result, 'The result should be the mocked QIcon')
 
-    def build_icon_with_resource_test(self):
+    def test_build_icon_with_resource(self):
         """
         Test the build_icon() function with a resource URI
         """
@@ -222,7 +222,7 @@ class TestLib(TestCase):
             # best we can do is to assert that we get back a MagicMock object.
             self.assertIsInstance(result, MagicMock, 'The result should be a MagicMock, because we mocked it out')
 
-    def image_to_byte_test(self):
+    def test_image_to_byte(self):
         """
         Test the image_to_byte() function
         """
@@ -248,7 +248,7 @@ class TestLib(TestCase):
             self.assertEqual('base64mock', result, 'The result should be the return value of the mocked out '
                                                    'base64 method')
 
-    def create_thumb_with_size_test(self):
+    def test_create_thumb_with_size(self):
         """
         Test the create_thumb() function with a given size.
         """
@@ -282,7 +282,7 @@ class TestLib(TestCase):
         except:
             pass
 
-    def create_thumb_no_size_test(self):
+    def test_create_thumb_no_size(self):
         """
         Test the create_thumb() function with no size specified.
         """
@@ -316,7 +316,7 @@ class TestLib(TestCase):
         except:
             pass
 
-    def create_thumb_invalid_size_test(self):
+    def test_create_thumb_invalid_size(self):
         """
         Test the create_thumb() function with invalid size specified.
         """
@@ -351,7 +351,7 @@ class TestLib(TestCase):
         except:
             pass
 
-    def create_thumb_width_only_test(self):
+    def test_create_thumb_width_only(self):
         """
         Test the create_thumb() function with a size of only width specified.
         """
@@ -386,7 +386,7 @@ class TestLib(TestCase):
         except:
             pass
 
-    def create_thumb_height_only_test(self):
+    def test_create_thumb_height_only(self):
         """
         Test the create_thumb() function with a size of only height specified.
         """
@@ -421,7 +421,7 @@ class TestLib(TestCase):
         except:
             pass
 
-    def create_thumb_empty_img_test(self):
+    def test_create_thumb_empty_img(self):
         """
         Test the create_thumb() function with a size of only height specified.
         """
@@ -431,7 +431,6 @@ class TestLib(TestCase):
         thumb_size = QtCore.QSize(-1, 100)
         expected_size_1 = QtCore.QSize(88, 88)
         expected_size_2 = QtCore.QSize(100, 100)
-        
 
         # Remove the thumb so that the test actually tests if the thumb will be created. Maybe it was not deleted in the
         # last test.
@@ -458,7 +457,7 @@ class TestLib(TestCase):
         with patch('openlp.core.lib.QtGui.QImageReader.size') as mocked_size:
             mocked_size.return_value = QtCore.QSize(0, 0)
             icon = create_thumb(image_path, thumb_path, size=thumb_size)
-        
+
         # THEN: Check if the thumb was created with aspect ratio of 1.
         self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
         self.assertFalse(icon.isNull(), 'The icon should not be null')
@@ -470,7 +469,7 @@ class TestLib(TestCase):
         except:
             pass
 
-    def check_item_selected_true_test(self):
+    def test_check_item_selected_true(self):
         """
         Test that the check_item_selected() function returns True when there are selected indexes
         """
@@ -487,7 +486,7 @@ class TestLib(TestCase):
         mocked_list_widget.selectedIndexes.assert_called_with()
         self.assertTrue(result, 'The result should be True')
 
-    def check_item_selected_false_test(self):
+    def test_check_item_selected_false(self):
         """
         Test that the check_item_selected() function returns False when there are no selected indexes.
         """
@@ -508,7 +507,7 @@ class TestLib(TestCase):
             MockedQtWidgets.QMessageBox.information.assert_called_with('parent', 'mocked translate', 'message')
             self.assertFalse(result, 'The result should be False')
 
-    def clean_tags_test(self):
+    def test_clean_tags(self):
         """
         Test clean_tags() method.
         """
@@ -530,7 +529,7 @@ class TestLib(TestCase):
             # THEN: The strings should be identical.
             self.assertEqual(wanted_string, result_string, 'The strings should be identical')
 
-    def expand_tags_test(self):
+    def test_expand_tags(self):
         """
         Test the expand_tags() method.
         """
@@ -569,7 +568,7 @@ class TestLib(TestCase):
             # THEN: The strings should be identical.
             self.assertEqual(wanted_string, result_string, 'The strings should be identical.')
 
-    def validate_thumb_file_does_not_exist_test(self):
+    def test_validate_thumb_file_does_not_exist(self):
         """
         Test the validate_thumb() function when the thumbnail does not exist
         """
@@ -586,7 +585,7 @@ class TestLib(TestCase):
             mocked_os.path.exists.assert_called_with(thumb_path)
             assert result is False, 'The result should be False'
 
-    def validate_thumb_file_exists_and_newer_test(self):
+    def test_validate_thumb_file_exists_and_newer(self):
         """
         Test the validate_thumb() function when the thumbnail exists and has a newer timestamp than the file
         """
@@ -606,7 +605,7 @@ class TestLib(TestCase):
             # THEN: we should have called a few functions, and the result should be True
             # mocked_os.path.exists.assert_called_with(thumb_path)
 
-    def validate_thumb_file_exists_and_older_test(self):
+    def test_validate_thumb_file_exists_and_older(self):
         """
         Test the validate_thumb() function when the thumbnail exists but is older than the file
         """
@@ -630,7 +629,7 @@ class TestLib(TestCase):
             mocked_os.stat.assert_any_call(thumb_path)
             assert result is False, 'The result should be False'
 
-    def resize_thumb_test(self):
+    def test_resize_thumb(self):
         """
         Test the resize_thumb() function
         """
@@ -651,7 +650,7 @@ class TestLib(TestCase):
         self.assertEqual(wanted_width, result_size.width(), 'The image should have the requested width.')
         self.assertEqual(image.pixel(0, 0), wanted_background_rgb, 'The background should be white.')
 
-    def create_separated_list_qlocate_test(self):
+    def test_create_separated_list_qlocate(self):
         """
         Test the create_separated_list function using the Qt provided method
         """
@@ -670,7 +669,7 @@ class TestLib(TestCase):
             assert string_result == 'Author 1, Author 2, and Author 3', 'The string should be u\'Author 1, ' \
                 'Author 2, and Author 3\'.'
 
-    def create_separated_list_empty_list_test(self):
+    def test_create_separated_list_empty_list(self):
         """
         Test the create_separated_list function with an empty list
         """
@@ -686,7 +685,7 @@ class TestLib(TestCase):
             # THEN: We shoud have an emptry string.
             assert string_result == '', 'The string sould be empty.'
 
-    def create_separated_list_with_one_item_test(self):
+    def test_create_separated_list_with_one_item(self):
         """
         Test the create_separated_list function with a list consisting of only one entry
         """
@@ -702,7 +701,7 @@ class TestLib(TestCase):
             # THEN: We should have "Author 1"
             assert string_result == 'Author 1', 'The string should be u\'Author 1\'.'
 
-    def create_separated_list_with_two_items_test(self):
+    def test_create_separated_list_with_two_items(self):
         """
         Test the create_separated_list function with a list of two entries
         """
@@ -719,7 +718,7 @@ class TestLib(TestCase):
             # THEN: We should have "Author 1 and Author 2"
             assert string_result == 'Author 1 and Author 2', 'The string should be u\'Author 1 and Author 2\'.'
 
-    def create_separated_list_with_three_items_test(self):
+    def test_create_separated_list_with_three_items(self):
         """
         Test the create_separated_list function with a list of three items
         """

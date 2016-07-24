@@ -49,7 +49,7 @@ class OSISBible(BibleDB):
         """
         Loads a Bible from file.
         """
-        log.debug('Starting OSIS import from "%s"' % self.filename)
+        log.debug('Starting OSIS import from "{name}"'.format(name=self.filename))
         if not isinstance(self.filename, str):
             self.filename = str(self.filename, 'utf8')
         import_file = None
@@ -69,7 +69,7 @@ class OSISBible(BibleDB):
             if not language_id:
                 language_id = self.get_language(bible_name)
             if not language_id:
-                log.error('Importing books from "%s" failed' % self.filename)
+                log.error('Importing books from "{name}" failed'.format(name=self.filename))
                 return False
             self.save_meta('language_id', language_id)
             num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=namespace))
@@ -127,9 +127,7 @@ class OSISBible(BibleDB):
                 etree.strip_tags(book, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}div'))
                 book_ref_id = self.get_book_ref_id_by_name(book.get('osisID'), num_books, language_id)
                 if not book_ref_id:
-                    book_ref_id = self.get_book_ref_id_by_localised_name(book.get('osisID'))
-                if not book_ref_id:
-                    log.error('Importing books from "%s" failed' % self.filename)
+                    log.error('Importing books from "{name}" failed'.format(name=self.filename))
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 db_book = self.create_book(book_details['name'], book_ref_id, book_details['testament_id'])
@@ -187,7 +185,8 @@ class OSISBible(BibleDB):
             trace_error_handler(log)
             success = False
             critical_error_message_box(message=translate('BiblesPlugin.OsisImport',
-                                                         'The file is not a valid OSIS-XML file: \n%s' % e.msg))
+                                                         'The file is not a valid OSIS-XML file:'
+                                                         '\n{text}').format(text=e.msg))
         finally:
             if import_file:
                 import_file.close()

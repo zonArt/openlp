@@ -28,7 +28,8 @@ PREREQUISITE: add_record() and get_all() functions validated.
 import os
 from unittest import TestCase
 
-from openlp.core.lib.projector.db import Manufacturer, Model, Projector, ProjectorDB, ProjectorSource
+from openlp.core.lib.projector.db import Manufacturer, Model, Projector, ProjectorDB, ProjectorSource, Source
+from openlp.core.lib.projector.constants import PJLINK_PORT
 
 from tests.functional import MagicMock, patch
 from tests.resources.projector.data import TEST_DB, TEST1_DATA, TEST2_DATA, TEST3_DATA
@@ -106,7 +107,7 @@ class TestProjectorDB(TestCase):
                 time.sleep(1)
                 retries += 1
 
-    def find_record_by_ip_test(self):
+    def test_find_record_by_ip(self):
         """
         Test find record by IP
         """
@@ -120,7 +121,7 @@ class TestProjectorDB(TestCase):
         self.assertTrue(compare_data(Projector(**TEST2_DATA), record),
                         'Record found should have been test_2 data')
 
-    def find_record_by_name_test(self):
+    def test_find_record_by_name(self):
         """
         Test find record by name
         """
@@ -134,7 +135,7 @@ class TestProjectorDB(TestCase):
         self.assertTrue(compare_data(Projector(**TEST2_DATA), record),
                         'Record found should have been test_2 data')
 
-    def record_delete_test(self):
+    def test_record_delete(self):
         """
         Test record can be deleted
         """
@@ -149,7 +150,7 @@ class TestProjectorDB(TestCase):
         found = self.projector.get_projector_by_ip(TEST3_DATA['ip'])
         self.assertFalse(found, 'test_3 record should have been deleted')
 
-    def record_edit_test(self):
+    def test_record_edit(self):
         """
         Test edited record returns the same record ID with different data
         """
@@ -175,7 +176,7 @@ class TestProjectorDB(TestCase):
         self.assertEqual(record_id, record.id, 'Edited record should have the same ID')
         self.assertTrue(compare_data(Projector(**TEST3_DATA), record), 'Edited record should have new data')
 
-    def source_add_test(self):
+    def test_source_add(self):
         """
         Test source entry for projector item
         """
@@ -193,9 +194,9 @@ class TestProjectorDB(TestCase):
         item = self.projector.get_projector_by_id(item_id)
         self.assertTrue(compare_source(item.source_list[0], source))
 
-    def manufacturer_repr_test(self):
+    def test_manufacturer_repr(self):
         """
-        Test manufacturer class __repr__ text
+        Test Manufacturer.__repr__ text
         """
         # GIVEN: Test object
         manufacturer = Manufacturer()
@@ -207,9 +208,9 @@ class TestProjectorDB(TestCase):
         self.assertEqual(str(manufacturer), '<Manufacturer(name="OpenLP Test")>',
                          'Manufacturer.__repr__() should have returned a proper representation string')
 
-    def model_repr_test(self):
+    def test_model_repr(self):
         """
-        Test model class __repr__ text
+        Test Model.__repr__ text
         """
         # GIVEN: Test object
         model = Model()
@@ -220,3 +221,66 @@ class TestProjectorDB(TestCase):
         # THEN: __repr__ should return a proper string
         self.assertEqual(str(model), '<Model(name='"OpenLP Test"')>',
                          'Model.__repr__() should have returned a proper representation string')
+
+    def test_source_repr(self):
+        """
+        Test Source.__repr__ text
+        """
+        # GIVEN: Test object
+        source = Source()
+
+        # WHEN: Source() information is set
+        source.pjlink_name = 'Test object'
+        source.pjlink_code = '11'
+        source.text = 'Input text'
+
+        # THEN: __repr__ should return a proper string
+        self.assertEqual(str(source), '<Source(pjlink_name="Test object", pjlink_code="11", text="Input text")>',
+                         'Source.__repr__() should have returned a proper representation string')
+
+    def test_projector_repr(self):
+        """
+        Test Projector.__repr__() text
+        """
+        # GIVEN: Test object
+        projector = Projector()
+
+        # WHEN: projector() is populated
+        # NOTE: projector.pin, projector.other, projector.sources should all return None
+        #       projector.source_list should return an empty list
+        projector.id = 0
+        projector.ip = '127.0.0.1'
+        projector.port = PJLINK_PORT
+        projector.name = 'Test One'
+        projector.location = 'Somewhere over the rainbow'
+        projector.notes = 'Not again'
+        projector.pjlink_name = 'TEST'
+        projector.manufacturer = 'IN YOUR DREAMS'
+        projector.model = 'OpenLP'
+
+        # THEN: __repr__ should return a proper string
+        self.assertEqual(str(projector),
+                         '< Projector(id="0", ip="127.0.0.1", port="4352", pin="None", name="Test One", '
+                         'location="Somewhere over the rainbow", notes="Not again", pjlink_name="TEST", '
+                         'manufacturer="IN YOUR DREAMS", model="OpenLP", other="None", sources="None", '
+                         'source_list="[]") >',
+                         'Projector.__repr__() should have returned a proper representation string')
+
+    def test_projectorsource_repr(self):
+        """
+        Test ProjectorSource.__repr__() text
+        """
+        # GIVEN: test setup
+        projector1 = Projector(**TEST1_DATA)
+        self.projector.add_projector(projector1)
+        item = self.projector.get_projector_by_id(projector1.id)
+        item_id = item.id
+
+        # WHEN: A source entry is saved for item
+        source = ProjectorSource(projector_id=item_id, code='11', text='First RGB source')
+        self.projector.add_source(source)
+
+        # THEN: __repr__ should return a proper string
+        self.assertEqual(str(source),
+                         '<ProjectorSource(id="1", code="11", text="First RGB source", projector_id="1")>',
+                         'ProjectorSource.__repr__)_ should have returned a proper representation string')

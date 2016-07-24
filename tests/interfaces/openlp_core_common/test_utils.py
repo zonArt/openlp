@@ -41,7 +41,7 @@ class TestUtils(TestCase, TestMixin):
         """
         self.setup_application()
 
-    def is_not_image_empty_test(self):
+    def test_is_not_image_empty(self):
         """
         Test the method handles an empty string
         """
@@ -54,7 +54,7 @@ class TestUtils(TestCase, TestMixin):
         # THEN the result is false
         assert result is True, 'The missing file test should return True'
 
-    def is_not_image_with_image_file_test(self):
+    def test_is_not_image_with_image_file(self):
         """
         Test the method handles an image file
         """
@@ -67,7 +67,7 @@ class TestUtils(TestCase, TestMixin):
         # THEN the result is false
         assert result is False, 'The file is present so the test should return False'
 
-    def is_not_image_with_none_image_file_test(self):
+    def test_is_not_image_with_none_image_file(self):
         """
         Test the method handles a non image file
         """

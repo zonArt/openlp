@@ -53,7 +53,7 @@ class TestThemeManager(TestCase):
         """
         shutil.rmtree(self.temp_folder)
 
-    def export_theme_test(self):
+    def test_export_theme(self):
         """
         Test exporting a theme .
         """
@@ -73,7 +73,7 @@ class TestThemeManager(TestCase):
                                                                  'Default', 'Default.xml'),
                                                     os.path.join('Default', 'Default.xml'))
 
-    def initial_theme_manager_test(self):
+    def test_initial_theme_manager(self):
         """
         Test the instantiation of theme manager.
         """
@@ -84,7 +84,7 @@ class TestThemeManager(TestCase):
         # THEN: The the controller should be registered in the registry.
         self.assertIsNotNone(Registry().get('theme_manager'), 'The base theme manager should be registered')
 
-    def write_theme_same_image_test(self):
+    def test_write_theme_same_image(self):
         """
         Test that we don't try to overwrite a theme background image with itself
         """
@@ -112,7 +112,7 @@ class TestThemeManager(TestCase):
             # THEN: The mocked_copyfile should not have been called
             self.assertFalse(mocked_copyfile.called, 'shutil.copyfile should not be called')
 
-    def write_theme_diff_images_test(self):
+    def test_write_theme_diff_images(self):
         """
         Test that we do overwrite a theme background image when a new is submitted
         """
@@ -139,7 +139,7 @@ class TestThemeManager(TestCase):
             # THEN: The mocked_copyfile should not have been called
             self.assertTrue(mocked_copyfile.called, 'shutil.copyfile should be called')
 
-    def write_theme_special_char_name_test(self):
+    def test_write_theme_special_char_name(self):
         """
         Test that we can save themes with special characters in the name
         """
@@ -160,7 +160,7 @@ class TestThemeManager(TestCase):
         self.assertTrue(os.path.exists(os.path.join(self.temp_folder, 'theme 愛 name', 'theme 愛 name.xml')),
                         'Theme with special characters should have been created!')
 
-    def over_write_message_box_yes_test(self):
+    def test_over_write_message_box_yes(self):
         """
         Test that theme_manager.over_write_message_box returns True when the user clicks yes.
         """
@@ -180,7 +180,7 @@ class TestThemeManager(TestCase):
                 theme_manager, 'Theme Already Exists', 'Theme Theme Name already exists. Do you want to replace it?',
                 ANY, ANY)
 
-    def over_write_message_box_no_test(self):
+    def test_over_write_message_box_no(self):
         """
         Test that theme_manager.over_write_message_box returns False when the user clicks no.
         """
@@ -200,7 +200,7 @@ class TestThemeManager(TestCase):
                 theme_manager, 'Theme Already Exists', 'Theme Theme Name already exists. Do you want to replace it?',
                 ANY, ANY)
 
-    def unzip_theme_test(self):
+    def test_unzip_theme(self):
         """
         Test that unzipping of themes works
         """
@@ -222,7 +222,7 @@ class TestThemeManager(TestCase):
             self.assertEqual(mocked_critical_error_message_box.call_count, 0, 'No errors should have happened')
             shutil.rmtree(folder)
 
-    def unzip_theme_invalid_version_test(self):
+    def test_unzip_theme_invalid_version(self):
         """
         Test that themes with invalid (< 2.0) or with no version attributes are rejected
         """

@@ -53,7 +53,7 @@ class TestEditCustomSlideForm(TestCase, TestMixin):
         del self.form
         del self.main_window
 
-    def basic_test(self):
+    def test_basic(self):
         """
         Test if the dialog is correctly set up.
         """
@@ -65,7 +65,7 @@ class TestEditCustomSlideForm(TestCase, TestMixin):
             # THEN: The dialog should be empty.
             assert self.form.slide_text_edit.toPlainText() == '', 'There should not be any text in the text editor.'
 
-    def set_text_test(self):
+    def test_set_text(self):
         """
         Test the set_text() method.
         """

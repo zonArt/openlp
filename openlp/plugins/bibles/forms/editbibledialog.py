@@ -103,9 +103,11 @@ class Ui_EditBibleDialog(object):
         self.book_name_edit = {}
         for book in BiblesResourcesDB.get_books():
             self.book_name_label[book['abbreviation']] = QtWidgets.QLabel(self.book_name_widget)
-            self.book_name_label[book['abbreviation']].setObjectName('book_name_label[%s]' % book['abbreviation'])
+            self.book_name_label[book['abbreviation']].setObjectName(
+                'book_name_label[{book}]'.format(book=book['abbreviation']))
             self.book_name_edit[book['abbreviation']] = QtWidgets.QLineEdit(self.book_name_widget)
-            self.book_name_edit[book['abbreviation']].setObjectName('book_name_edit[%s]' % book['abbreviation'])
+            self.book_name_edit[book['abbreviation']].setObjectName(
+                'book_name_edit[{name}]'.format(name=book['abbreviation']))
             self.book_name_widget_layout.addRow(
                 self.book_name_label[book['abbreviation']],
                 self.book_name_edit[book['abbreviation']])
@@ -148,4 +150,5 @@ class Ui_EditBibleDialog(object):
             self.bible_tab_widget.indexOf(self.book_name_tab),
             translate('SongsPlugin.EditBibleForm', 'Custom Book Names'))
         for book in BiblesResourcesDB.get_books():
-            self.book_name_label[book['abbreviation']].setText('%s:' % str(self.book_names[book['abbreviation']]))
+            self.book_name_label[book['abbreviation']].setText(
+                '{text}:'.format(text=self.book_names[book['abbreviation']]))

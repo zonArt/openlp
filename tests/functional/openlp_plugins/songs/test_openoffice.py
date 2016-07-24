@@ -46,7 +46,7 @@ class TestOpenOfficeImport(TestCase, TestMixin):
         Registry.create()
 
     @patch('openlp.plugins.songs.lib.importers.openoffice.SongImport')
-    def create_importer_test(self, mocked_songimport):
+    def test_create_importer(self, mocked_songimport):
         """
         Test creating an instance of the OpenOfficeImport file importer
         """
@@ -60,7 +60,7 @@ class TestOpenOfficeImport(TestCase, TestMixin):
         self.assertIsNotNone(importer, 'Import should not be none')
 
     @patch('openlp.plugins.songs.lib.importers.openoffice.SongImport')
-    def close_ooo_file_test(self, mocked_songimport):
+    def test_close_ooo_file(self, mocked_songimport):
         """
         Test that close_ooo_file catches raised exceptions
         """

@@ -62,7 +62,7 @@ class TestScreenList(TestCase):
         del self.screens
         del self.application
 
-    def add_desktop_test(self):
+    def test_add_desktop(self):
         """
         Test the ScreenList.screen_count_changed method to check if new monitors are detected by OpenLP.
         """

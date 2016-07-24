@@ -35,7 +35,7 @@ TEST_MEDIA = [['avi_file.avi', 61495], ['mp3_file.mp3', 134426], ['mpg_file.mpg'
 
 class TestMediainfoWrapper(TestCase):
 
-    def media_length_test(self):
+    def test_media_length(self):
         """
         Test the Media Info basic functionality
         """

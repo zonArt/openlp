@@ -80,14 +80,14 @@ class PdfController(PresentationController):
             found_mutool = re.search('usage: mutool.*', decoded_line, re.IGNORECASE)
             if found_mutool:
                 # Test that mutool contains mudraw
-                if re.search('draw\s+--\s+convert document.*', runlog.decode(), re.IGNORECASE | re.MULTILINE):
+                if re.search(r'draw\s+--\s+convert document.*', runlog.decode(), re.IGNORECASE | re.MULTILINE):
                     program_type = 'mutool'
                     break
             found_gs = re.search('GPL Ghostscript.*', decoded_line, re.IGNORECASE)
             if found_gs:
                 program_type = 'gs'
                 break
-        log.debug('in check_binary, found: %s', program_type)
+        log.debug('in check_binary, found: {text}'.format(text=program_type))
         return program_type
 
     def check_available(self):
@@ -215,8 +215,8 @@ class PdfDocument(PresentationDocument):
         height = 0.0
         for line in runlog.splitlines():
             try:
-                width = float(re.search('.*Size: x: (\d+\.?\d*), y: \d+.*', line.decode()).group(1))
-                height = float(re.search('.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line.decode()).group(1))
+                width = float(re.search(r'.*Size: x: (\d+\.?\d*), y: \d+.*', line.decode()).group(1))
+                height = float(re.search(r'.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line.decode()).group(1))
                 break
             except AttributeError:
                 continue
@@ -255,11 +255,13 @@ class PdfDocument(PresentationDocument):
                 os.makedirs(self.get_temp_folder())
             if self.controller.mudrawbin:
                 log.debug('loading presentation using mudraw')
+                # TODO: Find out where the string conversion actually happens
                 runlog = check_output([self.controller.mudrawbin, '-w', str(size.width()), '-h', str(size.height()),
                                        '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path],
                                       startupinfo=self.startupinfo)
             elif self.controller.mutoolbin:
                 log.debug('loading presentation using mutool')
+                # TODO: Find out where the string convertsion actually happens
                 runlog = check_output([self.controller.mutoolbin, 'draw', '-w', str(size.width()), '-h',
                                        str(size.height()),
                                        '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.file_path],
@@ -267,6 +269,7 @@ class PdfDocument(PresentationDocument):
             elif self.controller.gsbin:
                 log.debug('loading presentation using gs')
                 resolution = self.gs_get_resolution(size)
+                # TODO: Find out where the string conversion actually happens
                 runlog = check_output([self.controller.gsbin, '-dSAFER', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m',
                                        '-r' + str(resolution), '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4',
                                        '-sOutputFile=' + os.path.join(self.get_temp_folder(), 'mainslide%03d.png'),
