@@ -319,9 +319,9 @@ class HttpRouter(RegistryProperties):
         remote = translate('RemotePlugin.Mobile', 'Remote')
         stage = translate('RemotePlugin.Mobile', 'Stage')
         self.template_vars = {
-            'app_title': "OpenLP | {remote}".format(remote=remote),
-            'stage_title': "OpenLP | {stage}".format(stage=stage),
-            'live_title': "OpenLP | {live}".format(live=UiStrings().Live),
+            'app_title': "{remote} | OpenLP".format(remote=remote),
+            'stage_title': "{stage} | OpenLP".format(stage=stage),
+            'live_title': "{live} | OpenLP".format(live=UiStrings().Live),
             'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
             'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
