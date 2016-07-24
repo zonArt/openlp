@@ -22,43 +22,82 @@
 """
 Package to test the openlp.core.lib.theme package.
 """
-from tests.functional import MagicMock, patch
 from unittest import TestCase
+import os
 
 from openlp.core.lib.theme import ThemeXML
 
 
-class TestTheme(TestCase):
+class TestThemeXML(TestCase):
     """
-    Test the functions in the Theme module
+    Test the ThemeXML class
     """
-    def setUp(self):
-        """
-        Create the UI
-        """
-        pass
-
-    def tearDown(self):
-        """
-        Delete all the C++ objects at the end so that we don't have a segfault
-        """
-        pass
-
     def test_new_theme(self):
         """
-        Test the theme creation - basic test
+        Test the ThemeXML constructor
         """
-        # GIVEN: A new theme
-
-        # WHEN: A theme is created
+        # GIVEN: The ThemeXML class
+        # WHEN: A theme object is created
         default_theme = ThemeXML()
 
-        # THEN: We should get some default behaviours
-        self.assertTrue(default_theme.background_border_color == '#000000', 'The theme should have a black border')
-        self.assertTrue(default_theme.background_type == 'solid', 'The theme should have a solid backgrounds')
-        self.assertTrue(default_theme.display_vertical_align == 0,
-                        'The theme should have a display_vertical_align of 0')
-        self.assertTrue(default_theme.font_footer_name == "Arial",
-                        'The theme should have a font_footer_name of Arial')
-        self.assertTrue(default_theme.font_main_bold is False, 'The theme should have a font_main_bold of false')
-        self.assertTrue(len(default_theme.__dict__) == 47, 'The theme should have 47 variables')
+        # THEN: The default values should be correct
+        self.assertEqual('#000000', default_theme.background_border_color, 'background_border_color should be "#000000"')
+        self.assertEqual('solid', default_theme.background_type, 'background_type should be "solid"')
+        self.assertEqual(0, default_theme.display_vertical_align, 'display_vertical_align should be 0')
+        self.assertEqual('Arial', default_theme.font_footer_name, 'font_footer_name should be "Arial"')
+        self.assertFalse(default_theme.font_main_bold, 'font_main_bold should be False')
+        self.assertEqual(47, len(default_theme.__dict__), 'The theme should have 47 attributes')
+
+    def test_expand_json(self):
+        """
+        Test the expand_json method
+        """
+        # GIVEN: A ThemeXML object and some JSON to "expand"
+        theme = ThemeXML()
+        theme_json = {
+            'background': {
+                'border_color': '#000000',
+                'type': 'solid'
+            },
+            'display': {
+                'vertical_align': 0
+            },
+            'font': {
+                'footer': {
+                    'bold': False
+                },
+                'main': {
+                    'name': 'Arial'
+                }
+            }
+        }
+
+        # WHEN: ThemeXML.expand_json() is run
+        theme.expand_json(theme_json)
+
+        # THEN: The attributes should be set on the object
+        self.assertEqual('#000000', theme.background_border_color, 'background_border_color should be "#000000"')
+        self.assertEqual('solid', theme.background_type, 'background_type should be "solid"')
+        self.assertEqual(0, theme.display_vertical_align, 'display_vertical_align should be 0')
+        self.assertFalse(theme.font_footer_bold, 'font_footer_bold should be False')
+        self.assertEqual('Arial', theme.font_main_name, 'font_main_name should be "Arial"')
+
+    def test_extend_image_filename(self):
+        """
+        Test the extend_image_filename method
+        """
+        # GIVEN: A theme object
+        theme = ThemeXML()
+        theme.theme_name = 'MyBeautifulTheme   '
+        theme.background_filename = '    video.mp4'
+        theme.background_type = 'video'
+        path = os.path.expanduser('~')
+
+        # WHEN: ThemeXML.extend_image_filename is run
+        theme.extend_image_filename(path)
+
+        # THEN: The filename of the background should be correct
+        expected_filename = os.path.join(path, 'MyBeautifulTheme', 'video.mp4')
+        self.assertEqual(expected_filename, theme.background_filename)
+        self.assertEqual('MyBeautifulTheme', theme.theme_name)
+
