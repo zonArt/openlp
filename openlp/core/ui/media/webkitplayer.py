@@ -22,9 +22,9 @@
 """
 The :mod:`~openlp.core.ui.media.webkit` module contains our WebKit video player
 """
-from PyQt5 import QtGui, QtWebKitWidgets
-
 import logging
+
+from PyQt5 import QtGui, QtWebKitWidgets
 
 from openlp.core.common import Settings
 from openlp.core.lib import translate

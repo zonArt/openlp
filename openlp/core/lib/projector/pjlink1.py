@@ -48,7 +48,7 @@ from codecs import decode
 
 from PyQt5 import QtCore, QtNetwork
 
-from openlp.core.common import translate, md5_hash
+from openlp.core.common import translate, qmd5_hash
 from openlp.core.lib.projector.constants import *
 
 # Shortcuts
@@ -312,10 +312,10 @@ class PJLink1(QtNetwork.QTcpSocket):
             read = self.readLine(self.max_size)
             dontcare = self.readLine(self.max_size)  # Clean out the trailing \r\n
             if read is None:
-                log.warn('({ip}) read is None - socket error?'.format(ip=self.ip))
+                log.warning('({ip}) read is None - socket error?'.format(ip=self.ip))
                 return
             elif len(read) < 8:
-                log.warn('({ip}) Not enough data read)'.format(ip=self.ip))
+                log.warning('({ip}) Not enough data read)'.format(ip=self.ip))
                 return
             data = decode(read, 'ascii')
             # Possibility of extraneous data on input when reading.
@@ -364,14 +364,15 @@ class PJLink1(QtNetwork.QTcpSocket):
             else:
                 log.debug('({ip}) Setting hash with salt="{data}"'.format(ip=self.ip, data=data_check[2]))
                 log.debug('({ip}) pin="{data}"'.format(ip=self.ip, data=self.pin))
-                salt = md5_hash(salt=data_check[2].encode('ascii'), data=self.pin.encode('ascii'))
+                data_hash = str(qmd5_hash(salt=data_check[2].encode('utf-8'), data=self.pin.encode('utf-8')),
+                                encoding='ascii')
         else:
-            salt = None
-        # We're connected at this point, so go ahead and do regular I/O
+            data_hash = None
+        # We're connected at this point, so go ahead and setup regular I/O
         self.readyRead.connect(self.get_data)
         self.projectorReceivedData.connect(self._send_command)
         # Initial data we should know about
-        self.send_command(cmd='CLSS', salt=salt)
+        self.send_command(cmd='CLSS', salt=data_hash)
         self.waitForReadyRead()
         if (not self.no_poll) and (self.state() == self.ConnectedState):
             log.debug('({ip}) Starting timer'.format(ip=self.ip))
@@ -413,7 +414,7 @@ class PJLink1(QtNetwork.QTcpSocket):
             self.projectorReceivedData.emit()
             return
         elif '=' not in data:
-            log.warn('({ip}) get_data(): Invalid packet received'.format(ip=self.ip))
+            log.warning('({ip}) get_data(): Invalid packet received'.format(ip=self.ip))
             self.send_busy = False
             self.projectorReceivedData.emit()
             return
@@ -421,15 +422,15 @@ class PJLink1(QtNetwork.QTcpSocket):
         try:
             (prefix, class_, cmd, data) = (data_split[0][0], data_split[0][1], data_split[0][2:], data_split[1])
         except ValueError as e:
-            log.warn('({ip}) get_data(): Invalid packet - expected header + command + data'.format(ip=self.ip))
-            log.warn('({ip}) get_data(): Received data: "{data}"'.format(ip=self.ip, data=data_in.strip()))
+            log.warning('({ip}) get_data(): Invalid packet - expected header + command + data'.format(ip=self.ip))
+            log.warning('({ip}) get_data(): Received data: "{data}"'.format(ip=self.ip, data=data_in.strip()))
             self.change_status(E_INVALID_DATA)
             self.send_busy = False
             self.projectorReceivedData.emit()
             return
 
         if not (self.pjlink_class in PJLINK_VALID_CMD and cmd in PJLINK_VALID_CMD[self.pjlink_class]):
-            log.warn('({ip}) get_data(): Invalid packet - unknown command "{data}"'.format(ip=self.ip, data=cmd))
+            log.warning('({ip}) get_data(): Invalid packet - unknown command "{data}"'.format(ip=self.ip, data=cmd))
             self.send_busy = False
             self.projectorReceivedData.emit()
             return
@@ -607,7 +608,7 @@ class PJLink1(QtNetwork.QTcpSocket):
                 fill = {'Hours': int(data_dict[0]), 'On': False if data_dict[1] == '0' else True}
             except ValueError:
                 # In case of invalid entry
-                log.warn('({ip}) process_lamp(): Invalid data "{data}"'.format(ip=self.ip, data=data))
+                log.warning('({ip}) process_lamp(): Invalid data "{data}"'.format(ip=self.ip, data=data))
                 return
             lamps.append(fill)
             data_dict.pop(0)  # Remove lamp hours
@@ -634,7 +635,7 @@ class PJLink1(QtNetwork.QTcpSocket):
                     self.send_command('INST')
         else:
             # Log unknown status response
-            log.warn('({ip}) Unknown power response: {data}'.format(ip=self.ip, data=data))
+            log.warning('({ip}) Unknown power response: {data}'.format(ip=self.ip, data=data))
         return
 
     def process_avmt(self, data):
@@ -659,7 +660,7 @@ class PJLink1(QtNetwork.QTcpSocket):
             shutter = True
             mute = True
         else:
-            log.warn('({ip}) Unknown shutter response: {data}'.format(ip=self.ip, data=data))
+            log.warning('({ip}) Unknown shutter response: {data}'.format(ip=self.ip, data=data))
         update_icons = shutter != self.shutter
         update_icons = update_icons or mute != self.mute
         self.shutter = shutter
@@ -808,7 +809,7 @@ class PJLink1(QtNetwork.QTcpSocket):
         Initiate connection to projector.
         """
         if self.state() == self.ConnectedState:
-            log.warn('({ip}) connect_to_host(): Already connected - returning'.format(ip=self.ip))
+            log.warning('({ip}) connect_to_host(): Already connected - returning'.format(ip=self.ip))
             return
         self.change_status(S_CONNECTING)
         self.connectToHost(self.ip, self.port if isinstance(self.port, int) else int(self.port))
@@ -820,9 +821,9 @@ class PJLink1(QtNetwork.QTcpSocket):
         """
         if abort or self.state() != self.ConnectedState:
             if abort:
-                log.warn('({ip}) disconnect_from_host(): Aborting connection'.format(ip=self.ip))
+                log.warning('({ip}) disconnect_from_host(): Aborting connection'.format(ip=self.ip))
             else:
-                log.warn('({ip}) disconnect_from_host(): Not connected - returning'.format(ip=self.ip))
+                log.warning('({ip}) disconnect_from_host(): Not connected - returning'.format(ip=self.ip))
             self.reset_information()
         self.disconnectFromHost()
         try:

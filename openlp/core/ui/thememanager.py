@@ -583,7 +583,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ThemeManage
                     out_file.write(theme_zip.read(name))
                 out_file.close()
         except (IOError, zipfile.BadZipfile):
-            self.log_exception('Importing theme from zip failed {name|'.format(name=file_name))
+            self.log_exception('Importing theme from zip failed {name}'.format(name=file_name))
             raise ValidationError
         except ValidationError:
             critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),

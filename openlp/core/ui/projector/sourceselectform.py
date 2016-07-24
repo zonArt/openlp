@@ -139,23 +139,23 @@ def build_tab(group, source_key, default, projector, projectordb, edit=False):
     return widget, button_count, buttonchecked
 
 
-def set_button_tooltip(bar):
+def set_button_tooltip(button_bar):
     """
     Set the toolip for the standard buttons used
 
-    :param bar: QDialogButtonBar instance to update
+    :param button_bar: QDialogButtonBar instance to update
     """
-    for button in bar.buttons():
-        if bar.standardButton(button) == QtWidgets.QDialogButtonBox.Cancel:
+    for button in button_bar.buttons():
+        if button_bar.standardButton(button) == QtWidgets.QDialogButtonBox.Cancel:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
                                         'Ignoring current changes and return to OpenLP'))
-        elif bar.standardButton(button) == QtWidgets.QDialogButtonBox.Reset:
+        elif button_bar.standardButton(button) == QtWidgets.QDialogButtonBox.Reset:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
                                         'Delete all user-defined text and revert to PJLink default text'))
-        elif bar.standardButton(button) == QtWidgets.QDialogButtonBox.Discard:
+        elif button_bar.standardButton(button) == QtWidgets.QDialogButtonBox.Discard:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
                                         'Discard changes and reset to previous user-defined text'))
-        elif bar.standardButton(button) == QtWidgets.QDialogButtonBox.Ok:
+        elif button_bar.standardButton(button) == QtWidgets.QDialogButtonBox.Ok:
             button.setToolTip(translate('OpenLP.SourceSelectForm',
                                         'Save changes and return to OpenLP'))
         else:
