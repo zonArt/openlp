@@ -26,7 +26,7 @@ import datetime
 import logging
 import os
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui
 
 from openlp.core.common import ThemeLevel, SlideLimits, UiStrings, is_win, is_linux
 

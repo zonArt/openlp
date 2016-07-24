@@ -86,8 +86,6 @@ class ZefaniaBible(BibleDB):
                     continue
                 if bname:
                     book_ref_id = self.get_book_ref_id_by_name(bname, num_books, language_id)
-                    if not book_ref_id:
-                        book_ref_id = self.get_book_ref_id_by_localised_name(bname)
                 else:
                     log.debug('Could not find a name, will use number, basically a guess.')
                     book_ref_id = int(bnumber)

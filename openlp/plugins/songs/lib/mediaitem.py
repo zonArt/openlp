@@ -603,7 +603,7 @@ class SongMediaItem(MediaManagerItem):
                         else:
                             verse_index = VerseType.from_tag(verse[0]['type'])
                         verse_tag = VerseType.translated_tags[verse_index]
-                        verse_def = '{tag}{label}'.format(tzg=verse_tag, text=verse[0]['label'])
+                        verse_def = '{tag}{text}'.format(tag=verse_tag, text=verse[0]['label'])
                         service_item.add_from_text(verse[1], verse_def)
         service_item.title = song.title
         author_list = self.generate_footer(service_item, song)

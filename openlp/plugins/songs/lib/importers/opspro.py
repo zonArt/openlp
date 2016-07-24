@@ -55,7 +55,7 @@ class OPSProImport(SongImport):
         """
         password = self.extract_mdb_password()
         try:
-            conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ={source};'
+            conn = pyodbc.connect('DRIVER={{Microsoft Access Driver (*.mdb)}};DBQ={source};'
                                   'PWD={password}'.format(source=self.import_source, password=password))
         except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError) as e:
             log.warning('Unable to connect the OPS Pro database {source}. {error}'.format(source=self.import_source,
@@ -74,11 +74,11 @@ class OPSProImport(SongImport):
                 break
             # Type means: 0=Original, 1=Projection, 2=Own
             cursor.execute('SELECT Lyrics, Type, IsDualLanguage FROM Lyrics WHERE SongID = ? AND Type < 2 '
-                           'ORDER BY Type DESC', song.ID)
+                           'ORDER BY Type DESC', float(song.ID))
             lyrics = cursor.fetchone()
             cursor.execute('SELECT CategoryName FROM Category INNER JOIN SongCategory '
                            'ON Category.ID = SongCategory.CategoryID WHERE SongCategory.SongID = ? '
-                           'ORDER BY CategoryName', song.ID)
+                           'ORDER BY CategoryName', float(song.ID))
             topics = cursor.fetchall()
             try:
                 self.process_song(song, lyrics, topics)

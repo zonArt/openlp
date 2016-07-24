@@ -23,7 +23,6 @@
 Provide plugin management
 """
 import os
-import sys
 import imp
 
 from openlp.core.lib import Plugin, PluginStatus

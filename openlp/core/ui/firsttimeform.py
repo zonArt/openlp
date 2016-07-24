@@ -565,13 +565,13 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
             if self.has_run_wizard:
                 text = translate('OpenLP.FirstTimeWizard',
                                  'Download complete. Click the {button} button to return to OpenLP.'
-                                 ).format(text=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
+                                 ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
                 self.progress_label.setText(text)
             else:
                 text = translate('OpenLP.FirstTimeWizard',
                                  'Download complete. Click the {button} button to start OpenLP.'
                                  ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
-                self.progress_label.setText()
+                self.progress_label.setText(text)
         else:
             if self.has_run_wizard:
                 text = translate('OpenLP.FirstTimeWizard',
@@ -582,7 +582,7 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
                 text = translate('OpenLP.FirstTimeWizard',
                                  'Click the {button} button to start OpenLP.'
                                  ).format(button=clean_button_text(self.buttonText(QtWidgets.QWizard.FinishButton)))
-                self.progress_label.setText()
+                self.progress_label.setText(text)
         self.finish_button.setVisible(True)
         self.finish_button.setEnabled(True)
         self.cancel_button.setVisible(False)
@@ -666,14 +666,14 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
         if missed_files:
             file_list = ''
             for entry in missed_files:
-                file_list += '{text}<br \>'.format(text=entry)
+                file_list += '{text}<br \\>'.format(text=entry)
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Warning)
             msg.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'Network Error'))
             msg.setText(translate('OpenLP.FirstTimeWizard', 'Unable to download some files'))
             msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
                                              'The following files were not able to be '
-                                             'downloaded:<br \>{text}'.format(text=file_list)))
+                                             'downloaded:<br \\>{text}'.format(text=file_list)))
             msg.setStandardButtons(msg.Ok)
             ans = msg.exec()
         return True

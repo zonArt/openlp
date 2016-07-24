@@ -30,6 +30,7 @@ import re
 import chardet
 from lxml import objectify, etree
 
+from openlp.core.common import translate
 from openlp.core.ui.lib.wizard import WizardStrings
 from .songimport import SongImport
 
@@ -56,7 +57,13 @@ class PresentationManagerImport(SongImport):
                 # Open file with detected encoding and remove encoding declaration
                 text = open(file_path, mode='r', encoding=encoding).read()
                 text = re.sub('.+\?>\n', '', text)
-                tree = etree.fromstring(text, parser=etree.XMLParser(recover=True))
+                try:
+                    tree = etree.fromstring(text, parser=etree.XMLParser(recover=True))
+                except ValueError:
+                    self.log_error(file_path,
+                                   translate('SongsPlugin.PresentationManagerImport',
+                                             'File is not in XML-format, which is the only format supported.'))
+                    continue
             root = objectify.fromstring(etree.tostring(tree))
             self.process_song(root)
 

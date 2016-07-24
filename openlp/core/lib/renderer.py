@@ -531,7 +531,7 @@ def words_split(line):
     :param line: Line to be split
     """
     # this parse we are to be wordy
-    return re.split('\s+', line)
+    return re.split(r'\s+', line)
 
 
 def get_start_tags(raw_text):

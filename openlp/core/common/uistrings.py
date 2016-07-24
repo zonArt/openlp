@@ -69,7 +69,7 @@ class UiStrings(object):
         self.Default = translate('OpenLP.Ui', 'Default')
         self.DefaultColor = translate('OpenLP.Ui', 'Default Color:')
         self.DefaultServiceName = translate('OpenLP.Ui', 'Service %Y-%m-%d %H-%M',
-                                            'This may not contain any of the following characters: /\\?*|<>\[\]":+\n'
+                                            'This may not contain any of the following characters: /\\?*|<>[]":+\n'
                                             'See http://docs.python.org/library/datetime'
                                             '.html#strftime-strptime-behavior for more information.')
         self.Delete = translate('OpenLP.Ui', '&Delete')
