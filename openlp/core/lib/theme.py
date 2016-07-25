@@ -474,6 +474,7 @@ class ThemeXML(object):
             if element.startswith('shadow') or element.startswith('outline'):
                 master = 'font_main'
         # fix bold font
+        ret_value = None
         if element == 'weight':
             element = 'bold'
             if value == 'Normal':
@@ -482,7 +483,7 @@ class ThemeXML(object):
                 ret_value = True
         if element == 'proportion':
             element = 'size'
-        return False, master, element, ret_value
+        return False, master, element, ret_value if ret_value is not None else value
 
     def _create_attr(self, master, element, value):
         """
