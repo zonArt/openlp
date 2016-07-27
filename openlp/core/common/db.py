@@ -22,10 +22,11 @@
 """
 The :mod:`db` module provides helper functions for database related methods.
 """
-import sqlalchemy
 import logging
-
 from copy import deepcopy
+
+import sqlalchemy
+
 
 log = logging.getLogger(__name__)
 

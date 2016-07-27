@@ -480,9 +480,10 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         :return: service array
         """
         service = []
-        core = {'lite-service': self._save_lite,
-                'service-theme': self.service_theme
-                }
+        core = {
+            'lite-service': self._save_lite,
+            'service-theme': self.service_theme
+        }
         service.append({'openlp_core': core})
         return service
 
@@ -597,7 +598,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         if success:
             try:
                 shutil.copy(temp_file_name, path_file_name)
-            except shutil.Error:
+            except (shutil.Error, PermissionError):
                 return self.save_file_as()
             except OSError as ose:
                 QtWidgets.QMessageBox.critical(self, translate('OpenLP.ServiceManager', 'Error Saving File'),
@@ -658,7 +659,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         if success:
             try:
                 shutil.copy(temp_file_name, path_file_name)
-            except shutil.Error:
+            except (shutil.Error, PermissionError):
                 return self.save_file_as()
             self.main_window.add_recent_file(path_file_name)
             self.set_modified(False)
@@ -774,7 +775,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
             else:
                 critical_error_message_box(message=translate('OpenLP.ServiceManager', 'File is not a valid service.'))
                 self.log_error('File contains no service data')
-        except (IOError, NameError, zipfile.BadZipfile):
+        except (IOError, NameError):
             self.log_exception('Problem loading service file {name}'.format(name=file_name))
             critical_error_message_box(message=translate('OpenLP.ServiceManager',
                                        'File could not be opened because it is corrupt.'))
@@ -1327,7 +1328,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtWidgets.QWidget, Ui_ServiceMa
         """
         The theme may have changed in the settings dialog so make sure the theme combo box is in the correct state.
         """
-        visible = not self.renderer.theme_level == ThemeLevel.Global
+        visible = self.renderer.theme_level != ThemeLevel.Global
         self.toolbar.actions['theme_combo_box'].setVisible(visible)
         self.toolbar.actions['theme_label'].setVisible(visible)
         self.regenerate_service_items()

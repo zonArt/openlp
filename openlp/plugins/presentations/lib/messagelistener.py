@@ -28,7 +28,7 @@ from PyQt5 import QtCore
 
 from openlp.core.common import Registry
 from openlp.core.ui import HideMode
-from openlp.core.lib import ServiceItemContext, ServiceItem
+from openlp.core.lib import ServiceItemContext
 from openlp.plugins.presentations.lib.pdfcontroller import PDF_CONTROLLER_FILETYPES
 
 log = logging.getLogger(__name__)

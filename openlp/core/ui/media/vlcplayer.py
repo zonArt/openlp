@@ -112,7 +112,6 @@ def get_vlc():
 # This needs to happen on module load and not in get_vlc(), otherwise it can cause crashes on some DE on some setups
 # (reported on Gnome3, Unity, Cinnamon, all GTK+ based) when using native filedialogs...
 if is_linux() and 'nose' not in sys.argv[0] and get_vlc():
-    import ctypes
     try:
         try:
             x11 = ctypes.cdll.LoadLibrary('libX11.so.6')
@@ -233,7 +232,7 @@ class VlcPlayer(MediaPlayer):
         """
         vlc = get_vlc()
         start = datetime.now()
-        while not media_state == display.vlc_media.get_state():
+        while media_state != display.vlc_media.get_state():
             if display.vlc_media.get_state() == vlc.State.Error:
                 return False
             self.application.process_events()
