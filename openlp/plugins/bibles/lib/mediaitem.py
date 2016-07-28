@@ -161,7 +161,6 @@ class BibleMediaItem(MediaManagerItem):
         search_button_layout.setObjectName(prefix + 'search_button_layout')
         search_button_layout.addStretch()
         clear_button = QtWidgets.QPushButton(tab)
-        clear_button.setFixedSize(22, 22)
         clear_button.setIcon(self.clear_icon)
         clear_button.setObjectName(prefix + 'ClearButton')
         lock_button = QtWidgets.QToolButton(tab)
