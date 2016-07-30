@@ -556,6 +556,7 @@ class BibleMediaItem(MediaManagerItem):
         self.quick_search_edit.setFocus()
 
     def on_lock_button_toggled(self, checked):
+        self.quick_search_edit.setFocus()
         if checked:
             self.sender().setIcon(self.lock_icon)
         else:
