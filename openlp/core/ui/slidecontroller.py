@@ -37,7 +37,6 @@ from openlp.core.lib import ItemCapabilities, ServiceItem, ImageSource, ServiceI
     build_html
 from openlp.core.lib.ui import create_action
 from openlp.core.ui.lib.toolbar import OpenLPToolbar
-from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
 from openlp.core.ui.lib.listpreviewwidget import ListPreviewWidget
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 

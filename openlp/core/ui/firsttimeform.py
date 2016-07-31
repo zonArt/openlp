@@ -666,14 +666,14 @@ class FirstTimeForm(QtWidgets.QWizard, UiFirstTimeWizard, RegistryProperties):
         if missed_files:
             file_list = ''
             for entry in missed_files:
-                file_list += '{text}<br \>'.format(text=entry)
+                file_list += '{text}<br \\>'.format(text=entry)
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Warning)
             msg.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'Network Error'))
             msg.setText(translate('OpenLP.FirstTimeWizard', 'Unable to download some files'))
             msg.setInformativeText(translate('OpenLP.FirstTimeWizard',
                                              'The following files were not able to be '
-                                             'downloaded:<br \>{text}'.format(text=file_list)))
+                                             'downloaded:<br \\>{text}'.format(text=file_list)))
             msg.setStandardButtons(msg.Ok)
             ans = msg.exec()
         return True

@@ -272,7 +272,7 @@ class ImageManager(QtCore.QObject):
         Add image to cache if it is not already there.
         """
         log.debug('add_image {path}'.format(path=path))
-        if not (path, source, width, height) in self._cache:
+        if (path, source, width, height) not in self._cache:
             image = Image(path, source, background, width, height)
             self._cache[(path, source, width, height)] = image
             self._conversion_queue.put((image.priority, image.secondary_priority, image))

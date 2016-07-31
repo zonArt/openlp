@@ -24,9 +24,9 @@ The :mod:`~openlp.core.ui.media` module contains classes and objects for media p
 """
 import logging
 
-from openlp.core.common import Settings
-
 from PyQt5 import QtCore
+
+from openlp.core.common import Settings
 
 log = logging.getLogger(__name__ + '.__init__')
 
