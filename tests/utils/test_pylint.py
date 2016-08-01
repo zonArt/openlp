@@ -23,8 +23,8 @@
 Package to test for proper bzr tags.
 """
 import os
-import logging
 import platform
+import sys
 from unittest import TestCase, SkipTest
 
 try:
@@ -34,6 +34,14 @@ except ImportError:
     raise SkipTest('pylint not installed - skipping tests using pylint.')
 
 from openlp.core.common import is_win
+
+in_argv = False
+for arg in sys.argv:
+    if arg.endswith('test_pylint.py'):
+        in_argv = True
+        break
+if not in_argv:
+    raise SkipTest('test_pylint.py not specified in arguments - skipping tests using pylint.')
 
 TOLERATED_ERRORS = {'registryproperties.py': ['access-member-before-definition'],
                     'opensong.py': ['no-name-in-module'],
