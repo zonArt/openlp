@@ -48,7 +48,7 @@ class TestPylint(TestCase):
         """
         # GIVEN: Some checks to disable and enable, and the pylint script
         disabled_checks = 'import-error,no-member'
-        enabled_checks = 'missing-format-argument-key,unused-format-string-argument'
+        enabled_checks = 'missing-format-argument-key,unused-format-string-argument,bad-format-string'
         if is_win() or 'arch' in platform.dist()[0].lower():
             pylint_script = 'pylint'
         else:
