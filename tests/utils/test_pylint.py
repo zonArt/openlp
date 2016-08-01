@@ -92,6 +92,9 @@ class TestPylint(TestCase):
             # Filter out PyQt related errors
             elif ('no-name-in-module' in line or 'no-member' in line) and 'PyQt5' in line:
                 continue
+            # Filter out distutils related errors
+            elif 'distutils' in line:
+                continue
             elif self._is_line_tolerated(line):
                 continue
             else:
