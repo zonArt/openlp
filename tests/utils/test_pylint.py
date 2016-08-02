@@ -35,14 +35,6 @@ except ImportError:
 
 from openlp.core.common import is_win
 
-in_argv = False
-for arg in sys.argv:
-    if arg.endswith('test_pylint.py'):
-        in_argv = True
-        break
-if not in_argv:
-    raise SkipTest('test_pylint.py not specified in arguments - skipping tests using pylint.')
-
 TOLERATED_ERRORS = {'registryproperties.py': ['access-member-before-definition'],
                     'opensong.py': ['no-name-in-module'],
                     'maindisplay.py': ['no-name-in-module']}
@@ -54,6 +46,15 @@ class TestPylint(TestCase):
         """
         Test for pylint errors
         """
+        # Test if this file is specified in the arguments, if not skip the test.
+        in_argv = False
+        for arg in sys.argv:
+            if arg.endswith('test_pylint.py') or arg.endswith('test_pylint'):
+                in_argv = True
+                break
+        if not in_argv:
+            raise SkipTest('test_pylint.py not specified in arguments - skipping tests using pylint.')
+
         # GIVEN: Some checks to disable and enable, and the pylint script
         disabled_checks = 'import-error,no-member'
         enabled_checks = 'missing-format-argument-key,unused-format-string-argument,bad-format-string'
