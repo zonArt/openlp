@@ -23,8 +23,8 @@
 Package to test for proper bzr tags.
 """
 import os
-import logging
 import platform
+import sys
 from unittest import TestCase, SkipTest
 
 try:
@@ -46,9 +46,18 @@ class TestPylint(TestCase):
         """
         Test for pylint errors
         """
+        # Test if this file is specified in the arguments, if not skip the test.
+        in_argv = False
+        for arg in sys.argv:
+            if arg.endswith('test_pylint.py') or arg.endswith('test_pylint'):
+                in_argv = True
+                break
+        if not in_argv:
+            raise SkipTest('test_pylint.py not specified in arguments - skipping tests using pylint.')
+
         # GIVEN: Some checks to disable and enable, and the pylint script
         disabled_checks = 'import-error,no-member'
-        enabled_checks = 'missing-format-argument-key,unused-format-string-argument'
+        enabled_checks = 'missing-format-argument-key,unused-format-string-argument,bad-format-string'
         if is_win() or 'arch' in platform.dist()[0].lower():
             pylint_script = 'pylint'
         else:
@@ -83,6 +92,9 @@ class TestPylint(TestCase):
                 continue
             # Filter out PyQt related errors
             elif ('no-name-in-module' in line or 'no-member' in line) and 'PyQt5' in line:
+                continue
+            # Filter out distutils related errors
+            elif 'distutils' in line:
                 continue
             elif self._is_line_tolerated(line):
                 continue
