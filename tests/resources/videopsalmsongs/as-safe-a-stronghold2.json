@@ -1,0 +1,35 @@
+{
+    "authors": [
+        ["Martin Luther", "words"],
+        ["Unknown", "music"]
+    ],
+    "ccli_number": "12345",
+    "comments": "This is\nthe first comment\nThis is\nthe second comment\nThis is\nthe third comment\n",
+    "copyright": "Public Domain",
+    "song_book_name": "SongBook1",
+    "song_number": 0,
+    "title": "A Safe Stronghold Our God is Still",
+    "topics": [
+        "tema1",
+        "tema2"
+    ],
+    "verse_order_list": [],
+    "verses": [
+        [
+            "As safe a stronghold our God is still,\nA trusty shield and weapon;\nHe’ll help us clear from all the ill\nThat hath us now o’ertaken.\nThe ancient prince of hell\nHath risen with purpose fell;\nStrong mail of craft and power\nHe weareth in this hour;\nOn earth is not His fellow.",
+            "v"
+        ],
+        [
+            "With \"force\" of arms we nothing can,\nFull soon were we down-ridden;\nBut for us fights \\ the proper Man,\nWhom God Himself hath bidden.\nAsk ye: Who is this same?\nChrist Jesus is His name,\nThe Lord Sabaoth’s Son;\nHe, and no other one,\nShall conquer in the battle.",
+            "v"
+        ],
+        [
+            "And were this world all devils o’er,\nAnd watching to devour us,\nWe lay it not to heart so sore;\nNot they can overpower us.\nAnd let the prince of ill\nLook grim as e’er he will,\nHe harms us not a whit;\nFor why? his doom is writ;\nA word shall quickly slay him.",
+            "v"
+        ],
+        [
+            "God’s word, for all their craft and force,\nOne moment will not linger,\nBut, spite of hell, shall have its course;\n’Tis written by His finger.\nAnd though they take our life,\nGoods, honour, children, wife,\nYet is their profit small:\nThese things shall vanish all;\nThe city of God remaineth.",
+            "v"
+        ]
+    ]
+}

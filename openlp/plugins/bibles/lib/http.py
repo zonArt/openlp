@@ -252,7 +252,7 @@ class BGExtract(RegistryProperties):
                                                                         chapter=chapter,
                                                                         version=version)
         soup = get_soup_for_bible_ref(
-            'http://legacy.biblegateway.com/passage/?{url}'.format(url=url_params),
+            'http://biblegateway.com/passage/?{url}'.format(url=url_params),
             pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='')
         if not soup:
             return None
@@ -281,7 +281,7 @@ class BGExtract(RegistryProperties):
         """
         log.debug('BGExtract.get_books_from_http("{version}")'.format(version=version))
         url_params = urllib.parse.urlencode({'action': 'getVersionInfo', 'vid': '{version}'.format(version=version)})
-        reference_url = 'http://legacy.biblegateway.com/versions/?{url}#books'.format(url=url_params)
+        reference_url = 'http://biblegateway.com/versions/?{url}#books'.format(url=url_params)
         page = get_web_page(reference_url)
         if not page:
             send_error_message('download')
@@ -312,7 +312,7 @@ class BGExtract(RegistryProperties):
         for book in content:
             book = book.find('td')
             if book:
-                books.append(book.contents[0])
+                books.append(book.contents[1])
         return books
 
     def get_bibles_from_http(self):
@@ -322,11 +322,11 @@ class BGExtract(RegistryProperties):
         returns a list in the form [(biblename, biblekey, language_code)]
         """
         log.debug('BGExtract.get_bibles_from_http')
-        bible_url = 'https://legacy.biblegateway.com/versions/'
+        bible_url = 'https://biblegateway.com/versions/'
         soup = get_soup_for_bible_ref(bible_url)
         if not soup:
             return None
-        bible_select = soup.find('select', {'class': 'translation-dropdown'})
+        bible_select = soup.find('select', {'class': 'search-translation-select'})
         if not bible_select:
             log.debug('No select tags found - did site change?')
             return None
@@ -532,28 +532,26 @@ class CWExtract(RegistryProperties):
         returns a list in the form [(biblename, biblekey, language_code)]
         """
         log.debug('CWExtract.get_bibles_from_http')
-        bible_url = 'http://www.biblestudytools.com/'
+        bible_url = 'http://www.biblestudytools.com/bible-versions/'
         soup = get_soup_for_bible_ref(bible_url)
         if not soup:
             return None
-        bible_select = soup.find('select')
-        if not bible_select:
-            log.debug('No select tags found - did site change?')
-            return None
-        option_tags = bible_select.find_all('option', {'class': 'log-translation'})
-        if not option_tags:
-            log.debug('No option tags found - did site change?')
+        h4_tags = soup.find_all('h4', {'class': 'small-header'})
+        if not h4_tags:
+            log.debug('No h4 tags found - did site change?')
             return None
         bibles = []
-        for ot in option_tags:
-            tag_text = ot.get_text().strip()
-            try:
-                tag_value = ot['value']
-            except KeyError:
-                log.exception('No value attribute found - did site change?')
+        for h4t in h4_tags:
+            short_name = None
+            if h4t.span:
+                short_name = h4t.span.get_text().strip().lower()
+            else:
+                log.error('No span tag found - did site change?')
                 return None
-            if not tag_value:
+            if not short_name:
                 continue
+            h4t.span.extract()
+            tag_text = h4t.get_text().strip()
             # The names of non-english bibles has their language in parentheses at the end
             if tag_text.endswith(')'):
                 language = tag_text[tag_text.rfind('(') + 1:-1]
@@ -561,12 +559,20 @@ class CWExtract(RegistryProperties):
                     language_code = CROSSWALK_LANGUAGES[language]
                 else:
                     language_code = ''
-            # ... except for the latin vulgate
+            # ... except for those that don't...
             elif 'latin' in tag_text.lower():
                 language_code = 'la'
+            elif 'la biblia' in tag_text.lower() or 'nueva' in tag_text.lower():
+                language_code = 'es'
+            elif 'chinese' in tag_text.lower():
+                language_code = 'zh'
+            elif 'greek' in tag_text.lower():
+                language_code = 'el'
+            elif 'nova' in tag_text.lower():
+                language_code = 'pt'
             else:
                 language_code = 'en'
-            bibles.append((tag_text, tag_value, language_code))
+            bibles.append((tag_text, short_name, language_code))
         return bibles
 
 
