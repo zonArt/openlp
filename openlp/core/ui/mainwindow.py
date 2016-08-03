@@ -429,13 +429,13 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Export settings to a *.config file.'))
         self.settings_export_item.setText(translate('OpenLP.MainWindow', 'Settings'))
         self.settings_import_item.setStatusTip(
-            translate('OpenLP.MainWindow', 'Import OpenLP settings from a *.config file previously exported from '
-                                           'this or an another machine.'))
+            translate('OpenLP.MainWindow', 'Import settings from a *.config file previously exported from '
+                                           'this or another machine.'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
-        self.view_projector_manager_item.setText(translate('OPenLP.MainWindow', '&Projectors'))
+        self.view_projector_manager_item.setText(translate('OpenLP.MainWindow', '&Projectors'))
         self.view_projector_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Hide or show Projectors.'))
         self.view_projector_manager_item.setStatusTip(translate('OpenLP.MainWindow',
-                                                                'Toggle the visibility of the Projectors.'))
+                                                                'Toggle visibility of the Projectors.'))
         self.view_media_manager_item.setText(translate('OpenLP.MainWindow', 'L&ibrary'))
         self.view_media_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Hide or show the Library.'))
         self.view_media_manager_item.setStatusTip(translate('OpenLP.MainWindow',
@@ -443,22 +443,22 @@ class Ui_MainWindow(object):
         self.view_theme_manager_item.setText(translate('OpenLP.MainWindow', '&Themes'))
         self.view_theme_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Hide or show themes'))
         self.view_theme_manager_item.setStatusTip(translate('OpenLP.MainWindow',
-                                                  'Toggle the visibility of the Themes.'))
+                                                  'Toggle visibility of the Themes.'))
         self.view_service_manager_item.setText(translate('OpenLP.MainWindow', '&Service'))
         self.view_service_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Hide or show Service.'))
         self.view_service_manager_item.setStatusTip(translate('OpenLP.MainWindow',
-                                                    'Toggle the visibility of the Service.'))
+                                                    'Toggle visibility of the Service.'))
         self.view_preview_panel.setText(translate('OpenLP.MainWindow', '&Preview'))
         self.view_preview_panel.setToolTip(translate('OpenLP.MainWindow', 'Hide or show Preview.'))
         self.view_preview_panel.setStatusTip(
-            translate('OpenLP.MainWindow', 'Toggle the visibility of the Preview.'))
+            translate('OpenLP.MainWindow', 'Toggle visibility of the Preview.'))
         self.view_live_panel.setText(translate('OpenLP.MainWindow', 'Li&ve'))
         self.view_live_panel.setToolTip(translate('OpenLP.MainWindow', 'Hide or show Live'))
         self.lock_panel.setText(translate('OpenLP.MainWindow', 'L&ock visibility of the panels'))
         self.lock_panel.setStatusTip(translate('OpenLP.MainWindow', 'Lock visibility of the panels.'))
-        self.view_live_panel.setStatusTip(translate('OpenLP.MainWindow', 'Toggle the visibility of the Live.'))
+        self.view_live_panel.setStatusTip(translate('OpenLP.MainWindow', 'Toggle visibility of the Live.'))
         self.settings_plugin_list_item.setText(translate('OpenLP.MainWindow', '&Manage Plugins'))
-        self.settings_plugin_list_item.setStatusTip(translate('OpenLP.MainWindow', 'You can activate or disable plugins'
+        self.settings_plugin_list_item.setStatusTip(translate('OpenLP.MainWindow', 'You can enable and disable plugins '
                                                                                    'from here.'))
         self.about_item.setText(translate('OpenLP.MainWindow', '&About'))
         self.about_item.setStatusTip(translate('OpenLP.MainWindow', 'More information about OpenLP.'))
@@ -487,9 +487,9 @@ class Ui_MainWindow(object):
         self.update_theme_images.setText(translate('OpenLP.MainWindow', 'Update Theme Images'))
         self.update_theme_images.setStatusTip(translate('OpenLP.MainWindow',
                                                         'Update the preview images for all themes.'))
-        self.mode_default_item.setText(translate('OpenLP.MainWindow', '&Default'))
-        self.mode_default_item.setStatusTip(translate('OpenLP.MainWindow', 'Reset the interface layout back to the '
-                                                                           'default settings.'))
+        self.mode_default_item.setText(translate('OpenLP.MainWindow', '&Show all'))
+        self.mode_default_item.setStatusTip(translate('OpenLP.MainWindow', 'Reset the interface back to the '
+                                                                           'default layout and show all the panels.'))
         self.mode_setup_item.setText(translate('OpenLP.MainWindow', '&Setup'))
         self.mode_setup_item.setStatusTip(translate('OpenLP.MainWindow', 'Use layout that focuses on setting'
                                                                          ' up the Service.'))
@@ -954,7 +954,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, RegistryProperties):
             self,
             translate('OpenLP.MainWindow', 'Export Settings File'),
             '',
-            translate('OpenLP.MainWindow', 'Exported OpenLP Settings (*.conf)'))
+            translate('OpenLP.MainWindow', 'OpenLP Settings (*.conf)'))
         if not export_file_name:
             return
             # Make sure it's a .conf file.
