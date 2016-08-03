@@ -128,6 +128,12 @@ class BibleDB(Manager, RegistryProperties):
                 The name of the database. This is also used as the file name for SQLite databases.
         """
         log.info('BibleDB loaded')
+        self._setup(parent, **kwargs)
+
+    def _setup(self, parent, **kwargs):
+        """
+        Run some initial setup. This method is separate from __init__ in order to mock it out in tests.
+        """
         self.bible_plugin = parent
         self.session = None
         if 'path' not in kwargs:
@@ -465,14 +471,13 @@ class BibleDB(Manager, RegistryProperties):
         """
         log.debug('BibleDB.get_language()')
         from openlp.plugins.bibles.forms import LanguageForm
-        language = None
+        language_id = None
         language_form = LanguageForm(self.wizard)
         if language_form.exec(bible_name):
-            language = str(language_form.language_combo_box.currentText())
-        if not language:
+            combo_box = language_form.language_combo_box
+            language_id = combo_box.itemData(combo_box.currentIndex())
+        if not language_id:
             return False
-        language = BiblesResourcesDB.get_language(language)
-        language_id = language['id']
         self.save_meta('language_id', language_id)
         return language_id
 
@@ -766,43 +771,6 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             if book[1].lower() == name.lower():
                 return book[0]
         return None
-
-    @staticmethod
-    def get_language(name):
-        """
-        Return a dict containing the language id, name and code by name or abbreviation.
-
-        :param name: The name or abbreviation of the language.
-        """
-        log.debug('BiblesResourcesDB.get_language("{name}")'.format(name=name))
-        if not isinstance(name, str):
-            name = str(name)
-        language = BiblesResourcesDB.run_sql(
-            'SELECT id, name, code FROM language WHERE name = ? OR code = ?', (name, name.lower()))
-        if language:
-            return {
-                'id': language[0][0],
-                'name': str(language[0][1]),
-                'code': str(language[0][2])
-            }
-        else:
-            return None
-
-    @staticmethod
-    def get_languages():
-        """
-        Return a dict containing all languages with id, name and code.
-        """
-        log.debug('BiblesResourcesDB.get_languages()')
-        languages = BiblesResourcesDB.run_sql('SELECT id, name, code FROM language ORDER by name')
-        if languages:
-            return [{
-                'id': language[0],
-                'name': str(language[1]),
-                'code': str(language[2])
-            } for language in languages]
-        else:
-            return None
 
     @staticmethod
     def get_testament_reference():
