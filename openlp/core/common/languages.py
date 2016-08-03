@@ -182,7 +182,7 @@ languages = sorted([
     Language(137, translate('common.languages', 'Yoruba', 'Language code: yo'), 'yo'),
     Language(138, translate('common.languages', 'Zhuang', 'Language code: za'), 'za'),
     Language(139, translate('common.languages', 'Zulu', 'Language code: zu'), 'zu')
-    ], key=lambda language: language.name)
+], key=lambda language: language.name)
 
 
 def get_language(name):
