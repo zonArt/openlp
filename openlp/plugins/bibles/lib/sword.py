@@ -23,7 +23,7 @@
 import logging
 from pysword import modules
 
-from openlp.core.common import translate
+from openlp.core.common import languages, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
@@ -57,9 +57,12 @@ class SwordBible(BibleDB):
             pysword_modules = modules.SwordModules(self.sword_path)
             pysword_module_json = pysword_modules.parse_modules()[self.sword_key]
             bible = pysword_modules.get_bible_from_module(self.sword_key)
+            language_id = None
             language = pysword_module_json['lang']
             language = language[language.find('.') + 1:]
-            language_id = BiblesResourcesDB.get_language(language)['id']
+            language = languages.get_language(language)
+            if hasattr(language, 'id'):
+                language_id = language.id
             self.save_meta('language_id', language_id)
             books = bible.get_structure().get_books()
             # Count number of books
