@@ -982,7 +982,7 @@ class OldBibleDB(QtCore.QObject, Manager):
 
     def get_verses(self, book_id):
         """
-        Returns the verses of the Bible.
+        Returns the verses of the    Bible.
         """
         verses = self.run_sql(
             'SELECT book_id, chapter, verse, text FROM verse WHERE book_id = ? ORDER BY id', (book_id, ))
