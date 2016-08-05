@@ -73,6 +73,14 @@ class VideoPsalmImport(SongImport):
                         processed_content += c
                         c = next(file_content_it)
                     processed_content += '"' + c
+                # Remove control characters
+                elif (c < chr(32)):
+                    processed_content += ' '
+                # Handle escaped characters
+                elif c == '\\':
+                    processed_content += c
+                    c = next(file_content_it)
+                    processed_content += c
                 else:
                     processed_content += c
             songbook = json.loads(processed_content.strip())

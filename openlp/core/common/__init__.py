@@ -195,7 +195,7 @@ def verify_ip_address(addr):
     return True if verify_ipv4(addr) else verify_ipv6(addr)
 
 
-def md5_hash(salt, data=None):
+def md5_hash(salt=None, data=None):
     """
     Returns the hashed output of md5sum on salt,data
     using Python3 hashlib
@@ -205,8 +205,11 @@ def md5_hash(salt, data=None):
     :returns: str
     """
     log.debug('md5_hash(salt="{text}")'.format(text=salt))
+    if not salt and not data:
+        return None
     hash_obj = hashlib.new('md5')
-    hash_obj.update(salt)
+    if salt:
+        hash_obj.update(salt)
     if data:
         hash_obj.update(data)
     hash_value = hash_obj.hexdigest()
@@ -214,22 +217,30 @@ def md5_hash(salt, data=None):
     return hash_value
 
 
-def qmd5_hash(salt, data=None):
+def qmd5_hash(salt=None, data=None):
     """
     Returns the hashed output of MD5Sum on salt, data
-    using PyQt5.QCryptographicHash.
+    using PyQt5.QCryptographicHash. Function returns a
+    QByteArray instead of a text string.
+    If you need a string instead, call with
+
+        result = str(qmd5_hash(salt=..., data=...), encoding='ascii')
 
     :param salt: Initial salt
     :param data: OPTIONAL Data to hash
-    :returns: str
+    :returns: QByteArray
     """
     log.debug('qmd5_hash(salt="{text}"'.format(text=salt))
+    if salt is None and data is None:
+        return None
     hash_obj = QHash(QHash.Md5)
-    hash_obj.addData(salt)
-    hash_obj.addData(data)
+    if salt:
+        hash_obj.addData(salt)
+    if data:
+        hash_obj.addData(data)
     hash_value = hash_obj.result().toHex()
-    log.debug('qmd5_hash() returning "{text}"'.format(text=hash_value))
-    return hash_value.data()
+    log.debug('qmd5_hash() returning "{hash}"'.format(hash=hash_value))
+    return hash_value
 
 
 def clean_button_text(button_text):

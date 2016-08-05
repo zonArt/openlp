@@ -21,9 +21,9 @@
 ###############################################################################
 
 import logging
-from lxml import etree, objectify
+from lxml import etree
 
-from openlp.core.common import translate
+from openlp.core.common import languages, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
@@ -62,7 +62,9 @@ class ZefaniaBible(BibleDB):
             language_id = None
             language = zefania_bible_tree.xpath("/XMLBIBLE/INFORMATION/language/text()")
             if language:
-                language_id = BiblesResourcesDB.get_language(language[0])
+                language = languages.get_language(language[0])
+                if hasattr(language, 'id'):
+                    language_id = language.id
             # The language couldn't be detected, ask the user
             if not language_id:
                 language_id = self.get_language(bible_name)
@@ -86,8 +88,6 @@ class ZefaniaBible(BibleDB):
                     continue
                 if bname:
                     book_ref_id = self.get_book_ref_id_by_name(bname, num_books, language_id)
-                    if not book_ref_id:
-                        book_ref_id = self.get_book_ref_id_by_localised_name(bname)
                 else:
                     log.debug('Could not find a name, will use number, basically a guess.')
                     book_ref_id = int(bnumber)

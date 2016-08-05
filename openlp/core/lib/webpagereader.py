@@ -179,5 +179,4 @@ def get_web_page(url, header=None, update_openlp=False):
     return page
 
 
-__all__ = ['get_application_version', 'check_latest_version',
-           'get_web_page']
+__all__ = ['get_web_page']

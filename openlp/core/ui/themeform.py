@@ -249,7 +249,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         NOTE the font_main_override is the inverse of the check box value
         """
         if self.update_theme_allowed:
-            self.theme.font_main_override = not (value == QtCore.Qt.Checked)
+            self.theme.font_main_override = (value != QtCore.Qt.Checked)
 
     def on_footer_position_check_box_state_changed(self, value):
         """
@@ -257,7 +257,7 @@ class ThemeForm(QtWidgets.QWizard, Ui_ThemeWizard, RegistryProperties):
         NOTE the font_footer_override is the inverse of the check box value
         """
         if self.update_theme_allowed:
-            self.theme.font_footer_override = not (value == QtCore.Qt.Checked)
+            self.theme.font_footer_override = (value != QtCore.Qt.Checked)
 
     def exec(self, edit=False):
         """

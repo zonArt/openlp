@@ -46,7 +46,6 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.media import MediaController
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.ui.projector.manager import ProjectorManager
-from openlp.core.ui.lib.toolbar import OpenLPToolbar
 from openlp.core.ui.lib.dockwidget import OpenLPDockWidget
 from openlp.core.ui.lib.mediadockmanager import MediaDockManager
 

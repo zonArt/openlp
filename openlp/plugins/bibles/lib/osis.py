@@ -23,7 +23,7 @@
 import logging
 from lxml import etree
 
-from openlp.core.common import translate, trace_error_handler
+from openlp.core.common import languages, translate, trace_error_handler
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 from openlp.core.lib.ui import critical_error_message_box
 
@@ -62,9 +62,11 @@ class OSISBible(BibleDB):
             namespace = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
             # Find bible language
             language_id = None
-            language = osis_bible_tree.xpath("//ns:osisText/@xml:lang", namespaces=namespace)
-            if language:
-                language_id = BiblesResourcesDB.get_language(language[0])
+            lang = osis_bible_tree.xpath("//ns:osisText/@xml:lang", namespaces=namespace)
+            if lang:
+                language = languages.get_language(lang[0])
+                if hasattr(language, 'id'):
+                    language_id = language.id
             # The language couldn't be detected, ask the user
             if not language_id:
                 language_id = self.get_language(bible_name)
@@ -126,8 +128,6 @@ class OSISBible(BibleDB):
                 # Remove div-tags in the book
                 etree.strip_tags(book, ('{http://www.bibletechnologies.net/2003/OSIS/namespace}div'))
                 book_ref_id = self.get_book_ref_id_by_name(book.get('osisID'), num_books, language_id)
-                if not book_ref_id:
-                    book_ref_id = self.get_book_ref_id_by_localised_name(book.get('osisID'))
                 if not book_ref_id:
                     log.error('Importing books from "{name}" failed'.format(name=self.filename))
                     return False

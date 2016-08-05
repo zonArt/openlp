@@ -133,7 +133,7 @@ class ProjectorTab(SettingsTab):
         settings.setValue('socket timeout', self.socket_timeout_spin_box.value())
         settings.setValue('poll time', self.socket_poll_spin_box.value())
         settings.setValue('source dialog type', self.dialog_type_combo_box.currentIndex())
-        settings.endGroup
+        settings.endGroup()
 
     def on_dialog_type_combo_box_changed(self):
         self.dialog_type = self.dialog_type_combo_box.currentIndex()

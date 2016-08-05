@@ -95,7 +95,7 @@ def get_text_file_string(text_file):
     content = None
     try:
         file_handle = open(text_file, 'r', encoding='utf-8')
-        if not file_handle.read(3) == '\xEF\xBB\xBF':
+        if file_handle.read(3) != '\xEF\xBB\xBF':
             # no BOM was found
             file_handle.seek(0)
         content = file_handle.read()

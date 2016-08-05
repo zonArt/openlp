@@ -167,7 +167,7 @@ class ScreenList(object):
 
         :param number: The screen number (int).
         """
-        log.info('remove_screen {number:d}'.forma(number=number))
+        log.info('remove_screen {number:d}'.format(number=number))
         for screen in self.screen_list:
             if screen['number'] == number:
                 self.screen_list.remove(screen)

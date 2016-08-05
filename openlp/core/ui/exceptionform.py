@@ -32,8 +32,6 @@ import sqlalchemy
 from PyQt5 import Qt, QtCore, QtGui, QtWebKit, QtWidgets
 from lxml import etree
 
-from openlp.core.common import RegistryProperties, is_linux
-
 try:
     import migrate
     MIGRATE_VERSION = getattr(migrate, '__version__', '< 0.7')
@@ -74,6 +72,7 @@ except ImportError:
 
 from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.common.versionchecker import get_application_version
+from openlp.core.common import RegistryProperties, is_linux
 
 from .exceptiondialog import Ui_ExceptionDialog
 

@@ -23,7 +23,6 @@
 Provide the theme XML and handling functions for OpenLP v2 themes.
 """
 import os
-import re
 import logging
 import json
 
@@ -165,6 +164,7 @@ class ThemeXML(object):
         jsn = get_text_file_string(json_file)
         jsn = json.loads(jsn)
         self.expand_json(jsn)
+        self.background_filename = None
 
     def expand_json(self, var, prev=None):
         """
@@ -474,15 +474,16 @@ class ThemeXML(object):
             if element.startswith('shadow') or element.startswith('outline'):
                 master = 'font_main'
         # fix bold font
+        ret_value = None
         if element == 'weight':
             element = 'bold'
             if value == 'Normal':
-                value = False
+                ret_value = False
             else:
-                value = True
+                ret_value = True
         if element == 'proportion':
             element = 'size'
-        return False, master, element, value
+        return False, master, element, ret_value if ret_value is not None else value
 
     def _create_attr(self, master, element, value):
         """
