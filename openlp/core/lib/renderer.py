@@ -371,7 +371,6 @@ class Renderer(OpenLPMixin, RegistryMixin, RegistryProperties):
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css.
-        # TODO: Tested at home
         html = Template("""<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
                 var main = document.getElementById('main');

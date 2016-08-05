@@ -513,7 +513,7 @@ class ThemeXML(object):
         theme_strings = []
         for key in dir(self):
             if key[0:1] != '_':
-                # TODO: Tested at home
+                # TODO: Due to bound methods returned, I don't know how to write a proper test
                 theme_strings.append('{key:>30}: {value}'.format(key=key, value=getattr(self, key)))
         return '\n'.join(theme_strings)
 
