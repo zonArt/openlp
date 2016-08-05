@@ -643,11 +643,7 @@ class OpenLyrics(object):
         # Append text from tail and add formatting end tag.
         # TODO: Verify format() with template variables
         if element.tag == NSMAP % 'tag' and use_endtag:
-<<<<<<< TREE
             text += '{{/{name}}}'.format(name=element.get('name'))
-=======
-            text += '{{{name}}}'.format(name=element.get('name'))
->>>>>>> MERGE-SOURCE
         # Append text from tail.
         if element.tail:
             text += element.tail
