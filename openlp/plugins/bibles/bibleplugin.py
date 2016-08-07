@@ -22,12 +22,9 @@
 
 import logging
 
-from PyQt5 import QtWidgets
-
 from openlp.core.common.actions import ActionList
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import UiStrings, create_action
-from openlp.plugins.bibles.forms import BibleUpgradeForm
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem, LayoutStyle, DisplayStyle, \
     LanguageSelection
 from openlp.plugins.bibles.lib.mediaitem import BibleSearch
@@ -87,7 +84,6 @@ class BiblePlugin(Plugin):
         action_list.add_action(self.import_bible_item, UiStrings().Import)
         # Set to invisible until we can export bibles
         self.export_bible_item.setVisible(False)
-        self.tools_upgrade_item.setVisible(bool(self.manager.old_bible_databases))
 
     def finalise(self):
         """
@@ -100,20 +96,6 @@ class BiblePlugin(Plugin):
         action_list.remove_action(self.import_bible_item, UiStrings().Import)
         self.import_bible_item.setVisible(False)
         self.export_bible_item.setVisible(False)
-
-    def app_startup(self):
-        """
-        Perform tasks on application startup
-        """
-        super(BiblePlugin, self).app_startup()
-        if self.manager.old_bible_databases:
-            if QtWidgets.QMessageBox.information(
-                    self.main_window, translate('OpenLP', 'Information'),
-                    translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your '
-                                        'existing Bibles.\nShould OpenLP upgrade now?'),
-                    QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)) == \
-                    QtWidgets.QMessageBox.Yes:
-                self.on_tools_upgrade_item_triggered()
 
     def add_import_menu_item(self, import_menu):
         """
@@ -135,30 +117,6 @@ class BiblePlugin(Plugin):
         self.export_bible_item = create_action(export_menu, 'exportBibleItem',
                                                text=translate('BiblesPlugin', '&Bible'), visible=False)
         export_menu.addAction(self.export_bible_item)
-
-    def add_tools_menu_item(self, tools_menu):
-        """
-        Give the bible plugin the opportunity to add items to the **Tools** menu.
-
-        :param tools_menu:  The actual **Tools** menu item, so that your actions can use it as their parent.
-        """
-        log.debug('add tools menu')
-        self.tools_upgrade_item = create_action(
-            tools_menu, 'toolsUpgradeItem',
-            text=translate('BiblesPlugin', '&Upgrade older Bibles'),
-            statustip=translate('BiblesPlugin', 'Upgrade the Bible databases to the latest format.'),
-            visible=False, triggers=self.on_tools_upgrade_item_triggered)
-        tools_menu.addAction(self.tools_upgrade_item)
-
-    def on_tools_upgrade_item_triggered(self):
-        """
-        Upgrade older bible databases.
-        """
-        if not hasattr(self, 'upgrade_wizard'):
-            self.upgrade_wizard = BibleUpgradeForm(self.main_window, self.manager, self)
-        # If the import was not cancelled then reload.
-        if self.upgrade_wizard.exec():
-            self.media_item.reload_bibles()
 
     def on_bible_import_click(self):
         """

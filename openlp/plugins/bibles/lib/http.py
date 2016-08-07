@@ -34,6 +34,7 @@ from openlp.core.common import Registry, RegistryProperties, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.lib.webpagereader import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
+from openlp.plugins.bibles.lib.bibleimport import BibleImport
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, Book
 
 CLEANER_REGEX = re.compile(r'&nbsp;|<br />|\'\+\'')
@@ -576,10 +577,10 @@ class CWExtract(RegistryProperties):
         return bibles
 
 
-class HTTPBible(BibleDB, RegistryProperties):
+class HTTPBible(BibleImport, RegistryProperties):
     log.info('{name} HTTPBible loaded'.format(name=__name__))
 
-    def __init__(self, parent, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         Finds all the bibles defined for the system. Creates an Interface Object for each bible containing connection
         information.
@@ -588,7 +589,7 @@ class HTTPBible(BibleDB, RegistryProperties):
 
         Init confirms the bible exists and stores the database path.
         """
-        BibleDB.__init__(self, parent, **kwargs)
+        super().__init__(*args, **kwargs)
         self.download_source = kwargs['download_source']
         self.download_name = kwargs['download_name']
         # TODO: Clean up proxy stuff. We probably want one global proxy per connection type (HTTP and HTTPS) at most.
@@ -638,12 +639,8 @@ class HTTPBible(BibleDB, RegistryProperties):
             return False
         self.wizard.progress_bar.setMaximum(len(books) + 2)
         self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible', 'Registering Language...'))
-        if self.language_id:
-            self.save_meta('language_id', self.language_id)
-        else:
-            self.language_id = self.get_language(bible_name)
+        self.language_id = self.get_language_id(bible_name=bible_name)
         if not self.language_id:
-            log.error('Importing books from {name} failed'.format(name=self.filename))
             return False
         for book in books:
             if self.stop_import_flag:

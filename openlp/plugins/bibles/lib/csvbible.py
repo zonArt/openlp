@@ -54,25 +54,26 @@ import chardet
 import csv
 
 from openlp.core.common import translate
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
+from openlp.plugins.bibles.lib.bibleimport import BibleImport
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 
 log = logging.getLogger(__name__)
 
 
-class CSVBible(BibleDB):
+class CSVBible(BibleImport):
     """
     This class provides a specialisation for importing of CSV Bibles.
     """
     log.info('CSVBible loaded')
 
-    def __init__(self, parent, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         Loads a Bible from a set of CSV files. This class assumes the files contain all the information and a clean
         bible is being loaded.
         """
         log.info(self.__class__.__name__)
-        BibleDB.__init__(self, parent, **kwargs)
+        super().__init__(*args, **kwargs)
         self.books_file = kwargs['booksfile']
         self.verses_file = kwargs['versefile']
 
@@ -84,9 +85,8 @@ class CSVBible(BibleDB):
         self.wizard.progress_bar.setMinimum(0)
         self.wizard.progress_bar.setMaximum(66)
         success = True
-        language_id = self.get_language(bible_name)
+        language_id = self.get_language_id(bible_name=self.books_file)
         if not language_id:
-            log.error('Importing books from "{name}" failed'.format(name=self.filename))
             return False
         books_file = None
         book_list = {}

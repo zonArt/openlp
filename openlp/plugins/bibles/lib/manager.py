@@ -124,7 +124,6 @@ class BibleManager(RegistryProperties):
             files.remove('alternative_book_names.sqlite')
         log.debug('Bible Files {text}'.format(text=files))
         self.db_cache = {}
-        self.old_bible_databases = []
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             if not bible.session:
