@@ -214,7 +214,7 @@ class ExceptionForm(QtWidgets.QDialog, Ui_ExceptionDialog, RegistryProperties):
                                                                    Settings().value(self.settings_section +
                                                                                     '/last directory'),
                                                                    '{text} (*)'.format(text=UiStrings().AllFiles))
-        log.info('New files(s) {files}'.format(str(files)))
+        log.info('New files(s) {files}'.format(files=str(files)))
         if files:
             self.file_attachment = str(files)
 
