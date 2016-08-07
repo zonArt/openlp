@@ -29,7 +29,7 @@ from openlp.core.lib.projector.pjlink1 import PJLink1
 from openlp.core.lib.projector.constants import E_PARAMETER, ERROR_STRING, S_OFF, S_STANDBY, S_WARMUP, S_ON, \
     S_COOLDOWN, PJLINK_POWR_STATUS
 
-from tests.functional import patch
+from tests.functional import patch, MagicMock
 from tests.resources.projector.data import TEST_PIN, TEST_SALT, TEST_CONNECT_AUTHENTICATE, TEST_HASH
 
 pjlink_test = PJLink1(name='test', ip='127.0.0.1', pin=TEST_PIN, no_poll=True)
