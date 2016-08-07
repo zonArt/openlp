@@ -56,7 +56,6 @@ class TestBibleImport(TestCase):
         self.mock_log = self.log_patcher.start()
         self.setup_patcher.start()
 
-
     def get_language_id_language_found_test(self):
         """
         Test get_language_id() when called with a name found in the languages list
@@ -103,10 +102,8 @@ class TestBibleImport(TestCase):
         """
         # GIVEN: A mocked languages.get_language which returns None a mocked BibleDB.get_language which returns a
         #       language id.
-        with patch('openlp.core.common.languages.get_language',
-                   return_value=None) as mocked_languages_get_language, \
-                patch('openlp.plugins.bibles.lib.db.BibleDB.get_language',
-                      return_value=40) as mocked_db_get_language:
+        with patch('openlp.core.common.languages.get_language', return_value=None) as mocked_languages_get_language, \
+                patch('openlp.plugins.bibles.lib.db.BibleDB.get_language', return_value=40) as mocked_db_get_language:
             self.mock_log.error.reset_mock()
             instance = BibleImport(MagicMock())
             instance.save_meta = MagicMock()
@@ -128,7 +125,7 @@ class TestBibleImport(TestCase):
         # GIVEN: A mocked languages.get_language which returns None a mocked BibleDB.get_language which returns a
         #       language id.
         with patch('openlp.core.common.languages.get_language', return_value=None) as mocked_languages_get_language, \
-            patch('openlp.plugins.bibles.lib.db.BibleDB.get_language', return_value=None) as mocked_db_get_language:
+                patch('openlp.plugins.bibles.lib.db.BibleDB.get_language', return_value=None) as mocked_db_get_language:
             self.mock_log.error.reset_mock()
             instance = BibleImport(MagicMock())
             instance.save_meta = MagicMock()

@@ -23,10 +23,10 @@
 import logging
 from lxml import etree
 
-from openlp.core.common import languages, translate, trace_error_handler
+from openlp.core.common import translate, trace_error_handler
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -69,6 +69,7 @@ REMOVABLE_TAGS = ('{http://www.bibletechnologies.net/2003/OSIS/namespace}p',
                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}cell',
                   '{http://www.bibletechnologies.net/2003/OSIS/namespace}caption')
 
+
 def replacement(match):
     return match.group(2).upper()
 
@@ -103,8 +104,6 @@ class OSISBible(BibleImport):
             if not language_id:
                 return False
             num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=namespace))
-
-
             # Precompile a few xpath-querys
             verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=namespace)
             text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=namespace)

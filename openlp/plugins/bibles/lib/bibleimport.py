@@ -67,6 +67,7 @@ class BibleImport(BibleDB):
         """
         Parse and clean the supplied file by removing any elements or tags we don't use.
         :param filename: The filename of the xml file to parse. Str
+        :param use_objectify: Use the objectify parser rather than the etree parser. (Bool)
         :param elements: A tuple of element names (Str) to remove along with their content.
         :param tags: A tuple of element names (Str) to remove, preserving their content.
         :return: The root element of the xml document
