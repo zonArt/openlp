@@ -34,17 +34,8 @@ log = logging.getLogger(__name__)
 
 class OpenSongBible(BibleImport):
     """
-    OpenSong Bible format importer class.
+    OpenSong Bible format importer class. This class is used to import Bibles from OpenSong's XML format.
     """
-    def __init__(self, *args, **kwargs):
-        """
-        Constructor to create and set up an instance of the OpenSongBible class. This class is used to import Bibles
-        from OpenSong's XML format.
-        """
-        log.debug(self.__class__.__name__)
-        super().__init__(*args, **kwargs)
-        self.filename = kwargs['filename']
-
     def get_text(self, element):
         """
         Recursively get all text in an objectify element and its child elements.
@@ -65,8 +56,6 @@ class OpenSongBible(BibleImport):
         Loads a Bible from file.
         """
         log.debug('Starting OpenSong import from "{name}"'.format(name=self.filename))
-        if not isinstance(self.filename, str):
-            self.filename = str(self.filename, 'utf8')
         success = True
         try:
             bible = self.parse_xml(self.filename, use_objectify=True)

@@ -78,20 +78,11 @@ class OSISBible(BibleImport):
     """
     `OSIS <http://www.bibletechnologies.net/>`_ Bible format importer class.
     """
-    log.info('BibleOSISImpl loaded')
-
-    def __init__(self, *args, **kwargs):
-        log.debug(self.__class__.__name__)
-        super().__init__(*args, **kwargs)
-        self.filename = kwargs['filename']
-
     def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
         log.debug('Starting OSIS import from "{name}"'.format(name=self.filename))
-        if not isinstance(self.filename, str):
-            self.filename = str(self.filename, 'utf8')
         success = True
         try:
             self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',

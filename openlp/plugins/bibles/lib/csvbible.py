@@ -50,10 +50,10 @@ There are two acceptable formats of the verses file.  They are:
 All CSV files are expected to use a comma (',') as the delimiter and double quotes ('"') as the quote symbol.
 """
 import logging
-import chardet
 import csv
 
 from openlp.core.common import translate
+from openlp.core.lib import get_file_encoding
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
@@ -155,19 +155,3 @@ class CSVBible(BibleImport):
             return False
         else:
             return success
-
-
-def get_file_encoding(filename):
-    """
-    Utility function to get the file encoding.
-    """
-    detect_file = None
-    try:
-        detect_file = open(filename, 'rb')
-        details = chardet.detect(detect_file.read(1024))
-    except IOError:
-        log.exception('Error detecting file encoding')
-    finally:
-        if detect_file:
-            detect_file.close()
-    return details

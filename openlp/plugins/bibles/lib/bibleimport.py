@@ -34,9 +34,11 @@ class BibleImport(BibleDB):
     """
     Helper class to import bibles from a third party source into OpenLP
     """
+    #TODO: Test
     def __init__(self, *args, **kwargs):
         log.debug(self.__class__.__name__)
         super().__init__(*args, **kwargs)
+        self.filename = kwargs['filename'] if 'filename' in kwargs else None
 
     def get_language_id(self, file_language=None, bible_name=None):
         """

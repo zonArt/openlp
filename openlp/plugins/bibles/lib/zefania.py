@@ -21,12 +21,11 @@
 ###############################################################################
 
 import logging
-from lxml import etree
 
-from openlp.core.common import languages, translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 
 log = logging.getLogger(__name__)
@@ -39,24 +38,14 @@ REMOVABLE_TAGS = ('STYLE', 'GRAM', 'NOTE', 'SUP', 'XREF')
 
 class ZefaniaBible(BibleImport):
     """
-    Zefania Bible format importer class.
+    Zefania Bible format importer class. This class is used to import Bibles from ZefaniaBible's XML format.
     """
-    def __init__(self, *args, **kwargs):
-        """
-        Constructor to create and set up an instance of the ZefaniaBible class. This class is used to import Bibles
-        from ZefaniaBible's XML format.
-        """
-        log.debug(self.__class__.__name__)
-        super().__init__(*args, **kwargs)
-        self.filename = kwargs['filename']
 
     def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
         log.debug('Starting Zefania import from "{name}"'.format(name=self.filename))
-        if not isinstance(self.filename, str):
-            self.filename = str(self.filename, 'utf8')
         success = True
         try:
             xmlbible = self.parse_xml(self.filename, elements=REMOVABLE_ELEMENTS, tags=REMOVABLE_TAGS)

@@ -24,6 +24,7 @@ The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
 
+import chardet
 import logging
 import os
 from distutils.version import LooseVersion
@@ -335,6 +336,22 @@ def create_separated_list(string_list):
             merged = translate('OpenLP.core.lib', '%s, %s',
                                'Locale list separator: middle') % (string_list[index], merged)
         return translate('OpenLP.core.lib', '%s, %s', 'Locale list separator: start') % (string_list[0], merged)
+
+
+def get_file_encoding(filename):
+    """
+    Utility function to get the file encoding.
+    """
+    detect_file = None
+    try:
+        detect_file = open(filename, 'rb')
+        details = chardet.detect(detect_file.read(1024))
+    except IOError:
+        log.exception('Error detecting file encoding')
+    finally:
+        if detect_file:
+            detect_file.close()
+    return details
 
 
 from .exceptions import ValidationError
