@@ -23,6 +23,7 @@
 The :mod:`uistrings` module provides standard strings for OpenLP.
 """
 import logging
+import itertools
 
 from openlp.core.common import translate
 
@@ -155,3 +156,30 @@ class UiStrings(object):
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
         self.Video = translate('OpenLP.Ui', 'Video')
+        self.BibleShortSearchTitle = translate('OpenLP.Ui', 'Search is Empty or too Short')
+        self.BibleShortSearch = translate('OpenLP.Ui', '<strong>The search you have entered is empty or shorter '
+                                                       'than 3 characters long.</strong><br><br>Please try again with '
+                                                       'a longer search.')
+        self.BibleNoBiblesTitle = translate('OpenLP.Ui', 'No Bibles Available')
+        self.BibleNoBibles = translate('OpenLP.Ui', '<strong>There are no Bibles currently installed.</strong><br><br>'
+                                                    'Please use the Import Wizard to install one or more Bibles.')
+        book_chapter = translate('OpenLP.Ui', 'Book Chapter')
+        chapter = translate('OpenLP.Ui', 'Chapter')
+        verse = translate('OpenLP.Ui', 'Verse')
+        gap = ' | '
+        psalm = translate('OpenLP.Ui', 'Psalm')
+        may_shorten = translate('OpenLP.Ui', 'Book names may be shortened from full names, for an example Ps 23 = '
+                                             'Psalm 23')
+        bible_scripture_items = \
+            [book_chapter, gap, psalm, ' 23<br>',
+             book_chapter, '%(range)s', chapter, gap, psalm, ' 23%(range)s24<br>',
+             book_chapter, '%(verse)s', verse, '%(range)s', verse, gap, psalm, ' 23%(verse)s1%(range)s2<br>',
+             book_chapter, '%(verse)s', verse, '%(range)s', verse, '%(list)s', verse, '%(range)s', verse, gap, psalm,
+             ' 23%(verse)s1%(range)s2%(list)s5%(range)s6<br>',
+             book_chapter, '%(verse)s', verse, '%(range)s', verse, '%(list)s', chapter, '%(verse)s', verse, '%(range)s',
+             verse, gap, psalm, ' 23%(verse)s1%(range)s2%(list)s24%(verse)s1%(range)s3<br>',
+             book_chapter, '%(verse)s', verse, '%(range)s', chapter, '%(verse)s', verse, gap, psalm,
+             ' 23%(verse)s1%(range)s24%(verse)s1<br><br>', may_shorten]
+        itertools.chain.from_iterable(itertools.repeat(strings, 1) if isinstance(strings, str)
+                                      else strings for strings in bible_scripture_items)
+        self.BibleScriptureError = ''.join(str(joined) for joined in bible_scripture_items)

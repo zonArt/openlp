@@ -35,6 +35,7 @@ from openlp.plugins.bibles.forms.editbibleform import EditBibleForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, VerseReferenceList, get_reference_separator, \
     LanguageSelection, BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
+import re
 
 log = logging.getLogger(__name__)
 
@@ -45,6 +46,7 @@ class BibleSearch(object):
     """
     Reference = 1
     Text = 2
+    Combined = 3
 
 
 class BibleMediaItem(MediaManagerItem):
@@ -56,6 +58,7 @@ class BibleMediaItem(MediaManagerItem):
     log.info('Bible Media Item loaded')
 
     def __init__(self, parent, plugin):
+        self.clear_icon = build_icon(':/bibles/bibles_search_clear.png')
         self.lock_icon = build_icon(':/bibles/bibles_search_lock.png')
         self.unlock_icon = build_icon(':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin)
@@ -157,10 +160,15 @@ class BibleMediaItem(MediaManagerItem):
         search_button_layout = QtWidgets.QHBoxLayout()
         search_button_layout.setObjectName(prefix + 'search_button_layout')
         search_button_layout.addStretch()
+        # Note: If we use QPushButton instead of the QToolButton, the icon will be larger than the Lock icon.
+        clear_button = QtWidgets.QToolButton(tab)
+        clear_button.setIcon(self.clear_icon)
+        clear_button.setObjectName(prefix + 'ClearButton')
         lock_button = QtWidgets.QToolButton(tab)
         lock_button.setIcon(self.unlock_icon)
         lock_button.setCheckable(True)
         lock_button.setObjectName(prefix + 'LockButton')
+        search_button_layout.addWidget(clear_button)
         search_button_layout.addWidget(lock_button)
         search_button = QtWidgets.QPushButton(tab)
         search_button.setObjectName(prefix + 'SearchButton')
@@ -176,6 +184,7 @@ class BibleMediaItem(MediaManagerItem):
         setattr(self, prefix + 'SecondComboBox', second_combo_box)
         setattr(self, prefix + 'StyleLabel', style_label)
         setattr(self, prefix + 'StyleComboBox', style_combo_box)
+        setattr(self, prefix + 'ClearButton', clear_button)
         setattr(self, prefix + 'LockButton', lock_button)
         setattr(self, prefix + 'SearchButtonLayout', search_button_layout)
         setattr(self, prefix + 'SearchButton', search_button)
@@ -245,11 +254,14 @@ class BibleMediaItem(MediaManagerItem):
         self.quickStyleComboBox.activated.connect(self.on_quick_style_combo_box_changed)
         self.advancedStyleComboBox.activated.connect(self.on_advanced_style_combo_box_changed)
         # Buttons
+        self.advancedClearButton.clicked.connect(self.on_clear_button)
+        self.quickClearButton.clicked.connect(self.on_clear_button)
         self.advancedSearchButton.clicked.connect(self.on_advanced_search_button)
         self.quickSearchButton.clicked.connect(self.on_quick_search_button)
         # Other stuff
         self.quick_search_edit.returnPressed.connect(self.on_quick_search_button)
         self.search_tab_bar.currentChanged.connect(self.on_search_tab_bar_current_changed)
+        self.quick_search_edit.textChanged.connect(self.on_search_text_edit_changed)
 
     def on_focus(self):
         if self.quickTab.isVisible():
@@ -286,6 +298,7 @@ class BibleMediaItem(MediaManagerItem):
         self.quickStyleComboBox.setItemText(LayoutStyle.VersePerSlide, UiStrings().VersePerSlide)
         self.quickStyleComboBox.setItemText(LayoutStyle.VersePerLine, UiStrings().VersePerLine)
         self.quickStyleComboBox.setItemText(LayoutStyle.Continuous, UiStrings().Continuous)
+        self.quickClearButton.setToolTip(translate('BiblesPlugin.MediaItem', 'Clear the search results.'))
         self.quickLockButton.setToolTip(translate('BiblesPlugin.MediaItem',
                                                   'Toggle to keep or clear the previous results.'))
         self.quickSearchButton.setText(UiStrings().Search)
@@ -300,6 +313,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedStyleComboBox.setItemText(LayoutStyle.VersePerSlide, UiStrings().VersePerSlide)
         self.advancedStyleComboBox.setItemText(LayoutStyle.VersePerLine, UiStrings().VersePerLine)
         self.advancedStyleComboBox.setItemText(LayoutStyle.Continuous, UiStrings().Continuous)
+        self.advancedClearButton.setToolTip(translate('BiblesPlugin.MediaItem', 'Clear the search results.'))
         self.advancedLockButton.setToolTip(translate('BiblesPlugin.MediaItem',
                                                      'Toggle to keep or clear the previous results.'))
         self.advancedSearchButton.setText(UiStrings().Search)
@@ -309,6 +323,9 @@ class BibleMediaItem(MediaManagerItem):
         self.plugin.manager.media = self
         self.load_bibles()
         self.quick_search_edit.set_search_types([
+            (BibleSearch.Combined, ':/bibles/bibles_search_combined.png',
+                translate('BiblesPlugin.MediaItem', 'Text or Reference'),
+                translate('BiblesPlugin.MediaItem', 'Text or Reference...')),
             (BibleSearch.Reference, ':/bibles/bibles_search_reference.png',
                 translate('BiblesPlugin.MediaItem', 'Scripture Reference'),
                 translate('BiblesPlugin.MediaItem', 'Search Scripture Reference...')),
@@ -424,18 +441,24 @@ class BibleMediaItem(MediaManagerItem):
     def update_auto_completer(self):
         """
         This updates the bible book completion list for the search field. The completion depends on the bible. It is
-        only updated when we are doing a reference search, otherwise the auto completion list is removed.
+        only updated when we are doing reference or combined search, in text search the completion list is removed.
         """
         log.debug('update_auto_completer')
-        # Save the current search type to the configuration.
-        Settings().setValue('{section}/last search type'.format(section=self.settings_section),
-                            self.quick_search_edit.current_search_type())
+        # Save the current search type to the configuration. If setting for automatically resetting the search type to
+        # Combined is enabled, use that otherwise use the currently selected search type.
+        # Note: This setting requires a restart to take effect.
+        if Settings().value(self.settings_section + '/reset to combined quick search'):
+            Settings().setValue('{section}/last search type'.format(section=self.settings_section),
+                                BibleSearch.Combined)
+        else:
+            Settings().setValue('{section}/last search type'.format(section=self.settings_section),
+                                self.quick_search_edit.current_search_type())
         # Save the current bible to the configuration.
         Settings().setValue('{section}/quick bible'.format(section=self.settings_section),
                             self.quickVersionComboBox.currentText())
         books = []
-        # We have to do a 'Reference Search'.
-        if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+        # We have to do a 'Reference Search' (Or as part of Combined Search).
+        if self.quick_search_edit.current_search_type() is not BibleSearch.Text:
             bibles = self.plugin.manager.get_bibles()
             bible = self.quickVersionComboBox.currentText()
             if bible:
@@ -525,7 +548,15 @@ class BibleMediaItem(MediaManagerItem):
             self.advancedTab.setVisible(True)
             self.advanced_book_combo_box.setFocus()
 
+    def on_clear_button(self):
+        # Clear the list, then set the "No search Results" message, then clear the text field and give it focus.
+        self.list_view.clear()
+        self.check_search_result()
+        self.quick_search_edit.clear()
+        self.quick_search_edit.setFocus()
+
     def on_lock_button_toggled(self, checked):
+        self.quick_search_edit.setFocus()
         if checked:
             self.sender().setIcon(self.lock_icon)
         else:
@@ -652,10 +683,120 @@ class BibleMediaItem(MediaManagerItem):
         self.check_search_result()
         self.application.set_normal_cursor()
 
+    def on_quick_reference_search(self):
+        """
+        We are doing a 'Reference Search'.
+        This search is called on def on_quick_search_button by Quick Reference and Combined Searches.
+        """
+        # Set Bibles to use the text input from Quick search field.
+        bible = self.quickVersionComboBox.currentText()
+        second_bible = self.quickSecondComboBox.currentText()
+        """
+        Get input from field and replace 'A-Z + . ' with ''
+        This will check if field has any '.' after A-Z and removes them. Eg. Gen. 1 = Ge 1 = Genesis 1
+        If Book name has '.' after number. eg. 1. Genesis, the search fails without the dot, and vice versa.
+        A better solution would be to make '.' optional in the search results. Current solution was easier to code.
+        """
+        text = self.quick_search_edit.text()
+        text = re.sub('\D[.]\s', ' ', text)
+        # This is triggered on reference search, use the search from manager.py
+        if self.quick_search_edit.current_search_type() != BibleSearch.Text:
+            self.search_results = self.plugin.manager.get_verses(bible, text)
+        if second_bible and self.search_results:
+            self.second_search_results = \
+                self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
+
+    def on_quick_text_search(self):
+        """
+        We are doing a 'Text Search'.
+        This search is called on def on_quick_search_button by Quick Text and Combined Searches.
+        """
+        # Set Bibles to use the text input from Quick search field.
+        bible = self.quickVersionComboBox.currentText()
+        second_bible = self.quickSecondComboBox.currentText()
+        text = self.quick_search_edit.text()
+        # If Text search ends with "," OpenLP will crash, prevent this from happening by removing all ","s.
+        text = re.sub('[,]', '', text)
+        self.application.set_busy_cursor()
+        # Get Bibles list
+        bibles = self.plugin.manager.get_bibles()
+        # Add results to "search_results"
+        self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
+        if second_bible and self.search_results:
+            # new_search_results is needed to make sure 2nd bible contains all verses. (And counting them on error)
+            text = []
+            new_search_results = []
+            count = 0
+            passage_not_found = False
+            # Search second bible for results of search_results to make sure everythigns there.
+            # Count all the unfound passages.
+            for verse in self.search_results:
+                db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
+                if not db_book:
+                    log.debug('Passage "{name} {chapter:d}:{verse:d}" not found in '
+                              'Second Bible'.format(name=verse.book.name, chapter=verse.chapter, verse=verse.verse))
+                    passage_not_found = True
+                    count += 1
+                    continue
+                new_search_results.append(verse)
+                text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
+            if passage_not_found:
+                # This is for the 2nd Bible.
+                self.main_window.information_message(
+                    translate('BiblesPlugin.MediaItem', 'Information'),
+                    translate('BiblesPlugin.MediaItem', 'The second Bible does not contain all the verses '
+                                                        'that are in the main Bible.\nOnly verses found in both Bibles'
+                                                        ' will be shown.\n\n{count:d} verses have not been included '
+                                                        'in the results.').format(count=count))
+            # Join the searches so only verses that are found on both Bibles are shown.
+            self.search_results = new_search_results
+            self.second_search_results = bibles[second_bible].get_verses(text)
+
+    def on_quick_text_search_while_typing(self):
+        """
+        We are doing a 'Text Search' while typing
+        Call the verse_search_while_typing from manager.py
+        It does not show web bible errors while typing.
+        (It would result in the error popping every time a char is entered or removed)
+        """
+        # Set Bibles to use the text input from Quick search field.
+        bible = self.quickVersionComboBox.currentText()
+        second_bible = self.quickSecondComboBox.currentText()
+        text = self.quick_search_edit.text()
+        # If Text search ends with "," OpenLP will crash, prevent this from happening by removing all ","s.
+        text = re.sub('[,]', '', text)
+        self.application.set_busy_cursor()
+        # Get Bibles list
+        bibles = self.plugin.manager.get_bibles()
+        # Add results to "search_results"
+        self.search_results = self.plugin.manager.verse_search_while_typing(bible, second_bible, text)
+        if second_bible and self.search_results:
+            # new_search_results is needed to make sure 2nd bible contains all verses. (And counting them on error)
+            text = []
+            new_search_results = []
+            count = 0
+            passage_not_found = False
+            # Search second bible for results of search_results to make sure everythigns there.
+            # Count all the unfound passages. Even thou no error is shown, this needs to be done or
+            # the code breaks later on.
+            for verse in self.search_results:
+                db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
+                if not db_book:
+                    log.debug('Passage ("{versebookname}","{versechapter}","{verseverse}") not found in Second Bible'
+                              .format(versebookname=verse.book.name, versechapter='verse.chapter',
+                                      verseverse=verse.verse))
+                    count += 1
+                    continue
+                new_search_results.append(verse)
+                text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
+            # Join the searches so only verses that are found on both Bibles are shown.
+            self.search_results = new_search_results
+            self.second_search_results = bibles[second_bible].get_verses(text)
+
     def on_quick_search_button(self):
         """
-        Does a quick search and saves the search results. Quick search can either be "Reference Search" or
-        "Text Search".
+        This triggers the proper Quick search based on which search type is used.
+        "Eg. "Reference Search", "Text Search" or "Combined search".
         """
         log.debug('Quick Search Button clicked')
         self.quickSearchButton.setEnabled(False)
@@ -664,41 +805,68 @@ class BibleMediaItem(MediaManagerItem):
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quick_search_edit.text()
         if self.quick_search_edit.current_search_type() == BibleSearch.Reference:
-            # We are doing a 'Reference Search'.
-            self.search_results = self.plugin.manager.get_verses(bible, text)
-            if second_bible and self.search_results:
-                self.second_search_results = \
-                    self.plugin.manager.get_verses(second_bible, text, self.search_results[0].book.book_reference_id)
-        else:
-            # We are doing a 'Text Search'.
-            self.application.set_busy_cursor()
-            bibles = self.plugin.manager.get_bibles()
-            self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
-            if second_bible and self.search_results:
-                text = []
-                new_search_results = []
-                count = 0
-                passage_not_found = False
-                for verse in self.search_results:
-                    db_book = bibles[second_bible].get_book_by_book_ref_id(verse.book.book_reference_id)
-                    if not db_book:
-                        log.debug('Passage "{name} {chapter:d}:{verse:d}" not found in '
-                                  'Second Bible'.format(name=verse.book.name, chapter=verse.chapter, verse=verse.verse))
-                        passage_not_found = True
-                        count += 1
-                        continue
-                    new_search_results.append(verse)
-                    text.append((verse.book.book_reference_id, verse.chapter, verse.verse, verse.verse))
-                if passage_not_found:
-                    QtWidgets.QMessageBox.information(
-                        self, translate('BiblesPlugin.MediaItem', 'Information'),
-                        translate('BiblesPlugin.MediaItem',
-                                  'The second Bible does not contain all the verses that are in the main Bible. '
-                                  'Only verses found in both Bibles will be shown. {count:d} verses have not been '
-                                  'included in the results.').format(count=count),
-                        QtWidgets.QMessageBox.StandardButtons(QtWidgets.QMessageBox.Ok))
-                self.search_results = new_search_results
-                self.second_search_results = bibles[second_bible].get_verses(text)
+            # We are doing a 'Reference Search'. (Get script from def on_quick_reference_search)
+            self.on_quick_reference_search()
+            # Get reference separators from settings.
+            if not self.search_results:
+                reference_separators = {
+                    'verse': get_reference_separator('sep_v_display'),
+                    'range': get_reference_separator('sep_r_display'),
+                    'list': get_reference_separator('sep_l_display')}
+                self.main_window.information_message(
+                    translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
+                    translate('BiblesPlugin.BibleManager', '<strong>OpenLP couldn’t find anything '
+                                                           'with your search.<br><br>'
+                                                           'Please make sure that your reference follows '
+                                                           'one of these patterns:</strong><br><br>%s'
+                              % UiStrings().BibleScriptureError % reference_separators))
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
+            # We are doing a 'Text Search'. (Get script from def on_quick_text_search)
+            self.on_quick_text_search()
+            if not self.search_results and len(text) - text.count(' ') < 3 and bible:
+                self.main_window.information_message(
+                    UiStrings().BibleShortSearchTitle,
+                    UiStrings().BibleShortSearch)
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Combined:
+            # We are doing a 'Combined search'. Starting with reference search.
+            # Perform only if text contains any numbers
+            if (char.isdigit() for char in text):
+                self.on_quick_reference_search()
+            """
+            If results are found, search will be finalized.
+            This check needs to be here in order to avoid duplicate errors.
+            If keyword is shorter than 3 (not including spaces), message is given. It's actually possible to find
+            verses with less than 3 chars (Eg. G1 = Genesis 1) thus this error is not shown if any results are found.
+            if no Bibles are installed, this message is not shown - "No bibles" message is shown instead.
+            """
+            if not self.search_results and len(text) - text.count(' ') < 3 and bible:
+                self.main_window.information_message(
+                    UiStrings().BibleShortSearchTitle,
+                    UiStrings().BibleShortSearch)
+            if not self.search_results and len(text) - text.count(' ') > 2 and bible:
+                # Text search starts here if no reference was found and keyword is longer than 2.
+                #  > 2 check is required in order to avoid duplicate error messages for short keywords.
+                self.on_quick_text_search()
+                if not self.search_results and not \
+                        Settings().value(self.settings_section + '/hide combined quick error'):
+                        self.application.set_normal_cursor()
+                        # Reference separators need to be defined both, in here and on reference search,
+                        # error won't work if they are left out from one.
+                        reference_separators = {
+                            'verse': get_reference_separator('sep_v_display'),
+                            'range': get_reference_separator('sep_r_display'),
+                            'list': get_reference_separator('sep_l_display')}
+                        self.main_window.information_message(translate('BiblesPlugin.BibleManager', 'Nothing found'),
+                                                             translate('BiblesPlugin.BibleManager',
+                                                                       '<strong>OpenLP couldn’t find anything with your'
+                                                                       ' search.</strong><br><br>If you tried to search'
+                                                                       ' with Scripture Reference, please make<br> sure'
+                                                                       ' that your reference follows one of these'
+                                                                       ' patterns: <br><br>%s'
+                                                                       % UiStrings().BibleScriptureError %
+                                                                       reference_separators))
+        # Finalizing the search
+        # List is cleared if not locked, results are listed, button is set available, cursor is set to normal.
         if not self.quickLockButton.isChecked():
             self.list_view.clear()
         if self.list_view.count() != 0 and self.search_results:
@@ -708,6 +876,99 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSearchButton.setEnabled(True)
         self.check_search_result()
         self.application.set_normal_cursor()
+
+    def on_quick_search_while_typing(self):
+        """
+        This function is called when "Search as you type" is enabled for Bibles.
+        It is basically the same thing as "on_quick_search_search" but all the error messages are removed.
+        This also has increased min len for text search for performance reasons.
+        For commented version, please visit def on_quick_search_button.
+        """
+        bible = self.quickVersionComboBox.currentText()
+        second_bible = self.quickSecondComboBox.currentText()
+        text = self.quick_search_edit.text()
+        if self.quick_search_edit.current_search_type() == BibleSearch.Combined:
+            # If text has no numbers, auto search limit is min 8 characters for performance reasons.
+            # If you change this value, also change it in biblestab.py (Count) in enabling search while typing.
+            if (char.isdigit() for char in text) and len(text) > 2:
+                self.on_quick_reference_search()
+            if not self.search_results and len(text) > 7:
+                self.on_quick_text_search_while_typing()
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+            self.on_quick_reference_search()
+        elif self.quick_search_edit.current_search_type() == BibleSearch.Text:
+            if len(text) > 7:
+                self.on_quick_text_search_while_typing()
+        if not self.quickLockButton.isChecked():
+            self.list_view.clear()
+        if self.list_view.count() != 0 and self.search_results:
+            self.__check_second_bible(bible, second_bible)
+        elif self.search_results:
+            self.display_results(bible, second_bible)
+        self.check_search_result()
+        self.application.set_normal_cursor()
+
+    def on_search_text_edit_changed(self):
+        """
+        If search automatically while typing is enabled, perform the search and list results when conditions are met.
+        """
+        if Settings().value('bibles/is search while typing enabled'):
+            text = self.quick_search_edit.text()
+            """
+            Use Regex for finding space + number in reference search and space + 2 characters in text search.
+            Also search for two characters (Searches require at least two sets of two characters)
+            These are used to prevent bad search queries from starting. (Long/crashing queries)
+            """
+            space_and_digit_reference = re.compile(' \d')
+            two_chars_text = re.compile('\S\S')
+            space_and_two_chars_text = re.compile(' \S\S')
+            # Turn this into a format that may be used in if statement.
+            count_space_digit_reference = space_and_digit_reference.findall(text)
+            count_two_chars_text = two_chars_text.findall(text)
+            count_spaces_two_chars_text = space_and_two_chars_text.findall(text)
+            """
+            The Limit is required for setting the proper "No items found" message.
+            "Limit" is also hard coded to on_quick_search_while_typing, it must be there to avoid bad search
+            performance. Limit 8 = Text search, 3 = Reference search.
+            """
+            limit = 8
+            if self.quick_search_edit.current_search_type() == BibleSearch.Combined:
+                if len(count_space_digit_reference) != 0:
+                    limit = 3
+            elif self.quick_search_edit.current_search_type() == BibleSearch.Reference:
+                limit = 3
+            """
+            If text is empty, clear the list.
+            else: Start by checking if the search is suitable for "Search while typing"
+            """
+            if len(text) == 0:
+                if not self.quickLockButton.isChecked():
+                    self.list_view.clear()
+                self.check_search_result()
+            else:
+                if limit == 3 and (len(text) < limit or len(count_space_digit_reference) == 0):
+                    if not self.quickLockButton.isChecked():
+                        self.list_view.clear()
+                    self.check_search_result()
+                elif (limit == 8 and (len(text) < limit or len(count_spaces_two_chars_text) == 0 or
+                                      len(count_two_chars_text) < 2)):
+                    if not self.quickLockButton.isChecked():
+                        self.list_view.clear()
+                    self.check_search_result_search_while_typing_short()
+                else:
+                    """
+                    Start search if no chars are entered or deleted for 0.2 s
+                    If no Timer is set, Text search will break the search by sending repeative search Quaries on
+                    all chars. Use the self.on_quick_search_while_typing, this does not contain any error messages.
+                    """
+                    self.search_timer = ()
+                    if self.search_timer:
+                        self.search_timer.stop()
+                        self.search_timer.deleteLater()
+                    self.search_timer = QtCore.QTimer()
+                    self.search_timer.timeout.connect(self.on_quick_search_while_typing)
+                    self.search_timer.setSingleShot(True)
+                    self.search_timer.start(200)
 
     def display_results(self, bible, second_bible=''):
         """
