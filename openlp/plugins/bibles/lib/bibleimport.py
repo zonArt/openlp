@@ -25,7 +25,8 @@ import logging
 from lxml import etree, objectify
 
 from openlp.core.common import languages
-from openlp.plugins.bibles.lib.db import BibleDB
+from openlp.core.lib import ValidationError
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -63,6 +64,29 @@ class BibleImport(BibleDB):
             return None
         self.save_meta('language_id', language_id)
         return language_id
+
+    def find_and_create_book(self, name, no_of_books, language_id, guess_id=None):
+        """
+        Find the OpenLP book id and then create the book in this bible db
+
+        :param name: Name of the book. If None, then fall back to the guess_id Str
+        :param no_of_books: The total number of books contained in this bible Int
+        :param language_id: The OpenLP id of the language of this bible Int
+        :param guess_id: The guessed id of the book, used if name is None Int
+        :return:
+        """
+        if name:
+            book_ref_id = self.get_book_ref_id_by_name(name, no_of_books, language_id)
+        else:
+            log.debug('No book name supplied. Falling back to guess_id')
+            book_ref_id = guess_id
+        if not book_ref_id:
+            raise ValidationError(msg='Could not resolve book_ref_id in "{}"'.format(self.filename))
+        book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
+        if book_details is None:
+            raise ValidationError(msg='book_ref_id: {book_ref} Could not be found in the BibleResourcesDB while '
+                                      'importing {file}'.format(book_ref=book_ref_id, file=self.filename))
+        return self.create_book(name, book_ref_id, book_details['testament_id'])
 
     @staticmethod
     def parse_xml(filename, use_objectify=False, elements=None, tags=None):

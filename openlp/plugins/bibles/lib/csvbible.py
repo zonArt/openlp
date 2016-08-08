@@ -49,16 +49,21 @@ There are two acceptable formats of the verses file.  They are:
 
 All CSV files are expected to use a comma (',') as the delimiter and double quotes ('"') as the quote symbol.
 """
-import logging
 import csv
+import logging
+from collections import namedtuple
 
 from openlp.core.common import translate
 from openlp.core.lib import get_file_encoding
+from openlp.core.lib.exceptions import ValidationError
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 
 log = logging.getLogger(__name__)
+
+Book = namedtuple('Book', 'id, testament_id, name, abbreviation')
+Verse = namedtuple('Verse', 'book_id_name, chapter_number, number, text')
 
 
 class CSVBible(BibleImport):
@@ -77,81 +82,107 @@ class CSVBible(BibleImport):
         self.books_file = kwargs['booksfile']
         self.verses_file = kwargs['versefile']
 
+    @staticmethod
+    def get_book_name(name, books):
+        """
+        Normalize a book name or id.
+
+        :param name: The name, or id of a book. Str
+        :param books: A dict of books parsed from the books file.
+        :return: The normalized name. Str
+        """
+        try:
+            book_name = books[int(name)]
+        except ValueError:
+            book_name = name
+        return book_name
+
+    @staticmethod
+    def parse_csv_file(filename, results_tuple):
+        """
+        Parse the supplied CSV file.
+
+        :param filename: The name of the file to parse. Str
+        :param results_tuple: The namedtuple to use to store the results. namedtuple
+        :return: An iterable yielding namedtuples of type results_tuple
+        """
+        try:
+            encoding = get_file_encoding(filename)['encoding']
+            with open(filename, 'r', encoding=encoding, newline='') as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=',', quotechar='"')
+                return [results_tuple(*line) for line in csv_reader]
+        except (OSError, csv.Error):
+            raise ValidationError(msg='Parsing "{file}" failed'.format(file=filename))
+
+    def process_books(self, books):
+        """
+        Process the books parsed from the books file.
+
+        :param books: An a list Book namedtuples
+        :return: A dict of books or None
+        """
+        book_list = {}
+        number_of_books = len(books)
+        for book in books:
+            if self.stop_import_flag:
+                return None
+            self.wizard.increment_progress_bar(
+                translate('BiblesPlugin.CSVBible', 'Importing books... {book}').format(book=book.name))
+            self.find_and_create_book(book.name, number_of_books, self.language_id)
+            book_list.update({int(book.id): book.name})
+        self.application.process_events()
+        return book_list
+
+    def process_verses(self, verses, books):
+        """
+        Process the verses parsed from the verses file.
+
+        :param verses: A list of Verse namedtuples
+        :param books: A dict of books
+        :return: None
+        """
+        book_ptr = None
+        for verse in verses:
+            if self.stop_import_flag:
+                return None
+            verse_book = self.get_book_name(verse.book_id_name, books)
+            if book_ptr != verse_book:
+                book = self.get_book(verse_book)
+                book_ptr = book.name
+                self.wizard.increment_progress_bar(
+                    translate('BiblesPlugin.CSVBible', 'Importing verses from {book}...',
+                              'Importing verses from <book name>...').format(book=book.name))
+                self.session.commit()
+            self.create_verse(book.id, verse.chapter_number, verse.number, verse.text)
+        self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing verses... done.'))
+        self.application.process_events()
+        self.session.commit()
+
     def do_import(self, bible_name=None):
         """
-        Import the bible books and verses.
+        Import a bible from the CSV files.
+
+        :param bible_name: Optional name of the bible being imported. Str or None
+        :return: True if the import was successful, False if it failed or was cancelled
         """
-        self.wizard.progress_bar.setValue(0)
-        self.wizard.progress_bar.setMinimum(0)
-        self.wizard.progress_bar.setMaximum(66)
-        success = True
-        language_id = self.get_language_id(bible_name=self.books_file)
-        if not language_id:
-            return False
-        books_file = None
-        book_list = {}
-        # Populate the Tables
         try:
-            details = get_file_encoding(self.books_file)
-            books_file = open(self.books_file, 'r', encoding=details['encoding'])
-            books_reader = csv.reader(books_file, delimiter=',', quotechar='"')
-            for line in books_reader:
-                if self.stop_import_flag:
-                    break
-                self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible',
-                                                             'Importing books... {text}').format(text=line[2]))
-                book_ref_id = self.get_book_ref_id_by_name(line[2], 67, language_id)
-                if not book_ref_id:
-                    log.error('Importing books from "{name}" failed'.format(name=self.books_file))
-                    return False
-                book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                self.create_book(line[2], book_ref_id, book_details['testament_id'])
-                book_list.update({int(line[0]): line[2]})
-            self.application.process_events()
-        except (IOError, IndexError):
-            log.exception('Loading books from file failed')
-            success = False
-        finally:
-            if books_file:
-                books_file.close()
-        if self.stop_import_flag or not success:
+            self.language_id = self.get_language(bible_name)
+            if not self.language_id:
+                raise ValidationError(msg='Invalid language selected')
+            books = self.parse_csv_file(self.books_file, Book)
+            self.wizard.progress_bar.setValue(0)
+            self.wizard.progress_bar.setMinimum(0)
+            self.wizard.progress_bar.setMaximum(len(books))
+            book_list = self.process_books(books)
+            if self.stop_import_flag:
+                return False
+            verses = self.parse_csv_file(self.verses_file, Verse)
+            self.wizard.progress_bar.setValue(0)
+            self.wizard.progress_bar.setMaximum(len(books) + 1)
+            self.process_verses(verses, book_list)
+            if self.stop_import_flag:
+                return False
+        except ValidationError:
+            log.exception('Could not import CSV bible')
             return False
-        self.wizard.progress_bar.setValue(0)
-        self.wizard.progress_bar.setMaximum(67)
-        verse_file = None
-        try:
-            book_ptr = None
-            details = get_file_encoding(self.verses_file)
-            verse_file = open(self.verses_file, 'r', encoding=details['encoding'])
-            verse_reader = csv.reader(verse_file, delimiter=',', quotechar='"')
-            for line in verse_reader:
-                if self.stop_import_flag:
-                    break
-                try:
-                    line_book = book_list[int(line[0])]
-                except ValueError:
-                    line_book = line[0]
-                if book_ptr != line_book:
-                    book = self.get_book(line_book)
-                    book_ptr = book.name
-                    # TODO: Check out this conversion in translations
-                    self.wizard.increment_progress_bar(
-                        translate('BiblesPlugin.CSVBible',
-                                  'Importing verses from {name}...'.format(name=book.name),
-                                  'Importing verses from <book name>...'))
-                    self.session.commit()
-                verse_text = line[3]
-                self.create_verse(book.id, line[1], line[2], verse_text)
-            self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing verses... done.'))
-            self.application.process_events()
-            self.session.commit()
-        except IOError:
-            log.exception('Loading verses from file failed')
-            success = False
-        finally:
-            if verse_file:
-                verse_file.close()
-        if self.stop_import_flag:
-            return False
-        else:
-            return success
+        return True

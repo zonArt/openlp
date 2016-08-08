@@ -30,6 +30,7 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
+NS = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
 # Tags we don't use and can remove the content
 REMOVABLE_ELEMENTS = ('{http://www.bibletechnologies.net/2003/OSIS/namespace}note',
                       '{http://www.bibletechnologies.net/2003/OSIS/namespace}milestone',
@@ -88,18 +89,17 @@ class OSISBible(BibleImport):
             self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
                                                          'Removing unused tags (this may take a few minutes)...'))
             osis_bible_tree = self.parse_xml(self.filename, elements=REMOVABLE_ELEMENTS, tags=REMOVABLE_TAGS)
-            namespace = {'ns': 'http://www.bibletechnologies.net/2003/OSIS/namespace'}
             # Find bible language]
-            language = osis_bible_tree.xpath("//ns:osisText/@xml:lang", namespaces=namespace)
+            language = osis_bible_tree.xpath("//ns:osisText/@xml:lang", namespaces=NS)
             language_id = self.get_language_id(language[0] if language else None, bible_name=self.filename)
             if not language_id:
                 return False
-            num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=namespace))
+            num_books = int(osis_bible_tree.xpath("count(//ns:div[@type='book'])", namespaces=NS))
             # Precompile a few xpath-querys
-            verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=namespace)
-            text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=namespace)
+            verse_in_chapter = etree.XPath('count(//ns:chapter[1]/ns:verse)', namespaces=NS)
+            text_in_verse = etree.XPath('count(//ns:verse[1]/text())', namespaces=NS)
             # Find books in the bible
-            bible_books = osis_bible_tree.xpath("//ns:div[@type='book']", namespaces=namespace)
+            bible_books = osis_bible_tree.xpath("//ns:div[@type='book']", namespaces=NS)
             for book in bible_books:
                 if self.stop_import_flag:
                     break
