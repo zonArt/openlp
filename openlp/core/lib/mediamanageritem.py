@@ -651,6 +651,20 @@ class MediaManagerItem(QtWidgets.QWidget, RegistryProperties):
         item.setFont(font)
         self.list_view.addItem(item)
 
+    def check_search_result_search_while_typing_short(self):
+        """
+        This is used in Bible "Search while typing" if the search is shorter than the min required len.
+        """
+        if self.list_view.count():
+            return
+        message = translate('OpenLP.MediaManagerItem', 'Search is too short to be used in: "Search while typing"')
+        item = QtWidgets.QListWidgetItem(message)
+        item.setFlags(QtCore.Qt.NoItemFlags)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        item.setFont(font)
+        self.list_view.addItem(item)
+
     def _get_id_of_item_to_generate(self, item, remote_item):
         """
         Utility method to check items being submitted for slide generation.
