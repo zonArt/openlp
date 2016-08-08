@@ -35,7 +35,7 @@ class BibleImport(BibleDB):
     """
     Helper class to import bibles from a third party source into OpenLP
     """
-    #TODO: Test
+    # TODO: Test
     def __init__(self, *args, **kwargs):
         log.debug(self.__class__.__name__)
         super().__init__(*args, **kwargs)
