@@ -24,10 +24,10 @@ The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
 
-import chardet
 import logging
 import os
 from distutils.version import LooseVersion
+from chardet.universaldetector import UniversalDetector
 
 from PyQt5 import QtCore, QtGui, Qt, QtWidgets
 
@@ -340,18 +340,23 @@ def create_separated_list(string_list):
 
 def get_file_encoding(filename):
     """
-    Utility function to get the file encoding.
+    Utility function to incrementally detect the file encoding.
+
+    :param filename: Filename for the file to determine the encoding for. Str
+    :return: A dict with the keys 'encoding' and 'confidence'
     """
-    detect_file = None
+    detector = UniversalDetector()
     try:
-        detect_file = open(filename, 'rb')
-        details = chardet.detect(detect_file.read(1024))
-    except IOError:
+        with open(filename, 'rb') as detect_file:
+            while not detector.done:
+                chunk = detect_file.read(1024)
+                if not chunk:
+                    break
+                detector.feed(chunk)
+            detector.close()
+        return detector.result
+    except OSError:
         log.exception('Error detecting file encoding')
-    finally:
-        if detect_file:
-            detect_file.close()
-    return details
 
 
 from .exceptions import ValidationError

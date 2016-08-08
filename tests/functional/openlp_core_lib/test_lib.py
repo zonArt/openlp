@@ -23,6 +23,7 @@
 Package to test the openlp.core.lib package.
 """
 import os
+from io import BytesIO
 
 from unittest import TestCase
 from datetime import datetime, timedelta
@@ -30,8 +31,8 @@ from datetime import datetime, timedelta
 from PyQt5 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, check_item_selected, clean_tags, create_thumb, create_separated_list, \
-    expand_tags, get_text_file_string, image_to_byte, resize_image, str_to_bool, validate_thumb
-from tests.functional import MagicMock, patch
+    expand_tags, get_file_encoding, get_text_file_string, image_to_byte, resize_image, str_to_bool, validate_thumb
+from tests.functional import MagicMock, PropertyMock, call, patch
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
 
@@ -736,3 +737,62 @@ class TestLib(TestCase):
             # THEN: We should have "Author 1, Author 2, and Author 3"
             assert string_result == 'Author 1, Author 2, and Author 3', 'The string should be u\'Author 1, ' \
                 'Author 2, and Author 3\'.'
+
+    def test_get_file_name_encoding_done_test(self):
+        """
+        Test get_file_encoding when the detector sets done to True
+        """
+        # GIVEN: A mocked UniversalDetector instance with done attribute set to True after first iteration
+        with patch('openlp.core.lib.UniversalDetector') as mocked_universal_detector, \
+                patch('builtins.open', return_value=BytesIO(b"data" * 260)) as mocked_open:
+            encoding_result = {'encoding': 'UTF-8', 'confidence': 0.99}
+            mocked_universal_detector_inst = MagicMock(result=encoding_result)
+            type(mocked_universal_detector_inst).done = PropertyMock(side_effect=[False, True])
+            mocked_universal_detector.return_value = mocked_universal_detector_inst
+
+            # WHEN: Calling get_file_encoding
+            result = get_file_encoding('file name')
+
+            # THEN: The feed method of UniversalDetector should only br called once before returning a result
+            mocked_open.assert_called_once_with('file name', 'rb')
+            self.assertEqual(mocked_universal_detector_inst.feed.mock_calls, [call(b"data" * 256)])
+            mocked_universal_detector_inst.close.assert_called_once_with()
+            self.assertEqual(result, encoding_result)
+
+    def test_get_file_name_encoding_eof_test(self):
+        """
+        Test get_file_encoding when the end of the file is reached
+        """
+        # GIVEN: A mocked UniversalDetector instance which isn't set to done and a mocked open, with 1040 bytes of test
+        #       data (enough to run the iterator twice)
+        with patch('openlp.core.lib.UniversalDetector') as mocked_universal_detector, \
+                patch('builtins.open', return_value=BytesIO(b"data" * 260)) as mocked_open:
+            encoding_result = {'encoding': 'UTF-8', 'confidence': 0.99}
+            mocked_universal_detector_inst = MagicMock(mock=mocked_universal_detector,
+                                                       **{'done': False, 'result': encoding_result})
+            mocked_universal_detector.return_value = mocked_universal_detector_inst
+
+            # WHEN: Calling get_file_encoding
+            result = get_file_encoding('file name')
+
+            # THEN: The feed method of UniversalDetector should have been called twice before returning a result
+            mocked_open.assert_called_once_with('file name', 'rb')
+            self.assertEqual(mocked_universal_detector_inst.feed.mock_calls, [call(b"data" * 256), call(b"data" * 4)])
+            mocked_universal_detector_inst.close.assert_called_once_with()
+            self.assertEqual(result, encoding_result)
+
+    def test_get_file_name_encoding_oserror_test(self):
+        """
+        Test get_file_encoding when the end of the file is reached
+        """
+        # GIVEN: A mocked UniversalDetector instance which isn't set to done and a mocked open, with 1040 bytes of test
+        #       data (enough to run the iterator twice)
+        with patch('openlp.core.lib.UniversalDetector'), \
+                patch('builtins.open', side_effect=OSError), \
+                patch('openlp.core.lib.log') as mocked_log:
+            # WHEN: Calling get_file_encoding
+            result = get_file_encoding('file name')
+
+            # THEN: log.exception should be called and get_file_encoding should return None
+            mocked_log.exception.assert_called_once_with('Error detecting file encoding')
+            self.assertIsNone(result)
