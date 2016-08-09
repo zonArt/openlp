@@ -53,11 +53,9 @@ import csv
 import logging
 from collections import namedtuple
 
-from openlp.core.common import translate
-from openlp.core.lib import get_file_encoding
+from openlp.core.common import get_file_encoding, translate
 from openlp.core.lib.exceptions import ValidationError
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 
 log = logging.getLogger(__name__)

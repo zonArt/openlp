@@ -24,20 +24,19 @@ import logging
 
 from lxml import etree, objectify
 
-from openlp.core.common import languages
+from openlp.core.common import OpenLPMixin, languages
 from openlp.core.lib import ValidationError
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
 
-class BibleImport(BibleDB):
+class BibleImport(OpenLPMixin, BibleDB):
     """
     Helper class to import bibles from a third party source into OpenLP
     """
     # TODO: Test
     def __init__(self, *args, **kwargs):
-        log.debug(self.__class__.__name__)
         super().__init__(*args, **kwargs)
         self.filename = kwargs['filename'] if 'filename' in kwargs else None
 
