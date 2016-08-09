@@ -136,7 +136,8 @@ class TestCSVImport(TestCase):
         with patch('openlp.plugins.bibles.lib.importers.csvbible.get_file_encoding',
                    return_value={'encoding': 'utf-8', 'confidence': 0.99}),\
                 patch('openlp.plugins.bibles.lib.importers.csvbible.open', create=True) as mocked_open,\
-                patch('openlp.plugins.bibles.lib.importers.csvbible.csv.reader', return_value=iter(test_data)) as mocked_reader:
+                patch('openlp.plugins.bibles.lib.importers.csvbible.csv.reader',
+                      return_value=iter(test_data)) as mocked_reader:
 
             # WHEN: Calling the CSVBible parse_csv_file method with a file name and TestTuple
             result = CSVBible.parse_csv_file('file.csv', TestTuple)
