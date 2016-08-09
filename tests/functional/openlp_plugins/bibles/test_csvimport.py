@@ -32,7 +32,7 @@ from unittest import TestCase
 from tests.functional import ANY, MagicMock, PropertyMock, call, patch
 from openlp.core.lib.exceptions import ValidationError
 from openlp.plugins.bibles.lib.bibleimport import BibleImport
-from openlp.plugins.bibles.lib.csvbible import Book, CSVBible, Verse
+from openlp.plugins.bibles.lib.importers.csvbible import Book, CSVBible, Verse
 
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -133,10 +133,10 @@ class TestCSVImport(TestCase):
         test_data = [['1', 'Line 1', 'Data 1'], ['2', 'Line 2', 'Data 2'], ['3', 'Line 3', 'Data 3']]
         TestTuple = namedtuple('TestTuple', 'line_no line_description line_data')
 
-        with patch('openlp.plugins.bibles.lib.csvbible.get_file_encoding',
+        with patch('openlp.plugins.bibles.lib.importers.csvbible.get_file_encoding',
                    return_value={'encoding': 'utf-8', 'confidence': 0.99}),\
-                patch('openlp.plugins.bibles.lib.csvbible.open', create=True) as mocked_open,\
-                patch('openlp.plugins.bibles.lib.csvbible.csv.reader', return_value=iter(test_data)) as mocked_reader:
+                patch('openlp.plugins.bibles.lib.importers.csvbible.open', create=True) as mocked_open,\
+                patch('openlp.plugins.bibles.lib.importers.csvbible.csv.reader', return_value=iter(test_data)) as mocked_reader:
 
             # WHEN: Calling the CSVBible parse_csv_file method with a file name and TestTuple
             result = CSVBible.parse_csv_file('file.csv', TestTuple)
@@ -152,9 +152,9 @@ class TestCSVImport(TestCase):
         Test the parse_csv_file() handles an OSError correctly
         """
         # GIVEN: Mocked a mocked open object which raises an OSError
-        with patch('openlp.plugins.bibles.lib.csvbible.get_file_encoding',
+        with patch('openlp.plugins.bibles.lib.importers.csvbible.get_file_encoding',
                    return_value={'encoding': 'utf-8', 'confidence': 0.99}),\
-                patch('openlp.plugins.bibles.lib.csvbible.open', side_effect=OSError, create=True):
+                patch('openlp.plugins.bibles.lib.importers.csvbible.open', side_effect=OSError, create=True):
 
             # WHEN: Calling CSVBible.parse_csv_file
             # THEN: A ValidationError should be raised
@@ -167,10 +167,10 @@ class TestCSVImport(TestCase):
         Test the parse_csv_file() handles an csv.Error correctly
         """
         # GIVEN: Mocked a csv.reader which raises an csv.Error
-        with patch('openlp.plugins.bibles.lib.csvbible.get_file_encoding',
+        with patch('openlp.plugins.bibles.lib.importers.csvbible.get_file_encoding',
                    return_value={'encoding': 'utf-8', 'confidence': 0.99}),\
-                patch('openlp.plugins.bibles.lib.csvbible.open', create=True),\
-                patch('openlp.plugins.bibles.lib.csvbible.csv.reader', side_effect=csv.Error):
+                patch('openlp.plugins.bibles.lib.importers.csvbible.open', create=True),\
+                patch('openlp.plugins.bibles.lib.importers.csvbible.csv.reader', side_effect=csv.Error):
 
             # WHEN: Calling CSVBible.parse_csv_file
             # THEN: A ValidationError should be raised
@@ -204,7 +204,7 @@ class TestCSVImport(TestCase):
         # GIVEN: An instance of CSVBible with the stop_import_flag set to False, and some sample data
         mocked_manager = MagicMock()
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.csvbible.translate'):
+                patch('openlp.plugins.bibles.lib.importers.csvbible.translate'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
             type(importer).application = PropertyMock()
             importer.find_and_create_book = MagicMock()
@@ -254,7 +254,7 @@ class TestCSVImport(TestCase):
         # GIVEN: An instance of CSVBible with the application and wizard attributes mocked out, and some test data.
         mocked_manager = MagicMock()
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.csvbible.translate'):
+                patch('openlp.plugins.bibles.lib.importers.csvbible.translate'):
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
             type(importer).application = PropertyMock()
             importer.create_verse = MagicMock()
@@ -288,7 +288,7 @@ class TestCSVImport(TestCase):
         # GIVEN: An instance of CSVBible and a mocked get_language which simulates the user cancelling the language box
         mocked_manager = MagicMock()
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.csvbible.log') as mocked_log:
+                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
             importer.get_language = MagicMock(return_value=None)
 
@@ -308,7 +308,7 @@ class TestCSVImport(TestCase):
         # GIVEN: An instance of CSVBible with stop_import set to True
         mocked_manager = MagicMock()
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.csvbible.log') as mocked_log:
+                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verse.csv')
             importer.get_language = MagicMock(return_value=10)
             importer.parse_csv_file = MagicMock(return_value=['Book 1', 'Book 2', 'Book 3'])
@@ -333,7 +333,7 @@ class TestCSVImport(TestCase):
         # GIVEN: An instance of CSVBible with stop_import which is True the second time of calling
         mocked_manager = MagicMock()
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.csvbible.log') as mocked_log:
+                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
             CSVBible.stop_import_flag = PropertyMock(side_effect=[False, True])
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verses.csv')
             importer.get_language = MagicMock(return_value=10)
@@ -362,7 +362,7 @@ class TestCSVImport(TestCase):
         # GIVEN: An instance of CSVBible
         mocked_manager = MagicMock()
         with patch('openlp.plugins.bibles.lib.db.BibleDB._setup'),\
-                patch('openlp.plugins.bibles.lib.csvbible.log') as mocked_log:
+                patch('openlp.plugins.bibles.lib.importers.csvbible.log') as mocked_log:
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile='books.csv', versefile='verses.csv')
             importer.get_language = MagicMock(return_value=10)
             importer.parse_csv_file = MagicMock(side_effect=[['Book 1'], ['Verse 1']])
@@ -393,7 +393,7 @@ class TestCSVImport(TestCase):
         test_data = json.loads(result_file.read().decode())
         books_file = os.path.join(TEST_PATH, 'dk1933-books.csv')
         verses_file = os.path.join(TEST_PATH, 'dk1933-verses.csv')
-        with patch('openlp.plugins.bibles.lib.csvbible.CSVBible.application'):
+        with patch('openlp.plugins.bibles.lib.importers.csvbible.CSVBible.application'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = CSVBible(mocked_manager, path='.', name='.', booksfile=books_file, versefile=verses_file)

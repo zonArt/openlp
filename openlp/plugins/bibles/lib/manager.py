@@ -26,13 +26,13 @@ import os
 from openlp.core.common import RegistryProperties, AppLocation, Settings, translate, delete_file, UiStrings
 from openlp.plugins.bibles.lib import parse_reference, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
-from .csvbible import CSVBible
-from .http import HTTPBible
-from .opensong import OpenSongBible
-from .osis import OSISBible
-from .zefania import ZefaniaBible
+from .importers.csvbible import CSVBible
+from .importers.http import HTTPBible
+from .importers.opensong import OpenSongBible
+from .importers.osis import OSISBible
+from .importers.zefania import ZefaniaBible
 try:
-    from .sword import SwordBible
+    from .importers.sword import SwordBible
 except:
     pass
 

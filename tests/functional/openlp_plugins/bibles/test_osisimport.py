@@ -28,7 +28,7 @@ import json
 from unittest import TestCase
 
 from tests.functional import MagicMock, patch
-from openlp.plugins.bibles.lib.osis import OSISBible
+from openlp.plugins.bibles.lib.importers.osis import OSISBible
 from openlp.plugins.bibles.lib.db import BibleDB
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -72,7 +72,7 @@ class TestOsisImport(TestCase):
         result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
         test_data = json.loads(result_file.read().decode())
         bible_file = 'osis-dk1933.xml'
-        with patch('openlp.plugins.bibles.lib.osis.OSISBible.application'):
+        with patch('openlp.plugins.bibles.lib.importers.osis.OSISBible.application'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OSISBible(mocked_manager, path='.', name='.', filename='')
@@ -102,7 +102,7 @@ class TestOsisImport(TestCase):
         result_file = open(os.path.join(TEST_PATH, 'kjv.json'), 'rb')
         test_data = json.loads(result_file.read().decode())
         bible_file = 'osis-kjv.xml'
-        with patch('openlp.plugins.bibles.lib.osis.OSISBible.application'):
+        with patch('openlp.plugins.bibles.lib.importers.osis.OSISBible.application'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OSISBible(mocked_manager, path='.', name='.', filename='')
@@ -132,7 +132,7 @@ class TestOsisImport(TestCase):
         result_file = open(os.path.join(TEST_PATH, 'web.json'), 'rb')
         test_data = json.loads(result_file.read().decode())
         bible_file = 'osis-web.xml'
-        with patch('openlp.plugins.bibles.lib.osis.OSISBible.application'):
+        with patch('openlp.plugins.bibles.lib.importers.osis.OSISBible.application'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OSISBible(mocked_manager, path='.', name='.', filename='')
@@ -162,7 +162,7 @@ class TestOsisImport(TestCase):
         result_file = open(os.path.join(TEST_PATH, 'dk1933.json'), 'rb')
         test_data = json.loads(result_file.read().decode())
         bible_file = 'osis-dk1933-empty-verse.xml'
-        with patch('openlp.plugins.bibles.lib.osis.OSISBible.application'):
+        with patch('openlp.plugins.bibles.lib.importers.osis.OSISBible.application'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = OSISBible(mocked_manager, path='.', name='.', filename='')
