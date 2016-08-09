@@ -27,7 +27,6 @@ OpenLP work.
 import logging
 import os
 from distutils.version import LooseVersion
-from chardet.universaldetector import UniversalDetector
 
 from PyQt5 import QtCore, QtGui, Qt, QtWidgets
 
@@ -336,27 +335,6 @@ def create_separated_list(string_list):
             merged = translate('OpenLP.core.lib', '%s, %s',
                                'Locale list separator: middle') % (string_list[index], merged)
         return translate('OpenLP.core.lib', '%s, %s', 'Locale list separator: start') % (string_list[0], merged)
-
-
-def get_file_encoding(filename):
-    """
-    Utility function to incrementally detect the file encoding.
-
-    :param filename: Filename for the file to determine the encoding for. Str
-    :return: A dict with the keys 'encoding' and 'confidence'
-    """
-    detector = UniversalDetector()
-    try:
-        with open(filename, 'rb') as detect_file:
-            while not detector.done:
-                chunk = detect_file.read(1024)
-                if not chunk:
-                    break
-                detector.feed(chunk)
-            detector.close()
-        return detector.result
-    except OSError:
-        log.exception('Error detecting file encoding')
 
 
 from .exceptions import ValidationError
