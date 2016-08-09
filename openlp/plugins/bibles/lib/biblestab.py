@@ -128,6 +128,20 @@ class BiblesTab(SettingsTab):
         self.language_selection_layout.addWidget(self.language_selection_label)
         self.language_selection_layout.addWidget(self.language_selection_combo_box)
         self.right_layout.addWidget(self.language_selection_group_box)
+        self.bible_quick_settings_group_box = QtWidgets.QGroupBox(self.right_column)
+        self.bible_quick_settings_group_box.setObjectName('bible_quick_settings_group_box')
+        self.right_layout.addWidget(self.bible_quick_settings_group_box)
+        self.search_settings_layout = QtWidgets.QFormLayout(self.bible_quick_settings_group_box)
+        self.search_settings_layout.setObjectName('search_settings_layout')
+        self.reset_to_combined_quick_search_check_box = QtWidgets.QCheckBox(self.bible_quick_settings_group_box)
+        self.reset_to_combined_quick_search_check_box.setObjectName('reset_to_combined_quick_search_check_box')
+        self.search_settings_layout.addRow(self.reset_to_combined_quick_search_check_box)
+        self.hide_combined_quick_error_check_box = QtWidgets.QCheckBox(self.bible_quick_settings_group_box)
+        self.hide_combined_quick_error_check_box.setObjectName('hide_combined_quick_error_check_box')
+        self.search_settings_layout.addRow(self.hide_combined_quick_error_check_box)
+        self.bible_search_while_typing_check_box = QtWidgets.QCheckBox(self.bible_quick_settings_group_box)
+        self.bible_search_while_typing_check_box.setObjectName('bible_search_while_typing_check_box')
+        self.search_settings_layout.addRow(self.bible_search_while_typing_check_box)
         self.left_layout.addStretch()
         self.right_layout.addStretch()
         # Signals and slots
@@ -151,6 +165,12 @@ class BiblesTab(SettingsTab):
         self.end_separator_line_edit.editingFinished.connect(self.on_end_separator_line_edit_finished)
         Registry().register_function('theme_update_list', self.update_theme_list)
         self.language_selection_combo_box.activated.connect(self.on_language_selection_combo_box_changed)
+        self.reset_to_combined_quick_search_check_box.stateChanged.connect(
+            self.on_reset_to_combined_quick_search_check_box_changed)
+        self.hide_combined_quick_error_check_box.stateChanged.connect(
+            self.on_hide_combined_quick_error_check_box_changed)
+        self.bible_search_while_typing_check_box.stateChanged.connect(
+            self.on_bible_search_while_typing_check_box_changed)
 
     def retranslateUi(self):
         self.verse_display_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Verse Display'))
@@ -194,6 +214,17 @@ class BiblesTab(SettingsTab):
             LanguageSelection.Application, translate('BiblesPlugin.BiblesTab', 'Application Language'))
         self.language_selection_combo_box.setItemText(
             LanguageSelection.English, translate('BiblesPlugin.BiblesTab', 'English'))
+        self.bible_quick_settings_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Quick Search Settings'))
+        self.reset_to_combined_quick_search_check_box.setText(translate('BiblesPlugin.BiblesTab',
+                                                                        'Reset search type to "Text or Scripture'
+                                                                        ' Reference" on startup'))
+        self.hide_combined_quick_error_check_box.setText(translate('BiblesPlugin.BiblesTab',
+                                                                   'Don\'t show error if nothing is found in "Text or '
+                                                                   'Scripture Reference"'))
+        self.bible_search_while_typing_check_box.setText(translate('BiblesPlugin.BiblesTab',
+                                                                   'Search automatically while typing (Text search must'
+                                                                   ' contain a\nminimum of {count} characters and a '
+                                                                   'space for performance reasons)').format(count='8'))
 
     def on_bible_theme_combo_box_changed(self):
         self.bible_theme = self.bible_theme_combo_box.currentText()
@@ -302,6 +333,24 @@ class BiblesTab(SettingsTab):
                 self.end_separator_line_edit.setText(get_reference_separator('sep_e_default'))
                 self.end_separator_line_edit.setPalette(self.get_grey_text_palette(True))
 
+    def on_reset_to_combined_quick_search_check_box_changed(self, check_state):
+        """
+        Event handler for the 'hide_combined_quick_error' check box
+        """
+        self.reset_to_combined_quick_search = (check_state == QtCore.Qt.Checked)
+
+    def on_hide_combined_quick_error_check_box_changed(self, check_state):
+        """
+        Event handler for the 'hide_combined_quick_error' check box
+        """
+        self.hide_combined_quick_error = (check_state == QtCore.Qt.Checked)
+
+    def on_bible_search_while_typing_check_box_changed(self, check_state):
+        """
+        Event handler for the 'hide_combined_quick_error' check box
+        """
+        self.bible_search_while_typing = (check_state == QtCore.Qt.Checked)
+
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
@@ -355,6 +404,12 @@ class BiblesTab(SettingsTab):
             self.end_separator_check_box.setChecked(True)
         self.language_selection = settings.value('book name language')
         self.language_selection_combo_box.setCurrentIndex(self.language_selection)
+        self.reset_to_combined_quick_search = settings.value('reset to combined quick search')
+        self.reset_to_combined_quick_search_check_box.setChecked(self.reset_to_combined_quick_search)
+        self.hide_combined_quick_error = settings.value('hide combined quick error')
+        self.hide_combined_quick_error_check_box.setChecked(self.hide_combined_quick_error)
+        self.bible_search_while_typing = settings.value('is search while typing enabled')
+        self.bible_search_while_typing_check_box.setChecked(self.bible_search_while_typing)
         settings.endGroup()
 
     def save(self):
@@ -386,6 +441,9 @@ class BiblesTab(SettingsTab):
         if self.language_selection != settings.value('book name language'):
             settings.setValue('book name language', self.language_selection)
             self.settings_form.register_post_process('bibles_load_list')
+        settings.setValue('reset to combined quick search', self.reset_to_combined_quick_search)
+        settings.setValue('hide combined quick error', self.hide_combined_quick_error)
+        settings.setValue('is search while typing enabled', self.bible_search_while_typing)
         settings.endGroup()
         if self.tab_visited:
             self.settings_form.register_post_process('bibles_config_updated')
