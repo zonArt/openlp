@@ -26,7 +26,7 @@ import os
 
 from PyQt5 import QtCore
 
-from openlp.core.common import Registry
+from openlp.core.common import Registry, Settings
 from openlp.core.ui import HideMode
 from openlp.core.lib import ServiceItemContext
 from openlp.plugins.presentations.lib.pdfcontroller import PDF_CONTROLLER_FILETYPES
@@ -419,6 +419,8 @@ class MessageListener(object):
         is_live = message[1]
         if is_live:
             self.live_handler.next()
+            if Settings().value('core/click live slide to unblank'):
+                Registry().execute('slidecontroller_live_unblank')
         else:
             self.preview_handler.next()
 
@@ -431,6 +433,8 @@ class MessageListener(object):
         is_live = message[1]
         if is_live:
             self.live_handler.previous()
+            if Settings().value('core/click live slide to unblank'):
+                Registry().execute('slidecontroller_live_unblank')
         else:
             self.preview_handler.previous()
 

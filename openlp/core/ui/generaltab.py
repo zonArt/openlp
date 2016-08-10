@@ -209,6 +209,9 @@ class GeneralTab(SettingsTab):
         self.auto_unblank_check_box = QtWidgets.QCheckBox(self.settings_group_box)
         self.auto_unblank_check_box.setObjectName('auto_unblank_check_box')
         self.settings_layout.addRow(self.auto_unblank_check_box)
+        self.click_live_slide_to_unblank_check_box = QtWidgets.QCheckBox(self.settings_group_box)
+        self.click_live_slide_to_unblank_check_box.setObjectName('click_live_slide_to_unblank')
+        self.settings_layout.addRow(self.click_live_slide_to_unblank_check_box)
         self.auto_preview_check_box = QtWidgets.QCheckBox(self.settings_group_box)
         self.auto_preview_check_box.setObjectName('auto_preview_check_box')
         self.settings_layout.addRow(self.auto_preview_check_box)
@@ -258,6 +261,8 @@ class GeneralTab(SettingsTab):
         self.settings_group_box.setTitle(translate('OpenLP.GeneralTab', 'Application Settings'))
         self.save_check_service_check_box.setText(translate('OpenLP.GeneralTab',
                                                   'Prompt to save before starting a new service'))
+        self.click_live_slide_to_unblank_check_box.setText(translate('OpenLP.GeneralTab',
+                                                           'Unblank display when changing slide in Live'))
         self.auto_unblank_check_box.setText(translate('OpenLP.GeneralTab', 'Unblank display when sending '
                                                                            'items to Live'))
         self.auto_preview_check_box.setText(translate('OpenLP.GeneralTab',
@@ -293,6 +298,7 @@ class GeneralTab(SettingsTab):
         self.password_edit.setText(settings.value('songselect password'))
         self.save_check_service_check_box.setChecked(settings.value('save prompt'))
         self.auto_unblank_check_box.setChecked(settings.value('auto unblank'))
+        self.click_live_slide_to_unblank_check_box.setChecked(settings.value('click live slide to unblank'))
         self.display_on_monitor_check.setChecked(self.screens.display)
         self.warning_check_box.setChecked(settings.value('blank warning'))
         self.auto_open_check_box.setChecked(settings.value('auto open'))
@@ -337,6 +343,7 @@ class GeneralTab(SettingsTab):
         settings.setValue('update check', self.check_for_updates_check_box.isChecked())
         settings.setValue('save prompt', self.save_check_service_check_box.isChecked())
         settings.setValue('auto unblank', self.auto_unblank_check_box.isChecked())
+        settings.setValue('click live slide to unblank', self.click_live_slide_to_unblank_check_box.isChecked())
         settings.setValue('auto preview', self.auto_preview_check_box.isChecked())
         settings.setValue('loop delay', self.timeout_spin_box.value())
         settings.setValue('ccli number', self.number_edit.displayText())
